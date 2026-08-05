@@ -6,6 +6,7 @@
 - Project ID: `prj_YO15mYTp64EHk0wlg6QmBTxNeV5k`
 - Framework: Next.js
 - Status: created and linked to the local project, not deployed from GitHub yet.
+- Environment variables added: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 ## Supabase
 

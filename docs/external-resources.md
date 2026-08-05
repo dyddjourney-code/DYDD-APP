@@ -5,7 +5,7 @@
 - Project name: `dydd-online-school`
 - Project ID: `prj_YO15mYTp64EHk0wlg6QmBTxNeV5k`
 - Framework: Next.js
-- Status: created, not deployed from GitHub yet.
+- Status: created and linked to the local project, not deployed from GitHub yet.
 
 ## Supabase
 
@@ -22,4 +22,3 @@ Credentials are stored outside the repo in the local secrets directory. Do not c
 Status: not created yet.
 
 This machine has git configured and the local repository is committed, but I did not find a GitHub CLI or GitHub API token for creating a new repository. Existing repo deploy-key access appears useful for known repos, not for creating a brand-new GitHub repo.
-

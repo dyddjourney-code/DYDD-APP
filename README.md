@@ -17,7 +17,9 @@ Build a discipleship and training platform that can host DYDD classes, biblical 
 
 - Local project folder created.
 - Initial architecture, schema plan, migration skeleton, content inventory, and build outline are in this repo.
-- External resource creation still needs final verification: GitHub repo, Vercel project, and Supabase project.
+- GitHub, Vercel, and Supabase project structures are created and documented.
+- Supabase magic-link login and the first protected DYDD HQ dashboard route are in place.
+- DesignID/DesignPD and Spiritual Gifts live Google Sheet sources are confirmed for read-only app planning.
 
 ## First Build Target
 
@@ -30,6 +32,10 @@ The smallest real version should be:
 5. Progress tracking.
 6. A simple personalized reflection panel using stored DesignID scores.
 
+## Production Source Discipline
+
+DesignID/DesignPD and Spiritual Gifts are live working assessment engines. The app should observe those sources and mirror client-safe results into Supabase; do not change the live sheets or expose raw response data without explicit approval.
+
 ## Folder Map
 
 - `app/`: future Next.js app routes.
@@ -39,4 +45,3 @@ The smallest real version should be:
 - `lib/`: Supabase, Stripe, and agent helper code.
 - `supabase/migrations/`: database migration files.
 - `agents/`: companion behavior notes and prompt scaffolds.
-

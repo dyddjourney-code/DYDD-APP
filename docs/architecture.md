@@ -29,6 +29,17 @@ Supabase should handle:
 
 Use Row Level Security from the start. Students should only read their own enrollments, progress, reflections, assessment snapshots, and agent threads. Public course marketing content can be readable without auth if desired.
 
+## Assessment Sources
+
+Use the current live Google Sheets as scoring engines first, then mirror client-safe outputs into Supabase. DesignID/DesignPD and Spiritual Gifts are both live production sources and should be treated as read-only until John explicitly approves a write or automation change.
+
+Initial source map:
+
+- DesignID / DesignPD: Google Sheets source referenced by `DESIGNID_PD_SPREADSHEET_ID`.
+- Spiritual Gifts: Google Sheets source referenced by `SPIRITUAL_GIFTS_SPREADSHEET_ID`.
+
+The app should connect users to their own normalized `assessment_snapshots`, not expose raw sheet rows or scoring internals.
+
 ## Stripe
 
 Stripe should handle:
@@ -53,6 +64,5 @@ Current API probing confirmed access to the DYDD GHL sub-account and membership 
 Start simple:
 
 - Store each student's assessment profile.
-- Provide one lesson reflection assistant that receives lesson context and the student's design snapshot.
+- Provide one lesson reflection assistant that receives lesson context and the student's available DesignID, DesignPD, Spiritual Gifts, and journey/workbook snapshots.
 - Add companion personas later after the core course loop works.
-

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { signOut } from "@/app/login/actions";
+import { assessmentSources } from "@/lib/assessments/sources";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const journeySteps = [
@@ -9,14 +10,6 @@ const journeySteps = [
   { label: "Desire", state: "Queued" },
   { label: "Gifts", state: "Queued" },
   { label: "Niche", state: "Builder" },
-];
-
-const assessmentTools = [
-  "DesignID",
-  "DesignPD",
-  "Spiritual Gifts",
-  "Desire Map",
-  "Story Inventory",
 ];
 
 export default async function HqPage() {
@@ -103,12 +96,20 @@ export default async function HqPage() {
             <h2>Tools</h2>
           </div>
           <div className="tool-list">
-            {assessmentTools.map((tool) => (
-              <div key={tool}>
-                <span>{tool}</span>
-                <small>Waiting for source mapping</small>
+            {assessmentSources.map((source) => (
+              <div key={source.slug}>
+                <span>{source.label}</span>
+                <small>Live source mapped</small>
               </div>
             ))}
+            <div>
+              <span>Desire Map</span>
+              <small>Waiting for source mapping</small>
+            </div>
+            <div>
+              <span>Story Inventory</span>
+              <small>Waiting for source mapping</small>
+            </div>
           </div>
         </article>
 
@@ -127,8 +128,8 @@ export default async function HqPage() {
             </div>
           ) : (
             <p className="empty-state">
-              No assessment snapshots are attached yet. DesignID and DesignPD
-              sheet access will feed this area.
+              No assessment snapshots are attached yet. DesignID, DesignPD, and
+              Spiritual Gifts live sources will feed this area.
             </p>
           )}
         </article>

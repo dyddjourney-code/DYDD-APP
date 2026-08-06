@@ -5,7 +5,7 @@
 - Project name: `dydd-online-school`
 - Project ID: `prj_YO15mYTp64EHk0wlg6QmBTxNeV5k`
 - Framework: Next.js
-- Status: created and linked to the local project, not deployed from GitHub yet.
+- Status: created, linked locally, and connected to GitHub repo `dyddjourney-code/DYDD-APP`.
 - Environment variables added: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 ## Supabase
@@ -21,9 +21,14 @@ Credentials are stored outside the repo in the local secrets directory. Do not c
 ## Google Sheets
 
 - DesignID/DesignPD live engine: `DesignID_GoogleSheets_Scoring_Template`
-- Spreadsheet ID: `1544PcSoJIyGu7Ot_rYTl2Qui5fL539wpVEkdY-Ub_d4`
 - Status: read access confirmed through the local Google Sheets service account on 2026-08-06.
+- App env key: `DESIGNID_PD_SPREADSHEET_ID`
 - Use: observation and app architecture only. Treat this sheet as the live scoring engine and mirror client-safe outputs into Supabase; do not modify the working spreadsheet without explicit approval.
+
+- Spiritual Gifts live engine: `Spiritual Gifts Assessment`
+- Status: read access confirmed through the local Google Sheets service account on 2026-08-06.
+- App env key: `SPIRITUAL_GIFTS_SPREADSHEET_ID`
+- Use: production-safe observation and app architecture only. This assessment is free, live, and customer-facing; do not modify the working spreadsheet without explicit approval.
 
 ## GitHub
 

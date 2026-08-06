@@ -445,6 +445,10 @@ h3 {
   border-top: 1px solid var(--line);
 }
 
+.snapshot-list p {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
 .journey-map li em {
   color: var(--green);
   font-size: 0.82rem;

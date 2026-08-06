@@ -29,6 +29,39 @@ Use `assessment_snapshots` as the first normalized target:
 
 Later, add a separate admin-only audit table for source row references and sync diagnostics if needed. Keep that table out of client RLS policies.
 
+## Initial Ingestion Endpoint
+
+`POST /api/assessment-snapshots` is the first safe door into Supabase for normalized assessment results. It expects a server-side bearer token from `DYDD_ASSESSMENT_SYNC_SECRET` and writes with `SUPABASE_SERVICE_ROLE_KEY`.
+
+Allowed `assessmentType` values:
+
+- `designid`
+- `designpd`
+- `spiritual_gifts`
+
+Example shape:
+
+```json
+{
+  "userId": "supabase-auth-user-id",
+  "assessmentType": "spiritual_gifts",
+  "sourceSlug": "spiritual_gifts_google_sheet",
+  "sourceResponseId": "sheet-row-or-form-response-reference",
+  "sourceSubmittedAt": "2026-08-06T20:00:00.000Z",
+  "scores": {
+    "teaching": 18,
+    "mercy": 17
+  },
+  "summary": {
+    "primary": "Teaching",
+    "secondary": "Mercy"
+  },
+  "profileLanguage": {
+    "clientSummary": "Client-safe explanation text goes here."
+  }
+}
+```
+
 ## Companion Boundary
 
 The Companion may use mirrored assessment outputs to explain, reflect, and ask next-step questions. It should not claim spiritual authority, provide counseling/medical/legal advice, expose other customers' data, or reveal scoring formulas unless John has intentionally made those formulas part of the client experience.

@@ -1,4 +1,5 @@
 export type AssessmentSource = {
+  assessmentTypes: string[];
   envKey: string;
   isLiveProduction: boolean;
   label: string;
@@ -9,6 +10,7 @@ export type AssessmentSource = {
 
 export const assessmentSources = [
   {
+    assessmentTypes: ["designid", "designpd"],
     envKey: "DESIGNID_PD_SPREADSHEET_ID",
     isLiveProduction: true,
     label: "DesignID / DesignPD",
@@ -17,6 +19,7 @@ export const assessmentSources = [
     syncMode: "observe_then_mirror",
   },
   {
+    assessmentTypes: ["spiritual_gifts"],
     envKey: "SPIRITUAL_GIFTS_SPREADSHEET_ID",
     isLiveProduction: true,
     label: "Spiritual Gifts",

@@ -10,6 +10,7 @@
 - Latest verified deployment: commit `7ea706c` reached `READY` on 2026-08-06.
 - Access note: the deployment currently redirects to Vercel SSO, so deployment protection/access settings may need review before sharing publicly.
 - Environment variables added: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- Server-only environment variables needed for assessment sync: `SUPABASE_SERVICE_ROLE_KEY`, `DYDD_ASSESSMENT_SYNC_SECRET`, `DESIGNID_PD_SPREADSHEET_ID`, `SPIRITUAL_GIFTS_SPREADSHEET_ID`
 
 ## Supabase
 

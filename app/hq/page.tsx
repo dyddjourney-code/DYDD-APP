@@ -30,7 +30,7 @@ export default async function HqPage() {
 
   const { data: snapshots } = await supabase
     .from("assessment_snapshots")
-    .select("assessment_type,created_at")
+    .select("assessment_type,created_at,source")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(4);
@@ -122,7 +122,8 @@ export default async function HqPage() {
             <div className="snapshot-list">
               {snapshots.map((snapshot) => (
                 <p key={`${snapshot.assessment_type}-${snapshot.created_at}`}>
-                  {snapshot.assessment_type}
+                  <span>{snapshot.assessment_type}</span>
+                  <small>{snapshot.source ?? "DYDD source"}</small>
                 </p>
               ))}
             </div>

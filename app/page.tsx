@@ -1,17 +1,20 @@
-const modules = [
-  "Welcome and orientation",
-  "Understanding your design",
-  "Biblical identity basics",
-  "Evangelism foundations",
-  "Design-aware reflection",
+import Link from "next/link";
+
+const journeySteps = [
+  "Identity",
+  "Expertise",
+  "Story",
+  "Desire",
+  "Gifts",
+  "Niche",
 ];
 
-const buildSteps = [
-  "Student login",
-  "DesignID course import",
-  "Progress tracking",
-  "Personalized reflection panel",
-  "Stripe enrollment",
+const hqSignals = [
+  "Private login",
+  "Assessment access",
+  "Workbook artifacts",
+  "Companion guidance",
+  "Niche builder",
 ];
 
 export default function Home() {
@@ -20,61 +23,61 @@ export default function Home() {
       <section className="hero">
         <div className="hero-copy">
           <p className="eyebrow">Discover Your Divine Design</p>
-          <h1>DYDD Online School</h1>
+          <h1>DYDD Headquarters</h1>
           <p className="lede">
-            A buildable first home for courses, biblical basics, evangelism
-            training, and companion-guided learning that can speak to each
-            student's actual design.
+            A private command center where each client can enter the DYDD
+            Journey, gather assessment results and workbook artifacts, and
+            receive companion-guided reflection one step at a time.
           </p>
           <div className="action-row" aria-label="Primary actions">
-            <a href="#build-plan" className="button primary">
-              View build path
-            </a>
-            <a href="#course-map" className="button secondary">
-              Course map
+            <Link href="/login" className="button primary">
+              Enter HQ
+            </Link>
+            <a href="#journey" className="button secondary">
+              View journey
             </a>
           </div>
         </div>
-        <div className="journey-panel" aria-label="School prototype summary">
+        <div className="journey-panel" aria-label="DYDD HQ prototype summary">
           <div className="panel-header">
             <span>Prototype loop</span>
-            <strong>Version 0.1</strong>
+            <strong>HQ v0.2</strong>
           </div>
           <ol>
             <li>Sign in</li>
-            <li>Open DesignID Foundations</li>
-            <li>Watch a lesson</li>
-            <li>Answer a reflection</li>
-            <li>Receive design-aware guidance</li>
+            <li>Open Journey HQ</li>
+            <li>Connect assessments</li>
+            <li>Capture workbook input</li>
+            <li>Build a living niche draft</li>
           </ol>
         </div>
       </section>
 
-      <section id="course-map" className="band">
+      <section id="journey" className="band">
         <div>
-          <p className="section-label">Initial course</p>
-          <h2>DesignID Foundations</h2>
+          <p className="section-label">Client journey</p>
+          <h2>Leave HQ with a clear next step.</h2>
         </div>
         <div className="module-grid">
-          {modules.map((module, index) => (
-            <article className="module" key={module}>
+          {journeySteps.map((step, index) => (
+            <article className="module" key={step}>
               <span>{String(index + 1).padStart(2, "0")}</span>
-              <h3>{module}</h3>
+              <h3>{step}</h3>
             </article>
           ))}
         </div>
       </section>
 
-      <section id="build-plan" className="build-plan">
+      <section className="build-plan">
         <div>
           <p className="section-label">First useful version</p>
-          <h2>Build the core learning loop before the whole school.</h2>
+          <h2>Build the trusted client loop before the whole platform.</h2>
         </div>
         <div className="step-list">
-          {buildSteps.map((step) => (
-            <div className="step" key={step}>
+          {hqSignals.map((signal) => (
+            <div className="step" key={signal}>
               <span />
-              <p>{step}</p>
+              <p>{signal}</p>
             </div>
           ))}
         </div>
@@ -82,4 +85,3 @@ export default function Home() {
     </main>
   );
 }
-

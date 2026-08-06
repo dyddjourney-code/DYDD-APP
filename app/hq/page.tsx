@@ -1,7 +1,15 @@
 import { redirect } from "next/navigation";
 import { signOut } from "@/app/login/actions";
 import { assessmentSources } from "@/lib/assessments/sources";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+
+type AssessmentSnapshotSummary = {
+  assessment_type: string;
+  created_at: string;
+  source: string | null;
+  source_submitted_at: string | null;
+};
 
 const journeySteps = [
   { label: "Identity", state: "Ready" },
@@ -11,6 +19,93 @@ const journeySteps = [
   { label: "Gifts", state: "Queued" },
   { label: "Niche", state: "Builder" },
 ];
+
+const assessmentLabels: Record<string, string> = {
+  design_pathways: "Design Pathways",
+  designid: "DesignID",
+  designpd: "DesignPD",
+  fruit_360: "Fruit 360",
+  spiritual_gifts: "Spiritual Gifts",
+};
+
+function normalizeEmail(email: string | null | undefined) {
+  return email?.trim().toLowerCase() ?? "";
+}
+
+function displayDate(value: string | null) {
+  if (!value) {
+    return "Date unavailable";
+  }
+
+  return new Intl.DateTimeFormat("en", {
+    dateStyle: "medium",
+  }).format(new Date(value));
+}
+
+function latestByAssessment(snapshots: AssessmentSnapshotSummary[]) {
+  const latest = new Map<string, AssessmentSnapshotSummary>();
+
+  for (const snapshot of snapshots) {
+    if (!latest.has(snapshot.assessment_type)) {
+      latest.set(snapshot.assessment_type, snapshot);
+    }
+  }
+
+  return Array.from(latest.values());
+}
+
+async function findOrAttachParticipant(userId: string, email: string) {
+  const supabaseAdmin = createSupabaseAdminClient();
+
+  const { data: existingParticipant } = await supabaseAdmin
+    .from("assessment_participants")
+    .select("id,user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (existingParticipant) {
+    return existingParticipant.id as string;
+  }
+
+  if (!email) {
+    return null;
+  }
+
+  const { data: emailParticipant } = await supabaseAdmin
+    .from("assessment_participants")
+    .select("id,user_id")
+    .eq("normalized_email", email)
+    .maybeSingle();
+
+  if (!emailParticipant) {
+    return null;
+  }
+
+  if (!emailParticipant.user_id) {
+    await supabaseAdmin
+      .from("assessment_participants")
+      .update({ user_id: userId, updated_at: new Date().toISOString() })
+      .eq("id", emailParticipant.id);
+  }
+
+  return emailParticipant.id as string;
+}
+
+async function getLatestAssessmentSnapshots(userId: string, email: string) {
+  const participantId = await findOrAttachParticipant(userId, email);
+  const supabaseAdmin = createSupabaseAdminClient();
+  const query = supabaseAdmin
+    .from("assessment_snapshots")
+    .select("assessment_type,created_at,source,source_submitted_at")
+    .order("source_submitted_at", { ascending: false, nullsFirst: false })
+    .order("created_at", { ascending: false });
+
+  const { data } = participantId
+    ? await query.eq("participant_id", participantId)
+    : await query.eq("user_id", userId);
+
+  return latestByAssessment((data ?? []) as AssessmentSnapshotSummary[]);
+}
 
 export default async function HqPage() {
   const supabase = await createSupabaseServerClient();
@@ -28,12 +123,10 @@ export default async function HqPage() {
     .eq("id", user.id)
     .maybeSingle();
 
-  const { data: snapshots } = await supabase
-    .from("assessment_snapshots")
-    .select("assessment_type,created_at,source")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(4);
+  const snapshots = await getLatestAssessmentSnapshots(
+    user.id,
+    normalizeEmail(user.email),
+  );
 
   const displayName = profile?.full_name ?? user.email ?? "Traveler";
 
@@ -116,14 +209,23 @@ export default async function HqPage() {
         <article className="artifact-panel">
           <div className="card-heading">
             <p className="section-label">Artifacts</p>
-            <h2>Collected inputs</h2>
+            <h2>Latest assessment vault</h2>
           </div>
           {snapshots?.length ? (
             <div className="snapshot-list">
               {snapshots.map((snapshot) => (
                 <p key={`${snapshot.assessment_type}-${snapshot.created_at}`}>
-                  <span>{snapshot.assessment_type}</span>
-                  <small>{snapshot.source ?? "DYDD source"}</small>
+                  <span>
+                    {assessmentLabels[snapshot.assessment_type] ??
+                      snapshot.assessment_type}
+                  </span>
+                  <small>
+                    {displayDate(
+                      snapshot.source_submitted_at ?? snapshot.created_at,
+                    )}
+                    {" · "}
+                    {snapshot.source ?? "DYDD source"}
+                  </small>
                 </p>
               ))}
             </div>

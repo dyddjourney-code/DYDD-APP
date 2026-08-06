@@ -69,6 +69,7 @@ const sourceConfigs = {
     range: "DesignPD_Report_Data!A:DE",
     sourceSlug: "designpd_report_data",
     timestampColumn: "Report_Date_Display",
+    submittedAtColumn: "Helper_Key",
     emailColumn: "Email",
     nameColumn: "Name",
     scoreColumns: [
@@ -308,9 +309,31 @@ function sourceResponseId(config, record) {
 }
 
 function sourceSubmittedAt(config, record) {
-  const raw = String(record[config.timestampColumn] ?? "").trim();
+  const raw = String(record[config.submittedAtColumn ?? config.timestampColumn] ?? "").trim();
+  const serialMatch = raw.match(/\|(?<serial>\d{5,}(?:\.\d+)?)$/);
+  const serialRaw = serialMatch?.groups?.serial ?? raw;
+  const serialDate = Number(serialRaw);
+
+  if (Number.isFinite(serialDate) && serialDate > 1_000_000_000_000) {
+    const date = new Date(serialDate);
+    return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
+  }
+
+  if (Number.isFinite(serialDate) && serialDate > 1_000_000_000) {
+    const date = new Date(serialDate * 1000);
+    return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
+  }
+
+  if (Number.isFinite(serialDate) && serialDate > 20000) {
+    const googleEpochOffset = 25569;
+    const millisecondsPerDay = 86400 * 1000;
+    const date = new Date((serialDate - googleEpochOffset) * millisecondsPerDay);
+    return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
+  }
+
   const parsed = Date.parse(raw);
-  return Number.isNaN(parsed) ? undefined : new Date(parsed).toISOString();
+  const date = new Date(parsed);
+  return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
 }
 
 function buildPayload(config, record, syncBatchId) {

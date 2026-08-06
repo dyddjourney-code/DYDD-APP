@@ -16,6 +16,7 @@ The importer attaches every payload to the participant identity model:
 - Use a generated `participantKey` only when email is missing or unusable.
 - Use `sourceResponseId` for idempotent replays.
 - Supabase stores the durable person as `assessment_participants.id`.
+- Keep every submission. App views should select the latest snapshot per assessment type for the signed-in participant.
 
 ## Dry Run
 

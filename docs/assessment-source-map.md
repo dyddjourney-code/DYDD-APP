@@ -47,6 +47,12 @@ Use this priority order when mirroring assessment records:
 
 This means the unique person is not "a DesignID row" or "a Spiritual Gifts row." The unique person is the `assessment_participants.id`, and each assessment submission becomes a snapshot attached to that person.
 
+## Latest Snapshot Rule
+
+Multiple submissions by the same person are allowed and should be preserved. The app-facing read model should pull only the latest snapshot per `assessment_type` for the current participant, ordered by `source_submitted_at` first and `created_at` second.
+
+Do not delete older snapshots just because a newer one exists. Older records remain useful for history, audit, longitudinal growth, and future Companion context. The default HQ view should show the current/latest result for each assessment.
+
 Later, add a separate admin-only audit table for source row references and sync diagnostics if needed. Keep that table out of client RLS policies.
 
 ## Initial Ingestion Endpoint

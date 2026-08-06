@@ -5,7 +5,10 @@
 - Project name: `dydd-online-school`
 - Project ID: `prj_YO15mYTp64EHk0wlg6QmBTxNeV5k`
 - Framework: Next.js
-- Status: created, linked locally, and connected to GitHub repo `dyddjourney-code/DYDD-APP`.
+- Status: created, linked locally, connected to GitHub repo `dyddjourney-code/DYDD-APP`, and deploying from `master`.
+- Production URL: `https://dydd-online-school.vercel.app`
+- Latest verified deployment: commit `7ea706c` reached `READY` on 2026-08-06.
+- Access note: the deployment currently redirects to Vercel SSO, so deployment protection/access settings may need review before sharing publicly.
 - Environment variables added: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 ## Supabase

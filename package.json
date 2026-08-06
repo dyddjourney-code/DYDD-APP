@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "sync:assessments": "node scripts/import-assessment-snapshots.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

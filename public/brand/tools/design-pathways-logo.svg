@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 140" role="img" aria-labelledby="title">
+  <title id="title">Design Pathways</title>
+  <rect width="360" height="140" rx="18" fill="#fbfaf4"/>
+  <path d="M48 94c34-48 74-48 119 0s85 48 119 0" fill="none" stroke="#476b42" stroke-width="12" stroke-linecap="round"/>
+  <path d="M286 94l-31-2 18-25" fill="none" stroke="#b88a43" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="48" y="54" fill="#243f27" font-family="Aptos, Segoe UI, Arial, sans-serif" font-size="30" font-weight="800">Design</text>
+  <text x="48" y="122" fill="#243f27" font-family="Aptos, Segoe UI, Arial, sans-serif" font-size="34" font-weight="900">Pathways</text>
+</svg>

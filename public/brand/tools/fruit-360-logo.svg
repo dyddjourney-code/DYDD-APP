@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 140" role="img" aria-labelledby="title">
+  <title id="title">Fruit 360</title>
+  <rect width="360" height="140" rx="18" fill="#fbfaf4"/>
+  <circle cx="99" cy="72" r="42" fill="#eaf0e2" stroke="#476b42" stroke-width="10"/>
+  <path d="M99 30c16-22 43-20 58-4-23 3-40 13-58 4Z" fill="#476b42"/>
+  <path d="M83 70c10 17 23 27 45 27" fill="none" stroke="#b88a43" stroke-width="9" stroke-linecap="round"/>
+  <text x="169" y="66" fill="#243f27" font-family="Aptos, Segoe UI, Arial, sans-serif" font-size="38" font-weight="900">Fruit</text>
+  <text x="169" y="112" fill="#243f27" font-family="Aptos, Segoe UI, Arial, sans-serif" font-size="42" font-weight="900">360</text>
+</svg>

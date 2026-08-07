@@ -50,30 +50,35 @@ const toolCatalog = [
     assessmentType: "designid",
     detail: "Identity, contribution, reflection language, and a completed report.",
     label: "DesignID",
+    logo: "/brand/tools/designid-logo.webp",
     price: "$20",
   },
   {
     assessmentType: "designpd",
     detail: "Plan, Decide, and Do patterns for practical daily alignment.",
     label: "DesignPD",
+    logo: "/brand/tools/designpd-logo.jpg",
     price: "$50",
   },
   {
     assessmentType: "spiritual_gifts",
     detail: "A free first step for naming how the Spirit may be empowering service.",
     label: "Spiritual Gifts",
+    logo: "/brand/tools/spiritual-gifts-logo.jpg",
     price: "Free",
   },
   {
     assessmentType: "design_pathways",
     detail: "A free discernment layer for direction, experiments, and next steps.",
     label: "Design Pathways",
+    logo: "/brand/tools/design-pathways-logo.svg",
     price: "Free",
   },
   {
     assessmentType: "fruit_360",
     detail: "A free 360-style mirror for visible fruit and growth conversations.",
     label: "Fruit 360",
+    logo: "/brand/tools/fruit-360-logo.svg",
     price: "Free",
   },
 ];
@@ -305,7 +310,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           </div>
         </div>
         <div className="basecamp-scene" aria-hidden="true">
-          <img src="/brand/dydd-cabin-porch.png" alt="" />
+          <img src="/brand/dydd-cabin-hut-only.png" alt="" />
           <div className="camp-sign">
             <span>DYDD HQ</span>
             <strong>Base Camp</strong>
@@ -329,14 +334,17 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       </section>
 
       <section className="ask-dydi-hq" id="ask-dydi" aria-label="Ask Dydi">
-        <div>
-          <p className="section-label">Ask Dydi</p>
-          <h2>What should I look at next?</h2>
-          <p>
-            This will become the first conversation point in HQ, helping a person
-            understand what they own, what is missing, and where the next step
-            should begin.
-          </p>
+        <div className="dydi-host">
+          <img src="/brand/characters/dydi-full-body.png" alt="Dydi host" />
+          <div>
+            <p className="section-label">Ask Dydi</p>
+            <h2>What should I look at next?</h2>
+            <p>
+              This will become the first conversation point in HQ, helping a
+              person understand what they own, what is missing, and where the
+              next step should begin.
+            </p>
+          </div>
         </div>
         <form className="dydi-form">
           <label htmlFor="hq-dydi-question">Ask from your headquarters</label>
@@ -385,6 +393,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               const completed = ownsAssessment(assessmentReport, tool.assessmentType);
               return (
                 <article className="product-row" key={tool.label}>
+                  <img src={tool.logo} alt={`${tool.label} logo`} />
                   <div>
                     <strong>{tool.label}</strong>
                     <p>{tool.detail}</p>
@@ -488,7 +497,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             <p className="section-label">Journey and niche builder</p>
             <h2>
               {hasDyddCourseAccess
-                ? "Continue the DYDD journey."
+                ? "Continue the journey and shape the niche."
                 : "Unlock the DYDD course to open the journey."}
             </h2>
             <p>
@@ -497,6 +506,13 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               expertise, desire, gifts, and assessments can be walked out over
               time.
             </p>
+            {hasDyddCourseAccess ? (
+              <div className="niche-builder-steps">
+                <span>Journey process</span>
+                <span>Niche builder</span>
+                <span>Companion reflection</span>
+              </div>
+            ) : null}
           </div>
           <a className="button primary" href="#dydd-course">
             {hasDyddCourseAccess ? "Continue journey" : "View course access"}

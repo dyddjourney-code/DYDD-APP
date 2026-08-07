@@ -157,14 +157,17 @@ export default function Home() {
       </section>
 
       <section className="ask-dydi" aria-label="Ask Dydi">
-        <div>
-          <p className="section-label">Ask Dydi</p>
-          <h2>Curious how this could work for you or your group?</h2>
-          <p>
-            Ask about using the tool for a family, class, cohort, church,
-            coaching client, or leadership group. This section will become the
-            inquiry doorway for matching the app to the right use case.
-          </p>
+        <div className="dydi-host">
+          <img src="/brand/characters/dydi-full-body.png" alt="Dydi host" />
+          <div>
+            <p className="section-label">Ask Dydi</p>
+            <h2>Curious how this could work for you or your group?</h2>
+            <p>
+              Ask about using the tool for a family, class, cohort, church,
+              coaching client, or leadership group. This section will become the
+              inquiry doorway for matching the app to the right use case.
+            </p>
+          </div>
         </div>
         <form className="dydi-form">
           <label htmlFor="dydi-question">What would you like to explore?</label>

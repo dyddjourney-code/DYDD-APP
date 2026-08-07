@@ -537,7 +537,7 @@ h3 {
 
 .portal-access-panel {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
   gap: 12px;
   align-items: end;
   max-width: 780px;
@@ -864,9 +864,11 @@ h3 {
 .companion-brief,
 .journey-map,
 .assessment-panel,
+.tool-panel,
 .artifact-panel,
 .course-panel,
 .admin-panel,
+.journey-builder,
 .niche-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -937,6 +939,103 @@ h3 {
   max-width: none;
   margin: 0;
   font-size: clamp(2.1rem, 6vw, 5rem);
+}
+
+.basecamp-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 0.98fr) minmax(320px, 0.72fr);
+  gap: 18px;
+  align-items: stretch;
+  margin-bottom: 18px;
+  border: 1px solid rgba(36, 63, 39, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(115deg, rgba(36, 63, 39, 0.98), rgba(64, 92, 102, 0.91)),
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.08) 0,
+      rgba(255, 255, 255, 0.08) 1px,
+      transparent 1px,
+      transparent 24px
+    );
+  color: var(--white);
+  box-shadow: var(--shadow);
+}
+
+.basecamp-copy {
+  display: grid;
+  align-content: center;
+  min-height: 360px;
+  padding: clamp(26px, 5vw, 56px);
+}
+
+.basecamp-copy .section-label {
+  color: #bfe4c5;
+}
+
+.basecamp-copy h2 {
+  max-width: 14ch;
+  font-size: clamp(2.25rem, 5.3vw, 5.2rem);
+}
+
+.basecamp-copy p:not(.section-label) {
+  max-width: 58ch;
+  margin: 22px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1.04rem;
+  line-height: 1.7;
+}
+
+.basecamp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.basecamp-scene {
+  position: relative;
+  min-height: 360px;
+  background:
+    linear-gradient(rgba(251, 250, 244, 0.08), rgba(251, 250, 244, 0.22)),
+    rgba(251, 250, 244, 0.08);
+}
+
+.basecamp-scene img {
+  position: absolute;
+  right: -72px;
+  bottom: -44px;
+  width: min(680px, 64vw);
+  max-width: none;
+  height: auto;
+}
+
+.camp-sign {
+  position: absolute;
+  left: clamp(18px, 3vw, 34px);
+  bottom: clamp(18px, 3vw, 34px);
+  display: grid;
+  gap: 4px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 8px;
+  background: rgba(22, 33, 22, 0.68);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(12px);
+}
+
+.camp-sign span {
+  color: #bfe4c5;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.camp-sign strong {
+  font-size: 1.35rem;
 }
 
 .hq-hero {
@@ -1023,6 +1122,67 @@ h3 {
   box-shadow: 0 0 0 8px var(--green-soft);
 }
 
+.hq-command-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin-bottom: 18px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.hq-command-row p {
+  margin: 0;
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.hq-command-row span {
+  display: block;
+  color: var(--green-dark);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.hq-command-row small {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.ask-dydi-hq {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.42fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 48px);
+  align-items: start;
+  margin-bottom: 18px;
+  padding: clamp(24px, 4vw, 38px);
+  border: 1px solid rgba(36, 63, 39, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.94)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(184, 138, 67, 0.08) 0,
+      rgba(184, 138, 67, 0.08) 1px,
+      transparent 1px,
+      transparent 32px
+    );
+  box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
+}
+
+.ask-dydi-hq h2 {
+  max-width: 13ch;
+}
+
+.ask-dydi-hq p:not(.section-label) {
+  max-width: 52ch;
+  margin-top: 18px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
 .hq-summary-strip {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1060,9 +1220,11 @@ h3 {
 
 .journey-map,
 .assessment-panel,
+.tool-panel,
 .artifact-panel,
 .course-panel,
 .admin-panel,
+.journey-builder,
 .niche-panel {
   padding: 24px;
   box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
@@ -1079,6 +1241,166 @@ h3 {
       transparent 1px,
       transparent 18px
     );
+}
+
+.product-list,
+.course-card-list,
+.artifact-download-list {
+  display: grid;
+  gap: 12px;
+}
+
+.product-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 14px;
+  align-items: center;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+
+.product-row strong,
+.artifact-download span {
+  display: block;
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.product-row p,
+.course-card p,
+.journey-builder p,
+.hq-empty-state p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.product-row > span,
+.course-card > div > span {
+  color: var(--green-dark);
+  font-weight: 900;
+}
+
+.course-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: end;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.course-card.open {
+  border-color: rgba(71, 107, 66, 0.36);
+  background:
+    linear-gradient(rgba(234, 240, 226, 0.72), rgba(255, 255, 255, 0.94)),
+    var(--panel);
+}
+
+.course-card.locked {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.92)),
+    repeating-linear-gradient(
+      135deg,
+      rgba(138, 96, 70, 0.08) 0,
+      rgba(138, 96, 70, 0.08) 1px,
+      transparent 1px,
+      transparent 18px
+    );
+}
+
+.course-card h3 {
+  margin: 8px 0 0;
+  font-size: 1.22rem;
+}
+
+.course-card small,
+.artifact-download small {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.artifact-download {
+  display: grid;
+  gap: 14px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+
+.artifact-download dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--line);
+}
+
+.artifact-download dl div {
+  min-width: 0;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.artifact-download dt {
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.artifact-download dd {
+  margin: 0;
+  color: var(--green-dark);
+  font-weight: 850;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.hq-empty-state {
+  padding: 22px;
+  border: 1px dashed rgba(71, 107, 66, 0.42);
+  border-radius: 8px;
+  background: rgba(234, 240, 226, 0.42);
+}
+
+.hq-empty-state strong {
+  color: var(--green-dark);
+}
+
+.journey-builder {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: end;
+  background:
+    linear-gradient(120deg, rgba(36, 63, 39, 0.96), rgba(64, 92, 102, 0.9)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.08) 0,
+      rgba(255, 255, 255, 0.08) 1px,
+      transparent 1px,
+      transparent 46px
+    );
+  color: var(--white);
+}
+
+.journey-builder .section-label {
+  color: #bfe4c5;
+}
+
+.journey-builder p {
+  max-width: 70ch;
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .card-heading {
@@ -1752,6 +2074,7 @@ h3 {
 
 @media (max-width: 980px) {
   .brand-hero,
+  .basecamp-hero,
   .portal-hero,
   .portal-access-panel,
   .hero,
@@ -1764,9 +2087,12 @@ h3 {
   .reflection-band,
   .build-plan,
   .login-shell,
+  .ask-dydi-hq,
   .hq-hero,
   .hq-grid,
   .hq-summary-strip,
+  .hq-command-row,
+  .journey-builder,
   .polished-course-hero,
   .course-personalization,
   .module-panel,
@@ -1789,6 +2115,15 @@ h3 {
 
   .portal-hero {
     min-height: auto;
+  }
+
+  .basecamp-scene {
+    min-height: 310px;
+  }
+
+  .basecamp-scene img {
+    right: -120px;
+    width: min(760px, 110vw);
   }
 
   .portal-hero h1 {
@@ -1823,6 +2158,20 @@ h3 {
   .reflection-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .product-row,
+  .course-card {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .product-row .button {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .artifact-download dl {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 560px) {
@@ -1856,9 +2205,13 @@ h3 {
 
   .module-grid,
   .portal-stat-grid,
+  .hq-command-row,
   .hq-topbar,
   .card-heading,
   .course-map,
+  .product-row,
+  .course-card,
+  .journey-builder,
   .admin-metrics,
   .reflection-grid,
   .individual-snapshot > div:first-child,
@@ -1872,6 +2225,23 @@ h3 {
 
   .portal-access-panel {
     align-items: stretch;
+  }
+
+  .basecamp-copy,
+  .basecamp-scene {
+    min-height: 270px;
+  }
+
+  .basecamp-scene img {
+    right: -150px;
+    bottom: -38px;
+    width: 720px;
+  }
+
+  .product-row .button,
+  .course-card .button,
+  .journey-builder .button {
+    justify-self: stretch;
   }
 
   .portal-access-panel h2 {

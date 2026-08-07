@@ -7,6 +7,7 @@ import {
 
 export const heatherReviewEmail = "willoughbyhs@gmail.com";
 export const heatherReviewName = "Heather Willoughby";
+export const newReviewName = "Jordan Preview";
 
 export type ReviewSearchParams = {
   key?: string;
@@ -22,12 +23,25 @@ export function isHeatherReviewRequest(params?: ReviewSearchParams | null) {
   );
 }
 
+export function isNewReviewRequest(params?: ReviewSearchParams | null) {
+  return (
+    params?.review === "new" &&
+    Boolean(params.key) &&
+    Boolean(process.env.DYDD_REVIEW_TOKEN) &&
+    params.key === process.env.DYDD_REVIEW_TOKEN
+  );
+}
+
+export function isReviewRequest(params?: ReviewSearchParams | null) {
+  return isHeatherReviewRequest(params) || isNewReviewRequest(params);
+}
+
 export function reviewQuery(params?: ReviewSearchParams | null) {
-  if (!isHeatherReviewRequest(params)) {
+  if (!isReviewRequest(params)) {
     return "";
   }
 
-  return `?review=heather&key=${encodeURIComponent(params?.key ?? "")}`;
+  return `?review=${encodeURIComponent(params?.review ?? "")}&key=${encodeURIComponent(params?.key ?? "")}`;
 }
 
 export function withReviewQuery(path: string, params?: ReviewSearchParams | null) {
@@ -40,6 +54,14 @@ export async function getHeatherReviewReport(params?: ReviewSearchParams | null)
   }
 
   return getAssessmentSnapshotsForEmail(heatherReviewEmail);
+}
+
+export function getNewReviewReport(params?: ReviewSearchParams | null) {
+  if (!isNewReviewRequest(params)) {
+    return null;
+  }
+
+  return { all: [], latest: [] };
 }
 
 export function buildHeatherReviewContext(

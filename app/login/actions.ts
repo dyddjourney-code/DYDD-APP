@@ -105,6 +105,16 @@ export async function enterHeatherPreview() {
   redirect(`/hq?review=heather&key=${encodeURIComponent(reviewToken)}`);
 }
 
+export async function enterNewPreview() {
+  const reviewToken = process.env.DYDD_REVIEW_TOKEN;
+
+  if (!reviewToken) {
+    loginRedirect("New-person preview access is not configured yet.");
+  }
+
+  redirect(`/hq?review=new&key=${encodeURIComponent(reviewToken)}`);
+}
+
 export async function signOut() {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { enterHeatherPreview } from "@/app/login/actions";
+import { enterHeatherPreview, enterNewPreview } from "@/app/login/actions";
 import { designIdCourse } from "@/lib/courses/designid-foundations";
 
 const includedItems = [
@@ -64,7 +64,12 @@ export default function Home() {
             </div>
             <form action={enterHeatherPreview}>
               <button className="button primary portal-login-button" type="submit">
-                Log in for review
+                Heather review
+              </button>
+            </form>
+            <form action={enterNewPreview}>
+              <button className="button secondary portal-login-button" type="submit">
+                New person review
               </button>
             </form>
             <Link href="/login" className="button secondary">

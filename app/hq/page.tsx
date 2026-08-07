@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { signOut } from "@/app/login/actions";
-import { assessmentSources } from "@/lib/assessments/sources";
 import {
   assessmentLabels,
   displayDate,
@@ -19,7 +18,11 @@ import {
 } from "@/lib/identity/email";
 import {
   getHeatherReviewReport,
+  getNewReviewReport,
   heatherReviewName,
+  isHeatherReviewRequest,
+  isNewReviewRequest,
+  newReviewName,
   type ReviewSearchParams,
   withReviewQuery,
 } from "@/lib/review/heather";
@@ -42,13 +45,44 @@ type HqPageProps = {
   searchParams?: Promise<ReviewSearchParams>;
 };
 
-const journeySteps = [
-  { label: "Identity", state: "Open", detail: "Whose you are" },
-  { label: "Story", state: "Preparing", detail: "What shaped you" },
-  { label: "Expertise", state: "Preparing", detail: "What you have cultivated" },
-  { label: "Desire", state: "Preparing", detail: "What stirs your heart" },
-  { label: "Gifts", state: "Mapped", detail: "How the Spirit empowers you" },
-  { label: "Niche", state: "Builder", detail: "Where design becomes service" },
+const toolCatalog = [
+  {
+    assessmentType: "designid",
+    detail: "Identity, contribution, reflection language, and a completed report.",
+    label: "DesignID",
+    price: "$20",
+  },
+  {
+    assessmentType: "designpd",
+    detail: "Plan, Decide, and Do patterns for practical daily alignment.",
+    label: "DesignPD",
+    price: "$50",
+  },
+  {
+    assessmentType: "spiritual_gifts",
+    detail: "A free first step for naming how the Spirit may be empowering service.",
+    label: "Spiritual Gifts",
+    price: "Free",
+  },
+  {
+    assessmentType: "design_pathways",
+    detail: "A free discernment layer for direction, experiments, and next steps.",
+    label: "Design Pathways",
+    price: "Free",
+  },
+  {
+    assessmentType: "fruit_360",
+    detail: "A free 360-style mirror for visible fruit and growth conversations.",
+    label: "Fruit 360",
+    price: "Free",
+  },
+];
+
+const baseCampSteps = [
+  { detail: "Open your available tools.", label: "Supply Tent" },
+  { detail: "Review completed reports.", label: "Artifact Shelf" },
+  { detail: "Enter a course path.", label: "Trailhead" },
+  { detail: "Ask Dydi what to do next.", label: "Guide Fire" },
 ];
 
 function isAdminEmail(email: string | null | undefined) {
@@ -151,9 +185,22 @@ async function getHeatherAssessmentReport(enabled: boolean) {
   };
 }
 
+function ownsAssessment(report: StudentAssessmentReport, assessmentType: string) {
+  return report.latest.some(
+    (snapshot) => snapshot.assessment_type === assessmentType,
+  );
+}
+
+function artifactDownloadHref(snapshot: AssessmentSnapshotSummary) {
+  return `/api/artifacts/${encodeURIComponent(snapshot.id)}/download`;
+}
+
 export default async function HqPage({ searchParams }: HqPageProps) {
   const reviewParams = await searchParams;
-  const reviewReport = await getHeatherReviewReport(reviewParams);
+  const heatherPreview = isHeatherReviewRequest(reviewParams);
+  const newPreview = isNewReviewRequest(reviewParams);
+  const reviewReport =
+    (await getHeatherReviewReport(reviewParams)) ?? getNewReviewReport(reviewParams);
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -178,19 +225,47 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   const adminReport = await getAdminAssessmentReport(isAdmin);
   const heatherReport = await getHeatherAssessmentReport(isAdmin);
 
-  const displayName = reviewReport
+  const displayName = heatherPreview
     ? `${heatherReviewName} Preview`
-    : profile?.full_name ?? user?.email ?? "Traveler";
+    : newPreview
+      ? newReviewName
+      : profile?.full_name ?? user?.email ?? "Traveler";
+  const hasDyddCourseAccess = heatherPreview;
+  const hasDesignIdCourseAccess = heatherPreview || ownsAssessment(assessmentReport, "designid");
   const lessonCount = designIdCourse.modules.reduce(
     (count, module) => count + module.lessons.length,
     0,
   );
+  const completedArtifactCount = snapshots.length;
+
+  const courseCards = [
+    {
+      action: hasDesignIdCourseAccess ? "Open course" : "Included with DesignID",
+      available: hasDesignIdCourseAccess,
+      detail:
+        "A focused course for understanding DesignID language after the assessment is purchased and completed.",
+      href: withReviewQuery("/courses/designid-foundations", reviewParams),
+      label: "DesignID Foundations",
+      meta: `${designIdCourse.modules.length} modules · ${lessonCount} lessons`,
+      price: "Included with DesignID",
+    },
+    {
+      action: hasDyddCourseAccess ? "Continue course" : "Purchase access",
+      available: hasDyddCourseAccess,
+      detail:
+        "The fuller DYDD course walkthrough, guided journey process, and deeper companion-supported formation path.",
+      href: "#dydd-course",
+      label: "Discover Your Divine Design Course",
+      meta: "Paid course · bandwidth-heavy guided path",
+      price: "Paid access",
+    },
+  ];
 
   return (
     <main className="hq-shell">
       <header className="hq-topbar">
         <div>
-          <p className="eyebrow">On Purpose. For Purpose.</p>
+          <p className="eyebrow">Base camp headquarters</p>
           <h1>{displayName}</h1>
         </div>
         {reviewReport ? (
@@ -206,211 +281,220 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         )}
       </header>
 
-      <section className="hq-hero" aria-label="Journey status">
-        <div className="mission-brief">
-          <p className="section-label">Journey headquarters</p>
-          <h2>Begin with identity. Keep the evidence close.</h2>
+      <section className="basecamp-hero" aria-label="DYDD headquarters">
+        <div className="basecamp-copy">
+          <p className="section-label">You have arrived</p>
+          <h2>Set your pack down. Choose the next trail.</h2>
           <p>
-            This dashboard gathers assessment results, class branches, workbook
-            artifacts, and companion-guided reflection into one quiet workspace
-            for the DYDD Journey.
+            Headquarters is the staging place for tools, completed artifacts,
+            course access, the journey process, and Dydi-guided reflection.
           </p>
+          <div className="basecamp-actions">
+            <a className="button primary" href="#ask-dydi">
+              Ask Dydi
+            </a>
+            <a className="button secondary" href="#tools">
+              View tools
+            </a>
+          </div>
         </div>
-        <div className="companion-brief scripture-brief">
-          <img src="/brand/dydd-logo.webp" alt="Discover Your Divine Design" />
-          <p className="section-label">Class branch</p>
-          <h3>{designIdCourse.title}</h3>
-          <p>
-            {designIdCourse.modules.length} modules and {lessonCount} lessons
-            now include the uploaded GHL lesson bodies inside the app.
-          </p>
-          <Link
-            className="button secondary"
-            href={withReviewQuery("/courses/designid-foundations", reviewParams)}
-          >
-            Open course
-          </Link>
+        <div className="basecamp-scene" aria-hidden="true">
+          <img src="/brand/dydd-cabin-porch.png" alt="" />
+          <div className="camp-sign">
+            <span>DYDD HQ</span>
+            <strong>Base Camp</strong>
+          </div>
         </div>
       </section>
 
-      <section className="hq-summary-strip" aria-label="HQ summary">
+      <section className="hq-command-row" aria-label="HQ summary">
         <p>
-          <span>{snapshots.length}</span>
-          <small>Latest snapshots attached</small>
+          <span>{completedArtifactCount}</span>
+          <small>Completed artifacts</small>
         </p>
         <p>
-          <span>{assessmentSources.length}</span>
-          <small>Assessment sources mapped</small>
+          <span>{hasDyddCourseAccess ? 2 : hasDesignIdCourseAccess ? 1 : 0}</span>
+          <small>Course paths open</small>
         </p>
         <p>
-          <span>{lessonCount}</span>
-          <small>DesignID lessons staged</small>
+          <span>{toolCatalog.length}</span>
+          <small>Tools available after login</small>
         </p>
+      </section>
+
+      <section className="ask-dydi-hq" id="ask-dydi" aria-label="Ask Dydi">
+        <div>
+          <p className="section-label">Ask Dydi</p>
+          <h2>What should I look at next?</h2>
+          <p>
+            This will become the first conversation point in HQ, helping a person
+            understand what they own, what is missing, and where the next step
+            should begin.
+          </p>
+        </div>
+        <form className="dydi-form">
+          <label htmlFor="hq-dydi-question">Ask from your headquarters</label>
+          <textarea
+            id="hq-dydi-question"
+            name="question"
+            placeholder="What should I do first with my current tools?"
+            rows={4}
+          />
+          <button className="button primary" type="button">
+            Ask Dydi
+          </button>
+          <p className="helper-text">
+            Staged for preview. Live companion responses will connect later.
+          </p>
+        </form>
       </section>
 
       <section className="hq-grid" aria-label="DYDD HQ dashboard">
         <article className="journey-map">
           <div className="card-heading">
-            <p className="section-label">Six-step path</p>
-            <h2>Journey map</h2>
+            <p className="section-label">Base camp map</p>
+            <h2>Launch points</h2>
           </div>
           <ol>
-            {journeySteps.map((step, index) => (
+            {baseCampSteps.map((step, index) => (
               <li key={step.label}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <div>
                   <strong>{step.label}</strong>
                   <small>{step.detail}</small>
                 </div>
-                <em>{step.state}</em>
+                <em>{index === 0 ? "Ready" : "Staged"}</em>
               </li>
             ))}
           </ol>
         </article>
 
-        <article className="assessment-panel">
+        <article className="tool-panel" id="tools">
           <div className="card-heading">
-            <p className="section-label">Assessment access</p>
-            <h2>Tools</h2>
+            <p className="section-label">Tools</p>
+            <h2>Available after login</h2>
           </div>
-          <div className="tool-list">
-            {assessmentSources.map((source) => (
-              <div key={source.slug}>
-                <span>{source.label}</span>
-                <small>
-                  {source.slug === "fruitlife_360"
-                    ? "Source known, mirror pending"
-                    : "Live source mapped"}
-                </small>
-              </div>
+          <div className="product-list">
+            {toolCatalog.map((tool) => {
+              const completed = ownsAssessment(assessmentReport, tool.assessmentType);
+              return (
+                <article className="product-row" key={tool.label}>
+                  <div>
+                    <strong>{tool.label}</strong>
+                    <p>{tool.detail}</p>
+                  </div>
+                  <span>{completed ? "Completed" : tool.price}</span>
+                  <a className="button secondary" href="#tools">
+                    {completed ? "Review" : tool.price === "Free" ? "Start" : "Buy"}
+                  </a>
+                </article>
+              );
+            })}
+          </div>
+        </article>
+
+        <article className="course-panel">
+          <div className="card-heading">
+            <p className="section-label">Courses</p>
+            <h2>Course trailheads</h2>
+          </div>
+          <div className="course-card-list">
+            {courseCards.map((course) => (
+              <article
+                className={course.available ? "course-card open" : "course-card locked"}
+                id={course.label.startsWith("Discover") ? "dydd-course" : undefined}
+                key={course.label}
+              >
+                <div>
+                  <span>{course.price}</span>
+                  <h3>{course.label}</h3>
+                  <p>{course.detail}</p>
+                  <small>{course.meta}</small>
+                </div>
+                {course.available ? (
+                  <Link className="button secondary" href={course.href}>
+                    {course.action}
+                  </Link>
+                ) : (
+                  <a className="button secondary" href={course.href}>
+                    {course.action}
+                  </a>
+                )}
+              </article>
             ))}
-            <div>
-              <span>Desire Map</span>
-              <small>Waiting for source mapping</small>
-            </div>
-            <div>
-              <span>Story Inventory</span>
-              <small>Waiting for source mapping</small>
-            </div>
           </div>
         </article>
 
         <article className="artifact-panel">
           <div className="card-heading">
             <p className="section-label">Artifacts</p>
-            <h2>Latest assessment vault</h2>
+            <h2>Completed shelf</h2>
           </div>
           {snapshots?.length ? (
-            <>
-              <div className="snapshot-list">
-                {snapshots.map((snapshot) => (
-                  <article className="individual-snapshot" key={snapshot.id}>
-                    <div>
-                      <span>
-                        {assessmentLabels[snapshot.assessment_type] ??
-                          snapshot.assessment_type}
-                      </span>
-                      <small>
-                        {displayDate(
-                          snapshot.source_submitted_at ?? snapshot.created_at,
-                        )}
-                        {" · "}
-                        {snapshot.source ?? "DYDD source"}
-                      </small>
-                    </div>
-                    {snapshotHighlights(snapshot).length ? (
-                      <dl>
-                        {snapshotHighlights(snapshot).map((item) => (
-                          <div key={item.label}>
-                            <dt>{item.label}</dt>
-                            <dd>{item.value}</dd>
-                          </div>
-                        ))}
-                      </dl>
-                    ) : null}
-                  </article>
-                ))}
-              </div>
-              <div className="individual-history">
-                <div className="card-heading">
-                  <p className="section-label">Full mirrored history</p>
-                  <h3>{assessmentReport.all.length} records attached</h3>
-                </div>
-                {assessmentReport.all.map((snapshot) => (
-                  <p key={snapshot.id}>
+            <div className="artifact-download-list">
+              {snapshots.map((snapshot) => (
+                <article className="artifact-download" key={snapshot.id}>
+                  <div>
                     <span>
                       {assessmentLabels[snapshot.assessment_type] ??
                         snapshot.assessment_type}
                     </span>
                     <small>
+                      Completed{" "}
                       {displayDate(
                         snapshot.source_submitted_at ?? snapshot.created_at,
                       )}
-                      {" · "}
-                      {snapshot.source ?? "DYDD source"}
                     </small>
-                  </p>
-                ))}
-              </div>
-            </>
+                  </div>
+                  {snapshotHighlights(snapshot).length ? (
+                    <dl>
+                      {snapshotHighlights(snapshot).slice(0, 3).map((item) => (
+                        <div key={item.label}>
+                          <dt>{item.label}</dt>
+                          <dd>{item.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  ) : null}
+                  <a
+                    className="button secondary"
+                    href={artifactDownloadHref(snapshot)}
+                  >
+                    Download report
+                  </a>
+                </article>
+              ))}
+            </div>
           ) : (
-            <p className="empty-state">
-              No assessment snapshots are attached to this email yet. Use the
-              same email used on the assessments so the individual experience can
-              connect the historical DesignID, DesignPD, and Spiritual Gifts
-              records.
-            </p>
+            <div className="hq-empty-state">
+              <strong>No completed artifacts yet.</strong>
+              <p>
+                This account is ready to use the free tools or purchase
+                DesignID, DesignPD, and the DYDD course. Completed reports will
+                appear here after the person finishes an assessment.
+              </p>
+            </div>
           )}
         </article>
 
-        <article className="course-panel">
-          <div className="card-heading">
-            <p className="section-label">Class branch</p>
-            <h2>DesignID course</h2>
+        <article className="journey-builder">
+          <div>
+            <p className="section-label">Journey and niche builder</p>
+            <h2>
+              {hasDyddCourseAccess
+                ? "Continue the DYDD journey."
+                : "Unlock the DYDD course to open the journey."}
+            </h2>
+            <p>
+              The journey process and niche builder belong with the broader
+              Discover Your Divine Design course, where identity, story,
+              expertise, desire, gifts, and assessments can be walked out over
+              time.
+            </p>
           </div>
-          <p className="panel-copy">
-            Review the DesignID Foundations path with the full uploaded lesson
-            bodies now available in each lesson page.
-          </p>
-          <div className="lesson-rail">
-            {designIdCourse.modules.map((module) => (
-              <div key={module.slug}>
-                <strong>{module.title}</strong>
-                <ul>
-                  {module.lessons.slice(0, 4).map((lesson) => (
-                    <li key={lesson.slug}>
-                      <Link
-                        href={withReviewQuery(
-                          `/learn/designid-foundations/${lesson.slug}`,
-                          reviewParams,
-                        )}
-                      >
-                        {lesson.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-          <Link
-            className="button secondary"
-            href={withReviewQuery("/courses/designid-foundations", reviewParams)}
-          >
-            Open course map
-          </Link>
-        </article>
-
-        <article className="niche-panel">
-          <div className="card-heading">
-            <p className="section-label">Niche builder</p>
-            <h2>Live synthesis</h2>
-          </div>
-          <p>
-            The niche builder will combine identity, expertise, story, desire,
-            gifts, assessment language, and workbook responses into a living
-            draft the client can refine with the Companion.
-          </p>
+          <a className="button primary" href="#dydd-course">
+            {hasDyddCourseAccess ? "Continue journey" : "View course access"}
+          </a>
         </article>
 
         {adminReport ? (

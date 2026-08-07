@@ -290,7 +290,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       available: hasDyddCourseAccess,
       detail:
         "The fuller DYDD course walkthrough, guided journey process, and deeper companion-supported formation path.",
-      href: "#dydd-course",
+      href: withReviewQuery("/journey", reviewParams),
       icon:
         "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/12ab0cef-157a-4a43-8dcd-d6bf8b0a29af/dydd-icon-color.jpg?format=300w",
       id: "dydd-course",
@@ -557,9 +557,9 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               </div>
             ) : null}
           </div>
-          <a className="button primary" href="#dydd-course">
+          <Link className="button primary" href={withReviewQuery("/journey", reviewParams)}>
             {hasDyddCourseAccess ? "Continue journey" : "View course access"}
-          </a>
+          </Link>
         </article>
 
         {adminReport ? (

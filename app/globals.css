@@ -521,6 +521,20 @@ h3 {
   max-width: 760px;
 }
 
+.portal-hero h1 {
+  max-width: 12ch;
+  font-size: clamp(3rem, 5.35vw, 5rem);
+  line-height: 0.96;
+}
+
+.portal-hero .brand-mark {
+  margin-bottom: 22px;
+}
+
+.portal-hero .lede {
+  margin-bottom: 24px;
+}
+
 .portal-access-panel {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
@@ -543,8 +557,9 @@ h3 {
 }
 
 .portal-access-panel h2 {
-  max-width: 16ch;
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  max-width: 20ch;
+  font-size: clamp(1.2rem, 1.7vw, 1.55rem);
+  line-height: 1.12;
 }
 
 .portal-access-panel .helper-text {
@@ -1776,6 +1791,10 @@ h3 {
     min-height: auto;
   }
 
+  .portal-hero h1 {
+    max-width: 12ch;
+  }
+
   .portal-section-heading {
     position: static;
   }
@@ -1829,6 +1848,10 @@ h3 {
 
   h1 {
     font-size: clamp(3rem, 17vw, 4.5rem);
+  }
+
+  .portal-hero h1 {
+    font-size: clamp(2.85rem, 14vw, 4rem);
   }
 
   .module-grid,

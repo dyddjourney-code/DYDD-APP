@@ -93,6 +93,22 @@ export function readableLabel(value: string) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function highlightLabel(value: string) {
+  const labels: Record<string, string> = {
+    Decide_Tendency: "Decide",
+    Do_Tendency: "Do",
+    Plan_Tendency: "Plan",
+    Top1_Name: "Top 1",
+    Top2_Name: "Top 2",
+    Top3_Name: "Top 3",
+    Top1_Score: "Top 1 Score",
+    Top2_Score: "Top 2 Score",
+    Top3_Score: "Top 3 Score",
+  };
+
+  return labels[value] ?? readableLabel(value);
+}
+
 export function snapshotHighlights(snapshot: AssessmentSnapshotSummary) {
   const preferredKeysByAssessment: Record<string, string[]> = {
     designid: [
@@ -107,9 +123,6 @@ export function snapshotHighlights(snapshot: AssessmentSnapshotSummary) {
       "Plan_Tendency",
       "Decide_Tendency",
       "Do_Tendency",
-      "Plan_Descriptor",
-      "Decide_Descriptor",
-      "Do_Descriptor",
     ],
     spiritual_gifts: [
       "Top1_Name",
@@ -145,7 +158,7 @@ export function snapshotHighlights(snapshot: AssessmentSnapshotSummary) {
       }
 
       const value = compactValue(source[key]);
-      const label = readableLabel(key);
+      const label = highlightLabel(key);
       if (value && !items.some((item) => item.label === label)) {
         items.push({ label, value });
       }

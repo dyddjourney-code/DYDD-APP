@@ -11,16 +11,37 @@ export default function DesignIdCoursePage() {
     <main className="course-shell">
       <nav className="course-nav" aria-label="Course navigation">
         <Link href="/hq">Back to HQ</Link>
+        <Link href="/">DYDD home</Link>
       </nav>
 
-      <header className="course-hero">
-        <p className="eyebrow">DYDD class branch</p>
-        <h1>{designIdCourse.title}</h1>
-        <p className="lede">{designIdCourse.description}</p>
-        <p className="source-note">
-          Source staged from `{designIdCourse.source}`. GHL styling and contact
-          placeholders have been replaced with app-native lesson structure.
-        </p>
+      <header className="course-hero polished-course-hero">
+        <div>
+          <img
+            className="course-logo"
+            src="/brand/designid-logo.webp"
+            alt="DesignID"
+          />
+          <p className="eyebrow">DYDD class branch</p>
+          <h1>{designIdCourse.title}</h1>
+          <p className="lede">{designIdCourse.description}</p>
+          <p className="source-note">
+            The GHL course structure has been translated into app-native
+            modules, lesson cards, and reflection prompts for review.
+          </p>
+          <Link
+            className="button primary"
+            href="/learn/designid-foundations/welcome-to-designid"
+          >
+            Start first lesson
+          </Link>
+        </div>
+        <aside className="course-verse">
+          <p>
+            “For we are God&apos;s handiwork, created in Christ Jesus to do good
+            works, which God prepared in advance for us to do.”
+          </p>
+          <span>Ephesians 2:10</span>
+        </aside>
       </header>
 
       <section className="course-map" aria-label="Course modules">
@@ -33,16 +54,18 @@ export default function DesignIdCoursePage() {
           <small>Lessons</small>
         </div>
         <div className="course-stat">
-          <span>1</span>
-          <small>Working branch</small>
+          <span>4</span>
+          <small>Reflections</small>
         </div>
       </section>
 
       <section className="module-stack" aria-label="DesignID lessons">
-        {designIdCourse.modules.map((module) => (
+        {designIdCourse.modules.map((module, moduleIndex) => (
           <article key={module.slug} className="module-panel">
             <div>
-              <p className="section-label">{module.slug.replaceAll("-", " ")}</p>
+              <p className="section-label">
+                Module {String(moduleIndex + 1).padStart(2, "0")}
+              </p>
               <h2>{module.title}</h2>
             </div>
             <ol>

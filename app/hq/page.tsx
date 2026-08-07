@@ -39,12 +39,12 @@ type NamedParticipantSnapshot = AssessmentSnapshotSummary & {
 };
 
 const journeySteps = [
-  { label: "Identity", state: "Ready" },
-  { label: "Expertise", state: "Queued" },
-  { label: "Story", state: "Queued" },
-  { label: "Desire", state: "Queued" },
-  { label: "Gifts", state: "Queued" },
-  { label: "Niche", state: "Builder" },
+  { label: "Identity", state: "Open", detail: "Whose you are" },
+  { label: "Story", state: "Preparing", detail: "What shaped you" },
+  { label: "Expertise", state: "Preparing", detail: "What you have cultivated" },
+  { label: "Desire", state: "Preparing", detail: "What stirs your heart" },
+  { label: "Gifts", state: "Mapped", detail: "How the Spirit empowers you" },
+  { label: "Niche", state: "Builder", detail: "Where design becomes service" },
 ];
 
 const assessmentLabels: Record<string, string> = {
@@ -272,7 +272,7 @@ export default async function HqPage() {
     <main className="hq-shell">
       <header className="hq-topbar">
         <div>
-          <p className="eyebrow">DYDD Headquarters</p>
+          <p className="eyebrow">On Purpose. For Purpose.</p>
           <h1>{displayName}</h1>
         </div>
         <form action={signOut}>
@@ -284,24 +284,41 @@ export default async function HqPage() {
 
       <section className="hq-hero" aria-label="Journey status">
         <div className="mission-brief">
-          <p className="section-label">Current mission</p>
-          <h2>Begin the DYDD Journey with Identity.</h2>
+          <p className="section-label">Journey headquarters</p>
+          <h2>Begin with identity. Keep the evidence close.</h2>
           <p>
-            This dashboard will gather workbook answers, assessment results,
-            artifacts, and companion conversations into one private HQ for each
-            client.
+            This dashboard gathers assessment results, class branches, workbook
+            artifacts, and companion-guided reflection into one quiet workspace
+            for the DYDD Journey.
           </p>
         </div>
-        <div className="companion-brief">
-          <span className="pulse-dot" aria-hidden="true" />
-          <p className="section-label">Companion panel</p>
-          <h3>Guidance is staged, not wide open.</h3>
+        <div className="companion-brief scripture-brief">
+          <img src="/brand/designid-logo.webp" alt="DesignID" />
+          <p className="section-label">Class branch</p>
+          <h3>{designIdCourse.title}</h3>
           <p>
-            The first guardrail is simple: the Companion helps interpret stored
-            DYDD inputs and asks next-step questions. It does not replace
-            pastoral care, counseling, medical care, or God&apos;s voice.
+            {designIdCourse.modules.length} modules and {lessonCount} lessons
+            are staged for review from the GHL course source.
           </p>
+          <Link className="button secondary" href="/courses/designid-foundations">
+            Open course
+          </Link>
         </div>
+      </section>
+
+      <section className="hq-summary-strip" aria-label="HQ summary">
+        <p>
+          <span>{snapshots.length}</span>
+          <small>Latest snapshots attached</small>
+        </p>
+        <p>
+          <span>{assessmentSources.length}</span>
+          <small>Assessment sources mapped</small>
+        </p>
+        <p>
+          <span>{lessonCount}</span>
+          <small>DesignID lessons staged</small>
+        </p>
       </section>
 
       <section className="hq-grid" aria-label="DYDD HQ dashboard">
@@ -314,7 +331,10 @@ export default async function HqPage() {
             {journeySteps.map((step, index) => (
               <li key={step.label}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
-                <strong>{step.label}</strong>
+                <div>
+                  <strong>{step.label}</strong>
+                  <small>{step.detail}</small>
+                </div>
                 <em>{step.state}</em>
               </li>
             ))}
@@ -385,8 +405,9 @@ export default async function HqPage() {
             <h2>DesignID course</h2>
           </div>
           <p className="panel-copy">
-            The GHL course code is now staged as app-native lesson structure:
-            {` ${designIdCourse.modules.length} modules and ${lessonCount} lessons.`}
+            Review the DesignID Foundations path before the full lesson body
+            migration. This branch now functions as the first visible learning
+            doorway in the app.
           </p>
           <div className="lesson-rail">
             {designIdCourse.modules.map((module) => (

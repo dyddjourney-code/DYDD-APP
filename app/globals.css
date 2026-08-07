@@ -1,17 +1,19 @@
 :root {
   color-scheme: light;
-  --ink: #0e1511;
-  --muted: #5e6b62;
-  --paper: #f8faf7;
+  --ink: #162116;
+  --muted: #667263;
+  --paper: #fbfaf4;
   --panel: #ffffff;
-  --line: #dbe4dc;
-  --green: #2f6f3e;
-  --green-dark: #163b22;
-  --green-soft: #e4f0e6;
-  --brass: #b9822e;
-  --clay: #84624d;
-  --blueprint: #2f4f64;
+  --line: #e4dccb;
+  --green: #476b42;
+  --green-dark: #243f27;
+  --green-soft: #eaf0e2;
+  --brass: #b88a43;
+  --brass-soft: #f3e4c4;
+  --clay: #8a6046;
+  --blueprint: #405c66;
   --white: #ffffff;
+  --shadow: 0 24px 70px rgba(70, 58, 35, 0.11);
 }
 
 * {
@@ -25,25 +27,25 @@ html {
 body {
   margin: 0;
   background:
-    linear-gradient(rgba(248, 250, 247, 0.9), rgba(248, 250, 247, 0.94)),
+    linear-gradient(rgba(251, 250, 244, 0.93), rgba(251, 250, 244, 0.97)),
     repeating-linear-gradient(
       90deg,
-      rgba(22, 59, 34, 0.045) 0,
-      rgba(22, 59, 34, 0.045) 1px,
+      rgba(36, 63, 39, 0.035) 0,
+      rgba(36, 63, 39, 0.035) 1px,
       transparent 1px,
-      transparent 72px
+      transparent 88px
     ),
     repeating-linear-gradient(
       0deg,
-      rgba(22, 59, 34, 0.035) 0,
-      rgba(22, 59, 34, 0.035) 1px,
+      rgba(184, 138, 67, 0.045) 0,
+      rgba(184, 138, 67, 0.045) 1px,
       transparent 1px,
-      transparent 72px
+      transparent 88px
     ),
     var(--paper);
   color: var(--ink);
   font-family:
-    "Aptos", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont,
+    "Satoshi", "Aptos", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont,
     sans-serif;
 }
 
@@ -78,8 +80,45 @@ p {
     linear-gradient(135deg, #ffffff 0%, #e7f1e8 50%, #f8faf7 100%);
 }
 
+.brand-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
+  gap: clamp(34px, 6vw, 82px);
+  align-items: center;
+  min-height: 88dvh;
+  padding: clamp(28px, 6vw, 86px);
+  border-bottom: 1px solid var(--line);
+  background:
+    linear-gradient(108deg, rgba(251, 250, 244, 0.98) 0%, rgba(251, 250, 244, 0.78) 53%, rgba(234, 240, 226, 0.9) 100%),
+    url("/brand/dydd-cabin-porch.png") right bottom / min(760px, 58vw) auto no-repeat;
+}
+
+.brand-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(251, 250, 244, 0.98), rgba(251, 250, 244, 0.62)),
+    radial-gradient(circle at 72% 18%, rgba(184, 138, 67, 0.18), transparent 20rem);
+}
+
+.brand-hero > * {
+  position: relative;
+}
+
 .hero-copy {
   max-width: 760px;
+}
+
+.brand-mark,
+.course-logo {
+  display: block;
+  width: min(250px, 70vw);
+  height: auto;
+  margin-bottom: 28px;
 }
 
 .eyebrow,
@@ -93,10 +132,10 @@ p {
 }
 
 h1 {
-  max-width: 12ch;
+  max-width: 13ch;
   margin-bottom: 24px;
-  font-size: clamp(4rem, 11vw, 9rem);
-  line-height: 0.9;
+  font-size: clamp(3.8rem, 8vw, 7.6rem);
+  line-height: 0.92;
   letter-spacing: 0;
 }
 
@@ -137,8 +176,13 @@ h3 {
   font-weight: 800;
   cursor: pointer;
   transition:
-    transform 160ms ease,
-    background 160ms ease;
+    transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    background 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.button:hover {
+  transform: translateY(-2px);
 }
 
 .button:active {
@@ -154,6 +198,53 @@ h3 {
 .secondary {
   background: rgba(255, 255, 255, 0.82);
   color: var(--ink);
+}
+
+.hero-art {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-items: end;
+  min-height: 560px;
+}
+
+.hero-art img {
+  width: min(360px, 78vw);
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 36px 80px rgba(36, 63, 39, 0.24);
+  transform: rotate(1.5deg);
+}
+
+.verse-card {
+  position: absolute;
+  right: 0;
+  bottom: 38px;
+  width: min(330px, 78vw);
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow:
+    var(--shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(18px);
+}
+
+.verse-card p {
+  margin-bottom: 12px;
+  color: var(--green-dark);
+  font-size: 1.05rem;
+  font-weight: 850;
+  line-height: 1.45;
+}
+
+.verse-card span {
+  color: var(--brass);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .text-link {
@@ -244,7 +335,8 @@ h3 {
 }
 
 .band,
-.course-access-band,
+.course-feature,
+.reflection-band,
 .build-plan {
   display: grid;
   grid-template-columns: minmax(220px, 0.38fr) minmax(0, 1fr);
@@ -253,10 +345,10 @@ h3 {
   border-bottom: 1px solid var(--line);
 }
 
-.course-access-band {
+.course-feature {
   align-items: center;
   background:
-    linear-gradient(120deg, rgba(22, 59, 34, 0.96), rgba(47, 79, 100, 0.88)),
+    linear-gradient(120deg, rgba(36, 63, 39, 0.96), rgba(64, 92, 102, 0.9)),
     repeating-linear-gradient(
       90deg,
       rgba(255, 255, 255, 0.08) 0,
@@ -267,8 +359,15 @@ h3 {
   color: var(--white);
 }
 
-.course-access-band .section-label {
+.course-feature .section-label {
   color: #bfe4c5;
+}
+
+.feature-copy p:last-child {
+  max-width: 58ch;
+  margin: 20px 0 0;
+  color: rgba(255, 255, 255, 0.74);
+  line-height: 1.7;
 }
 
 .course-access-panel {
@@ -326,9 +425,50 @@ h3 {
 }
 
 .module h3 {
-  margin: 54px 0 0;
+  margin: 54px 0 8px;
   font-size: 1rem;
   line-height: 1.2;
+}
+
+.module p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.reflection-band {
+  align-items: start;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.58), rgba(251, 250, 244, 0.94)),
+    var(--paper);
+}
+
+.reflection-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.reflection-grid article {
+  min-height: 190px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.reflection-grid span {
+  display: inline-flex;
+  margin-bottom: 48px;
+  color: var(--green-dark);
+  font-weight: 900;
+}
+
+.reflection-grid p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.58;
 }
 
 .step-list {
@@ -430,8 +570,9 @@ h3 {
 .hq-shell {
   padding: clamp(22px, 4vw, 48px);
   background:
-    radial-gradient(circle at 82% 4%, rgba(47, 111, 62, 0.14), transparent 28rem),
-    radial-gradient(circle at 8% 28%, rgba(185, 130, 46, 0.12), transparent 22rem);
+    linear-gradient(rgba(251, 250, 244, 0.94), rgba(251, 250, 244, 0.96)),
+    radial-gradient(circle at 82% 4%, rgba(71, 107, 66, 0.16), transparent 28rem),
+    radial-gradient(circle at 8% 28%, rgba(184, 138, 67, 0.14), transparent 22rem);
 }
 
 .hq-topbar {
@@ -462,7 +603,7 @@ h3 {
   padding: clamp(24px, 4vw, 44px);
   border-radius: 8px;
   background:
-    linear-gradient(135deg, rgba(22, 59, 34, 0.96), rgba(14, 21, 17, 0.94)),
+    linear-gradient(135deg, rgba(36, 63, 39, 0.97), rgba(22, 33, 22, 0.94)),
     repeating-linear-gradient(
       135deg,
       rgba(255, 255, 255, 0.09) 0,
@@ -503,6 +644,19 @@ h3 {
   padding: 28px;
 }
 
+.scripture-brief {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  box-shadow: var(--shadow);
+}
+
+.scripture-brief img {
+  width: min(220px, 72vw);
+  height: auto;
+  margin-bottom: 8px;
+}
+
 .companion-brief p:last-child,
 .niche-panel p {
   color: var(--muted);
@@ -519,6 +673,35 @@ h3 {
   box-shadow: 0 0 0 8px var(--green-soft);
 }
 
+.hq-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin-bottom: 18px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.hq-summary-strip p {
+  margin: 0;
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.hq-summary-strip span {
+  display: block;
+  color: var(--green-dark);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.hq-summary-strip small {
+  color: var(--muted);
+  font-weight: 800;
+}
+
 .hq-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
@@ -532,6 +715,7 @@ h3 {
 .admin-panel,
 .niche-panel {
   padding: 24px;
+  box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
 }
 
 .journey-map,
@@ -579,6 +763,13 @@ h3 {
   min-height: 58px;
   margin: 0;
   border-top: 1px solid var(--line);
+}
+
+.journey-map li small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.83rem;
 }
 
 .snapshot-list p {
@@ -762,6 +953,9 @@ h3 {
 .lesson-shell {
   min-height: 100dvh;
   padding: clamp(22px, 5vw, 64px);
+  background:
+    linear-gradient(rgba(251, 250, 244, 0.9), rgba(251, 250, 244, 0.96)),
+    radial-gradient(circle at 82% 10%, rgba(184, 138, 67, 0.16), transparent 26rem);
 }
 
 .course-nav {
@@ -777,10 +971,51 @@ h3 {
   max-width: 980px;
 }
 
+.polished-course-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.5fr);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: end;
+  max-width: 1180px;
+  margin-bottom: 40px;
+}
+
 .course-hero h1,
 .lesson-page h1 {
   max-width: 11ch;
-  font-size: clamp(3rem, 9vw, 7rem);
+  font-size: clamp(3rem, 7vw, 6.4rem);
+}
+
+.course-verse {
+  padding: clamp(24px, 4vw, 36px);
+  border: 1px solid rgba(36, 63, 39, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.94)),
+    repeating-linear-gradient(
+      135deg,
+      rgba(184, 138, 67, 0.09) 0,
+      rgba(184, 138, 67, 0.09) 1px,
+      transparent 1px,
+      transparent 22px
+    );
+  box-shadow: var(--shadow);
+}
+
+.course-verse p {
+  margin-bottom: 16px;
+  color: var(--green-dark);
+  font-size: 1.2rem;
+  font-weight: 850;
+  line-height: 1.55;
+}
+
+.course-verse span {
+  color: var(--brass);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .source-note {
@@ -794,22 +1029,22 @@ h3 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
-  max-width: 840px;
+  max-width: 960px;
   margin: 40px 0;
   background: var(--line);
   border: 1px solid var(--line);
 }
 
 .course-stat {
-  min-height: 110px;
-  padding: 20px;
+  min-height: 126px;
+  padding: 24px;
   background: rgba(255, 255, 255, 0.9);
 }
 
 .module-stack {
   display: grid;
   gap: 20px;
-  max-width: 1080px;
+  max-width: 1180px;
 }
 
 .module-panel {
@@ -820,6 +1055,7 @@ h3 {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
 }
 
 .module-panel h2 {
@@ -854,6 +1090,10 @@ h3 {
   font-weight: 850;
 }
 
+.module-panel a:hover {
+  color: var(--brass);
+}
+
 .module-panel p {
   margin: 8px 0 0;
   color: var(--muted);
@@ -861,6 +1101,10 @@ h3 {
 }
 
 .lesson-page {
+  display: grid;
+  grid-template-columns: minmax(170px, 0.24fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 58px);
+  max-width: 1180px;
   padding: clamp(24px, 5vw, 54px);
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -873,6 +1117,27 @@ h3 {
       transparent 1px,
       transparent 28px
     );
+  box-shadow: var(--shadow);
+}
+
+.lesson-index {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  padding-top: 8px;
+}
+
+.lesson-index img {
+  width: min(180px, 68vw);
+  height: auto;
+}
+
+.lesson-index span {
+  color: var(--green-dark);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .lesson-brief {
@@ -895,17 +1160,69 @@ h3 {
   line-height: 1.7;
 }
 
+.lesson-callout {
+  margin-top: 28px;
+  padding: clamp(22px, 4vw, 34px);
+  border-left: 6px solid var(--brass);
+  border-radius: 8px;
+  background: var(--brass-soft);
+}
+
+.lesson-callout h2 {
+  margin-bottom: 12px;
+  font-size: clamp(1.6rem, 3vw, 2.8rem);
+}
+
+.lesson-callout p:last-child {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.lesson-pagination {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 30px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.lesson-pagination a,
+.lesson-pagination span {
+  min-height: 54px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.74);
+  color: var(--green-dark);
+  font-weight: 850;
+}
+
 @media (max-width: 980px) {
+  .brand-hero,
   .hero,
   .band,
-  .course-access-band,
+  .course-feature,
+  .reflection-band,
   .build-plan,
   .login-shell,
   .hq-hero,
   .hq-grid,
+  .hq-summary-strip,
+  .polished-course-hero,
   .module-panel,
+  .lesson-page,
   .named-check {
     grid-template-columns: 1fr;
+  }
+
+  .brand-hero {
+    min-height: auto;
+    background:
+      linear-gradient(rgba(251, 250, 244, 0.94), rgba(251, 250, 244, 0.96)),
+      url("/brand/dydd-cabin-porch.png") center bottom / 900px auto no-repeat;
+    padding-bottom: 300px;
   }
 
   .hero {
@@ -919,16 +1236,26 @@ h3 {
   .module-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .reflection-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 560px) {
+  .brand-hero,
   .hero,
   .band,
-  .course-access-band,
+  .course-feature,
+  .reflection-band,
   .build-plan,
   .login-shell,
   .hq-shell {
     padding: 24px;
+  }
+
+  .brand-hero {
+    padding-bottom: 220px;
   }
 
   h1 {
@@ -940,8 +1267,24 @@ h3 {
   .card-heading,
   .course-map,
   .admin-metrics,
+  .reflection-grid,
+  .lesson-pagination,
+  .named-check-list p,
   .admin-submission-list p {
     grid-template-columns: 1fr;
+  }
+
+  .hero-art {
+    min-height: 460px;
+  }
+
+  .hero-art img {
+    width: min(310px, 82vw);
+  }
+
+  .verse-card {
+    left: 0;
+    right: auto;
   }
 
   .hq-topbar,

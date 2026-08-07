@@ -4,28 +4,36 @@ import { designIdCourse } from "@/lib/courses/designid-foundations";
 
 const includedItems = [
   {
-    label: "Your assessment shelf",
-    text: "DesignID, DesignPD, Spiritual Gifts, and future tools can live together without turning the journey into a pile of separate reports.",
+    label: "Assessment shelf",
+    text: "DesignID, DesignPD, Spiritual Gifts, and future tools gathered into one personal place.",
   },
   {
     label: "Course room",
-    text: "A place to continue learning the language of your design after the first insight lands.",
+    text: "Lessons that help the language of your design become part of daily life.",
   },
   {
     label: "Reflection desk",
-    text: "Prompts, workbook thoughts, and next steps belong close to the results that gave them meaning.",
+    text: "Workbook prompts and next steps kept near the results that gave them meaning.",
   },
   {
     label: "Dydi's corner",
-    text: "A conversational guide can help the person slow down, notice what matters, and choose the next faithful move.",
+    text: "A guide station for slowing down, noticing what matters, and choosing a faithful next move.",
   },
 ];
 
 const approachSteps = [
-  "Open your personal HQ",
-  "Review what is already on the shelf",
-  "Choose the next room to enter",
-  "Continue with course, reflection, or Dydi",
+  {
+    label: "Begin here",
+    text: "Open the personal view and see the pieces of the DYDD journey in one place.",
+  },
+  {
+    label: "Look around",
+    text: "Move between results, course lessons, workbook reflection, and future guide prompts without losing the thread.",
+  },
+  {
+    label: "Take the next step",
+    text: "Choose one faithful action, then return as clarity grows through practice, prayer, and service.",
+  },
 ];
 
 const previewStats = [
@@ -82,44 +90,33 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="portal-preview" aria-label="What the app includes">
-          <div className="portal-preview-window">
-            <div className="portal-window-bar">
-              <span />
-              <span />
-              <span />
-            </div>
-            <div className="portal-route-card">
-              <small>DYDD HQ</small>
-              <strong>Identity. Evidence. Guided next steps.</strong>
-              <p>
-                The personal view can gather course progress, assessment
-                summaries, reflections, and Dydi prompts in one quiet workspace.
-              </p>
-            </div>
-            <div className="portal-stat-grid">
-              {previewStats.map((stat) => (
-                <p key={stat.label}>
-                  <span>{stat.value}</span>
-                  <small>{stat.label}</small>
-                </p>
-              ))}
-            </div>
-          </div>
+        <div className="portal-journey-note" aria-label="Journey preview">
+          {previewStats.map((stat) => (
+            <p key={stat.label}>
+              <span>{stat.value}</span>
+              <small>{stat.label}</small>
+            </p>
+          ))}
         </div>
       </section>
 
       <section className="portal-value-band" aria-label="Value and approach">
         <div>
-          <p className="section-label">Why this exists</p>
-          <h2>People need a guided path from insight to faithful action.</h2>
+          <p className="section-label">On Purpose, For Purpose</p>
+          <h2>Your life is not random, and your design is not accidental.</h2>
         </div>
-        <p>
-          Assessments can name important patterns, but the real value comes when
-          a person can revisit the language, connect it to their story, ask
-          better questions, and keep moving toward service, calling, and
-          maturity.
-        </p>
+        <div className="portal-purpose-copy">
+          <p>
+            Discover Your Divine Design helps people recognize how God has
+            uniquely shaped their identity, expertise, story, desire, gifts, and
+            niche so they can live and serve with clarity.
+          </p>
+          <blockquote>
+            For we are God&apos;s handiwork, created in Christ Jesus to do good
+            works, which God prepared in advance for us to do.
+            <cite>Ephesians 2:10</cite>
+          </blockquote>
+        </div>
       </section>
 
       <section className="portal-included" aria-label="What is included">
@@ -149,26 +146,28 @@ export default function Home() {
             moving without feeling sold to or sent into a maze.
           </p>
         </div>
-        <ol>
-          {approachSteps.map((step, index) => (
-            <li key={step}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <strong>{step}</strong>
-            </li>
+        <div className="portal-overview-cards">
+          {approachSteps.map((step) => (
+            <article key={step.label}>
+              <strong>{step.label}</strong>
+              <p>{step.text}</p>
+            </article>
           ))}
-        </ol>
+        </div>
       </section>
 
       <section className="ask-dydi" aria-label="Ask Dydi">
         <div className="dydi-host">
-          <img src="/brand/characters/dydi-full-body.png" alt="Dydi host" />
-          <div>
+          <div className="dydi-figure">
+            <img src="/brand/characters/dydi-full-body.png" alt="Dydi host" />
+          </div>
+          <div className="dydi-copy">
             <p className="section-label">Ask Dydi</p>
             <h2>Need help choosing where to begin?</h2>
             <p>
-              Dydi will eventually act like the guide in the room, helping
-              someone make sense of what is available and choose a faithful next
-              step.
+              Dydi is stationed beside the doorway as the future guide for the
+              journey, helping someone understand what is available and choose a
+              faithful next step.
             </p>
           </div>
         </div>

@@ -833,6 +833,39 @@ h3 {
   overflow-wrap: anywhere;
 }
 
+.individual-history {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.individual-history .card-heading {
+  margin-bottom: 10px;
+}
+
+.individual-history h3 {
+  margin-bottom: 0;
+  color: var(--green-dark);
+}
+
+.individual-history p {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 42px;
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+
+.individual-history span {
+  font-weight: 800;
+}
+
+.individual-history small {
+  color: var(--muted);
+}
+
 .journey-map li em {
   color: var(--green);
   font-size: 0.82rem;
@@ -1351,6 +1384,7 @@ h3 {
   .reflection-grid,
   .individual-snapshot > div:first-child,
   .individual-snapshot dl,
+  .individual-history p,
   .lesson-pagination,
   .named-check-list p,
   .admin-submission-list p {

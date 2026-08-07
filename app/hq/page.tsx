@@ -14,6 +14,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 type AssessmentSnapshotSummary = {
   assessment_type: string;
   created_at: string;
+  id: string;
   profile: Record<string, unknown> | null;
   scores: Record<string, unknown> | null;
   source: string | null;
@@ -37,9 +38,7 @@ type ParticipantRecord = {
   user_id: string | null;
 };
 
-type NamedParticipantSnapshot = AssessmentSnapshotSummary & {
-  id: string;
-};
+type NamedParticipantSnapshot = AssessmentSnapshotSummary;
 
 type KeyValueItem = {
   label: string;
@@ -199,12 +198,12 @@ async function findOrAttachParticipant(userId: string, email: string) {
   return emailParticipant.id as string;
 }
 
-async function getLatestAssessmentSnapshots(userId: string, email: string) {
+async function getAssessmentSnapshotsForUser(userId: string, email: string) {
   const participantId = await findOrAttachParticipant(userId, email);
   const supabaseAdmin = createSupabaseAdminClient();
   const query = supabaseAdmin
     .from("assessment_snapshots")
-    .select("assessment_type,created_at,profile,scores,source,source_submitted_at,summary")
+    .select("id,assessment_type,created_at,profile,scores,source,source_submitted_at,summary")
     .order("source_submitted_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false });
 
@@ -212,7 +211,12 @@ async function getLatestAssessmentSnapshots(userId: string, email: string) {
     ? await query.eq("participant_id", participantId)
     : await query.eq("user_id", userId);
 
-  return latestByAssessment((data ?? []) as AssessmentSnapshotSummary[]);
+  const all = (data ?? []) as AssessmentSnapshotSummary[];
+
+  return {
+    all,
+    latest: latestByAssessment(all),
+  };
 }
 
 async function getAdminAssessmentReport(enabled: boolean) {
@@ -321,10 +325,11 @@ export default async function HqPage() {
     .eq("id", user.id)
     .maybeSingle();
 
-  const snapshots = await getLatestAssessmentSnapshots(
+  const assessmentReport = await getAssessmentSnapshotsForUser(
     user.id,
     normalizeEmail(user.email),
   );
+  const snapshots = assessmentReport.latest;
   const isAdmin = isAdminEmail(user.email);
   const adminReport = await getAdminAssessmentReport(isAdmin);
   const heatherReport = await getHeatherAssessmentReport(isAdmin);
@@ -441,13 +446,43 @@ export default async function HqPage() {
             <h2>Latest assessment vault</h2>
           </div>
           {snapshots?.length ? (
-            <div className="snapshot-list">
-              {snapshots.map((snapshot) => (
-                <article
-                  className="individual-snapshot"
-                  key={`${snapshot.assessment_type}-${snapshot.created_at}`}
-                >
-                  <div>
+            <>
+              <div className="snapshot-list">
+                {snapshots.map((snapshot) => (
+                  <article className="individual-snapshot" key={snapshot.id}>
+                    <div>
+                      <span>
+                        {assessmentLabels[snapshot.assessment_type] ??
+                          snapshot.assessment_type}
+                      </span>
+                      <small>
+                        {displayDate(
+                          snapshot.source_submitted_at ?? snapshot.created_at,
+                        )}
+                        {" · "}
+                        {snapshot.source ?? "DYDD source"}
+                      </small>
+                    </div>
+                    {snapshotHighlights(snapshot).length ? (
+                      <dl>
+                        {snapshotHighlights(snapshot).map((item) => (
+                          <div key={item.label}>
+                            <dt>{item.label}</dt>
+                            <dd>{item.value}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+              <div className="individual-history">
+                <div className="card-heading">
+                  <p className="section-label">Full mirrored history</p>
+                  <h3>{assessmentReport.all.length} records attached</h3>
+                </div>
+                {assessmentReport.all.map((snapshot) => (
+                  <p key={snapshot.id}>
                     <span>
                       {assessmentLabels[snapshot.assessment_type] ??
                         snapshot.assessment_type}
@@ -459,20 +494,10 @@ export default async function HqPage() {
                       {" · "}
                       {snapshot.source ?? "DYDD source"}
                     </small>
-                  </div>
-                  {snapshotHighlights(snapshot).length ? (
-                    <dl>
-                      {snapshotHighlights(snapshot).map((item) => (
-                        <div key={item.label}>
-                          <dt>{item.label}</dt>
-                          <dd>{item.value}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  ) : null}
-                </article>
-              ))}
-            </div>
+                  </p>
+                ))}
+              </div>
+            </>
           ) : (
             <p className="empty-state">
               No assessment snapshots are attached to this email yet. Use the

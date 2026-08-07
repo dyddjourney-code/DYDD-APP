@@ -94,13 +94,36 @@ export function readableLabel(value: string) {
 }
 
 export function snapshotHighlights(snapshot: AssessmentSnapshotSummary) {
-  const preferredKeys = [
+  const preferredKeysByAssessment: Record<string, string[]> = {
+    designid: [
+      "Primary",
+      "Secondary",
+      "Integrative_Reflection",
+      "Reflection_Of_God",
+      "Spiritual_Strength",
+      "Potential_Shadow",
+    ],
+    designpd: [
+      "Plan_Tendency",
+      "Decide_Tendency",
+      "Do_Tendency",
+      "Plan_Descriptor",
+      "Decide_Descriptor",
+      "Do_Descriptor",
+    ],
+    spiritual_gifts: [
+      "Top1_Name",
+      "Top2_Name",
+      "Top3_Name",
+      "Top1_Score",
+      "Top2_Score",
+      "Top3_Score",
+    ],
+  };
+  const preferredKeys = preferredKeysByAssessment[snapshot.assessment_type] ?? [
     "Primary",
     "Secondary",
     "Integrative_Reflection",
-    "Reflection_Of_God",
-    "Spiritual_Strength",
-    "Potential_Shadow",
     "Top1_Name",
     "Top2_Name",
     "Top3_Name",

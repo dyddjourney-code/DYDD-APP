@@ -84,10 +84,10 @@ const toolCatalog = [
 ];
 
 const baseCampSteps = [
-  { detail: "Open assessments, free tools, and next-step resources.", label: "Tools Cabin" },
-  { detail: "Step into DYDD, DesignID, DesignPD, or Spiritual Gifts courses.", label: "Course Trailheads" },
+  { detail: "Open assessments, free tools, and next-step resources.", label: "Tool Bench" },
+  { detail: "Step into DYDD, DesignID, DesignPD, or Spiritual Gifts courses.", label: "Course Table" },
   { detail: "Download completed reports and revisit past insights.", label: "Artifact Shelf" },
-  { detail: "Move through the journey process and niche builder.", label: "Journey Path" },
+  { detail: "Move through the journey process, niche builder, and Dydi reflection.", label: "Trail Door" },
 ];
 
 function isAdminEmail(email: string | null | undefined) {
@@ -335,18 +335,19 @@ export default async function HqPage({ searchParams }: HqPageProps) {
 
       <section className="basecamp-hero" aria-label="DYDD headquarters">
         <div className="basecamp-copy">
-          <p className="section-label">You have arrived</p>
-          <h2>Set your pack down. Choose the next trail.</h2>
+          <p className="section-label">You are inside the hut</p>
+          <h2>Look around. Your next step has a place.</h2>
           <p>
-            Headquarters is the staging place for tools, completed artifacts,
-            course access, the journey process, and Dydi-guided reflection.
+            Headquarters gathers the workbench, course table, artifact shelf,
+            journey door, and Dydi conversation corner into one natural launch
+            point.
           </p>
           <div className="basecamp-actions">
             <a className="button primary" href="#ask-dydi">
-              Ask Dydi
+              Talk with Dydi
             </a>
             <a className="button secondary" href="#tools">
-              View tools
+              Look around HQ
             </a>
           </div>
         </div>
@@ -379,11 +380,11 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           <img src="/brand/characters/dydi-full-body.png" alt="Dydi host" />
           <div>
             <p className="section-label">Ask Dydi</p>
-            <h2>What should I look at next?</h2>
+            <h2>Start at the conversation corner.</h2>
             <p>
-              This will become the first conversation point in HQ, helping a
-              person understand what they own, what is missing, and where the
-              next step should begin.
+              Dydi is staged as the guide inside HQ, helping a person notice
+              what they own, what is missing, and which station should get their
+              attention next.
             </p>
           </div>
         </div>

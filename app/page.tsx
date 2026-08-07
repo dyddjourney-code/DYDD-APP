@@ -4,28 +4,28 @@ import { designIdCourse } from "@/lib/courses/designid-foundations";
 
 const includedItems = [
   {
-    label: "Assessment vault",
-    text: "A private place where DesignID, DesignPD, Spiritual Gifts, and future tools can be gathered under one journey.",
+    label: "Your assessment shelf",
+    text: "DesignID, DesignPD, Spiritual Gifts, and future tools can live together without turning the journey into a pile of separate reports.",
   },
   {
-    label: "Guided course path",
-    text: "A lesson-by-lesson walkthrough that can eventually adapt the teaching to each person's assessment language.",
+    label: "Course room",
+    text: "A place to continue learning the language of your design after the first insight lands.",
   },
   {
-    label: "Reflection workspace",
-    text: "A place to collect prompts, responses, workbook artifacts, and the next faithful step.",
+    label: "Reflection desk",
+    text: "Prompts, workbook thoughts, and next steps belong close to the results that gave them meaning.",
   },
   {
-    label: "Companion layer",
-    text: "Dydi can become the conversational guide that helps a person process their own records without turning the app into a static report.",
+    label: "Dydi's corner",
+    text: "A conversational guide can help the person slow down, notice what matters, and choose the next faithful move.",
   },
 ];
 
 const approachSteps = [
-  "Register or sign in",
-  "Connect assessment records",
-  "Walk the course pathway",
-  "Ask Dydi for guided reflection",
+  "Open your personal HQ",
+  "Review what is already on the shelf",
+  "Choose the next room to enter",
+  "Continue with course, reflection, or Dydi",
 ];
 
 const previewStats = [
@@ -133,7 +133,6 @@ export default function Home() {
               className={`portal-feature portal-feature-${index + 1}`}
               key={item.label}
             >
-              <span>{String(index + 1).padStart(2, "0")}</span>
               <h3>{item.label}</h3>
               <p>{item.text}</p>
             </article>
@@ -143,8 +142,12 @@ export default function Home() {
 
       <section className="portal-flow" aria-label="How it works">
         <div>
-          <p className="section-label">How it works</p>
-          <h2>Simple entry. Personal walkthrough. Better conversations.</h2>
+          <p className="section-label">Opening the door</p>
+          <h2>A calm launch point for the journey.</h2>
+          <p>
+            The portal should help a person orient, choose a next step, and keep
+            moving without feeling sold to or sent into a maze.
+          </p>
         </div>
         <ol>
           {approachSteps.map((step, index) => (
@@ -161,11 +164,11 @@ export default function Home() {
           <img src="/brand/characters/dydi-full-body.png" alt="Dydi host" />
           <div>
             <p className="section-label">Ask Dydi</p>
-            <h2>Curious how this could work for you or your group?</h2>
+            <h2>Need help choosing where to begin?</h2>
             <p>
-              Ask about using the tool for a family, class, cohort, church,
-              coaching client, or leadership group. This section will become the
-              inquiry doorway for matching the app to the right use case.
+              Dydi will eventually act like the guide in the room, helping
+              someone make sense of what is available and choose a faithful next
+              step.
             </p>
           </div>
         </div>

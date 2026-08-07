@@ -84,10 +84,10 @@ const toolCatalog = [
 ];
 
 const baseCampSteps = [
-  { detail: "Open your available tools.", label: "Supply Tent" },
-  { detail: "Review completed reports.", label: "Artifact Shelf" },
-  { detail: "Enter a course path.", label: "Trailhead" },
-  { detail: "Ask Dydi what to do next.", label: "Guide Fire" },
+  { detail: "Open assessments, free tools, and next-step resources.", label: "Tools Cabin" },
+  { detail: "Step into DYDD, DesignID, DesignPD, or Spiritual Gifts courses.", label: "Course Trailheads" },
+  { detail: "Download completed reports and revisit past insights.", label: "Artifact Shelf" },
+  { detail: "Move through the journey process and niche builder.", label: "Journey Path" },
 ];
 
 function isAdminEmail(email: string | null | undefined) {
@@ -243,6 +243,15 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       : profile?.full_name ?? user?.email ?? "Traveler";
   const hasDyddCourseAccess = heatherPreview;
   const hasDesignIdCourseAccess = heatherPreview || ownsAssessment(assessmentReport, "designid");
+  const hasDesignPdCourseAccess = heatherPreview || ownsAssessment(assessmentReport, "designpd");
+  const hasSpiritualGiftsCourseAccess =
+    heatherPreview || ownsAssessment(assessmentReport, "spiritual_gifts");
+  const openCourseCount = [
+    hasDyddCourseAccess,
+    hasDesignIdCourseAccess,
+    hasDesignPdCourseAccess,
+    hasSpiritualGiftsCourseAccess,
+  ].filter(Boolean).length;
   const lessonCount = designIdCourse.modules.reduce(
     (count, module) => count + module.lessons.length,
     0,
@@ -256,9 +265,25 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       detail:
         "A focused course for understanding DesignID language after the assessment is purchased and completed.",
       href: withReviewQuery("/courses/designid-foundations", reviewParams),
+      icon:
+        "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/c6506120-e23e-4a7d-800d-b1a654693c5b/ID-icon-color.jpg?format=300w",
+      id: "designid-course",
       label: "DesignID Foundations",
       meta: `${designIdCourse.modules.length} modules · ${lessonCount} lessons`,
       price: "Included with DesignID",
+    },
+    {
+      action: hasDesignPdCourseAccess ? "Open course" : "Included with DesignPD",
+      available: hasDesignPdCourseAccess,
+      detail:
+        "A practical course focused on tendencies for how you plan, decide, and do in real life.",
+      href: "#designpd-course",
+      icon:
+        "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/9c103421-19d5-411f-abe7-614bd22088e8/designpd-icon.jpg?format=300w",
+      id: "designpd-course",
+      label: "DesignPD Course",
+      meta: "New course · practical tendencies",
+      price: "Included with DesignPD",
     },
     {
       action: hasDyddCourseAccess ? "Continue course" : "Purchase access",
@@ -266,9 +291,25 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       detail:
         "The fuller DYDD course walkthrough, guided journey process, and deeper companion-supported formation path.",
       href: "#dydd-course",
+      icon:
+        "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/12ab0cef-157a-4a43-8dcd-d6bf8b0a29af/dydd-icon-color.jpg?format=300w",
+      id: "dydd-course",
       label: "Discover Your Divine Design Course",
       meta: "Paid course · bandwidth-heavy guided path",
       price: "Paid access",
+    },
+    {
+      action: hasSpiritualGiftsCourseAccess ? "Open course" : "Start free assessment",
+      available: hasSpiritualGiftsCourseAccess,
+      detail:
+        "A companion course for naming gifts and connecting them to service, formation, and calling.",
+      href: "#spiritual-gifts-course",
+      icon:
+        "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/8131fe81-0e4a-4503-ab92-8f4a7da620bb/dydd-gifts-icon.jpg?format=300w",
+      id: "spiritual-gifts-course",
+      label: "Spiritual Gifts Course",
+      meta: "Available with the free Spiritual Gifts assessment",
+      price: "Free assessment",
     },
   ];
 
@@ -324,7 +365,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           <small>Completed artifacts</small>
         </p>
         <p>
-          <span>{hasDyddCourseAccess ? 2 : hasDesignIdCourseAccess ? 1 : 0}</span>
+          <span>{openCourseCount}</span>
           <small>Course paths open</small>
         </p>
         <p>
@@ -417,9 +458,10 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             {courseCards.map((course) => (
               <article
                 className={course.available ? "course-card open" : "course-card locked"}
-                id={course.label.startsWith("Discover") ? "dydd-course" : undefined}
+                id={course.id}
                 key={course.label}
               >
+                <img src={course.icon} alt={`${course.label} icon`} />
                 <div>
                   <span>{course.price}</span>
                   <h3>{course.label}</h3>

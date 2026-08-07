@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { designIdCourse } from "@/lib/courses/designid-foundations";
 
 const journeySteps = [
   "Identity",
@@ -18,6 +19,11 @@ const hqSignals = [
 ];
 
 export default function Home() {
+  const lessonCount = designIdCourse.modules.reduce(
+    (count, module) => count + module.lessons.length,
+    0,
+  );
+
   return (
     <main className="school-shell">
       <section className="hero">
@@ -25,31 +31,60 @@ export default function Home() {
           <p className="eyebrow">Discover Your Divine Design</p>
           <h1>DYDD Headquarters</h1>
           <p className="lede">
-            A private command center where each client can enter the DYDD
-            Journey, gather assessment results and workbook artifacts, and
-            receive companion-guided reflection one step at a time.
+            The new HQ build now has a visible DesignID course branch, mapped
+            assessment history, and the first field-lab look for processing the
+            DYDD Journey.
           </p>
           <div className="action-row" aria-label="Primary actions">
             <Link href="/login" className="button primary">
               Enter HQ
+            </Link>
+            <Link href="/courses/designid-foundations" className="button secondary">
+              Open DesignID course
             </Link>
             <a href="#journey" className="button secondary">
               View journey
             </a>
           </div>
         </div>
-        <div className="journey-panel" aria-label="DYDD HQ prototype summary">
+        <div className="journey-panel field-log" aria-label="DYDD HQ release summary">
           <div className="panel-header">
-            <span>Prototype loop</span>
-            <strong>HQ v0.2</strong>
+            <span>Production build</span>
+            <strong>HQ v0.3</strong>
+          </div>
+          <div className="release-stamp">
+            <span>{designIdCourse.modules.length}</span>
+            <small>DesignID modules</small>
           </div>
           <ol>
-            <li>Sign in</li>
-            <li>Open Journey HQ</li>
-            <li>Connect assessments</li>
-            <li>Capture workbook input</li>
-            <li>Build a living niche draft</li>
+            <li>{lessonCount} course lessons staged</li>
+            <li>Admin all-submissions view added</li>
+            <li>Duplicate submission history preserved</li>
+            <li>Gmail dot matching enabled</li>
+            <li>Heather verification lives inside HQ admin</li>
           </ol>
+        </div>
+      </section>
+
+      <section className="course-access-band" aria-label="DesignID course access">
+        <div>
+          <p className="section-label">Course access</p>
+          <h2>DesignID Foundations is live in the app.</h2>
+        </div>
+        <div className="course-access-panel">
+          <p>
+            The GHL course code has been converted into an app-native course
+            map so the branch can be reviewed before the full lesson body
+            migration.
+          </p>
+          <div className="mini-metrics" aria-label="Course metrics">
+            <span>{designIdCourse.modules.length} modules</span>
+            <span>{lessonCount} lessons</span>
+            <span>Review branch</span>
+          </div>
+          <Link className="button primary" href="/courses/designid-foundations">
+            Review the course branch
+          </Link>
         </div>
       </section>
 

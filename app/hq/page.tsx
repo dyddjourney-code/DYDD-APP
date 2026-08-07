@@ -34,6 +34,10 @@ type ParticipantRecord = {
   user_id: string | null;
 };
 
+type NamedParticipantSnapshot = AssessmentSnapshotSummary & {
+  id: string;
+};
+
 const journeySteps = [
   { label: "Identity", state: "Ready" },
   { label: "Expertise", state: "Queued" },
@@ -189,6 +193,51 @@ async function getAdminAssessmentReport(enabled: boolean) {
   };
 }
 
+async function getHeatherAssessmentReport(enabled: boolean) {
+  if (!enabled) {
+    return null;
+  }
+
+  const supabaseAdmin = createSupabaseAdminClient();
+  const heatherEmails = participantEmailCandidates("willoughby.h.s@gmail.com");
+
+  const { data: participants } = await supabaseAdmin
+    .from("assessment_participants")
+    .select("id,display_name,normalized_email")
+    .in("normalized_email", heatherEmails)
+    .returns<
+      Array<{
+        display_name: string | null;
+        id: string;
+        normalized_email: string | null;
+      }>
+    >();
+
+  const participantIds = (participants ?? []).map((participant) => participant.id);
+
+  if (!participantIds.length) {
+    return {
+      latest: [] as NamedParticipantSnapshot[],
+      participantCount: 0,
+      totalSnapshots: 0,
+    };
+  }
+
+  const { data } = await supabaseAdmin
+    .from("assessment_snapshots")
+    .select("id,assessment_type,created_at,source,source_submitted_at")
+    .in("participant_id", participantIds)
+    .order("source_submitted_at", { ascending: false, nullsFirst: false })
+    .order("created_at", { ascending: false })
+    .returns<NamedParticipantSnapshot[]>();
+
+  return {
+    latest: latestByAssessment(data ?? []) as NamedParticipantSnapshot[],
+    participantCount: participantIds.length,
+    totalSnapshots: data?.length ?? 0,
+  };
+}
+
 export default async function HqPage() {
   const supabase = await createSupabaseServerClient();
   const {
@@ -209,7 +258,9 @@ export default async function HqPage() {
     user.id,
     normalizeEmail(user.email),
   );
-  const adminReport = await getAdminAssessmentReport(isAdminEmail(user.email));
+  const isAdmin = isAdminEmail(user.email);
+  const adminReport = await getAdminAssessmentReport(isAdmin);
+  const heatherReport = await getHeatherAssessmentReport(isAdmin);
 
   const displayName = profile?.full_name ?? user.email ?? "Traveler";
   const lessonCount = designIdCourse.modules.reduce(
@@ -386,6 +437,40 @@ export default async function HqPage() {
                 <small>Duplicate histories in this window</small>
               </p>
             </div>
+            {heatherReport ? (
+              <div className="named-check">
+                <div>
+                  <p className="section-label">Heather verification</p>
+                  <h3>willoughbyhs@gmail.com is attached.</h3>
+                  <p>
+                    {heatherReport.participantCount
+                      ? `${heatherReport.totalSnapshots} mirrored submissions are connected across ${heatherReport.participantCount} participant record${
+                          heatherReport.participantCount === 1 ? "" : "s"
+                        }.`
+                      : "No mirrored submissions are attached yet for Heather's Gmail variants."}
+                  </p>
+                </div>
+                {heatherReport.latest.length ? (
+                  <div className="named-check-list">
+                    {heatherReport.latest.map((snapshot) => (
+                      <p key={snapshot.id}>
+                        <span>
+                          {assessmentLabels[snapshot.assessment_type] ??
+                            snapshot.assessment_type}
+                        </span>
+                        <small>
+                          {displayDate(
+                            snapshot.source_submitted_at ?? snapshot.created_at,
+                          )}
+                          {" · "}
+                          {snapshot.source ?? "DYDD source"}
+                        </small>
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
             <div className="admin-submission-list">
               {adminReport.recent.slice(0, 36).map((snapshot) => (
                 <p key={snapshot.id}>

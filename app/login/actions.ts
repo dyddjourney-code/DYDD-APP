@@ -6,7 +6,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const productionAppUrl = "https://dydd-online-school.vercel.app";
 
-function loginRedirect(message: string) {
+function loginRedirect(message: string): never {
   redirect(`/login?message=${encodeURIComponent(message)}`);
 }
 
@@ -93,6 +93,16 @@ export async function verifyEmailCode(formData: FormData) {
   }
 
   redirect("/hq");
+}
+
+export async function enterHeatherPreview() {
+  const reviewToken = process.env.DYDD_REVIEW_TOKEN;
+
+  if (!reviewToken) {
+    loginRedirect("Heather preview access is not configured yet.");
+  }
+
+  redirect(`/hq?review=heather&key=${encodeURIComponent(reviewToken)}`);
 }
 
 export async function signOut() {

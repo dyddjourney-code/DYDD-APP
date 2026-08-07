@@ -62,7 +62,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             autoComplete="email"
             id="code-email"
             name="email"
-            placeholder="willoughbyhs@gmail.com"
+            placeholder="you@example.com"
             required
             type="email"
           />

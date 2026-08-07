@@ -1,156 +1,182 @@
 import Link from "next/link";
+import { enterHeatherPreview } from "@/app/login/actions";
 import { designIdCourse } from "@/lib/courses/designid-foundations";
 
-const journeySteps = [
-  { label: "Identity", detail: "Whose you are" },
-  { label: "Story", detail: "What shaped you" },
-  { label: "Expertise", detail: "What you have cultivated" },
-  { label: "Desire", detail: "What stirs your heart" },
-  { label: "Gifts", detail: "How the Spirit empowers you" },
-  { label: "Niche", detail: "Where design becomes service" },
+const includedItems = [
+  {
+    label: "Assessment vault",
+    text: "A private place where DesignID, DesignPD, Spiritual Gifts, and future tools can be gathered under one journey.",
+  },
+  {
+    label: "Guided course path",
+    text: "A lesson-by-lesson walkthrough that can eventually adapt the teaching to each person's assessment language.",
+  },
+  {
+    label: "Reflection workspace",
+    text: "A place to collect prompts, responses, workbook artifacts, and the next faithful step.",
+  },
+  {
+    label: "Companion layer",
+    text: "Dydi can become the conversational guide that helps a person process their own records without turning the app into a static report.",
+  },
 ];
 
-const hqSignals = [
-  "Private learner HQ",
-  "Assessment vault",
-  "DesignID Foundations",
-  "Guided reflection",
-  "Purpose synthesis",
+const approachSteps = [
+  "Register or sign in",
+  "Connect assessment records",
+  "Walk the course pathway",
+  "Ask Dydi for guided reflection",
 ];
 
-const reflections = [
+const previewStats = [
+  { label: "DesignID modules", value: designIdCourse.modules.length },
   {
-    label: "Architect",
-    text: "Vision, initiative, and the drive to build what serves a purpose.",
+    label: "Staged lessons",
+    value: designIdCourse.modules.reduce(
+      (count, module) => count + module.lessons.length,
+      0,
+    ),
   },
-  {
-    label: "Artisan",
-    text: "Craft, clarity, and the ability to shape truth with precision.",
-  },
-  {
-    label: "Shepherd",
-    text: "Care, empathy, and the instinct to strengthen people.",
-  },
-  {
-    label: "Steward",
-    text: "Order, responsibility, and faithful attention to what matters.",
-  },
+  { label: "Core journey moves", value: 6 },
 ];
 
 export default function Home() {
-  const lessonCount = designIdCourse.modules.reduce(
-    (count, module) => count + module.lessons.length,
-    0,
-  );
-
   return (
-    <main className="school-shell">
-      <section className="brand-hero">
-        <div className="hero-copy">
+    <main className="portal-shell">
+      <section className="portal-hero" aria-label="DYDD portal entry">
+        <div className="portal-hero-copy">
           <img
             className="brand-mark"
             src="/brand/dydd-logo.webp"
             alt="Discover Your Divine Design"
           />
-          <p className="eyebrow">On Purpose. For Purpose.</p>
-          <h1>Discover Your Divine Design HQ</h1>
+          <p className="eyebrow">Private journey portal</p>
+          <h1>Your design deserves more than a report.</h1>
           <p className="lede">
-            A private learning space for DesignID, assessment history, guided
-            reflection, and the next faithful step in the DYDD Journey.
+            The DYDD online school is being shaped as a guided headquarters for
+            assessment results, course content, workbook reflection, and future
+            companion conversations.
           </p>
-          <div className="action-row" aria-label="Primary actions">
-            <Link href="/login" className="button primary">
-              Enter HQ
-            </Link>
-            <Link href="/courses/designid-foundations" className="button secondary">
-              Open DesignID course
-            </Link>
-            <a href="#journey" className="button secondary">
-              View journey
-            </a>
-          </div>
-        </div>
-        <div className="hero-art" aria-label="DYDD journey preview">
-          <img
-            src="/brand/dydd-book-cover.webp"
-            alt="Discover Your Divine Design book cover"
-          />
-          <div className="verse-card">
-            <p>
-              “For we are God&apos;s handiwork, created in Christ Jesus to do
-              good works.”
-            </p>
-            <span>Ephesians 2:10</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="course-feature" aria-label="DesignID course access">
-        <div className="feature-copy">
-          <p className="section-label">Course access</p>
-          <h2>DesignID Foundations now feels like the front door.</h2>
-          <p>
-            The course branch is no longer buried. It sits beside the learner
-            HQ as the first class pathway, with the full uploaded lesson code
-            now rendered inside the app for review.
-          </p>
-        </div>
-        <div className="course-access-panel">
-          <div className="mini-metrics" aria-label="Course metrics">
-            <span>{designIdCourse.modules.length} modules</span>
-            <span>{lessonCount} lessons</span>
-            <span>Full lesson bodies loaded</span>
-          </div>
-          <Link className="button primary" href="/courses/designid-foundations">
-            Review the course branch
-          </Link>
-        </div>
-      </section>
-
-      <section id="journey" className="band">
-        <div>
-          <p className="section-label">DYDD framework</p>
-          <h2>The app should support the journey, not distract from it.</h2>
-        </div>
-        <div className="module-grid">
-          {journeySteps.map((step, index) => (
-            <article className="module" key={step.label}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <h3>{step.label}</h3>
-              <p>{step.detail}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="reflection-band" aria-label="DesignID reflections">
-        <div>
-          <p className="section-label">Four reflections</p>
-          <h2>DesignID gives language to how grace shows up.</h2>
-        </div>
-        <div className="reflection-grid">
-          {reflections.map((reflection) => (
-            <article key={reflection.label}>
-              <span>{reflection.label}</span>
-              <p>{reflection.text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="build-plan">
-        <div>
-          <p className="section-label">Current product loop</p>
-          <h2>A more polished shell for the first real learner experience.</h2>
-        </div>
-        <div className="step-list">
-          {hqSignals.map((signal) => (
-            <div className="step" key={signal}>
-              <span />
-              <p>{signal}</p>
+          <div className="portal-access-panel" aria-label="Portal access">
+            <div>
+              <p className="section-label">Portal entry</p>
+              <h2>Sign in or register to open your personal view.</h2>
             </div>
+            <form action={enterHeatherPreview}>
+              <button className="button primary portal-login-button" type="submit">
+                Log in for review
+              </button>
+            </form>
+            <Link href="/login" className="button secondary">
+              Register or email sign-in
+            </Link>
+            <p className="helper-text">
+              Review mode opens the current staged personal view. The public
+              portal does not display individual assessment records.
+            </p>
+          </div>
+        </div>
+
+        <div className="portal-preview" aria-label="What the app includes">
+          <div className="portal-preview-window">
+            <div className="portal-window-bar">
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="portal-route-card">
+              <small>DYDD HQ</small>
+              <strong>Identity. Evidence. Guided next steps.</strong>
+              <p>
+                The personal view can gather course progress, assessment
+                summaries, reflections, and Dydi prompts in one quiet workspace.
+              </p>
+            </div>
+            <div className="portal-stat-grid">
+              {previewStats.map((stat) => (
+                <p key={stat.label}>
+                  <span>{stat.value}</span>
+                  <small>{stat.label}</small>
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="portal-value-band" aria-label="Value and approach">
+        <div>
+          <p className="section-label">Why this exists</p>
+          <h2>People need a guided path from insight to faithful action.</h2>
+        </div>
+        <p>
+          Assessments can name important patterns, but the real value comes when
+          a person can revisit the language, connect it to their story, ask
+          better questions, and keep moving toward service, calling, and
+          maturity.
+        </p>
+      </section>
+
+      <section className="portal-included" aria-label="What is included">
+        <div className="portal-section-heading">
+          <p className="section-label">What is included</p>
+          <h2>A living journey space, not a one-time score page.</h2>
+        </div>
+        <div className="portal-bento">
+          {includedItems.map((item, index) => (
+            <article
+              className={`portal-feature portal-feature-${index + 1}`}
+              key={item.label}
+            >
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{item.label}</h3>
+              <p>{item.text}</p>
+            </article>
           ))}
         </div>
+      </section>
+
+      <section className="portal-flow" aria-label="How it works">
+        <div>
+          <p className="section-label">How it works</p>
+          <h2>Simple entry. Personal walkthrough. Better conversations.</h2>
+        </div>
+        <ol>
+          {approachSteps.map((step, index) => (
+            <li key={step}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{step}</strong>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="ask-dydi" aria-label="Ask Dydi">
+        <div>
+          <p className="section-label">Ask Dydi</p>
+          <h2>Curious how this could work for you or your group?</h2>
+          <p>
+            Ask about using the tool for a family, class, cohort, church,
+            coaching client, or leadership group. This section will become the
+            inquiry doorway for matching the app to the right use case.
+          </p>
+        </div>
+        <form className="dydi-form">
+          <label htmlFor="dydi-question">What would you like to explore?</label>
+          <textarea
+            id="dydi-question"
+            name="question"
+            placeholder="I want to use DYDD with..."
+            rows={5}
+          />
+          <button className="button primary" type="button">
+            Ask Dydi
+          </button>
+          <p className="helper-text">
+            This inquiry box is staged for the product preview. Live Dydi
+            responses will connect later.
+          </p>
+        </form>
       </section>
     </main>
   );

@@ -57,7 +57,7 @@ const toolCatalog = [
     assessmentType: "designpd",
     detail: "Plan, Decide, and Do patterns for practical daily alignment.",
     label: "DesignPD",
-    logo: "/brand/tools/designpd-logo.jpg",
+    logo: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b85a099e-3a97-4d64-951a-5243dced21c2/DesignPW-logo.jpg?format=300w",
     price: "$50",
   },
   {
@@ -78,7 +78,7 @@ const toolCatalog = [
     assessmentType: "fruit_360",
     detail: "A free 360-style mirror for visible fruit and growth conversations.",
     label: "Fruit 360",
-    logo: "/brand/tools/fruit-360-logo.svg",
+    logo: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/418710fa-3116-4f5f-a68a-8b1c9f415678/FL360-logo.jpg?format=300w",
     price: "Free",
   },
 ];

@@ -191,8 +191,14 @@ function ownsAssessment(report: StudentAssessmentReport, assessmentType: string)
   );
 }
 
-function artifactDownloadHref(snapshot: AssessmentSnapshotSummary) {
-  return `/api/artifacts/${encodeURIComponent(snapshot.id)}/download`;
+function artifactDownloadHref(
+  snapshot: AssessmentSnapshotSummary,
+  reviewParams?: ReviewSearchParams | null,
+) {
+  return withReviewQuery(
+    `/api/artifacts/${encodeURIComponent(snapshot.id)}/download`,
+    reviewParams,
+  );
 }
 
 export default async function HqPage({ searchParams }: HqPageProps) {
@@ -458,7 +464,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                   ) : null}
                   <a
                     className="button secondary"
-                    href={artifactDownloadHref(snapshot)}
+                    href={artifactDownloadHref(snapshot, reviewParams)}
                   >
                     Download report
                   </a>

@@ -27,4 +27,13 @@ export const assessmentSources = [
     sourceSystem: "google_sheets",
     syncMode: "observe_then_mirror",
   },
+  {
+    assessmentTypes: ["fruit_360"],
+    envKey: "FRUITLIFE_360_SPREADSHEET_ID",
+    isLiveProduction: true,
+    label: "FruitLife 360",
+    slug: "fruitlife_360",
+    sourceSystem: "google_sheets",
+    syncMode: "observe_then_mirror",
+  },
 ] satisfies AssessmentSource[];

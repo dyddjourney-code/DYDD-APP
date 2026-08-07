@@ -4,6 +4,7 @@ import {
   isPlainObject,
   type AssessmentSnapshotPayload,
 } from "@/lib/assessments/types";
+import { canonicalizeParticipantEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
@@ -22,10 +23,6 @@ function getBearerToken(request: NextRequest) {
   return header.slice("bearer ".length).trim();
 }
 
-function normalizeEmail(email: string) {
-  return email.trim().toLowerCase();
-}
-
 function validatePayload(value: unknown):
   | { data: AssessmentSnapshotPayload; error?: never }
   | { data?: never; error: string } {
@@ -36,7 +33,7 @@ function validatePayload(value: unknown):
   const userId = typeof value.userId === "string" ? value.userId.trim() : "";
   const participantEmail =
     typeof value.participantEmail === "string"
-      ? normalizeEmail(value.participantEmail)
+      ? canonicalizeParticipantEmail(value.participantEmail)
       : "";
   const participantKey =
     typeof value.participantKey === "string" ? value.participantKey.trim() : "";

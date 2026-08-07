@@ -293,7 +293,15 @@ function coerceValue(value) {
 
 function normalizeEmail(value) {
   const email = String(value ?? "").trim().toLowerCase();
-  return email.includes("@") ? email : "";
+  if (!email.includes("@")) return "";
+
+  const [localPart, domain] = email.split("@");
+
+  if (domain === "gmail.com" || domain === "googlemail.com") {
+    return `${localPart.split("+")[0].replaceAll(".", "")}@gmail.com`;
+  }
+
+  return email;
 }
 
 function hash(value) {

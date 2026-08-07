@@ -14,8 +14,11 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 type AssessmentSnapshotSummary = {
   assessment_type: string;
   created_at: string;
+  profile: Record<string, unknown> | null;
+  scores: Record<string, unknown> | null;
   source: string | null;
   source_submitted_at: string | null;
+  summary: Record<string, unknown> | null;
 };
 
 type AdminSnapshotSummary = AssessmentSnapshotSummary & {
@@ -36,6 +39,11 @@ type ParticipantRecord = {
 
 type NamedParticipantSnapshot = AssessmentSnapshotSummary & {
   id: string;
+};
+
+type KeyValueItem = {
+  label: string;
+  value: string;
 };
 
 const journeySteps = [
@@ -85,6 +93,65 @@ function latestByAssessment(snapshots: AssessmentSnapshotSummary[]) {
   }
 
   return Array.from(latest.values());
+}
+
+function readableLabel(value: string) {
+  return value
+    .replaceAll("_", " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function compactValue(value: unknown) {
+  if (value === null || value === undefined || value === "") {
+    return "";
+  }
+
+  if (typeof value === "number") {
+    return Number.isInteger(value) ? String(value) : value.toFixed(1);
+  }
+
+  if (typeof value === "boolean") {
+    return value ? "Yes" : "No";
+  }
+
+  return String(value);
+}
+
+function snapshotHighlights(snapshot: AssessmentSnapshotSummary) {
+  const preferredKeys = [
+    "Primary",
+    "Secondary",
+    "Integrative_Reflection",
+    "Reflection_Of_God",
+    "Spiritual_Strength",
+    "Potential_Shadow",
+    "Top1_Name",
+    "Top2_Name",
+    "Top3_Name",
+    "Plan_Tendency",
+    "Decide_Tendency",
+    "Do_Tendency",
+  ];
+  const items: KeyValueItem[] = [];
+
+  for (const source of [snapshot.summary, snapshot.profile, snapshot.scores]) {
+    if (!source) {
+      continue;
+    }
+
+    for (const key of preferredKeys) {
+      if (items.length >= 6) {
+        return items;
+      }
+
+      const value = compactValue(source[key]);
+      if (value && !items.some((item) => item.label === readableLabel(key))) {
+        items.push({ label: readableLabel(key), value });
+      }
+    }
+  }
+
+  return items;
 }
 
 async function findOrAttachParticipant(userId: string, email: string) {
@@ -137,7 +204,7 @@ async function getLatestAssessmentSnapshots(userId: string, email: string) {
   const supabaseAdmin = createSupabaseAdminClient();
   const query = supabaseAdmin
     .from("assessment_snapshots")
-    .select("assessment_type,created_at,source,source_submitted_at")
+    .select("assessment_type,created_at,profile,scores,source,source_submitted_at,summary")
     .order("source_submitted_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false });
 
@@ -157,7 +224,7 @@ async function getAdminAssessmentReport(enabled: boolean) {
   const { data } = await supabaseAdmin
     .from("assessment_snapshots")
     .select(
-      "id,assessment_type,created_at,source,source_submitted_at,assessment_participants(display_name,normalized_email)",
+      "id,assessment_type,created_at,profile,scores,source,source_submitted_at,summary,assessment_participants(display_name,normalized_email)",
     )
     .order("source_submitted_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false })
@@ -225,7 +292,7 @@ async function getHeatherAssessmentReport(enabled: boolean) {
 
   const { data } = await supabaseAdmin
     .from("assessment_snapshots")
-    .select("id,assessment_type,created_at,source,source_submitted_at")
+    .select("id,assessment_type,created_at,profile,scores,source,source_submitted_at,summary")
     .in("participant_id", participantIds)
     .order("source_submitted_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false })
@@ -293,12 +360,12 @@ export default async function HqPage() {
           </p>
         </div>
         <div className="companion-brief scripture-brief">
-          <img src="/brand/designid-logo.webp" alt="DesignID" />
+          <img src="/brand/dydd-logo.webp" alt="Discover Your Divine Design" />
           <p className="section-label">Class branch</p>
           <h3>{designIdCourse.title}</h3>
           <p>
             {designIdCourse.modules.length} modules and {lessonCount} lessons
-            are staged for review from the GHL course source.
+            now include the uploaded GHL lesson bodies inside the app.
           </p>
           <Link className="button secondary" href="/courses/designid-foundations">
             Open course
@@ -376,25 +443,42 @@ export default async function HqPage() {
           {snapshots?.length ? (
             <div className="snapshot-list">
               {snapshots.map((snapshot) => (
-                <p key={`${snapshot.assessment_type}-${snapshot.created_at}`}>
-                  <span>
-                    {assessmentLabels[snapshot.assessment_type] ??
-                      snapshot.assessment_type}
-                  </span>
-                  <small>
-                    {displayDate(
-                      snapshot.source_submitted_at ?? snapshot.created_at,
-                    )}
-                    {" · "}
-                    {snapshot.source ?? "DYDD source"}
-                  </small>
-                </p>
+                <article
+                  className="individual-snapshot"
+                  key={`${snapshot.assessment_type}-${snapshot.created_at}`}
+                >
+                  <div>
+                    <span>
+                      {assessmentLabels[snapshot.assessment_type] ??
+                        snapshot.assessment_type}
+                    </span>
+                    <small>
+                      {displayDate(
+                        snapshot.source_submitted_at ?? snapshot.created_at,
+                      )}
+                      {" · "}
+                      {snapshot.source ?? "DYDD source"}
+                    </small>
+                  </div>
+                  {snapshotHighlights(snapshot).length ? (
+                    <dl>
+                      {snapshotHighlights(snapshot).map((item) => (
+                        <div key={item.label}>
+                          <dt>{item.label}</dt>
+                          <dd>{item.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  ) : null}
+                </article>
               ))}
             </div>
           ) : (
             <p className="empty-state">
-              No assessment snapshots are attached yet. DesignID, DesignPD, and
-              Spiritual Gifts live sources will feed this area.
+              No assessment snapshots are attached to this email yet. Use the
+              same email used on the assessments so the individual experience can
+              connect the historical DesignID, DesignPD, and Spiritual Gifts
+              records.
             </p>
           )}
         </article>
@@ -405,9 +489,8 @@ export default async function HqPage() {
             <h2>DesignID course</h2>
           </div>
           <p className="panel-copy">
-            Review the DesignID Foundations path before the full lesson body
-            migration. This branch now functions as the first visible learning
-            doorway in the app.
+            Review the DesignID Foundations path with the full uploaded lesson
+            bodies now available in each lesson page.
           </p>
           <div className="lesson-rail">
             {designIdCourse.modules.map((module) => (

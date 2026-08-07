@@ -1,9 +1,12 @@
+import { designIdLessonBodies } from "./designid-source-html";
+
 export type DesignIdLesson = {
   slug: string;
   title: string;
   sourceTitle: string;
   summary: string;
   focus: string[];
+  bodyHtml: string;
 };
 
 export type DesignIdModule = {
@@ -198,7 +201,11 @@ export const designIdCourse = {
 } as const;
 
 export const designIdLessons = designIdCourse.modules.flatMap((module) =>
-  module.lessons.map((lesson) => ({ ...lesson, moduleTitle: module.title })),
+  module.lessons.map((lesson) => ({
+    ...lesson,
+    bodyHtml: designIdLessonBodies[lesson.slug] ?? "",
+    moduleTitle: module.title,
+  })),
 );
 
 export function getDesignIdLesson(slug: string) {

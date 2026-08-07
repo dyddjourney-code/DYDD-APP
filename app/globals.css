@@ -776,6 +776,63 @@ h3 {
   grid-template-columns: minmax(0, 1fr) auto;
 }
 
+.individual-snapshot {
+  display: grid;
+  gap: 14px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+
+.individual-snapshot > div:first-child {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.individual-snapshot span {
+  color: var(--ink);
+  font-weight: 850;
+}
+
+.individual-snapshot small {
+  color: var(--muted);
+}
+
+.individual-snapshot dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--line);
+}
+
+.individual-snapshot dl div {
+  min-width: 0;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.individual-snapshot dt {
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.individual-snapshot dd {
+  margin: 0;
+  color: var(--green-dark);
+  font-weight: 850;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 .journey-map li em {
   color: var(--green);
   font-size: 0.82rem;
@@ -1160,6 +1217,30 @@ h3 {
   line-height: 1.7;
 }
 
+.lesson-source {
+  margin-top: 32px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+}
+
+.source-lesson-body {
+  display: grid;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.source-lesson-body * {
+  max-width: 100%;
+}
+
+.source-lesson-body img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
 .lesson-callout {
   margin-top: 28px;
   padding: clamp(22px, 4vw, 34px);
@@ -1268,6 +1349,8 @@ h3 {
   .course-map,
   .admin-metrics,
   .reflection-grid,
+  .individual-snapshot > div:first-child,
+  .individual-snapshot dl,
   .lesson-pagination,
   .named-check-list p,
   .admin-submission-list p {

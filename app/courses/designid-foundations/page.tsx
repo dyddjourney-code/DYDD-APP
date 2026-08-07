@@ -18,15 +18,15 @@ export default function DesignIdCoursePage() {
         <div>
           <img
             className="course-logo"
-            src="/brand/designid-logo.webp"
-            alt="DesignID"
+            src="/brand/dydd-logo.webp"
+            alt="Discover Your Divine Design"
           />
           <p className="eyebrow">DYDD class branch</p>
           <h1>{designIdCourse.title}</h1>
           <p className="lede">{designIdCourse.description}</p>
           <p className="source-note">
-            The GHL course structure has been translated into app-native
-            modules, lesson cards, and reflection prompts for review.
+            The uploaded GHL course code has been translated into app-native
+            modules, lesson cards, reflection prompts, and full lesson bodies.
           </p>
           <Link
             className="button primary"

@@ -47,7 +47,7 @@ export default async function DesignIdLessonPage({ params }: LessonPageProps) {
 
       <article className="lesson-page polished-lesson">
         <aside className="lesson-index">
-          <img src="/brand/designid-logo.webp" alt="DesignID" />
+          <img src="/brand/dydd-logo.webp" alt="Discover Your Divine Design" />
           <span>
             Lesson {String(currentIndex + 1).padStart(2, "0")} of{" "}
             {designIdLessons.length}
@@ -77,14 +77,12 @@ export default async function DesignIdLessonPage({ params }: LessonPageProps) {
             </p>
           </section>
 
-          <section className="lesson-brief muted-brief" aria-label="Migration note">
-            <p className="section-label">Source note</p>
-            <p>
-              Original GHL block title: <strong>{lesson.sourceTitle}</strong>.
-              This first app pass preserves the lesson path and review logic;
-              the full body content can be moved into durable lesson records in
-              the next content migration.
-            </p>
+          <section className="lesson-source" aria-label="Complete lesson body">
+            <p className="section-label">Complete course lesson</p>
+            <div
+              className="source-lesson-body"
+              dangerouslySetInnerHTML={{ __html: lesson.bodyHtml }}
+            />
           </section>
 
           <footer className="lesson-pagination" aria-label="Lesson pagination">

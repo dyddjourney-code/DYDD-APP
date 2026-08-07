@@ -49,8 +49,8 @@ export default function Home() {
         <div className="hero-copy">
           <img
             className="brand-mark"
-            src="/brand/designid-logo.webp"
-            alt="DesignID"
+            src="/brand/dydd-logo.webp"
+            alt="Discover Your Divine Design"
           />
           <p className="eyebrow">On Purpose. For Purpose.</p>
           <h1>Discover Your Divine Design HQ</h1>
@@ -91,15 +91,15 @@ export default function Home() {
           <h2>DesignID Foundations now feels like the front door.</h2>
           <p>
             The course branch is no longer buried. It sits beside the learner
-            HQ as the first class pathway, with the full module structure ready
-            for deeper lesson-body migration.
+            HQ as the first class pathway, with the full uploaded lesson code
+            now rendered inside the app for review.
           </p>
         </div>
         <div className="course-access-panel">
           <div className="mini-metrics" aria-label="Course metrics">
             <span>{designIdCourse.modules.length} modules</span>
             <span>{lessonCount} lessons</span>
-            <span>GHL source adapted</span>
+            <span>Full lesson bodies loaded</span>
           </div>
           <Link className="button primary" href="/courses/designid-foundations">
             Review the course branch

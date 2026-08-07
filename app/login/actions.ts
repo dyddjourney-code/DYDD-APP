@@ -4,8 +4,39 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+const productionAppUrl = "https://dydd-online-school.vercel.app";
+
 function loginRedirect(message: string) {
   redirect(`/login?message=${encodeURIComponent(message)}`);
+}
+
+function getAppBaseUrl(requestHeaders: Headers) {
+  const configuredUrl =
+    process.env.DYDD_APP_URL ??
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    process.env.NEXT_PUBLIC_APP_URL;
+
+  if (configuredUrl) {
+    return configuredUrl.replace(/\/$/, "");
+  }
+
+  const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+
+  if (vercelUrl) {
+    return `https://${vercelUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}`;
+  }
+
+  const origin = requestHeaders.get("origin");
+
+  if (origin && !origin.includes("localhost") && !origin.includes("127.0.0.1")) {
+    return origin.replace(/\/$/, "");
+  }
+
+  if (process.env.NODE_ENV === "production") {
+    return productionAppUrl;
+  }
+
+  return origin?.replace(/\/$/, "") ?? "http://localhost:3000";
 }
 
 export async function signInWithMagicLink(formData: FormData) {
@@ -18,12 +49,12 @@ export async function signInWithMagicLink(formData: FormData) {
   }
 
   const requestHeaders = await headers();
-  const origin = requestHeaders.get("origin") ?? "http://localhost:3000";
+  const appBaseUrl = getAppBaseUrl(requestHeaders);
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${origin}/auth/callback?next=/hq`,
+      emailRedirectTo: `${appBaseUrl}/auth/callback?next=/hq`,
     },
   });
 

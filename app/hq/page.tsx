@@ -101,7 +101,7 @@ async function getHeatherAssessmentReport(enabled: boolean) {
   }
 
   const supabaseAdmin = createSupabaseAdminClient();
-  const heatherEmails = participantEmailCandidates("willoughby.h.s@gmail.com");
+  const heatherEmails = participantEmailCandidates("willoughbyhs@gmail.com");
 
   const { data: participants } = await supabaseAdmin
     .from("assessment_participants")

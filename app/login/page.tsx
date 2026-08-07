@@ -41,8 +41,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             type="email"
           />
           <p className="helper-text">
-            Supabase sends a sign-in email. If the link does not open the HQ,
-            use the 6-digit code from that same email below.
+            Supabase sends a one-use sign-in email that should return you to
+            the live DYDD HQ.
           </p>
           <button className="button primary" type="submit">
             Send sign-in email
@@ -79,8 +79,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             type="text"
           />
           <p className="helper-text">
-            This is the more reliable review path when the email link opens in
-            Telegram, a different browser, or a private tab.
+            Use this only if your sign-in email includes a 6-digit code. The
+            current default Supabase email may only include the link.
           </p>
           <button className="button primary" type="submit">
             Enter HQ

@@ -6,6 +6,7 @@ import {
   assessmentLabels,
   displayDate,
   getAssessmentSnapshotsForUser,
+  type StudentAssessmentReport,
   latestByAssessment,
   snapshotHighlights,
   type AssessmentSnapshotSummary,
@@ -16,6 +17,12 @@ import {
   normalizeEmail,
   participantEmailCandidates,
 } from "@/lib/identity/email";
+import {
+  getHeatherReviewReport,
+  heatherReviewName,
+  type ReviewSearchParams,
+  withReviewQuery,
+} from "@/lib/review/heather";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -30,6 +37,10 @@ type AdminSnapshotSummary = AssessmentSnapshotSummary & {
 };
 
 type NamedParticipantSnapshot = AssessmentSnapshotSummary;
+
+type HqPageProps = {
+  searchParams?: Promise<ReviewSearchParams>;
+};
 
 const journeySteps = [
   { label: "Identity", state: "Open", detail: "Whose you are" },
@@ -140,32 +151,36 @@ async function getHeatherAssessmentReport(enabled: boolean) {
   };
 }
 
-export default async function HqPage() {
+export default async function HqPage({ searchParams }: HqPageProps) {
+  const reviewParams = await searchParams;
+  const reviewReport = await getHeatherReviewReport(reviewParams);
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
+  if (!user && !reviewReport) {
     redirect("/login");
   }
 
-  const { data: profile } = await supabase
-    .from("school_profiles")
-    .select("full_name,email")
-    .eq("id", user.id)
-    .maybeSingle();
+  const { data: profile } = user
+    ? await supabase
+        .from("school_profiles")
+        .select("full_name,email")
+        .eq("id", user.id)
+        .maybeSingle()
+    : { data: null };
 
-  const assessmentReport = await getAssessmentSnapshotsForUser(
-    user.id,
-    normalizeEmail(user.email),
-  );
+  const assessmentReport: StudentAssessmentReport = reviewReport ??
+    (await getAssessmentSnapshotsForUser(user?.id ?? "", normalizeEmail(user?.email)));
   const snapshots = assessmentReport.latest;
-  const isAdmin = isAdminEmail(user.email);
+  const isAdmin = Boolean(user && isAdminEmail(user.email));
   const adminReport = await getAdminAssessmentReport(isAdmin);
   const heatherReport = await getHeatherAssessmentReport(isAdmin);
 
-  const displayName = profile?.full_name ?? user.email ?? "Traveler";
+  const displayName = reviewReport
+    ? `${heatherReviewName} Preview`
+    : profile?.full_name ?? user?.email ?? "Traveler";
   const lessonCount = designIdCourse.modules.reduce(
     (count, module) => count + module.lessons.length,
     0,
@@ -178,11 +193,17 @@ export default async function HqPage() {
           <p className="eyebrow">On Purpose. For Purpose.</p>
           <h1>{displayName}</h1>
         </div>
-        <form action={signOut}>
-          <button className="button secondary" type="submit">
-            Sign out
-          </button>
-        </form>
+        {reviewReport ? (
+          <Link className="button secondary" href="/login">
+            Real sign-in
+          </Link>
+        ) : (
+          <form action={signOut}>
+            <button className="button secondary" type="submit">
+              Sign out
+            </button>
+          </form>
+        )}
       </header>
 
       <section className="hq-hero" aria-label="Journey status">
@@ -203,7 +224,10 @@ export default async function HqPage() {
             {designIdCourse.modules.length} modules and {lessonCount} lessons
             now include the uploaded GHL lesson bodies inside the app.
           </p>
-          <Link className="button secondary" href="/courses/designid-foundations">
+          <Link
+            className="button secondary"
+            href={withReviewQuery("/courses/designid-foundations", reviewParams)}
+          >
             Open course
           </Link>
         </div>
@@ -355,7 +379,12 @@ export default async function HqPage() {
                 <ul>
                   {module.lessons.slice(0, 4).map((lesson) => (
                     <li key={lesson.slug}>
-                      <Link href={`/learn/designid-foundations/${lesson.slug}`}>
+                      <Link
+                        href={withReviewQuery(
+                          `/learn/designid-foundations/${lesson.slug}`,
+                          reviewParams,
+                        )}
+                      >
                         {lesson.title}
                       </Link>
                     </li>
@@ -364,7 +393,10 @@ export default async function HqPage() {
               </div>
             ))}
           </div>
-          <Link className="button secondary" href="/courses/designid-foundations">
+          <Link
+            className="button secondary"
+            href={withReviewQuery("/courses/designid-foundations", reviewParams)}
+          >
             Open course map
           </Link>
         </article>

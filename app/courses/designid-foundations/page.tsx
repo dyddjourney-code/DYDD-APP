@@ -6,11 +6,25 @@ import {
 } from "@/lib/assessments/student-context";
 import { designIdCourse } from "@/lib/courses/designid-foundations";
 import { normalizeEmail } from "@/lib/identity/email";
+import {
+  buildHeatherReviewContext,
+  getHeatherReviewReport,
+  type ReviewSearchParams,
+  withReviewQuery,
+} from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-export default async function DesignIdCoursePage() {
+type DesignIdCoursePageProps = {
+  searchParams?: Promise<ReviewSearchParams>;
+};
+
+export default async function DesignIdCoursePage({
+  searchParams,
+}: DesignIdCoursePageProps) {
+  const reviewParams = await searchParams;
+  const reviewReport = await getHeatherReviewReport(reviewParams);
   const lessonCount = designIdCourse.modules.reduce(
     (count, module) => count + module.lessons.length,
     0,
@@ -19,16 +33,17 @@ export default async function DesignIdCoursePage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const assessmentReport = user
+  const assessmentReport = reviewReport ?? (user
     ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
-    : { all: [], latest: [] };
+    : { all: [], latest: [] });
   const designId = buildDesignIdContext(assessmentReport);
+  const reviewContext = reviewReport ? buildHeatherReviewContext(reviewReport) : null;
   const connected = hasDesignIdData(designId);
 
   return (
     <main className="course-shell">
       <nav className="course-nav" aria-label="Course navigation">
-        <Link href="/hq">Back to HQ</Link>
+        <Link href={withReviewQuery("/hq", reviewParams)}>Back to HQ</Link>
         <Link href="/">DYDD home</Link>
       </nav>
 
@@ -48,7 +63,10 @@ export default async function DesignIdCoursePage() {
           </p>
           <Link
             className="button primary"
-            href="/learn/designid-foundations/welcome-to-designid"
+            href={withReviewQuery(
+              "/learn/designid-foundations/welcome-to-designid",
+              reviewParams,
+            )}
           >
             Start first lesson
           </Link>
@@ -82,7 +100,9 @@ export default async function DesignIdCoursePage() {
           <p className="section-label">Individual walkthrough</p>
           <h2>
             {connected
-              ? "This course can now read the learner's DesignID pattern."
+              ? reviewContext
+                ? "You are previewing Heather's personalized DesignID pattern."
+                : "This course can now read the learner's DesignID pattern."
               : "Sign in with the assessment email to personalize this course."}
           </h2>
         </div>
@@ -122,7 +142,12 @@ export default async function DesignIdCoursePage() {
                 <li key={lesson.slug}>
                   <span>{String(index + 1).padStart(2, "0")}</span>
                   <div>
-                    <Link href={`/learn/designid-foundations/${lesson.slug}`}>
+                    <Link
+                      href={withReviewQuery(
+                        `/learn/designid-foundations/${lesson.slug}`,
+                        reviewParams,
+                      )}
+                    >
                       {lesson.title}
                     </Link>
                     <p>{lesson.summary}</p>

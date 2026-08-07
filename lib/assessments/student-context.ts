@@ -197,6 +197,42 @@ export async function getAssessmentSnapshotsForUser(
   };
 }
 
+export async function getAssessmentSnapshotsForEmail(email: string) {
+  const emailCandidates = participantEmailCandidates(email);
+
+  if (!emailCandidates.length) {
+    return { all: [], latest: [] };
+  }
+
+  const supabaseAdmin = createSupabaseAdminClient();
+  const { data: participants } = await supabaseAdmin
+    .from("assessment_participants")
+    .select("id")
+    .in("normalized_email", emailCandidates)
+    .returns<Array<{ id: string }>>();
+
+  const participantIds = (participants ?? []).map((participant) => participant.id);
+
+  if (!participantIds.length) {
+    return { all: [], latest: [] };
+  }
+
+  const { data } = await supabaseAdmin
+    .from("assessment_snapshots")
+    .select("id,assessment_type,created_at,scores,source,source_submitted_at")
+    .in("participant_id", participantIds)
+    .order("source_submitted_at", { ascending: false, nullsFirst: false })
+    .order("created_at", { ascending: false })
+    .returns<AssessmentSnapshotSummary[]>();
+
+  const all = data ?? [];
+
+  return {
+    all,
+    latest: latestByAssessment(all),
+  };
+}
+
 export function getLatestSnapshot(
   report: StudentAssessmentReport,
   assessmentType: string,

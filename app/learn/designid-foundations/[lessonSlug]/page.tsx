@@ -13,12 +13,19 @@ import {
   personalizeDesignIdHtml,
 } from "@/lib/courses/personalization";
 import { normalizeEmail } from "@/lib/identity/email";
+import {
+  buildHeatherReviewContext,
+  getHeatherReviewReport,
+  type ReviewSearchParams,
+  withReviewQuery,
+} from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type LessonPageProps = {
   params: Promise<{
     lessonSlug: string;
   }>;
+  searchParams?: Promise<ReviewSearchParams>;
 };
 
 export const dynamic = "force-dynamic";
@@ -38,8 +45,12 @@ export async function generateMetadata({ params }: LessonPageProps) {
   };
 }
 
-export default async function DesignIdLessonPage({ params }: LessonPageProps) {
+export default async function DesignIdLessonPage({
+  params,
+  searchParams,
+}: LessonPageProps) {
   const { lessonSlug } = await params;
+  const reviewParams = await searchParams;
   const lesson = getDesignIdLesson(lessonSlug);
 
   if (!lesson) {
@@ -53,15 +64,18 @@ export default async function DesignIdLessonPage({ params }: LessonPageProps) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const assessmentReport = user
+  const reviewReport = await getHeatherReviewReport(reviewParams);
+  const assessmentReport = reviewReport ?? (user
     ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
-    : { all: [], latest: [] };
-  const studentContext = {
-    assessmentReport,
-    designId: buildDesignIdContext(assessmentReport),
-    displayName: user?.email ?? "Learner",
-    isSignedIn: Boolean(user),
-  };
+    : { all: [], latest: [] });
+  const studentContext = reviewReport
+    ? buildHeatherReviewContext(reviewReport)
+    : {
+        assessmentReport,
+        designId: buildDesignIdContext(assessmentReport),
+        displayName: user?.email ?? "Learner",
+        isSignedIn: Boolean(user),
+      };
   const walkthrough = buildWalkthroughPrompt(lesson.title, studentContext);
   const personalizedBody = personalizeDesignIdHtml(
     lesson.bodyHtml,
@@ -71,8 +85,10 @@ export default async function DesignIdLessonPage({ params }: LessonPageProps) {
   return (
     <main className="lesson-shell">
       <nav className="course-nav" aria-label="Lesson navigation">
-        <Link href="/courses/designid-foundations">Course map</Link>
-        <Link href="/hq">HQ</Link>
+        <Link href={withReviewQuery("/courses/designid-foundations", reviewParams)}>
+          Course map
+        </Link>
+        <Link href={withReviewQuery("/hq", reviewParams)}>HQ</Link>
       </nav>
 
       <article className="lesson-page polished-lesson">
@@ -118,8 +134,11 @@ export default async function DesignIdLessonPage({ params }: LessonPageProps) {
                 <li key={item}>{item}</li>
               ))}
             </ul>
-            {user ? (
-              <Link className="button secondary" href="/hq">
+            {studentContext.isSignedIn ? (
+              <Link
+                className="button secondary"
+                href={withReviewQuery("/hq", reviewParams)}
+              >
                 Review my HQ records
               </Link>
             ) : (
@@ -139,18 +158,30 @@ export default async function DesignIdLessonPage({ params }: LessonPageProps) {
 
           <footer className="lesson-pagination" aria-label="Lesson pagination">
             {previousLesson ? (
-              <Link href={`/learn/designid-foundations/${previousLesson.slug}`}>
+              <Link
+                href={withReviewQuery(
+                  `/learn/designid-foundations/${previousLesson.slug}`,
+                  reviewParams,
+                )}
+              >
                 Previous: {previousLesson.title}
               </Link>
             ) : (
               <span>First lesson</span>
             )}
             {nextLesson ? (
-              <Link href={`/learn/designid-foundations/${nextLesson.slug}`}>
+              <Link
+                href={withReviewQuery(
+                  `/learn/designid-foundations/${nextLesson.slug}`,
+                  reviewParams,
+                )}
+              >
                 Next: {nextLesson.title}
               </Link>
             ) : (
-              <Link href="/courses/designid-foundations">Back to course map</Link>
+              <Link href={withReviewQuery("/courses/designid-foundations", reviewParams)}>
+                Back to course map
+              </Link>
             )}
           </footer>
         </div>

@@ -57,7 +57,7 @@ const toolCatalog = [
     assessmentType: "designpd",
     detail: "Plan, Decide, and Do patterns for practical daily alignment.",
     label: "DesignPD",
-    logo: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b85a099e-3a97-4d64-951a-5243dced21c2/DesignPW-logo.jpg?format=300w",
+    logo: "/brand/tools/designpd-logo.jpg",
     price: "$50",
   },
   {
@@ -71,7 +71,7 @@ const toolCatalog = [
     assessmentType: "design_pathways",
     detail: "A free discernment layer for direction, experiments, and next steps.",
     label: "Design Pathways",
-    logo: "/brand/tools/design-pathways-logo.svg",
+    logo: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b85a099e-3a97-4d64-951a-5243dced21c2/DesignPW-logo.jpg?format=300w",
     price: "Free",
   },
   {

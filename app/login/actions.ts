@@ -34,6 +34,36 @@ export async function signInWithMagicLink(formData: FormData) {
   loginRedirect("Check your email for the DYDD HQ sign-in link.");
 }
 
+export async function verifyEmailCode(formData: FormData) {
+  const email = String(formData.get("email") ?? "")
+    .trim()
+    .toLowerCase();
+  const token = String(formData.get("token") ?? "")
+    .replace(/\D/g, "")
+    .trim();
+
+  if (!email || !email.includes("@")) {
+    loginRedirect("Enter the same email address that received the code.");
+  }
+
+  if (token.length !== 6) {
+    loginRedirect("Enter the 6-digit code from the email.");
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.verifyOtp({
+    email,
+    token,
+    type: "email",
+  });
+
+  if (error) {
+    loginRedirect(error.message);
+  }
+
+  redirect("/hq");
+}
+
 export async function signOut() {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();

@@ -1,15 +1,27 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
+  buildDesignIdContext,
+  getAssessmentSnapshotsForUser,
+} from "@/lib/assessments/student-context";
+import {
   designIdLessons,
   getDesignIdLesson,
 } from "@/lib/courses/designid-foundations";
+import {
+  buildWalkthroughPrompt,
+  personalizeDesignIdHtml,
+} from "@/lib/courses/personalization";
+import { normalizeEmail } from "@/lib/identity/email";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type LessonPageProps = {
   params: Promise<{
     lessonSlug: string;
   }>;
 };
+
+export const dynamic = "force-dynamic";
 
 export function generateStaticParams() {
   return designIdLessons.map((lesson) => ({
@@ -37,6 +49,24 @@ export default async function DesignIdLessonPage({ params }: LessonPageProps) {
   const currentIndex = designIdLessons.findIndex((item) => item.slug === lesson.slug);
   const nextLesson = designIdLessons[currentIndex + 1];
   const previousLesson = designIdLessons[currentIndex - 1];
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const assessmentReport = user
+    ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
+    : { all: [], latest: [] };
+  const studentContext = {
+    assessmentReport,
+    designId: buildDesignIdContext(assessmentReport),
+    displayName: user?.email ?? "Learner",
+    isSignedIn: Boolean(user),
+  };
+  const walkthrough = buildWalkthroughPrompt(lesson.title, studentContext);
+  const personalizedBody = personalizeDesignIdHtml(
+    lesson.bodyHtml,
+    studentContext,
+  );
 
   return (
     <main className="lesson-shell">
@@ -77,11 +107,33 @@ export default async function DesignIdLessonPage({ params }: LessonPageProps) {
             </p>
           </section>
 
+          <section
+            className="personal-walkthrough"
+            aria-label="Personalized DesignID walkthrough"
+          >
+            <p className="section-label">Personal walkthrough</p>
+            <h2>{walkthrough.heading}</h2>
+            <ul>
+              {walkthrough.items.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+            {user ? (
+              <Link className="button secondary" href="/hq">
+                Review my HQ records
+              </Link>
+            ) : (
+              <Link className="button secondary" href="/login">
+                Sign in to personalize
+              </Link>
+            )}
+          </section>
+
           <section className="lesson-source" aria-label="Complete lesson body">
             <p className="section-label">Complete course lesson</p>
             <div
               className="source-lesson-body"
-              dangerouslySetInnerHTML={{ __html: lesson.bodyHtml }}
+              dangerouslySetInnerHTML={{ __html: personalizedBody }}
             />
           </section>
 

@@ -512,6 +512,7 @@ h3 {
 
 .login-copy {
   max-width: 740px;
+  grid-row: 1 / span 2;
 }
 
 .login-panel,
@@ -531,6 +532,10 @@ h3 {
   display: grid;
   gap: 28px;
   padding: clamp(24px, 4vw, 42px);
+}
+
+.code-panel {
+  align-self: start;
 }
 
 .auth-form {
@@ -1125,6 +1130,63 @@ h3 {
   border: 1px solid var(--line);
 }
 
+.course-personalization {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.75fr);
+  gap: 22px;
+  align-items: center;
+  max-width: 1180px;
+  margin-bottom: 34px;
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid rgba(71, 107, 66, 0.24);
+  border-radius: 8px;
+  background:
+    linear-gradient(rgba(234, 240, 226, 0.84), rgba(255, 255, 255, 0.92)),
+    repeating-linear-gradient(
+      135deg,
+      rgba(71, 107, 66, 0.08) 0,
+      rgba(71, 107, 66, 0.08) 1px,
+      transparent 1px,
+      transparent 24px
+    );
+}
+
+.course-personalization h2 {
+  font-size: clamp(1.55rem, 3vw, 3rem);
+}
+
+.course-personalization dl {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--line);
+}
+
+.course-personalization dl div {
+  min-width: 0;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.course-personalization dt {
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.course-personalization dd {
+  margin: 0;
+  color: var(--green-dark);
+  font-weight: 900;
+  line-height: 1.35;
+}
+
 .course-stat {
   min-height: 126px;
   padding: 24px;
@@ -1293,6 +1355,36 @@ h3 {
   line-height: 1.7;
 }
 
+.personal-walkthrough {
+  margin-top: 28px;
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid rgba(71, 107, 66, 0.24);
+  border-radius: 8px;
+  background:
+    linear-gradient(rgba(234, 240, 226, 0.9), rgba(255, 255, 255, 0.95)),
+    repeating-linear-gradient(
+      135deg,
+      rgba(71, 107, 66, 0.08) 0,
+      rgba(71, 107, 66, 0.08) 1px,
+      transparent 1px,
+      transparent 22px
+    );
+}
+
+.personal-walkthrough h2 {
+  margin-bottom: 16px;
+  font-size: clamp(1.5rem, 3vw, 2.6rem);
+}
+
+.personal-walkthrough ul {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 20px;
+  padding-left: 20px;
+  color: var(--ink);
+  line-height: 1.65;
+}
+
 .lesson-pagination {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1325,6 +1417,7 @@ h3 {
   .hq-grid,
   .hq-summary-strip,
   .polished-course-hero,
+  .course-personalization,
   .module-panel,
   .lesson-page,
   .named-check {
@@ -1345,6 +1438,10 @@ h3 {
 
   .journey-panel {
     min-height: 330px;
+  }
+
+  .login-copy {
+    grid-row: auto;
   }
 
   .module-grid {

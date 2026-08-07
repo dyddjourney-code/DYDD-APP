@@ -1,11 +1,29 @@
 import Link from "next/link";
+import {
+  buildDesignIdContext,
+  getAssessmentSnapshotsForUser,
+  hasDesignIdData,
+} from "@/lib/assessments/student-context";
 import { designIdCourse } from "@/lib/courses/designid-foundations";
+import { normalizeEmail } from "@/lib/identity/email";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-export default function DesignIdCoursePage() {
+export const dynamic = "force-dynamic";
+
+export default async function DesignIdCoursePage() {
   const lessonCount = designIdCourse.modules.reduce(
     (count, module) => count + module.lessons.length,
     0,
   );
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const assessmentReport = user
+    ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
+    : { all: [], latest: [] };
+  const designId = buildDesignIdContext(assessmentReport);
+  const connected = hasDesignIdData(designId);
 
   return (
     <main className="course-shell">
@@ -57,6 +75,37 @@ export default function DesignIdCoursePage() {
           <span>4</span>
           <small>Reflections</small>
         </div>
+      </section>
+
+      <section className="course-personalization" aria-label="Personalization status">
+        <div>
+          <p className="section-label">Individual walkthrough</p>
+          <h2>
+            {connected
+              ? "This course can now read the learner's DesignID pattern."
+              : "Sign in with the assessment email to personalize this course."}
+          </h2>
+        </div>
+        {connected ? (
+          <dl>
+            <div>
+              <dt>Primary</dt>
+              <dd>{designId.primary}</dd>
+            </div>
+            <div>
+              <dt>Secondary</dt>
+              <dd>{designId.secondary}</dd>
+            </div>
+            <div>
+              <dt>Integrative</dt>
+              <dd>{designId.integrativeReflection}</dd>
+            </div>
+          </dl>
+        ) : (
+          <Link className="button secondary" href="/login">
+            Sign in to connect records
+          </Link>
+        )}
       </section>
 
       <section className="module-stack" aria-label="DesignID lessons">

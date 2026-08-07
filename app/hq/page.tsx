@@ -2,6 +2,14 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { signOut } from "@/app/login/actions";
 import { assessmentSources } from "@/lib/assessments/sources";
+import {
+  assessmentLabels,
+  displayDate,
+  getAssessmentSnapshotsForUser,
+  latestByAssessment,
+  snapshotHighlights,
+  type AssessmentSnapshotSummary,
+} from "@/lib/assessments/student-context";
 import { designIdCourse } from "@/lib/courses/designid-foundations";
 import {
   canonicalizeParticipantEmail,
@@ -10,17 +18,6 @@ import {
 } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-
-type AssessmentSnapshotSummary = {
-  assessment_type: string;
-  created_at: string;
-  id: string;
-  profile: Record<string, unknown> | null;
-  scores: Record<string, unknown> | null;
-  source: string | null;
-  source_submitted_at: string | null;
-  summary: Record<string, unknown> | null;
-};
 
 type AdminSnapshotSummary = AssessmentSnapshotSummary & {
   assessment_participants:
@@ -32,18 +29,7 @@ type AdminSnapshotSummary = AssessmentSnapshotSummary & {
   id: string;
 };
 
-type ParticipantRecord = {
-  id: string;
-  normalized_email: string | null;
-  user_id: string | null;
-};
-
 type NamedParticipantSnapshot = AssessmentSnapshotSummary;
-
-type KeyValueItem = {
-  label: string;
-  value: string;
-};
 
 const journeySteps = [
   { label: "Identity", state: "Open", detail: "Whose you are" },
@@ -53,24 +39,6 @@ const journeySteps = [
   { label: "Gifts", state: "Mapped", detail: "How the Spirit empowers you" },
   { label: "Niche", state: "Builder", detail: "Where design becomes service" },
 ];
-
-const assessmentLabels: Record<string, string> = {
-  design_pathways: "Design Pathways",
-  designid: "DesignID",
-  designpd: "DesignPD",
-  fruit_360: "Fruit 360",
-  spiritual_gifts: "Spiritual Gifts",
-};
-
-function displayDate(value: string | null) {
-  if (!value) {
-    return "Date unavailable";
-  }
-
-  return new Intl.DateTimeFormat("en", {
-    dateStyle: "medium",
-  }).format(new Date(value));
-}
 
 function isAdminEmail(email: string | null | undefined) {
   const configured = (process.env.DYDD_ADMIN_EMAILS ?? "")
@@ -82,143 +50,6 @@ function isAdminEmail(email: string | null | undefined) {
   return adminEmails.has(canonicalizeParticipantEmail(email));
 }
 
-function latestByAssessment(snapshots: AssessmentSnapshotSummary[]) {
-  const latest = new Map<string, AssessmentSnapshotSummary>();
-
-  for (const snapshot of snapshots) {
-    if (!latest.has(snapshot.assessment_type)) {
-      latest.set(snapshot.assessment_type, snapshot);
-    }
-  }
-
-  return Array.from(latest.values());
-}
-
-function readableLabel(value: string) {
-  return value
-    .replaceAll("_", " ")
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
-}
-
-function compactValue(value: unknown) {
-  if (value === null || value === undefined || value === "") {
-    return "";
-  }
-
-  if (typeof value === "number") {
-    return Number.isInteger(value) ? String(value) : value.toFixed(1);
-  }
-
-  if (typeof value === "boolean") {
-    return value ? "Yes" : "No";
-  }
-
-  return String(value);
-}
-
-function snapshotHighlights(snapshot: AssessmentSnapshotSummary) {
-  const preferredKeys = [
-    "Primary",
-    "Secondary",
-    "Integrative_Reflection",
-    "Reflection_Of_God",
-    "Spiritual_Strength",
-    "Potential_Shadow",
-    "Top1_Name",
-    "Top2_Name",
-    "Top3_Name",
-    "Plan_Tendency",
-    "Decide_Tendency",
-    "Do_Tendency",
-  ];
-  const items: KeyValueItem[] = [];
-
-  for (const source of [snapshot.summary, snapshot.profile, snapshot.scores]) {
-    if (!source) {
-      continue;
-    }
-
-    for (const key of preferredKeys) {
-      if (items.length >= 6) {
-        return items;
-      }
-
-      const value = compactValue(source[key]);
-      if (value && !items.some((item) => item.label === readableLabel(key))) {
-        items.push({ label: readableLabel(key), value });
-      }
-    }
-  }
-
-  return items;
-}
-
-async function findOrAttachParticipant(userId: string, email: string) {
-  const supabaseAdmin = createSupabaseAdminClient();
-
-  const { data: existingParticipant } = await supabaseAdmin
-    .from("assessment_participants")
-    .select("id,user_id")
-    .eq("user_id", userId)
-    .maybeSingle();
-
-  if (existingParticipant) {
-    return existingParticipant.id as string;
-  }
-
-  if (!email) {
-    return null;
-  }
-
-  const emailCandidates = participantEmailCandidates(email);
-
-  if (!emailCandidates.length) {
-    return null;
-  }
-
-  const { data: emailParticipants } = await supabaseAdmin
-    .from("assessment_participants")
-    .select("id,user_id")
-    .in("normalized_email", emailCandidates)
-    .returns<ParticipantRecord[]>();
-
-  const emailParticipant = emailParticipants?.[0];
-
-  if (!emailParticipant) {
-    return null;
-  }
-
-  if (!emailParticipant.user_id) {
-    await supabaseAdmin
-      .from("assessment_participants")
-      .update({ user_id: userId, updated_at: new Date().toISOString() })
-      .eq("id", emailParticipant.id);
-  }
-
-  return emailParticipant.id as string;
-}
-
-async function getAssessmentSnapshotsForUser(userId: string, email: string) {
-  const participantId = await findOrAttachParticipant(userId, email);
-  const supabaseAdmin = createSupabaseAdminClient();
-  const query = supabaseAdmin
-    .from("assessment_snapshots")
-    .select("id,assessment_type,created_at,profile,scores,source,source_submitted_at,summary")
-    .order("source_submitted_at", { ascending: false, nullsFirst: false })
-    .order("created_at", { ascending: false });
-
-  const { data } = participantId
-    ? await query.eq("participant_id", participantId)
-    : await query.eq("user_id", userId);
-
-  const all = (data ?? []) as AssessmentSnapshotSummary[];
-
-  return {
-    all,
-    latest: latestByAssessment(all),
-  };
-}
-
 async function getAdminAssessmentReport(enabled: boolean) {
   if (!enabled) {
     return null;
@@ -228,7 +59,7 @@ async function getAdminAssessmentReport(enabled: boolean) {
   const { data } = await supabaseAdmin
     .from("assessment_snapshots")
     .select(
-      "id,assessment_type,created_at,profile,scores,source,source_submitted_at,summary,assessment_participants(display_name,normalized_email)",
+      "id,assessment_type,created_at,scores,source,source_submitted_at,assessment_participants(display_name,normalized_email)",
     )
     .order("source_submitted_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false })
@@ -296,7 +127,7 @@ async function getHeatherAssessmentReport(enabled: boolean) {
 
   const { data } = await supabaseAdmin
     .from("assessment_snapshots")
-    .select("id,assessment_type,created_at,profile,scores,source,source_submitted_at,summary")
+    .select("id,assessment_type,created_at,scores,source,source_submitted_at")
     .in("participant_id", participantIds)
     .order("source_submitted_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false })

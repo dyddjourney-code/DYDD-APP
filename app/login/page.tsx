@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { signInWithMagicLink } from "./actions";
+import { signInWithMagicLink, verifyEmailCode } from "./actions";
 
 type LoginPageProps = {
   searchParams?: Promise<{
@@ -25,10 +25,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         </p>
       </section>
 
-      <section className="login-panel" aria-label="Sign in">
+      <section className="login-panel" aria-label="Request sign-in link">
         <div>
-          <p className="section-label">Secure sign in</p>
-          <h2>Magic link</h2>
+          <p className="section-label">Step one</p>
+          <h2>Request access</h2>
         </div>
         <form action={signInWithMagicLink} className="auth-form">
           <label htmlFor="email">Email address</label>
@@ -41,14 +41,51 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             type="email"
           />
           <p className="helper-text">
-            Supabase sends the sign-in link. No password is required for this
-            first version.
+            Supabase sends a sign-in email. If the link does not open the HQ,
+            use the 6-digit code from that same email below.
           </p>
           <button className="button primary" type="submit">
-            Send sign-in link
+            Send sign-in email
           </button>
         </form>
         {message ? <p className="status-note">{message}</p> : null}
+      </section>
+
+      <section className="login-panel code-panel" aria-label="Enter email code">
+        <div>
+          <p className="section-label">Step two</p>
+          <h2>Enter email code</h2>
+        </div>
+        <form action={verifyEmailCode} className="auth-form">
+          <label htmlFor="code-email">Email address</label>
+          <input
+            autoComplete="email"
+            id="code-email"
+            name="email"
+            placeholder="willoughby.h.s@gmail.com"
+            required
+            type="email"
+          />
+          <label htmlFor="token">6-digit code</label>
+          <input
+            autoComplete="one-time-code"
+            id="token"
+            inputMode="numeric"
+            maxLength={6}
+            name="token"
+            pattern="[0-9]{6}"
+            placeholder="123456"
+            required
+            type="text"
+          />
+          <p className="helper-text">
+            This is the more reliable review path when the email link opens in
+            Telegram, a different browser, or a private tab.
+          </p>
+          <button className="button primary" type="submit">
+            Enter HQ
+          </button>
+        </form>
       </section>
     </main>
   );

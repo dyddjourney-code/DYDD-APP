@@ -57,6 +57,31 @@ Run a one-record apply before a full import:
 DYDD_APP_URL="https://dydd-online-school.vercel.app" npm run sync:assessments -- --source designid --limit 1 --apply
 ```
 
+## Automatic Sync
+
+New submissions are mirrored by the protected cron route:
+
+```text
+GET /api/cron/assessment-sync
+```
+
+The route reads the same live Google Sheet tabs as the backfill script and upserts snapshots idempotently by `(assessment_type, source, source_response_id)`, so reruns do not create duplicate submissions. It is configured in `vercel.json` to run hourly.
+
+Required production environment variables:
+
+- `CRON_SECRET`
+- `DYDD_GOOGLE_SERVICE_ACCOUNT_B64` or `DYDD_GOOGLE_SERVICE_ACCOUNT_JSON`
+- `DESIGNID_PD_SPREADSHEET_ID`
+- `SPIRITUAL_GIFTS_SPREADSHEET_ID`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+Manual smoke test:
+
+```bash
+curl -H "Authorization: Bearer $CRON_SECRET" \
+  "https://dydd-online-school.vercel.app/api/cron/assessment-sync?dryRun=1&limit=1"
+```
+
 ## Current Dry-Run Counts
 
 Last checked on 2026-08-06:

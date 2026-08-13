@@ -8,6 +8,27 @@ import { spawnSync } from "node:child_process";
 const SHEETS_AGENT = process.env.GOOGLE_SHEETS_AGENT ?? "/usr/local/bin/google-sheets-agent";
 const DEFAULT_OUTPUT_DIR = "out/assessment-import";
 
+const ignoredFruitLifeParticipantIds = new Set([
+  "FL360-SAMPLE",
+  "FL360-",
+  "FL360-6613479139972243000",
+  "FL360-6615917389977502768",
+  "FL360-661OC201030",
+  "FL360-6623764982748128899",
+  "FL360-6623772952748222782",
+]);
+
+const ignoredFruitLifeParticipantNames = new Set([
+  "George Jetson",
+  "Greg Brady",
+  "Miguel Papala",
+  "OpenClaw SelfOnly 201030",
+  "Rocky Balboa",
+  "SelfOnly Test",
+  "Wallace ObserverPath Test",
+  "Wallace SelfOnly Test",
+]);
+
 const sourceConfigs = {
   designid: {
     assessmentType: "designid",
@@ -176,6 +197,156 @@ const sourceConfigs = {
       "Top5_Blurb",
     ],
   },
+  fruit_360: {
+    assessmentType: "fruit_360",
+    envKey: "FRUITLIFE_360_SPREADSHEET_ID",
+    range: "Report_Export_360!A:IZ",
+    sourceSlug: "fruitlife_360_report_export",
+    timestampColumn: "Report_Date",
+    responseIdColumn: "Participant_ID",
+    emailColumn: "Participant_Email",
+    nameColumn: "Participant_Name",
+    scoreColumns: [
+      "Response_Count",
+      "Observer_Count",
+      "Self_Overall",
+      "Observer_Overall",
+      "Overall_Gap",
+      "Love_Self",
+      "Love_Observer",
+      "Love_Self_Pressure",
+      "Love_Observer_Pressure",
+      "Joy_Self",
+      "Joy_Observer",
+      "Joy_Self_Pressure",
+      "Joy_Observer_Pressure",
+      "Peace_Self",
+      "Peace_Observer",
+      "Peace_Self_Pressure",
+      "Peace_Observer_Pressure",
+      "Patience_Self",
+      "Patience_Observer",
+      "Patience_Self_Pressure",
+      "Patience_Observer_Pressure",
+      "Kindness_Self",
+      "Kindness_Observer",
+      "Kindness_Self_Pressure",
+      "Kindness_Observer_Pressure",
+      "Goodness_Self",
+      "Goodness_Observer",
+      "Goodness_Self_Pressure",
+      "Goodness_Observer_Pressure",
+      "Faithfulness_Self",
+      "Faithfulness_Observer",
+      "Faithfulness_Self_Pressure",
+      "Faithfulness_Observer_Pressure",
+      "Gentleness_Self",
+      "Gentleness_Observer",
+      "Gentleness_Self_Pressure",
+      "Gentleness_Observer_Pressure",
+      "Self-control_Self",
+      "Self-control_Observer",
+      "Self-control_Self_Pressure",
+      "Self-control_Observer_Pressure",
+      "Love_Rank",
+      "Joy_Rank",
+      "Peace_Rank",
+      "Patience_Rank",
+      "Kindness_Rank",
+      "Goodness_Rank",
+      "Faithfulness_Rank",
+      "Gentleness_Rank",
+      "Self-control_Rank",
+    ],
+    summaryColumns: [
+      "Participant_ID",
+      "Report_Date",
+      "Reviewer_Mix",
+      "Most_Visible_Fruit",
+      "Encouragement_Others_See",
+      "Growth_Invitations",
+      "Pressure_Vulnerabilities",
+      "Most_Visible_Fruit_List",
+      "Steady_Forming_Fruit_List",
+      "Growth_Invitation_Fruit_List",
+      "Report_Mode",
+    ],
+    profileColumns: [
+      "Overview_Note",
+      "Love_Category",
+      "Love_Summary",
+      "Love_Tier_Label",
+      "Love_Tier_Description",
+      "Love_Growth_Invitation",
+      "Love_Practice",
+      "Joy_Category",
+      "Joy_Summary",
+      "Joy_Tier_Label",
+      "Joy_Tier_Description",
+      "Joy_Growth_Invitation",
+      "Joy_Practice",
+      "Peace_Category",
+      "Peace_Summary",
+      "Peace_Tier_Label",
+      "Peace_Tier_Description",
+      "Peace_Growth_Invitation",
+      "Peace_Practice",
+      "Patience_Category",
+      "Patience_Summary",
+      "Patience_Tier_Label",
+      "Patience_Tier_Description",
+      "Patience_Growth_Invitation",
+      "Patience_Practice",
+      "Kindness_Category",
+      "Kindness_Summary",
+      "Kindness_Tier_Label",
+      "Kindness_Tier_Description",
+      "Kindness_Growth_Invitation",
+      "Kindness_Practice",
+      "Goodness_Category",
+      "Goodness_Summary",
+      "Goodness_Tier_Label",
+      "Goodness_Tier_Description",
+      "Goodness_Growth_Invitation",
+      "Goodness_Practice",
+      "Faithfulness_Category",
+      "Faithfulness_Summary",
+      "Faithfulness_Tier_Label",
+      "Faithfulness_Tier_Description",
+      "Faithfulness_Growth_Invitation",
+      "Faithfulness_Practice",
+      "Gentleness_Category",
+      "Gentleness_Summary",
+      "Gentleness_Tier_Label",
+      "Gentleness_Tier_Description",
+      "Gentleness_Growth_Invitation",
+      "Gentleness_Practice",
+      "Self-control_Category",
+      "Self-control_Summary",
+      "Self_control_Tier_Label",
+      "Self_control_Tier_Description",
+      "Self_control_Growth_Invitation",
+      "Self_control_Practice",
+      "Love_Consistency_Note",
+      "Love_Pressure_Note",
+      "Joy_Consistency_Note",
+      "Joy_Pressure_Note",
+      "Peace_Consistency_Note",
+      "Peace_Pressure_Note",
+      "Patience_Consistency_Note",
+      "Patience_Pressure_Note",
+      "Kindness_Consistency_Note",
+      "Kindness_Pressure_Note",
+      "Goodness_Consistency_Note",
+      "Goodness_Pressure_Note",
+      "Faithfulness_Consistency_Note",
+      "Faithfulness_Pressure_Note",
+      "Gentleness_Consistency_Note",
+      "Gentleness_Pressure_Note",
+      "Self-control_Consistency_Note",
+      "Self-control_Pressure_Note",
+    ],
+  },
 };
 
 function parseEnvFile(filePath) {
@@ -238,7 +409,7 @@ function parseArgs(argv) {
 
 function printUsage() {
   console.log(`Usage:
-  node scripts/import-assessment-snapshots.mjs [--source designid,designpd,spiritual_gifts] [--limit 25] [--out-dir out/assessment-import] [--apply]
+  node scripts/import-assessment-snapshots.mjs [--source designid,designpd,spiritual_gifts,fruit_360] [--limit 25] [--out-dir out/assessment-import] [--apply]
 
 Default mode is a dry run. It writes JSONL payloads and a summary report under out/assessment-import.
 Use --apply only when DYDD_APP_URL and DYDD_ASSESSMENT_SYNC_SECRET are set and you intend to write to Supabase.`);
@@ -309,6 +480,11 @@ function hash(value) {
 }
 
 function sourceResponseId(config, record) {
+  const configuredId = String(record[config.responseIdColumn ?? ""] ?? "").trim();
+  if (configuredId) {
+    return `${config.sourceSlug}:${configuredId}`;
+  }
+
   const timestamp = record[config.timestampColumn] ?? "";
   const email = normalizeEmail(record[config.emailColumn]);
   const name = String(record[config.nameColumn] ?? "").trim();
@@ -353,7 +529,10 @@ function buildPayload(config, record, syncBatchId) {
   return {
     assessmentType: config.assessmentType,
     participantEmail: participantEmail || undefined,
-    participantKey: participantEmail ? undefined : `dydd:${config.assessmentType}:${hash(fallbackKeyBasis)}`,
+    participantKey:
+      participantEmail || !participantName
+        ? undefined
+        : `dydd:${config.assessmentType}:${hash(fallbackKeyBasis)}`,
     participantName: participantName || undefined,
     profileLanguage: pick(record, config.profileColumns),
     scores: pick(record, config.scoreColumns),
@@ -366,6 +545,18 @@ function buildPayload(config, record, syncBatchId) {
 }
 
 function hasUsablePayload(payload) {
+  if (payload.assessmentType === "fruit_360") {
+    const participantId = String(payload.summary?.Participant_ID ?? "").trim();
+    const participantName = (payload.participantName ?? "").replace(/\s+/g, " ").trim();
+
+    if (
+      ignoredFruitLifeParticipantIds.has(participantId) ||
+      ignoredFruitLifeParticipantNames.has(participantName)
+    ) {
+      return false;
+    }
+  }
+
   return (
     Boolean(payload.participantEmail || payload.participantKey) &&
     Object.keys(payload.scores).length > 0 &&

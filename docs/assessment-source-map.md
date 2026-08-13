@@ -16,6 +16,7 @@ The DYDD app should not replace working assessment engines at the start. It shou
 | --- | --- | --- | --- |
 | DesignID / DesignPD | Google Sheets | `DESIGNID_PD_SPREADSHEET_ID` | Assessment snapshot, profile language, Companion context, Niche builder |
 | Spiritual Gifts | Google Sheets | `SPIRITUAL_GIFTS_SPREADSHEET_ID` | Assessment snapshot, Gifts journey step, Companion context, Niche builder |
+| FruitLife 360 | Google Sheets | `FRUITLIFE_360_SPREADSHEET_ID` | Fruit formation snapshot, report highlights, Companion context, future formation history |
 
 ## Supabase Mirror Shape
 

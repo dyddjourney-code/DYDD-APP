@@ -7,6 +7,7 @@ The first backfill path mirrors already-scored, client-safe outputs from the liv
 - DesignID: `Export_For_Results`
 - DesignPD: `DesignPD_Report_Data`
 - Spiritual Gifts: `Scores`
+- FruitLife 360: `Report_Export_360`
 
 ## Identity
 
@@ -32,6 +33,7 @@ Limit records while checking a source:
 npm run sync:assessments -- --source designid --limit 10
 npm run sync:assessments -- --source designpd --limit 10
 npm run sync:assessments -- --source spiritual_gifts --limit 10
+npm run sync:assessments -- --source fruit_360 --limit 10
 ```
 
 ## Apply
@@ -89,3 +91,4 @@ Last checked on 2026-08-06:
 - DesignID: 236 payloads
 - DesignPD: 236 payloads
 - Spiritual Gifts: 189 payloads
+- FruitLife 360: added after the initial backfill; payload count depends on completed rows in `Report_Export_360`

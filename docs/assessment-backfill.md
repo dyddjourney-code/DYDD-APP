@@ -65,7 +65,7 @@ New submissions are mirrored by the protected cron route:
 GET /api/cron/assessment-sync
 ```
 
-The route reads the same live Google Sheet tabs as the backfill script and upserts snapshots idempotently by `(assessment_type, source, source_response_id)`, so reruns do not create duplicate submissions. It is configured in `vercel.json` to run hourly.
+The route reads the same live Google Sheet tabs as the backfill script and upserts snapshots idempotently by `(assessment_type, source, source_response_id)`, so reruns do not create duplicate submissions. It is configured in `vercel.json` to run daily on Vercel's current Hobby cron allowance. Use the manual sync command when a class or test batch needs an immediate refresh.
 
 Required production environment variables:
 

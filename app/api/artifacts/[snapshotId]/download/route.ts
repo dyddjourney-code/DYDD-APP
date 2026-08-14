@@ -9,7 +9,7 @@ import {
 } from "@/lib/assessments/student-context";
 import { normalizeEmail } from "@/lib/identity/email";
 import {
-  heatherReviewEmail,
+  getHeatherReviewReport,
   isHeatherReviewRequest,
 } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -64,8 +64,8 @@ async function findAuthorizedSnapshot(
   };
 
   if (isHeatherReviewRequest(reviewParams)) {
-    const report = await getAssessmentSnapshotsForEmail(heatherReviewEmail);
-    return report.all.find((snapshot) => snapshot.id === snapshotId) ?? null;
+    const report = await getHeatherReviewReport(reviewParams);
+    return report?.all.find((snapshot) => snapshot.id === snapshotId) ?? null;
   }
 
   const supabase = await createSupabaseServerClient();

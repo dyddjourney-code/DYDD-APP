@@ -132,6 +132,14 @@ export function snapshotHighlights(snapshot: AssessmentSnapshotSummary) {
       "Top2_Score",
       "Top3_Score",
     ],
+    fruit_360: [
+      "Most_Visible_Fruit_List",
+      "Steady_Forming_Fruit_List",
+      "Growth_Invitation_Fruit_List",
+      "Pressure_Vulnerabilities",
+      "Reviewer_Mix",
+      "Report_Mode",
+    ],
   };
   const preferredKeys = preferredKeysByAssessment[snapshot.assessment_type] ?? [
     "Primary",
@@ -166,6 +174,34 @@ export function snapshotHighlights(snapshot: AssessmentSnapshotSummary) {
   }
 
   return items;
+}
+
+export function snapshotInsightRows(
+  snapshot: AssessmentSnapshotSummary | undefined,
+  keys: string[],
+) {
+  if (!snapshot) {
+    return [];
+  }
+
+  const rows: Array<{ label: string; value: string }> = [];
+  const sections = [
+    snapshotSection(snapshot, "summary"),
+    snapshotSection(snapshot, "profileLanguage"),
+    snapshotSection(snapshot, "scores"),
+  ];
+
+  for (const key of keys) {
+    for (const section of sections) {
+      const value = compactValue(section[key]);
+      if (value) {
+        rows.push({ label: highlightLabel(key), value });
+        break;
+      }
+    }
+  }
+
+  return rows;
 }
 
 export async function findOrAttachParticipant(userId: string, email: string) {
@@ -234,29 +270,64 @@ export async function getAssessmentSnapshotsForUser(
 }
 
 export async function getAssessmentSnapshotsForEmail(email: string) {
-  const emailCandidates = participantEmailCandidates(email);
+  return getAssessmentSnapshotsForParticipantMatch({
+    emails: [email],
+  });
+}
 
-  if (!emailCandidates.length) {
+export async function getAssessmentSnapshotsForParticipantMatch({
+  displayNames = [],
+  emails = [],
+}: {
+  displayNames?: string[];
+  emails?: string[];
+}) {
+  const emailCandidates = emails.flatMap((email) =>
+    participantEmailCandidates(email),
+  );
+  const normalizedNames = displayNames
+    .map((name) => name.trim())
+    .filter(Boolean);
+
+  if (!emailCandidates.length && !normalizedNames.length) {
     return { all: [], latest: [] };
   }
 
   const supabaseAdmin = createSupabaseAdminClient();
-  const { data: participants } = await supabaseAdmin
-    .from("assessment_participants")
-    .select("id")
-    .in("normalized_email", emailCandidates)
-    .returns<Array<{ id: string }>>();
+  const participantIds = new Set<string>();
 
-  const participantIds = (participants ?? []).map((participant) => participant.id);
+  if (emailCandidates.length) {
+    const { data: participants } = await supabaseAdmin
+      .from("assessment_participants")
+      .select("id")
+      .in("normalized_email", emailCandidates)
+      .returns<Array<{ id: string }>>();
 
-  if (!participantIds.length) {
+    for (const participant of participants ?? []) {
+      participantIds.add(participant.id);
+    }
+  }
+
+  for (const displayName of normalizedNames) {
+    const { data: participants } = await supabaseAdmin
+      .from("assessment_participants")
+      .select("id")
+      .ilike("display_name", displayName)
+      .returns<Array<{ id: string }>>();
+
+    for (const participant of participants ?? []) {
+      participantIds.add(participant.id);
+    }
+  }
+
+  if (!participantIds.size) {
     return { all: [], latest: [] };
   }
 
   const { data } = await supabaseAdmin
     .from("assessment_snapshots")
     .select("id,assessment_type,created_at,scores,source,source_submitted_at")
-    .in("participant_id", participantIds)
+    .in("participant_id", Array.from(participantIds))
     .order("source_submitted_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false })
     .returns<AssessmentSnapshotSummary[]>();
@@ -352,4 +423,69 @@ export function hasDesignIdData(designId: Record<string, string>) {
       designId.integrativeReflection ||
       designId.reflectionShadow,
   );
+}
+
+export function buildAssessmentCourseInsights(
+  report: StudentAssessmentReport,
+  assessmentType: string | null,
+) {
+  if (!assessmentType) {
+    return {
+      connected: report.latest.length > 0,
+      rows: report.latest.flatMap((snapshot) =>
+        snapshotHighlights(snapshot).slice(0, 2).map((item) => ({
+          label: `${assessmentLabels[snapshot.assessment_type] ?? snapshot.assessment_type}: ${item.label}`,
+          value: item.value,
+        })),
+      ),
+    };
+  }
+
+  const snapshot = getLatestSnapshot(report, assessmentType);
+
+  if (!snapshot) {
+    return {
+      connected: false,
+      rows: [] as Array<{ label: string; value: string }>,
+    };
+  }
+
+  const detailKeysByAssessment: Record<string, string[]> = {
+    designpd: [
+      "Plan_Tendency",
+      "Decide_Tendency",
+      "Do_Tendency",
+      "Plan_Descriptor",
+      "Decide_Descriptor",
+      "Do_Descriptor",
+      "Sustainability_Do_Growth_Practice",
+    ],
+    fruit_360: [
+      "Reviewer_Mix",
+      "Most_Visible_Fruit_List",
+      "Steady_Forming_Fruit_List",
+      "Growth_Invitation_Fruit_List",
+      "Pressure_Vulnerabilities",
+      "Goodness_Practice",
+      "Faithfulness_Practice",
+      "Kindness_Practice",
+    ],
+    spiritual_gifts: [
+      "Top1_Name",
+      "Top2_Name",
+      "Top3_Name",
+      "Top1_Blurb",
+      "Top1_MaturityDescription",
+      "Top1_GrowthAreas",
+      "Top1_StepsToGrow",
+    ],
+  };
+
+  return {
+    connected: true,
+    rows: snapshotInsightRows(
+      snapshot,
+      detailKeysByAssessment[assessmentType] ?? [],
+    ),
+  };
 }

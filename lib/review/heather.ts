@@ -1,12 +1,18 @@
 import {
   buildDesignIdContext,
-  getAssessmentSnapshotsForEmail,
+  getAssessmentSnapshotsForParticipantMatch,
   type StudentAssessmentReport,
   type StudentDesignContext,
 } from "@/lib/assessments/student-context";
 
 export const heatherReviewEmail = "willoughbyhs@gmail.com";
 export const heatherReviewName = "Heather Willoughby";
+export const heatherReviewEmails = [
+  heatherReviewEmail,
+  "heatherlawton312@gmail.com",
+  "heather.willoughby@sbesinc.com",
+];
+export const heatherReviewNames = [heatherReviewName, "Heather Lawton"];
 export const newReviewName = "Jordan Preview";
 
 export type ReviewSearchParams = {
@@ -53,7 +59,10 @@ export async function getHeatherReviewReport(params?: ReviewSearchParams | null)
     return null;
   }
 
-  return getAssessmentSnapshotsForEmail(heatherReviewEmail);
+  return getAssessmentSnapshotsForParticipantMatch({
+    displayNames: heatherReviewNames,
+    emails: heatherReviewEmails,
+  });
 }
 
 export function getNewReviewReport(params?: ReviewSearchParams | null) {

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { enterHeatherPreview, enterNewPreview } from "@/app/login/actions";
+import { allCourseSummaries } from "@/lib/courses/course-catalog";
 import { designIdCourse } from "@/lib/courses/designid-foundations";
 
 const includedItems = [
@@ -39,13 +40,13 @@ const approachSteps = [
 const previewStats = [
   { label: "DesignID modules", value: designIdCourse.modules.length },
   {
-    label: "Staged lessons",
+    label: "DesignID lessons",
     value: designIdCourse.modules.reduce(
       (count, module) => count + module.lessons.length,
       0,
     ),
   },
-  { label: "Core journey moves", value: 6 },
+  { label: "Mapped classes", value: allCourseSummaries.length },
 ];
 
 export default function Home() {

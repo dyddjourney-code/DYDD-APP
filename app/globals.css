@@ -2150,6 +2150,48 @@ h3 {
   text-transform: uppercase;
 }
 
+.course-logo-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.course-logo-row .course-logo {
+  width: min(240px, 66vw);
+  max-height: 92px;
+  margin-bottom: 0;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.course-logo-row .course-logo.small {
+  width: min(150px, 46vw);
+  max-height: 72px;
+  padding: 10px 12px;
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.multi-course-hero h1 {
+  max-width: 12ch;
+}
+
+.assessment-snapshot-card h2 {
+  margin-bottom: 14px;
+  color: var(--green-dark);
+  font-size: clamp(1.55rem, 3vw, 2.8rem);
+  line-height: 1;
+}
+
+.assessment-snapshot-card p:not(.section-label) {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
 .source-note {
   max-width: 72ch;
   color: var(--muted);
@@ -2318,7 +2360,10 @@ h3 {
 
 .lesson-index img {
   width: min(180px, 68vw);
+  max-height: 128px;
   height: auto;
+  object-fit: contain;
+  object-position: left center;
 }
 
 .lesson-index span {
@@ -2327,6 +2372,12 @@ h3 {
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.lesson-index small {
+  color: var(--muted);
+  font-weight: 850;
+  line-height: 1.45;
 }
 
 .lesson-brief {
@@ -2420,6 +2471,77 @@ h3 {
   padding-left: 20px;
   color: var(--ink);
   line-height: 1.65;
+}
+
+.lesson-insight-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(71, 107, 66, 0.2);
+  border-radius: 8px;
+  background: rgba(71, 107, 66, 0.18);
+}
+
+.lesson-insight-list div {
+  min-width: 0;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.lesson-insight-list dt {
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lesson-insight-list dd {
+  margin: 0;
+  color: var(--green-dark);
+  font-weight: 850;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.readable-lesson-body {
+  display: grid;
+  gap: 16px;
+  margin-top: 30px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+}
+
+.readable-lesson-body p:not(.section-label) {
+  max-width: 74ch;
+  margin: 0;
+  color: #3e4d3b;
+  font-size: 1.04rem;
+  line-height: 1.82;
+}
+
+.course-shell-gold,
+.lesson-shell-gold {
+  background:
+    linear-gradient(rgba(251, 250, 244, 0.92), rgba(251, 250, 244, 0.96)),
+    radial-gradient(circle at 84% 12%, rgba(184, 138, 67, 0.22), transparent 26rem);
+}
+
+.course-shell-blue,
+.lesson-shell-blue {
+  background:
+    linear-gradient(rgba(251, 250, 244, 0.9), rgba(251, 250, 244, 0.96)),
+    radial-gradient(circle at 80% 12%, rgba(71, 100, 127, 0.18), transparent 26rem);
+}
+
+.course-shell-clay,
+.lesson-shell-clay {
+  background:
+    linear-gradient(rgba(251, 250, 244, 0.9), rgba(251, 250, 244, 0.96)),
+    radial-gradient(circle at 82% 8%, rgba(138, 96, 70, 0.18), transparent 26rem);
 }
 
 .lesson-pagination {
@@ -2883,6 +3005,7 @@ h3 {
   .lesson-pagination,
   .named-check-list p,
   .admin-submission-list p,
+  .lesson-insight-list,
   .journey-hero,
   .journey-source-band,
   .journey-stage-intro,

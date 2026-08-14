@@ -4,12 +4,14 @@ import { signOut } from "@/app/login/actions";
 import {
   assessmentLabels,
   displayDate,
+  getAssessmentSnapshotsForParticipantMatch,
   getAssessmentSnapshotsForUser,
   type StudentAssessmentReport,
   latestByAssessment,
   snapshotHighlights,
   type AssessmentSnapshotSummary,
 } from "@/lib/assessments/student-context";
+import { allCourseSummaries } from "@/lib/courses/course-catalog";
 import { designIdCourse } from "@/lib/courses/designid-foundations";
 import {
   canonicalizeParticipantEmail,
@@ -71,14 +73,14 @@ const toolCatalog = [
     assessmentType: "design_pathways",
     detail: "A free discernment layer for direction, experiments, and next steps.",
     label: "Design Pathways",
-    logo: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b85a099e-3a97-4d64-951a-5243dced21c2/DesignPW-logo.jpg?format=300w",
+    logo: "/brand/tools/design-pathways-logo.svg",
     price: "Free",
   },
   {
     assessmentType: "fruit_360",
     detail: "A free 360-style mirror for visible fruit and growth conversations.",
-    label: "Fruit 360",
-    logo: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/418710fa-3116-4f5f-a68a-8b1c9f415678/FL360-logo.jpg?format=300w",
+    label: "FruitLife 360",
+    logo: "/brand/tools/fruit-360-logo.svg",
     price: "Free",
   },
 ];
@@ -150,43 +152,15 @@ async function getHeatherAssessmentReport(enabled: boolean) {
     return null;
   }
 
-  const supabaseAdmin = createSupabaseAdminClient();
-  const heatherEmails = participantEmailCandidates("willoughbyhs@gmail.com");
-
-  const { data: participants } = await supabaseAdmin
-    .from("assessment_participants")
-    .select("id,display_name,normalized_email")
-    .in("normalized_email", heatherEmails)
-    .returns<
-      Array<{
-        display_name: string | null;
-        id: string;
-        normalized_email: string | null;
-      }>
-    >();
-
-  const participantIds = (participants ?? []).map((participant) => participant.id);
-
-  if (!participantIds.length) {
-    return {
-      latest: [] as NamedParticipantSnapshot[],
-      participantCount: 0,
-      totalSnapshots: 0,
-    };
-  }
-
-  const { data } = await supabaseAdmin
-    .from("assessment_snapshots")
-    .select("id,assessment_type,created_at,scores,source,source_submitted_at")
-    .in("participant_id", participantIds)
-    .order("source_submitted_at", { ascending: false, nullsFirst: false })
-    .order("created_at", { ascending: false })
-    .returns<NamedParticipantSnapshot[]>();
+  const report = await getAssessmentSnapshotsForParticipantMatch({
+    displayNames: [heatherReviewName],
+    emails: ["willoughbyhs@gmail.com"],
+  });
 
   return {
-    latest: latestByAssessment(data ?? []) as NamedParticipantSnapshot[],
-    participantCount: participantIds.length,
-    totalSnapshots: data?.length ?? 0,
+    latest: report.latest as NamedParticipantSnapshot[],
+    participantCount: report.latest.length ? 1 : 0,
+    totalSnapshots: report.all.length,
   };
 }
 
@@ -246,11 +220,13 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   const hasDesignPdCourseAccess = heatherPreview || ownsAssessment(assessmentReport, "designpd");
   const hasSpiritualGiftsCourseAccess =
     heatherPreview || ownsAssessment(assessmentReport, "spiritual_gifts");
+  const hasFruitLifeCourseAccess = heatherPreview || ownsAssessment(assessmentReport, "fruit_360");
   const openCourseCount = [
     hasDyddCourseAccess,
     hasDesignIdCourseAccess,
     hasDesignPdCourseAccess,
     hasSpiritualGiftsCourseAccess,
+    hasFruitLifeCourseAccess,
   ].filter(Boolean).length;
   const lessonCount = designIdCourse.modules.reduce(
     (count, module) => count + module.lessons.length,
@@ -258,60 +234,37 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   );
   const completedArtifactCount = snapshots.length;
 
-  const courseCards = [
-    {
-      action: hasDesignIdCourseAccess ? "Open course" : "Included with DesignID",
-      available: hasDesignIdCourseAccess,
-      detail:
-        "A focused course for understanding DesignID language after the assessment is purchased and completed.",
-      href: withReviewQuery("/courses/designid-foundations", reviewParams),
-      icon:
-        "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/c6506120-e23e-4a7d-800d-b1a654693c5b/ID-icon-color.jpg?format=300w",
-      id: "designid-course",
-      label: "DesignID Foundations",
-      meta: `${designIdCourse.modules.length} modules · ${lessonCount} lessons`,
-      price: "Included with DesignID",
-    },
-    {
-      action: hasDesignPdCourseAccess ? "Open course" : "Included with DesignPD",
-      available: hasDesignPdCourseAccess,
-      detail:
-        "A practical course focused on tendencies for how you plan, decide, and do in real life.",
-      href: "#designpd-course",
-      icon:
-        "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/9c103421-19d5-411f-abe7-614bd22088e8/designpd-icon.jpg?format=300w",
-      id: "designpd-course",
-      label: "DesignPD Course",
-      meta: "New course · practical tendencies",
-      price: "Included with DesignPD",
-    },
-    {
-      action: hasDyddCourseAccess ? "Continue course" : "Purchase access",
-      available: hasDyddCourseAccess,
-      detail:
-        "The fuller DYDD course walkthrough, guided journey process, and deeper companion-supported formation path.",
-      href: withReviewQuery("/journey", reviewParams),
-      icon:
-        "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/12ab0cef-157a-4a43-8dcd-d6bf8b0a29af/dydd-icon-color.jpg?format=300w",
-      id: "dydd-course",
-      label: "Discover Your Divine Design Course",
-      meta: "Paid course · bandwidth-heavy guided path",
-      price: "Paid access",
-    },
-    {
-      action: hasSpiritualGiftsCourseAccess ? "Open course" : "Start free assessment",
-      available: hasSpiritualGiftsCourseAccess,
-      detail:
-        "A companion course for naming gifts and connecting them to service, formation, and calling.",
-      href: "#spiritual-gifts-course",
-      icon:
-        "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/8131fe81-0e4a-4503-ab92-8f4a7da620bb/dydd-gifts-icon.jpg?format=300w",
-      id: "spiritual-gifts-course",
-      label: "Spiritual Gifts Course",
-      meta: "Available with the free Spiritual Gifts assessment",
-      price: "Free assessment",
-    },
-  ];
+  const courseAccessBySlug: Record<string, boolean> = {
+    "designid-foundations": hasDesignIdCourseAccess,
+    "designpd-alignment": hasDesignPdCourseAccess,
+    "discover-your-divine-design": hasDyddCourseAccess,
+    "fruitlife-360-formation": hasFruitLifeCourseAccess,
+    "spiritual-gifts-service": hasSpiritualGiftsCourseAccess,
+  };
+  const courseCards = allCourseSummaries.map((course) => {
+    const available = courseAccessBySlug[course.slug] ?? false;
+
+    return {
+      action: available
+        ? course.slug === "discover-your-divine-design"
+          ? "Continue course"
+          : "Open course"
+        : course.price === "Free assessment"
+          ? "Start free assessment"
+          : course.price,
+      available,
+      detail: course.description,
+      href: withReviewQuery(course.hrefBase, reviewParams),
+      icon: course.logo,
+      id: `${course.slug}-course`,
+      label: course.title,
+      meta:
+        course.slug === "designid-foundations"
+          ? `${designIdCourse.modules.length} modules · ${lessonCount} lessons`
+          : `${course.moduleCount} modules · mapped for review`,
+      price: course.price,
+    };
+  });
 
   return (
     <main className="hq-shell">

@@ -3,12 +3,14 @@
 import crypto from "node:crypto";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { sendResendEmail } from "@/lib/email/resend";
 import {
   fruitLifeFruits,
   fruitLifeRatingPrompts,
   fruitRatingField,
   type FruitLifeResponseType,
 } from "@/lib/fruitlife360/intake";
+import { buildFruitLifePayloadForSession } from "@/lib/fruitlife360/payload";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
@@ -138,10 +140,97 @@ async function getSessionForToken(sessionId: string, token: string, path: string
 }
 
 async function queuePayloadJob(supabase: ReturnType<typeof createSupabaseAdminClient>, sessionId: string) {
-  await supabase.from("fruitlife_360_report_jobs").insert({
+  const payload = await buildFruitLifePayloadForSession(supabase, sessionId);
+  const { data: job } = await supabase.from("fruitlife_360_report_jobs").insert({
     job_status: "queued",
     job_type: "fruitlife_360_payload",
     metadata: { trigger: "response_threshold" },
+    payload,
+    session_id: sessionId,
+  }).select("id").single();
+
+  await supabase.from("fruitlife_360_report_artifacts").insert({
+    artifact_status: "ready",
+    artifact_type: "payload",
+    metadata: {
+      fieldCount: Object.keys(payload).length,
+      source: "vercel_payload_generator",
+    },
+    provider: "vercel",
+    report_job_id: job?.id ?? null,
+    session_id: sessionId,
+  });
+}
+
+function fruitLifeInviteEmail({
+  observerGoal,
+  observerLink,
+  participantName,
+  selfLink,
+}: {
+  observerGoal: number;
+  observerLink: string;
+  participantName: string;
+  selfLink: string;
+}) {
+  const observerText =
+    observerGoal > 0
+      ? `\n\nObserver link to share:\n${observerLink}\n\nShare this with ${observerGoal} trusted observer${observerGoal === 1 ? "" : "s"}.`
+      : "";
+
+  const text = `Hi ${participantName},\n\nYour FruitLife 360 reflection is ready to begin.\n\nSelf reflection link:\n${selfLink}${observerText}\n\nFruitLife 360 is designed as a formation mirror, not a grade or label.`;
+
+  return {
+    html: text
+      .split("\n\n")
+      .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br>")}</p>`)
+      .join(""),
+    subject: "Your FruitLife 360 reflection links",
+    text,
+  };
+}
+
+async function recordAndSendInviteEmail({
+  observerGoal,
+  observerLink,
+  participantEmail,
+  participantName,
+  selfLink,
+  sessionId,
+  supabase,
+}: {
+  observerGoal: number;
+  observerLink: string;
+  participantEmail: string;
+  participantName: string;
+  selfLink: string;
+  sessionId: string;
+  supabase: ReturnType<typeof createSupabaseAdminClient>;
+}) {
+  const email = fruitLifeInviteEmail({
+    observerGoal,
+    observerLink,
+    participantName,
+    selfLink,
+  });
+  const result = await sendResendEmail({
+    ...email,
+    to: participantEmail,
+  });
+
+  await supabase.from("fruitlife_360_report_artifacts").insert({
+    artifact_status: result.sent ? "sent" : result.skipped ? "draft" : "error",
+    artifact_type: "email",
+    metadata: {
+      error: result.message ?? null,
+      observerLink,
+      purpose: "initial_invite_email",
+      resendSkipped: result.skipped,
+      resendSent: result.sent,
+      selfLink,
+    },
+    provider: "resend",
+    provider_document_id: result.id ?? null,
     session_id: sessionId,
   });
 }
@@ -325,16 +414,14 @@ export async function createFruitLifeSession(formData: FormData) {
   const selfLink = `${baseUrl}/fruitlife360/self?session=${session.id}&token=${token}`;
   const observerLink = `${baseUrl}/fruitlife360/observer?session=${session.id}&token=${token}`;
 
-  await supabase.from("fruitlife_360_report_artifacts").insert({
-    artifact_status: "draft",
-    artifact_type: "email",
-    metadata: {
-      observerLink,
-      purpose: "initial_invite_email_pending_resend",
-      selfLink,
-    },
-    provider: "resend",
-    session_id: session.id,
+  await recordAndSendInviteEmail({
+    observerGoal,
+    observerLink,
+    participantEmail,
+    participantName,
+    selfLink,
+    sessionId: session.id,
+    supabase,
   });
 
   redirect(

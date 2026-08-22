@@ -43,6 +43,29 @@ type AdminSnapshotSummary = AssessmentSnapshotSummary & {
 
 type NamedParticipantSnapshot = AssessmentSnapshotSummary;
 
+type FruitLifeDashboardSession = {
+  artifacts: Array<{
+    artifact_status: string;
+    artifact_type: string;
+    created_at: string;
+    external_url: string | null;
+    filename: string | null;
+    provider: string;
+  }>;
+  created_at: string;
+  id: string;
+  observer_completed_count: number;
+  observer_goal: number;
+  participant_email: string | null;
+  participant_name: string | null;
+  report_status: string;
+  report_url: string | null;
+  response_count: number;
+  self_completed_at: string | null;
+  session_status: string;
+  updated_at: string;
+};
+
 type HqPageProps = {
   searchParams?: Promise<ReviewSearchParams>;
 };
@@ -51,6 +74,7 @@ const toolCatalog = [
   {
     assessmentType: "designid",
     detail: "Identity, contribution, reflection language, and a completed report.",
+    href: "#tools",
     label: "DesignID",
     logo: "/brand/tools/designid-logo.webp",
     price: "$20",
@@ -58,6 +82,7 @@ const toolCatalog = [
   {
     assessmentType: "designpd",
     detail: "Plan, Decide, and Do patterns for practical daily alignment.",
+    href: "#tools",
     label: "DesignPD",
     logo: "/brand/tools/designpd-logo.jpg",
     price: "$50",
@@ -65,6 +90,7 @@ const toolCatalog = [
   {
     assessmentType: "spiritual_gifts",
     detail: "A free first step for naming how the Spirit may be empowering service.",
+    href: "#tools",
     label: "Spiritual Gifts",
     logo: "/brand/tools/spiritual-gifts-logo.jpg",
     price: "Free",
@@ -72,13 +98,15 @@ const toolCatalog = [
   {
     assessmentType: "design_pathways",
     detail: "A free discernment layer for direction, experiments, and next steps.",
+    href: "#design-pathways",
     label: "Design Pathways",
-    logo: "/brand/tools/design-pathways-logo.svg",
+    logo: "/brand/tools/design-pathways-logo.jpg",
     price: "Free",
   },
   {
     assessmentType: "fruit_360",
     detail: "A free 360-style mirror for visible fruit and growth conversations.",
+    href: "/fruitlife360",
     label: "FruitLife 360",
     logo: "/brand/tools/fruit-360-logo.svg",
     price: "Free",
@@ -92,6 +120,29 @@ const baseCampSteps = [
   { detail: "Move through the journey process, niche builder, and Dydi reflection.", label: "Trail Door" },
 ];
 
+const fruitLifeStages = [
+  {
+    detail: "Create a Vercel/Supabase session and send the participant their self and observer links.",
+    label: "Start intake",
+    state: "Live",
+  },
+  {
+    detail: "Track whether self reflection is done and how many observer responses have landed.",
+    label: "Response watch",
+    state: "Live",
+  },
+  {
+    detail: "Prepare the same report payload the old Google Sheet and PDFMonkey path expects.",
+    label: "Payload queue",
+    state: "Live",
+  },
+  {
+    detail: "Individual observer reminders and final PDF rendering are next after this UI pass.",
+    label: "Reminder/report worker",
+    state: "Next",
+  },
+];
+
 function isAdminEmail(email: string | null | undefined) {
   const configured = (process.env.DYDD_ADMIN_EMAILS ?? "")
     .split(",")
@@ -100,6 +151,84 @@ function isAdminEmail(email: string | null | undefined) {
   const adminEmails = new Set(["dyddjourney@gmail.com", ...configured]);
 
   return adminEmails.has(canonicalizeParticipantEmail(email));
+}
+
+function titleizeStatus(value: string | null | undefined) {
+  return value ? value.replace(/_/g, " ") : "not started";
+}
+
+function getFruitLifeCompletion(session: FruitLifeDashboardSession | null) {
+  if (!session) {
+    return { completed: 0, required: 1 };
+  }
+
+  const selfCount = session.self_completed_at ? 1 : 0;
+  const required = 1 + Math.max(0, session.observer_goal);
+  const completed = selfCount + Math.max(0, session.observer_completed_count);
+
+  return { completed, required };
+}
+
+async function getFruitLifeDashboardSessions({
+  email,
+  enabled,
+  isAdmin,
+}: {
+  email: string | null;
+  enabled: boolean;
+  isAdmin: boolean;
+}) {
+  if (!enabled || (!email && !isAdmin)) {
+    return [];
+  }
+
+  const supabaseAdmin = createSupabaseAdminClient();
+  let query = supabaseAdmin
+    .from("fruitlife_360_sessions")
+    .select(
+      "id,participant_name,participant_email,session_status,report_status,observer_goal,observer_completed_count,response_count,self_completed_at,report_url,created_at,updated_at",
+    )
+    .order("updated_at", { ascending: false })
+    .limit(isAdmin ? 6 : 4);
+
+  if (!isAdmin && email) {
+    query = query.eq("participant_email", email);
+  }
+
+  const { data } = await query;
+  const sessions = (data ?? []) as Omit<FruitLifeDashboardSession, "artifacts">[];
+  const sessionIds = sessions.map((session) => session.id);
+
+  if (!sessionIds.length) {
+    return [];
+  }
+
+  const { data: artifacts } = await supabaseAdmin
+    .from("fruitlife_360_report_artifacts")
+    .select("session_id,artifact_type,artifact_status,provider,external_url,filename,created_at")
+    .in("session_id", sessionIds)
+    .order("created_at", { ascending: false });
+
+  const artifactsBySession = new Map<string, FruitLifeDashboardSession["artifacts"]>();
+
+  for (const artifact of artifacts ?? []) {
+    const sessionId = String(artifact.session_id);
+    const current = artifactsBySession.get(sessionId) ?? [];
+    current.push({
+      artifact_status: String(artifact.artifact_status),
+      artifact_type: String(artifact.artifact_type),
+      created_at: String(artifact.created_at),
+      external_url: typeof artifact.external_url === "string" ? artifact.external_url : null,
+      filename: typeof artifact.filename === "string" ? artifact.filename : null,
+      provider: String(artifact.provider),
+    });
+    artifactsBySession.set(sessionId, current);
+  }
+
+  return sessions.map((session) => ({
+    ...session,
+    artifacts: artifactsBySession.get(session.id) ?? [],
+  }));
 }
 
 async function getAdminAssessmentReport(enabled: boolean) {
@@ -221,6 +350,18 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   const hasSpiritualGiftsCourseAccess =
     heatherPreview || ownsAssessment(assessmentReport, "spiritual_gifts");
   const hasFruitLifeCourseAccess = heatherPreview || ownsAssessment(assessmentReport, "fruit_360");
+  const fruitLifeDashboardEmail = heatherPreview
+    ? "willoughbyhs@gmail.com"
+    : newPreview
+      ? null
+      : normalizeEmail(profile?.email ?? user?.email);
+  const fruitLifeSessions = await getFruitLifeDashboardSessions({
+    email: fruitLifeDashboardEmail,
+    enabled: Boolean(fruitLifeDashboardEmail || isAdmin),
+    isAdmin,
+  });
+  const activeFruitLifeSession = fruitLifeSessions[0] ?? null;
+  const fruitLifeCompletion = getFruitLifeCompletion(activeFruitLifeSession);
   const openCourseCount = [
     hasDyddCourseAccess,
     hasDesignIdCourseAccess,
@@ -326,6 +467,116 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           <span>{toolCatalog.length}</span>
           <small>Tools available after login</small>
         </p>
+        <p>
+          <span>{fruitLifeSessions.length}</span>
+          <small>FruitLife sessions visible</small>
+        </p>
+      </section>
+
+      <section className="fruitlife-workbench" aria-label="FruitLife 360 workflow">
+        <div className="fruitlife-workbench-lead">
+          <img src="/brand/tools/fruit-360-logo.svg" alt="FruitLife 360 logo" />
+          <p className="section-label">FruitLife 360 workflow</p>
+          <h2>Start the intake, watch responses, then queue the report payload.</h2>
+          <p>
+            This is the new Vercel/Supabase path. It keeps the working report
+            output target in view while moving intake, links, response storage,
+            and status out of the fragile Sheet queue.
+          </p>
+          <div className="basecamp-actions">
+            <Link className="button primary" href="/fruitlife360">
+              Start FruitLife intake
+            </Link>
+            <a className="button secondary" href="#fruitlife-artifacts">
+              View report state
+            </a>
+          </div>
+          <div className="fruitlife-stage-grid">
+            {fruitLifeStages.map((stage) => (
+              <article key={stage.label}>
+                <span>{stage.state}</span>
+                <strong>{stage.label}</strong>
+                <small>{stage.detail}</small>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div className="fruitlife-status-console">
+          <div className="fruitlife-session-summary">
+            <p className="section-label">Current session</p>
+            <strong>
+              {activeFruitLifeSession?.participant_name ??
+                activeFruitLifeSession?.participant_email ??
+                "No active FruitLife session yet"}
+            </strong>
+            <small>
+              {activeFruitLifeSession
+                ? `Updated ${displayDate(activeFruitLifeSession.updated_at)}`
+                : "Create an intake to generate the self and observer links."}
+            </small>
+          </div>
+          <div className="fruitlife-progress-meter">
+            <span
+              style={{
+                width: `${Math.min(
+                  100,
+                  Math.round(
+                    (fruitLifeCompletion.completed / fruitLifeCompletion.required) * 100,
+                  ),
+                )}%`,
+              }}
+            />
+          </div>
+          <div className="fruitlife-kpis">
+            <p>
+              <span>{activeFruitLifeSession?.self_completed_at ? "Done" : "Open"}</span>
+              <small>Self reflection</small>
+            </p>
+            <p>
+              <span>
+                {activeFruitLifeSession?.observer_completed_count ?? 0}/
+                {activeFruitLifeSession?.observer_goal ?? 3}
+              </span>
+              <small>Observers</small>
+            </p>
+            <p>
+              <span>{titleizeStatus(activeFruitLifeSession?.report_status)}</span>
+              <small>Report payload</small>
+            </p>
+          </div>
+          <div className="fruitlife-session-list" id="fruitlife-artifacts">
+            {fruitLifeSessions.length ? (
+              fruitLifeSessions.map((session) => (
+                <article key={session.id}>
+                  <div>
+                    <strong>{session.participant_name ?? session.participant_email}</strong>
+                    <small>
+                      {titleizeStatus(session.session_status)}
+                      {" · "}
+                      {session.observer_completed_count}/{session.observer_goal} observers
+                    </small>
+                  </div>
+                  <span>
+                    {session.artifacts.length
+                      ? `${session.artifacts.length} artifact${
+                          session.artifacts.length === 1 ? "" : "s"
+                        }`
+                      : "No artifact"}
+                  </span>
+                </article>
+              ))
+            ) : (
+              <article>
+                <div>
+                  <strong>Ready for the first native intake</strong>
+                  <small>After creation, this panel will show session progress.</small>
+                </div>
+                <span>Waiting</span>
+              </article>
+            )}
+          </div>
+        </div>
       </section>
 
       <section className="ask-dydi-hq" id="ask-dydi" aria-label="Ask Dydi">
@@ -387,14 +638,18 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             {toolCatalog.map((tool) => {
               const completed = ownsAssessment(assessmentReport, tool.assessmentType);
               return (
-                <article className="product-row" key={tool.label}>
+                <article
+                  className="product-row"
+                  id={tool.assessmentType === "design_pathways" ? "design-pathways" : undefined}
+                  key={tool.label}
+                >
                   <img src={tool.logo} alt={`${tool.label} logo`} />
                   <div>
                     <strong>{tool.label}</strong>
                     <p>{tool.detail}</p>
                   </div>
                   <span>{completed ? "Completed" : tool.price}</span>
-                  <a className="button secondary" href="#tools">
+                  <a className="button secondary" href={tool.href}>
                     {completed ? "Review" : tool.price === "Free" ? "Start" : "Buy"}
                   </a>
                 </article>

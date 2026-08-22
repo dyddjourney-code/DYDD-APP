@@ -196,6 +196,12 @@ function fruitScoreFromSnapshot(snapshot: AssessmentSnapshotSummary, fruitKey: s
   return observer ?? self;
 }
 
+function reportModeLabel(value: string | null | undefined) {
+  if (value === "FULL_360") return "Full 360";
+  if (value === "SELF_ONLY") return "Self-only";
+  return titleizeStatus(value);
+}
+
 function buildFruitLifeTrend(snapshots: AssessmentSnapshotSummary[]) {
   const fruitSnapshots = snapshots
     .filter((snapshot) => snapshot.assessment_type === "fruit_360")
@@ -220,6 +226,9 @@ function buildFruitLifeTrend(snapshots: AssessmentSnapshotSummary[]) {
       id: snapshot.id,
       index,
       mode: compactValue(snapshotSection(snapshot, "summary").Report_Mode) || "FruitLife",
+      mostVisible:
+        compactValue(snapshotSection(snapshot, "summary").Most_Visible_Fruit_List) ||
+        "Awaiting ranked fruit",
       snapshot,
     };
   });
@@ -239,6 +248,17 @@ function buildFruitLifeTrend(snapshots: AssessmentSnapshotSummary[]) {
         })
         .filter((fruit) => fruit.current !== null)
     : [];
+  const sortedChanges = [...changes].sort((a, b) => {
+    const deltaA = a.delta ?? 0;
+    const deltaB = b.delta ?? 0;
+    return deltaB - deltaA;
+  });
+  const topRiser = sortedChanges.find((fruit) => (fruit.delta ?? 0) > 0) ?? null;
+  const growthWatch = [...changes]
+    .filter((fruit) => fruit.current !== null)
+    .sort((a, b) => (a.current ?? 0) - (b.current ?? 0))[0] ?? null;
+  const overallDelta =
+    latest && previous ? latest.average - previous.average : null;
   const pointSpacing = datedRuns.length > 1 ? 680 / (datedRuns.length - 1) : 0;
   const series = fruitTrendMetrics
     .map((fruit) => {
@@ -254,7 +274,7 @@ function buildFruitLifeTrend(snapshots: AssessmentSnapshotSummary[]) {
     })
     .filter((fruit) => fruit.points.length);
 
-  return { changes, datedRuns, latest, series };
+  return { changes, datedRuns, growthWatch, latest, overallDelta, series, topRiser };
 }
 
 function getFruitLifeCompletion(session: FruitLifeDashboardSession | null) {
@@ -407,6 +427,31 @@ function artifactDownloadHref(
     `/api/artifacts/${encodeURIComponent(snapshot.id)}/download`,
     reviewParams,
   );
+}
+
+function artifactLabel(snapshot: AssessmentSnapshotSummary) {
+  const label = assessmentLabels[snapshot.assessment_type] ?? snapshot.assessment_type;
+
+  if (snapshot.assessment_type !== "fruit_360") {
+    return label;
+  }
+
+  const mode = compactValue(snapshotSection(snapshot, "summary").Report_Mode);
+  return `${label} · ${reportModeLabel(mode)}`;
+}
+
+function sessionModeFromMetadata(session: FruitLifeDashboardSession) {
+  const payloadArtifact = session.artifacts.find(
+    (artifact) => artifact.artifact_type === "payload",
+  );
+  const mode =
+    payloadArtifact?.filename?.includes("self")
+      ? "SELF_ONLY"
+      : session.observer_goal > 0
+        ? "FULL_360"
+        : "SELF_ONLY";
+
+  return reportModeLabel(mode);
 }
 
 export default async function HqPage({ searchParams }: HqPageProps) {
@@ -607,7 +652,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
 
         <div className="fruitlife-status-console">
           <div className="fruitlife-session-summary">
-            <p className="section-label">Current session</p>
+            <p className="section-label">Latest FruitLife run</p>
             <strong>
               {activeFruitLifeSession?.participant_name ??
                 activeFruitLifeSession?.participant_email ??
@@ -615,7 +660,9 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             </strong>
             <small>
               {activeFruitLifeSession
-                ? `Updated ${displayDate(activeFruitLifeSession.updated_at)}`
+                ? `${sessionModeFromMetadata(activeFruitLifeSession)} · Updated ${displayDate(
+                    activeFruitLifeSession.updated_at,
+                  )}`
                 : "Create an intake to generate the self and observer links."}
             </small>
           </div>
@@ -650,18 +697,18 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           </div>
           {activeFruitLifeSession?.metadata?.selfLink ? (
             <div className="fruitlife-link-dock">
-              <p>
-                <span>Self link</span>
-                <a href={activeFruitLifeSession.metadata.selfLink}>
-                  {activeFruitLifeSession.metadata.selfLink}
-                </a>
-              </p>
-              {activeFruitLifeSession.metadata.observerLinks?.[0]?.link ? (
-                <p>
-                  <span>Observer link</span>
+              <div className="fruitlife-latest-actions">
+                <a href={activeFruitLifeSession.metadata.selfLink}>Open self link</a>
+                {activeFruitLifeSession.metadata.observerLinks?.[0]?.link ? (
                   <a href={activeFruitLifeSession.metadata.observerLinks[0].link}>
-                    {activeFruitLifeSession.metadata.observerLinks[0].link}
+                    Open first observer link
                   </a>
+                ) : null}
+              </div>
+              {activeFruitLifeSession.metadata.observerLinks?.[0]?.link ? (
+                <p className="fruitlife-latest-note">
+                  Links are generated and stored with the session. Use Remind to resend
+                  pending invitations without rebuilding the intake.
                 </p>
               ) : null}
             </div>
@@ -672,11 +719,23 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                 <article key={session.id}>
                   <div>
                     <strong>{session.participant_name ?? session.participant_email}</strong>
-                    <small>
-                      {titleizeStatus(session.session_status)}
-                      {" · "}
-                      {session.observer_completed_count}/{session.observer_goal} observers
+                    <small className="fruitlife-session-meta">
+                      <span>{displayDate(session.created_at)}</span>
+                      <span>{sessionModeFromMetadata(session)}</span>
+                      <span>{titleizeStatus(session.session_status)}</span>
+                      <span>
+                        {session.observer_completed_count}/{session.observer_goal} observers
+                      </span>
                     </small>
+                    {session.artifacts.length ? (
+                      <div className="fruitlife-session-artifacts">
+                        {session.artifacts.slice(0, 3).map((artifact) => (
+                          <small key={`${artifact.artifact_type}-${artifact.created_at}`}>
+                            {titleizeStatus(artifact.artifact_type)}
+                          </small>
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
                   <span>
                     {session.artifacts.length
@@ -708,7 +767,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       <section className="fruitlife-trend-tool" aria-label="FruitLife growth over time">
         <div className="fruitlife-trend-copy">
           <p className="section-label">Fruit over time</p>
-          <h2>See formation movement, not just one report.</h2>
+          <h2>Read the movement across seasons.</h2>
           <p>
             Each dated FruitLife artifact becomes a point on the timeline. The
             first version compares self-only and 360 runs so a person can notice
@@ -727,9 +786,46 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                 <small>Latest average</small>
               </div>
               <div>
-                <span>{fruitLifeTrend.latest?.mode.replaceAll("_", " ") ?? "FruitLife"}</span>
+                <span>{reportModeLabel(fruitLifeTrend.latest?.mode) ?? "FruitLife"}</span>
                 <small>Latest mode</small>
               </div>
+            </div>
+            <div className="fruitlife-insight-strip">
+              <p>
+                <span>Overall movement</span>
+                <strong>
+                  {fruitLifeTrend.overallDelta === null
+                    ? "Baseline ready"
+                    : `${fruitLifeTrend.overallDelta >= 0 ? "+" : ""}${fruitLifeTrend.overallDelta.toFixed(
+                        1,
+                      )} average`}
+                </strong>
+                <small>
+                  {fruitLifeTrend.overallDelta === null ? "Needs a second run" : "Since last run"}
+                </small>
+              </p>
+              <p>
+                <span>Strongest lift</span>
+                <strong>
+                  {fruitLifeTrend.topRiser
+                    ? `${fruitLifeTrend.topRiser.label} +${fruitLifeTrend.topRiser.delta?.toFixed(
+                        1,
+                      )}`
+                    : "No lift yet"}
+                </strong>
+                <small>Biggest positive change</small>
+              </p>
+              <p>
+                <span>Growth watch</span>
+                <strong>
+                  {fruitLifeTrend.growthWatch
+                    ? `${fruitLifeTrend.growthWatch.label} ${fruitLifeTrend.growthWatch.current?.toFixed(
+                        1,
+                      )}`
+                    : "Awaiting scores"}
+                </strong>
+                <small>Lowest latest fruit</small>
+              </p>
             </div>
             <svg className="fruitlife-line-chart" viewBox="0 0 760 250" role="img">
               <title>FruitLife 360 score changes over time</title>
@@ -788,6 +884,16 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                       : `${fruit.delta >= 0 ? "+" : ""}${fruit.delta.toFixed(1)} since last run`}
                   </small>
                 </p>
+              ))}
+            </div>
+            <div className="fruitlife-run-timeline">
+              {fruitLifeTrend.datedRuns.map((run) => (
+                <article key={run.id}>
+                  <span>{run.date}</span>
+                  <strong>{run.average.toFixed(1)}</strong>
+                  <small>{reportModeLabel(run.mode)}</small>
+                  <em>{run.mostVisible}</em>
+                </article>
               ))}
             </div>
           </div>
@@ -924,10 +1030,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               {artifactSnapshots.map((snapshot) => (
                 <article className="artifact-download" key={snapshot.id}>
                   <div>
-                    <span>
-                      {assessmentLabels[snapshot.assessment_type] ??
-                        snapshot.assessment_type}
-                    </span>
+                    <span>{artifactLabel(snapshot)}</span>
                     <small>
                       Completed{" "}
                       {displayDate(

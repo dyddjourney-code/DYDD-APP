@@ -257,8 +257,9 @@ h3 {
 }
 
 .fruitlife-panel h2 {
-  max-width: 16ch;
-  font-size: clamp(1.8rem, 4vw, 3.3rem);
+  max-width: 32ch;
+  font-size: clamp(1.35rem, 2vw, 2rem);
+  line-height: 1.08;
 }
 
 .fruitlife-grid {
@@ -321,9 +322,69 @@ h3 {
   font-weight: 900;
 }
 
+.fruitlife-fruit p,
+.fruitlife-panel > p {
+  max-width: 72ch;
+  margin: 0;
+  color: var(--muted);
+}
+
 .fruitlife-scale {
   grid-template-columns: minmax(0, 1fr) minmax(180px, 240px);
   align-items: center;
+}
+
+.fruitlife-rank-sorter {
+  display: grid;
+  gap: 8px;
+}
+
+.fruitlife-rank-item {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 56px;
+  padding: 10px;
+  border: 1px solid rgba(71, 107, 66, 0.22);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  cursor: grab;
+}
+
+.fruitlife-rank-item:active {
+  cursor: grabbing;
+}
+
+.fruitlife-rank-number {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--green-dark);
+  color: white;
+  font-weight: 900;
+}
+
+.fruitlife-rank-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.fruitlife-rank-actions button {
+  min-width: 54px;
+  min-height: 36px;
+  border: 1px solid rgba(71, 107, 66, 0.22);
+  border-radius: 8px;
+  background: white;
+  color: var(--green-dark);
+  font-weight: 900;
+}
+
+.fruitlife-rank-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.36;
 }
 
 .form-message {

@@ -1,10 +1,11 @@
 import {
   fruitLifeFruits,
+  fruitLifeQuestionBank,
   fruitLifeRatingOptions,
-  fruitLifeRatingPrompts,
   fruitRatingField,
   type FruitLifeResponseType,
 } from "@/lib/fruitlife360/intake";
+import { FruitRankSorter } from "./fruit-rank-sorter";
 
 type FruitLifeAssessmentFormProps = {
   action: (formData: FormData) => void | Promise<void>;
@@ -13,6 +14,13 @@ type FruitLifeAssessmentFormProps = {
   sessionId?: string;
   token?: string;
 };
+
+const fruitLifeQuestionsByFruit = new Map(
+  fruitLifeFruits.map((fruit) => [
+    fruit.key,
+    fruitLifeQuestionBank.filter((question) => question.fruitKey === fruit.key),
+  ]),
+);
 
 export function FruitLifeAssessmentForm({
   action,
@@ -56,19 +64,16 @@ export function FruitLifeAssessmentForm({
 
       <section className="fruitlife-panel">
         <p className="section-label">Fruit Ratings</p>
-        <h2>Rate each fruit from 1 to 5.</h2>
+        <h2>Rate each statement from 1 to 5.</h2>
         <div className="fruitlife-rating-list">
           {fruitLifeFruits.map((fruit) => (
             <fieldset className="fruitlife-fruit" key={fruit.key}>
               <legend>{fruit.label}</legend>
-              {fruitLifeRatingPrompts.map((prompt) => (
-                <label className="fruitlife-scale" key={prompt.key}>
-                  <span>{isSelf ? prompt.selfText : prompt.observerText}</span>
-                  <select
-                    defaultValue="3"
-                    name={fruitRatingField(fruit.key, prompt.key)}
-                    required
-                  >
+              <p>{fruitLifeQuestionsByFruit.get(fruit.key)?.[0]?.definition}</p>
+              {fruitLifeQuestionsByFruit.get(fruit.key)?.map((question) => (
+                <label className="fruitlife-scale" key={question.code}>
+                  <span>{isSelf ? question.selfText : question.observerText}</span>
+                  <select defaultValue="3" name={fruitRatingField(question.code)} required>
                     {fruitLifeRatingOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.value} - {option.label}
@@ -84,21 +89,12 @@ export function FruitLifeAssessmentForm({
 
       <section className="fruitlife-panel">
         <p className="section-label">Fruit Ranking</p>
-        <h2>Rank the fruits from most visible to most growth invitation.</h2>
-        <div className="fruitlife-grid ranks">
-          {Array.from({ length: fruitLifeFruits.length }, (_, index) => (
-            <label key={index}>
-              Rank {index + 1}
-              <select defaultValue={fruitLifeFruits[index]?.key} name={`fruit_rank_${index + 1}`}>
-                {fruitLifeFruits.map((fruit) => (
-                  <option key={fruit.key} value={fruit.key}>
-                    {fruit.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-          ))}
-        </div>
+        <h2>{isSelf ? "Rank your fruits." : "Rank the fruits you see."}</h2>
+        <p>
+          Drag the fruits into order from most consistently visible at the top to greatest
+          growth invitation at the bottom.
+        </p>
+        <FruitRankSorter />
       </section>
 
       <section className="fruitlife-panel">

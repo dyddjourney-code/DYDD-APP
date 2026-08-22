@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { sendResendEmail } from "@/lib/email/resend";
 import {
   fruitLifeFruits,
-  fruitLifeRatingPrompts,
+  fruitLifeQuestionBank,
   fruitRatingField,
   type FruitLifeResponseType,
 } from "@/lib/fruitlife360/intake";
@@ -84,24 +84,33 @@ async function getAppBaseUrl() {
 function buildScores(formData: FormData) {
   const answers: Record<string, Record<string, number>> = {};
   const fruitAverages: Record<string, number> = {};
+  const questionScores: Record<string, number> = {};
 
   for (const fruit of fruitLifeFruits) {
     const fruitAnswers: Record<string, number> = {};
+    const fruitQuestions = fruitLifeQuestionBank.filter(
+      (question) => question.fruitKey === fruit.key,
+    );
 
-    for (const prompt of fruitLifeRatingPrompts) {
-      fruitAnswers[prompt.key] = Math.min(
+    for (const question of fruitQuestions) {
+      const score = Math.min(
         5,
-        Math.max(1, getNumber(formData, fruitRatingField(fruit.key, prompt.key), 3)),
+        Math.max(1, getNumber(formData, fruitRatingField(question.code), 3)),
       );
+      fruitAnswers[question.code] = score;
+      questionScores[question.code] = score;
     }
 
+    const values = Object.values(fruitAnswers);
+    const averageScore = values.reduce((sum, value) => sum + value, 0) / values.length;
+    fruitAnswers.visible = averageScore;
+    fruitAnswers.consistent = averageScore;
+    fruitAnswers.pressure = values[2] ?? averageScore;
     answers[fruit.key] = fruitAnswers;
-    fruitAverages[fruit.key] =
-      Object.values(fruitAnswers).reduce((sum, value) => sum + value, 0) /
-      fruitLifeRatingPrompts.length;
+    fruitAverages[fruit.key] = averageScore;
   }
 
-  return { answers, fruitAverages };
+  return { answers, fruitAverages, questionScores };
 }
 
 function getFruitRank(formData: FormData) {
@@ -254,7 +263,7 @@ async function saveResponse({
   const reflectionGrowth = getString(formData, "reflection_growth");
   const reflectionEncouragement = getString(formData, "reflection_encouragement");
   const fruitRank = getFruitRank(formData);
-  const { answers, fruitAverages } = buildScores(formData);
+  const { answers, fruitAverages, questionScores } = buildScores(formData);
   const submittedAt = new Date().toISOString();
 
   if (!reviewerName) {
@@ -279,6 +288,7 @@ async function saveResponse({
       fruitAverages,
       growthFocus: fruitRank.slice(-3),
       mostVisible: fruitRank.slice(0, 3),
+      questionScores,
     },
     fruit_rank: fruitRank,
     relationship_label: relationship || (responseType === "self" ? "Self" : null),

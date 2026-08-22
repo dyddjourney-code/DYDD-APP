@@ -67,7 +67,7 @@ New submissions are mirrored by the protected cron route:
 GET /api/cron/assessment-sync
 ```
 
-The route reads the same live Google Sheet tabs as the backfill script and upserts snapshots idempotently by `(assessment_type, source, source_response_id)`, so reruns do not create duplicate submissions. It is configured in `vercel.json` to run daily on Vercel's current Hobby cron allowance. Use the manual sync command when a class or test batch needs an immediate refresh.
+The route reads the same live Google Sheet tabs as the backfill script and upserts snapshots idempotently by `(assessment_type, source, source_response_id)`, so reruns do not create duplicate submissions. It is configured in `vercel.json` to run hourly now that the DYDD Vercel team is on Pro. Use the manual sync command when a class or test batch needs an immediate refresh.
 
 Required production environment variables:
 
@@ -82,6 +82,24 @@ Manual smoke test:
 ```bash
 curl -H "Authorization: Bearer $CRON_SECRET" \
   "https://dydd-online-school.vercel.app/api/cron/assessment-sync?dryRun=1&limit=1"
+```
+
+## FruitLife Session Copy
+
+FruitLife 360 has a second copy step while the app is taking ownership of the workflow. The normal assessment sync mirrors scored report outputs into `assessment_snapshots` as `fruit_360`. Then the FruitLife session sync copies those mirrored snapshots into `fruitlife_360_sessions`, where the app can track participant/session/report state without editing the live workbook.
+
+Dry run:
+
+```bash
+curl -H "Authorization: Bearer $CRON_SECRET" \
+  "https://dydd-online-school.vercel.app/api/fruitlife360/session-sync?dryRun=1&limit=25"
+```
+
+Apply:
+
+```bash
+curl -X POST -H "Authorization: Bearer $DYDD_ASSESSMENT_SYNC_SECRET" \
+  "https://dydd-online-school.vercel.app/api/fruitlife360/session-sync?limit=25"
 ```
 
 ## Current Dry-Run Counts

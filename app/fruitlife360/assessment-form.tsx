@@ -38,20 +38,41 @@ export function FruitLifeAssessmentForm({
 
       {message ? <p className="form-message">{message}</p> : null}
 
+      <section className="fruitlife-assessment-card">
+        <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
+        <div>
+          <p className="section-label">{isSelf ? "Self path" : "Observer path"}</p>
+          <h2>{isSelf ? "Notice what is visible right now." : "Help them see with kindness."}</h2>
+          <p>
+            This takes about 6 minutes: identify yourself, rate 27 statements, rank the
+            fruit, and leave language the report can use.
+          </p>
+        </div>
+        <div className="fruitlife-assessment-steps">
+          <span>Identity</span>
+          <span>Ratings</span>
+          <span>Rank</span>
+          <span>Reflection</span>
+        </div>
+      </section>
+
       <section className="fruitlife-panel">
         <p className="section-label">{isSelf ? "Self Reflection" : "Observer Reflection"}</p>
         <h2>{isSelf ? "Tell the truth with hope." : "Offer clear, helpful feedback."}</h2>
         <div className="fruitlife-grid two">
           <label>
             Your name
+            <small>{isSelf ? "Use the name you want connected to the report." : "So the participant knows who offered the feedback."}</small>
             <input name="reviewer_name" required type="text" />
           </label>
           <label>
             Your email
+            <small>{isSelf ? "Required for the self reflection." : "Optional, but helpful if follow-up is needed."}</small>
             <input name="reviewer_email" required={isSelf} type="email" />
           </label>
           <label>
             Relationship
+            <small>{isSelf ? "Locked to Self." : "Example: friend, spouse, pastor, coworker."}</small>
             <input
               defaultValue={isSelf ? "Self" : ""}
               name="relationship_label"
@@ -67,7 +88,7 @@ export function FruitLifeAssessmentForm({
         <h2>Rate each statement from 1 to 5.</h2>
         <div className="fruitlife-rating-list">
           {fruitLifeFruits.map((fruit) => (
-            <fieldset className="fruitlife-fruit" key={fruit.key}>
+            <fieldset className={`fruitlife-fruit ${fruit.key}`} key={fruit.key}>
               <legend>{fruit.label}</legend>
               <p>{fruitLifeQuestionsByFruit.get(fruit.key)?.[0]?.definition}</p>
               {fruitLifeQuestionsByFruit.get(fruit.key)?.map((question) => (

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { sendFruitLifeReminder } from "@/app/fruitlife360/actions";
 import { signOut } from "@/app/login/actions";
 import {
   assessmentLabels,
@@ -54,6 +55,10 @@ type FruitLifeDashboardSession = {
   }>;
   created_at: string;
   id: string;
+  metadata: {
+    observerLinks?: Array<{ email?: string; link?: string; name?: string; relationship?: string }>;
+    selfLink?: string;
+  } | null;
   observer_completed_count: number;
   observer_goal: number;
   participant_email: string | null;
@@ -186,7 +191,7 @@ async function getFruitLifeDashboardSessions({
   let query = supabaseAdmin
     .from("fruitlife_360_sessions")
     .select(
-      "id,participant_name,participant_email,session_status,report_status,observer_goal,observer_completed_count,response_count,self_completed_at,report_url,created_at,updated_at",
+      "id,metadata,participant_name,participant_email,session_status,report_status,observer_goal,observer_completed_count,response_count,self_completed_at,report_url,created_at,updated_at",
     )
     .order("updated_at", { ascending: false })
     .limit(isAdmin ? 6 : 4);
@@ -362,6 +367,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   });
   const activeFruitLifeSession = fruitLifeSessions[0] ?? null;
   const fruitLifeCompletion = getFruitLifeCompletion(activeFruitLifeSession);
+  const hqReturnPath = withReviewQuery("/hq", reviewParams);
   const openCourseCount = [
     hasDyddCourseAccess,
     hasDesignIdCourseAccess,
@@ -545,6 +551,24 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               <small>Report payload</small>
             </p>
           </div>
+          {activeFruitLifeSession?.metadata?.selfLink ? (
+            <div className="fruitlife-link-dock">
+              <p>
+                <span>Self link</span>
+                <a href={activeFruitLifeSession.metadata.selfLink}>
+                  {activeFruitLifeSession.metadata.selfLink}
+                </a>
+              </p>
+              {activeFruitLifeSession.metadata.observerLinks?.[0]?.link ? (
+                <p>
+                  <span>Observer link</span>
+                  <a href={activeFruitLifeSession.metadata.observerLinks[0].link}>
+                    {activeFruitLifeSession.metadata.observerLinks[0].link}
+                  </a>
+                </p>
+              ) : null}
+            </div>
+          ) : null}
           <div className="fruitlife-session-list" id="fruitlife-artifacts">
             {fruitLifeSessions.length ? (
               fruitLifeSessions.map((session) => (
@@ -564,6 +588,11 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                         }`
                       : "No artifact"}
                   </span>
+                  <form action={sendFruitLifeReminder}>
+                    <input name="session_id" type="hidden" value={session.id} />
+                    <input name="return_to" type="hidden" value={hqReturnPath} />
+                    <button type="submit">Remind</button>
+                  </form>
                 </article>
               ))
             ) : (

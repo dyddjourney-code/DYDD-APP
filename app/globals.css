@@ -12,6 +12,15 @@
   --brass-soft: #f3e4c4;
   --clay: #8a6046;
   --blueprint: #476b42;
+  --fruit-love: #9e5a4f;
+  --fruit-joy: #d4a451;
+  --fruit-peace: #647c9b;
+  --fruit-patience: #8b7757;
+  --fruit-kindness: #739d5e;
+  --fruit-goodness: #4a6239;
+  --fruit-faithfulness: #5a496b;
+  --fruit-gentleness: #a9a36f;
+  --fruit-selfcontrol: #52737a;
   --white: #ffffff;
   --shadow: 0 24px 70px rgba(70, 58, 35, 0.11);
 }
@@ -221,9 +230,16 @@ h3 {
 .fruitlife-shell {
   min-height: 100dvh;
   padding: clamp(22px, 5vw, 56px);
+  background:
+    radial-gradient(circle at 84% 12%, rgba(212, 164, 81, 0.12), transparent 24rem),
+    radial-gradient(circle at 8% 38%, rgba(117, 154, 91, 0.1), transparent 22rem);
 }
 
 .fruitlife-hero {
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+  gap: clamp(24px, 5vw, 58px);
+  align-items: end;
   max-width: 980px;
   padding: clamp(30px, 6vw, 72px) 0 clamp(18px, 4vw, 40px);
 }
@@ -236,6 +252,23 @@ h3 {
   max-width: 11ch;
 }
 
+.fruitlife-hero-mark {
+  display: grid;
+  align-content: end;
+  min-height: 172px;
+  padding: 18px;
+  border: 1px solid rgba(74, 98, 57, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: 0 18px 48px rgba(70, 58, 35, 0.1);
+}
+
+.fruitlife-hero-mark img,
+.fruitlife-assessment-card img {
+  width: 100%;
+  height: auto;
+}
+
 .fruitlife-form {
   display: grid;
   gap: 18px;
@@ -243,7 +276,43 @@ h3 {
 }
 
 .fruitlife-signup {
-  max-width: 840px;
+  max-width: 1080px;
+}
+
+.fruitlife-intake-overview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid rgba(74, 98, 57, 0.18);
+  border-radius: 8px;
+  background: rgba(74, 98, 57, 0.18);
+}
+
+.fruitlife-intake-overview p {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  margin: 0;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--green-dark);
+  font-weight: 900;
+}
+
+.fruitlife-intake-overview span,
+.fruitlife-observer-row > span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--green-dark);
+  color: white;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.86rem;
+  font-weight: 900;
 }
 
 .fruitlife-panel {
@@ -260,6 +329,50 @@ h3 {
   max-width: 32ch;
   font-size: clamp(1.35rem, 2vw, 2rem);
   line-height: 1.08;
+}
+
+.fruitlife-assessment-card {
+  display: grid;
+  grid-template-columns: minmax(180px, 230px) minmax(0, 1fr) minmax(160px, 210px);
+  gap: clamp(18px, 3vw, 30px);
+  align-items: center;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid rgba(74, 98, 57, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(246, 248, 243, 0.86)),
+    var(--white);
+  box-shadow: 0 18px 48px rgba(70, 58, 35, 0.1);
+}
+
+.fruitlife-assessment-card h2 {
+  max-width: 22ch;
+  font-size: clamp(1.45rem, 2.8vw, 2.65rem);
+  line-height: 0.98;
+}
+
+.fruitlife-assessment-card p:not(.section-label) {
+  max-width: 54ch;
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.fruitlife-assessment-steps {
+  display: grid;
+  gap: 8px;
+}
+
+.fruitlife-assessment-steps span {
+  padding: 9px 11px;
+  border: 1px solid rgba(74, 98, 57, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--green-dark);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .fruitlife-grid {
@@ -284,6 +397,13 @@ h3 {
   font-weight: 800;
 }
 
+.fruitlife-form label small {
+  color: rgba(102, 114, 99, 0.82);
+  font-size: 0.78rem;
+  font-weight: 760;
+  line-height: 1.35;
+}
+
 .fruitlife-form input,
 .fruitlife-form select,
 .fruitlife-form textarea {
@@ -295,6 +415,18 @@ h3 {
   background: var(--white);
   color: var(--ink);
   font: inherit;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.fruitlife-form input:focus,
+.fruitlife-form select:focus,
+.fruitlife-form textarea:focus {
+  outline: none;
+  border-color: rgba(74, 98, 57, 0.62);
+  box-shadow: 0 0 0 4px rgba(117, 154, 91, 0.13);
 }
 
 .fruitlife-form textarea {
@@ -311,10 +443,22 @@ h3 {
   display: grid;
   gap: 12px;
   margin: 0;
-  padding: 18px;
-  border: 1px solid rgba(71, 107, 66, 0.22);
+  padding: 18px 18px 18px 22px;
+  border: 1px solid rgba(71, 107, 66, 0.18);
+  border-left: 6px solid var(--fruit-goodness);
   border-radius: 8px;
+  background: rgba(255, 255, 255, 0.68);
 }
+
+.fruitlife-fruit.love { border-left-color: var(--fruit-love); }
+.fruitlife-fruit.joy { border-left-color: var(--fruit-joy); }
+.fruitlife-fruit.peace { border-left-color: var(--fruit-peace); }
+.fruitlife-fruit.patience { border-left-color: var(--fruit-patience); }
+.fruitlife-fruit.kindness { border-left-color: var(--fruit-kindness); }
+.fruitlife-fruit.goodness { border-left-color: var(--fruit-goodness); }
+.fruitlife-fruit.faithfulness { border-left-color: var(--fruit-faithfulness); }
+.fruitlife-fruit.gentleness { border-left-color: var(--fruit-gentleness); }
+.fruitlife-fruit.self_control { border-left-color: var(--fruit-selfcontrol); }
 
 .fruitlife-fruit legend {
   padding: 0 8px;
@@ -385,6 +529,35 @@ h3 {
 .fruitlife-rank-actions button:disabled {
   cursor: not-allowed;
   opacity: 0.36;
+}
+
+.fruitlife-observer-roster {
+  display: grid;
+  gap: 10px;
+}
+
+.fruitlife-observer-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 0.7fr) minmax(0, 1fr) minmax(0, 0.7fr);
+  gap: 12px;
+  align-items: end;
+  padding: 12px;
+  border: 1px solid rgba(74, 98, 57, 0.14);
+  border-radius: 8px;
+  background: rgba(246, 248, 243, 0.62);
+}
+
+.fruitlife-intake-note {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  max-width: 1080px;
+  padding: 14px 16px;
+  border-left: 4px solid var(--brass);
+  background: rgba(243, 228, 196, 0.42);
+  color: var(--green-dark);
+  line-height: 1.55;
 }
 
 .form-message {
@@ -1765,6 +1938,37 @@ h3 {
   font-weight: 800;
 }
 
+.fruitlife-link-dock {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.fruitlife-link-dock p {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+}
+
+.fruitlife-link-dock span {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fruitlife-link-dock a {
+  overflow-wrap: anywhere;
+  color: white;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
 .fruitlife-session-list {
   display: grid;
   gap: 8px;
@@ -1772,7 +1976,7 @@ h3 {
 
 .fruitlife-session-list article {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 12px;
   align-items: center;
   padding: 12px 0;
@@ -1805,6 +2009,26 @@ h3 {
   font-size: 0.82rem;
   font-weight: 850;
   white-space: nowrap;
+}
+
+.fruitlife-session-list form {
+  margin: 0;
+}
+
+.fruitlife-session-list button {
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.fruitlife-session-list button:active {
+  transform: translateY(1px);
 }
 
 .ask-dydi-hq {
@@ -3575,8 +3799,22 @@ h3 {
 
   .fruitlife-grid.two,
   .fruitlife-grid.ranks,
-  .fruitlife-scale {
+  .fruitlife-scale,
+  .fruitlife-hero,
+  .fruitlife-assessment-card,
+  .fruitlife-observer-row,
+  .fruitlife-intake-note,
+  .fruitlife-session-list article {
     grid-template-columns: 1fr;
+  }
+
+  .fruitlife-intake-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fruitlife-hero-mark,
+  .fruitlife-assessment-card img {
+    max-width: 260px;
   }
 
   .fruitlife-panel h2 {

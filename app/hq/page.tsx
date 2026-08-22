@@ -108,7 +108,7 @@ const toolCatalog = [
     detail: "A free 360-style mirror for visible fruit and growth conversations.",
     href: "/fruitlife360",
     label: "FruitLife 360",
-    logo: "/brand/tools/fruit-360-logo.svg",
+    logo: "/brand/tools/fruitful-life-360-logo.jpg",
     price: "Free",
   },
 ];
@@ -475,7 +475,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
 
       <section className="fruitlife-workbench" aria-label="FruitLife 360 workflow">
         <div className="fruitlife-workbench-lead">
-          <img src="/brand/tools/fruit-360-logo.svg" alt="FruitLife 360 logo" />
+          <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
           <p className="section-label">FruitLife 360 workflow</p>
           <h2>Start the intake, watch responses, then queue the report payload.</h2>
           <p>

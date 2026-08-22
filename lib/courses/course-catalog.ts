@@ -203,7 +203,7 @@ export const learningCourses = [
       "Dydi should treat FruitLife as formation feedback: encouragement, pressure awareness, and next practices, never shame or fixed identity.",
     description:
       "A formation class for reading visible fruit, pressure patterns, and growth invitations with prayer, humility, and practice.",
-    logo: "/brand/tools/fruit-360-logo.svg",
+    logo: "/brand/tools/fruitful-life-360-logo.jpg",
     modules: [
       {
         slug: "orientation",

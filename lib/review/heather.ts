@@ -13,6 +13,8 @@ export const heatherReviewEmails = [
   "heather.willoughby@sbesinc.com",
 ];
 export const heatherReviewNames = [heatherReviewName, "Heather Lawton"];
+export const jordanReviewEmail = "j94gray@gmail.com";
+export const jordanReviewName = "Jordan Gray";
 export const newReviewName = "Jordan Preview";
 
 export type ReviewSearchParams = {
@@ -65,12 +67,15 @@ export async function getHeatherReviewReport(params?: ReviewSearchParams | null)
   });
 }
 
-export function getNewReviewReport(params?: ReviewSearchParams | null) {
+export async function getNewReviewReport(params?: ReviewSearchParams | null) {
   if (!isNewReviewRequest(params)) {
     return null;
   }
 
-  return { all: [], latest: [] };
+  return getAssessmentSnapshotsForParticipantMatch({
+    displayNames: [jordanReviewName],
+    emails: [jordanReviewEmail],
+  });
 }
 
 export function buildHeatherReviewContext(

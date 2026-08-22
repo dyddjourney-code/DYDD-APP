@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { sendFruitLifeReminder } from "@/app/fruitlife360/actions";
 import { signOut } from "@/app/login/actions";
 import {
@@ -9,7 +10,9 @@ import {
   getAssessmentSnapshotsForUser,
   type StudentAssessmentReport,
   latestByAssessment,
+  compactValue,
   snapshotHighlights,
+  snapshotSection,
   type AssessmentSnapshotSummary,
 } from "@/lib/assessments/student-context";
 import { allCourseSummaries } from "@/lib/courses/course-catalog";
@@ -25,6 +28,7 @@ import {
   heatherReviewName,
   isHeatherReviewRequest,
   isNewReviewRequest,
+  jordanReviewEmail,
   newReviewName,
   type ReviewSearchParams,
   withReviewQuery,
@@ -74,6 +78,18 @@ type FruitLifeDashboardSession = {
 type HqPageProps = {
   searchParams?: Promise<ReviewSearchParams>;
 };
+
+const fruitTrendMetrics = [
+  { color: "var(--fruit-love)", key: "Love", label: "Love" },
+  { color: "var(--fruit-joy)", key: "Joy", label: "Joy" },
+  { color: "var(--fruit-peace)", key: "Peace", label: "Peace" },
+  { color: "var(--fruit-patience)", key: "Patience", label: "Patience" },
+  { color: "var(--fruit-kindness)", key: "Kindness", label: "Kindness" },
+  { color: "var(--fruit-goodness)", key: "Goodness", label: "Goodness" },
+  { color: "var(--fruit-faithfulness)", key: "Faithfulness", label: "Faithfulness" },
+  { color: "var(--fruit-gentleness)", key: "Gentleness", label: "Gentleness" },
+  { color: "var(--fruit-selfcontrol)", key: "Self-control", label: "Self-Control" },
+];
 
 const toolCatalog = [
   {
@@ -160,6 +176,85 @@ function isAdminEmail(email: string | null | undefined) {
 
 function titleizeStatus(value: string | null | undefined) {
   return value ? value.replace(/_/g, " ") : "not started";
+}
+
+function readScoreNumber(source: Record<string, unknown>, key: string) {
+  const value = source[key];
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  return null;
+}
+
+function fruitScoreFromSnapshot(snapshot: AssessmentSnapshotSummary, fruitKey: string) {
+  const scores = snapshotSection(snapshot, "scores");
+  const observer = readScoreNumber(scores, `${fruitKey}_Observer`);
+  const self = readScoreNumber(scores, `${fruitKey}_Self`);
+
+  return observer ?? self;
+}
+
+function buildFruitLifeTrend(snapshots: AssessmentSnapshotSummary[]) {
+  const fruitSnapshots = snapshots
+    .filter((snapshot) => snapshot.assessment_type === "fruit_360")
+    .sort((a, b) => {
+      const dateA = new Date(a.source_submitted_at ?? a.created_at).getTime();
+      const dateB = new Date(b.source_submitted_at ?? b.created_at).getTime();
+      return dateA - dateB;
+    });
+
+  const datedRuns = fruitSnapshots.map((snapshot, index) => {
+    const values = fruitTrendMetrics.flatMap((fruit) => {
+      const value = fruitScoreFromSnapshot(snapshot, fruit.key);
+      return value === null ? [] : [value];
+    });
+    const average = values.length
+      ? values.reduce((sum, value) => sum + value, 0) / values.length
+      : 0;
+
+    return {
+      average,
+      date: displayDate(snapshot.source_submitted_at ?? snapshot.created_at),
+      id: snapshot.id,
+      index,
+      mode: compactValue(snapshotSection(snapshot, "summary").Report_Mode) || "FruitLife",
+      snapshot,
+    };
+  });
+
+  const latest = datedRuns.at(-1);
+  const previous = datedRuns.length > 1 ? datedRuns.at(-2) : null;
+  const changes = latest
+    ? fruitTrendMetrics
+        .map((fruit) => {
+          const current = fruitScoreFromSnapshot(latest.snapshot, fruit.key);
+          const prior = previous ? fruitScoreFromSnapshot(previous.snapshot, fruit.key) : null;
+          return {
+            ...fruit,
+            current,
+            delta: current !== null && prior !== null ? current - prior : null,
+          };
+        })
+        .filter((fruit) => fruit.current !== null)
+    : [];
+  const pointSpacing = datedRuns.length > 1 ? 680 / (datedRuns.length - 1) : 0;
+  const series = fruitTrendMetrics
+    .map((fruit) => {
+      const points = datedRuns.flatMap((run, index) => {
+        const value = fruitScoreFromSnapshot(run.snapshot, fruit.key);
+        if (value === null) return [];
+        const x = 40 + pointSpacing * index;
+        const y = 222 - ((Math.max(1, Math.min(5, value)) - 1) / 4) * 170;
+        return [{ x, y, value }];
+      });
+
+      return { ...fruit, points };
+    })
+    .filter((fruit) => fruit.points.length);
+
+  return { changes, datedRuns, latest, series };
 }
 
 function getFruitLifeCompletion(session: FruitLifeDashboardSession | null) {
@@ -319,7 +414,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   const heatherPreview = isHeatherReviewRequest(reviewParams);
   const newPreview = isNewReviewRequest(reviewParams);
   const reviewReport =
-    (await getHeatherReviewReport(reviewParams)) ?? getNewReviewReport(reviewParams);
+    (await getHeatherReviewReport(reviewParams)) ?? (await getNewReviewReport(reviewParams));
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -358,7 +453,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   const fruitLifeDashboardEmail = heatherPreview
     ? "willoughbyhs@gmail.com"
     : newPreview
-      ? null
+      ? jordanReviewEmail
       : normalizeEmail(profile?.email ?? user?.email);
   const fruitLifeSessions = await getFruitLifeDashboardSessions({
     email: fruitLifeDashboardEmail,
@@ -379,7 +474,9 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     (count, module) => count + module.lessons.length,
     0,
   );
-  const completedArtifactCount = snapshots.length;
+  const artifactSnapshots = assessmentReport.all;
+  const completedArtifactCount = artifactSnapshots.length;
+  const fruitLifeTrend = buildFruitLifeTrend(assessmentReport.all);
 
   const courseAccessBySlug: Record<string, boolean> = {
     "designid-foundations": hasDesignIdCourseAccess,
@@ -608,6 +705,103 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         </div>
       </section>
 
+      <section className="fruitlife-trend-tool" aria-label="FruitLife growth over time">
+        <div className="fruitlife-trend-copy">
+          <p className="section-label">Fruit over time</p>
+          <h2>See formation movement, not just one report.</h2>
+          <p>
+            Each dated FruitLife artifact becomes a point on the timeline. The
+            first version compares self-only and 360 runs so a person can notice
+            what is rising, steady, or asking for attention over time.
+          </p>
+        </div>
+        {fruitLifeTrend.datedRuns.length ? (
+          <div className="fruitlife-trend-board">
+            <div className="fruitlife-trend-header">
+              <div>
+                <span>{fruitLifeTrend.datedRuns.length}</span>
+                <small>Dated runs</small>
+              </div>
+              <div>
+                <span>{fruitLifeTrend.latest?.average.toFixed(1) ?? "0.0"}</span>
+                <small>Latest average</small>
+              </div>
+              <div>
+                <span>{fruitLifeTrend.latest?.mode.replaceAll("_", " ") ?? "FruitLife"}</span>
+                <small>Latest mode</small>
+              </div>
+            </div>
+            <svg className="fruitlife-line-chart" viewBox="0 0 760 250" role="img">
+              <title>FruitLife 360 score changes over time</title>
+              {[1, 2, 3, 4, 5].map((level) => {
+                const y = 222 - ((level - 1) / 4) * 170;
+                return (
+                  <g key={level}>
+                    <line x1="40" x2="720" y1={y} y2={y} />
+                    <text x="14" y={y + 4}>{level}</text>
+                  </g>
+                );
+              })}
+              {fruitLifeTrend.series.map((series) => (
+                <g key={series.key}>
+                  <polyline
+                    fill="none"
+                    points={series.points.map((point) => `${point.x},${point.y}`).join(" ")}
+                    stroke={series.color}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="3"
+                  />
+                  {series.points.map((point) => (
+                    <circle
+                      cx={point.x}
+                      cy={point.y}
+                      fill="var(--panel)"
+                      key={`${series.key}-${point.x}-${point.y}`}
+                      r="4.4"
+                      stroke={series.color}
+                      strokeWidth="2.4"
+                    />
+                  ))}
+                </g>
+              ))}
+              {fruitLifeTrend.datedRuns.map((run, index) => {
+                const x =
+                  fruitLifeTrend.datedRuns.length > 1
+                    ? 40 + (680 / (fruitLifeTrend.datedRuns.length - 1)) * index
+                    : 380;
+                return (
+                  <text className="fruitlife-date-label" key={run.id} x={x} y="244">
+                    {run.date}
+                  </text>
+                );
+              })}
+            </svg>
+            <div className="fruitlife-change-grid">
+              {fruitLifeTrend.changes.map((fruit) => (
+                <p key={fruit.key} style={{ "--fruit-color": fruit.color } as CSSProperties}>
+                  <span>{fruit.label}</span>
+                  <strong>{fruit.current?.toFixed(1)}</strong>
+                  <small>
+                    {fruit.delta === null
+                      ? "Baseline"
+                      : `${fruit.delta >= 0 ? "+" : ""}${fruit.delta.toFixed(1)} since last run`}
+                  </small>
+                </p>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="fruitlife-trend-empty">
+            <strong>No FruitLife timeline yet.</strong>
+            <p>
+              Complete or seed two dated FruitLife artifacts and this panel will
+              draw the change overview automatically.
+            </p>
+          </div>
+        )}
+      </section>
+
       <section className="ask-dydi-hq" id="ask-dydi" aria-label="Ask Dydi">
         <div className="dydi-host">
           <img src="/brand/characters/dydi-full-body.png" alt="Dydi host" />
@@ -725,9 +919,9 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             <p className="section-label">Artifacts</p>
             <h2>Completed shelf</h2>
           </div>
-          {snapshots?.length ? (
+          {artifactSnapshots?.length ? (
             <div className="artifact-download-list">
-              {snapshots.map((snapshot) => (
+              {artifactSnapshots.map((snapshot) => (
                 <article className="artifact-download" key={snapshot.id}>
                   <div>
                     <span>

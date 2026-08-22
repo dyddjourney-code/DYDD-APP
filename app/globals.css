@@ -2031,6 +2031,149 @@ h3 {
   transform: translateY(1px);
 }
 
+.fruitlife-trend-tool {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.48fr) minmax(0, 1fr);
+  gap: clamp(20px, 4vw, 38px);
+  align-items: stretch;
+  margin-bottom: 18px;
+  padding: clamp(22px, 4vw, 38px);
+  border: 1px solid rgba(36, 63, 39, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(112deg, rgba(255, 255, 255, 0.94), rgba(251, 250, 244, 0.96)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(100, 124, 155, 0.07) 0,
+      rgba(100, 124, 155, 0.07) 1px,
+      transparent 1px,
+      transparent 30px
+    );
+  box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
+}
+
+.fruitlife-trend-copy {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.fruitlife-trend-copy h2 {
+  max-width: 13ch;
+  font-size: clamp(2rem, 4vw, 3.8rem);
+  line-height: 1;
+}
+
+.fruitlife-trend-copy p:not(.section-label),
+.fruitlife-trend-empty p {
+  max-width: 54ch;
+  color: var(--muted);
+  line-height: 1.72;
+}
+
+.fruitlife-trend-board,
+.fruitlife-trend-empty {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.fruitlife-trend-header {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--line);
+}
+
+.fruitlife-trend-header div {
+  min-width: 0;
+  padding: 12px;
+  background: rgba(251, 250, 244, 0.92);
+}
+
+.fruitlife-trend-header span {
+  display: block;
+  color: var(--green-dark);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 1.1rem;
+  font-weight: 900;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+  text-transform: capitalize;
+}
+
+.fruitlife-trend-header small,
+.fruitlife-change-grid small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.fruitlife-line-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 18px;
+  overflow: visible;
+}
+
+.fruitlife-line-chart line {
+  stroke: rgba(36, 63, 39, 0.13);
+  stroke-width: 1;
+}
+
+.fruitlife-line-chart text {
+  fill: var(--muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.fruitlife-line-chart .fruitlife-date-label {
+  text-anchor: middle;
+}
+
+.fruitlife-change-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.fruitlife-change-grid p {
+  min-width: 0;
+  margin: 0;
+  padding: 12px;
+  border-top: 4px solid var(--fruit-color);
+  border-radius: 8px;
+  background: rgba(251, 250, 244, 0.84);
+}
+
+.fruitlife-change-grid span {
+  display: block;
+  color: var(--ink);
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.fruitlife-change-grid strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--green-dark);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
 .ask-dydi-hq {
   display: grid;
   grid-template-columns: minmax(420px, 0.84fr) minmax(320px, 0.78fr);
@@ -3463,6 +3606,7 @@ h3 {
   .login-shell,
   .ask-dydi-hq,
   .fruitlife-workbench,
+  .fruitlife-trend-tool,
   .hq-hero,
   .hq-grid,
   .hq-summary-strip,
@@ -3592,6 +3736,10 @@ h3 {
   .artifact-download dl {
     grid-template-columns: 1fr;
   }
+
+  .fruitlife-trend-header {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 560px) {
@@ -3637,6 +3785,7 @@ h3 {
   .fruitlife-kpis,
   .fruitlife-session-list article,
   .fruitlife-stage-grid,
+  .fruitlife-change-grid,
   .hq-topbar,
   .card-heading,
   .course-map,

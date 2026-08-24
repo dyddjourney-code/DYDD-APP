@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/assessment-sync",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/fruitlife360/report-worker",
+      "schedule": "*/15 * * * *"
     }
   ]
 }

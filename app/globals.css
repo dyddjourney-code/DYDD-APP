@@ -1732,8 +1732,8 @@ h3 {
   border: 1px solid rgba(36, 63, 39, 0.2);
   border-radius: 8px;
   background:
-    linear-gradient(90deg, rgba(22, 33, 22, 0.9), rgba(36, 63, 39, 0.58), rgba(36, 63, 39, 0.16)),
-    url("/brand/dydd-cabin-porch.png") center / cover no-repeat;
+    linear-gradient(90deg, rgba(22, 33, 22, 0.88), rgba(36, 63, 39, 0.54), rgba(36, 63, 39, 0.08)),
+    url("/brand/dydd-journey-road-waymarkers.png") center / cover no-repeat;
   color: var(--white);
   box-shadow: 0 22px 48px rgba(70, 58, 35, 0.12);
 }
@@ -1743,8 +1743,8 @@ h3 {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 18% 28%, rgba(243, 228, 196, 0.18), transparent 30%),
-    linear-gradient(0deg, rgba(22, 33, 22, 0.34), transparent 44%);
+    radial-gradient(circle at 18% 28%, rgba(243, 228, 196, 0.14), transparent 30%),
+    linear-gradient(0deg, rgba(22, 33, 22, 0.24), transparent 46%);
   pointer-events: none;
 }
 

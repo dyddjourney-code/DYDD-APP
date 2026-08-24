@@ -1647,22 +1647,19 @@ h3 {
 .basecamp-wayfinding {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 1px;
-  overflow: hidden;
+  gap: 10px;
   margin-bottom: 18px;
-  border: 1px solid rgba(36, 63, 39, 0.18);
-  border-radius: 8px;
-  background: rgba(71, 107, 66, 0.16);
-  box-shadow: 0 18px 42px rgba(70, 58, 35, 0.06);
 }
 
 .basecamp-wayfinding a {
   position: relative;
   display: grid;
   align-content: start;
-  gap: 10px;
-  min-height: 188px;
-  padding: 18px;
+  gap: 9px;
+  min-height: 150px;
+  padding: 16px;
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 8px;
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(251, 250, 244, 0.92)),
     repeating-linear-gradient(
@@ -1674,6 +1671,7 @@ h3 {
     );
   color: var(--ink);
   text-decoration: none;
+  box-shadow: 0 14px 30px rgba(70, 58, 35, 0.05);
   transition:
     background 180ms ease,
     transform 180ms ease;
@@ -1696,10 +1694,16 @@ h3 {
 }
 
 .basecamp-wayfinding span {
+  width: fit-content;
+  padding: 5px 8px;
+  border: 1px solid rgba(71, 107, 66, 0.18);
+  border-radius: 999px;
+  background: rgba(234, 240, 226, 0.72);
   color: var(--brass);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.82rem;
+  font-size: 0.68rem;
   font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .basecamp-wayfinding strong {
@@ -1715,20 +1719,109 @@ h3 {
   line-height: 1.45;
 }
 
-.basecamp-wayfinding em {
-  align-self: end;
-  width: fit-content;
-  margin-top: 12px;
-  padding: 6px 9px;
-  border: 1px solid rgba(71, 107, 66, 0.18);
+.journey-orientation {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(300px, 0.72fr) minmax(0, 1fr);
+  gap: clamp(20px, 4vw, 42px);
+  align-items: end;
+  overflow: hidden;
+  min-height: 440px;
+  margin-bottom: 18px;
+  padding: clamp(24px, 5vw, 52px);
+  border: 1px solid rgba(36, 63, 39, 0.2);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(22, 33, 22, 0.9), rgba(36, 63, 39, 0.58), rgba(36, 63, 39, 0.16)),
+    url("/brand/dydd-cabin-porch.png") center / cover no-repeat;
+  color: var(--white);
+  box-shadow: 0 22px 48px rgba(70, 58, 35, 0.12);
+}
+
+.journey-orientation::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 28%, rgba(243, 228, 196, 0.18), transparent 30%),
+    linear-gradient(0deg, rgba(22, 33, 22, 0.34), transparent 44%);
+  pointer-events: none;
+}
+
+.orientation-copy,
+.orientation-route {
+  position: relative;
+  z-index: 1;
+}
+
+.orientation-copy .section-label {
+  color: #d9edc6;
+}
+
+.orientation-copy h2 {
+  max-width: 14ch;
+  color: var(--white);
+  font-size: clamp(2.2rem, 5vw, 4.9rem);
+  line-height: 0.98;
+}
+
+.orientation-copy p:not(.section-label) {
+  max-width: 46ch;
+  margin-top: 18px;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.68;
+}
+
+.orientation-route {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.orientation-route li {
+  position: relative;
+  display: grid;
+  gap: 7px;
+  min-height: 112px;
+  padding: 16px 18px 16px 28px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(22, 33, 22, 0.52);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.orientation-route li::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  left: 12px;
+  width: 3px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72);
-  color: var(--green-dark);
-  font-size: 0.72rem;
-  font-style: normal;
+  background: #d9edc6;
+}
+
+.orientation-route span {
+  color: #d9edc6;
+  font-size: 0.7rem;
   font-weight: 900;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.orientation-route strong {
+  color: var(--white);
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
+.orientation-route small {
+  color: rgba(255, 255, 255, 0.74);
+  font-weight: 760;
+  line-height: 1.45;
 }
 
 .hq-hero {
@@ -2500,6 +2593,11 @@ h3 {
   grid-column: 1 / -1;
 }
 
+.fieldkit-panel,
+.artifact-workbench {
+  grid-column: 1 / -1;
+}
+
 .journey-map,
 .course-panel {
   background:
@@ -2511,6 +2609,158 @@ h3 {
       transparent 1px,
       transparent 18px
     );
+}
+
+.trailhead-panel {
+  overflow: hidden;
+}
+
+.trailhead-map {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.42fr) minmax(0, 1fr);
+  gap: clamp(20px, 4vw, 42px);
+  align-items: stretch;
+}
+
+.trail-signpost {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-height: 420px;
+  padding: 28px 24px;
+  border-radius: 8px;
+  background:
+    linear-gradient(rgba(36, 63, 39, 0.72), rgba(22, 33, 22, 0.9)),
+    url("/brand/dydd-cabin-porch.png") 32% center / cover no-repeat;
+  color: var(--white);
+}
+
+.trail-signpost::before {
+  content: "";
+  position: absolute;
+  top: 120px;
+  bottom: 22px;
+  left: 50%;
+  width: 16px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #6f4a2f, #a76f45 48%, #5c3b24);
+  transform: translateX(-50%);
+}
+
+.trail-signpost span,
+.trail-signpost strong,
+.trail-signpost small {
+  position: relative;
+  z-index: 1;
+}
+
+.trail-signpost span {
+  color: #d9edc6;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.trail-signpost strong {
+  width: fit-content;
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 6px;
+  background: linear-gradient(135deg, #9a643c, #704424);
+  box-shadow: 0 12px 22px rgba(22, 33, 22, 0.24);
+  font-size: 1.35rem;
+  line-height: 1.1;
+}
+
+.trail-signpost small {
+  width: fit-content;
+  max-width: 210px;
+  margin-left: clamp(16px, 4vw, 70px);
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  background: linear-gradient(135deg, #b27a4b, #805331);
+  box-shadow: 0 10px 20px rgba(22, 33, 22, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 900;
+}
+
+.trail-signpost small:nth-of-type(2),
+.trail-signpost small:nth-of-type(4) {
+  margin-left: 0;
+}
+
+.trail-route-list {
+  display: grid;
+  gap: 12px;
+}
+
+.trail-route {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid rgba(71, 107, 66, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.trail-route.open {
+  background:
+    linear-gradient(rgba(234, 240, 226, 0.72), rgba(255, 255, 255, 0.94)),
+    var(--panel);
+}
+
+.trail-route.locked {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.92)),
+    repeating-linear-gradient(
+      135deg,
+      rgba(138, 96, 70, 0.08) 0,
+      rgba(138, 96, 70, 0.08) 1px,
+      transparent 1px,
+      transparent 18px
+    );
+}
+
+.trail-route img {
+  width: 66px;
+  height: 66px;
+  padding: 8px;
+  border: 1px solid rgba(71, 107, 66, 0.2);
+  border-radius: 8px;
+  background: rgba(251, 250, 244, 0.92);
+  object-fit: contain;
+}
+
+.trail-route span {
+  color: var(--brass);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.trail-route h3 {
+  margin: 7px 0 0;
+  color: var(--green-dark);
+  font-size: 1.2rem;
+}
+
+.trail-route p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.trail-route small {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-weight: 800;
 }
 
 .journal-panel,
@@ -2547,22 +2797,23 @@ h3 {
 
 .fieldkit-feature {
   display: grid;
-  grid-template-columns: 104px minmax(0, 1fr) auto;
-  gap: 16px;
+  grid-template-columns: 118px minmax(0, 1fr) auto;
+  gap: clamp(16px, 3vw, 28px);
   align-items: center;
-  margin-bottom: 14px;
-  padding: 16px;
+  margin-bottom: 18px;
+  padding: clamp(18px, 3vw, 28px);
   border: 1px solid rgba(71, 107, 66, 0.18);
   border-radius: 8px;
   background:
-    linear-gradient(118deg, rgba(234, 240, 226, 0.78), rgba(255, 255, 255, 0.94)),
+    radial-gradient(circle at 8% 18%, rgba(184, 138, 67, 0.14), transparent 28%),
+    linear-gradient(118deg, rgba(234, 240, 226, 0.8), rgba(255, 255, 255, 0.94)),
     var(--panel);
 }
 
 .fieldkit-feature img {
-  width: 92px;
-  height: 64px;
-  padding: 7px;
+  width: 104px;
+  height: 78px;
+  padding: 9px;
   border: 1px solid rgba(71, 107, 66, 0.18);
   border-radius: 8px;
   background: rgba(251, 250, 244, 0.92);
@@ -2578,6 +2829,7 @@ h3 {
 
 .fieldkit-feature p {
   margin: 6px 0 0;
+  max-width: 74ch;
   color: var(--muted);
   line-height: 1.55;
 }
@@ -2604,6 +2856,22 @@ h3 {
 
 .fieldkit-status small {
   color: var(--muted);
+}
+
+.fieldkit-panel {
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.94), rgba(251, 250, 244, 0.96)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(184, 138, 67, 0.08) 0,
+      rgba(184, 138, 67, 0.08) 1px,
+      transparent 1px,
+      transparent 26px
+    );
+}
+
+.fieldkit-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .product-list,
@@ -2720,8 +2988,10 @@ h3 {
 .artifact-download {
   display: grid;
   gap: 14px;
-  padding: 18px 0;
-  border-top: 1px solid var(--line);
+  padding: 18px;
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
 }
 
 .artifact-download dl {
@@ -2756,6 +3026,43 @@ h3 {
   font-weight: 850;
   line-height: 1.35;
   overflow-wrap: anywhere;
+}
+
+.artifact-workbench {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(184, 138, 67, 0.14), transparent 30%),
+    linear-gradient(135deg, rgba(250, 244, 232, 0.98), rgba(255, 255, 255, 0.95)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(111, 74, 47, 0.08) 0,
+      rgba(111, 74, 47, 0.08) 1px,
+      transparent 1px,
+      transparent 34px
+    );
+}
+
+.artifact-workbench::before {
+  content: "";
+  position: absolute;
+  inset: auto 24px 18px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(111, 74, 47, 0.12);
+  pointer-events: none;
+}
+
+.artifact-workbench .card-heading,
+.artifact-workbench .artifact-download-list,
+.artifact-workbench .hq-empty-state {
+  position: relative;
+  z-index: 1;
+}
+
+.artifact-workbench .artifact-download-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
 }
 
 .hq-empty-state {
@@ -3903,6 +4210,8 @@ h3 {
   .reflection-band,
   .build-plan,
   .login-shell,
+  .journey-orientation,
+  .trailhead-map,
   .ask-dydi-hq,
   .fruitlife-workbench,
   .fruitlife-trend-tool,
@@ -4018,6 +4327,15 @@ h3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .fieldkit-list,
+  .artifact-workbench .artifact-download-list {
+    grid-template-columns: 1fr;
+  }
+
+  .trail-signpost {
+    min-height: 340px;
+  }
+
   .journey-map ol {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -4105,6 +4423,8 @@ h3 {
   .fruitlife-stage-grid,
   .fruitlife-change-grid,
   .basecamp-wayfinding,
+  .orientation-route,
+  .trail-route,
   .fieldkit-feature,
   .hq-topbar,
   .card-heading,

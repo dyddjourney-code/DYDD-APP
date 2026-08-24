@@ -134,40 +134,63 @@ const toolCatalog = [
 
 const baseCampSteps = [
   {
-    detail: "The staged path from identity to action.",
+    detail: "See the whole path and the next faithful step.",
     href: "/journey",
     label: "Journey",
-    state: "Open",
+    state: "Path",
   },
   {
-    detail: "Starting points for assessments, courses, and formation paths.",
+    detail: "Choose the guided paths and assessments that start the work.",
     href: "#trailheads",
     label: "Trailheads",
-    state: "Choose",
+    state: "Start",
   },
   {
-    detail: "Completed reports, downloads, and saved discoveries.",
+    detail: "Return to completed reports and saved discoveries.",
     href: "#artifacts",
     label: "Artifacts",
-    state: "Review",
+    state: "Saved",
   },
   {
-    detail: "Practical companions, exercises, and interactive tools.",
+    detail: "Use practical tools for reflection, growth, and preparation.",
     href: "#field-kit",
     label: "Field Kit",
-    state: "Use",
+    state: "Prepare",
   },
   {
-    detail: "Personal notes, prayers, and reflections for the road.",
+    detail: "Keep notes, prayers, and reflections in one place.",
     href: "#journal",
     label: "Journal",
-    state: "Staged",
+    state: "Write",
   },
   {
-    detail: "Live sessions, studies, podcasts, events, and replays.",
+    detail: "Find future studies, calls, events, and replays.",
     href: "#gatherings",
     label: "Gatherings",
     state: "Soon",
+  },
+];
+
+const journeyMarkers = [
+  {
+    detail: "Begin with the full Discover Your Divine Design trail.",
+    label: "Start Here",
+    meta: "Main trail",
+  },
+  {
+    detail: "Use DesignID early to name identity, contribution, and fit.",
+    label: "DesignID",
+    meta: "Early marker",
+  },
+  {
+    detail: "Add Spiritual Gifts when the journey turns toward calling and service.",
+    label: "Spiritual Gifts",
+    meta: "Deeper trail",
+  },
+  {
+    detail: "Use DesignPD and FruitLife 360 to practice, grow, and walk it out.",
+    label: "Practice & Grow",
+    meta: "Road ahead",
   },
 ];
 
@@ -575,6 +598,26 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       price: course.price,
     };
   });
+  const trailheadOrder = [
+    "discover-your-divine-design-course",
+    "designid-foundations-course",
+    "spiritual-gifts-service-course",
+    "designpd-alignment-course",
+    "fruitlife-360-formation-course",
+  ];
+  const trailheadMetaById: Record<string, string> = {
+    "discover-your-divine-design-course": "Main trail",
+    "designid-foundations-course": "Early marker",
+    "spiritual-gifts-service-course": "Calling marker",
+    "designpd-alignment-course": "Practice marker",
+    "fruitlife-360-formation-course": "Growth marker",
+  };
+  const trailheadCards = [...courseCards].sort((a, b) => {
+    const aIndex = trailheadOrder.indexOf(a.id);
+    const bIndex = trailheadOrder.indexOf(b.id);
+
+    return (aIndex === -1 ? 99 : aIndex) - (bIndex === -1 ? 99 : bIndex);
+  });
 
   return (
     <main className="hq-shell">
@@ -621,106 +664,107 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         </div>
       </section>
 
+      <section className="journey-orientation" aria-label="Where to begin">
+        <div className="orientation-copy">
+          <p className="section-label">Where to begin</p>
+          <h2>Your journey starts with Discover Your Divine Design.</h2>
+          <p>
+            Base Camp is the place to see where you are, what you already carry,
+            and which part of the road is ready for your attention next.
+          </p>
+          <div className="basecamp-actions">
+            <Link className="button primary" href={withReviewQuery("/journey", reviewParams)}>
+              Open main trail
+            </Link>
+            <a className="button secondary" href="#trailheads">
+              See trailheads
+            </a>
+          </div>
+        </div>
+        <ol className="orientation-route">
+          {journeyMarkers.map((marker) => (
+            <li key={marker.label}>
+              <span>{marker.meta}</span>
+              <strong>{marker.label}</strong>
+              <small>{marker.detail}</small>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       <section className="basecamp-wayfinding" aria-label="Base Camp wayfinding">
-        {baseCampSteps.map((step, index) => {
+        {baseCampSteps.map((step) => {
           const href = step.href.startsWith("/")
             ? withReviewQuery(step.href, reviewParams)
             : step.href;
 
           return (
             <a href={href} key={step.label}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
+              <span>{step.state}</span>
               <strong>{step.label}</strong>
               <small>{step.detail}</small>
-              <em>{step.state}</em>
             </a>
           );
         })}
       </section>
 
-      <section className="ask-dydi-hq" id="ask-dydi" aria-label="Ask Dydi">
-        <div className="dydi-host">
-          <img src="/brand/characters/dydi-full-body.png" alt="Dydi host" />
-          <div>
-            <p className="section-label">Companion guide</p>
-            <h2>Dydi stays close to the next step.</h2>
-            <p>
-              The guide layer belongs throughout the journey, especially where
-              a person needs encouragement, interpretation, or a simple way to
-              keep moving.
-            </p>
-          </div>
-        </div>
-        <form className="dydi-form">
-          <label htmlFor="hq-dydi-question">Ask from Base Camp</label>
-          <textarea
-            id="hq-dydi-question"
-            name="question"
-            placeholder="Where should I begin today?"
-            rows={4}
-          />
-          <button className="button primary" type="button">
-            Ask Dydi
-          </button>
-          <p className="helper-text">
-            Staged for preview. Live companion responses will connect later.
-          </p>
-        </form>
-      </section>
-
       <section className="hq-grid" aria-label="DYDD Base Camp pathways">
-        <article className="journey-map">
+        <article className="course-panel trailhead-panel" id="trailheads">
           <div className="card-heading">
-            <p className="section-label">Journey map</p>
-            <h2>A path, not a pile.</h2>
+            <p className="section-label">Trailheads</p>
+            <h2>Choose the trail, then follow the markers.</h2>
           </div>
-          <ol>
-            {[
-              {
-                detail: "Open the current profile and see what is already known.",
-                label: "Orient",
-                state: "Now",
-              },
-              {
-                detail: "Choose the next assessment, course, or guided path.",
-                label: "Begin",
-                state: "Next",
-              },
-              {
-                detail: "Use reports, prompts, notes, and companions to reflect.",
-                label: "Reflect",
-                state: "Active",
-              },
-              {
-                detail: "Turn insight into practices, conversations, and service.",
-                label: "Walk it out",
-                state: "Growing",
-              },
-            ].map((step, index) => (
-              <li key={step.label}>
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <div>
-                  <strong>{step.label}</strong>
-                  <small>{step.detail}</small>
-                </div>
-                <em>{step.state}</em>
-              </li>
-            ))}
-          </ol>
+          <div className="trailhead-map">
+            <div className="trail-signpost" aria-hidden="true">
+              <span>DYDD</span>
+              <strong>Main Trail</strong>
+              <small>DesignID</small>
+              <small>Spiritual Gifts</small>
+              <small>DesignPD</small>
+              <small>FruitLife 360</small>
+            </div>
+            <div className="trail-route-list">
+              {trailheadCards.map((course) => (
+                <article
+                  className={course.available ? "trail-route open" : "trail-route locked"}
+                  id={course.id}
+                  key={course.label}
+                >
+                  <img src={course.icon} alt={`${course.label} icon`} />
+                  <div>
+                    <span>{trailheadMetaById[course.id] ?? "Trail marker"}</span>
+                    <h3>{course.label}</h3>
+                    <p>{course.detail}</p>
+                    <small>{course.meta}</small>
+                  </div>
+                  {course.available ? (
+                    <Link className="button secondary" href={course.href}>
+                      {course.action}
+                    </Link>
+                  ) : (
+                    <a className="button secondary" href={course.href}>
+                      {course.action}
+                    </a>
+                  )}
+                </article>
+              ))}
+            </div>
+          </div>
         </article>
 
-        <article className="tool-panel" id="field-kit">
+        <article className="tool-panel fieldkit-panel" id="field-kit">
           <div className="card-heading">
             <p className="section-label">Field Kit</p>
-            <h2>For the road ahead</h2>
+            <h2>Prepare for the road ahead.</h2>
           </div>
           <div className="fieldkit-feature">
             <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
             <div>
               <strong>FruitLife 360</strong>
               <p>
-                Interactive formation work belongs here, with saved runs,
-                observer progress, artifacts, notes, and next-step links.
+                Pack this for growth work: saved runs, observer progress,
+                artifacts, notes, and the next trailhead that helps explain
+                what the results mean.
               </p>
               <div className="fieldkit-status">
                 <span>
@@ -739,7 +783,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               Open
             </Link>
           </div>
-          <div className="product-list">
+          <div className="product-list fieldkit-list">
             {toolCatalog.map((tool) => {
               const completed = ownsAssessment(assessmentReport, tool.assessmentType);
               return (
@@ -763,43 +807,10 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           </div>
         </article>
 
-        <article className="course-panel" id="trailheads">
-          <div className="card-heading">
-            <p className="section-label">Trailheads</p>
-            <h2>Choose where the path begins.</h2>
-          </div>
-          <div className="course-card-list">
-            {courseCards.map((course) => (
-              <article
-                className={course.available ? "course-card open" : "course-card locked"}
-                id={course.id}
-                key={course.label}
-              >
-                <img src={course.icon} alt={`${course.label} icon`} />
-                <div>
-                  <span>{course.price}</span>
-                  <h3>{course.label}</h3>
-                  <p>{course.detail}</p>
-                  <small>{course.meta}</small>
-                </div>
-                {course.available ? (
-                  <Link className="button secondary" href={course.href}>
-                    {course.action}
-                  </Link>
-                ) : (
-                  <a className="button secondary" href={course.href}>
-                    {course.action}
-                  </a>
-                )}
-              </article>
-            ))}
-          </div>
-        </article>
-
-        <article className="artifact-panel" id="artifacts">
+        <article className="artifact-panel artifact-workbench" id="artifacts">
           <div className="card-heading">
             <p className="section-label">Artifacts</p>
-            <h2>What you already carry</h2>
+            <h2>Examine what you have already discovered.</h2>
           </div>
           {artifactSnapshots?.length ? (
             <div className="artifact-download-list">
@@ -847,16 +858,16 @@ export default async function HqPage({ searchParams }: HqPageProps) {
 
         <article className="journey-builder">
           <div>
-            <p className="section-label">Journey</p>
+            <p className="section-label">Main trail</p>
             <h2>
               {hasDyddCourseAccess
-                ? "Continue the journey and shape the niche."
-                : "Preview the road from identity to action."}
+                ? "Continue Discover Your Divine Design."
+                : "Open the Discover Your Divine Design trail."}
             </h2>
             <p>
-              This is where the map becomes more than navigation. Assessment
-              results, companion prompts, journal entries, and next practices
-              can become a staged path toward faithful action.
+              This opens the guided course path that gathers the book,
+              workbook, assessments, reflection, and next steps into one
+              formation trail.
             </p>
             {hasDyddCourseAccess ? (
               <div className="niche-builder-steps">
@@ -867,7 +878,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             ) : null}
           </div>
           <Link className="button primary" href={withReviewQuery("/journey", reviewParams)}>
-            {hasDyddCourseAccess ? "Continue journey" : "View course access"}
+            {hasDyddCourseAccess ? "Continue trail" : "View course access"}
           </Link>
         </article>
 
@@ -973,6 +984,36 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             </div>
           </article>
         ) : null}
+      </section>
+
+      <section className="ask-dydi-hq" id="ask-dydi" aria-label="Ask Dydi">
+        <div className="dydi-host">
+          <img src="/brand/characters/dydi-full-body.png" alt="Dydi host" />
+          <div>
+            <p className="section-label">Companion guide</p>
+            <h2>Dydi stays near the trail.</h2>
+            <p>
+              The guide layer belongs throughout the journey, especially where
+              a person needs encouragement, interpretation, or a simple way to
+              keep moving.
+            </p>
+          </div>
+        </div>
+        <form className="dydi-form">
+          <label htmlFor="hq-dydi-question">Ask from Base Camp</label>
+          <textarea
+            id="hq-dydi-question"
+            name="question"
+            placeholder="Where should I begin today?"
+            rows={4}
+          />
+          <button className="button primary" type="button">
+            Ask Dydi
+          </button>
+          <p className="helper-text">
+            Staged for preview. Live companion responses will connect later.
+          </p>
+        </form>
       </section>
     </main>
   );

@@ -1,7 +1,5 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import type { CSSProperties } from "react";
-import { sendFruitLifeReminder } from "@/app/fruitlife360/actions";
 import { signOut } from "@/app/login/actions";
 import {
   assessmentLabels,
@@ -95,7 +93,7 @@ const toolCatalog = [
   {
     assessmentType: "designid",
     detail: "Identity, contribution, reflection language, and a completed report.",
-    href: "#tools",
+    href: "#field-kit",
     label: "DesignID",
     logo: "/brand/tools/designid-logo.webp",
     price: "$20",
@@ -103,7 +101,7 @@ const toolCatalog = [
   {
     assessmentType: "designpd",
     detail: "Plan, Decide, and Do patterns for practical daily alignment.",
-    href: "#tools",
+    href: "#field-kit",
     label: "DesignPD",
     logo: "/brand/tools/designpd-logo.jpg",
     price: "$50",
@@ -111,7 +109,7 @@ const toolCatalog = [
   {
     assessmentType: "spiritual_gifts",
     detail: "A free first step for naming how the Spirit may be empowering service.",
-    href: "#tools",
+    href: "#field-kit",
     label: "Spiritual Gifts",
     logo: "/brand/tools/spiritual-gifts-logo.jpg",
     price: "Free",
@@ -135,10 +133,42 @@ const toolCatalog = [
 ];
 
 const baseCampSteps = [
-  { detail: "Open assessments, free tools, and next-step resources.", label: "Tool Bench" },
-  { detail: "Step into DYDD, DesignID, DesignPD, or Spiritual Gifts courses.", label: "Course Table" },
-  { detail: "Download completed reports and revisit past insights.", label: "Artifact Shelf" },
-  { detail: "Move through the journey process, niche builder, and Dydi reflection.", label: "Trail Door" },
+  {
+    detail: "The staged path from identity to action.",
+    href: "/journey",
+    label: "Journey",
+    state: "Open",
+  },
+  {
+    detail: "Starting points for assessments, courses, and formation paths.",
+    href: "#trailheads",
+    label: "Trailheads",
+    state: "Choose",
+  },
+  {
+    detail: "Completed reports, downloads, and saved discoveries.",
+    href: "#artifacts",
+    label: "Artifacts",
+    state: "Review",
+  },
+  {
+    detail: "Practical companions, exercises, and interactive tools.",
+    href: "#field-kit",
+    label: "Field Kit",
+    state: "Use",
+  },
+  {
+    detail: "Personal notes, prayers, and reflections for the road.",
+    href: "#journal",
+    label: "Journal",
+    state: "Staged",
+  },
+  {
+    detail: "Live sessions, studies, podcasts, events, and replays.",
+    href: "#gatherings",
+    label: "Gatherings",
+    state: "Soon",
+  },
 ];
 
 const fruitLifeStages = [
@@ -489,6 +519,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     : newPreview
       ? newReviewName
       : profile?.full_name ?? user?.email ?? "Traveler";
+  const welcomeName = displayName.replace(/\s+Preview$/, "").split(/\s+/)[0] ?? "Traveler";
   const hasDyddCourseAccess = heatherPreview;
   const hasDesignIdCourseAccess = heatherPreview || ownsAssessment(assessmentReport, "designid");
   const hasDesignPdCourseAccess = heatherPreview || ownsAssessment(assessmentReport, "designpd");
@@ -507,21 +538,11 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   });
   const activeFruitLifeSession = fruitLifeSessions[0] ?? null;
   const fruitLifeCompletion = getFruitLifeCompletion(activeFruitLifeSession);
-  const hqReturnPath = withReviewQuery("/hq", reviewParams);
-  const openCourseCount = [
-    hasDyddCourseAccess,
-    hasDesignIdCourseAccess,
-    hasDesignPdCourseAccess,
-    hasSpiritualGiftsCourseAccess,
-    hasFruitLifeCourseAccess,
-  ].filter(Boolean).length;
   const lessonCount = designIdCourse.modules.reduce(
     (count, module) => count + module.lessons.length,
     0,
   );
   const artifactSnapshots = assessmentReport.all;
-  const completedArtifactCount = artifactSnapshots.length;
-  const fruitLifeTrend = buildFruitLifeTrend(assessmentReport.all);
 
   const courseAccessBySlug: Record<string, boolean> = {
     "designid-foundations": hasDesignIdCourseAccess,
@@ -559,7 +580,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     <main className="hq-shell">
       <header className="hq-topbar">
         <div>
-          <p className="eyebrow">Base camp headquarters</p>
+          <p className="eyebrow">DYDD Base Camp</p>
           <h1>{displayName}</h1>
         </div>
         {reviewReport ? (
@@ -575,358 +596,67 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         )}
       </header>
 
-      <section className="basecamp-hero" aria-label="DYDD headquarters">
+      <section className="basecamp-hero" aria-label="DYDD Base Camp">
         <div className="basecamp-copy">
-          <p className="section-label">You are inside the hut</p>
-          <h2>Look around. Your next step has a place.</h2>
+          <h2>Welcome, {welcomeName}.</h2>
           <p>
-            Headquarters gathers the workbench, course table, artifact shelf,
-            journey door, and Dydi conversation corner into one natural launch
-            point.
+            This is your place to pause, gather what you have discovered, and
+            choose the next faithful step.
           </p>
           <div className="basecamp-actions">
-            <a className="button primary" href="#ask-dydi">
-              Talk with Dydi
-            </a>
-            <a className="button secondary" href="#tools">
-              Look around HQ
+            <Link className="button primary" href={withReviewQuery("/journey", reviewParams)}>
+              Begin the journey
+            </Link>
+            <a className="button secondary" href="#field-kit">
+              Open the field kit
             </a>
           </div>
         </div>
         <div className="basecamp-scene" aria-hidden="true">
           <img src="/brand/dydd-cabin-hut-only.png" alt="" />
           <div className="camp-sign">
-            <span>DYDD HQ</span>
+            <span>DYDD</span>
             <strong>Base Camp</strong>
           </div>
         </div>
       </section>
 
-      <section className="hq-command-row" aria-label="HQ summary">
-        <p>
-          <span>{completedArtifactCount}</span>
-          <small>Completed artifacts</small>
-        </p>
-        <p>
-          <span>{openCourseCount}</span>
-          <small>Course paths open</small>
-        </p>
-        <p>
-          <span>{toolCatalog.length}</span>
-          <small>Tools available after login</small>
-        </p>
-        <p>
-          <span>{fruitLifeSessions.length}</span>
-          <small>FruitLife sessions visible</small>
-        </p>
-      </section>
+      <section className="basecamp-wayfinding" aria-label="Base Camp wayfinding">
+        {baseCampSteps.map((step, index) => {
+          const href = step.href.startsWith("/")
+            ? withReviewQuery(step.href, reviewParams)
+            : step.href;
 
-      <section className="fruitlife-workbench" aria-label="FruitLife 360 workflow">
-        <div className="fruitlife-workbench-lead">
-          <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
-          <p className="section-label">FruitLife 360 workflow</p>
-          <h2>Start the intake, watch responses, then queue the report payload.</h2>
-          <p>
-            This is the new Vercel/Supabase path. It keeps the working report
-            output target in view while moving intake, links, response storage,
-            and status out of the fragile Sheet queue.
-          </p>
-          <div className="basecamp-actions">
-            <Link className="button primary" href="/fruitlife360">
-              Start FruitLife intake
-            </Link>
-            <a className="button secondary" href="#fruitlife-artifacts">
-              View report state
+          return (
+            <a href={href} key={step.label}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{step.label}</strong>
+              <small>{step.detail}</small>
+              <em>{step.state}</em>
             </a>
-          </div>
-          <div className="fruitlife-stage-grid">
-            {fruitLifeStages.map((stage) => (
-              <article key={stage.label}>
-                <span>{stage.state}</span>
-                <strong>{stage.label}</strong>
-                <small>{stage.detail}</small>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <div className="fruitlife-status-console">
-          <div className="fruitlife-session-summary">
-            <p className="section-label">Latest FruitLife run</p>
-            <strong>
-              {activeFruitLifeSession?.participant_name ??
-                activeFruitLifeSession?.participant_email ??
-                "No active FruitLife session yet"}
-            </strong>
-            <small>
-              {activeFruitLifeSession
-                ? `${sessionModeFromMetadata(activeFruitLifeSession)} · Updated ${displayDate(
-                    activeFruitLifeSession.updated_at,
-                  )}`
-                : "Create an intake to generate the self and observer links."}
-            </small>
-          </div>
-          <div className="fruitlife-progress-meter">
-            <span
-              style={{
-                width: `${Math.min(
-                  100,
-                  Math.round(
-                    (fruitLifeCompletion.completed / fruitLifeCompletion.required) * 100,
-                  ),
-                )}%`,
-              }}
-            />
-          </div>
-          <div className="fruitlife-kpis">
-            <p>
-              <span>{activeFruitLifeSession?.self_completed_at ? "Done" : "Open"}</span>
-              <small>Self reflection</small>
-            </p>
-            <p>
-              <span>
-                {activeFruitLifeSession?.observer_completed_count ?? 0}/
-                {activeFruitLifeSession?.observer_goal ?? 3}
-              </span>
-              <small>Observers</small>
-            </p>
-            <p>
-              <span>{titleizeStatus(activeFruitLifeSession?.report_status)}</span>
-              <small>Report payload</small>
-            </p>
-          </div>
-          {activeFruitLifeSession?.metadata?.selfLink ? (
-            <div className="fruitlife-link-dock">
-              <div className="fruitlife-latest-actions">
-                <a href={activeFruitLifeSession.metadata.selfLink}>Open self link</a>
-                {activeFruitLifeSession.metadata.observerLinks?.[0]?.link ? (
-                  <a href={activeFruitLifeSession.metadata.observerLinks[0].link}>
-                    Open first observer link
-                  </a>
-                ) : null}
-              </div>
-              {activeFruitLifeSession.metadata.observerLinks?.[0]?.link ? (
-                <p className="fruitlife-latest-note">
-                  Links are generated and stored with the session. Use Remind to resend
-                  pending invitations without rebuilding the intake.
-                </p>
-              ) : null}
-            </div>
-          ) : null}
-          <div className="fruitlife-session-list" id="fruitlife-artifacts">
-            {fruitLifeSessions.length ? (
-              fruitLifeSessions.map((session) => (
-                <article key={session.id}>
-                  <div>
-                    <strong>{session.participant_name ?? session.participant_email}</strong>
-                    <small className="fruitlife-session-meta">
-                      <span>{displayDate(session.created_at)}</span>
-                      <span>{sessionModeFromMetadata(session)}</span>
-                      <span>{titleizeStatus(session.session_status)}</span>
-                      <span>
-                        {session.observer_completed_count}/{session.observer_goal} observers
-                      </span>
-                    </small>
-                    {session.artifacts.length ? (
-                      <div className="fruitlife-session-artifacts">
-                        {session.artifacts.slice(0, 3).map((artifact) => (
-                          <small key={`${artifact.artifact_type}-${artifact.created_at}`}>
-                            {titleizeStatus(artifact.artifact_type)}
-                          </small>
-                        ))}
-                      </div>
-                    ) : null}
-                  </div>
-                  <span>
-                    {session.artifacts.length
-                      ? `${session.artifacts.length} artifact${
-                          session.artifacts.length === 1 ? "" : "s"
-                        }`
-                      : "No artifact"}
-                  </span>
-                  <form action={sendFruitLifeReminder}>
-                    <input name="session_id" type="hidden" value={session.id} />
-                    <input name="return_to" type="hidden" value={hqReturnPath} />
-                    <button type="submit">Remind</button>
-                  </form>
-                </article>
-              ))
-            ) : (
-              <article>
-                <div>
-                  <strong>Ready for the first native intake</strong>
-                  <small>After creation, this panel will show session progress.</small>
-                </div>
-                <span>Waiting</span>
-              </article>
-            )}
-          </div>
-        </div>
-      </section>
-
-      <section className="fruitlife-trend-tool" aria-label="FruitLife growth over time">
-        <div className="fruitlife-trend-copy">
-          <p className="section-label">Fruit over time</p>
-          <h2>Read the movement across seasons.</h2>
-          <p>
-            Each dated FruitLife artifact becomes a point on the timeline. The
-            first version compares self-only and 360 runs so a person can notice
-            what is rising, steady, or asking for attention over time.
-          </p>
-        </div>
-        {fruitLifeTrend.datedRuns.length ? (
-          <div className="fruitlife-trend-board">
-            <div className="fruitlife-trend-header">
-              <div>
-                <span>{fruitLifeTrend.datedRuns.length}</span>
-                <small>Dated runs</small>
-              </div>
-              <div>
-                <span>{fruitLifeTrend.latest?.average.toFixed(1) ?? "0.0"}</span>
-                <small>Latest average</small>
-              </div>
-              <div>
-                <span>{reportModeLabel(fruitLifeTrend.latest?.mode) ?? "FruitLife"}</span>
-                <small>Latest mode</small>
-              </div>
-            </div>
-            <div className="fruitlife-insight-strip">
-              <p>
-                <span>Overall movement</span>
-                <strong>
-                  {fruitLifeTrend.overallDelta === null
-                    ? "Baseline ready"
-                    : `${fruitLifeTrend.overallDelta >= 0 ? "+" : ""}${fruitLifeTrend.overallDelta.toFixed(
-                        1,
-                      )} average`}
-                </strong>
-                <small>
-                  {fruitLifeTrend.overallDelta === null ? "Needs a second run" : "Since last run"}
-                </small>
-              </p>
-              <p>
-                <span>Strongest lift</span>
-                <strong>
-                  {fruitLifeTrend.topRiser
-                    ? `${fruitLifeTrend.topRiser.label} +${fruitLifeTrend.topRiser.delta?.toFixed(
-                        1,
-                      )}`
-                    : "No lift yet"}
-                </strong>
-                <small>Biggest positive change</small>
-              </p>
-              <p>
-                <span>Growth watch</span>
-                <strong>
-                  {fruitLifeTrend.growthWatch
-                    ? `${fruitLifeTrend.growthWatch.label} ${fruitLifeTrend.growthWatch.current?.toFixed(
-                        1,
-                      )}`
-                    : "Awaiting scores"}
-                </strong>
-                <small>Lowest latest fruit</small>
-              </p>
-            </div>
-            <svg className="fruitlife-line-chart" viewBox="0 0 760 250" role="img">
-              <title>FruitLife 360 score changes over time</title>
-              {[1, 2, 3, 4, 5].map((level) => {
-                const y = 222 - ((level - 1) / 4) * 170;
-                return (
-                  <g key={level}>
-                    <line x1="40" x2="720" y1={y} y2={y} />
-                    <text x="14" y={y + 4}>{level}</text>
-                  </g>
-                );
-              })}
-              {fruitLifeTrend.series.map((series) => (
-                <g key={series.key}>
-                  <polyline
-                    fill="none"
-                    points={series.points.map((point) => `${point.x},${point.y}`).join(" ")}
-                    stroke={series.color}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="3"
-                  />
-                  {series.points.map((point) => (
-                    <circle
-                      cx={point.x}
-                      cy={point.y}
-                      fill="var(--panel)"
-                      key={`${series.key}-${point.x}-${point.y}`}
-                      r="4.4"
-                      stroke={series.color}
-                      strokeWidth="2.4"
-                    />
-                  ))}
-                </g>
-              ))}
-              {fruitLifeTrend.datedRuns.map((run, index) => {
-                const x =
-                  fruitLifeTrend.datedRuns.length > 1
-                    ? 40 + (680 / (fruitLifeTrend.datedRuns.length - 1)) * index
-                    : 380;
-                return (
-                  <text className="fruitlife-date-label" key={run.id} x={x} y="244">
-                    {run.date}
-                  </text>
-                );
-              })}
-            </svg>
-            <div className="fruitlife-change-grid">
-              {fruitLifeTrend.changes.map((fruit) => (
-                <p key={fruit.key} style={{ "--fruit-color": fruit.color } as CSSProperties}>
-                  <span>{fruit.label}</span>
-                  <strong>{fruit.current?.toFixed(1)}</strong>
-                  <small>
-                    {fruit.delta === null
-                      ? "Baseline"
-                      : `${fruit.delta >= 0 ? "+" : ""}${fruit.delta.toFixed(1)} since last run`}
-                  </small>
-                </p>
-              ))}
-            </div>
-            <div className="fruitlife-run-timeline">
-              {fruitLifeTrend.datedRuns.map((run) => (
-                <article key={run.id}>
-                  <span>{run.date}</span>
-                  <strong>{run.average.toFixed(1)}</strong>
-                  <small>{reportModeLabel(run.mode)}</small>
-                  <em>{run.mostVisible}</em>
-                </article>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="fruitlife-trend-empty">
-            <strong>No FruitLife timeline yet.</strong>
-            <p>
-              Complete or seed two dated FruitLife artifacts and this panel will
-              draw the change overview automatically.
-            </p>
-          </div>
-        )}
+          );
+        })}
       </section>
 
       <section className="ask-dydi-hq" id="ask-dydi" aria-label="Ask Dydi">
         <div className="dydi-host">
           <img src="/brand/characters/dydi-full-body.png" alt="Dydi host" />
           <div>
-            <p className="section-label">Ask Dydi</p>
-            <h2>Start at the conversation corner.</h2>
+            <p className="section-label">Companion guide</p>
+            <h2>Dydi stays close to the next step.</h2>
             <p>
-              Dydi is staged as the guide inside HQ, helping a person notice
-              what they own, what is missing, and which station should get their
-              attention next.
+              The guide layer belongs throughout the journey, especially where
+              a person needs encouragement, interpretation, or a simple way to
+              keep moving.
             </p>
           </div>
         </div>
         <form className="dydi-form">
-          <label htmlFor="hq-dydi-question">Ask from your headquarters</label>
+          <label htmlFor="hq-dydi-question">Ask from Base Camp</label>
           <textarea
             id="hq-dydi-question"
             name="question"
-            placeholder="What should I do first with my current tools?"
+            placeholder="Where should I begin today?"
             rows={4}
           />
           <button className="button primary" type="button">
@@ -938,30 +668,76 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         </form>
       </section>
 
-      <section className="hq-grid" aria-label="DYDD HQ dashboard">
+      <section className="hq-grid" aria-label="DYDD Base Camp pathways">
         <article className="journey-map">
           <div className="card-heading">
-            <p className="section-label">Base camp map</p>
-            <h2>Launch points</h2>
+            <p className="section-label">Journey map</p>
+            <h2>A path, not a pile.</h2>
           </div>
           <ol>
-            {baseCampSteps.map((step, index) => (
+            {[
+              {
+                detail: "Open the current profile and see what is already known.",
+                label: "Orient",
+                state: "Now",
+              },
+              {
+                detail: "Choose the next assessment, course, or guided path.",
+                label: "Begin",
+                state: "Next",
+              },
+              {
+                detail: "Use reports, prompts, notes, and companions to reflect.",
+                label: "Reflect",
+                state: "Active",
+              },
+              {
+                detail: "Turn insight into practices, conversations, and service.",
+                label: "Walk it out",
+                state: "Growing",
+              },
+            ].map((step, index) => (
               <li key={step.label}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <div>
                   <strong>{step.label}</strong>
                   <small>{step.detail}</small>
                 </div>
-                <em>{index === 0 ? "Ready" : "Staged"}</em>
+                <em>{step.state}</em>
               </li>
             ))}
           </ol>
         </article>
 
-        <article className="tool-panel" id="tools">
+        <article className="tool-panel" id="field-kit">
           <div className="card-heading">
-            <p className="section-label">Tools</p>
-            <h2>Available after login</h2>
+            <p className="section-label">Field Kit</p>
+            <h2>For the road ahead</h2>
+          </div>
+          <div className="fieldkit-feature">
+            <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
+            <div>
+              <strong>FruitLife 360</strong>
+              <p>
+                Interactive formation work belongs here, with saved runs,
+                observer progress, artifacts, notes, and next-step links.
+              </p>
+              <div className="fieldkit-status">
+                <span>
+                  {activeFruitLifeSession
+                    ? `${fruitLifeCompletion.completed}/${fruitLifeCompletion.required} responses`
+                    : "Ready to start"}
+                </span>
+                <small>
+                  {activeFruitLifeSession
+                    ? `Updated ${displayDate(activeFruitLifeSession.updated_at)}`
+                    : "Create the first FruitLife intake"}
+                </small>
+              </div>
+            </div>
+            <Link className="button secondary" href="/fruitlife360">
+              Open
+            </Link>
           </div>
           <div className="product-list">
             {toolCatalog.map((tool) => {
@@ -987,10 +763,10 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           </div>
         </article>
 
-        <article className="course-panel">
+        <article className="course-panel" id="trailheads">
           <div className="card-heading">
-            <p className="section-label">Courses</p>
-            <h2>Course trailheads</h2>
+            <p className="section-label">Trailheads</p>
+            <h2>Choose where the path begins.</h2>
           </div>
           <div className="course-card-list">
             {courseCards.map((course) => (
@@ -1020,10 +796,10 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           </div>
         </article>
 
-        <article className="artifact-panel">
+        <article className="artifact-panel" id="artifacts">
           <div className="card-heading">
             <p className="section-label">Artifacts</p>
-            <h2>Completed shelf</h2>
+            <h2>What you already carry</h2>
           </div>
           {artifactSnapshots?.length ? (
             <div className="artifact-download-list">
@@ -1071,17 +847,16 @@ export default async function HqPage({ searchParams }: HqPageProps) {
 
         <article className="journey-builder">
           <div>
-            <p className="section-label">Journey and niche builder</p>
+            <p className="section-label">Journey</p>
             <h2>
               {hasDyddCourseAccess
                 ? "Continue the journey and shape the niche."
-                : "Unlock the DYDD course to open the journey."}
+                : "Preview the road from identity to action."}
             </h2>
             <p>
-              The journey process and niche builder belong with the broader
-              Discover Your Divine Design course, where identity, story,
-              expertise, desire, gifts, and assessments can be walked out over
-              time.
+              This is where the map becomes more than navigation. Assessment
+              results, companion prompts, journal entries, and next practices
+              can become a staged path toward faithful action.
             </p>
             {hasDyddCourseAccess ? (
               <div className="niche-builder-steps">
@@ -1094,6 +869,34 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           <Link className="button primary" href={withReviewQuery("/journey", reviewParams)}>
             {hasDyddCourseAccess ? "Continue journey" : "View course access"}
           </Link>
+        </article>
+
+        <article className="journal-panel" id="journal">
+          <div className="card-heading">
+            <p className="section-label">Journal</p>
+            <h2>Reflection that stays with the person.</h2>
+          </div>
+          <p>
+            Notes, prayers, workbook responses, questions, and companion-guided
+            reflections should live here instead of disappearing after a single
+            session.
+          </p>
+          <div className="journal-lines">
+            <span>Today I noticed...</span>
+            <span>The place I need grace is...</span>
+            <span>My next faithful step is...</span>
+          </div>
+        </article>
+
+        <article className="gatherings-panel" id="gatherings">
+          <div className="card-heading">
+            <p className="section-label">Gatherings</p>
+            <h2>Live and archived moments.</h2>
+          </div>
+          <p>
+            This can hold future studies, live calls, podcasts, events, replays,
+            and community invitations without making Base Camp feel crowded.
+          </p>
         </article>
 
         {adminReport ? (

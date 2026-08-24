@@ -132,44 +132,36 @@ const toolCatalog = [
   },
 ];
 
-const baseCampSteps = [
+const hqMenu = [
   {
-    detail: "See the whole path and the next faithful step.",
-    href: "/journey",
-    label: "Journey",
-    state: "Path",
+    icon: "tent",
+    label: "Base Camp",
+    href: "#basecamp",
+    children: [{ icon: "route", label: "Journey", href: "/journey" }],
   },
+  { icon: "signpost", label: "Trailheads", href: "#trailheads" },
   {
-    detail: "Choose the guided paths and assessments that start the work.",
-    href: "#trailheads",
-    label: "Trailheads",
-    state: "Start",
-  },
-  {
-    detail: "Return to completed reports and saved discoveries.",
-    href: "#artifacts",
-    label: "Artifacts",
-    state: "Saved",
-  },
-  {
-    detail: "Use practical tools for reflection, growth, and preparation.",
-    href: "#field-kit",
+    icon: "fieldkit",
     label: "Field Kit",
-    state: "Prepare",
+    href: "#field-kit",
+    children: [{ icon: "artifact", label: "Artifacts", href: "#artifacts" }],
   },
   {
-    detail: "Keep notes, prayers, and reflections in one place.",
-    href: "#journal",
-    label: "Journal",
-    state: "Write",
+    icon: "gear",
+    label: "Gear",
+    href: "#gear",
+    children: [
+      { icon: "journal", label: "Journal", href: "#journal" },
+      { icon: "devotions", label: "Devotions", href: "#devotions" },
+      { icon: "niche", label: "Niche Builder", href: "#niche-builder" },
+    ],
   },
-  {
-    detail: "Find future studies, calls, events, and replays.",
-    href: "#gatherings",
-    label: "Gatherings",
-    state: "Soon",
-  },
+  { icon: "fireside", label: "Fireside", href: "#fireside" },
 ];
+
+function MenuIcon({ name }: { name: string }) {
+  return <span aria-hidden="true" className={`hq-menu-icon icon-${name}`} />;
+}
 
 const journeyMarkers = [
   {
@@ -620,26 +612,67 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   });
 
   return (
-    <main className="hq-shell">
-      <header className="hq-topbar">
-        <div>
-          <p className="eyebrow">DYDD Base Camp</p>
-          <h1>{displayName}</h1>
+    <main className="hq-shell hq-app-shell">
+      <aside className="hq-sidebar" aria-label="DYDD navigation">
+        <a className="hq-sidebar-brand" href="#basecamp">
+          <img src="/brand/dydd-logo.webp" alt="Discover Your Divine Design" />
+        </a>
+        <nav className="hq-sidebar-nav">
+          {hqMenu.map((item) => {
+            const href = item.href.startsWith("/")
+              ? withReviewQuery(item.href, reviewParams)
+              : item.href;
+            return (
+              <div className="hq-nav-group" key={item.label}>
+                <a className="hq-nav-item" href={href}>
+                  <MenuIcon name={item.icon} />
+                  <span>{item.label}</span>
+                </a>
+                {item.children ? (
+                  <div className="hq-subnav">
+                    {item.children.map((child) => {
+                      const childHref = child.href.startsWith("/")
+                        ? withReviewQuery(child.href, reviewParams)
+                        : child.href;
+                      return (
+                        <a className="hq-subnav-item" href={childHref} key={child.label}>
+                          <MenuIcon name={child.icon} />
+                          <span>{child.label}</span>
+                        </a>
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
+        </nav>
+        <div className="hq-sidebar-note">
+          <span>Preview</span>
+          <strong>{welcomeName}</strong>
         </div>
-        {reviewReport ? (
-          <Link className="button secondary" href="/login">
-            Real sign-in
-          </Link>
-        ) : (
-          <form action={signOut}>
-            <button className="button secondary" type="submit">
-              Sign out
-            </button>
-          </form>
-        )}
-      </header>
+      </aside>
 
-      <section className="basecamp-hero" aria-label="DYDD Base Camp">
+      <div className="hq-content">
+        <header className="hq-topbar">
+          <div>
+            <p className="eyebrow">DYDD Base Camp</p>
+            <h1>{displayName}</h1>
+          </div>
+          {reviewReport ? (
+            <Link className="button secondary" href="/login">
+              Real sign-in
+            </Link>
+          ) : (
+            <form action={signOut}>
+              <button className="button secondary" type="submit">
+                Sign out
+              </button>
+            </form>
+          )}
+        </header>
+
+      <section className="basecamp-hero" id="basecamp" aria-label="DYDD Base Camp">
         <div className="basecamp-copy">
           <h2>Welcome, {welcomeName}.</h2>
           <p>
@@ -690,22 +723,6 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             </li>
           ))}
         </ol>
-      </section>
-
-      <section className="basecamp-wayfinding" aria-label="Base Camp wayfinding">
-        {baseCampSteps.map((step) => {
-          const href = step.href.startsWith("/")
-            ? withReviewQuery(step.href, reviewParams)
-            : step.href;
-
-          return (
-            <a href={href} key={step.label}>
-              <span>{step.state}</span>
-              <strong>{step.label}</strong>
-              <small>{step.detail}</small>
-            </a>
-          );
-        })}
       </section>
 
       <section className="hq-grid" aria-label="DYDD Base Camp pathways">
@@ -879,31 +896,54 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           </Link>
         </article>
 
-        <article className="journal-panel" id="journal">
+        <article className="gear-panel" id="gear">
           <div className="card-heading">
-            <p className="section-label">Journal</p>
-            <h2>Reflection that stays with the person.</h2>
+            <p className="section-label">Gear</p>
+            <h2>Personal practices for the road ahead.</h2>
           </div>
-          <p>
-            Notes, prayers, workbook responses, questions, and companion-guided
-            reflections should live here instead of disappearing after a single
-            session.
-          </p>
-          <div className="journal-lines">
-            <span>Today I noticed...</span>
-            <span>The place I need grace is...</span>
-            <span>My next faithful step is...</span>
+          <div className="gear-grid">
+            <section id="journal">
+              <MenuIcon name="journal" />
+              <strong>Journal</strong>
+              <p>
+                Notes, prayers, workbook responses, questions, and
+                companion-guided reflections.
+              </p>
+              <div className="journal-lines">
+                <span>Today I noticed...</span>
+                <span>The place I need grace is...</span>
+                <span>My next faithful step is...</span>
+              </div>
+            </section>
+            <section id="devotions">
+              <MenuIcon name="devotions" />
+              <strong>Devotions</strong>
+              <p>
+                Daily and weekly Scripture-centered rhythms for continued
+                growth.
+              </p>
+              <small>Planned</small>
+            </section>
+            <section id="niche-builder">
+              <MenuIcon name="niche" />
+              <strong>Niche Builder</strong>
+              <p>
+                A focused workspace for turning assessment insight into a clear
+                serving direction.
+              </p>
+              <small>Planned</small>
+            </section>
           </div>
         </article>
 
-        <article className="gatherings-panel" id="gatherings">
+        <article className="fireside-panel" id="fireside">
           <div className="card-heading">
-            <p className="section-label">Gatherings</p>
+            <p className="section-label">Fireside</p>
             <h2>Live and archived moments.</h2>
           </div>
           <p>
-            This can hold future studies, live calls, podcasts, events, replays,
-            and community invitations without making Base Camp feel crowded.
+            Podcasts, blog posts, live events, replays, studies, and community
+            moments can gather here without crowding Base Camp.
           </p>
         </article>
 
@@ -1012,6 +1052,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           </p>
         </form>
       </section>
+      </div>
     </main>
   );
 }

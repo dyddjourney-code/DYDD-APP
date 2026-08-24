@@ -715,14 +715,11 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             <h2>Choose the trail, then follow the markers.</h2>
           </div>
           <div className="trailhead-map">
-            <div className="trail-signpost" aria-hidden="true">
-              <span>DYDD</span>
-              <strong>Main Trail</strong>
-              <small>DesignID</small>
-              <small>Spiritual Gifts</small>
-              <small>DesignPD</small>
-              <small>FruitLife 360</small>
-            </div>
+            <img
+              className="trail-signpost-image"
+              src="/brand/dydd-trailheads-signpost-dydi.png"
+              alt="Dydi standing beside a jungle trail sign for the DYDD Journey and Basecamp"
+            />
             <div className="trail-route-list">
               {trailheadCards.map((course) => (
                 <article

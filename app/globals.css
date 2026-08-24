@@ -2617,79 +2617,22 @@ h3 {
 
 .trailhead-map {
   display: grid;
-  grid-template-columns: minmax(240px, 0.42fr) minmax(0, 1fr);
+  grid-template-columns: minmax(280px, 0.46fr) minmax(0, 1fr);
   gap: clamp(20px, 4vw, 42px);
   align-items: stretch;
 }
 
-.trail-signpost {
-  position: relative;
-  display: grid;
-  align-content: start;
-  gap: 12px;
+.trail-signpost-image {
+  display: block;
+  width: 100%;
+  height: 100%;
   min-height: 420px;
-  padding: 28px 24px;
+  max-height: 620px;
   border-radius: 8px;
-  background:
-    linear-gradient(rgba(36, 63, 39, 0.72), rgba(22, 33, 22, 0.9)),
-    url("/brand/dydd-cabin-porch.png") 32% center / cover no-repeat;
-  color: var(--white);
-}
-
-.trail-signpost::before {
-  content: "";
-  position: absolute;
-  top: 120px;
-  bottom: 22px;
-  left: 50%;
-  width: 16px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #6f4a2f, #a76f45 48%, #5c3b24);
-  transform: translateX(-50%);
-}
-
-.trail-signpost span,
-.trail-signpost strong,
-.trail-signpost small {
-  position: relative;
-  z-index: 1;
-}
-
-.trail-signpost span {
-  color: #d9edc6;
-  font-size: 0.72rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.trail-signpost strong {
-  width: fit-content;
-  padding: 14px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 6px;
-  background: linear-gradient(135deg, #9a643c, #704424);
-  box-shadow: 0 12px 22px rgba(22, 33, 22, 0.24);
-  font-size: 1.35rem;
-  line-height: 1.1;
-}
-
-.trail-signpost small {
-  width: fit-content;
-  max-width: 210px;
-  margin-left: clamp(16px, 4vw, 70px);
-  padding: 10px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 6px;
-  background: linear-gradient(135deg, #b27a4b, #805331);
-  box-shadow: 0 10px 20px rgba(22, 33, 22, 0.2);
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 900;
-}
-
-.trail-signpost small:nth-of-type(2),
-.trail-signpost small:nth-of-type(4) {
-  margin-left: 0;
+  border: 1px solid rgba(71, 107, 66, 0.2);
+  object-fit: cover;
+  object-position: center;
+  box-shadow: 0 18px 38px rgba(70, 58, 35, 0.14);
 }
 
 .trail-route-list {
@@ -4332,7 +4275,7 @@ h3 {
     grid-template-columns: 1fr;
   }
 
-  .trail-signpost {
+  .trail-signpost-image {
     min-height: 340px;
   }
 

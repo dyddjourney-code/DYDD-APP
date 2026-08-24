@@ -1687,20 +1687,25 @@ h3 {
 }
 
 .icon-route::before {
-  inset: 8px;
-  border: 2px solid var(--green-dark);
-  border-right-color: transparent;
-  border-radius: 999px;
-  transform: rotate(-28deg);
+  left: 7px;
+  bottom: 8px;
+  width: 16px;
+  height: 13px;
+  border-top: 3px solid var(--green-dark);
+  border-right: 3px solid var(--green-dark);
+  border-radius: 0 12px 0 0;
+  transform: skew(-12deg);
 }
 
 .icon-route::after {
-  right: 7px;
-  bottom: 7px;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--brass);
+  top: 7px;
+  right: 6px;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 8px solid var(--brass);
+  transform: rotate(-25deg);
 }
 
 .icon-signpost::before {
@@ -1722,8 +1727,7 @@ h3 {
   box-shadow: -3px 10px 0 rgba(71, 107, 66, 0.72);
 }
 
-.icon-fieldkit::before,
-.icon-gear::before {
+.icon-fieldkit::before {
   left: 8px;
   right: 8px;
   bottom: 7px;
@@ -1732,8 +1736,7 @@ h3 {
   border-radius: 5px 5px 7px 7px;
 }
 
-.icon-fieldkit::after,
-.icon-gear::after {
+.icon-fieldkit::after {
   top: 6px;
   left: 11px;
   width: 10px;
@@ -1743,27 +1746,57 @@ h3 {
   border-radius: 8px 8px 0 0;
 }
 
-.icon-artifact::before {
-  top: 8px;
+.icon-gear::before {
   left: 8px;
+  top: 8px;
   width: 16px;
-  height: 17px;
+  height: 18px;
   border: 2px solid var(--green-dark);
-  border-radius: 2px;
-  background: rgba(243, 228, 196, 0.75);
+  border-radius: 6px 6px 5px 5px;
+  background:
+    linear-gradient(90deg, transparent 44%, rgba(71, 107, 66, 0.28) 45% 55%, transparent 56%),
+    rgba(184, 138, 67, 0.22);
+  box-shadow: inset 0 -5px 0 rgba(184, 138, 67, 0.25);
+}
+
+.icon-gear::after {
+  top: 6px;
+  left: 12px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid var(--green-dark);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  box-shadow:
+    -7px 7px 0 -4px var(--green-dark),
+    7px 7px 0 -4px var(--green-dark);
+}
+
+.icon-artifact::before {
+  top: 7px;
+  left: 12px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid rgba(111, 77, 32, 0.9);
+  border-radius: 50% 50% 45% 45%;
+  background: var(--brass);
+  box-shadow:
+    -4px 7px 0 1px var(--brass),
+    4px 7px 0 1px var(--brass),
+    0 12px 0 3px var(--brass);
 }
 
 .icon-artifact::after {
-  top: 13px;
-  left: 12px;
-  width: 8px;
-  height: 2px;
-  background: var(--brass);
-  box-shadow: 0 5px 0 var(--brass);
+  left: 7px;
+  bottom: 6px;
+  width: 18px;
+  height: 5px;
+  border: 2px solid rgba(111, 77, 32, 0.9);
+  border-radius: 2px 2px 4px 4px;
+  background: rgba(243, 228, 196, 0.9);
 }
 
-.icon-journal::before,
-.icon-devotions::before {
+.icon-journal::before {
   top: 7px;
   left: 8px;
   width: 16px;
@@ -1773,8 +1806,7 @@ h3 {
   background: rgba(255, 255, 255, 0.8);
 }
 
-.icon-journal::after,
-.icon-devotions::after {
+.icon-journal::after {
   top: 11px;
   left: 13px;
   width: 7px;
@@ -1783,39 +1815,73 @@ h3 {
   box-shadow: 0 5px 0 var(--brass), 0 10px 0 var(--brass);
 }
 
-.icon-niche::before {
-  inset: 8px;
+.icon-devotions::before {
+  top: 11px;
+  left: 6px;
+  width: 20px;
+  height: 13px;
   border: 2px solid var(--green-dark);
-  border-radius: 50%;
+  border-top: 0;
+  border-radius: 1px 1px 7px 7px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.82) 0 48%, rgba(71, 107, 66, 0.22) 49% 51%, rgba(255, 255, 255, 0.82) 52%);
+}
+
+.icon-devotions::after {
+  left: 13px;
+  top: 5px;
+  width: 7px;
+  height: 11px;
+  border-radius: 8px 8px 8px 2px;
+  background: var(--brass);
+  transform: rotate(25deg);
+}
+
+.icon-niche::before {
+  top: 8px;
+  left: 7px;
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--green-dark);
+  border-radius: 4px;
+  background: rgba(184, 138, 67, 0.22);
+  box-shadow: 9px 8px 0 -2px rgba(255, 255, 255, 0.88), 9px 8px 0 0 var(--green-dark);
 }
 
 .icon-niche::after {
-  top: 14px;
-  left: 14px;
-  width: 4px;
-  height: 4px;
+  top: 12px;
+  left: 15px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--brass);
-  box-shadow: 0 0 0 5px rgba(184, 138, 67, 0.2);
+  box-shadow:
+    -10px 0 0 -1px rgba(255, 255, 255, 0.9),
+    0 9px 0 -1px rgba(255, 255, 255, 0.9);
 }
 
 .icon-fireside::before {
-  left: 11px;
-  bottom: 7px;
-  width: 10px;
+  left: 10px;
+  bottom: 10px;
+  width: 12px;
   height: 16px;
   border-radius: 10px 10px 10px 2px;
-  background: var(--brass);
-  transform: rotate(16deg);
+  background:
+    radial-gradient(circle at 55% 68%, rgba(255, 246, 190, 0.9) 0 22%, transparent 24%),
+    linear-gradient(145deg, #d96f2a 0 45%, var(--brass) 46% 100%);
+  transform: rotate(18deg);
+  box-shadow: -4px 5px 0 -1px #c95724;
 }
 
 .icon-fireside::after {
-  left: 7px;
+  left: 6px;
   bottom: 6px;
-  width: 18px;
+  width: 20px;
   height: 4px;
   border-radius: 999px;
   background: var(--green-dark);
+  box-shadow: 0 -1px 0 rgba(111, 77, 32, 0.35);
+  transform: rotate(-8deg);
 }
 
 .hq-topbar {

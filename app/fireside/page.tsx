@@ -1,0 +1,36 @@
+import Link from "next/link";
+
+export default function FiresidePage() {
+  return (
+    <main className="journey-shell hq-standalone-page">
+      <nav className="course-nav" aria-label="Fireside navigation">
+        <Link href="/hq">Back to Base Camp</Link>
+        <Link href="/journey">Journey</Link>
+        <Link href="/gear">Gear</Link>
+      </nav>
+
+      <header className="standalone-hero fireside-page-hero">
+        <div>
+          <p className="eyebrow">Fireside</p>
+          <h1>A future gathering place for encouragement and conversation.</h1>
+          <p className="lede">
+            Fireside can hold studies, podcast/video teaching, live moments,
+            replays, community prompts, and deeper companion-led reflection
+            without turning Base Camp into a content archive.
+          </p>
+        </div>
+      </header>
+
+      <section className="fireside-panel">
+        <div className="card-heading">
+          <p className="section-label">Planned</p>
+          <h2>Teaching, replays, stories, and shared reflection.</h2>
+        </div>
+        <p>
+          This page is intentionally light for now. It gives Fireside a real
+          destination in the app while we build the Journey and Field Kit first.
+        </p>
+      </section>
+    </main>
+  );
+}

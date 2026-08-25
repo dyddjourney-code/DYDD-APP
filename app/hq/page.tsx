@@ -94,23 +94,15 @@ const toolCatalog = [
   {
     assessmentType: "designid",
     detail: "Identity, contribution, reflection language, and a completed report.",
-    href: "#field-kit",
+    href: "/field-kit",
     label: "DesignID",
     logo: "/brand/tools/designid-logo.webp",
     price: "$20",
   },
   {
-    assessmentType: "designpd",
-    detail: "Plan, Decide, and Do patterns for practical daily alignment.",
-    href: "#field-kit",
-    label: "DesignPD",
-    logo: "/brand/tools/designpd-logo.jpg",
-    price: "$50",
-  },
-  {
     assessmentType: "spiritual_gifts",
     detail: "A free first step for naming how the Spirit may be empowering service.",
-    href: "#field-kit",
+    href: "/field-kit",
     label: "Spiritual Gifts",
     logo: "/brand/tools/spiritual-gifts-logo.jpg",
     price: "Free",
@@ -118,10 +110,18 @@ const toolCatalog = [
   {
     assessmentType: "design_pathways",
     detail: "A free discernment layer for direction, experiments, and next steps.",
-    href: "#design-pathways",
+    href: "/field-kit",
     label: "Design Pathways",
     logo: "/brand/tools/design-pathways-logo.jpg",
     price: "Free",
+  },
+  {
+    assessmentType: "designpd",
+    detail: "Plan, Decide, and Do patterns for practical daily alignment.",
+    href: "/field-kit",
+    label: "DesignPD",
+    logo: "/brand/tools/designpd-logo.jpg",
+    price: "$50",
   },
   {
     assessmentType: "fruit_360",
@@ -137,30 +137,30 @@ const hqMenu = [
   {
     icon: "tent",
     label: "Base Camp",
-    href: "#basecamp",
+    href: "/hq",
     children: [{ icon: "hiker", label: "Journey", href: "/journey" }],
   },
-  { icon: "signpost", label: "Trailheads", href: "#trailheads" },
+  { icon: "signpost", label: "Trailheads", href: "/trailheads" },
   {
     icon: "map",
     label: "Field Kit",
-    href: "#field-kit",
+    href: "/field-kit",
     children: [
-      { icon: "camera", label: "Artifact", href: "#artifacts" },
-      { icon: "badge", label: "Trail Badges", href: "#trail-badges" },
+      { icon: "camera", label: "Artifacts", href: "/field-kit#artifacts" },
+      { icon: "badge", label: "Trail Badges", href: "/field-kit#trail-badges" },
     ],
   },
   {
     icon: "backpack",
     label: "Gear",
-    href: "#gear",
+    href: "/gear",
     children: [
-      { icon: "compass", label: "Journal", href: "#journal" },
-      { icon: "flashlight", label: "Waypoints", href: "#waypoints" },
-      { icon: "magnifier", label: "Pathfinder", href: "#pathfinder" },
+      { icon: "compass", label: "Journal", href: "/gear#journal" },
+      { icon: "flashlight", label: "Waypoints", href: "/gear#waypoints" },
+      { icon: "magnifier", label: "Pathfinder", href: "/pathfinder" },
     ],
   },
-  { icon: "fireside", label: "Fireside", href: "#fireside" },
+  { icon: "fireside", label: "Fireside", href: "/fireside" },
 ];
 
 type TrailBadge = {
@@ -443,6 +443,102 @@ const journeyMarkers = [
     label: "Practice & Grow",
     meta: "Road ahead",
   },
+];
+
+const baseCampLinks = [
+  {
+    detail: "Begin the guided book, workbook, assessment, and companion path.",
+    href: "/journey",
+    kicker: "Main hub",
+    title: "Start the Journey",
+  },
+  {
+    detail: "Take DesignID early as a fast first win for identity and reflection language.",
+    href: "/field-kit",
+    kicker: "Week one",
+    title: "Take DesignID",
+  },
+  {
+    detail: "Choose a trailhead when someone needs a focused entry point.",
+    href: "/trailheads",
+    kicker: "Options",
+    title: "View Trailheads",
+  },
+  {
+    detail: "See tools, artifacts, earned badges, and possible badges.",
+    href: "/field-kit",
+    kicker: "Collected",
+    title: "Open Field Kit",
+  },
+  {
+    detail: "Capture prayers, workbook notes, and reflection prompts from every section.",
+    href: "/gear",
+    kicker: "Practice",
+    title: "Use the Journal",
+  },
+  {
+    detail: "Clarify the niche where identity, gifts, story, desire, and service converge.",
+    href: "/pathfinder",
+    kicker: "Purpose",
+    title: "Find the Niche",
+  },
+];
+
+const designAcronym = [
+  {
+    letter: "D",
+    title: "Design",
+    text: "God has formed the person on purpose before asking them to live for purpose.",
+  },
+  {
+    letter: "E",
+    title: "Expertise",
+    text: "Skills, practice, wisdom, and lived capacity become part of faithful service.",
+  },
+  {
+    letter: "S",
+    title: "Story",
+    text: "The redeemed path behind a person helps reveal compassion, burden, and calling.",
+  },
+  {
+    letter: "I",
+    title: "Identity",
+    text: "The journey starts with whose they are, not only what they can do.",
+  },
+  {
+    letter: "G",
+    title: "Gifts",
+    text: "Grace-given wiring and spiritual gifts point toward contribution in the Body.",
+  },
+  {
+    letter: "N",
+    title: "Niche",
+    text: "The pieces converge into a clear place to serve, build, lead, and bless.",
+  },
+];
+
+const visualJourneyMap = [
+  { icon: "tent", label: "Start", text: "Orient at Base Camp" },
+  { icon: "hiker", label: "DYDD", text: "Open the main journey" },
+  { image: "/brand/badges/identity-badge.svg", label: "Identity", text: "Whose you are" },
+  { image: "/brand/badges/designid-badge.png", label: "DesignID", text: "Early assessment marker" },
+  { image: "/brand/badges/expertise-badge.svg", label: "Expertise", text: "Skills and capacity" },
+  { image: "/brand/badges/story-badge.svg", label: "Story", text: "Formation and testimony" },
+  { image: "/brand/badges/desire-badge.svg", label: "Desire", text: "Holy motivation" },
+  {
+    image: "/brand/badges/spiritual-gifts-badge.png",
+    label: "Gifts Tool",
+    text: "Spiritual gifts assessment",
+  },
+  { image: "/brand/badges/gifts-badge.svg", label: "Gifts", text: "Grace-given service" },
+  { image: "/brand/badges/niche-badge.svg", label: "Niche", text: "Purpose clarity" },
+  {
+    image: "/brand/badges/design-pathways-badge.png",
+    label: "Pathways",
+    text: "Choose the next path",
+  },
+  { image: "/brand/badges/designpd-badge.png", label: "DesignPD", text: "Practice and decisions" },
+  { image: "/brand/badges/fruitlife-360-badge.png", label: "FruitLife 360", text: "Visible growth" },
 ];
 
 const fruitLifeStages = [
@@ -971,18 +1067,20 @@ export default async function HqPage({ searchParams }: HqPageProps) {
 
       <section className="basecamp-hero" id="basecamp" aria-label="DYDD Base Camp">
         <div className="basecamp-copy">
+          <p className="section-label">On Purpose, For Purpose</p>
           <h2>Welcome, {welcomeName}.</h2>
           <p>
-            This is your place to pause, gather what you have discovered, and
-            choose the next faithful step.
+            Base Camp orients the whole Discover Your Divine Design experience:
+            start here, see the road, gather your tools, and choose the next
+            faithful step.
           </p>
           <div className="basecamp-actions">
             <Link className="button primary" href={withReviewQuery("/journey", reviewParams)}>
               Begin the journey
             </Link>
-            <a className="button secondary" href="#field-kit">
+            <Link className="button secondary" href="/field-kit">
               Open the field kit
-            </a>
+            </Link>
           </div>
         </div>
         <div className="basecamp-scene" aria-hidden="true">
@@ -997,18 +1095,19 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       <section className="journey-orientation" aria-label="Where to begin">
         <div className="orientation-copy">
           <p className="section-label">Where to begin</p>
-          <h2>Your journey starts with Discover Your Divine Design.</h2>
+          <h2>Start with the full trail or take one fast first step.</h2>
           <p>
-            Base Camp is the place to see where you are, what you already carry,
-            and which part of the road is ready for your attention next.
+            The full Journey is the main path, but DesignID can also be a
+            low-friction first move inside week one. Either way, Base Camp keeps
+            the next door obvious.
           </p>
           <div className="basecamp-actions">
             <Link className="button primary" href={withReviewQuery("/journey", reviewParams)}>
               Open main trail
             </Link>
-            <a className="button secondary" href="#trailheads">
-              See trailheads
-            </a>
+            <Link className="button secondary" href="/field-kit">
+              Start with DesignID
+            </Link>
           </div>
         </div>
         <ol className="orientation-route">
@@ -1022,283 +1121,81 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         </ol>
       </section>
 
-      <section className="hq-grid" aria-label="DYDD Base Camp pathways">
-        <article className="course-panel trailhead-panel" id="trailheads">
-          <div className="card-heading">
-            <p className="section-label">Trailheads</p>
-            <h2>Choose the trail, then follow the markers.</h2>
-          </div>
-          <div className="trailhead-map">
-            <img
-              className="trail-signpost-image"
-              src="/brand/dydd-trailheads-signpost-dydi.png"
-              alt="Dydi standing beside a jungle trail sign for the DYDD Journey and Basecamp"
-            />
-            <div className="trail-route-list">
-              {trailheadCards.map((course) => (
-                <article
-                  className={course.available ? "trail-route open" : "trail-route locked"}
-                  id={course.id}
-                  key={course.label}
-                >
-                  <img src={course.icon} alt={`${course.label} icon`} />
-                  <div>
-                    <span>{trailheadMetaById[course.id] ?? "Trail marker"}</span>
-                    <h3>{course.label}</h3>
-                    <p>{course.detail}</p>
-                    <small>{course.meta}</small>
-                  </div>
-                  {course.available ? (
-                    <Link className="button secondary" href={course.href}>
-                      {course.action}
-                    </Link>
-                  ) : (
-                    <a className="button secondary" href={course.href}>
-                      {course.action}
-                    </a>
-                  )}
-                </article>
-              ))}
-            </div>
-          </div>
-        </article>
-
-        <article className="tool-panel fieldkit-panel" id="field-kit">
-          <div className="card-heading">
-            <p className="section-label">Field Kit</p>
-            <h2>Prepare for the road ahead.</h2>
-          </div>
-          <div className="fieldkit-feature">
-            <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
-            <div>
-              <strong>FruitLife 360</strong>
-              <p>
-                Pack this for growth work: saved runs, observer progress,
-                artifacts, notes, and the next trailhead that helps explain
-                what the results mean.
-              </p>
-              <div className="fieldkit-status">
-                <span>
-                  {activeFruitLifeSession
-                    ? `${fruitLifeCompletion.completed}/${fruitLifeCompletion.required} responses`
-                    : "Ready to start"}
-                </span>
-                <small>
-                  {activeFruitLifeSession
-                    ? `Updated ${displayDate(activeFruitLifeSession.updated_at)}`
-                    : "Create the first FruitLife intake"}
-                </small>
-              </div>
-            </div>
-            <Link className="button secondary" href="/fruitlife360">
-              Open
-            </Link>
-          </div>
-          <div className="product-list fieldkit-list">
-            {toolCatalog.map((tool) => {
-              const completed = ownsAssessment(assessmentReport, tool.assessmentType);
-              return (
-                <article
-                  className="product-row"
-                  id={tool.assessmentType === "design_pathways" ? "design-pathways" : undefined}
-                  key={tool.label}
-                >
-                  <img src={tool.logo} alt={`${tool.label} logo`} />
-                  <div>
-                    <strong>{tool.label}</strong>
-                    <p>{tool.detail}</p>
-                  </div>
-                  <span>{completed ? "Completed" : tool.price}</span>
-                  <a className="button secondary" href={tool.href}>
-                    {completed ? "Review" : tool.price === "Free" ? "Start" : "Buy"}
-                  </a>
-                </article>
-              );
-            })}
-          </div>
-        </article>
-
-        <article className="artifact-panel artifact-workbench" id="artifacts">
-          <div className="card-heading">
-            <p className="section-label">Artifacts</p>
-            <h2>Examine what you have already discovered.</h2>
-          </div>
-          {artifactSnapshots?.length ? (
-            <div className="artifact-download-list">
-              {artifactSnapshots.map((snapshot) => (
-                <article className="artifact-download" key={snapshot.id}>
-                  <div>
-                    <span>{artifactLabel(snapshot)}</span>
-                    <small>
-                      Completed{" "}
-                      {displayDate(
-                        snapshot.source_submitted_at ?? snapshot.created_at,
-                      )}
-                    </small>
-                  </div>
-                  {snapshotHighlights(snapshot).length ? (
-                    <dl>
-                      {snapshotHighlights(snapshot).slice(0, 3).map((item) => (
-                        <div key={item.label}>
-                          <dt>{item.label}</dt>
-                          <dd>{item.value}</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  ) : null}
-                  <a
-                    className="button secondary"
-                    href={artifactDownloadHref(snapshot, reviewParams)}
-                  >
-                    Download report
-                  </a>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="hq-empty-state">
-              <strong>No completed artifacts yet.</strong>
-              <p>
-                This account is ready to use the free tools or purchase
-                DesignID, DesignPD, and the DYDD course. Completed reports will
-                appear here after the person finishes an assessment.
-              </p>
-            </div>
-          )}
-        </article>
-
-        <article className="badge-panel" id="trail-badges">
-          <div className="card-heading">
-            <p className="section-label">Trail Badges</p>
-            <h2>Visible markers for progress, growth, and calling.</h2>
-          </div>
-          <div className="badge-system-intro">
-            <p>
-              This first badge map gives the journey a set of earnable trail
-              markers: the D.E.S.I.G.N. pieces, connected tools, and personal
-              Reflection badges.
-            </p>
-            <span>
-              {badgeCards.filter((badge) => badge.earned).length}/{badgeCards.length} earned
-            </span>
-          </div>
-          {(["D.E.S.I.G.N.", "Tools", "Reflections"] as const).map((group) => (
-            <section className="badge-group" key={group}>
-              <div className="badge-group-heading">
-                <h3>{group}</h3>
-                <small>
-                  {group === "D.E.S.I.G.N."
-                    ? "Main journey markers"
-                    : group === "Tools"
-                      ? "Connected discovery work"
-                      : "Personalized reflection markers"}
-                </small>
-              </div>
-              <div className="badge-grid">
-                {badgeCards
-                  .filter((badge) => badge.group === group)
-                  .map((badge) => (
-                    <article
-                      className={badge.earned ? "trail-badge earned" : "trail-badge locked"}
-                      key={badge.slug}
-                    >
-                      <div className="badge-art">
-                        <img src={badge.image} alt={`${badge.title} trail badge`} />
-                        {badge.earned && badge.group === "Reflections" ? (
-                          <span>{welcomeName}</span>
-                        ) : null}
-                      </div>
-                      <div className="badge-copy">
-                        <span>{badge.status}</span>
-                        <strong>{badge.title}</strong>
-                        <p>{badge.detail}</p>
-                        <small>{badge.condition}</small>
-                      </div>
-                    </article>
-                  ))}
-              </div>
-            </section>
-          ))}
-        </article>
-
-        <article className="journey-builder">
-          <div>
-            <p className="section-label">Main trail</p>
-            <h2>
-              {hasDyddCourseAccess
-                ? "Continue Discover Your Divine Design."
-                : "Open the Discover Your Divine Design trail."}
-            </h2>
-            <p>
-              This opens the guided course path that gathers the book,
-              workbook, assessments, reflection, and next steps into one
-              formation trail.
-            </p>
-            {hasDyddCourseAccess ? (
-              <div className="niche-builder-steps">
-                <span>Journey process</span>
-                <span>Pathfinder</span>
-                <span>Companion reflection</span>
-              </div>
-            ) : null}
-          </div>
-          <Link className="button primary" href={withReviewQuery("/journey", reviewParams)}>
-            {hasDyddCourseAccess ? "Continue trail" : "View course access"}
+      <nav className="basecamp-wayfinding" aria-label="Base Camp page links">
+        {baseCampLinks.map((item) => (
+          <Link href={withReviewQuery(item.href, reviewParams)} key={item.title}>
+            <span>{item.kicker}</span>
+            <strong>{item.title}</strong>
+            <small>{item.detail}</small>
           </Link>
-        </article>
+        ))}
+      </nav>
 
-        <article className="gear-panel" id="gear">
-          <div className="card-heading">
-            <p className="section-label">Gear</p>
-            <h2>Personal practices for the road ahead.</h2>
-          </div>
-          <div className="gear-grid">
-            <section id="journal">
-              <MenuIcon name="compass" />
-              <strong>Journal</strong>
-              <p>
-                Notes, prayers, workbook responses, questions, and
-                companion-guided reflections.
-              </p>
-              <div className="journal-lines">
-                <span>Today I noticed...</span>
-                <span>The place I need grace is...</span>
-                <span>My next faithful step is...</span>
-              </div>
-            </section>
-            <section id="waypoints">
-              <MenuIcon name="flashlight" />
-              <strong>Waypoints</strong>
-              <p>
-                Daily and weekly Scripture-centered rhythms for continued
-                growth, direction, and next-step clarity.
-              </p>
-              <small>Planned</small>
-            </section>
-            <section id="pathfinder">
-              <MenuIcon name="magnifier" />
-              <strong>Pathfinder</strong>
-              <p>
-                A focused workspace for turning assessment insight into a clear
-                serving direction.
-              </p>
-              <small>Planned</small>
-            </section>
-          </div>
-        </article>
-
-        <article className="fireside-panel" id="fireside">
-          <div className="card-heading">
-            <p className="section-label">Fireside</p>
-            <h2>Live and archived moments.</h2>
-          </div>
+      <section className="basecamp-story-grid" aria-label="Discover Your Divine Design overview">
+        <article className="basecamp-story-card">
+          <p className="section-label">What is DYDD?</p>
+          <h2>Discover Your Divine Design helps people name who God made them to be and where they are called to serve.</h2>
           <p>
-            Podcasts, blog posts, live events, replays, studies, and community
-            moments can gather here without crowding Base Camp.
+            It combines teaching, assessment insight, workbook reflection, prayer,
+            and practical next steps so a person can move from scattered self-awareness
+            into faithful direction.
           </p>
         </article>
+        <article className="basecamp-purpose-card">
+          <p className="section-label">The point</p>
+          <h2>On Purpose, For Purpose</h2>
+          <p>
+            The journey does not end with personality language. It keeps pressing
+            toward a niche: the clear serving place where identity, expertise,
+            story, desire, gifts, and opportunity come together.
+          </p>
+        </article>
+        <article className="design-acronym-panel">
+          <div className="card-heading">
+            <p className="section-label">D.E.S.I.G.N.</p>
+            <h2>The framework underneath the road.</h2>
+          </div>
+          <div className="design-acronym-grid">
+            {designAcronym.map((item) => (
+              <section key={item.title}>
+                <span>{item.letter}</span>
+                <strong>{item.title}</strong>
+                <p>{item.text}</p>
+              </section>
+            ))}
+          </div>
+        </article>
+      </section>
 
-        {adminReport ? (
+      <section className="visual-journey-map" aria-label="Typical DYDD journey map">
+        <div className="card-heading">
+          <p className="section-label">Typical journey map</p>
+          <h2>A visible road for the whole experience.</h2>
+          <p>
+            This can become interactive later: each marker can show the badge,
+            assessment, workbook section, unlock condition, and next action.
+          </p>
+        </div>
+        <ol>
+          {visualJourneyMap.map((marker, index) => (
+            <li key={`${marker.label}-${index}`}>
+              <div className="journey-map-marker">
+                {marker.image ? (
+                  <img src={marker.image} alt={`${marker.label} marker`} />
+                ) : (
+                  <MenuIcon name={marker.icon ?? "hiker"} />
+                )}
+              </div>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{marker.label}</strong>
+              <small>{marker.text}</small>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {adminReport ? (
+        <section className="hq-grid" aria-label="Base Camp admin view">
           <article className="admin-panel">
             <div className="card-heading">
               <p className="section-label">Admin report</p>
@@ -1371,8 +1268,8 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               ))}
             </div>
           </article>
-        ) : null}
-      </section>
+        </section>
+      ) : null}
 
       <section className="ask-dydi-hq" id="ask-dydi" aria-label="Ask Dydi">
         <div className="dydi-host">

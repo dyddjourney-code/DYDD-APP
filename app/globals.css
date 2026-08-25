@@ -2193,6 +2193,350 @@ h3 {
   line-height: 1.45;
 }
 
+.basecamp-story-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.basecamp-story-card,
+.basecamp-purpose-card,
+.design-acronym-panel,
+.visual-journey-map,
+.standalone-hero,
+.fieldkit-tool-card,
+.badge-accordion,
+.journal-workbench {
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
+}
+
+.basecamp-story-card,
+.basecamp-purpose-card,
+.design-acronym-panel,
+.visual-journey-map {
+  padding: clamp(22px, 4vw, 36px);
+}
+
+.basecamp-story-card {
+  background:
+    linear-gradient(132deg, rgba(255, 255, 255, 0.96), rgba(234, 240, 226, 0.82)),
+    var(--panel);
+}
+
+.basecamp-purpose-card {
+  background:
+    linear-gradient(140deg, rgba(36, 63, 39, 0.96), rgba(71, 107, 66, 0.86)),
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.08) 0,
+      rgba(255, 255, 255, 0.08) 1px,
+      transparent 1px,
+      transparent 24px
+    );
+  color: var(--white);
+}
+
+.basecamp-story-card h2,
+.basecamp-purpose-card h2 {
+  font-size: clamp(1.75rem, 3.3vw, 3.4rem);
+  line-height: 1.02;
+}
+
+.basecamp-story-card p:not(.section-label),
+.basecamp-purpose-card p:not(.section-label),
+.visual-journey-map .card-heading p:not(.section-label) {
+  margin-top: 18px;
+  max-width: 68ch;
+  color: var(--muted);
+  line-height: 1.68;
+}
+
+.basecamp-purpose-card .section-label,
+.basecamp-purpose-card p:not(.section-label) {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.design-acronym-panel {
+  grid-column: 1 / -1;
+}
+
+.design-acronym-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.design-acronym-grid section {
+  display: grid;
+  gap: 8px;
+  min-height: 188px;
+  padding: 16px;
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(251, 250, 244, 0.94), rgba(255, 255, 255, 0.9)),
+    var(--panel);
+}
+
+.design-acronym-grid span {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  background: var(--green-dark);
+  color: var(--white);
+  font-weight: 950;
+}
+
+.design-acronym-grid strong {
+  color: var(--green-dark);
+  font-size: 1.12rem;
+  font-weight: 950;
+}
+
+.design-acronym-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.visual-journey-map {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(251, 250, 244, 0.96)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(71, 107, 66, 0.055) 0,
+      rgba(71, 107, 66, 0.055) 1px,
+      transparent 1px,
+      transparent 34px
+    );
+}
+
+.visual-journey-map ol {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(13, minmax(122px, 1fr));
+  gap: 18px;
+  margin: 28px 0 0;
+  padding: 20px 0 10px;
+  list-style: none;
+  overflow-x: auto;
+}
+
+.visual-journey-map ol::before {
+  content: "";
+  position: absolute;
+  top: 62px;
+  left: 58px;
+  right: 58px;
+  height: 4px;
+  border-radius: 999px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(36, 63, 39, 0.44) 0 26px,
+      rgba(184, 138, 67, 0.5) 26px 40px
+    );
+}
+
+.visual-journey-map li {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  min-width: 122px;
+  text-align: center;
+}
+
+.journey-map-marker {
+  display: grid;
+  place-items: center;
+  width: 82px;
+  height: 82px;
+  border: 2px solid rgba(36, 63, 39, 0.22);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.96), rgba(234, 240, 226, 0.92)),
+    var(--panel);
+  box-shadow: 0 12px 24px rgba(36, 63, 39, 0.12);
+}
+
+.journey-map-marker img {
+  width: 66px;
+  height: 66px;
+  object-fit: contain;
+}
+
+.journey-map-marker .hq-menu-icon {
+  width: 52px;
+  height: 52px;
+}
+
+.visual-journey-map li > span {
+  color: var(--brass);
+  font-size: 0.7rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+}
+
+.visual-journey-map li > strong {
+  color: var(--green-dark);
+  font-size: 0.95rem;
+  font-weight: 950;
+}
+
+.visual-journey-map li > small {
+  max-width: 14ch;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 760;
+  line-height: 1.35;
+}
+
+.hq-standalone-page {
+  padding: clamp(24px, 5vw, 58px);
+}
+
+.standalone-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+  gap: clamp(24px, 5vw, 54px);
+  align-items: center;
+  margin-bottom: 18px;
+  padding: clamp(26px, 5vw, 48px);
+  overflow: hidden;
+}
+
+.standalone-hero h1 {
+  max-width: 13ch;
+  margin-bottom: 18px;
+  font-size: clamp(2.4rem, 6vw, 5.4rem);
+}
+
+.standalone-hero img {
+  display: block;
+  width: min(360px, 100%);
+  justify-self: center;
+  object-fit: contain;
+}
+
+.trailheads-hero,
+.fieldkit-hero,
+.gear-hero,
+.pathfinder-hero,
+.fireside-page-hero {
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.96), rgba(234, 240, 226, 0.78)),
+    var(--panel);
+}
+
+.trailhead-page-list,
+.fieldkit-page-grid {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.trailhead-page-list .trail-route {
+  grid-template-columns: 88px minmax(0, 1fr) auto;
+}
+
+.fieldkit-page-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.fieldkit-tool-card {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  min-height: 260px;
+  padding: 18px;
+}
+
+.fieldkit-tool-card img {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 16px rgba(36, 63, 39, 0.16));
+}
+
+.fieldkit-tool-card span {
+  color: var(--brass);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.fieldkit-tool-card strong {
+  color: var(--green-dark);
+  font-size: 1.15rem;
+  font-weight: 950;
+}
+
+.fieldkit-tool-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.52;
+}
+
+.badge-accordion {
+  padding: 0;
+  overflow: hidden;
+}
+
+.badge-accordion summary {
+  cursor: pointer;
+  padding: 18px 20px;
+  color: var(--green-dark);
+  font-weight: 950;
+}
+
+.badge-accordion-groups {
+  display: grid;
+  gap: 22px;
+  padding: 0 20px 22px;
+}
+
+.journal-workbench {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 18px;
+}
+
+.journal-workbench label {
+  display: grid;
+  gap: 10px;
+}
+
+.journal-workbench span {
+  color: var(--green-dark);
+  font-weight: 950;
+}
+
+.journal-workbench textarea {
+  width: 100%;
+  border: 1px solid rgba(71, 107, 66, 0.2);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--ink);
+  font: inherit;
+  line-height: 1.45;
+  padding: 12px 13px;
+  resize: vertical;
+}
+
 .hq-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(300px, 0.55fr);
@@ -4757,6 +5101,8 @@ h3 {
   .build-plan,
   .login-shell,
   .journey-orientation,
+  .basecamp-story-grid,
+  .standalone-hero,
   .trailhead-map,
   .ask-dydi-hq,
   .fruitlife-workbench,
@@ -4889,6 +5235,8 @@ h3 {
   }
 
   .fieldkit-list,
+  .fieldkit-page-grid,
+  .journal-workbench,
   .artifact-workbench .artifact-download-list,
   .badge-system-intro,
   .gear-grid {
@@ -4986,8 +5334,10 @@ h3 {
   .fruitlife-stage-grid,
   .fruitlife-change-grid,
   .basecamp-wayfinding,
+  .design-acronym-grid,
   .orientation-route,
   .trail-route,
+  .trailhead-page-list .trail-route,
   .fieldkit-feature,
   .hq-topbar,
   .card-heading,

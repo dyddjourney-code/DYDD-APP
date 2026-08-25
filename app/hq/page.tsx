@@ -461,36 +461,55 @@ const baseCampLinks = [
   },
 ];
 
+const dyddDefinitionCards = [
+  {
+    title: "Discover",
+    text: "Uncover patterns and design",
+  },
+  {
+    title: "Your",
+    text: "Own it personally",
+  },
+  {
+    title: "Divine",
+    text: "Recognize God's hand in it",
+  },
+  {
+    title: "Design",
+    text: "Live from where you were made",
+  },
+];
+
 const designAcronym = [
   {
     letter: "D",
-    title: "Design",
-    text: "God has formed the person on purpose before asking them to live for purpose.",
+    title: "Identity",
+    text: "Start with whose you are and the design God has already placed in you.",
   },
   {
     letter: "E",
     title: "Expertise",
-    text: "Skills, practice, wisdom, and lived capacity become part of faithful service.",
+    text: "Name the skills, wisdom, practice, and capacity you can bring to others.",
   },
   {
     letter: "S",
     title: "Story",
-    text: "The redeemed path behind a person helps reveal compassion, burden, and calling.",
+    text: "Let the path behind you reveal compassion, burden, and formation.",
   },
   {
     letter: "I",
-    title: "Identity",
-    text: "The journey starts with whose they are, not only what they can do.",
+    title: "Desire",
+    text: "Pay attention to holy motivation, burden, joy, and longing.",
   },
   {
     letter: "G",
     title: "Gifts",
-    text: "Grace-given wiring and spiritual gifts point toward contribution in the Body.",
+    text: "See how grace-given wiring points toward contribution in the Body.",
   },
   {
     letter: "N",
     title: "Niche",
-    text: "The pieces converge into a clear place to serve, build, lead, and bless.",
+    text: "Bring the pieces together into a clear place to serve, build, lead, and bless.",
   },
 ];
 
@@ -1075,35 +1094,54 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       <section className="basecamp-story-grid" aria-label="Discover Your Divine Design overview">
         <article className="basecamp-story-card">
           <p className="section-label">What is DYDD?</p>
-          <h2>Discover Your Divine Design helps people name who God made them to be and where they are called to serve.</h2>
-          <p>
-            It combines teaching, assessment insight, workbook reflection, prayer,
-            and practical next steps so a person can move from scattered self-awareness
-            into faithful direction.
-          </p>
+          <div className="dydd-definition-cards">
+            {dyddDefinitionCards.map((card) => (
+              <section key={card.title}>
+                <h2>{card.title}</h2>
+                <p>{card.text}</p>
+              </section>
+            ))}
+          </div>
+          <p className="dydd-definition-footer">You were intentionally designed.</p>
         </article>
         <article className="basecamp-purpose-card">
           <p className="section-label">The point</p>
-          <h2>On Purpose, For Purpose</h2>
-          <p>
-            The journey does not end with personality language. It keeps pressing
-            toward a niche: the clear serving place where identity, expertise,
-            story, desire, gifts, and opportunity come together.
-          </p>
+          <div className="purpose-two-up">
+            <section>
+              <h2>You are On Purpose</h2>
+              <p>You are a masterpiece</p>
+            </section>
+            <section>
+              <h2>You are For Purpose</h2>
+              <p>Intended for participation</p>
+            </section>
+          </div>
+          <blockquote>
+            For we are God's handiwork, created in Christ Jesus to do good works,
+            which God prepared in advance for us to do. Ephesians 2:10
+          </blockquote>
         </article>
         <article className="design-acronym-panel">
-          <div className="card-heading">
-            <p className="section-label">D.E.S.I.G.N.</p>
-            <h2>The framework underneath the road.</h2>
+          <div className="design-acronym-media">
+            <img
+              src="/brand/design/design-tree-storybook.png"
+              alt="DESIGN acronym carved into a tree with Identity, Expertise, Story, Desire, Gifts, and Niche"
+            />
           </div>
-          <div className="design-acronym-grid">
-            {designAcronym.map((item) => (
-              <section key={item.title}>
-                <span>{item.letter}</span>
-                <strong>{item.title}</strong>
-                <p>{item.text}</p>
-              </section>
-            ))}
+          <div className="design-acronym-content">
+            <div className="card-heading">
+              <p className="section-label">D.E.S.I.G.N.</p>
+              <h2>The path toward your niche.</h2>
+            </div>
+            <div className="design-acronym-grid">
+              {designAcronym.map((item) => (
+                <section key={item.title}>
+                  <span>{item.letter}</span>
+                  <strong>{item.title}</strong>
+                  <p>{item.text}</p>
+                </section>
+              ))}
+            </div>
           </div>
         </article>
       </section>

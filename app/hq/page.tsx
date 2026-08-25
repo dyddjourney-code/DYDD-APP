@@ -137,30 +137,116 @@ const hqMenu = [
     icon: "tent",
     label: "Base Camp",
     href: "#basecamp",
-    children: [{ icon: "route", label: "Journey", href: "/journey" }],
+    children: [{ icon: "hiker", label: "Journey", href: "/journey" }],
   },
   { icon: "signpost", label: "Trailheads", href: "#trailheads" },
   {
-    icon: "fieldkit",
+    icon: "map",
     label: "Field Kit",
     href: "#field-kit",
-    children: [{ icon: "artifact", label: "Artifacts", href: "#artifacts" }],
+    children: [{ icon: "camera", label: "Artifact", href: "#artifacts" }],
   },
   {
-    icon: "gear",
+    icon: "backpack",
     label: "Gear",
     href: "#gear",
     children: [
-      { icon: "journal", label: "Journal", href: "#journal" },
-      { icon: "devotions", label: "Devotions", href: "#devotions" },
-      { icon: "niche", label: "Niche Builder", href: "#niche-builder" },
+      { icon: "compass", label: "Journal", href: "#journal" },
+      { icon: "flashlight", label: "Waypoints", href: "#waypoints" },
+      { icon: "magnifier", label: "Pathfinder", href: "#pathfinder" },
     ],
   },
   { icon: "fireside", label: "Fireside", href: "#fireside" },
 ];
 
 function MenuIcon({ name }: { name: string }) {
-  return <span aria-hidden="true" className={`hq-menu-icon icon-${name}`} />;
+  const common = {
+    fill: "none",
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    strokeWidth: 2.1,
+    viewBox: "0 0 32 32",
+  };
+
+  const icon =
+    name === "tent" ? (
+      <svg {...common}>
+        <path d="M4.5 25.5h23" stroke="var(--green-dark)" />
+        <path d="M7.5 25.5 16 7.5l8.5 18" fill="#f0d08a" stroke="var(--green-dark)" />
+        <path d="M16 7.5v18" stroke="#6f4d20" />
+        <path d="M16 25.5 20.5 17l4 8.5" fill="#d4a451" stroke="var(--green-dark)" />
+      </svg>
+    ) : name === "hiker" ? (
+      <svg {...common}>
+        <circle cx="16" cy="7.5" r="3" fill="#d4a451" stroke="var(--green-dark)" />
+        <path d="m14.5 11 4 3.5-2.8 4.2 4.8 6.8" stroke="var(--green-dark)" />
+        <path d="m16.8 14.8-5.3 3.3" stroke="var(--green-dark)" />
+        <path d="m15.7 18.7-5.2 6.8" stroke="var(--green-dark)" />
+        <path d="M21.5 10v16" stroke="#6f4d20" />
+        <path d="M7 27.5c5.5-2.7 12.7-2.7 18 0" stroke="#759a5b" />
+      </svg>
+    ) : name === "signpost" ? (
+      <svg {...common}>
+        <path d="M16 6v21" stroke="var(--green-dark)" />
+        <path d="M8 8.5h13.5l2.5 2.8-2.5 2.7H8z" fill="#e8c576" stroke="#6f4d20" />
+        <path d="M24 17.5H10.5L8 20.2l2.5 2.8H24z" fill="#759a5b" stroke="var(--green-dark)" />
+        <path d="M12 27h8" stroke="var(--green-dark)" />
+      </svg>
+    ) : name === "map" ? (
+      <svg {...common}>
+        <path d="m5.5 9 7-2.5 7 2.5 7-2.5v17l-7 2.5-7-2.5-7 2.5z" fill="#f7efd8" stroke="var(--green-dark)" />
+        <path d="M12.5 6.5v17M19.5 9v17" stroke="#6f4d20" />
+        <path d="M8 17c2-2 4.1-2.6 6.3-1.7 2.5 1 4.7.4 6.6-1.8" stroke="#759a5b" />
+        <path d="M22.8 20.8 24.5 19l1.8 1.8-1.8 1.9z" fill="#d4a451" stroke="#6f4d20" />
+      </svg>
+    ) : name === "camera" ? (
+      <svg {...common}>
+        <path d="M8 11.5h4l1.7-2.5h5l1.7 2.5H24a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-8a3 3 0 0 1 3-3Z" fill="#f0d08a" stroke="var(--green-dark)" />
+        <circle cx="16" cy="18.5" r="4.4" fill="#fffaf0" stroke="#6f4d20" />
+        <circle cx="16" cy="18.5" r="1.5" fill="#759a5b" stroke="#759a5b" />
+        <path d="M22.5 14h1" stroke="#6f4d20" />
+      </svg>
+    ) : name === "backpack" ? (
+      <svg {...common}>
+        <path d="M11 11V9a5 5 0 0 1 10 0v2" stroke="var(--green-dark)" />
+        <path d="M9 10.5h14a3 3 0 0 1 3 3v10.2a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3V13.5a3 3 0 0 1 3-3Z" fill="#759a5b" stroke="var(--green-dark)" />
+        <path d="M10 18.2h12v8.5H10z" fill="#f0d08a" stroke="#6f4d20" />
+        <path d="M6 16h4M22 16h4M13 14h6" stroke="#eaf0e2" />
+      </svg>
+    ) : name === "compass" ? (
+      <svg {...common}>
+        <circle cx="16" cy="16" r="10.5" fill="#fffaf0" stroke="var(--green-dark)" />
+        <path d="m19.8 9.8-2.2 7.8-5.4 4.6 2.2-7.8z" fill="#d4a451" stroke="#6f4d20" />
+        <circle cx="16" cy="16" r="1.4" fill="var(--green-dark)" stroke="var(--green-dark)" />
+        <path d="M16 4.2v2M16 25.8v2M4.2 16h2M25.8 16h2" stroke="#759a5b" />
+      </svg>
+    ) : name === "flashlight" ? (
+      <svg {...common}>
+        <path d="M20 7.5 26.5 14 15 25.5 8.5 19z" fill="#759a5b" stroke="var(--green-dark)" />
+        <path d="m17.5 10 6.5 6.5" stroke="#eaf0e2" />
+        <path d="m8.5 19-3 3M6.5 16.5 3 17.2M11 21.5l-.8 3.6" stroke="#d4a451" />
+        <path d="m13.4 16.2 2.4 2.4" stroke="#eaf0e2" />
+      </svg>
+    ) : name === "magnifier" ? (
+      <svg {...common}>
+        <circle cx="14" cy="14" r="7.5" fill="#fffaf0" stroke="var(--green-dark)" />
+        <path d="m19.5 19.5 6.5 6.5" stroke="#6f4d20" />
+        <path d="M10.7 14.2 13.2 17l4.5-5.5" stroke="#d4a451" />
+        <path d="M23.5 23.5 26 21" stroke="#6f4d20" />
+      </svg>
+    ) : name === "fireside" ? (
+      <svg {...common}>
+        <path d="M11 26.5 22 22M10 22l12 4.5" stroke="#6f4d20" />
+        <path d="M16.5 24.5c-4.4-2.2-6-5.5-4.7-9.8 1.4 1.4 2.6 2.1 3.5 2.1-.3-3.3.9-6 3.7-8.3.2 3.6 1.5 5.3 3.9 7 2.1 3.8.5 7-6.4 9Z" fill="#d96f2a" stroke="var(--green-dark)" />
+        <path d="M16.6 22.2c-2.1-1.2-2.8-2.9-1.9-5.1 1 .9 1.9 1.2 2.6 1 .1-1.8.8-3.2 2.1-4.4 0 2 .7 3.1 1.8 4 1 2-.2 3.6-4.6 4.5Z" fill="#f6d36d" stroke="#6f4d20" />
+      </svg>
+    ) : null;
+
+  return (
+    <span aria-hidden="true" className={`hq-menu-icon icon-${name}`}>
+      {icon}
+    </span>
+  );
 }
 
 const journeyMarkers = [
@@ -886,7 +972,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             {hasDyddCourseAccess ? (
               <div className="niche-builder-steps">
                 <span>Journey process</span>
-                <span>Niche builder</span>
+                <span>Pathfinder</span>
                 <span>Companion reflection</span>
               </div>
             ) : null}
@@ -903,7 +989,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           </div>
           <div className="gear-grid">
             <section id="journal">
-              <MenuIcon name="journal" />
+              <MenuIcon name="compass" />
               <strong>Journal</strong>
               <p>
                 Notes, prayers, workbook responses, questions, and
@@ -915,18 +1001,18 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                 <span>My next faithful step is...</span>
               </div>
             </section>
-            <section id="devotions">
-              <MenuIcon name="devotions" />
-              <strong>Devotions</strong>
+            <section id="waypoints">
+              <MenuIcon name="flashlight" />
+              <strong>Waypoints</strong>
               <p>
                 Daily and weekly Scripture-centered rhythms for continued
-                growth.
+                growth, direction, and next-step clarity.
               </p>
               <small>Planned</small>
             </section>
-            <section id="niche-builder">
-              <MenuIcon name="niche" />
-              <strong>Niche Builder</strong>
+            <section id="pathfinder">
+              <MenuIcon name="magnifier" />
+              <strong>Pathfinder</strong>
               <p>
                 A focused workspace for turning assessment insight into a clear
                 serving direction.

@@ -1651,20 +1651,26 @@ h3 {
 }
 
 .hq-menu-icon {
-  position: relative;
-  display: block;
+  display: grid;
+  place-items: center;
   width: 32px;
   height: 32px;
   border: 1px solid rgba(71, 107, 66, 0.2);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.74);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(251, 250, 244, 0.82));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.hq-menu-icon svg {
+  display: block;
+  width: 26px;
+  height: 26px;
 }
 
 .hq-menu-icon::before,
 .hq-menu-icon::after {
-  content: "";
-  position: absolute;
-  display: block;
+  display: none;
 }
 
 .icon-tent::before {

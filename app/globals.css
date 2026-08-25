@@ -2263,16 +2263,13 @@ h3 {
 }
 
 .basecamp-purpose-card {
+  border-color: rgba(36, 63, 39, 0.13);
   background:
-    linear-gradient(140deg, rgba(36, 63, 39, 0.96), rgba(71, 107, 66, 0.86)),
-    repeating-linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.08) 0,
-      rgba(255, 255, 255, 0.08) 1px,
-      transparent 1px,
-      transparent 24px
-    );
-  color: var(--white);
+    linear-gradient(var(--brass), var(--brass)) top / 100% 8px no-repeat,
+    linear-gradient(var(--green-dark), var(--green-dark)) bottom / 100% 8px no-repeat,
+    #f5f1e8;
+  color: var(--ink);
+  text-align: center;
 }
 
 .dydd-definition-cards {
@@ -2361,53 +2358,83 @@ h3 {
   line-height: 1.68;
 }
 
-.basecamp-purpose-card .section-label,
-.basecamp-purpose-card p:not(.section-label) {
-  color: rgba(255, 255, 255, 0.78);
+.basecamp-purpose-card .section-label {
+  color: var(--green-dark);
 }
 
 .purpose-two-up {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
-  overflow: hidden;
-  margin-top: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.12);
+  gap: clamp(42px, 6vw, 62px);
+  overflow: visible;
+  margin-top: 18px;
+  background: transparent;
+}
+
+.purpose-two-up::before {
+  position: absolute;
+  inset: 4px 50%;
+  width: 2px;
+  content: "";
+  background: var(--green);
+  transform: translateX(-50%);
 }
 
 .purpose-two-up section {
   display: grid;
   align-content: center;
-  min-height: 174px;
-  padding: clamp(20px, 4vw, 34px);
-  background: rgba(22, 33, 22, 0.22);
+  min-height: 168px;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid rgba(36, 63, 39, 0.12);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: 0 14px 34px rgba(70, 58, 35, 0.08);
 }
 
 .purpose-two-up h2 {
   max-width: none;
   margin-bottom: 12px;
-  color: var(--white);
-  font-size: clamp(1.75rem, 3vw, 3.1rem);
-  line-height: 1;
+  color: #0f1711;
+  font-size: clamp(1.65rem, 3.2vw, 2.75rem);
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.purpose-two-up h2 span {
+  color: var(--green-dark);
 }
 
 .purpose-two-up p {
   margin: 0;
-  color: rgba(255, 255, 255, 0.78);
-  font-size: 1.02rem;
-  font-weight: 820;
+  color: #0f1711;
+  font-size: clamp(1.5rem, 2.9vw, 2.45rem);
+  font-weight: 860;
+  line-height: 1.18;
 }
 
 .basecamp-purpose-card blockquote {
-  max-width: 88ch;
-  margin: 22px auto 0;
-  color: rgba(255, 255, 255, 0.86);
-  font-size: clamp(1rem, 1.6vw, 1.18rem);
-  font-weight: 720;
-  line-height: 1.62;
+  max-width: 86ch;
+  margin: clamp(22px, 4vw, 34px) auto 0;
+  color: #0f1711;
+  font-size: clamp(1.15rem, 2.1vw, 1.75rem);
+  font-weight: 820;
+  line-height: 1.35;
   text-align: center;
+}
+
+.basecamp-purpose-card blockquote p {
+  margin: 0;
+  color: inherit;
+}
+
+.basecamp-purpose-card cite {
+  display: block;
+  margin-top: 8px;
+  color: #0f1711;
+  font-size: clamp(1rem, 1.8vw, 1.45rem);
+  font-style: normal;
+  font-weight: 520;
 }
 
 .design-acronym-panel {
@@ -5460,6 +5487,17 @@ h3 {
 
   .trail-signpost-image {
     min-height: 340px;
+  }
+
+  .purpose-two-up {
+    gap: 24px;
+  }
+
+  .purpose-two-up::before {
+    inset: 50% 14px auto;
+    width: auto;
+    height: 2px;
+    transform: translateY(-50%);
   }
 
   .journey-map ol {

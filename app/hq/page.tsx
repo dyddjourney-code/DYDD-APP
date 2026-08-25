@@ -1108,17 +1108,32 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           <p className="section-label">The point</p>
           <div className="purpose-two-up">
             <section>
-              <h2>You are On Purpose</h2>
-              <p>You are a masterpiece</p>
+              <h2>
+                You are <span>On Purpose</span>
+              </h2>
+              <p>
+                You are a masterpiece,
+                <br />
+                designed for grace.
+              </p>
             </section>
             <section>
-              <h2>You are For Purpose</h2>
-              <p>Intended for participation</p>
+              <h2>
+                You are <span>For Purpose</span>
+              </h2>
+              <p>
+                You are designed to
+                <br />
+                participate and engage.
+              </p>
             </section>
           </div>
           <blockquote>
-            For we are God's handiwork, created in Christ Jesus to do good works,
-            which God prepared in advance for us to do. Ephesians 2:10
+            <p>
+              “We are God&apos;s handiwork, created in Christ Jesus to do good
+              works, which God prepared in advance for us to do.”
+            </p>
+            <cite>Ephesians 2:10.</cite>
           </blockquote>
         </article>
         <article className="design-acronym-panel">

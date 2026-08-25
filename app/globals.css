@@ -3558,7 +3558,7 @@ h3 {
 }
 
 .trail-badge.locked .badge-art img {
-  filter: grayscale(0.45) opacity(0.72);
+  filter: drop-shadow(0 8px 12px rgba(36, 63, 39, 0.16));
 }
 
 .badge-art span {

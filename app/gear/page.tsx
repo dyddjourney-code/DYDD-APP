@@ -1,6 +1,16 @@
 import Link from "next/link";
+import { saveGearJournalEntries } from "@/app/gear/actions";
 
-export default function GearPage() {
+type GearPageProps = {
+  searchParams?: Promise<{
+    message?: string;
+    saved?: string;
+  }>;
+};
+
+export default async function GearPage({ searchParams }: GearPageProps) {
+  const params = await searchParams;
+
   return (
     <main className="journey-shell hq-standalone-page">
       <nav className="course-nav" aria-label="Gear navigation">
@@ -26,20 +36,40 @@ export default function GearPage() {
           <p className="section-label">Journal</p>
           <h2>Reflection prompts can be launched from anywhere.</h2>
         </div>
-        <div className="journal-workbench">
+        {params?.saved ? (
+          <p className="journey-save-notice">Saved {params.saved} journal entries.</p>
+        ) : params?.message ? (
+          <p className="journey-save-notice">{params.message}</p>
+        ) : null}
+        <form action={saveGearJournalEntries} className="journal-workbench">
           <label>
             <span>Reflect on DesignID</span>
-            <textarea placeholder="What did DesignID help me name about my design?" rows={4} />
+            <textarea
+              name="journal-designid-reflection"
+              placeholder="What did DesignID help me name about my design?"
+              rows={4}
+            />
           </label>
           <label>
             <span>Reflect on Spiritual Gifts</span>
-            <textarea placeholder="Where do I sense God inviting me to serve?" rows={4} />
+            <textarea
+              name="journal-spiritual-gifts-reflection"
+              placeholder="Where do I sense God inviting me to serve?"
+              rows={4}
+            />
           </label>
           <label>
             <span>Next faithful step</span>
-            <textarea placeholder="The next step I need to take is..." rows={4} />
+            <textarea
+              name="journal-next-faithful-step"
+              placeholder="The next step I need to take is..."
+              rows={4}
+            />
           </label>
-        </div>
+          <button className="button secondary" type="submit">
+            Save journal entries
+          </button>
+        </form>
       </section>
 
       <section className="gear-grid" aria-label="Future gear areas">

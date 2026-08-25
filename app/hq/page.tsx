@@ -1044,12 +1044,13 @@ export default async function HqPage({ searchParams }: HqPageProps) {
 
       <section className="basecamp-hero" id="basecamp" aria-label="DYDD Base Camp">
         <div className="basecamp-copy">
+          <p className="section-label basecamp-purpose-pill">On Purpose, For Purpose</p>
           <div className="basecamp-identity-lockup">
-            <img src="/brand/badges/shepherd-badge.svg" alt="Shepherd badge" />
             <div>
-              <p className="section-label">On Purpose, For Purpose</p>
               <h2>{welcomeName}</h2>
+              <span>Shepherd</span>
             </div>
+            <img src="/brand/badges/shepherd-badge.svg" alt="Shepherd badge" />
           </div>
         </div>
         <div className="basecamp-scene" aria-hidden="true">

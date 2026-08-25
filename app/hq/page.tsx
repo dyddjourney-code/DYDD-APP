@@ -483,33 +483,33 @@ const dyddDefinitionCards = [
 const designAcronym = [
   {
     letter: "D",
+    phrase: "Intentionally crafted",
     title: "Identity",
-    text: "Start with whose you are and the design God has already placed in you.",
   },
   {
     letter: "E",
+    phrase: "Equipped with skills",
     title: "Expertise",
-    text: "Name the skills, wisdom, practice, and capacity you can bring to others.",
   },
   {
     letter: "S",
+    phrase: "Given a redeemed story",
     title: "Story",
-    text: "Let the path behind you reveal compassion, burden, and formation.",
   },
   {
     letter: "I",
+    phrase: "Stirred with holy motivations",
     title: "Desire",
-    text: "Pay attention to holy motivation, burden, joy, and longing.",
   },
   {
     letter: "G",
+    phrase: "Empowered by gifts",
     title: "Gifts",
-    text: "See how grace-given wiring points toward contribution in the Body.",
   },
   {
     letter: "N",
+    phrase: "Called to live out your purpose",
     title: "Niche",
-    text: "Bring the pieces together into a clear place to serve, build, lead, and bless.",
   },
 ];
 
@@ -1145,15 +1145,16 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           </div>
           <div className="design-acronym-content">
             <div className="card-heading">
-              <p className="section-label">D.E.S.I.G.N.</p>
-              <h2>The path toward your niche.</h2>
+              <p className="section-label">The DESIGN framework</p>
+              <h2>D.E.S.I.G.N.</h2>
             </div>
             <div className="design-acronym-grid">
               {designAcronym.map((item) => (
                 <section key={item.title}>
                   <span>{item.letter}</span>
-                  <strong>{item.title}</strong>
-                  <p>{item.text}</p>
+                  <p>
+                    {item.phrase} <strong>({item.title})</strong>
+                  </p>
                 </section>
               ))}
             </div>

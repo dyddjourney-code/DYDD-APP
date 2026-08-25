@@ -2466,66 +2466,56 @@ h3 {
 }
 
 .design-acronym-content .card-heading h2 {
-  font-size: clamp(1.8rem, 3.2vw, 3.4rem);
-  line-height: 1.02;
+  color: var(--green-dark);
+  font-size: clamp(3.25rem, 7.4vw, 6.8rem);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  line-height: 0.9;
 }
 
 .design-acronym-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 22px;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: clamp(22px, 3vw, 32px);
 }
 
 .design-acronym-grid section {
   position: relative;
   display: grid;
-  gap: 8px;
-  min-height: 138px;
-  padding: 16px;
-  border: 1px solid rgba(71, 107, 66, 0.16);
-  border-radius: 8px;
-  background:
-    linear-gradient(145deg, rgba(251, 250, 244, 0.94), rgba(255, 255, 255, 0.9)),
-    var(--panel);
-}
-
-.design-acronym-grid section::after {
-  content: "";
-  position: absolute;
-  top: 36px;
-  right: -13px;
-  width: 18px;
-  border-top: 2px dotted rgba(184, 138, 67, 0.54);
-}
-
-.design-acronym-grid section:nth-child(even)::after,
-.design-acronym-grid section:last-child::after {
-  display: none;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 .design-acronym-grid span {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
   background: var(--green-dark);
   color: var(--white);
-  font-weight: 950;
-}
-
-.design-acronym-grid strong {
-  color: var(--green-dark);
-  font-size: 1.12rem;
+  font-size: 1rem;
   font-weight: 950;
 }
 
 .design-acronym-grid p {
   margin: 0;
-  color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.5;
+  color: #0f1711;
+  font-size: clamp(1.2rem, 2vw, 1.72rem);
+  font-weight: 540;
+  line-height: 1.22;
+}
+
+.design-acronym-grid strong {
+  color: #0f1711;
+  font-style: italic;
+  font-weight: 850;
 }
 
 .visual-journey-map {

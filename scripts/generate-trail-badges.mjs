@@ -228,7 +228,7 @@ function reflectionPatchSvg({ type, color, label }) {
   const line = `fill="none" stroke="${patchGold}" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"`;
   const fine = `fill="none" stroke="${patchGold}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"`;
   const glyphs = {
-    shepherd: `<path ${line} d="M256 335c-78-51-126-99-126-153 0-38 27-66 64-66 28 0 48 16 62 43 14-27 34-43 62-43 37 0 64 28 64 66 0 54-48 102-126 153Z"/>`,
+    shepherd: `<path ${line} transform="translate(0 18)" d="M256 335c-78-51-126-99-126-153 0-38 27-66 64-66 28 0 48 16 62 43 14-27 34-43 62-43 37 0 64 28 64 66 0 54-48 102-126 153Z"/>`,
     artisan: `<path ${line} d="M150 330c42-36 86-39 131-10 32 20 62 22 90 4"/>
 <path d="M209 268 318 159c14-14 36-14 50 0l14 14c14 14 14 36 0 50L273 332l-73 13z" fill="${darkBase}" stroke="${patchGold}" stroke-width="16" stroke-linejoin="round"/>
 <path ${fine} d="M318 159 382 223M273 332l-73 13 9-77"/>`,

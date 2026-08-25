@@ -422,29 +422,6 @@ function MenuIcon({ name }: { name: string }) {
   );
 }
 
-const journeyMarkers = [
-  {
-    detail: "Begin with the full Discover Your Divine Design trail.",
-    label: "Start Here",
-    meta: "Main trail",
-  },
-  {
-    detail: "Use DesignID early to name identity, contribution, and fit.",
-    label: "DesignID",
-    meta: "Early marker",
-  },
-  {
-    detail: "Add Spiritual Gifts when the journey turns toward calling and service.",
-    label: "Spiritual Gifts",
-    meta: "Deeper trail",
-  },
-  {
-    detail: "Use DesignPD and FruitLife 360 to practice, grow, and walk it out.",
-    label: "Practice & Grow",
-    meta: "Road ahead",
-  },
-];
-
 const baseCampLinks = [
   {
     detail: "Begin the guided book, workbook, assessment, and companion path.",
@@ -518,8 +495,8 @@ const designAcronym = [
 ];
 
 const visualJourneyMap = [
-  { icon: "tent", label: "Start", text: "Orient at Base Camp" },
-  { icon: "hiker", label: "DYDD", text: "Open the main journey" },
+  { icon: "tent", label: "Start", size: "large", text: "Orient at Base Camp" },
+  { icon: "hiker", label: "DYDD", size: "large", text: "Open the main journey" },
   { image: "/brand/badges/identity-badge.svg", label: "Identity", text: "Whose you are" },
   { image: "/brand/badges/designid-badge.png", label: "DesignID", text: "Early assessment marker" },
   { image: "/brand/badges/expertise-badge.svg", label: "Expertise", text: "Skills and capacity" },
@@ -1067,20 +1044,12 @@ export default async function HqPage({ searchParams }: HqPageProps) {
 
       <section className="basecamp-hero" id="basecamp" aria-label="DYDD Base Camp">
         <div className="basecamp-copy">
-          <p className="section-label">On Purpose, For Purpose</p>
-          <h2>Welcome, {welcomeName}.</h2>
-          <p>
-            Base Camp orients the whole Discover Your Divine Design experience:
-            start here, see the road, gather your tools, and choose the next
-            faithful step.
-          </p>
-          <div className="basecamp-actions">
-            <Link className="button primary" href={withReviewQuery("/journey", reviewParams)}>
-              Begin the journey
-            </Link>
-            <Link className="button secondary" href="/field-kit">
-              Open the field kit
-            </Link>
+          <div className="basecamp-identity-lockup">
+            <img src="/brand/badges/shepherd-badge.svg" alt="Shepherd badge" />
+            <div>
+              <p className="section-label">On Purpose, For Purpose</p>
+              <h2>{welcomeName}</h2>
+            </div>
           </div>
         </div>
         <div className="basecamp-scene" aria-hidden="true">
@@ -1090,35 +1059,6 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             <strong>Base Camp</strong>
           </div>
         </div>
-      </section>
-
-      <section className="journey-orientation" aria-label="Where to begin">
-        <div className="orientation-copy">
-          <p className="section-label">Where to begin</p>
-          <h2>Start with the full trail or take one fast first step.</h2>
-          <p>
-            The full Journey is the main path, but DesignID can also be a
-            low-friction first move inside week one. Either way, Base Camp keeps
-            the next door obvious.
-          </p>
-          <div className="basecamp-actions">
-            <Link className="button primary" href={withReviewQuery("/journey", reviewParams)}>
-              Open main trail
-            </Link>
-            <Link className="button secondary" href="/field-kit">
-              Start with DesignID
-            </Link>
-          </div>
-        </div>
-        <ol className="orientation-route">
-          {journeyMarkers.map((marker) => (
-            <li key={marker.label}>
-              <span>{marker.meta}</span>
-              <strong>{marker.label}</strong>
-              <small>{marker.detail}</small>
-            </li>
-          ))}
-        </ol>
       </section>
 
       <nav className="basecamp-wayfinding" aria-label="Base Camp page links">
@@ -1179,7 +1119,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         <ol>
           {visualJourneyMap.map((marker, index) => (
             <li key={`${marker.label}-${index}`}>
-              <div className="journey-map-marker">
+              <div className={`journey-map-marker${marker.size === "large" ? " large" : ""}`}>
                 {marker.image ? (
                   <img src={marker.image} alt={`${marker.label} marker`} />
                 ) : (

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { saveJourneyStageResponses } from "@/app/journey/actions";
 import { dyddJourney } from "@/lib/journey/dydd-journey";
+import { getFacilitatorPlaybookStage } from "@/lib/journey/facilitator-playbook";
 import { PageHelp } from "@/components/page-help";
 
 const responseLabels = {
@@ -88,78 +89,163 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
       ) : null}
 
       <section className="journey-stage-stack" aria-label="Journey stages">
-        {dyddJourney.stages.map((stage) => (
-          <article className="journey-stage" id={stage.slug} key={stage.slug}>
-            <div className="journey-stage-intro">
-              <p className="section-label">{stage.classWeek}</p>
-              <h2>{stage.title}</h2>
-              <p>{stage.summary}</p>
-              <small>{stage.sourcePages}</small>
-            </div>
+        {dyddJourney.stages.map((stage) => {
+          const playbookStage = getFacilitatorPlaybookStage(stage.slug);
 
-            {stage.assessmentCallouts?.length ? (
-              <div className="journey-assessment-callouts">
-                {stage.assessmentCallouts.map((callout) => (
-                  <section key={`${stage.slug}-${callout.assessment}`}>
-                    <span>{callout.assessment}</span>
-                    <h3>{callout.title}</h3>
-                    <p>{callout.body}</p>
-                  </section>
-                ))}
+          return (
+            <article className="journey-stage" id={stage.slug} key={stage.slug}>
+              <div className="journey-stage-intro">
+                <p className="section-label">{stage.classWeek}</p>
+                <h2>{stage.title}</h2>
+                <p>{stage.summary}</p>
+                <small>{stage.sourcePages}</small>
               </div>
-            ) : null}
 
-            <div className="journey-stage-grid">
-              <section>
-                <h3>Video intro</h3>
-                <p>{stage.videoIntro}</p>
-              </section>
-              <section>
-                <h3>Interactive moves</h3>
-                <ul>
-                  {stage.contentMoves.map((move) => (
-                    <li key={move}>{move}</li>
+              {stage.assessmentCallouts?.length ? (
+                <div className="journey-assessment-callouts">
+                  {stage.assessmentCallouts.map((callout) => (
+                    <section key={`${stage.slug}-${callout.assessment}`}>
+                      <span>{callout.assessment}</span>
+                      <h3>{callout.title}</h3>
+                      <p>{callout.body}</p>
+                    </section>
                   ))}
-                </ul>
-              </section>
-              <section>
-                <h3>Dydi context</h3>
-                <p>{stage.dydiContext}</p>
-              </section>
-              <section>
-                <h3>Database record</h3>
-                <p>{stage.databaseRecord}</p>
-              </section>
-            </div>
+                </div>
+              ) : null}
 
-            <form action={saveJourneyStageResponses} className="journey-workbook-form">
-              <input name="stage_slug" type="hidden" value={stage.slug} />
-              <div className="journey-section-stack">
-                {stage.sections.map((section, sectionIndex) => (
-                  <details key={section.slug} open={sectionIndex === 0}>
-                    <summary>
-                      <span>{section.sourceRef}</span>
-                      <strong>{section.title}</strong>
-                      <small>{section.purpose}</small>
-                    </summary>
-                    <div className="journey-care-grid">
-                      {Object.entries(section.care).map(([careStep, body]) => (
-                        <section key={`${section.slug}-${careStep}`}>
-                          <span>{careLabels[careStep as keyof typeof careLabels]}</span>
-                          <p>{body}</p>
-                        </section>
-                      ))}
+              <div className="journey-stage-grid">
+                <section>
+                  <h3>Video intro</h3>
+                  <p>{stage.videoIntro}</p>
+                </section>
+                <section>
+                  <h3>Interactive moves</h3>
+                  <ul>
+                    {stage.contentMoves.map((move) => (
+                      <li key={move}>{move}</li>
+                    ))}
+                  </ul>
+                </section>
+                <section>
+                  <h3>Dydi context</h3>
+                  <p>{stage.dydiContext}</p>
+                </section>
+                <section>
+                  <h3>Database record</h3>
+                  <p>{stage.databaseRecord}</p>
+                </section>
+              </div>
+
+              {playbookStage ? (
+                <aside className="journey-facilitator-card" aria-label={`${stage.title} facilitator playbook`}>
+                  <div className="journey-facilitator-heading">
+                    <div className="host-playbook-icon mini" aria-hidden="true">
+                      <svg fill="none" viewBox="0 0 64 64">
+                        <path d="M13 12h25a10 10 0 0 1 10 10v30H23a10 10 0 0 1-10-10Z" fill="#fffaf0" stroke="#243f27" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+                        <path d="M22 22h17M22 30h15M22 38h11" stroke="#739d5e" strokeLinecap="round" strokeWidth="3" />
+                        <path d="m45 12 7-5 4 8-7 5Z" fill="#d4a451" stroke="#6f4d20" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="section-label">Jordan's facilitator playbook</p>
+                      <h3>{playbookStage.session}: {playbookStage.title}</h3>
+                    </div>
+                  </div>
+                  <div className="facilitator-coach-grid">
+                    <section>
+                      <span>In the moment</span>
+                      <ul>
+                        {playbookStage.inTheMoment.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </section>
+                    <section>
+                      <span>Prepare next</span>
+                      <ul>
+                        {playbookStage.prepareNext.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </section>
+                    <section>
+                      <span>Email queue</span>
+                      <ul>
+                        {playbookStage.emails.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </section>
+                    <section>
+                      <span>Pull from appendix</span>
+                      <ul>
+                        {playbookStage.resources.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    </section>
+                  </div>
+                </aside>
+              ) : null}
+
+              <form action={saveJourneyStageResponses} className="journey-workbook-form">
+                <input name="stage_slug" type="hidden" value={stage.slug} />
+                <div className="journey-section-stack">
+                  {stage.sections.map((section, sectionIndex) => (
+                    <details key={section.slug} open={sectionIndex === 0}>
+                      <summary>
+                        <span>{section.sourceRef}</span>
+                        <strong>{section.title}</strong>
+                        <small>{section.purpose}</small>
+                      </summary>
+                      <div className="journey-care-grid">
+                        {Object.entries(section.care).map(([careStep, body]) => (
+                          <section key={`${section.slug}-${careStep}`}>
+                            <span>{careLabels[careStep as keyof typeof careLabels]}</span>
+                            <p>{body}</p>
+                          </section>
+                        ))}
+                      </div>
+                      <div className="journey-prompt-grid">
+                        {section.prompts.map((prompt) => (
+                          <label key={prompt.id}>
+                            <span>
+                              {prompt.careStep
+                                ? `${careLabels[prompt.careStep]}. `
+                                : ""}
+                              {prompt.label}
+                            </span>
+                            {prompt.helper ? <small>{prompt.helper}</small> : null}
+                            {prompt.responseType === "short_text" ? (
+                              <input name={prompt.id} placeholder="Type here..." />
+                            ) : (
+                              <textarea
+                                name={prompt.id}
+                                placeholder={`${responseLabels[prompt.responseType]} staged for Supabase save`}
+                                rows={prompt.responseType === "declaration" ? 3 : 5}
+                              />
+                            )}
+                          </label>
+                        ))}
+                      </div>
+                    </details>
+                  ))}
+                </div>
+
+                {stage.pathfinder ? (
+                  <section className="journey-pathfinder-card">
+                    <div>
+                      <p className="section-label">Pathfinder</p>
+                      <h3>{stage.pathfinder.title}</h3>
+                      <p>{stage.pathfinder.body}</p>
                     </div>
                     <div className="journey-prompt-grid">
-                      {section.prompts.map((prompt) => (
+                      {stage.pathfinder.prompts.map((prompt) => (
                         <label key={prompt.id}>
                           <span>
-                            {prompt.careStep
-                              ? `${careLabels[prompt.careStep]}. `
-                              : ""}
+                            {prompt.careStep ? `${careLabels[prompt.careStep]}. ` : ""}
                             {prompt.label}
                           </span>
-                          {prompt.helper ? <small>{prompt.helper}</small> : null}
                           {prompt.responseType === "short_text" ? (
                             <input name={prompt.id} placeholder="Type here..." />
                           ) : (
@@ -169,47 +255,18 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
                               rows={prompt.responseType === "declaration" ? 3 : 5}
                             />
                           )}
-                        </label>
-                      ))}
+                          </label>
+                        ))}
                     </div>
-                  </details>
-                ))}
-              </div>
-
-              {stage.pathfinder ? (
-                <section className="journey-pathfinder-card">
-                  <div>
-                    <p className="section-label">Pathfinder</p>
-                    <h3>{stage.pathfinder.title}</h3>
-                    <p>{stage.pathfinder.body}</p>
-                  </div>
-                  <div className="journey-prompt-grid">
-                    {stage.pathfinder.prompts.map((prompt) => (
-                      <label key={prompt.id}>
-                        <span>
-                          {prompt.careStep ? `${careLabels[prompt.careStep]}. ` : ""}
-                          {prompt.label}
-                        </span>
-                        {prompt.responseType === "short_text" ? (
-                          <input name={prompt.id} placeholder="Type here..." />
-                        ) : (
-                          <textarea
-                            name={prompt.id}
-                            placeholder={`${responseLabels[prompt.responseType]} staged for Supabase save`}
-                            rows={prompt.responseType === "declaration" ? 3 : 5}
-                          />
-                        )}
-                      </label>
-                    ))}
-                  </div>
-                </section>
-              ) : null}
-              <button className="button secondary" type="submit">
-                Save chapter draft
-              </button>
-            </form>
-          </article>
-        ))}
+                  </section>
+                ) : null}
+                <button className="button secondary" type="submit">
+                  Save chapter draft
+                </button>
+              </form>
+            </article>
+          );
+        })}
       </section>
     </main>
   );

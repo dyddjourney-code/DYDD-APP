@@ -238,6 +238,13 @@ h3 {
   color: var(--ink);
 }
 
+.text-button {
+  border-color: transparent;
+  background: transparent;
+  color: var(--green-dark);
+  box-shadow: none;
+}
+
 .hero-art {
   position: relative;
   display: grid;
@@ -2924,6 +2931,81 @@ h3 {
   width: min(170px, 100%);
 }
 
+.host-playbook-feature {
+  grid-template-columns: 96px minmax(0, 0.9fr) minmax(320px, 1.1fr);
+  align-items: center;
+  border-color: rgba(212, 164, 81, 0.42);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(234, 240, 226, 0.8)),
+    var(--panel);
+}
+
+.host-playbook-icon {
+  display: grid;
+  place-items: center;
+  width: 82px;
+  height: 82px;
+  border: 1px solid rgba(36, 63, 39, 0.18);
+  border-radius: 999px;
+  background: var(--white);
+  box-shadow: 0 16px 34px rgba(70, 58, 35, 0.12);
+}
+
+.host-playbook-icon svg {
+  width: 54px;
+  height: 54px;
+}
+
+.host-playbook-icon.mini {
+  width: 58px;
+  height: 58px;
+  box-shadow: 0 10px 24px rgba(70, 58, 35, 0.12);
+}
+
+.host-playbook-icon.mini svg {
+  width: 38px;
+  height: 38px;
+}
+
+.host-playbook-copy {
+  display: grid;
+  gap: 10px;
+}
+
+.host-playbook-copy h2 {
+  max-width: none;
+  margin: 0;
+}
+
+.host-playbook-copy p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.62;
+}
+
+.host-playbook-copy small {
+  color: var(--green-dark);
+  font-weight: 850;
+}
+
+.host-playbook-highlights {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.host-playbook-highlights span {
+  min-height: 62px;
+  padding: 12px 13px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--green-dark);
+  font-size: 0.88rem;
+  font-weight: 840;
+  line-height: 1.35;
+}
+
 .camp-circle-control-grid,
 .camp-circle-two-column {
   display: grid;
@@ -3153,6 +3235,96 @@ h3 {
   font-size: 0.8rem;
   font-weight: 760;
   line-height: 1.35;
+}
+
+.facilitator-route-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(150px, 1fr));
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.facilitator-route-grid article {
+  display: grid;
+  gap: 9px;
+  align-content: start;
+  min-width: 150px;
+  min-height: 206px;
+  padding: 16px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.facilitator-route-grid span,
+.journey-facilitator-card span {
+  color: var(--brass);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.facilitator-route-grid strong {
+  color: var(--green-dark);
+  line-height: 1.15;
+}
+
+.facilitator-route-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.facilitator-route-grid a {
+  align-self: end;
+  color: var(--green-dark);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.playbook-resource-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.playbook-resource-grid article {
+  display: grid;
+  gap: 10px;
+  min-height: 190px;
+  padding: 16px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.playbook-resource-grid strong {
+  color: var(--green-dark);
+  font-size: 1.02rem;
+  line-height: 1.16;
+}
+
+.playbook-resource-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.48;
+}
+
+.playbook-resource-grid article > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-self: end;
+}
+
+.playbook-resource-grid .button {
+  min-height: 38px;
+  padding: 9px 11px;
+  font-size: 0.78rem;
 }
 
 .shared-workbench section,
@@ -5863,6 +6035,61 @@ h3 {
   line-height: 1.58;
 }
 
+.journey-facilitator-card {
+  display: grid;
+  gap: 18px;
+  padding: 20px;
+  border: 1px solid rgba(212, 164, 81, 0.42);
+  border-left: 8px solid var(--green);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(234, 240, 226, 0.66)),
+    var(--white);
+}
+
+.journey-facilitator-heading {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.journey-facilitator-heading h3 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(1.35rem, 2.2vw, 2rem);
+}
+
+.journey-facilitator-heading .section-label {
+  margin-bottom: 5px;
+}
+
+.facilitator-coach-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.facilitator-coach-grid section {
+  padding: 15px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.facilitator-coach-grid ul {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding-left: 18px;
+}
+
+.facilitator-coach-grid li {
+  color: #40503e;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .journey-workbook-form {
   display: grid;
   gap: 18px;
@@ -6159,6 +6386,7 @@ h3 {
   .camp-circle-hero,
   .camp-circle-control-grid,
   .camp-circle-two-column,
+  .host-playbook-feature,
   .journey-builder,
   .polished-course-hero,
   .course-personalization,
@@ -6318,6 +6546,8 @@ h3 {
   .fieldkit-page-grid,
   .circle-type-grid,
   .privacy-lane-grid,
+  .playbook-resource-grid,
+  .facilitator-coach-grid,
   .purpose-two-up,
   .journal-workbench,
   .artifact-workbench .artifact-download-list,
@@ -6546,6 +6776,7 @@ h3 {
   .design-acronym-panel,
   .visual-journey-map,
   .page-help,
+  .host-playbook-feature,
   .camp-circle-panel,
   .gear-panel,
   .fireside-panel,
@@ -6553,6 +6784,17 @@ h3 {
   .artifact-panel,
   .badge-panel {
     padding: 18px;
+  }
+
+  .host-playbook-highlights,
+  .playbook-resource-grid,
+  .facilitator-coach-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .host-playbook-icon {
+    width: 70px;
+    height: 70px;
   }
 
   .page-help {

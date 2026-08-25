@@ -26,7 +26,12 @@ const navItems = [
     ],
   },
   { icon: "fireside", label: "Fireside", href: "/fireside" },
-  { icon: "group", label: "Camp Circle", href: "/camp-circle" },
+  {
+    icon: "group",
+    label: "Camp Circle",
+    href: "/camp-circle",
+    children: [{ icon: "playbook", label: "Host Playbook", href: "/camp-circle#host-playbook" }],
+  },
 ];
 
 function AppNavIcon({ name }: { name: string }) {
@@ -110,6 +115,13 @@ function AppNavIcon({ name }: { name: string }) {
         <circle cx="8.5" cy="14" r="3" fill="#739d5e" stroke="var(--green-dark)" />
         <circle cx="23.5" cy="14" r="3" fill="#647c9b" stroke="var(--green-dark)" />
         <path d="M7 25c1-4 4-6 9-6s8 2 9 6" fill="#fffaf0" stroke="var(--green-dark)" />
+      </svg>
+    ) : name === "playbook" ? (
+      <svg {...common}>
+        <path d="M7 6.5h12.5A4.5 4.5 0 0 1 24 11v14.5H11.5A4.5 4.5 0 0 1 7 21Z" fill="#fffaf0" stroke="var(--green-dark)" />
+        <path d="M11.5 10.5h8M11.5 14.5h7M11.5 18.5h5" stroke="#739d5e" />
+        <path d="M22.5 7.5 25.5 5l1.6 3.6-2.8 2.5Z" fill="#d4a451" stroke="#6f4d20" />
+        <path d="m20.6 13.2 3.7-2.1" stroke="#6f4d20" />
       </svg>
     ) : null;
 

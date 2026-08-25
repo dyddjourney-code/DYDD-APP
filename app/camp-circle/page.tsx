@@ -1,5 +1,11 @@
 import Link from "next/link";
 import { PageHelp } from "@/components/page-help";
+import {
+  facilitatorPlaybookAppendices,
+  facilitatorPlaybookHighlights,
+  facilitatorPlaybookMeta,
+  facilitatorPlaybookStages,
+} from "@/lib/journey/facilitator-playbook";
 
 const circleTypes = [
   {
@@ -157,6 +163,28 @@ export default function CampCirclePage() {
         title="How Camp Circle works"
       />
 
+      <section className="camp-circle-panel host-playbook-feature" id="host-playbook">
+        <div className="host-playbook-icon" aria-hidden="true">
+          <svg fill="none" viewBox="0 0 64 64">
+            <path d="M13 12h25a10 10 0 0 1 10 10v30H23a10 10 0 0 1-10-10Z" fill="#fffaf0" stroke="#243f27" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+            <path d="M22 22h17M22 30h15M22 38h11" stroke="#739d5e" strokeLinecap="round" strokeWidth="3" />
+            <path d="m45 12 7-5 4 8-7 5Z" fill="#d4a451" stroke="#6f4d20" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+            <path d="m39 27 10-7" stroke="#6f4d20" strokeLinecap="round" strokeWidth="3" />
+          </svg>
+        </div>
+        <div className="host-playbook-copy">
+          <p className="section-label">Optional facilitator resource</p>
+          <h2>{facilitatorPlaybookMeta.title}</h2>
+          <p>{facilitatorPlaybookMeta.value}</p>
+          <small>{facilitatorPlaybookMeta.source}</small>
+        </div>
+        <div className="host-playbook-highlights">
+          {facilitatorPlaybookHighlights.map((item) => (
+            <span key={item}>{item}</span>
+          ))}
+        </div>
+      </section>
+
       <section className="camp-circle-control-grid" aria-label="Circle control dashboard">
         <article className="camp-circle-panel circle-builder">
           <div className="card-heading">
@@ -279,6 +307,23 @@ export default function CampCirclePage() {
         </ol>
       </section>
 
+      <section className="camp-circle-panel facilitator-route-panel" aria-label="Facilitator playbook route">
+        <div className="card-heading">
+          <p className="section-label">Facilitator route</p>
+          <h2>The playbook follows the circle in real time.</h2>
+        </div>
+        <div className="facilitator-route-grid">
+          {facilitatorPlaybookStages.map((stage) => (
+            <article key={stage.slug}>
+              <span>{stage.session}</span>
+              <strong>{stage.title}</strong>
+              <p>{stage.inTheMoment[0]}</p>
+              <a href={`/journey#${stage.slug}`}>Open in Journey</a>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="camp-circle-two-column">
         <article className="camp-circle-panel shared-workbench">
           <div className="card-heading">
@@ -330,6 +375,25 @@ export default function CampCirclePage() {
               <p>{first}</p>
               <p>{second}</p>
             </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="camp-circle-panel playbook-resource-hub" aria-label="Host playbook resource hub">
+        <div className="card-heading">
+          <p className="section-label">Purchased host library</p>
+          <h2>Appendices become usable host tools.</h2>
+        </div>
+        <div className="playbook-resource-grid">
+          {facilitatorPlaybookAppendices.map((resource) => (
+            <article key={resource.title}>
+              <strong>{resource.title}</strong>
+              <p>{resource.detail}</p>
+              <div>
+                <button className="button secondary" type="button">Open</button>
+                <button className="button text-button" type="button">Email to myself</button>
+              </div>
+            </article>
           ))}
         </div>
       </section>

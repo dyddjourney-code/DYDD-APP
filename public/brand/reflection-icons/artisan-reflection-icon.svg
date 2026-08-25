@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Artisan Reflection icon">
 <rect width="512" height="512" fill="none"/>
 <circle cx="256" cy="256" r="212" fill="#243f52"/>
-<circle cx="256" cy="256" r="212" fill="#376f9f" fill-opacity=".18"/>
+<circle cx="256" cy="256" r="212" fill="#647C9B" fill-opacity=".18"/>
 <circle cx="256" cy="256" r="190" fill="none" stroke="#d9b866" stroke-width="19"/>
 <circle cx="256" cy="256" r="153" fill="none" stroke="#fff8e7" stroke-opacity=".38" stroke-width="8"/>
 <path fill="none" stroke="#d9b866" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M150 330c42-36 86-39 131-10 32 20 62 22 90 4"/>

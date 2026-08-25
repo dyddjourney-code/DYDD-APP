@@ -20,11 +20,14 @@ const black = "#171915";
 const dyddGreen = "#365f3f";
 const pine = "#243f27";
 const moss = "#6f8d57";
-const gold = "#c89a38";
-const blue = "#376f9f";
+const architectGold = "#D4A451";
+const artisanBlue = "#647C9B";
+const shepherdGreen = "#739D5E";
+const stewardPurple = "#5A496B";
+const gold = architectGold;
+const blue = artisanBlue;
+const designAccentGold = "#c89a38";
 const purple = "#70509a";
-const shepherdGreen = "#4f8c57";
-const stewardPurple = "#7352a4";
 const patchGold = "#d9b866";
 
 function assetDataUri(relativePath) {
@@ -163,7 +166,7 @@ ${center}
 function designIcon(kind) {
   const line = `fill="none" stroke="${pine}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"`;
   const fine = `fill="none" stroke="${pine}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"`;
-  const accent = `fill="none" stroke="${gold}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"`;
+  const accent = `fill="none" stroke="${designAccentGold}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"`;
   const icons = {
     identity: `<g>
 <circle cx="256" cy="235" r="103" fill="${cream}" stroke="${black}" stroke-opacity=".22" stroke-width="5"/>
@@ -339,9 +342,9 @@ const badges = [
   ["niche", "Niche", "DYDD DESIGN badge for Niche", baseBadge({ title: "Niche", desc: "DYDD DESIGN badge for Niche", bodyFill: dyddGreen, ribbonFill: black, shape: "rounded", center: designIcon("niche") })],
   ["designid", "DesignID", "DYDD trail badge for DesignID", baseBadge({ title: "DesignID", desc: "DYDD trail badge for DesignID", bodyFill: dyddGreen, ribbonFill: black, shape: "circle", center: toolCenter("designid", designIdIcon, 158) })],
   ["spiritual-gifts", "Spiritual Gifts", "DYDD trail badge for Spiritual Gifts", baseBadge({ title: "Spiritual Gifts", desc: "DYDD trail badge for Spiritual Gifts", bodyFill: pine, ribbonFill: moss, shape: "hex", center: toolCenter("spiritual-gifts", spiritualGiftsIcon, 158) })],
-  ["fruitlife-360", "FruitLife 360", "DYDD trail badge for FruitLife 360", baseBadge({ title: "FruitLife 360", desc: "DYDD trail badge for FruitLife 360", bodyFill: dyddGreen, ribbonFill: black, shape: "rounded", center: toolCenter("fruitlife-360", fruitLifeIcon, 158) })],
-  ["designpd", "DesignPD", "DYDD trail badge for DesignPD", baseBadge({ title: "DesignPD", desc: "DYDD trail badge for DesignPD", bodyFill: pine, ribbonFill: moss, shape: "circle", center: toolCenter("designpd", designPdIcon, 158) })],
   ["design-pathways", "Design Pathways", "DYDD trail badge for Design Pathways", baseBadge({ title: "Design Pathways", desc: "DYDD trail badge for Design Pathways", bodyFill: dyddGreen, ribbonFill: black, shape: "hex", center: toolCenter("design-pathways", designPathwaysIcon, 158) })],
+  ["designpd", "DesignPD", "DYDD trail badge for DesignPD", baseBadge({ title: "DesignPD", desc: "DYDD trail badge for DesignPD", bodyFill: pine, ribbonFill: moss, shape: "circle", center: toolCenter("designpd", designPdIcon, 158) })],
+  ["fruitlife-360", "FruitLife 360", "DYDD trail badge for FruitLife 360", baseBadge({ title: "FruitLife 360", desc: "DYDD trail badge for FruitLife 360", bodyFill: dyddGreen, ribbonFill: black, shape: "rounded", center: toolCenter("fruitlife-360", fruitLifeIcon, 158) })],
   ["shepherd", "Shepherd", "DYDD Reflection badge for Shepherd", baseBadge({ title: "Shepherd", desc: "DYDD Reflection badge for Shepherd", bodyFill: shepherdGreen, ribbonFill: black, shape: "rounded", center: reflectionCenter({ type: "shepherd", color: shepherdGreen, icon: shepherdIcon }) })],
   ["artisan", "Artisan", "DYDD Reflection badge for Artisan", baseBadge({ title: "Artisan", desc: "DYDD Reflection badge for Artisan", bodyFill: blue, ribbonFill: black, shape: "circle", center: reflectionCenter({ type: "artisan", color: blue, icon: artisanIcon }) })],
   ["architect", "Architect", "DYDD Reflection badge for Architect", baseBadge({ title: "Architect", desc: "DYDD Reflection badge for Architect", bodyFill: gold, ribbonFill: black, shape: "hex", center: reflectionCenter({ type: "architect", color: gold, icon: architectIcon }) })],

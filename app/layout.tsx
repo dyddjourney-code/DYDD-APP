@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AppMobileNav } from "@/components/app-mobile-nav";
+import { AppSidebar } from "@/components/app-sidebar";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,7 +18,10 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <AppMobileNav />
-        {children}
+        <div className="app-frame">
+          <AppSidebar />
+          <div className="app-frame-content">{children}</div>
+        </div>
       </body>
     </html>
   );

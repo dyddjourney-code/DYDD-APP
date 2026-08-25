@@ -141,7 +141,6 @@ const hqMenu = [
     href: "/hq",
     children: [{ icon: "hiker", label: "Journey", href: "/journey" }],
   },
-  { icon: "group", label: "Camp Circle", href: "/camp-circle" },
   { icon: "signpost", label: "Trailheads", href: "/trailheads" },
   {
     icon: "map",
@@ -163,6 +162,7 @@ const hqMenu = [
     ],
   },
   { icon: "fireside", label: "Fireside", href: "/fireside" },
+  { icon: "group", label: "Camp Circle", href: "/camp-circle" },
 ];
 
 type TrailBadge = {
@@ -1018,46 +1018,6 @@ export default async function HqPage({ searchParams }: HqPageProps) {
 
   return (
     <main className="hq-shell hq-app-shell">
-      <aside className="hq-sidebar" aria-label="DYDD navigation">
-        <a className="hq-sidebar-brand" href="#basecamp">
-          <img src="/brand/dydd-logo.webp" alt="Discover Your Divine Design" />
-        </a>
-        <nav className="hq-sidebar-nav">
-          {hqMenu.map((item) => {
-            const href = item.href.startsWith("/")
-              ? withReviewQuery(item.href, reviewParams)
-              : item.href;
-            return (
-              <div className="hq-nav-group" key={item.label}>
-                <a className="hq-nav-item" href={href}>
-                  <MenuIcon name={item.icon} />
-                  <span>{item.label}</span>
-                </a>
-                {item.children ? (
-                  <div className="hq-subnav">
-                    {item.children.map((child) => {
-                      const childHref = child.href.startsWith("/")
-                        ? withReviewQuery(child.href, reviewParams)
-                        : child.href;
-                      return (
-                        <a className="hq-subnav-item" href={childHref} key={child.label}>
-                          <MenuIcon name={child.icon} />
-                          <span>{child.label}</span>
-                        </a>
-                      );
-                    })}
-                  </div>
-                ) : null}
-              </div>
-            );
-          })}
-        </nav>
-        <div className="hq-sidebar-note">
-          <span>Preview</span>
-          <strong>{welcomeName}</strong>
-        </div>
-      </aside>
-
       <div className="hq-content">
         <header className="hq-topbar">
           <div>

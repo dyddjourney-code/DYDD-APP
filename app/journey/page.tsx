@@ -9,6 +9,13 @@ const responseLabels = {
   short_text: "Short response",
 };
 
+const careLabels = {
+  act: "Act",
+  connect: "Connect",
+  explore: "Explore",
+  reflect: "Reflect",
+};
+
 type JourneyPageProps = {
   searchParams?: Promise<{
     message?: string;
@@ -54,6 +61,16 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
         </ul>
       </section>
 
+      <section className="journey-chapter-nav" aria-label="Journey chapter shortcuts">
+        {dyddJourney.stages.map((stage, index) => (
+          <a href={`#${stage.slug}`} key={stage.slug}>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <strong>{stage.title}</strong>
+            <small>{stage.classWeek}</small>
+          </a>
+        ))}
+      </section>
+
       {params?.saved ? (
         <p className="journey-save-notice">Saved {params.saved} workbook responses.</p>
       ) : params?.message ? (
@@ -69,6 +86,18 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
               <p>{stage.summary}</p>
               <small>{stage.sourcePages}</small>
             </div>
+
+            {stage.assessmentCallouts?.length ? (
+              <div className="journey-assessment-callouts">
+                {stage.assessmentCallouts.map((callout) => (
+                  <section key={`${stage.slug}-${callout.assessment}`}>
+                    <span>{callout.assessment}</span>
+                    <h3>{callout.title}</h3>
+                    <p>{callout.body}</p>
+                  </section>
+                ))}
+              </div>
+            ) : null}
 
             <div className="journey-stage-grid">
               <section>
@@ -95,25 +124,78 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
 
             <form action={saveJourneyStageResponses} className="journey-workbook-form">
               <input name="stage_slug" type="hidden" value={stage.slug} />
-              {stage.prompts.map((prompt) => (
-                <label key={prompt.id}>
-                  <span>
-                    {prompt.careStep ? `${prompt.careStep}. ` : ""}
-                    {prompt.label}
-                  </span>
-                  {prompt.responseType === "short_text" ? (
-                    <input name={prompt.id} placeholder="Type here..." />
-                  ) : (
-                    <textarea
-                      name={prompt.id}
-                      placeholder={`${responseLabels[prompt.responseType]} staged for Supabase save`}
-                      rows={prompt.responseType === "declaration" ? 3 : 5}
-                    />
-                  )}
-                </label>
-              ))}
+              <div className="journey-section-stack">
+                {stage.sections.map((section, sectionIndex) => (
+                  <details key={section.slug} open={sectionIndex === 0}>
+                    <summary>
+                      <span>{section.sourceRef}</span>
+                      <strong>{section.title}</strong>
+                      <small>{section.purpose}</small>
+                    </summary>
+                    <div className="journey-care-grid">
+                      {Object.entries(section.care).map(([careStep, body]) => (
+                        <section key={`${section.slug}-${careStep}`}>
+                          <span>{careLabels[careStep as keyof typeof careLabels]}</span>
+                          <p>{body}</p>
+                        </section>
+                      ))}
+                    </div>
+                    <div className="journey-prompt-grid">
+                      {section.prompts.map((prompt) => (
+                        <label key={prompt.id}>
+                          <span>
+                            {prompt.careStep
+                              ? `${careLabels[prompt.careStep]}. `
+                              : ""}
+                            {prompt.label}
+                          </span>
+                          {prompt.helper ? <small>{prompt.helper}</small> : null}
+                          {prompt.responseType === "short_text" ? (
+                            <input name={prompt.id} placeholder="Type here..." />
+                          ) : (
+                            <textarea
+                              name={prompt.id}
+                              placeholder={`${responseLabels[prompt.responseType]} staged for Supabase save`}
+                              rows={prompt.responseType === "declaration" ? 3 : 5}
+                            />
+                          )}
+                        </label>
+                      ))}
+                    </div>
+                  </details>
+                ))}
+              </div>
+
+              {stage.pathfinder ? (
+                <section className="journey-pathfinder-card">
+                  <div>
+                    <p className="section-label">Pathfinder</p>
+                    <h3>{stage.pathfinder.title}</h3>
+                    <p>{stage.pathfinder.body}</p>
+                  </div>
+                  <div className="journey-prompt-grid">
+                    {stage.pathfinder.prompts.map((prompt) => (
+                      <label key={prompt.id}>
+                        <span>
+                          {prompt.careStep ? `${careLabels[prompt.careStep]}. ` : ""}
+                          {prompt.label}
+                        </span>
+                        {prompt.responseType === "short_text" ? (
+                          <input name={prompt.id} placeholder="Type here..." />
+                        ) : (
+                          <textarea
+                            name={prompt.id}
+                            placeholder={`${responseLabels[prompt.responseType]} staged for Supabase save`}
+                            rows={prompt.responseType === "declaration" ? 3 : 5}
+                          />
+                        )}
+                      </label>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
               <button className="button secondary" type="submit">
-                Save draft
+                Save chapter draft
               </button>
             </form>
           </article>

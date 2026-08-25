@@ -25,6 +25,14 @@ function getStage(stageSlug: string) {
   return dyddJourney.stages.find((stage) => stage.slug === stageSlug);
 }
 
+function getStagePrompts(stage: NonNullable<ReturnType<typeof getStage>>) {
+  return [
+    ...stage.prompts,
+    ...stage.sections.flatMap((section) => section.prompts),
+    ...(stage.pathfinder?.prompts ?? []),
+  ];
+}
+
 export async function saveJourneyStageResponses(formData: FormData) {
   const stageSlug = String(formData.get("stage_slug") ?? "");
   const stage = getStage(stageSlug);
@@ -54,7 +62,7 @@ export async function saveJourneyStageResponses(formData: FormData) {
 
   const responses: WorkbookResponseRecord[] = [];
 
-  for (const prompt of stage.prompts) {
+  for (const prompt of getStagePrompts(stage)) {
     const responseText = String(formData.get(prompt.id) ?? "").trim();
 
     if (!responseText) {

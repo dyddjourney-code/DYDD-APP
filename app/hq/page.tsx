@@ -222,10 +222,12 @@ function MenuIcon({ name }: { name: string }) {
       </svg>
     ) : name === "flashlight" ? (
       <svg {...common}>
-        <path d="M20 7.5 26.5 14 15 25.5 8.5 19z" fill="#759a5b" stroke="var(--green-dark)" />
-        <path d="m17.5 10 6.5 6.5" stroke="#eaf0e2" />
-        <path d="m8.5 19-3 3M6.5 16.5 3 17.2M11 21.5l-.8 3.6" stroke="#d4a451" />
-        <path d="m13.4 16.2 2.4 2.4" stroke="#eaf0e2" />
+        <path d="M6 13.2h4.8l2.2 2.2v4.4L10.8 22H6z" fill="#d4a451" stroke="var(--green-dark)" />
+        <path d="M12.8 15.5h12.7a2 2 0 0 1 2 2v.2a2 2 0 0 1-2 2H12.8z" fill="#759a5b" stroke="var(--green-dark)" />
+        <path d="M17.4 15.5v4.2" stroke="#eaf0e2" />
+        <path d="M21.5 14.2h3.5" stroke="#6f4d20" />
+        <path d="M5.8 15.2 2.8 13.6M5.3 17.6H2.1M5.8 20l-3 1.6" stroke="#f0d08a" />
+        <path d="M10.8 14.1v6.8" stroke="#fffaf0" />
       </svg>
     ) : name === "magnifier" ? (
       <svg {...common}>

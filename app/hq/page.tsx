@@ -3,6 +3,7 @@ import Link from "next/link";
 import { signOut } from "@/app/login/actions";
 import {
   assessmentLabels,
+  buildDesignIdContext,
   displayDate,
   getAssessmentSnapshotsForParticipantMatch,
   getAssessmentSnapshotsForUser,
@@ -144,7 +145,10 @@ const hqMenu = [
     icon: "map",
     label: "Field Kit",
     href: "#field-kit",
-    children: [{ icon: "camera", label: "Artifact", href: "#artifacts" }],
+    children: [
+      { icon: "camera", label: "Artifact", href: "#artifacts" },
+      { icon: "badge", label: "Trail Badges", href: "#trail-badges" },
+    ],
   },
   {
     icon: "backpack",
@@ -157,6 +161,166 @@ const hqMenu = [
     ],
   },
   { icon: "fireside", label: "Fireside", href: "#fireside" },
+];
+
+type TrailBadge = {
+  condition: string;
+  detail: string;
+  group: "D.E.S.I.G.N." | "Tools" | "Reflections";
+  image: string;
+  kind:
+    | "design_piece"
+    | "design_pathways"
+    | "designid"
+    | "designpd"
+    | "fruit_360"
+    | "reflection"
+    | "spiritual_gifts";
+  reflection?: "architect" | "artisan" | "shepherd" | "steward";
+  slug: string;
+  title: string;
+};
+
+const trailBadges: TrailBadge[] = [
+  {
+    condition: "Complete the Identity marker in the DYDD journey.",
+    detail: "Names who you are before what you do.",
+    group: "D.E.S.I.G.N.",
+    image: "/brand/badges/identity-badge.svg",
+    kind: "design_piece",
+    slug: "identity",
+    title: "Identity",
+  },
+  {
+    condition: "Complete the Expertise marker in the DYDD journey.",
+    detail: "Recognizes the skills and capacities you carry.",
+    group: "D.E.S.I.G.N.",
+    image: "/brand/badges/expertise-badge.svg",
+    kind: "design_piece",
+    slug: "expertise",
+    title: "Expertise",
+  },
+  {
+    condition: "Complete the Story marker in the DYDD journey.",
+    detail: "Honors the path God has been writing through your life.",
+    group: "D.E.S.I.G.N.",
+    image: "/brand/badges/story-badge.svg",
+    kind: "design_piece",
+    slug: "story",
+    title: "Story",
+  },
+  {
+    condition: "Complete the Desire marker in the DYDD journey.",
+    detail: "Identifies the holy motivations that keep pulling you forward.",
+    group: "D.E.S.I.G.N.",
+    image: "/brand/badges/desire-badge.svg",
+    kind: "design_piece",
+    slug: "desire",
+    title: "Desire",
+  },
+  {
+    condition: "Complete the Gifts marker in the DYDD journey.",
+    detail: "Connects grace-given gifts to faithful service.",
+    group: "D.E.S.I.G.N.",
+    image: "/brand/badges/gifts-badge.svg",
+    kind: "design_piece",
+    slug: "gifts",
+    title: "Gifts",
+  },
+  {
+    condition: "Complete the Niche marker and draft a clear Niche Declaration.",
+    detail: "Marks the calling place where the design pieces converge.",
+    group: "D.E.S.I.G.N.",
+    image: "/brand/badges/niche-badge.svg",
+    kind: "design_piece",
+    slug: "niche",
+    title: "Niche",
+  },
+  {
+    condition: "Finish DesignID and connect the report to Base Camp.",
+    detail: "Discovers your Reflection pattern and design language.",
+    group: "Tools",
+    image: "/brand/badges/designid-badge.svg",
+    kind: "designid",
+    slug: "designid",
+    title: "DesignID",
+  },
+  {
+    condition: "Finish the Spiritual Gifts tool and connect the report.",
+    detail: "Highlights gifts that build up the Body of Christ.",
+    group: "Tools",
+    image: "/brand/badges/grace-gifts-badge.svg",
+    kind: "spiritual_gifts",
+    slug: "grace-gifts",
+    title: "Grace Gifts",
+  },
+  {
+    condition: "Complete the FruitLife 360 intake and review cycle.",
+    detail: "Shows where the fruit of the Spirit is becoming visible.",
+    group: "Tools",
+    image: "/brand/badges/fruitlife-360-badge.svg",
+    kind: "fruit_360",
+    slug: "fruitlife-360",
+    title: "FruitLife 360",
+  },
+  {
+    condition: "Finish DesignPD and connect the report to Base Camp.",
+    detail: "Turns design insight into practical growth direction.",
+    group: "Tools",
+    image: "/brand/badges/designpd-badge.svg",
+    kind: "designpd",
+    slug: "designpd",
+    title: "DesignPD",
+  },
+  {
+    condition: "Complete Design Pathways planning work.",
+    detail: "Clarifies the best next path for your season and assignment.",
+    group: "Tools",
+    image: "/brand/badges/design-pathways-badge.svg",
+    kind: "design_pathways",
+    slug: "design-pathways",
+    title: "Design Pathways",
+  },
+  {
+    condition: "Earned when Shepherd is part of your DesignID Reflection pattern.",
+    detail: "Compassion, nurture, and people-centered care.",
+    group: "Reflections",
+    image: "/brand/badges/shepherd-badge.svg",
+    kind: "reflection",
+    reflection: "shepherd",
+    slug: "shepherd",
+    title: "Shepherd",
+  },
+  {
+    condition: "Earned when Artisan is part of your DesignID Reflection pattern.",
+    detail: "Creativity, expression, beauty, and meaning-making.",
+    group: "Reflections",
+    image: "/brand/badges/artisan-badge.svg",
+    kind: "reflection",
+    reflection: "artisan",
+    slug: "artisan",
+    title: "Artisan",
+  },
+  {
+    condition: "Earned when Architect is part of your DesignID Reflection pattern.",
+    detail: "Vision, structure, clarity, and new-order thinking.",
+    group: "Reflections",
+    image: "/brand/badges/architect-badge.svg",
+    kind: "reflection",
+    reflection: "architect",
+    slug: "architect",
+    title: "Architect",
+  },
+  {
+    condition: "Earned when Steward is part of your DesignID Reflection pattern.",
+    detail: "Faithfulness, wisdom, protection, and responsibility.",
+    group: "Reflections",
+    image: "/brand/badges/steward-badge.svg",
+    kind: "reflection",
+    reflection: "steward",
+    slug: "steward",
+    title: "Steward",
+  },
 ];
 
 function MenuIcon({ name }: { name: string }) {
@@ -205,6 +369,13 @@ function MenuIcon({ name }: { name: string }) {
         <circle cx="16" cy="18.5" r="4.4" fill="#fffaf0" stroke="#6f4d20" />
         <circle cx="16" cy="18.5" r="1.5" fill="#759a5b" stroke="#759a5b" />
         <path d="M22.5 14h1" stroke="#6f4d20" />
+      </svg>
+    ) : name === "badge" ? (
+      <svg {...common}>
+        <path d="M16 5.5 25 10v8.8c0 5.1-3.6 7.9-9 9.7-5.4-1.8-9-4.6-9-9.7V10z" fill="#5d548b" stroke="var(--green-dark)" />
+        <path d="M11.5 13.2h9l2.1 2.1-2.1 2.1h-9z" fill="#d4a451" stroke="#6f4d20" />
+        <path d="M11 23.5 8.6 28l4.3-1 3.1 3 3.1-3 4.3 1-2.4-4.5" stroke="#6f4d20" />
+        <path d="M13 21.2h6" stroke="#fffaf0" />
       </svg>
     ) : name === "backpack" ? (
       <svg {...common}>
@@ -552,6 +723,14 @@ function ownsAssessment(report: StudentAssessmentReport, assessmentType: string)
   );
 }
 
+function reflectionIsPresent(reflectionText: string, reflection?: string) {
+  if (!reflection) {
+    return false;
+  }
+
+  return reflectionText.toLowerCase().includes(reflection);
+}
+
 function artifactDownloadHref(
   snapshot: AssessmentSnapshotSummary,
   reviewParams?: ReviewSearchParams | null,
@@ -641,6 +820,14 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   });
   const activeFruitLifeSession = fruitLifeSessions[0] ?? null;
   const fruitLifeCompletion = getFruitLifeCompletion(activeFruitLifeSession);
+  const designIdContext = buildDesignIdContext(assessmentReport);
+  const reflectionText = [
+    designIdContext.primary,
+    designIdContext.secondary,
+    designIdContext.integrativeReflection,
+  ]
+    .join(" ")
+    .toLowerCase();
   const lessonCount = designIdCourse.modules.reduce(
     (count, module) => count + module.lessons.length,
     0,
@@ -697,6 +884,28 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     const bIndex = trailheadOrder.indexOf(b.id);
 
     return (aIndex === -1 ? 99 : aIndex) - (bIndex === -1 ? 99 : bIndex);
+  });
+  const badgeCards = trailBadges.map((badge) => {
+    const earned =
+      badge.kind === "designid"
+        ? hasDesignIdCourseAccess
+        : badge.kind === "designpd"
+          ? hasDesignPdCourseAccess
+          : badge.kind === "spiritual_gifts"
+            ? hasSpiritualGiftsCourseAccess
+            : badge.kind === "fruit_360"
+              ? hasFruitLifeCourseAccess || fruitLifeCompletion.completed > 0
+              : badge.kind === "design_pathways"
+                ? ownsAssessment(assessmentReport, "design_pathways")
+                : badge.kind === "reflection"
+                  ? reflectionIsPresent(reflectionText, badge.reflection)
+                  : false;
+
+    return {
+      ...badge,
+      earned,
+      status: earned ? "Earned" : badge.kind === "design_piece" ? "Planned" : "Locked",
+    };
   });
 
   return (
@@ -956,6 +1165,60 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               </p>
             </div>
           )}
+        </article>
+
+        <article className="badge-panel" id="trail-badges">
+          <div className="card-heading">
+            <p className="section-label">Trail Badges</p>
+            <h2>Visible markers for progress, growth, and calling.</h2>
+          </div>
+          <div className="badge-system-intro">
+            <p>
+              This first badge map gives the journey a set of earnable trail
+              markers: the D.E.S.I.G.N. pieces, connected tools, and personal
+              Reflection badges.
+            </p>
+            <span>
+              {badgeCards.filter((badge) => badge.earned).length}/{badgeCards.length} earned
+            </span>
+          </div>
+          {(["D.E.S.I.G.N.", "Tools", "Reflections"] as const).map((group) => (
+            <section className="badge-group" key={group}>
+              <div className="badge-group-heading">
+                <h3>{group}</h3>
+                <small>
+                  {group === "D.E.S.I.G.N."
+                    ? "Main journey markers"
+                    : group === "Tools"
+                      ? "Connected discovery work"
+                      : "Personalized reflection markers"}
+                </small>
+              </div>
+              <div className="badge-grid">
+                {badgeCards
+                  .filter((badge) => badge.group === group)
+                  .map((badge) => (
+                    <article
+                      className={badge.earned ? "trail-badge earned" : "trail-badge locked"}
+                      key={badge.slug}
+                    >
+                      <div className="badge-art">
+                        <img src={badge.image} alt={`${badge.title} trail badge`} />
+                        {badge.earned && badge.group === "Reflections" ? (
+                          <span>{welcomeName}</span>
+                        ) : null}
+                      </div>
+                      <div className="badge-copy">
+                        <span>{badge.status}</span>
+                        <strong>{badge.title}</strong>
+                        <p>{badge.detail}</p>
+                        <small>{badge.condition}</small>
+                      </div>
+                    </article>
+                  ))}
+              </div>
+            </section>
+          ))}
         </article>
 
         <article className="journey-builder">

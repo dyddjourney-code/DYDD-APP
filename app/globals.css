@@ -1459,6 +1459,7 @@ h3 {
 .assessment-panel,
 .tool-panel,
 .artifact-panel,
+.badge-panel,
 .course-panel,
 .admin-panel,
 .journey-builder,
@@ -2946,6 +2947,7 @@ h3 {
 .assessment-panel,
 .tool-panel,
 .artifact-panel,
+.badge-panel,
 .course-panel,
 .admin-panel,
 .journey-builder,
@@ -2964,7 +2966,8 @@ h3 {
 }
 
 .fieldkit-panel,
-.artifact-workbench {
+.artifact-workbench,
+.badge-panel {
   grid-column: 1 / -1;
 }
 
@@ -3441,6 +3444,181 @@ h3 {
 
 .hq-empty-state strong {
   color: var(--green-dark);
+}
+
+.badge-panel {
+  display: grid;
+  gap: 20px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(247, 242, 232, 0.94)),
+    repeating-linear-gradient(
+      45deg,
+      rgba(93, 84, 139, 0.08) 0,
+      rgba(93, 84, 139, 0.08) 1px,
+      transparent 1px,
+      transparent 24px
+    );
+}
+
+.badge-system-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 18px;
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.badge-system-intro p {
+  margin: 0;
+  max-width: 72ch;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.badge-system-intro span {
+  min-width: 116px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: var(--green-dark);
+  color: white;
+  font-weight: 900;
+  text-align: center;
+}
+
+.badge-group {
+  display: grid;
+  gap: 12px;
+}
+
+.badge-group-heading {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(71, 107, 66, 0.16);
+  padding-bottom: 10px;
+}
+
+.badge-group-heading h3 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: 1.08rem;
+}
+
+.badge-group-heading small {
+  color: var(--muted);
+  font-weight: 850;
+}
+
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.trail-badge {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  min-height: 156px;
+  padding: 14px;
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 10px 22px rgba(70, 58, 35, 0.06);
+}
+
+.trail-badge.locked {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.88)),
+    repeating-linear-gradient(
+      135deg,
+      rgba(71, 107, 66, 0.06) 0,
+      rgba(71, 107, 66, 0.06) 1px,
+      transparent 1px,
+      transparent 16px
+    );
+}
+
+.badge-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.badge-art img {
+  width: 82px;
+  height: 82px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 12px rgba(36, 63, 39, 0.16));
+}
+
+.trail-badge.locked .badge-art img {
+  filter: grayscale(0.45) opacity(0.72);
+}
+
+.badge-art span {
+  position: absolute;
+  right: -6px;
+  bottom: 10px;
+  max-width: 88px;
+  padding: 4px 8px;
+  border: 2px solid rgba(255, 248, 231, 0.94);
+  border-radius: 999px;
+  background: #d4a451;
+  color: #fff8e7;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 6px 14px rgba(70, 58, 35, 0.16);
+}
+
+.badge-copy {
+  min-width: 0;
+}
+
+.badge-copy > span {
+  color: var(--brass);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.trail-badge.earned .badge-copy > span {
+  color: var(--green-dark);
+}
+
+.badge-copy strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.badge-copy p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.badge-copy small {
+  display: block;
+  margin-top: 8px;
+  color: var(--green-dark);
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1.35;
 }
 
 .journey-builder {
@@ -4712,6 +4890,7 @@ h3 {
 
   .fieldkit-list,
   .artifact-workbench .artifact-download-list,
+  .badge-system-intro,
   .gear-grid {
     grid-template-columns: 1fr;
   }

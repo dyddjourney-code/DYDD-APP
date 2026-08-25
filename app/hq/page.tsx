@@ -1067,7 +1067,11 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           <div className="basecamp-identity-lockup">
             <div>
               <h2>{welcomeName}</h2>
-              <span>Shepherd</span>
+              <p>
+                <span className="reflection-label shepherd">Shepherd</span>
+                <span aria-hidden="true">-</span>
+                <span className="reflection-label architect">Architect</span>
+              </p>
             </div>
             <img src="/brand/badges/shepherd-badge.svg" alt="Shepherd badge" />
           </div>
@@ -1102,7 +1106,10 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               </section>
             ))}
           </div>
-          <p className="dydd-definition-footer">You were intentionally designed.</p>
+          <p className="dydd-definition-footer">
+            You were not created randomly. You were formed, intentionally
+            invited, and invited into meaningful work.
+          </p>
         </article>
         <article className="basecamp-purpose-card">
           <p className="section-label">The point</p>
@@ -1146,12 +1153,11 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           <div className="design-acronym-content">
             <div className="card-heading">
               <p className="section-label">The DESIGN framework</p>
-              <h2>D.E.S.I.G.N.</h2>
             </div>
             <div className="design-acronym-grid">
               {designAcronym.map((item) => (
                 <section key={item.title}>
-                  <span>{item.letter}</span>
+                  <span aria-hidden="true" />
                   <p>
                     {item.phrase} <strong>({item.title})</strong>
                   </p>

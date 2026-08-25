@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Shepherd Reflection icon">
+<rect width="512" height="512" fill="none"/>
+<circle cx="256" cy="256" r="212" fill="#263f27"/>
+<circle cx="256" cy="256" r="212" fill="#4f8c57" fill-opacity=".18"/>
+<circle cx="256" cy="256" r="190" fill="none" stroke="#d9b866" stroke-width="19"/>
+<circle cx="256" cy="256" r="153" fill="none" stroke="#fff8e7" stroke-opacity=".38" stroke-width="8"/>
+<path fill="none" stroke="#d9b866" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M256 335c-78-51-126-99-126-153 0-38 27-66 64-66 28 0 48 16 62 43 14-27 34-43 62-43 37 0 64 28 64 66 0 54-48 102-126 153Z"/>
+</svg>

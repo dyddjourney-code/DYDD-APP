@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Steward Reflection icon">
+<rect width="512" height="512" fill="none"/>
+<circle cx="256" cy="256" r="212" fill="#382748"/>
+<circle cx="256" cy="256" r="212" fill="#7352a4" fill-opacity=".18"/>
+<circle cx="256" cy="256" r="190" fill="none" stroke="#d9b866" stroke-width="19"/>
+<circle cx="256" cy="256" r="153" fill="none" stroke="#fff8e7" stroke-opacity=".38" stroke-width="8"/>
+<path fill="none" stroke="#d9b866" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M256 121v229M174 171h164M205 350h102"/>
+<path fill="none" stroke="#d9b866" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M164 188 108 317h112L164 188Zm184 0-56 129h112l-56-129Z"/>
+<path fill="none" stroke="#d9b866" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" d="M108 317c27 27 85 27 112 0M292 317c27 27 85 27 112 0"/>
+<circle cx="256" cy="104" r="19" fill="#d9b866"/>
+</svg>

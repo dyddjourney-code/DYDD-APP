@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Architect Reflection icon">
+<rect width="512" height="512" fill="none"/>
+<circle cx="256" cy="256" r="212" fill="#171915"/>
+<circle cx="256" cy="256" r="212" fill="#c89a38" fill-opacity=".18"/>
+<circle cx="256" cy="256" r="190" fill="none" stroke="#d9b866" stroke-width="19"/>
+<circle cx="256" cy="256" r="153" fill="none" stroke="#fff8e7" stroke-opacity=".38" stroke-width="8"/>
+<path fill="none" stroke="#d9b866" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M140 331h232M157 331v-76h49m149 76v-76h-49"/>
+<path fill="none" stroke="#d9b866" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" d="M180 331V229c0-62 34-104 76-104s76 42 76 104v102"/>
+<path fill="none" stroke="#d9b866" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" d="M256 103v306M108 259h296M132 207h248M169 379h174"/>
+</svg>

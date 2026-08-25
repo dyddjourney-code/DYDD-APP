@@ -140,6 +140,7 @@ const hqMenu = [
     href: "/hq",
     children: [{ icon: "hiker", label: "Journey", href: "/journey" }],
   },
+  { icon: "group", label: "Camp Circle", href: "/camp-circle" },
   { icon: "signpost", label: "Trailheads", href: "/trailheads" },
   {
     icon: "map",
@@ -356,6 +357,14 @@ function MenuIcon({ name }: { name: string }) {
         <path d="M24 17.5H10.5L8 20.2l2.5 2.8H24z" fill="#759a5b" stroke="var(--green-dark)" />
         <path d="M12 27h8" stroke="var(--green-dark)" />
       </svg>
+    ) : name === "group" ? (
+      <svg {...common}>
+        <circle cx="16" cy="10" r="4.2" fill="#d4a451" stroke="var(--green-dark)" />
+        <circle cx="8.7" cy="14" r="3.2" fill="#739d5e" stroke="var(--green-dark)" />
+        <circle cx="23.3" cy="14" r="3.2" fill="#647c9b" stroke="var(--green-dark)" />
+        <path d="M9 26.5v-2.2a6.9 6.9 0 0 1 14 0v2.2" fill="#fffaf0" stroke="var(--green-dark)" />
+        <path d="M3.8 25.8v-1.4a5 5 0 0 1 7.4-4.4M28.2 25.8v-1.4a5 5 0 0 0-7.4-4.4" stroke="#6f4d20" />
+      </svg>
     ) : name === "map" ? (
       <svg {...common}>
         <path d="m5.5 9 7-2.5 7 2.5 7-2.5v17l-7 2.5-7-2.5-7 2.5z" fill="#f7efd8" stroke="var(--green-dark)" />
@@ -446,6 +455,12 @@ const baseCampLinks = [
     href: "/field-kit",
     kicker: "Collected",
     title: "Open Field Kit",
+  },
+  {
+    detail: "Set up invitations, shared summaries, and couple or group progress.",
+    href: "/camp-circle",
+    kicker: "Together",
+    title: "Open Camp Circle",
   },
   {
     detail: "Capture prayers, workbook notes, and reflection prompts from every section.",

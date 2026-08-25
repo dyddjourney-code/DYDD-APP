@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageHelp } from "@/components/page-help";
 
 const circleTypes = [
   {
@@ -146,6 +147,15 @@ export default function CampCirclePage() {
           <img src="/brand/badges/spiritual-gifts-badge.png" alt="Spiritual Gifts badge" />
         </div>
       </header>
+
+      <PageHelp
+        items={[
+          "Start by choosing the circle format and capacity that matches the group.",
+          "Invite people into the shared trail without exposing their private workbook or journal.",
+          "Use shared entries for summaries, questions, prayers, next steps, and group memory.",
+        ]}
+        title="How Camp Circle works"
+      />
 
       <section className="camp-circle-control-grid" aria-label="Circle control dashboard">
         <article className="camp-circle-panel circle-builder">

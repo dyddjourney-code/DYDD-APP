@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageHelp } from "@/components/page-help";
 
 const trailheads = [
   {
@@ -72,6 +73,14 @@ export default function TrailheadsPage() {
           alt="Dydi beside the DYDD trailheads signpost"
         />
       </header>
+
+      <PageHelp
+        items={[
+          "Choose Journey when someone is ready for the full guided path.",
+          "Choose Field Kit when someone needs a specific assessment, report, or badge view.",
+          "Choose Pathfinder when the work is focused on niche, calling, and direction.",
+        ]}
+      />
 
       <section className="trailhead-page-list" aria-label="Available trailheads">
         {trailheads.map((trailhead) => (

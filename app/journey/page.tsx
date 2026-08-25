@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { saveJourneyStageResponses } from "@/app/journey/actions";
 import { dyddJourney } from "@/lib/journey/dydd-journey";
+import { PageHelp } from "@/components/page-help";
 
 const responseLabels = {
   declaration: "Declaration",
@@ -60,6 +61,15 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
           ))}
         </ul>
       </section>
+
+      <PageHelp
+        items={[
+          "Use the chapter shortcuts to jump to the next unfinished part of the workbook.",
+          "Open each section to move through Connect, Act, Reflect, and Explore prompts.",
+          "Save chapter drafts as you go; Pathfinder entries build a purpose thread over time.",
+        ]}
+        title="How to walk the Journey"
+      />
 
       <section className="journey-chapter-nav" aria-label="Journey chapter shortcuts">
         {dyddJourney.stages.map((stage, index) => (

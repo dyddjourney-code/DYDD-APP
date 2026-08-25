@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageHelp } from "@/components/page-help";
 
 export default function PathfinderPage() {
   return (
@@ -21,6 +22,15 @@ export default function PathfinderPage() {
         </div>
         <img src="/brand/badges/niche-badge.svg" alt="Niche badge" />
       </header>
+
+      <PageHelp
+        items={[
+          "Use Pathfinder to collect the purpose thread from each Journey chapter.",
+          "Keep multiple ideas if a better niche or experiment emerges later.",
+          "The final declaration should draw from identity, expertise, story, desire, gifts, and opportunity.",
+        ]}
+        title="How Pathfinder will work"
+      />
 
       <section className="niche-panel">
         <div className="card-heading">

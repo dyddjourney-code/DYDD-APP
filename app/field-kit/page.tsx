@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageHelp } from "@/components/page-help";
 
 const tools = [
   {
@@ -81,6 +82,14 @@ export default function FieldKitPage() {
         </div>
         <img src="/brand/badges/dydd-trail-badges-preview.png" alt="DYDD badge set preview" />
       </header>
+
+      <PageHelp
+        items={[
+          "Open assessment and report tools from the top row when you need a specific resource.",
+          "Use Artifacts for completed reports, downloads, certificates, and saved discoveries.",
+          "Open Trail Badges when you want to see what is possible; earned badges stay visible first.",
+        ]}
+      />
 
       <section className="fieldkit-page-grid" aria-label="Field Kit tools">
         {tools.map((tool) => (

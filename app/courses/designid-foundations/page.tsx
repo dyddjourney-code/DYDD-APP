@@ -13,6 +13,7 @@ import {
   withReviewQuery,
 } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { PageHelp } from "@/components/page-help";
 
 export const dynamic = "force-dynamic";
 
@@ -79,6 +80,15 @@ export default async function DesignIdCoursePage({
           <span>Ephesians 2:10</span>
         </aside>
       </header>
+
+      <PageHelp
+        items={[
+          "Start the first lesson if you are new to DesignID.",
+          "Use the module list to resume where you left off.",
+          "Connect assessment data with the same email so the course can reflect the learner's pattern.",
+        ]}
+        title="How to use this course"
+      />
 
       <section className="course-map" aria-label="Course modules">
         <div className="course-stat">

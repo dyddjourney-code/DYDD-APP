@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageHelp } from "@/components/page-help";
 
 export default function FiresidePage() {
   return (
@@ -20,6 +21,14 @@ export default function FiresidePage() {
           </p>
         </div>
       </header>
+
+      <PageHelp
+        items={[
+          "Use Fireside for teaching, stories, replays, and shared encouragement.",
+          "Keep broad content here so Base Camp can stay simple and directional.",
+          "Future discussion prompts can connect back to Journey chapters and Camp Circle.",
+        ]}
+      />
 
       <section className="fireside-panel">
         <div className="card-heading">

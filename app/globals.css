@@ -56,11 +56,23 @@ body {
   font-family:
     "Satoshi", "Aptos", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont,
     sans-serif;
+  overflow-x: hidden;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+.mobile-app-nav {
+  display: none;
 }
 
 h1,
@@ -1649,6 +1661,59 @@ h3 {
 .hq-sidebar-note strong {
   color: var(--green-dark);
   font-size: 1.05rem;
+}
+
+.page-help {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.32fr) minmax(0, 1fr);
+  gap: clamp(16px, 3vw, 28px);
+  align-items: start;
+  margin-bottom: 18px;
+  padding: clamp(18px, 3vw, 26px);
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 8px;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.9), rgba(234, 240, 226, 0.72)),
+    var(--panel);
+  box-shadow: 0 16px 34px rgba(70, 58, 35, 0.06);
+}
+
+.page-help h2 {
+  max-width: 11ch;
+  color: var(--green-dark);
+  font-size: clamp(1.45rem, 2.6vw, 2.35rem);
+  line-height: 1.03;
+}
+
+.page-help ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.page-help li {
+  position: relative;
+  padding: 12px 14px 12px 34px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  color: #40503e;
+  font-weight: 760;
+  line-height: 1.45;
+}
+
+.page-help li::before {
+  content: "";
+  position: absolute;
+  top: 18px;
+  left: 14px;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 0 0 4px rgba(71, 107, 66, 0.12);
 }
 
 .hq-menu-icon {
@@ -5892,6 +5957,98 @@ h3 {
 }
 
 @media (max-width: 980px) {
+  body {
+    padding-top: 70px;
+  }
+
+  .mobile-app-nav {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    left: 12px;
+    z-index: 30;
+    display: block;
+    pointer-events: none;
+  }
+
+  .mobile-app-nav summary {
+    display: grid;
+    grid-template-columns: 34px auto;
+    gap: 10px;
+    align-items: center;
+    width: fit-content;
+    min-height: 46px;
+    margin-left: auto;
+    padding: 8px 14px 8px 9px;
+    border: 1px solid rgba(36, 63, 39, 0.2);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--green-dark);
+    cursor: pointer;
+    font-weight: 900;
+    list-style: none;
+    pointer-events: auto;
+    box-shadow: 0 14px 30px rgba(70, 58, 35, 0.14);
+  }
+
+  .mobile-app-nav summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-app-nav summary span,
+  .mobile-app-nav summary span::before,
+  .mobile-app-nav summary span::after {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--green-dark);
+  }
+
+  .mobile-app-nav summary span {
+    position: relative;
+    justify-self: center;
+  }
+
+  .mobile-app-nav summary span::before,
+  .mobile-app-nav summary span::after {
+    content: "";
+    position: absolute;
+    left: 0;
+  }
+
+  .mobile-app-nav summary span::before {
+    top: -7px;
+  }
+
+  .mobile-app-nav summary span::after {
+    top: 7px;
+  }
+
+  .mobile-app-nav nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    max-width: 520px;
+    margin: 10px 0 0 auto;
+    padding: 12px;
+    border: 1px solid rgba(36, 63, 39, 0.16);
+    border-radius: 8px;
+    background: rgba(251, 250, 244, 0.98);
+    pointer-events: auto;
+    box-shadow: 0 24px 60px rgba(70, 58, 35, 0.18);
+  }
+
+  .mobile-app-nav nav a {
+    min-width: 0;
+    padding: 12px 13px;
+    border: 1px solid rgba(71, 107, 66, 0.14);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.82);
+    color: var(--green-dark);
+    font-weight: 900;
+  }
+
   .hq-app-shell,
   .brand-hero,
   .basecamp-hero,
@@ -5928,7 +6085,8 @@ h3 {
   .course-personalization,
   .module-panel,
   .lesson-page,
-  .named-check {
+  .named-check,
+  .page-help {
     grid-template-columns: 1fr;
   }
 
@@ -6049,6 +6207,34 @@ h3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .visual-journey-map {
+    overflow: visible;
+  }
+
+  .visual-journey-map ol {
+    grid-template-columns: repeat(13, 132px);
+    margin-right: calc(clamp(22px, 4vw, 36px) * -1);
+    padding-right: clamp(22px, 4vw, 36px);
+    scroll-snap-type: x proximity;
+    scrollbar-color: rgba(71, 107, 66, 0.5) rgba(234, 240, 226, 0.8);
+  }
+
+  .visual-journey-map li {
+    scroll-snap-align: start;
+  }
+
+  .group-journey-track {
+    overflow-x: auto;
+    grid-template-columns: repeat(12, minmax(142px, 1fr));
+    padding-bottom: 10px;
+    scroll-snap-type: x proximity;
+  }
+
+  .group-journey-track li {
+    min-width: 142px;
+    scroll-snap-align: start;
+  }
+
   .fieldkit-list,
   .fieldkit-page-grid,
   .circle-type-grid,
@@ -6121,6 +6307,27 @@ h3 {
 }
 
 @media (max-width: 560px) {
+  body {
+    padding-top: 64px;
+  }
+
+  .mobile-app-nav {
+    top: 9px;
+    right: 9px;
+    left: 9px;
+  }
+
+  .mobile-app-nav summary {
+    min-height: 42px;
+    padding-right: 12px;
+  }
+
+  .mobile-app-nav nav {
+    grid-template-columns: 1fr;
+    max-height: calc(100dvh - 76px);
+    overflow: auto;
+  }
+
   .brand-hero,
   .portal-hero,
   .hero,
@@ -6135,7 +6342,13 @@ h3 {
   .login-shell,
   .hq-shell,
   .journey-shell {
-    padding: 24px;
+    padding: 18px;
+  }
+
+  .fruitlife-shell,
+  .course-shell,
+  .lesson-shell {
+    padding: 18px;
   }
 
   .brand-hero {
@@ -6149,7 +6362,14 @@ h3 {
   }
 
   h1 {
-    font-size: clamp(3rem, 17vw, 4.5rem);
+    max-width: none;
+    font-size: clamp(2.55rem, 13vw, 4rem);
+    overflow-wrap: anywhere;
+  }
+
+  h2 {
+    max-width: none;
+    font-size: clamp(1.7rem, 8vw, 2.7rem);
   }
 
   .portal-hero h1 {
@@ -6207,7 +6427,7 @@ h3 {
   }
 
   .hq-sidebar {
-    padding: 14px;
+    display: none;
   }
 
   .hq-sidebar-nav {
@@ -6221,6 +6441,165 @@ h3 {
 
   .hq-sidebar-brand img {
     width: min(170px, 82vw);
+  }
+
+  .course-nav {
+    gap: 8px;
+    margin-bottom: 18px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .course-nav a {
+    flex: 0 0 auto;
+    padding: 9px 10px;
+    border: 1px solid rgba(71, 107, 66, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.76);
+    font-size: 0.88rem;
+  }
+
+  .standalone-hero,
+  .journey-hero,
+  .basecamp-hero,
+  .basecamp-story-card,
+  .basecamp-purpose-card,
+  .design-acronym-panel,
+  .visual-journey-map,
+  .page-help,
+  .camp-circle-panel,
+  .gear-panel,
+  .fireside-panel,
+  .niche-panel,
+  .artifact-panel,
+  .badge-panel {
+    padding: 18px;
+  }
+
+  .standalone-hero {
+    gap: 18px;
+  }
+
+  .standalone-hero h1,
+  .journey-hero h1,
+  .basecamp-copy h2 {
+    max-width: none;
+  }
+
+  .page-help h2 {
+    max-width: none;
+  }
+
+  .page-help li {
+    padding-right: 12px;
+  }
+
+  .basecamp-wayfinding a {
+    min-height: 128px;
+  }
+
+  .dydd-definition-cards section {
+    min-height: 118px;
+  }
+
+  .design-acronym-media img {
+    min-height: 280px;
+  }
+
+  .visual-journey-map ol {
+    grid-template-columns: repeat(13, 124px);
+    gap: 14px;
+    margin-right: -18px;
+    padding-right: 18px;
+  }
+
+  .visual-journey-map ol::before {
+    left: 52px;
+    width: calc((124px * 13) + (14px * 12) - 104px);
+  }
+
+  .journey-map-marker {
+    width: 74px;
+    height: 74px;
+  }
+
+  .journey-map-marker img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .journey-map-marker .hq-menu-icon {
+    width: 62px;
+    height: 62px;
+  }
+
+  .journey-map-marker .hq-menu-icon svg {
+    width: 58px;
+    height: 58px;
+  }
+
+  .fieldkit-tool-card {
+    min-height: 0;
+  }
+
+  .trailhead-page-list .trail-route,
+  .trail-route {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+
+  .trail-route .button {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+  }
+
+  .trail-route img {
+    width: 58px;
+    height: 58px;
+  }
+
+  .trail-badge {
+    grid-template-columns: 76px minmax(0, 1fr);
+    min-height: 132px;
+  }
+
+  .badge-art img {
+    width: 74px;
+    height: 74px;
+  }
+
+  .member-progress section,
+  .comparison-header,
+  .comparison-row {
+    grid-template-columns: 1fr;
+  }
+
+  .member-progress p {
+    text-align: left;
+  }
+
+  .comparison-header > *,
+  .comparison-row > * {
+    border-right: 0;
+    border-top: 1px solid rgba(71, 107, 66, 0.13);
+  }
+
+  .comparison-header > :first-child,
+  .comparison-row > :first-child {
+    border-top: 0;
+  }
+
+  .group-track-panel {
+    overflow: visible;
+  }
+
+  .group-journey-track {
+    grid-template-columns: repeat(12, 136px);
+    margin-right: -18px;
+    padding-right: 18px;
+  }
+
+  .group-journey-track::before {
+    width: calc((136px * 12) + (12px * 11) - 104px);
   }
 
   .journey-stage-intro .section-label,

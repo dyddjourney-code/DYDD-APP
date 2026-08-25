@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageHelp } from "@/components/page-help";
 import { createFruitLifeSession } from "./actions";
 
 type FruitLifeSignupPageProps = {
@@ -34,6 +35,15 @@ export default async function FruitLifeSignupPage({
           </p>
         </div>
       </header>
+
+      <PageHelp
+        items={[
+          "Create the self-reflection session before inviting observers.",
+          "Add observers now if you have them, or use the saved observer link later.",
+          "Watch the status area after creation so reports, reminders, and artifacts stay organized.",
+        ]}
+        title="How FruitLife 360 works"
+      />
 
       <form action={createFruitLifeSession} className="fruitlife-form fruitlife-signup">
         {params?.message ? <p className="form-message">{params.message}</p> : null}

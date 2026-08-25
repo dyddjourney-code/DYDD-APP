@@ -34,6 +34,7 @@ import {
 } from "@/lib/review/heather";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { PageHelp } from "@/components/page-help";
 
 type AdminSnapshotSummary = AssessmentSnapshotSummary & {
   assessment_participants:
@@ -1109,6 +1110,15 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           </Link>
         ))}
       </nav>
+
+      <PageHelp
+        items={[
+          "Start with Journey when you want the full guided DYDD path.",
+          "Use Trailheads for a focused entry point like DesignID, Spiritual Gifts, or Pathfinder.",
+          "Open Field Kit when you need reports, tools, artifacts, or earned badges.",
+        ]}
+        title="Start from Base Camp"
+      />
 
       <section className="basecamp-story-grid" aria-label="Discover Your Divine Design overview">
         <article className="basecamp-story-card">

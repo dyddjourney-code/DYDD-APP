@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { saveGearJournalEntries } from "@/app/gear/actions";
+import { PageHelp } from "@/components/page-help";
 
 type GearPageProps = {
   searchParams?: Promise<{
@@ -30,6 +31,14 @@ export default async function GearPage({ searchParams }: GearPageProps) {
           </p>
         </div>
       </header>
+
+      <PageHelp
+        items={[
+          "Use the journal to capture reflection that begins in assessments, Journey chapters, or Waypoints.",
+          "Save focused entries instead of trying to make one perfect long journal record.",
+          "Later, selected journal context can help Dydi guide the next faithful step.",
+        ]}
+      />
 
       <section className="gear-panel" id="journal">
         <div className="card-heading">

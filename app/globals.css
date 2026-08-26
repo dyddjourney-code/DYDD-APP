@@ -3168,15 +3168,70 @@ h3 {
 
 .fieldkit-assessments-section {
   display: grid;
-  gap: clamp(18px, 3vw, 28px);
+  gap: clamp(16px, 2.6vw, 24px);
 }
 
 .fieldkit-section-heading {
-  max-width: 940px;
+  display: grid;
+  gap: 10px;
+  max-width: none;
 }
 
 .fieldkit-section-heading h2 {
-  max-width: 22ch;
+  max-width: none;
+  color: var(--green-dark);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 0.96;
+}
+
+.fieldkit-section-heading p {
+  max-width: 1120px;
+}
+
+.fieldkit-assessment-flow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(12px, 2vw, 18px);
+}
+
+.fieldkit-assessment-flow article {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  min-height: 160px;
+  padding: clamp(16px, 2vw, 20px);
+  border: 1px solid rgba(71, 107, 66, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(142deg, rgba(255, 255, 255, 0.92), rgba(234, 240, 226, 0.62)),
+    var(--panel);
+  box-shadow: 0 16px 36px rgba(70, 58, 35, 0.07);
+}
+
+.fieldkit-assessment-flow article > span {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: var(--green-dark);
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 950;
+}
+
+.fieldkit-assessment-flow h3 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: 1.12rem;
+  line-height: 1.1;
+}
+
+.fieldkit-assessment-flow p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 .fieldkit-product-columns {
@@ -7309,6 +7364,7 @@ h3 {
   }
 
   .fieldkit-product-columns,
+  .fieldkit-assessment-flow,
   .artifact-workbench .artifact-download-list,
   .earned-badge-grid {
     grid-template-columns: 1fr;

@@ -99,6 +99,27 @@ const earnedBadges = [
   },
 ];
 
+const assessmentFlow = [
+  {
+    detail:
+      "Each assessment captures a focused snapshot of design, gifting, fruit, pathway, or practical action patterns.",
+    step: "1",
+    title: "Take the assessment",
+  },
+  {
+    detail:
+      "Completed assessments open the Trailhead course connected to that tool so the learner can understand and apply the results.",
+    step: "2",
+    title: "Explore the Trailhead",
+  },
+  {
+    detail:
+      "Reports become artifacts that personalize Trailheads and the full Discover Your Divine Design Journey as progress is made.",
+    step: "3",
+    title: "Review the artifact",
+  },
+];
+
 const badgeGroups = [
   {
     badges: [
@@ -195,14 +216,25 @@ export default function FieldKitPage() {
 
       <section className="fieldkit-assessments-section" aria-label="Assessment products">
         <div className="catalog-heading fieldkit-section-heading">
-          <p className="section-label">Products</p>
-          <h2>Assessments that stand alone and support the full journey.</h2>
+          <h2>Journey Assessments</h2>
           <p>
-            Each assessment can be used on its own for focused insight, and each one also
-            becomes part of the larger Discover Your Divine Design journey. Free or
-            purchased, every completed assessment unlocks a Trailhead course to help the
-            learner understand and apply the results.
+            Assessments can stand on their own for focused insight, and they also feed the
+            larger Discover Your Divine Design journey. Each one creates a result artifact,
+            opens the related Trailhead course, and gives the system personal information it
+            can use later inside course lessons and the main DYDD Journey.
           </p>
+        </div>
+
+        <div className="fieldkit-assessment-flow" aria-label="Assessment progression">
+          {assessmentFlow.map((item) => (
+            <article key={item.title}>
+              <span>{item.step}</span>
+              <div>
+                <h3>{item.title}</h3>
+                <p>{item.detail}</p>
+              </div>
+            </article>
+          ))}
         </div>
 
         <div className="fieldkit-product-columns">

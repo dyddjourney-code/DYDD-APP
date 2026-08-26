@@ -19,73 +19,83 @@ const featuredCourse = {
 
 const courses = [
   {
-    action: "Take assessment",
+    action: "Launch course",
     description:
       "A short course that helps you understand your DesignID results with clarity and confidence.",
-    href: "/field-kit",
+    href: "/courses/designid-foundations",
     logo: "/brand/tools/designid-logo.webp",
     points: [
       "Clear walkthrough of your report",
       "Understand reflection and energy patterns",
       "Practical next steps for everyday application",
     ],
+    price: "$20 assessment completed",
     prerequisite: "Requires a completed DesignID assessment.",
+    status: "unlocked",
     title: "Unpack Your DesignID Assessment",
   },
   {
-    action: "Take assessment",
+    action: "Launch course",
     description:
       "A focused course that helps you read your Spiritual Gifts results as grace for service, maturity, and love.",
-    href: "/field-kit",
+    href: "/courses/spiritual-gifts-service",
     logo: "/brand/tools/spiritual-gifts-logo.jpg",
     points: [
       "Understand your top gifts",
       "Connect gifts to humble service",
       "Notice growth areas and next faithful steps",
     ],
+    price: "Free assessment completed",
     prerequisite: "Requires a completed Spiritual Gifts assessment.",
+    status: "unlocked",
     title: "Spiritual Gifts in Service",
   },
   {
     action: "Take assessment",
     description:
       "A self-paced course created to help you understand your DesignPD report and apply your design in the way you plan, make decisions, and move into purposeful action.",
-    href: "/field-kit",
+    href: "/field-kit#purchase-assessments",
     logo: "/brand/tools/designpd-logo.jpg",
     points: [
       "Understand your Plan, Decide, and Do patterns",
       "Connect report insights to real-life action",
       "Build healthier rhythms for purpose and progress",
     ],
+    price: "$50 assessment required",
     prerequisite: "Requires a completed DesignPD assessment.",
+    status: "locked",
     title: "Unpack Your DesignPD Report",
   },
   {
     action: "Take assessment",
     description:
       "A formation course using visible fruit, observer feedback, and honest growth conversations.",
-    href: "/fruitlife360",
+    href: "/field-kit#free-assessments",
     logo: "/brand/tools/fruitful-life-360-logo.jpg",
     points: [
       "Review fruit of the Spirit formation themes",
       "Learn from self and observer feedback",
       "Choose simple growth practices for the next season",
     ],
+    price: "Free assessment required",
     prerequisite: "Requires a completed Fruit Life 360 assessment.",
+    status: "locked",
     title: "Fruit Life 360 Growth Course",
   },
   {
-    action: "Coming soon",
+    action: "Take assessment",
     description:
       "A future course that will help you understand your Design Pathways results and choose the clearest next route for growth.",
-    href: "/field-kit",
+    href: "/field-kit#purchase-assessments",
     logo: "/brand/tools/design-pathways-logo.jpg",
     points: [
       "Identify your current pathway",
       "Connect pathway insight to next steps",
       "Use your results inside the larger Discover Your Divine Design journey",
     ],
+    price: "$10 assessment required",
     prerequisite: "Will require a completed Design Pathways assessment.",
+    status: "locked",
     title: "Design Pathways",
   },
 ];
@@ -157,14 +167,14 @@ export default function TrailheadsPage() {
         <div className="course-catalog-grid">
           {courses.map((course) => (
             <article
-              className={`catalog-course-card ${course.action === "Coming soon" ? "locked" : "open"}`}
+              className={`catalog-course-card ${course.status === "unlocked" ? "open" : "locked"}`}
               key={course.title}
             >
               <div className="catalog-course-logo">
                 <img src={course.logo} alt={`${course.title} logo`} />
               </div>
               <div>
-                <span>Assessment course</span>
+                <span>{course.status === "unlocked" ? "Course unlocked" : "Assessment required"}</span>
                 <h3>{course.title}</h3>
                 <p>{course.description}</p>
                 <ul>
@@ -172,10 +182,11 @@ export default function TrailheadsPage() {
                     <li key={point}>{point}</li>
                   ))}
                 </ul>
+                <small>Price: {course.price}</small>
                 <small>Prerequisite: {course.prerequisite}</small>
               </div>
               <Link
-                className={`button ${course.action === "Coming soon" ? "secondary" : "primary"}`}
+                className={`button ${course.status === "unlocked" ? "primary" : "secondary"}`}
                 href={course.href}
               >
                 {course.action}

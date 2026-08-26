@@ -3331,6 +3331,37 @@ h3 {
   line-height: 1.55;
 }
 
+.fieldkit-assessment-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: center;
+}
+
+.fieldkit-assessment-meta span,
+.fieldkit-assessment-meta strong {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 6px 9px;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.fieldkit-assessment-meta span {
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--green-dark);
+}
+
+.fieldkit-assessment-meta strong {
+  border: 1px solid rgba(184, 138, 67, 0.22);
+  background: rgba(243, 228, 196, 0.62);
+  color: #6f4d20;
+}
+
 .fieldkit-assessment-copy ul {
   display: flex;
   flex-wrap: wrap;
@@ -3352,8 +3383,19 @@ h3 {
 }
 
 .fieldkit-assessment-card .button {
-  grid-column: 2;
   justify-self: start;
+}
+
+.fieldkit-assessment-actions {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  align-items: center;
+}
+
+.fieldkit-status-button {
+  cursor: default;
 }
 
 .badge-accordion {
@@ -7646,8 +7688,15 @@ h3 {
   }
 
   .fieldkit-assessment-card .button {
-    grid-column: 1;
     justify-self: stretch;
+  }
+
+  .fieldkit-assessment-actions {
+    grid-column: 1;
+  }
+
+  .fieldkit-assessment-actions .button {
+    flex: 1 1 180px;
   }
 
   .fieldkit-artifact-actions .button {

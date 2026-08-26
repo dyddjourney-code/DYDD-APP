@@ -4,50 +4,70 @@ import { PageHelp } from "@/components/page-help";
 const purchaseAssessments = [
   {
     action: "Purchase assessment",
+    courseAction: "Continue to course",
+    courseHref: "/courses/designid-foundations",
     detail:
       "Names reflection style, contribution language, energy patterns, and the way a person tends to experience purpose.",
     href: "/designid",
     logo: "/brand/tools/designid-logo.webp",
     points: ["Reflection pattern", "Report artifact", "Trailhead course included"],
+    price: "$20",
+    status: "Purchased",
     title: "DesignID",
   },
   {
     action: "Purchase assessment",
+    courseAction: null,
+    courseHref: null,
     detail:
       "Helps people see how they plan, decide, and move into action so purpose becomes more practical.",
     href: "/field-kit",
     logo: "/brand/tools/designpd-logo.jpg",
     points: ["Plan, Decide, Do patterns", "Practical rhythms", "Trailhead course included"],
+    price: "$50",
+    status: null,
     title: "DesignPD",
   },
   {
-    action: "Coming soon",
+    action: "Purchase assessment",
+    courseAction: null,
+    courseHref: null,
     detail:
       "A discernment assessment for clarifying pathway, next experiments, and the most helpful route forward.",
     href: "/field-kit",
     logo: "/brand/tools/design-pathways-logo.jpg",
     points: ["Pathway clarity", "Next-step experiments", "Trailhead course included"],
+    price: "$10",
+    status: null,
     title: "Design Pathways",
   },
 ];
 
 const freeAssessments = [
   {
-    action: "Take free assessment",
+    action: "Start assessment",
+    courseAction: "Go to course",
+    courseHref: "/courses/spiritual-gifts-service",
     detail:
       "A first-step tool for naming how the Spirit may be empowering service, maturity, and love.",
     href: "/field-kit",
     logo: "/brand/tools/spiritual-gifts-logo.jpg",
     points: ["Gifts language", "Service reflection", "Trailhead course included"],
+    price: "Free",
+    status: "Completed",
     title: "Spiritual Gifts",
   },
   {
     action: "Start assessment",
+    courseAction: null,
+    courseHref: null,
     detail:
       "A 360-style mirror for visible fruit, feedback, and honest growth conversations over time.",
     href: "/fruitlife360",
     logo: "/brand/tools/fruitful-life-360-logo.jpg",
     points: ["Self reflection", "Observer feedback", "Trailhead course included"],
+    price: "Free",
+    status: null,
     title: "Fruit Life 360",
   },
 ];
@@ -195,18 +215,30 @@ function AssessmentCard({
         <span>{kind} assessment</span>
         <h3>{assessment.title}</h3>
         <p>{assessment.detail}</p>
+        <div className="fieldkit-assessment-meta">
+          <span>{assessment.price}</span>
+          {assessment.status ? <strong>{assessment.status}</strong> : null}
+        </div>
         <ul>
           {assessment.points.map((point) => (
             <li key={point}>{point}</li>
           ))}
         </ul>
       </div>
-      <Link
-        className={`button ${assessment.action === "Coming soon" ? "secondary" : "primary"}`}
-        href={assessment.href}
-      >
-        {assessment.action}
-      </Link>
+      <div className="fieldkit-assessment-actions">
+        {assessment.status === "Purchased" ? (
+          <span className="button secondary fieldkit-status-button">{assessment.status}</span>
+        ) : (
+          <Link className="button primary" href={assessment.href}>
+            {assessment.action}
+          </Link>
+        )}
+        {assessment.courseAction && assessment.courseHref ? (
+          <Link className="button primary" href={assessment.courseHref}>
+            {assessment.courseAction}
+          </Link>
+        ) : null}
+      </div>
     </article>
   );
 }
@@ -259,7 +291,11 @@ export default function FieldKitPage() {
         </div>
 
         <div className="fieldkit-product-columns">
-          <section className="fieldkit-product-group" aria-label="Purchase assessments">
+          <section
+            className="fieldkit-product-group"
+            id="purchase-assessments"
+            aria-label="Purchase assessments"
+          >
             <div className="fieldkit-product-heading">
               <span>For purchase</span>
               <h3>Purchase assessments</h3>
@@ -271,7 +307,11 @@ export default function FieldKitPage() {
             </div>
           </section>
 
-          <section className="fieldkit-product-group" aria-label="Free assessments">
+          <section
+            className="fieldkit-product-group"
+            id="free-assessments"
+            aria-label="Free assessments"
+          >
             <div className="fieldkit-product-heading">
               <span>No-cost entry points</span>
               <h3>Free assessments</h3>

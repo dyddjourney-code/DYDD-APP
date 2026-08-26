@@ -3534,6 +3534,35 @@ h3 {
   gap: 20px;
 }
 
+.camp-circle-page .card-heading,
+.camp-circle-page .wide-heading {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: stretch;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.camp-circle-page .card-heading .section-label,
+.camp-circle-page .wide-heading .section-label,
+.host-playbook-copy .section-label {
+  width: fit-content;
+}
+
+.camp-circle-page .card-heading h2,
+.camp-circle-page .wide-heading h2,
+.host-playbook-copy h2 {
+  max-width: none;
+  margin: 0;
+}
+
+.camp-circle-page .card-heading p:not(.section-label),
+.camp-circle-page .wide-heading p:not(.section-label),
+.host-playbook-copy p {
+  max-width: 96ch;
+  margin: 0;
+}
+
 .wide-heading {
   display: grid;
   gap: 8px;
@@ -3645,7 +3674,7 @@ h3 {
 }
 
 .camp-circle-panel h2 {
-  max-width: 14ch;
+  max-width: none;
   color: var(--green-dark);
   font-size: clamp(1.7rem, 3vw, 3rem);
 }
@@ -3814,7 +3843,7 @@ h3 {
   align-content: start;
   min-width: 146px;
   min-height: 160px;
-  padding-top: 54px;
+  padding-top: 82px;
   text-align: center;
 }
 
@@ -3847,6 +3876,7 @@ h3 {
 .group-journey-track strong {
   color: var(--green-dark);
   font-weight: 950;
+  line-height: 1.15;
 }
 
 .group-journey-track small {

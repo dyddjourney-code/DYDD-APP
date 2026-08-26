@@ -14,7 +14,7 @@ const bookResources = [
       "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/d2a3900f-0b7c-4b09-84d4-1429dcb48c8f/DYDD_Workbook.jpeg?format=750w",
     alt: "Discover Your Divine Design workbook cover",
     description:
-      "A guided companion to the book created to support prayerful engagement, personal reflection, and faithful application.",
+      "A guided companion to the book created to support prayerful engagement, personal reflection, and faithful application. The workbook is included digitally inside the Discover Your Divine Design Journey; this paper copy is for people who prefer something they can hold, write in, and keep nearby.",
     cta: "Purchase workbook",
     href: "https://www.amazon.com/s?k=Discover+Your+Divine+Design+Workbook+John+Willoughby",
   },
@@ -24,8 +24,7 @@ const liveExperiences = [
   {
     label: "DYDD Workshop",
     title: "Discover Your Divine Design Training Workshop",
-    image:
-      "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/67bc84f8-96c2-4e03-b701-c766a40f92a0/diverse-people-in-a-seminar-2025-02-10-11-57-04-utc.jpg?format=750w",
+    image: "/brand/gear/dydd-workshop-cartoon.png",
     description:
       "A workshop introducing the full DYDD framework so participants can explore identity in Christ, personal design, and calling together.",
     idealFor: ["Churches and ministries", "Small groups and cohorts", "Retreats and formation gatherings"],
@@ -33,8 +32,7 @@ const liveExperiences = [
   {
     label: "Foundations",
     title: "DesignID Foundations Workshop",
-    image:
-      "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/2c4932b8-76eb-4828-baee-0553d4b6f8d9/happy-multiracial-group-of-coworkers-take-selfie-t-2025-01-07-05-56-33-utc.jpg?format=750w",
+    image: "/brand/gear/designid-foundations-cartoon.png",
     description:
       "A focused experience for understanding DesignID, the four design reflections, grace flow, and shared language for empathy and collaboration.",
     idealFor: ["Teams and organizations", "Ministry staff and volunteers", "Groups seeking practical self-awareness"],
@@ -42,8 +40,7 @@ const liveExperiences = [
   {
     label: "Leadership",
     title: "DesignID Leadership Team Workshop",
-    image:
-      "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/ac8d6497-3b9e-4731-9c5e-31c96646e888/businesswoman-in-presentation-at-conference-raisin-2024-10-19-04-44-41-utc.jpg?format=750w",
+    image: "/brand/gear/designid-leadership-cartoon.png",
     description:
       "A strategic workshop for leadership teams who want to understand how design shapes leadership style, communication, and wise collaboration.",
     idealFor: ["Leadership teams", "Pastors and ministry leaders", "Executive and organizational groups"],
@@ -56,11 +53,10 @@ export default function GearPage() {
       <header className="standalone-hero gear-hero">
         <div>
           <p className="eyebrow">Gear</p>
-          <h1>Books and resources for the journey.</h1>
+          <h1>Resources for the journey.</h1>
           <p className="lede">
-            Start with the core Discover Your Divine Design book and workbook.
-            These resources support the full journey and give people something
-            simple to keep using beyond the app.
+            Books, workshops, and live experiences that help people carry the
+            Discover Your Divine Design journey into daily life.
           </p>
         </div>
       </header>
@@ -68,10 +64,11 @@ export default function GearPage() {
       <section className="gear-panel gear-books-panel" id="books">
         <div className="card-heading">
           <p className="section-label">Books</p>
-          <h2>The main resources live here first.</h2>
           <p>
-            The book and workbook are the core gear for the DYDD journey. They
-            can be highlighted elsewhere, but this page gives them a clear home.
+            The book and workbook are the core gear for the Discover Your Divine
+            Design journey. The workbook is included digitally inside the
+            journey, and the paper copy is available below for anyone who wants
+            a printed companion.
           </p>
         </div>
         <div className="gear-book-grid">
@@ -95,7 +92,6 @@ export default function GearPage() {
       <section className="gear-panel gear-workshops-panel" id="workshops">
         <div className="card-heading">
           <p className="section-label">Workshops & Live Experiences</p>
-          <h2>Live support for groups, teams, and churches.</h2>
           <p>
             Facilitated experiences can help people build shared language,
             deepen clarity, and apply the DYDD framework in community.
@@ -121,14 +117,6 @@ export default function GearPage() {
             </article>
           ))}
         </div>
-        <a
-          className="button primary gear-contact-button"
-          href="https://www.discoverdivine.design/discover-your-divine-design-contact"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Contact to schedule
-        </a>
       </section>
     </main>
   );

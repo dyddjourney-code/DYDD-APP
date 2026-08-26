@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { AppMobileNav } from "@/components/app-mobile-nav";
 import { AppSidebar } from "@/components/app-sidebar";
 import "./globals.css";
@@ -20,7 +21,14 @@ export default function RootLayout({
         <AppMobileNav />
         <div className="app-frame">
           <AppSidebar />
-          <div className="app-frame-content">{children}</div>
+          <div className="app-frame-content">
+            {children}
+            <footer className="app-footer" aria-label="App support links">
+              <span>Contact</span>
+              <Link href="/privacy">Privacy Policy</Link>
+              <Link href="/terms">Terms of Service</Link>
+            </footer>
+          </div>
         </div>
       </body>
     </html>

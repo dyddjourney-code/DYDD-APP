@@ -5216,6 +5216,55 @@ h3 {
   white-space: nowrap;
 }
 
+.waypoint-category-chip {
+  width: fit-content;
+  margin: 0;
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: var(--green-dark);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.waypoint-category-identity {
+  border-color: rgba(106, 134, 185, 0.3);
+  background: rgba(218, 228, 247, 0.88);
+}
+
+.waypoint-category-design {
+  border-color: rgba(184, 138, 67, 0.32);
+  background: rgba(250, 227, 184, 0.86);
+}
+
+.waypoint-category-calling {
+  border-color: rgba(126, 154, 101, 0.34);
+  background: rgba(225, 238, 205, 0.9);
+}
+
+.waypoint-category-spiritual-gifts {
+  border-color: rgba(148, 113, 173, 0.28);
+  background: rgba(235, 221, 242, 0.9);
+}
+
+.waypoint-category-faithful-practice {
+  border-color: rgba(91, 148, 143, 0.32);
+  background: rgba(211, 238, 233, 0.9);
+}
+
+.waypoint-category-relationships-and-community {
+  border-color: rgba(196, 116, 104, 0.3);
+  background: rgba(249, 220, 215, 0.88);
+}
+
+.waypoint-category-work-and-leadership {
+  border-color: rgba(127, 117, 88, 0.32);
+  background: rgba(235, 226, 203, 0.9);
+}
+
 .waypoint-reflection-box {
   display: grid;
   gap: 5px;
@@ -5242,13 +5291,21 @@ h3 {
   font-weight: 800;
 }
 
+.waypoint-quick-actions {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.32fr) minmax(0, 1fr);
+  gap: 10px;
+}
+
+.waypoint-current-button,
 .waypoint-last-week-card {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 10px;
   align-items: center;
   width: 100%;
   padding: 14px 16px;
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.82);
   color: var(--muted);
   font: inherit;
@@ -5256,6 +5313,16 @@ h3 {
   cursor: pointer;
 }
 
+.waypoint-current-button {
+  grid-template-columns: 1fr;
+  background: rgba(234, 240, 226, 0.78);
+}
+
+.waypoint-last-week-card {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.waypoint-current-button span,
 .waypoint-last-week-card span {
   color: rgba(36, 63, 39, 0.74);
   font-size: 0.78rem;
@@ -5264,9 +5331,16 @@ h3 {
   text-transform: uppercase;
 }
 
+.waypoint-current-button strong,
 .waypoint-last-week-card strong {
   min-width: 0;
   color: var(--green-dark);
+}
+
+.waypoint-current-button.is-active,
+.waypoint-last-week-card.is-active {
+  border-color: rgba(184, 138, 67, 0.46);
+  background: rgba(243, 228, 196, 0.52);
 }
 
 .waypoint-last-week-card small {
@@ -5274,6 +5348,7 @@ h3 {
   font-size: 0.82rem;
 }
 
+.waypoint-current-button:active,
 .waypoint-last-week-card:active,
 .waypoint-result-card:active,
 .waypoint-similar-strip button:active,
@@ -5288,16 +5363,31 @@ h3 {
   background: rgba(251, 250, 244, 0.7);
 }
 
+.waypoint-similar-heading {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.waypoint-similar-heading span {
+  color: rgba(36, 63, 39, 0.7);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
 .waypoint-similar-strip > div {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
   gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scroll-snap-type: x proximity;
 }
 
 .waypoint-similar-strip button {
   display: grid;
   gap: 4px;
-  min-width: 0;
+  flex: 0 0 clamp(190px, 26vw, 260px);
   border: 1px solid rgba(36, 63, 39, 0.13);
   border-radius: 8px;
   padding: 10px;
@@ -5306,14 +5396,7 @@ h3 {
   font: inherit;
   text-align: left;
   cursor: pointer;
-}
-
-.waypoint-similar-strip button span {
-  color: rgba(36, 63, 39, 0.72);
-  font-size: 0.72rem;
-  font-weight: 900;
-  letter-spacing: 0;
-  text-transform: uppercase;
+  scroll-snap-align: start;
 }
 
 .waypoint-similar-strip button strong {
@@ -5322,6 +5405,11 @@ h3 {
   font-size: 0.92rem;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.waypoint-similar-strip button small {
+  color: var(--muted);
+  font-size: 0.78rem;
 }
 
 .waypoint-result-card h3 {
@@ -5383,7 +5471,10 @@ h3 {
 
 .waypoint-results {
   display: grid;
-  gap: 10px;
+  max-height: 470px;
+  overflow-y: auto;
+  gap: 8px;
+  padding-right: 4px;
 }
 
 .waypoint-result-card {
@@ -5392,7 +5483,7 @@ h3 {
   gap: 14px;
   align-items: center;
   width: 100%;
-  padding: 14px;
+  padding: 11px 12px;
   border: 1px solid rgba(36, 63, 39, 0.12);
   border-radius: 8px;
   background: rgba(251, 250, 244, 0.58);
@@ -5413,7 +5504,18 @@ h3 {
 
 .waypoint-result-card > div:first-child {
   display: grid;
-  gap: 6px;
+  gap: 5px;
+}
+
+.waypoint-result-card h3 {
+  font-size: 1rem;
+}
+
+.waypoint-result-card p:not(.waypoint-category-chip) {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
 }
 
 .waypoint-meta-row {

@@ -65,6 +65,38 @@ const waypointArchive = [
       "Ask God to show you one gift He wants you to practice with love instead of pressure.",
   },
   {
+    id: "the-shape-of-faithful-strength",
+    title: "The Shape of Faithful Strength",
+    date: "August 5, 2026",
+    category: "Design",
+    scripture: "1 Corinthians 12:18",
+    tags: ["Design", "Reflection Patterns", "Strengths"],
+    excerpt:
+      "Your strongest patterns become healthier when they are received as placement instead of pressure.",
+    body: [
+      "God places people in the Body with intention. That means your design is not random, and it is not meant to become a burden you have to prove.",
+      "This week, pay attention to one strength that keeps showing up naturally. Ask how it can serve with love instead of needing applause or control.",
+    ],
+    reflection:
+      "Notice one design strength this week and ask how it can become service instead of pressure.",
+  },
+  {
+    id: "when-your-design-needs-rest",
+    title: "When Your Design Needs Rest",
+    date: "July 15, 2026",
+    category: "Design",
+    scripture: "Matthew 11:28",
+    tags: ["Design", "Rest", "Reflection Patterns"],
+    excerpt:
+      "Even the parts of you that feel most natural still need to be restored by Jesus.",
+    body: [
+      "The way you are wired can be life-giving, but it can also become tired. Shepherds can overcarry, Artisans can overextend, Architects can overbuild, and Stewards can overmanage.",
+      "Jesus does not only redeem your weakness. He also teaches your strengths how to rest.",
+    ],
+    reflection:
+      "Ask where your natural pattern has been carrying too much without receiving care.",
+  },
+  {
     id: "the-courage-to-name-what-matters",
     title: "The Courage to Name What Matters",
     date: "August 5, 2026",
@@ -81,6 +113,54 @@ const waypointArchive = [
       "Write down one desire or burden that keeps returning, then ask what faithful step belongs to today.",
   },
   {
+    id: "called-before-you-feel-ready",
+    title: "Called Before You Feel Ready",
+    date: "July 22, 2026",
+    category: "Calling",
+    scripture: "2 Corinthians 12:9",
+    tags: ["Calling", "Courage", "Faithful Practice"],
+    excerpt:
+      "Calling rarely waits until you feel completely prepared. It often grows through dependent obedience.",
+    body: [
+      "God's invitation does not always arrive after confidence. Sometimes obedience is the place where confidence is formed.",
+      "This week, consider one step you have delayed because you were waiting to feel ready. Bring that hesitation honestly to God, then ask what small faithful action belongs next.",
+    ],
+    reflection:
+      "Name one small step of obedience that does not require full confidence before you begin.",
+  },
+  {
+    id: "belonging-before-building",
+    title: "Belonging Before Building",
+    date: "July 8, 2026",
+    category: "Identity",
+    scripture: "John 15:5",
+    tags: ["Identity", "Belonging", "Rest"],
+    excerpt:
+      "The fruit of your life grows from abiding before it grows from effort.",
+    body: [
+      "It is easy to treat the journey like a project to complete. Jesus invites you first into abiding, because lasting fruit grows from connection before productivity.",
+      "Before you build, lead, serve, or decide, return to the simple truth that you belong to Him.",
+    ],
+    reflection:
+      "Pause before one task this week and pray: Jesus, help me begin from belonging.",
+  },
+  {
+    id: "named-by-grace-not-output",
+    title: "Named by Grace, Not Output",
+    date: "June 24, 2026",
+    category: "Identity",
+    scripture: "Galatians 2:20",
+    tags: ["Identity", "Grace", "Purposeful Action"],
+    excerpt:
+      "Your work matters, but it was never meant to carry the weight of naming who you are.",
+    body: [
+      "Fruitful work is a gift, but it becomes heavy when it tries to become your identity. In Christ, you are received before you are productive.",
+      "Let grace name you again this week, especially in the places where output has been loud.",
+    ],
+    reflection:
+      "Ask where your output has started to define you, then let grace speak first.",
+  },
+  {
     id: "faithfulness-in-the-ordinary-work",
     title: "Faithfulness in the Ordinary Work",
     date: "July 29, 2026",
@@ -95,6 +175,22 @@ const waypointArchive = [
     ],
     reflection:
       "Choose one routine responsibility and do it as an act of worship and stewardship.",
+  },
+  {
+    id: "leadership-that-listens-first",
+    title: "Leadership That Listens First",
+    date: "June 17, 2026",
+    category: "Work & Leadership",
+    scripture: "James 1:19",
+    tags: ["Work", "Leadership", "Relationships"],
+    excerpt:
+      "Faithful leadership often begins by slowing down enough to hear what is really happening.",
+    body: [
+      "Leadership does not always need the fastest answer. Sometimes the most faithful move is to listen long enough for people, context, and wisdom to become clearer.",
+      "This week, choose one conversation where listening will be more helpful than fixing too quickly.",
+    ],
+    reflection:
+      "Practice one conversation where your first gift is attention, not advice.",
   },
 ];
 

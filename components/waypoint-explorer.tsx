@@ -70,9 +70,21 @@ export function WaypointExplorer({
         [waypoint.category, ...waypoint.tags].some((tag) =>
           selectedTags.has(tag),
         ),
-      )
-      .slice(0, 3);
+      );
   }, [selectedWaypoint, waypoints]);
+
+  function categoryClass(categoryName: string) {
+    return `waypoint-category-chip waypoint-category-${categoryName
+      .toLowerCase()
+      .replace(/&/g, "and")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "")}`;
+  }
+
+  function selectWaypoint(id: string) {
+    setSelectedId(id);
+    setShareState("Share");
+  }
 
   async function handleShare() {
     const shareUrl = `${window.location.origin}/fireside#waypoints`;
@@ -111,7 +123,9 @@ export function WaypointExplorer({
 
         <div className="waypoint-display-heading">
           <div>
-            <p className="section-label">{selectedWaypoint.category}</p>
+            <p className={categoryClass(selectedWaypoint.category)}>
+              {selectedWaypoint.category}
+            </p>
             <h2>{selectedWaypoint.title}</h2>
             <p className="waypoint-scripture">{selectedWaypoint.scripture}</p>
           </div>
@@ -142,32 +156,58 @@ export function WaypointExplorer({
         </div>
       </article>
 
-      {previousWaypoint ? (
+      <div className="waypoint-quick-actions" aria-label="Waypoint shortcuts">
         <button
-          className="waypoint-last-week-card"
-          onClick={() => setSelectedId(previousWaypoint.id)}
+          className={
+            selectedWaypoint.id === currentId
+              ? "waypoint-current-button is-active"
+              : "waypoint-current-button"
+          }
+          onClick={() => selectWaypoint(currentId)}
           type="button"
         >
-          <span>See last week</span>
-          <strong>{previousWaypoint.title}</strong>
-          <small>
-            {previousWaypoint.scripture} · {previousWaypoint.date}
-          </small>
+          <span>Current week</span>
+          <strong>
+            {waypoints.find((waypoint) => waypoint.id === currentId)?.title}
+          </strong>
         </button>
-      ) : null}
+        {previousWaypoint ? (
+          <button
+            className={
+              selectedWaypoint.id === previousWaypoint.id
+                ? "waypoint-last-week-card is-active"
+                : "waypoint-last-week-card"
+            }
+            onClick={() => selectWaypoint(previousWaypoint.id)}
+            type="button"
+          >
+            <span>See last week</span>
+            <strong>{previousWaypoint.title}</strong>
+            <small>
+              {previousWaypoint.scripture} · {previousWaypoint.date}
+            </small>
+          </button>
+        ) : null}
+      </div>
 
       {similarWaypoints.length > 0 ? (
         <aside className="waypoint-similar-strip" aria-label="Similar topics">
-          <p className="section-label">Similar Topics</p>
+          <div className="waypoint-similar-heading">
+            <p className="section-label">Similar Topics</p>
+            <span>{similarWaypoints.length} related</span>
+          </div>
           <div>
             {similarWaypoints.map((waypoint) => (
               <button
                 key={waypoint.id}
-                onClick={() => setSelectedId(waypoint.id)}
+                onClick={() => selectWaypoint(waypoint.id)}
                 type="button"
               >
-                <span>{waypoint.category}</span>
+                <span className={categoryClass(waypoint.category)}>
+                  {waypoint.category}
+                </span>
                 <strong>{waypoint.title}</strong>
+                <small>{waypoint.scripture}</small>
               </button>
             ))}
           </div>
@@ -220,11 +260,13 @@ export function WaypointExplorer({
                       : "waypoint-result-card"
                   }
                   key={waypoint.id}
-                  onClick={() => setSelectedId(waypoint.id)}
+                  onClick={() => selectWaypoint(waypoint.id)}
                   type="button"
                 >
                   <div>
-                    <p className="section-label">{waypoint.category}</p>
+                    <p className={categoryClass(waypoint.category)}>
+                      {waypoint.category}
+                    </p>
                     <h3>{waypoint.title}</h3>
                     <p>{waypoint.excerpt}</p>
                   </div>

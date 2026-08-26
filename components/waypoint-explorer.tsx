@@ -2,25 +2,40 @@
 
 import { useMemo, useState } from "react";
 
-type WaypointSummary = {
+type Waypoint = {
+  id: string;
   title: string;
   date: string;
   category: string;
+  scripture: string;
   tags: string[];
   excerpt: string;
+  body: string[];
+  reflection: string;
 };
 
 type WaypointExplorerProps = {
   categories: string[];
-  waypoints: WaypointSummary[];
+  currentId: string;
+  previousId: string;
+  waypoints: Waypoint[];
 };
 
 export function WaypointExplorer({
   categories,
+  currentId,
+  previousId,
   waypoints,
 }: WaypointExplorerProps) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
+  const [selectedId, setSelectedId] = useState(currentId);
+  const [shareState, setShareState] = useState("Share");
+
+  const selectedWaypoint =
+    waypoints.find((waypoint) => waypoint.id === selectedId) ?? waypoints[0];
+  const previousWaypoint =
+    waypoints.find((waypoint) => waypoint.id === previousId) ?? waypoints[1];
 
   const visibleWaypoints = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -32,6 +47,7 @@ export function WaypointExplorer({
         waypoint.title,
         waypoint.date,
         waypoint.category,
+        waypoint.scripture,
         waypoint.excerpt,
         ...waypoint.tags,
       ]
@@ -42,57 +58,190 @@ export function WaypointExplorer({
     });
   }, [category, query, waypoints]);
 
-  return (
-    <div className="waypoint-explorer">
-      <div className="waypoint-search-row">
-        <label>
-          <span>Search Waypoints</span>
-          <input
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search identity, gifts, calling..."
-            type="search"
-            value={query}
-          />
-        </label>
-        <label>
-          <span>Category</span>
-          <select
-            onChange={(event) => setCategory(event.target.value)}
-            value={category}
-          >
-            <option value="All">All categories</option>
-            {categories.map((categoryName) => (
-              <option key={categoryName} value={categoryName}>
-                {categoryName}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
+  const similarWaypoints = useMemo(() => {
+    const selectedTags = new Set([
+      selectedWaypoint.category,
+      ...selectedWaypoint.tags,
+    ]);
 
-      <div className="waypoint-results" aria-live="polite">
-        {visibleWaypoints.length > 0 ? (
-          visibleWaypoints.map((waypoint) => (
-            <article className="waypoint-result-card" key={waypoint.title}>
-              <div>
-                <p className="section-label">{waypoint.category}</p>
-                <h3>{waypoint.title}</h3>
-                <p>{waypoint.excerpt}</p>
-              </div>
-              <div className="waypoint-meta-row">
-                <span>{waypoint.date}</span>
-                {waypoint.tags.map((tag) => (
-                  <span key={tag}>{tag}</span>
-                ))}
-              </div>
-            </article>
-          ))
-        ) : (
-          <p className="waypoint-empty-state">
-            No Waypoints match that search yet.
+    return waypoints
+      .filter((waypoint) => waypoint.id !== selectedWaypoint.id)
+      .filter((waypoint) =>
+        [waypoint.category, ...waypoint.tags].some((tag) =>
+          selectedTags.has(tag),
+        ),
+      )
+      .slice(0, 3);
+  }, [selectedWaypoint, waypoints]);
+
+  async function handleShare() {
+    const shareUrl = `${window.location.origin}/fireside#waypoints`;
+    const shareText = `${selectedWaypoint.title} - ${selectedWaypoint.scripture}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: selectedWaypoint.title,
+          text: shareText,
+          url: shareUrl,
+        });
+      } else {
+        await navigator.clipboard.writeText(
+          `${selectedWaypoint.title}\n${shareText}\n${shareUrl}`,
+        );
+        setShareState("Link copied");
+        window.setTimeout(() => setShareState("Share"), 1800);
+      }
+    } catch {
+      setShareState("Share");
+    }
+  }
+
+  return (
+    <>
+      <article className="waypoint-display-card">
+        <div className="waypoint-card-topline">
+          <span>
+            {selectedWaypoint.id === currentId
+              ? "Current Waypoint"
+              : "Selected Waypoint"}
+          </span>
+          <span>{selectedWaypoint.date}</span>
+        </div>
+
+        <div className="waypoint-display-heading">
+          <div>
+            <p className="section-label">{selectedWaypoint.category}</p>
+            <h2>{selectedWaypoint.title}</h2>
+            <p className="waypoint-scripture">{selectedWaypoint.scripture}</p>
+          </div>
+          <button
+            className="button secondary waypoint-share-button"
+            onClick={handleShare}
+            type="button"
+          >
+            {shareState}
+          </button>
+        </div>
+
+        <div className="waypoint-body">
+          {selectedWaypoint.body.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+
+        <div className="waypoint-reflection-box">
+          <strong>For your design:</strong>
+          <span>{selectedWaypoint.reflection}</span>
+        </div>
+
+        <div className="waypoint-tag-row">
+          {selectedWaypoint.tags.map((tag) => (
+            <span key={tag}>{tag}</span>
+          ))}
+        </div>
+      </article>
+
+      {previousWaypoint ? (
+        <button
+          className="waypoint-last-week-card"
+          onClick={() => setSelectedId(previousWaypoint.id)}
+          type="button"
+        >
+          <span>See last week</span>
+          <strong>{previousWaypoint.title}</strong>
+          <small>
+            {previousWaypoint.scripture} · {previousWaypoint.date}
+          </small>
+        </button>
+      ) : null}
+
+      {similarWaypoints.length > 0 ? (
+        <aside className="waypoint-similar-strip" aria-label="Similar topics">
+          <p className="section-label">Similar Topics</p>
+          <div>
+            {similarWaypoints.map((waypoint) => (
+              <button
+                key={waypoint.id}
+                onClick={() => setSelectedId(waypoint.id)}
+                type="button"
+              >
+                <span>{waypoint.category}</span>
+                <strong>{waypoint.title}</strong>
+              </button>
+            ))}
+          </div>
+        </aside>
+      ) : null}
+
+      <div className="waypoint-archive-panel">
+        <div className="card-heading">
+          <p className="section-label">Find a Waypoint</p>
+          <p>
+            Search by title, Scripture, category, reflection theme, or tag as
+            the Waypoint library grows.
           </p>
-        )}
+        </div>
+
+        <div className="waypoint-explorer">
+          <div className="waypoint-search-row">
+            <label>
+              <span>Search Waypoints</span>
+              <input
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search identity, gifts, calling..."
+                type="search"
+                value={query}
+              />
+            </label>
+            <label>
+              <span>Category</span>
+              <select
+                onChange={(event) => setCategory(event.target.value)}
+                value={category}
+              >
+                <option value="All">All categories</option>
+                {categories.map((categoryName) => (
+                  <option key={categoryName} value={categoryName}>
+                    {categoryName}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <div className="waypoint-results" aria-live="polite">
+            {visibleWaypoints.length > 0 ? (
+              visibleWaypoints.map((waypoint) => (
+                <button
+                  className={
+                    waypoint.id === selectedWaypoint.id
+                      ? "waypoint-result-card is-selected"
+                      : "waypoint-result-card"
+                  }
+                  key={waypoint.id}
+                  onClick={() => setSelectedId(waypoint.id)}
+                  type="button"
+                >
+                  <div>
+                    <p className="section-label">{waypoint.category}</p>
+                    <h3>{waypoint.title}</h3>
+                    <p>{waypoint.excerpt}</p>
+                  </div>
+                  <div className="waypoint-meta-row">
+                    <span>{waypoint.scripture}</span>
+                    <span>{waypoint.date}</span>
+                  </div>
+                </button>
+              ))
+            ) : (
+              <p className="waypoint-empty-state">
+                No Waypoints match that search yet.
+              </p>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

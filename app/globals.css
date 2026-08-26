@@ -5139,12 +5139,12 @@ h3 {
 
 .waypoints-section {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(290px, 0.75fr);
-  gap: clamp(14px, 2.4vw, 24px);
+  gap: 12px;
 }
 
-.waypoint-current-card,
-.waypoint-previous-card,
+.waypoint-display-card,
+.waypoint-last-week-card,
+.waypoint-similar-strip,
 .waypoint-archive-panel {
   border: 1px solid rgba(36, 63, 39, 0.16);
   border-radius: 8px;
@@ -5152,7 +5152,7 @@ h3 {
   box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
 }
 
-.waypoint-current-card {
+.waypoint-display-card {
   display: grid;
   gap: 14px;
   padding: clamp(22px, 3.6vw, 38px);
@@ -5161,16 +5161,28 @@ h3 {
     radial-gradient(circle at 18% 16%, rgba(184, 138, 67, 0.16), transparent 32%);
 }
 
-.waypoint-current-card h2 {
-  max-width: 18ch;
+.waypoint-display-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: start;
+}
+
+.waypoint-display-card h2 {
+  max-width: 26ch;
   margin: 0;
   color: var(--green-dark);
   font-size: clamp(2rem, 4.2vw, 4.15rem);
   line-height: 0.98;
 }
 
-.waypoint-current-card p:not(.section-label),
-.waypoint-previous-card p:not(.section-label),
+.waypoint-body {
+  display: grid;
+  gap: 12px;
+  max-width: 94ch;
+}
+
+.waypoint-display-card p:not(.section-label),
 .waypoint-result-card p {
   margin: 0;
   color: var(--muted);
@@ -5200,6 +5212,10 @@ h3 {
   font-weight: 900;
 }
 
+.waypoint-share-button {
+  white-space: nowrap;
+}
+
 .waypoint-reflection-box {
   display: grid;
   gap: 5px;
@@ -5226,14 +5242,88 @@ h3 {
   font-weight: 800;
 }
 
-.waypoint-previous-card {
+.waypoint-last-week-card {
   display: grid;
-  align-content: start;
-  gap: 12px;
-  padding: clamp(18px, 2.6vw, 24px);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--muted);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
-.waypoint-previous-card h3,
+.waypoint-last-week-card span {
+  color: rgba(36, 63, 39, 0.74);
+  font-size: 0.78rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.waypoint-last-week-card strong {
+  min-width: 0;
+  color: var(--green-dark);
+}
+
+.waypoint-last-week-card small {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.waypoint-last-week-card:active,
+.waypoint-result-card:active,
+.waypoint-similar-strip button:active,
+.waypoint-share-button:active {
+  transform: translateY(1px);
+}
+
+.waypoint-similar-strip {
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+  background: rgba(251, 250, 244, 0.7);
+}
+
+.waypoint-similar-strip > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.waypoint-similar-strip button {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  border: 1px solid rgba(36, 63, 39, 0.13);
+  border-radius: 8px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--muted);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.waypoint-similar-strip button span {
+  color: rgba(36, 63, 39, 0.72);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.waypoint-similar-strip button strong {
+  overflow: hidden;
+  color: var(--green-dark);
+  font-size: 0.92rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .waypoint-result-card h3 {
   margin: 0;
   color: var(--green-dark);
@@ -5301,10 +5391,24 @@ h3 {
   grid-template-columns: minmax(0, 1fr) minmax(170px, 0.28fr);
   gap: 14px;
   align-items: center;
+  width: 100%;
   padding: 14px;
   border: 1px solid rgba(36, 63, 39, 0.12);
   border-radius: 8px;
   background: rgba(251, 250, 244, 0.58);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.waypoint-result-card.is-selected {
+  border-color: rgba(184, 138, 67, 0.44);
+  background: rgba(234, 240, 226, 0.78);
 }
 
 .waypoint-result-card > div:first-child {
@@ -7868,6 +7972,16 @@ h3 {
 
   .waypoint-meta-row {
     justify-content: flex-start;
+  }
+
+  .waypoint-display-heading,
+  .waypoint-last-week-card,
+  .waypoint-similar-strip > div {
+    grid-template-columns: 1fr;
+  }
+
+  .waypoint-share-button {
+    width: fit-content;
   }
 
   .brand-hero {

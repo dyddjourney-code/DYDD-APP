@@ -12,6 +12,7 @@ const waypointCategories = [
 ];
 
 const currentWaypoint = {
+  id: "designed-to-move-with-grace",
   title: "Designed to Move With Grace",
   date: "August 26, 2026",
   category: "Design",
@@ -19,9 +20,16 @@ const currentWaypoint = {
   tags: ["Design", "Reflection Patterns", "Purposeful Action"],
   excerpt:
     "Your design is not meant to become a label that holds you still. It is meant to help you move with more honesty, faith, and grace.",
+  body: [
+    "Your design is not meant to become a label that holds you still. It is meant to help you move with more honesty, faith, and grace. When Paul wrote that we have different gifts according to the grace given to us, he was reminding the church that design is received before it is expressed.",
+    "This week, slow down enough to notice where your natural wiring brings life and where it starts carrying pressure it was never meant to hold. God does not ask you to become someone else in order to be faithful. He invites you to bring what He placed in you under His care, His timing, and His love.",
+  ],
+  reflection:
+    "Shepherds can notice who needs care. Artisans can notice what needs expression. Architects can notice what needs structure. Stewards can notice what needs faithful follow-through.",
 };
 
 const previousWaypoint = {
+  id: "begin-with-who-god-says-you-are",
   title: "Begin With Who God Says You Are",
   date: "August 19, 2026",
   category: "Identity",
@@ -29,34 +37,64 @@ const previousWaypoint = {
   tags: ["Identity", "Belonging", "Calling"],
   excerpt:
     "Before you rush to prove your purpose, pause long enough to receive your identity. Calling grows from belonging, not striving.",
+  body: [
+    "Before you rush to prove your purpose, pause long enough to receive your identity. You are not beginning from emptiness, pressure, or performance. You are God's workmanship, created in Christ Jesus for good works He prepared ahead of time.",
+    "Identity gives the journey its footing. When you remember who you belong to, your next step can become less frantic and more faithful.",
+  ],
+  reflection:
+    "Take one quiet moment this week to ask: where am I trying to earn what God has already named over me?",
 };
 
 const waypointArchive = [
   currentWaypoint,
   previousWaypoint,
   {
+    id: "when-your-gifts-need-room-to-breathe",
     title: "When Your Gifts Need Room to Breathe",
     date: "August 12, 2026",
     category: "Spiritual Gifts",
+    scripture: "1 Peter 4:10",
     tags: ["Spiritual Gifts", "Service", "Discernment"],
     excerpt:
       "Spiritual gifts mature when they are practiced with humility, love, and room for the Holy Spirit to lead.",
+    body: [
+      "Spiritual gifts are not trophies to display. They are graces to steward. When you make room for prayer, practice, and humility, your gifts become less about pressure and more about love.",
+      "This week, pay attention to the places where service feels both stretching and life-giving. That may be one of the places God is inviting you to grow.",
+    ],
+    reflection:
+      "Ask God to show you one gift He wants you to practice with love instead of pressure.",
   },
   {
+    id: "the-courage-to-name-what-matters",
     title: "The Courage to Name What Matters",
     date: "August 5, 2026",
     category: "Calling",
+    scripture: "Proverbs 20:5",
     tags: ["Calling", "Desire", "Direction"],
     excerpt:
       "A clear next step often begins by telling the truth about the desires God keeps bringing back to the surface.",
+    body: [
+      "Sometimes clarity begins with honesty. The purpose God is forming in you may already be showing up through the burdens, hopes, questions, and desires that keep returning.",
+      "You do not have to force a final answer today. Name what matters, bring it to God, and take the next faithful step.",
+    ],
+    reflection:
+      "Write down one desire or burden that keeps returning, then ask what faithful step belongs to today.",
   },
   {
+    id: "faithfulness-in-the-ordinary-work",
     title: "Faithfulness in the Ordinary Work",
     date: "July 29, 2026",
     category: "Work & Leadership",
+    scripture: "Colossians 3:23",
     tags: ["Work", "Leadership", "Stewardship"],
     excerpt:
       "The work in front of you may be more sacred than it looks when it is offered back to God with intention.",
+    body: [
+      "Purpose does not only live in dramatic moments. It often takes shape in ordinary work, steady faithfulness, small acts of courage, and responsibilities carried with love.",
+      "This week, look for one ordinary task that can become an offering instead of a burden.",
+    ],
+    reflection:
+      "Choose one routine responsibility and do it as an act of worship and stewardship.",
   },
 ];
 
@@ -156,85 +194,13 @@ export default function FiresidePage() {
         </form>
       </section>
 
-      <section
-        className="waypoints-section"
-        aria-label="DYDD Waypoints library"
-      >
-        <article className="waypoint-current-card">
-          <div className="waypoint-card-topline">
-            <span>Current Waypoint</span>
-            <span>{currentWaypoint.date}</span>
-          </div>
-          <p className="section-label">{currentWaypoint.category}</p>
-          <h2>{currentWaypoint.title}</h2>
-          <p className="waypoint-scripture">{currentWaypoint.scripture}</p>
-          <p>
-            Your design is not meant to become a label that holds you still. It
-            is meant to help you move with more honesty, faith, and grace. When
-            Paul wrote that we have different gifts according to the grace given
-            to us, he was reminding the church that design is received before it
-            is expressed.
-          </p>
-          <p>
-            This week, slow down enough to notice where your natural wiring
-            brings life and where it starts carrying pressure it was never meant
-            to hold. God does not ask you to become someone else in order to be
-            faithful. He invites you to bring what He placed in you under His
-            care, His timing, and His love.
-          </p>
-          <div className="waypoint-reflection-box">
-            <strong>For your design:</strong>
-            <span>
-              Shepherds can notice who needs care. Artisans can notice what
-              needs expression. Architects can notice what needs structure.
-              Stewards can notice what needs faithful follow-through.
-            </span>
-          </div>
-          <div className="waypoint-tag-row">
-            {currentWaypoint.tags.map((tag) => (
-              <span key={tag}>{tag}</span>
-            ))}
-          </div>
-        </article>
-
-        <aside className="waypoint-previous-card">
-          <div className="waypoint-card-topline">
-            <span>Last Week</span>
-            <span>{previousWaypoint.date}</span>
-          </div>
-          <p className="section-label">{previousWaypoint.category}</p>
-          <h3>{previousWaypoint.title}</h3>
-          <p className="waypoint-scripture">{previousWaypoint.scripture}</p>
-          <p>
-            Before you rush to prove your purpose, pause long enough to receive
-            your identity. You are not beginning from emptiness, pressure, or
-            performance. You are God&apos;s workmanship, created in Christ Jesus
-            for good works He prepared ahead of time.
-          </p>
-          <p>
-            Identity gives the journey its footing. When you remember who you
-            belong to, your next step can become less frantic and more faithful.
-          </p>
-          <div className="waypoint-tag-row">
-            {previousWaypoint.tags.map((tag) => (
-              <span key={tag}>{tag}</span>
-            ))}
-          </div>
-        </aside>
-
-        <div className="waypoint-archive-panel">
-          <div className="card-heading">
-            <p className="section-label">Previous Waypoints</p>
-            <p>
-              Search by title, category, reflection theme, or tag as the
-              Waypoint library grows.
-            </p>
-          </div>
-          <WaypointExplorer
-            categories={waypointCategories}
-            waypoints={waypointArchive}
-          />
-        </div>
+      <section className="waypoints-section" aria-label="DYDD Waypoints library">
+        <WaypointExplorer
+          categories={waypointCategories}
+          currentId={currentWaypoint.id}
+          previousId={previousWaypoint.id}
+          waypoints={waypointArchive}
+        />
       </section>
 
       <section className="fireside-live-section" aria-label="Live Fireside">

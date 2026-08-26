@@ -20,7 +20,10 @@ const navItems = [
     icon: "fireside",
     label: "Fireside",
     href: "/fireside",
-    children: [{ icon: "flashlight", label: "Waypoints", href: "/fireside#waypoints" }],
+    children: [
+      { icon: "flashlight", label: "Waypoints", href: "/fireside#waypoints" },
+      { icon: "calendar", label: "Live", href: "/fireside#live" },
+    ],
   },
   {
     icon: "group",
@@ -92,6 +95,13 @@ function AppNavIcon({ name }: { name: string }) {
         <path d="M6 13.2h4.8l2.2 2.2v4.4L10.8 22H6z" fill="#d4a451" stroke="var(--green-dark)" />
         <path d="M12.8 15.5h12.7a2 2 0 0 1 2 2v.2a2 2 0 0 1-2 2H12.8z" fill="#759a5b" stroke="var(--green-dark)" />
         <path d="M5.8 15.2 2.8 13.6M5.3 17.6H2.1M5.8 20l-3 1.6" stroke="#f0d08a" />
+      </svg>
+    ) : name === "calendar" ? (
+      <svg {...common}>
+        <path d="M7 8.5h18a3 3 0 0 1 3 3V25a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V11.5a3 3 0 0 1 3-3Z" fill="#fffaf0" stroke="var(--green-dark)" />
+        <path d="M4.5 14h23" stroke="#6f4d20" />
+        <path d="M10 5v6M22 5v6" stroke="#476b42" />
+        <path d="M10 18h3M16 18h3M22 18h2M10 23h3M16 23h3" stroke="#d4a451" />
       </svg>
     ) : name === "magnifier" ? (
       <svg {...common}>

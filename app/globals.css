@@ -5110,11 +5110,168 @@ h3 {
   gap: 8px;
 }
 
+.fireside-live-section .card-heading h2 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(1.9rem, 3.4vw, 3.4rem);
+  line-height: 1;
+}
+
 .fireside-live-section .card-heading p:not(.section-label) {
   max-width: 92ch;
   margin: 0;
   color: var(--muted);
   line-height: 1.58;
+}
+
+.fireside-live-type-row,
+.fireside-podcast-name-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fireside-live-type-row span,
+.fireside-podcast-name-grid span,
+.fireside-event-meta span,
+.fireside-board-heading > span {
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: rgba(243, 228, 196, 0.52);
+  color: rgba(36, 63, 39, 0.78);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.fireside-live-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.fireside-event-board,
+.fireside-podcast-panel,
+.fireside-live-note {
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.fireside-event-board,
+.fireside-podcast-panel {
+  display: grid;
+  gap: 14px;
+  padding: clamp(16px, 2.4vw, 22px);
+}
+
+.fireside-board-heading {
+  display: flex;
+  gap: 12px;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.fireside-board-heading h3,
+.fireside-podcast-panel h3,
+.fireside-event-card h4 {
+  margin: 0;
+  color: var(--green-dark);
+  line-height: 1.05;
+}
+
+.fireside-board-heading h3 {
+  font-size: clamp(1.5rem, 2.2vw, 2.15rem);
+}
+
+.fireside-board-heading > span {
+  white-space: nowrap;
+}
+
+.fireside-event-list {
+  display: grid;
+  gap: 10px;
+}
+
+.fireside-event-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 14px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid rgba(36, 63, 39, 0.12);
+  border-radius: 8px;
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.94), rgba(251, 250, 244, 0.88)),
+    var(--panel);
+}
+
+.fireside-event-meta {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 1 / -1;
+  gap: 6px;
+}
+
+.fireside-event-meta span:first-child {
+  background: rgba(218, 228, 247, 0.88);
+}
+
+.fireside-event-card h4,
+.fireside-event-card p,
+.fireside-event-footer {
+  grid-column: 1;
+}
+
+.fireside-event-card p,
+.fireside-podcast-panel p,
+.fireside-live-note p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.fireside-event-card .button {
+  grid-column: 2;
+  grid-row: 2 / span 3;
+  align-self: center;
+  white-space: nowrap;
+}
+
+.fireside-event-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.fireside-event-footer strong {
+  color: var(--brass);
+}
+
+.fireside-podcast-panel {
+  background:
+    linear-gradient(145deg, rgba(234, 240, 226, 0.92), rgba(255, 255, 255, 0.88)),
+    var(--panel);
+}
+
+.fireside-podcast-name-grid span:nth-child(2n) {
+  background: rgba(211, 238, 233, 0.9);
+}
+
+.fireside-podcast-name-grid span:nth-child(3n) {
+  background: rgba(235, 221, 242, 0.9);
+}
+
+.fireside-podcast-panel strong {
+  color: var(--green-dark);
+}
+
+.fireside-live-note {
+  padding: 12px 14px;
 }
 
 .fireside-feature-card {
@@ -8032,6 +8189,7 @@ h3 {
   .journey-builder,
   .fireside-author-strip,
   .fireside-connect-panel,
+  .fireside-live-layout,
   .waypoints-section,
   .waypoint-result-card,
   .polished-course-hero,
@@ -8077,9 +8235,22 @@ h3 {
   }
 
   .waypoint-display-heading,
+  .waypoint-quick-actions,
   .waypoint-last-week-card,
-  .waypoint-similar-strip > div {
+  .fireside-event-card {
     grid-template-columns: 1fr;
+  }
+
+  .fireside-event-card h4,
+  .fireside-event-card p,
+  .fireside-event-footer,
+  .fireside-event-card .button {
+    grid-column: 1;
+  }
+
+  .fireside-event-card .button {
+    grid-row: auto;
+    justify-self: start;
   }
 
   .waypoint-share-button {

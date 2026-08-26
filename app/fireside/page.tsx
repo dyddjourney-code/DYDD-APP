@@ -194,19 +194,51 @@ const waypointArchive = [
   },
 ];
 
-const liveFiresideFeatures = [
+const liveGatherings = [
   {
-    label: "Podcast & Teaching",
-    title: "Listen, watch, and keep growing.",
+    format: "Virtual",
+    type: "DYDD Overview",
+    title: "Discover Your Divine Design Intro Night",
+    date: "Coming soon",
+    price: "Free preview",
     description:
-      "Podcast episodes, videos, teachings, sermons, and replay content can live here as the Fireside library grows.",
+      "A simple live introduction to the full DYDD journey, the assessments, and the course path.",
   },
   {
-    label: "Live Gatherings",
-    title: "Join the next conversation.",
+    format: "Virtual",
+    type: "DesignID",
+    title: "Understanding Your DesignID Results",
+    date: "Coming soon",
+    price: "Included with DesignID",
     description:
-      "Virtual classes, live events, workshops, and paid group experiences can invite people into deeper connection.",
+      "A focused walkthrough for people who have completed DesignID and want help applying the report.",
   },
+  {
+    format: "Live",
+    type: "Workshop",
+    title: "Purpose & Calling Workshop",
+    date: "Coming soon",
+    price: "Paid seat",
+    description:
+      "A deeper guided session for groups, churches, or teams who want to explore purpose together.",
+  },
+];
+
+const liveTypes = [
+  "DYDD overviews",
+  "DesignID sessions",
+  "Spiritual Gifts sessions",
+  "Workshops",
+  "Virtual classes",
+  "Live gatherings",
+];
+
+const podcastNameIdeas = [
+  "The DYDD Fireside",
+  "Waypoints with John",
+  "On Purpose, For Purpose",
+  "The Divine Design Table",
+  "Along the Way",
 ];
 
 export default function FiresidePage() {
@@ -299,22 +331,80 @@ export default function FiresidePage() {
         />
       </section>
 
-      <section className="fireside-live-section" aria-label="Live Fireside">
+      <section className="fireside-live-section" id="live" aria-label="Live Fireside">
         <div className="card-heading">
           <p className="section-label">Live Fireside</p>
+          <h2>Gatherings, teaching, and conversations.</h2>
           <p>
-            Conversations, teaching, podcast episodes, videos, and live
-            gatherings can sit here as the Fireside library grows.
+            Live Fireside can become the place where people find upcoming
+            classes, virtual gatherings, podcast episodes, teaching, and replay
+            content without leaving the journey.
           </p>
         </div>
-        <div className="fireside-content-grid" aria-label="Fireside connections">
-          {liveFiresideFeatures.map((feature) => (
-            <article className="fireside-feature-card" key={feature.label}>
-              <p className="section-label">{feature.label}</p>
-              <h3>{feature.title}</h3>
-              <p>{feature.description}</p>
-            </article>
+
+        <div className="fireside-live-type-row" aria-label="Live Fireside categories">
+          {liveTypes.map((type) => (
+            <span key={type}>{type}</span>
           ))}
+        </div>
+
+        <div className="fireside-live-layout">
+          <section className="fireside-event-board" aria-label="Upcoming live gatherings">
+            <div className="fireside-board-heading">
+              <div>
+                <p className="section-label">Event Calendar</p>
+                <h3>Coming Up</h3>
+              </div>
+              <span>Enrollment coming soon</span>
+            </div>
+
+            <div className="fireside-event-list">
+              {liveGatherings.map((event) => (
+                <article className="fireside-event-card" key={event.title}>
+                  <div className="fireside-event-meta">
+                    <span>{event.format}</span>
+                    <span>{event.type}</span>
+                  </div>
+                  <h4>{event.title}</h4>
+                  <p>{event.description}</p>
+                  <div className="fireside-event-footer">
+                    <span>{event.date}</span>
+                    <strong>{event.price}</strong>
+                  </div>
+                  <button className="button secondary" type="button">
+                    Save my spot
+                  </button>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <aside className="fireside-podcast-panel" aria-label="Podcast direction">
+            <p className="section-label">Podcast & Teaching</p>
+            <h3>A listening path for the journey.</h3>
+            <p>
+              Podcast episodes, short teachings, video clips, sermons, and
+              replay content can sit here once the rhythm is ready.
+            </p>
+            <div className="fireside-podcast-name-grid" aria-label="Podcast name ideas">
+              {podcastNameIdeas.map((name) => (
+                <span key={name}>{name}</span>
+              ))}
+            </div>
+            <p>
+              My favorite direction right now is{" "}
+              <strong>The DYDD Fireside</strong> because it matches this page
+              and gives room for teaching, interviews, stories, and
+              devotion-style episodes.
+            </p>
+          </aside>
+        </div>
+
+        <div className="fireside-live-note">
+          <p>
+            Later this can connect to real event registration, payment, calendar
+            reminders, replay access, and subscriber invitations.
+          </p>
         </div>
       </section>
     </main>

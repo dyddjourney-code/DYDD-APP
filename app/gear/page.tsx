@@ -1,104 +1,134 @@
-import { saveGearJournalEntries } from "@/app/gear/actions";
-import { PageHelp } from "@/components/page-help";
+const bookResources = [
+  {
+    title: "Discover Your Divine Design",
+    image: "/brand/dydd-book-cover.webp",
+    alt: "Discover Your Divine Design book cover",
+    description:
+      "The theological and conceptual foundation of the DYDD journey, exploring identity in Christ, personal design, and faithful living with clarity and grace.",
+    cta: "Purchase book",
+    href: "https://www.amazon.com/Discover-Your-Divine-Design-Purpose/dp/B0DZL6MG7K",
+  },
+  {
+    title: "Discover Your Divine Design Workbook",
+    image:
+      "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/d2a3900f-0b7c-4b09-84d4-1429dcb48c8f/DYDD_Workbook.jpeg?format=750w",
+    alt: "Discover Your Divine Design workbook cover",
+    description:
+      "A guided companion to the book created to support prayerful engagement, personal reflection, and faithful application.",
+    cta: "Purchase workbook",
+    href: "https://www.amazon.com/s?k=Discover+Your+Divine+Design+Workbook+John+Willoughby",
+  },
+];
 
-type GearPageProps = {
-  searchParams?: Promise<{
-    message?: string;
-    saved?: string;
-  }>;
-};
+const liveExperiences = [
+  {
+    label: "DYDD Workshop",
+    title: "Discover Your Divine Design Training Workshop",
+    image:
+      "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/67bc84f8-96c2-4e03-b701-c766a40f92a0/diverse-people-in-a-seminar-2025-02-10-11-57-04-utc.jpg?format=750w",
+    description:
+      "A workshop introducing the full DYDD framework so participants can explore identity in Christ, personal design, and calling together.",
+    idealFor: ["Churches and ministries", "Small groups and cohorts", "Retreats and formation gatherings"],
+  },
+  {
+    label: "Foundations",
+    title: "DesignID Foundations Workshop",
+    image:
+      "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/2c4932b8-76eb-4828-baee-0553d4b6f8d9/happy-multiracial-group-of-coworkers-take-selfie-t-2025-01-07-05-56-33-utc.jpg?format=750w",
+    description:
+      "A focused experience for understanding DesignID, the four design reflections, grace flow, and shared language for empathy and collaboration.",
+    idealFor: ["Teams and organizations", "Ministry staff and volunteers", "Groups seeking practical self-awareness"],
+  },
+  {
+    label: "Leadership",
+    title: "DesignID Leadership Team Workshop",
+    image:
+      "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/ac8d6497-3b9e-4731-9c5e-31c96646e888/businesswoman-in-presentation-at-conference-raisin-2024-10-19-04-44-41-utc.jpg?format=750w",
+    description:
+      "A strategic workshop for leadership teams who want to understand how design shapes leadership style, communication, and wise collaboration.",
+    idealFor: ["Leadership teams", "Pastors and ministry leaders", "Executive and organizational groups"],
+  },
+];
 
-export default async function GearPage({ searchParams }: GearPageProps) {
-  const params = await searchParams;
-
+export default function GearPage() {
   return (
     <main className="journey-shell hq-standalone-page">
       <header className="standalone-hero gear-hero">
         <div>
           <p className="eyebrow">Gear</p>
-          <h1>The journal becomes the connective tissue.</h1>
+          <h1>Books and resources for the journey.</h1>
           <p className="lede">
-            Gear is where reflection lands. DesignID, Spiritual Gifts, the
-            workbook, and future companion prompts can all send people back
-            here to write, pray, decide, and remember.
+            Start with the core Discover Your Divine Design book and workbook.
+            These resources support the full journey and give people something
+            simple to keep using beyond the app.
           </p>
         </div>
       </header>
 
-      <PageHelp
-        items={[
-          "Use the journal to capture reflection that begins in assessments, Journey chapters, or Waypoints.",
-          "Save focused entries instead of trying to make one perfect long journal record.",
-          "Later, selected journal context can help Dydi guide the next faithful step.",
-        ]}
-      />
-
-      <section className="gear-panel" id="journal">
+      <section className="gear-panel gear-books-panel" id="books">
         <div className="card-heading">
-          <p className="section-label">Journal</p>
-          <h2>Reflection prompts can be launched from anywhere.</h2>
+          <p className="section-label">Books</p>
+          <h2>The main resources live here first.</h2>
+          <p>
+            The book and workbook are the core gear for the DYDD journey. They
+            can be highlighted elsewhere, but this page gives them a clear home.
+          </p>
         </div>
-        {params?.saved ? (
-          <p className="journey-save-notice">Saved {params.saved} journal entries.</p>
-        ) : params?.message ? (
-          <p className="journey-save-notice">{params.message}</p>
-        ) : null}
-        <form action={saveGearJournalEntries} className="journal-workbench">
-          <label>
-            <span>Reflect on DesignID</span>
-            <textarea
-              name="journal-designid-reflection"
-              placeholder="What did DesignID help me name about my design?"
-              rows={4}
-            />
-          </label>
-          <label>
-            <span>Reflect on Spiritual Gifts</span>
-            <textarea
-              name="journal-spiritual-gifts-reflection"
-              placeholder="Where do I sense God inviting me to serve?"
-              rows={4}
-            />
-          </label>
-          <label>
-            <span>Next faithful step</span>
-            <textarea
-              name="journal-next-faithful-step"
-              placeholder="The next step I need to take is..."
-              rows={4}
-            />
-          </label>
-          <button className="button secondary" type="submit">
-            Save journal entries
-          </button>
-        </form>
+        <div className="gear-book-grid">
+          {bookResources.map((book) => (
+            <article className="gear-book-card" key={book.title}>
+              <div className="gear-book-cover">
+                <img src={book.image} alt={book.alt} />
+              </div>
+              <div className="gear-book-copy">
+                <h3>{book.title}</h3>
+                <p>{book.description}</p>
+                <a className="button secondary" href={book.href} target="_blank" rel="noreferrer">
+                  {book.cta}
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
-      <section className="gear-grid" aria-label="Future gear areas">
-        <section id="waypoints">
-          <strong>Waypoints</strong>
+      <section className="gear-panel gear-workshops-panel" id="workshops">
+        <div className="card-heading">
+          <p className="section-label">Workshops & Live Experiences</p>
+          <h2>Live support for groups, teams, and churches.</h2>
           <p>
-            Devotion-style checkpoints can become Scripture, prayer, and weekly
-            direction without crowding the main Journey.
+            Facilitated experiences can help people build shared language,
+            deepen clarity, and apply the DYDD framework in community.
           </p>
-          <small>Planned</small>
-        </section>
-        <section>
-          <strong>Companion Notes</strong>
-          <p>
-            Dydi can eventually read selected journal context and help the
-            learner keep moving with encouragement and clarity.
-          </p>
-          <small>Planned</small>
-        </section>
-        <section>
-          <strong>Saved Decisions</strong>
-          <p>
-            Important declarations, commitments, and action steps should become
-            easy to revisit from one place.
-          </p>
-          <small>Planned</small>
-        </section>
+        </div>
+        <div className="gear-experience-grid">
+          {liveExperiences.map((experience) => (
+            <article className="gear-experience-card" key={experience.title}>
+              <div className="gear-experience-media">
+                <img src={experience.image} alt="" />
+                <span>{experience.label}</span>
+              </div>
+              <div className="gear-experience-copy">
+                <h3>{experience.title}</h3>
+                <p>{experience.description}</p>
+                <strong>Ideal for:</strong>
+                <ul>
+                  {experience.idealFor.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          ))}
+        </div>
+        <a
+          className="button primary gear-contact-button"
+          href="https://www.discoverdivine.design/discover-your-divine-design-contact"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Contact to schedule
+        </a>
       </section>
     </main>
   );

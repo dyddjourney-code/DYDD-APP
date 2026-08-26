@@ -6,8 +6,8 @@ const mobileNavItems = [
   { href: "/trailheads", label: "Trailheads" },
   { href: "/field-kit", label: "Field Kit" },
   { href: "/gear", label: "Gear" },
-  { href: "/pathfinder", label: "Pathfinder" },
   { href: "/fireside", label: "Fireside" },
+  { href: "/fireside#waypoints", label: "Waypoints" },
   { href: "/camp-circle", label: "Camp Circle" },
   { href: "/camp-circle#host-playbook", label: "Host Playbook" },
 ];

@@ -33,6 +33,17 @@ export default function FiresidePage() {
           destination in the app while we build the Journey and Field Kit first.
         </p>
       </section>
+
+      <section className="fireside-panel" id="waypoints">
+        <div className="card-heading">
+          <p className="section-label">Waypoints</p>
+          <h2>Short encouragement for the next step.</h2>
+        </div>
+        <p>
+          Waypoints can become Scripture, prayer, devotion-style checkpoints,
+          and weekly direction without crowding the main Journey.
+        </p>
+      </section>
     </main>
   );
 }

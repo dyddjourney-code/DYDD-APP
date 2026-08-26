@@ -151,17 +151,13 @@ const hqMenu = [
       { icon: "badge", label: "Trail Badges", href: "/field-kit#trail-badges" },
     ],
   },
+  { icon: "backpack", label: "Gear", href: "/gear" },
   {
-    icon: "backpack",
-    label: "Gear",
-    href: "/gear",
-    children: [
-      { icon: "compass", label: "Journal", href: "/gear#journal" },
-      { icon: "flashlight", label: "Waypoints", href: "/gear#waypoints" },
-      { icon: "magnifier", label: "Pathfinder", href: "/pathfinder" },
-    ],
+    icon: "fireside",
+    label: "Fireside",
+    href: "/fireside",
+    children: [{ icon: "flashlight", label: "Waypoints", href: "/fireside#waypoints" }],
   },
-  { icon: "fireside", label: "Fireside", href: "/fireside" },
   { icon: "group", label: "Camp Circle", href: "/camp-circle" },
 ];
 
@@ -464,14 +460,14 @@ const baseCampLinks = [
     title: "Open Camp Circle",
   },
   {
-    detail: "Capture prayers, workbook notes, and reflection prompts from every section.",
+    detail: "Find the book, workbook, and live experiences that support the journey.",
     href: "/gear",
-    kicker: "Practice",
-    title: "Use the Journal",
+    kicker: "Resources",
+    title: "Open Gear",
   },
   {
     detail: "Clarify the niche where identity, gifts, story, desire, and service converge.",
-    href: "/pathfinder",
+    href: "/journey#niche",
     kicker: "Purpose",
     title: "Find the Niche",
   },
@@ -1074,7 +1070,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       <PageHelp
         items={[
           "Start with Journey when you want the full guided DYDD path.",
-          "Use Trailheads for a focused entry point like DesignID, Spiritual Gifts, or Pathfinder.",
+          "Use Trailheads for a focused entry point like DesignID, Spiritual Gifts, or Fruit Life 360.",
           "Open Field Kit when you need reports, tools, artifacts, or earned badges.",
         ]}
         title="Start from Base Camp"

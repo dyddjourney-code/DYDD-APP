@@ -15,17 +15,13 @@ const navItems = [
       { icon: "badge", label: "Trail Badges", href: "/field-kit#trail-badges" },
     ],
   },
+  { icon: "backpack", label: "Gear", href: "/gear" },
   {
-    icon: "backpack",
-    label: "Gear",
-    href: "/gear",
-    children: [
-      { icon: "compass", label: "Journal", href: "/gear#journal" },
-      { icon: "flashlight", label: "Waypoints", href: "/gear#waypoints" },
-      { icon: "magnifier", label: "Pathfinder", href: "/pathfinder" },
-    ],
+    icon: "fireside",
+    label: "Fireside",
+    href: "/fireside",
+    children: [{ icon: "flashlight", label: "Waypoints", href: "/fireside#waypoints" }],
   },
-  { icon: "fireside", label: "Fireside", href: "/fireside" },
   {
     icon: "group",
     label: "Camp Circle",

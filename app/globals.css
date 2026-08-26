@@ -2820,6 +2820,47 @@ h3 {
     var(--panel);
 }
 
+.fireside-page {
+  position: relative;
+}
+
+.fireside-page-hero {
+  min-height: clamp(300px, 34vw, 430px);
+  align-items: end;
+  background:
+    linear-gradient(90deg, rgba(39, 54, 36, 0.9) 0%, rgba(39, 54, 36, 0.66) 45%, rgba(39, 54, 36, 0.18) 78%),
+    url("/brand/dydd-cabin-porch.png") center / cover no-repeat;
+  color: #fbfaf4;
+}
+
+.fireside-page-hero h1 {
+  max-width: 10ch;
+  color: #ffffff;
+}
+
+.fireside-page-hero .eyebrow,
+.fireside-page-hero .lede {
+  color: rgba(251, 250, 244, 0.88);
+}
+
+.fireside-help {
+  position: absolute;
+  top: clamp(16px, 2.4vw, 26px);
+  right: clamp(16px, 2.4vw, 26px);
+}
+
+.fireside-help .page-help {
+  margin: 0;
+  padding: 0;
+}
+
+.fireside-help .page-help-trigger {
+  border-color: rgba(251, 250, 244, 0.42);
+  background: rgba(23, 39, 27, 0.72);
+  color: #ffffff;
+  box-shadow: 0 12px 26px rgba(23, 39, 27, 0.22);
+}
+
 .fieldkit-hero {
   position: relative;
   grid-template-columns: minmax(0, 0.62fr);
@@ -4877,6 +4918,155 @@ h3 {
 
 .gear-panel {
   grid-column: 1 / -1;
+}
+
+.fireside-author-strip,
+.fireside-connect-panel,
+.fireside-content-grid {
+  grid-column: 1 / -1;
+}
+
+.fireside-author-strip {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.34fr) minmax(0, 1fr);
+  gap: clamp(18px, 3vw, 32px);
+  align-items: center;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
+  background:
+    linear-gradient(120deg, rgba(251, 250, 244, 0.96), rgba(234, 240, 226, 0.86)),
+    var(--panel);
+  box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
+}
+
+.fireside-author-photo {
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.fireside-author-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 28%;
+}
+
+.fireside-author-copy h2 {
+  max-width: 17ch;
+  margin: 0 0 14px;
+  color: var(--green-dark);
+  font-size: clamp(2rem, 4.4vw, 4rem);
+}
+
+.fireside-author-copy p:not(.section-label) {
+  max-width: 92ch;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.58;
+}
+
+.fireside-author-copy p + p {
+  margin-top: 10px;
+}
+
+.fireside-connect-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr);
+  gap: clamp(18px, 3vw, 32px);
+  align-items: center;
+  padding: clamp(20px, 3.6vw, 34px);
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.94), rgba(251, 250, 244, 0.98)),
+    repeating-linear-gradient(
+      135deg,
+      rgba(184, 138, 67, 0.1) 0,
+      rgba(184, 138, 67, 0.1) 1px,
+      transparent 1px,
+      transparent 18px
+    );
+  box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
+}
+
+.fireside-connect-heading h2 {
+  max-width: 16ch;
+  margin: 0 0 14px;
+  color: var(--green-dark);
+}
+
+.fireside-connect-heading p:not(.section-label) {
+  max-width: 92ch;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.62;
+}
+
+.fireside-subscribe-card {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  border: 1px solid rgba(36, 63, 39, 0.15);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.fireside-subscribe-card label {
+  color: var(--green-dark);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.fireside-subscribe-card div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.fireside-subscribe-card input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(36, 63, 39, 0.18);
+  border-radius: 8px;
+  padding: 11px 12px;
+  background: #ffffff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.fireside-subscribe-card small {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.fireside-content-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.fireside-feature-card {
+  min-height: 220px;
+  padding: 20px;
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
+}
+
+.fireside-feature-card h3 {
+  color: var(--green-dark);
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+  line-height: 1.06;
+}
+
+.fireside-feature-card p:not(.section-label) {
+  color: var(--muted);
+  line-height: 1.58;
 }
 
 .gear-grid {
@@ -7349,6 +7539,8 @@ h3 {
   .camp-circle-two-column,
   .host-playbook-feature,
   .journey-builder,
+  .fireside-author-strip,
+  .fireside-connect-panel,
   .polished-course-hero,
   .course-personalization,
   .module-panel,
@@ -7812,7 +8004,8 @@ h3 {
   .fieldkit-product-columns,
   .fieldkit-assessment-flow,
   .artifact-workbench .artifact-download-list,
-  .earned-badge-grid {
+  .earned-badge-grid,
+  .fireside-content-grid {
     grid-template-columns: 1fr;
   }
 

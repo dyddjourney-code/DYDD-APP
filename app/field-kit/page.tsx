@@ -55,8 +55,10 @@ const freeAssessments = [
 const artifacts = [
   {
     action: "Open report",
+    courseAction: "Explore course",
+    courseHref: "/courses/designid-foundations",
     detail:
-      "Jordan's DesignID artifact is connected so the Journey and Trailheads can read Shepherd language when course personalization is tested.",
+      "Your DesignID results are ready to review. The connected course helps you understand and apply what the report is showing.",
     href: "/courses/designid-foundations",
     logo: "/brand/tools/designid-logo.webp",
     meta: [
@@ -68,8 +70,10 @@ const artifacts = [
   },
   {
     action: "Open report",
+    courseAction: "Explore course",
+    courseHref: "/trailheads",
     detail:
-      "Spiritual Gifts is staged as completed so course lessons can later adapt around gifts language and service patterns.",
+      "Your Spiritual Gifts results are ready to review. The connected course helps you explore how those gifts can be used in faithful service.",
     href: "/field-kit",
     logo: "/brand/tools/spiritual-gifts-logo.jpg",
     meta: [
@@ -84,20 +88,26 @@ const artifacts = [
 const earnedBadges = [
   {
     image: "/brand/badges/designid-badge.png",
-    note: "Earned when Jordan completed DesignID.",
+    note: "Earned badge: DesignID",
     title: "DesignID",
   },
   {
     image: "/brand/badges/shepherd-badge.svg",
-    note: "Earned from the DesignID Shepherd reflection pattern.",
+    note: "Earned badge: Shepherd",
     title: "Shepherd",
   },
   {
     image: "/brand/badges/spiritual-gifts-badge.png",
-    note: "Earned when Jordan completed Spiritual Gifts.",
+    note: "Earned badge: Spiritual Gifts",
     title: "Spiritual Gifts",
   },
 ];
+
+const nextBadge = {
+  action: "Complete the DesignPD assessment",
+  image: "/brand/badges/designpd-badge.png",
+  title: "DesignPD",
+};
 
 const assessmentFlow = [
   {
@@ -267,12 +277,9 @@ export default function FieldKitPage() {
       <section className="artifact-panel artifact-workbench" id="artifacts">
         <div className="card-heading">
           <p className="section-label">Artifacts</p>
-          <h2>Jordan's completed results are staged here.</h2>
         </div>
         <p className="fieldkit-section-note">
-          This is the shelf where real assessment outputs, report PDFs, workbook exports,
-          feedback, and learner notes will live. For beta testing, Jordan already has
-          DesignID and Spiritual Gifts artifacts connected.
+          Hi Jordan, here are the artifacts you've collected from your journey so far.
         </p>
         <div className="artifact-download-list">
           {artifacts.map((artifact) => (
@@ -296,6 +303,9 @@ export default function FieldKitPage() {
                 <Link className="button primary" href={artifact.href}>
                   {artifact.action}
                 </Link>
+                <Link className="button secondary" href={artifact.courseHref}>
+                  {artifact.courseAction}
+                </Link>
                 <Link className="button secondary" href="/gear">
                   Add feedback
                 </Link>
@@ -306,9 +316,17 @@ export default function FieldKitPage() {
       </section>
 
       <section className="badge-panel" id="trail-badges">
-        <div className="card-heading">
-          <p className="section-label">Trail Badges</p>
-          <h2>Earned badges stay visible. Possible badges stay tucked away.</h2>
+        <div className="badge-board-heading">
+          <div>
+            <p className="section-label">Trail Badges</p>
+            <p>Here are the badges you've earned so far, Jordan.</p>
+          </div>
+          <aside className="next-badge-card" aria-label="Next badge">
+            <span>Next badge</span>
+            <img src={nextBadge.image} alt={`${nextBadge.title} badge`} />
+            <strong>{nextBadge.title}</strong>
+            <p>{nextBadge.action}</p>
+          </aside>
         </div>
 
         <div className="earned-badge-grid" aria-label="Earned trail badges">
@@ -319,7 +337,6 @@ export default function FieldKitPage() {
                 <span>Earned</span>
               </div>
               <div className="badge-copy">
-                <span>Earned badge</span>
                 <strong>{badge.title}</strong>
                 <p>{badge.note}</p>
               </div>
@@ -327,15 +344,10 @@ export default function FieldKitPage() {
           ))}
         </div>
 
-        <div className="badge-system-intro">
-          <p>
-            The possible badge view stays closed until the learner wants to see what else
-            can be earned later.
-          </p>
-          <span>Accordion</span>
-        </div>
-        <details className="badge-accordion">
-          <summary>What badges are possible?</summary>
+        <section className="possible-badge-board" aria-label="Possible trail badges">
+          <div className="badge-group-heading">
+            <h3>What badges are possible?</h3>
+          </div>
           <div className="badge-accordion-groups">
             {badgeGroups.map((group) => (
               <section className="badge-group" key={group.title}>
@@ -360,7 +372,7 @@ export default function FieldKitPage() {
               </section>
             ))}
           </div>
-        </details>
+        </section>
       </section>
     </main>
   );

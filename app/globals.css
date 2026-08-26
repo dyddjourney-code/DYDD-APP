@@ -3185,7 +3185,10 @@ h3 {
 }
 
 .fieldkit-section-heading p {
-  max-width: 1120px;
+  max-width: none !important;
+  width: 100%;
+  font-size: 1.08rem;
+  line-height: 1.58;
 }
 
 .fieldkit-assessment-flow {
@@ -5171,9 +5174,11 @@ h3 {
 .fieldkit-section-note {
   position: relative;
   z-index: 1;
-  max-width: 78ch;
-  margin: -8px 0 4px;
+  max-width: none;
+  margin: -14px 0 4px;
   color: var(--muted);
+  font-size: 1.05rem;
+  font-weight: 780;
   line-height: 1.62;
 }
 
@@ -5213,7 +5218,7 @@ h3 {
 .earned-badge-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 
 .hq-empty-state {
@@ -5239,6 +5244,69 @@ h3 {
       transparent 1px,
       transparent 24px
     );
+}
+
+.badge-board-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(210px, 0.28fr);
+  gap: clamp(16px, 2vw, 24px);
+  align-items: start;
+}
+
+.badge-board-heading > div {
+  display: grid;
+  gap: 8px;
+}
+
+.badge-board-heading p:not(.section-label) {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  font-weight: 780;
+  line-height: 1.55;
+}
+
+.next-badge-card {
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  padding: 14px;
+  border: 1px solid rgba(184, 138, 67, 0.28);
+  border-radius: 8px;
+  background:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.9), rgba(243, 228, 196, 0.5)),
+    var(--panel);
+  text-align: center;
+  box-shadow: 0 14px 28px rgba(70, 58, 35, 0.08);
+}
+
+.next-badge-card span {
+  color: var(--brass);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.next-badge-card img {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 14px rgba(36, 63, 39, 0.16));
+}
+
+.next-badge-card strong {
+  color: var(--green-dark);
+  font-size: 1.04rem;
+  font-weight: 950;
+}
+
+.next-badge-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 780;
+  line-height: 1.35;
 }
 
 .badge-system-intro {
@@ -5274,6 +5342,15 @@ h3 {
   gap: 12px;
 }
 
+.possible-badge-board {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.68);
+}
+
 .badge-group-heading {
   display: flex;
   gap: 12px;
@@ -5302,11 +5379,11 @@ h3 {
 
 .trail-badge {
   display: grid;
-  grid-template-columns: 84px minmax(0, 1fr);
-  gap: 14px;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 16px;
   align-items: center;
-  min-height: 156px;
-  padding: 14px;
+  min-height: 176px;
+  padding: 16px;
   border: 1px solid rgba(71, 107, 66, 0.16);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.78);
@@ -5332,8 +5409,8 @@ h3 {
 }
 
 .badge-art img {
-  width: 82px;
-  height: 82px;
+  width: 108px;
+  height: 108px;
   object-fit: contain;
   filter: drop-shadow(0 8px 12px rgba(36, 63, 39, 0.16));
 }
@@ -5382,7 +5459,7 @@ h3 {
   display: block;
   margin-top: 5px;
   color: var(--ink);
-  font-size: 1.05rem;
+  font-size: 1.12rem;
   font-weight: 900;
 }
 

@@ -2820,6 +2820,46 @@ h3 {
     var(--panel);
 }
 
+.fieldkit-hero {
+  position: relative;
+  grid-template-columns: minmax(0, 0.62fr);
+  min-height: clamp(320px, 36vw, 450px);
+  align-items: end;
+  overflow: visible;
+  background:
+    linear-gradient(90deg, rgba(23, 39, 27, 0.86) 0%, rgba(23, 39, 27, 0.62) 42%, rgba(23, 39, 27, 0.1) 76%),
+    url("/brand/dydd-fieldkit-jungle-banner.png") center / cover no-repeat;
+  color: #fbfaf4;
+}
+
+.fieldkit-hero .eyebrow,
+.fieldkit-hero .lede {
+  color: rgba(251, 250, 244, 0.88);
+}
+
+.fieldkit-hero h1 {
+  max-width: 13ch;
+  color: #ffffff;
+}
+
+.fieldkit-help {
+  position: absolute;
+  top: clamp(16px, 2.4vw, 26px);
+  right: clamp(16px, 2.4vw, 26px);
+}
+
+.fieldkit-help .page-help {
+  margin: 0;
+  padding: 0;
+}
+
+.fieldkit-help .page-help-trigger {
+  border-color: rgba(251, 250, 244, 0.42);
+  background: rgba(23, 39, 27, 0.72);
+  color: #ffffff;
+  box-shadow: 0 12px 26px rgba(23, 39, 27, 0.22);
+}
+
 .trailheads-hero {
   position: relative;
   grid-template-columns: minmax(0, 0.7fr);
@@ -3126,26 +3166,49 @@ h3 {
   justify-self: start;
 }
 
-.fieldkit-page-grid {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-}
-
-.fieldkit-tool-card {
+.fieldkit-assessments-section {
   display: grid;
-  align-content: start;
-  gap: 9px;
-  min-height: 260px;
-  padding: 18px;
+  gap: clamp(18px, 3vw, 28px);
 }
 
-.fieldkit-tool-card img {
-  width: 96px;
-  height: 96px;
-  object-fit: contain;
-  filter: drop-shadow(0 10px 16px rgba(36, 63, 39, 0.16));
+.fieldkit-section-heading {
+  max-width: 940px;
 }
 
-.fieldkit-tool-card span {
+.fieldkit-section-heading h2 {
+  max-width: 22ch;
+}
+
+.fieldkit-product-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);
+  gap: clamp(14px, 2vw, 20px);
+  align-items: start;
+}
+
+.fieldkit-product-group {
+  display: grid;
+  gap: 12px;
+  padding: clamp(16px, 2.4vw, 22px);
+  border: 1px solid rgba(71, 107, 66, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(138deg, rgba(255, 255, 255, 0.92), rgba(250, 244, 232, 0.76)),
+    var(--panel);
+  box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
+}
+
+.fieldkit-product-heading {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(71, 107, 66, 0.16);
+}
+
+.fieldkit-product-heading span,
+.fieldkit-assessment-copy span {
   color: var(--brass);
   font-size: 0.72rem;
   font-weight: 950;
@@ -3153,16 +3216,86 @@ h3 {
   text-transform: uppercase;
 }
 
-.fieldkit-tool-card strong {
+.fieldkit-product-heading h3 {
+  margin: 0;
   color: var(--green-dark);
-  font-size: 1.15rem;
-  font-weight: 950;
+  font-size: clamp(1.3rem, 2.2vw, 1.8rem);
 }
 
-.fieldkit-tool-card p {
+.fieldkit-assessment-list {
+  display: grid;
+  gap: 12px;
+}
+
+.fieldkit-assessment-card {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  padding: 16px;
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.fieldkit-assessment-logo {
+  display: grid;
+  place-items: center;
+  min-height: 112px;
+  padding: 12px;
+  border: 1px solid rgba(71, 107, 66, 0.18);
+  border-radius: 8px;
+  background: rgba(251, 250, 244, 0.92);
+}
+
+.fieldkit-assessment-logo img {
+  width: 100%;
+  max-height: 88px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 16px rgba(36, 63, 39, 0.12));
+}
+
+.fieldkit-assessment-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.fieldkit-assessment-copy h3 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: 1.2rem;
+  line-height: 1.08;
+}
+
+.fieldkit-assessment-copy p {
   margin: 0;
   color: var(--muted);
-  line-height: 1.52;
+  line-height: 1.55;
+}
+
+.fieldkit-assessment-copy ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fieldkit-assessment-copy li {
+  padding: 7px 9px;
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background: rgba(234, 240, 226, 0.56);
+  color: var(--green-dark);
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.fieldkit-assessment-card .button {
+  grid-column: 2;
+  justify-self: start;
 }
 
 .badge-accordion {
@@ -4978,6 +5111,54 @@ h3 {
 .artifact-workbench .artifact-download-list {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
+}
+
+.fieldkit-section-note {
+  position: relative;
+  z-index: 1;
+  max-width: 78ch;
+  margin: -8px 0 4px;
+  color: var(--muted);
+  line-height: 1.62;
+}
+
+.fieldkit-artifact-card {
+  gap: 16px;
+}
+
+.fieldkit-artifact-title {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.fieldkit-artifact-title img {
+  width: 96px;
+  height: 74px;
+  padding: 8px;
+  border: 1px solid rgba(71, 107, 66, 0.18);
+  border-radius: 8px;
+  background: rgba(251, 250, 244, 0.92);
+  object-fit: contain;
+}
+
+.fieldkit-artifact-title p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.fieldkit-artifact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.earned-badge-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .hq-empty-state {
@@ -7120,6 +7301,45 @@ h3 {
   .trailheads-hero {
     min-height: 330px;
     background-position: 56% center;
+  }
+
+  .fieldkit-hero {
+    min-height: 330px;
+    background-position: 58% center;
+  }
+
+  .fieldkit-product-columns,
+  .artifact-workbench .artifact-download-list,
+  .earned-badge-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fieldkit-product-heading {
+    display: grid;
+    gap: 4px;
+  }
+
+  .fieldkit-assessment-card,
+  .fieldkit-artifact-title {
+    grid-template-columns: 1fr;
+  }
+
+  .fieldkit-assessment-logo {
+    justify-items: start;
+    min-height: 94px;
+  }
+
+  .fieldkit-assessment-logo img {
+    width: min(210px, 100%);
+  }
+
+  .fieldkit-assessment-card .button {
+    grid-column: 1;
+    justify-self: stretch;
+  }
+
+  .fieldkit-artifact-actions .button {
+    flex: 1 1 180px;
   }
 
   .course-heading-row h2 {

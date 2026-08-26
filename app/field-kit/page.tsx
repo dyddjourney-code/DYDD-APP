@@ -214,12 +214,6 @@ function AssessmentCard({
 export default function FieldKitPage() {
   return (
     <main className="journey-shell hq-standalone-page">
-      <nav className="course-nav" aria-label="Field Kit navigation">
-        <Link href="/hq">Back to Base Camp</Link>
-        <Link href="/trailheads">Trailheads</Link>
-        <Link href="/gear">Gear</Link>
-      </nav>
-
       <header className="standalone-hero fieldkit-hero">
         <div>
           <p className="eyebrow">Field Kit</p>

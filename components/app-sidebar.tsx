@@ -2,7 +2,7 @@ const navItems = [
   {
     icon: "tent",
     label: "Base Camp",
-    href: "/hq",
+    href: "/base-camp",
     children: [{ icon: "hiker", label: "Journey", href: "/journey" }],
   },
   { icon: "signpost", label: "Trailheads", href: "/trailheads" },
@@ -135,7 +135,7 @@ function AppNavIcon({ name }: { name: string }) {
 export function AppSidebar() {
   return (
     <aside className="hq-sidebar app-sidebar" aria-label="DYDD navigation">
-      <a className="hq-sidebar-brand" href="/hq">
+      <a className="hq-sidebar-brand" href="/base-camp">
         <img src="/brand/dydd-logo.webp" alt="Discover Your Divine Design" />
       </a>
       <nav className="hq-sidebar-nav">

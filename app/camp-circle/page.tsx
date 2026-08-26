@@ -8,15 +8,15 @@ import {
 
 const circleTypes = [
   {
-    capacity: "2 people",
-    detail: "A shared pace for friends, mentor pairs, or a one-to-one discipleship track.",
-    label: "Pair",
-    privacy: "Private personal trail, shared chapter summaries.",
+    capacity: "Solo",
+    detail: "Keep your personal DYDD trail private while staying ready to share selected summaries later.",
+    label: "Walk solo",
+    privacy: "Private account, personal pacing, optional sharing later.",
   },
   {
     capacity: "2 people",
-    detail: "Adds a future opt-in side-by-side view for marriage conversations.",
-    label: "Couple",
+    detail: "Move with a friend, mentor, spouse, or ministry partner at a shared pace.",
+    label: "Pair or couple",
     privacy: "Personal trail stays private unless both people intentionally share.",
   },
   {
@@ -130,49 +130,44 @@ export default function CampCirclePage() {
     <main className="journey-shell hq-standalone-page camp-circle-page">
       <header className="standalone-hero camp-circle-hero">
         <div>
-          <p className="eyebrow">Camp Circle</p>
-          <h1>A parallel journey for people walking together.</h1>
+          <p className="eyebrow">Together</p>
+          <h1>Camp Circle</h1>
           <p className="lede">
-            Camp Circle is the control page for couples, pairs, small groups,
-            and classes. It keeps each person&apos;s private DYDD record intact
-            while giving the circle a shared trail for summaries, questions,
-            group learning, prayer, and next steps.
+            A parallel journey for people walking together. Camp Circle helps
+            pairs, couples, small groups, and classes move through DYDD with
+            shared summaries, questions, prayer, and next steps while each
+            person&apos;s private trail stays private.
           </p>
-        </div>
-        <div className="camp-circle-hero-badges" aria-label="Circle formats">
-          <img src="/brand/badges/shepherd-badge.svg" alt="Shepherd badge" />
-          <img src="/brand/badges/designid-badge.png" alt="DesignID badge" />
-          <img src="/brand/badges/spiritual-gifts-badge.png" alt="Spiritual Gifts badge" />
         </div>
       </header>
 
       <PageHelp
         items={[
-          "Start by choosing the circle format and capacity that matches the group.",
-          "Invite people into the shared trail without exposing their private workbook or journal.",
-          "Use shared entries for summaries, questions, prayers, next steps, and group memory.",
+          "Choose whether the journey is solo, paired, a small group, or a class.",
+          "Invite people without exposing private workbook, journal, or assessment details.",
+          "Use shared entries for summaries, questions, prayers, and next steps.",
         ]}
-        title="How Camp Circle works"
+        title="Camp Circle help"
       />
 
-      <section className="camp-circle-panel host-playbook-feature" id="host-playbook">
-        <div className="host-playbook-icon" aria-hidden="true">
-          <svg fill="none" viewBox="0 0 64 64">
-            <path d="M13 12h25a10 10 0 0 1 10 10v30H23a10 10 0 0 1-10-10Z" fill="#fffaf0" stroke="#243f27" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
-            <path d="M22 22h17M22 30h15M22 38h11" stroke="#739d5e" strokeLinecap="round" strokeWidth="3" />
-            <path d="m45 12 7-5 4 8-7 5Z" fill="#d4a451" stroke="#6f4d20" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
-            <path d="m39 27 10-7" stroke="#6f4d20" strokeLinecap="round" strokeWidth="3" />
-          </svg>
+      <section className="camp-circle-panel circle-options-panel" aria-label="Camp Circle options">
+        <div className="card-heading wide-heading">
+          <p className="section-label">Camp Circle</p>
+          <h2>Choose how people walk together.</h2>
+          <p>
+            The circle can stay personal, become a pair or couple rhythm, or
+            support a hosted group or class without turning private work into
+            public work.
+          </p>
         </div>
-        <div className="host-playbook-copy">
-          <p className="section-label">Optional facilitator resource</p>
-          <h2>{facilitatorPlaybookMeta.title}</h2>
-          <p>{facilitatorPlaybookMeta.value}</p>
-          <small>{facilitatorPlaybookMeta.source}</small>
-        </div>
-        <div className="host-playbook-highlights">
-          {facilitatorPlaybookHighlights.map((item) => (
-            <span key={item}>{item}</span>
+        <div className="circle-type-grid">
+          {circleTypes.map((type) => (
+            <article className="camp-circle-panel" key={type.label}>
+              <span>{type.capacity}</span>
+              <h2>{type.label}</h2>
+              <p>{type.detail}</p>
+              <small>{type.privacy}</small>
+            </article>
           ))}
         </div>
       </section>
@@ -257,17 +252,6 @@ export default function CampCirclePage() {
         </article>
       </section>
 
-      <section className="circle-type-grid" aria-label="Circle sizes">
-        {circleTypes.map((type) => (
-          <article className="camp-circle-panel" key={type.label}>
-            <span>{type.capacity}</span>
-            <h2>{type.label}</h2>
-            <p>{type.detail}</p>
-            <small>{type.privacy}</small>
-          </article>
-        ))}
-      </section>
-
       <section className="camp-circle-panel privacy-lanes" aria-label="Data privacy lanes">
         <div className="card-heading">
           <p className="section-label">Privacy architecture</p>
@@ -299,10 +283,32 @@ export default function CampCirclePage() {
         </ol>
       </section>
 
-      <section className="camp-circle-panel facilitator-route-panel" aria-label="Facilitator playbook route">
+      <section className="camp-circle-panel host-playbook-feature" id="field-guide">
+        <div className="host-playbook-icon" aria-hidden="true">
+          <svg fill="none" viewBox="0 0 64 64">
+            <path d="M13 12h25a10 10 0 0 1 10 10v30H23a10 10 0 0 1-10-10Z" fill="#fffaf0" stroke="#243f27" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+            <path d="M22 22h17M22 30h15M22 38h11" stroke="#739d5e" strokeLinecap="round" strokeWidth="3" />
+            <path d="m45 12 7-5 4 8-7 5Z" fill="#d4a451" stroke="#6f4d20" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+            <path d="m39 27 10-7" stroke="#6f4d20" strokeLinecap="round" strokeWidth="3" />
+          </svg>
+        </div>
+        <div className="host-playbook-copy">
+          <p className="section-label">Field Guide</p>
+          <h2>{facilitatorPlaybookMeta.title.replace("Host Playbook", "Field Guide")}</h2>
+          <p>{facilitatorPlaybookMeta.value}</p>
+          <small>{facilitatorPlaybookMeta.source}</small>
+        </div>
+        <div className="host-playbook-highlights">
+          {facilitatorPlaybookHighlights.map((item) => (
+            <span key={item}>{item}</span>
+          ))}
+        </div>
+      </section>
+
+      <section className="camp-circle-panel facilitator-route-panel" aria-label="Field Guide route">
         <div className="card-heading">
-          <p className="section-label">Facilitator route</p>
-          <h2>The playbook follows the circle in real time.</h2>
+          <p className="section-label">Field Guide route</p>
+          <h2>The guide follows the circle in real time.</h2>
         </div>
         <div className="facilitator-route-grid">
           {facilitatorPlaybookStages.map((stage) => (
@@ -371,9 +377,9 @@ export default function CampCirclePage() {
         </div>
       </section>
 
-      <section className="camp-circle-panel playbook-resource-hub" aria-label="Host playbook resource hub">
+      <section className="camp-circle-panel playbook-resource-hub" aria-label="Field Guide resource hub">
         <div className="card-heading">
-          <p className="section-label">Purchased host library</p>
+          <p className="section-label">Field Guide library</p>
           <h2>Appendices become usable host tools.</h2>
         </div>
         <div className="playbook-resource-grid">

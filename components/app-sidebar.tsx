@@ -29,7 +29,7 @@ const navItems = [
     icon: "group",
     label: "Camp Circle",
     href: "/camp-circle",
-    children: [{ icon: "playbook", label: "Host Playbook", href: "/camp-circle#host-playbook" }],
+    children: [{ icon: "playbook", label: "Field Guide", href: "/camp-circle#field-guide" }],
   },
 ];
 

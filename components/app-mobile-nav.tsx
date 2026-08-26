@@ -10,7 +10,7 @@ const mobileNavItems = [
   { href: "/fireside#waypoints", label: "Waypoints" },
   { href: "/fireside#live", label: "Live" },
   { href: "/camp-circle", label: "Camp Circle" },
-  { href: "/camp-circle#host-playbook", label: "Host Playbook" },
+  { href: "/camp-circle#field-guide", label: "Field Guide" },
 ];
 
 export function AppMobileNav() {

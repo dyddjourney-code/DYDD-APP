@@ -3505,40 +3505,49 @@ h3 {
 }
 
 .camp-circle-hero {
-  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.38fr);
+  min-height: clamp(320px, 40vw, 520px);
+  grid-template-columns: minmax(0, 0.72fr);
+  align-items: end;
   background:
-    linear-gradient(115deg, rgba(255, 255, 255, 0.96), rgba(234, 240, 226, 0.84)),
-    repeating-linear-gradient(
-      135deg,
-      rgba(184, 138, 67, 0.08) 0,
-      rgba(184, 138, 67, 0.08) 1px,
-      transparent 1px,
-      transparent 22px
-    ),
-    var(--panel);
+    linear-gradient(90deg, rgba(20, 34, 24, 0.84), rgba(20, 34, 24, 0.34) 58%, rgba(20, 34, 24, 0.12)),
+    linear-gradient(0deg, rgba(20, 34, 24, 0.48), rgba(20, 34, 24, 0.04) 48%),
+    url("/brand/dydd-camp-circle-campfire-banner.png") center / cover no-repeat,
+    var(--green-dark);
+  color: var(--white);
 }
 
 .camp-circle-hero h1 {
-  max-width: 11ch;
+  max-width: 10ch;
+  color: var(--white);
 }
 
-.camp-circle-hero-badges {
+.camp-circle-hero .eyebrow {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.camp-circle-hero .lede {
+  max-width: 68ch;
+  color: rgba(255, 250, 240, 0.92);
+}
+
+.circle-options-panel {
+  gap: 20px;
+}
+
+.wide-heading {
   display: grid;
-  grid-template-columns: repeat(2, minmax(86px, 1fr));
-  gap: 12px;
-  align-items: center;
-  justify-items: center;
+  gap: 8px;
 }
 
-.camp-circle-hero-badges img {
-  width: min(128px, 100%);
-  height: auto;
-  filter: drop-shadow(0 14px 20px rgba(36, 63, 39, 0.14));
+.wide-heading h2 {
+  max-width: none;
 }
 
-.camp-circle-hero-badges img:first-child {
-  grid-row: span 2;
-  width: min(170px, 100%);
+.wide-heading p {
+  max-width: 88ch;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.58;
 }
 
 .host-playbook-feature {

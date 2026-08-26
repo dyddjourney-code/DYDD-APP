@@ -124,7 +124,6 @@ export default function TrailheadsPage() {
       <section className="course-catalog-section" aria-label="Discover Your Divine Design course catalog">
         <div className="catalog-heading compact course-heading-row">
           <h2>Main course</h2>
-          <p className="section-label">Courses</p>
         </div>
 
         <article className="featured-course-banner">
@@ -136,11 +135,7 @@ export default function TrailheadsPage() {
           <div className="featured-course-copy">
             <div className="featured-course-logo-block">
               <img src={featuredCourse.logo} alt="Discover Your Divine Design logo" />
-              <Link className="button primary" href={featuredCourse.href}>
-                {featuredCourse.action}
-              </Link>
             </div>
-            <span>Main course</span>
             <h3>{featuredCourse.title}</h3>
             <p>{featuredCourse.description}</p>
             <ul>
@@ -149,12 +144,14 @@ export default function TrailheadsPage() {
               ))}
             </ul>
             <small>Prerequisite: {featuredCourse.prerequisite}</small>
+            <Link className="button primary" href={featuredCourse.href}>
+              {featuredCourse.action}
+            </Link>
           </div>
         </article>
 
         <div className="catalog-heading compact course-heading-row">
           <h2>Assessment-based courses</h2>
-          <p className="section-label">Courses</p>
         </div>
 
         <div className="course-catalog-grid">

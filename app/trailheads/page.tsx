@@ -8,12 +8,12 @@ const featuredCourse = {
   href: "/journey",
   logo: "/brand/dydd-logo.webp",
   points: [
-    "Walk through the full DYD framework",
+    "Walk through the full Discover Your Divine Design framework",
     "Teaching across identity, design, and calling",
     "Practical guidance for faithful application",
   ],
   prerequisite:
-    "Best starting point for the full DYD experience. Assessment results can be added as you move through the journey.",
+    "Best starting point for the full Discover Your Divine Design experience. Assessment results can be added as you move through the journey.",
   title: "Discover Your Divine Design Journey",
 };
 
@@ -83,7 +83,7 @@ const courses = [
     points: [
       "Identify your current pathway",
       "Connect pathway insight to next steps",
-      "Use your results inside the larger DYD journey",
+      "Use your results inside the larger Discover Your Divine Design journey",
     ],
     prerequisite: "Will require a completed Design Pathways assessment.",
     title: "Design Pathways",
@@ -102,38 +102,31 @@ export default function TrailheadsPage() {
       <header className="standalone-hero trailheads-hero">
         <div>
           <p className="eyebrow">Trailheads</p>
-          <h1>DYD Courses</h1>
+          <h1>Discover Your Divine Design Courses</h1>
           <p className="lede">
             Discover Your Divine Design courses guide you through a focused part
             of the journey with clear lessons, practical reflection, and next
             steps you can use.
           </p>
         </div>
+        <div className="trailheads-help">
+          <PageHelp
+            title="Courses Help"
+            items={[
+              "Start with the Discover Your Divine Design Journey when someone needs the full walkthrough.",
+              "Use the smaller courses after the matching assessment has been completed.",
+              "If an assessment is missing, send the learner to the assessment first instead of opening the course.",
+            ]}
+          />
+        </div>
       </header>
 
-      <PageHelp
-        items={[
-          "Start with the Discover Your Divine Design Journey when someone needs the full walkthrough.",
-          "Use the smaller courses after the matching assessment has been completed.",
-          "If an assessment is missing, send the learner to the assessment first instead of opening the course.",
-        ]}
-      />
-
-      <section className="course-catalog-section" aria-label="DYD course catalog">
-        <div className="catalog-heading">
-          <p className="section-label">Courses</p>
-          <h2>Course Catalog</h2>
-          <p>
-            Choose the full DYD Journey first, or open the course that matches a
-            completed assessment.
-          </p>
-        </div>
-
+      <section className="course-catalog-section" aria-label="Discover Your Divine Design course catalog">
         <article className="featured-course-banner">
           <img
             className="featured-course-guide"
             src="/brand/dydd-trailheads-signpost-dydi.png"
-            alt="Dydi beside the DYD course signpost"
+            alt="Dydi beside the Discover Your Divine Design course signpost"
           />
           <div className="featured-course-copy">
             <img src={featuredCourse.logo} alt="Discover Your Divine Design logo" />
@@ -151,6 +144,11 @@ export default function TrailheadsPage() {
             </Link>
           </div>
         </article>
+
+        <div className="catalog-heading compact">
+          <p className="section-label">Courses</p>
+          <h2>Assessment-based courses</h2>
+        </div>
 
         <div className="course-catalog-grid">
           {courses.map((course) => (

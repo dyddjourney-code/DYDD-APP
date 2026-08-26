@@ -35,7 +35,7 @@ export default function FiresidePage() {
           items={[
             "Use Fireside for Scripture, devotion, teaching, podcast, video, and live event connections.",
             "Keep relational content here so Base Camp and the Journey stay focused.",
-            "Future subscriptions can support weekly DYD Waypoints and Fireside updates.",
+            "Future subscriptions can support weekly DYDD Waypoints and Fireside updates.",
           ]}
         />
       </div>
@@ -66,12 +66,12 @@ export default function FiresidePage() {
 
       <section className="fireside-connect-panel">
         <div className="fireside-connect-heading">
-          <p className="section-label">DYD Waypoints</p>
+          <p className="section-label">DYDD Waypoints</p>
           <h2>Pause, breathe, and keep walking.</h2>
           <p>
             Weekly content designed to help you along your journey. Every now
             and then, it is good to stand still, breathe, and notice what God is
-            forming in you. These Waypoints can speak to the whole DYD community
+            forming in you. These Waypoints can speak to the whole DYDD community
             while offering simple reflection callouts for Shepherd, Artisan,
             Architect, and Steward design patterns.
           </p>
@@ -90,7 +90,7 @@ export default function FiresidePage() {
             </button>
           </div>
           <small>
-            Subscribe to receive the weekly DYD Waypoint by email when delivery
+            Subscribe to receive the weekly DYDD Waypoint by email when delivery
             is connected.
           </small>
         </form>

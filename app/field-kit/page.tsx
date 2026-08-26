@@ -104,15 +104,15 @@ const earnedBadges = [
 ];
 
 const nextBadge = {
-  action: "Complete the DesignPD assessment",
-  image: "/brand/badges/designpd-badge.png",
-  title: "DesignPD",
+  action: "Begin the first D.E.S.I.G.N. step inside the Discover Your Divine Design Journey.",
+  image: "/brand/badges/identity-badge.svg",
+  title: "Identity",
 };
 
 const assessmentFlow = [
   {
     detail:
-      "Each assessment captures a focused snapshot of design, gifting, fruit, pathway, or practical action patterns.",
+      "Each assessment captures a focused snapshot of design, gifting, fruit, pathway, or practical action patterns. These will become your journey artifacts.",
     step: "1",
     title: "Take the assessment",
   },
@@ -140,6 +140,7 @@ const badgeGroups = [
       ["Gifts", "/brand/badges/gifts-badge.svg"],
       ["Niche", "/brand/badges/niche-badge.svg"],
     ],
+    note: "Badges earned as Jordan moves through the main Discover Your Divine Design Journey.",
     title: "D.E.S.I.G.N. Badges",
   },
   {
@@ -150,6 +151,7 @@ const badgeGroups = [
       ["DesignPD", "/brand/badges/designpd-badge.png"],
       ["Fruit Life 360", "/brand/badges/fruitlife-360-badge.png"],
     ],
+    note: "Badges earned when each assessment or report is completed.",
     title: "Assessment Badges",
   },
   {
@@ -158,6 +160,7 @@ const badgeGroups = [
       ["Architect", "/brand/badges/architect-badge.svg"],
       ["Steward", "/brand/badges/steward-badge.svg"],
     ],
+    note: "For awareness. Jordan's DesignID reflection badge is Shepherd, so the other reflection badges are references only.",
     title: "Reflection Badges",
   },
 ];
@@ -344,10 +347,8 @@ export default function FieldKitPage() {
           ))}
         </div>
 
-        <section className="possible-badge-board" aria-label="Possible trail badges">
-          <div className="badge-group-heading">
-            <h3>What badges are possible?</h3>
-          </div>
+        <details className="possible-badge-board" aria-label="Possible trail badges">
+          <summary>What badges are possible?</summary>
           <div className="badge-accordion-groups">
             {badgeGroups.map((group) => (
               <section className="badge-group" key={group.title}>
@@ -355,6 +356,7 @@ export default function FieldKitPage() {
                   <h3>{group.title}</h3>
                   <small>Preview</small>
                 </div>
+                <p className="badge-group-note">{group.note}</p>
                 <div className="badge-grid">
                   {group.badges.map(([title, image]) => (
                     <article className="trail-badge locked" key={title}>
@@ -372,7 +374,7 @@ export default function FieldKitPage() {
               </section>
             ))}
           </div>
-        </section>
+        </details>
       </section>
     </main>
   );

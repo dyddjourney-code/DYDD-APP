@@ -5248,8 +5248,8 @@ h3 {
 
 .badge-board-heading {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(210px, 0.28fr);
-  gap: clamp(16px, 2vw, 24px);
+  grid-template-columns: minmax(0, 1fr) minmax(148px, 0.18fr);
+  gap: clamp(12px, 1.6vw, 18px);
   align-items: start;
 }
 
@@ -5269,8 +5269,8 @@ h3 {
 .next-badge-card {
   display: grid;
   justify-items: center;
-  gap: 7px;
-  padding: 14px;
+  gap: 5px;
+  padding: 10px;
   border: 1px solid rgba(184, 138, 67, 0.28);
   border-radius: 8px;
   background:
@@ -5282,31 +5282,31 @@ h3 {
 
 .next-badge-card span {
   color: var(--brass);
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   font-weight: 950;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .next-badge-card img {
-  width: 92px;
-  height: 92px;
+  width: 62px;
+  height: 62px;
   object-fit: contain;
   filter: drop-shadow(0 10px 14px rgba(36, 63, 39, 0.16));
 }
 
 .next-badge-card strong {
   color: var(--green-dark);
-  font-size: 1.04rem;
+  font-size: 0.96rem;
   font-weight: 950;
 }
 
 .next-badge-card p {
   margin: 0;
   color: var(--muted);
-  font-size: 0.86rem;
+  font-size: 0.76rem;
   font-weight: 780;
-  line-height: 1.35;
+  line-height: 1.25;
 }
 
 .badge-system-intro {
@@ -5345,10 +5345,23 @@ h3 {
 .possible-badge-board {
   display: grid;
   gap: 16px;
-  padding: 18px;
+  padding: 0;
   border: 1px solid rgba(71, 107, 66, 0.16);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.68);
+  overflow: hidden;
+}
+
+.possible-badge-board summary {
+  cursor: pointer;
+  padding: 16px 18px;
+  color: var(--green-dark);
+  font-size: 1.08rem;
+  font-weight: 950;
+}
+
+.possible-badge-board[open] summary {
+  border-bottom: 1px solid rgba(71, 107, 66, 0.16);
 }
 
 .badge-group-heading {
@@ -5371,10 +5384,18 @@ h3 {
   font-weight: 850;
 }
 
+.badge-group-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 780;
+  line-height: 1.45;
+}
+
 .badge-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(138px, 1fr));
+  gap: 10px;
 }
 
 .trail-badge {
@@ -5391,6 +5412,12 @@ h3 {
 }
 
 .trail-badge.locked {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  gap: 8px;
+  min-height: 166px;
+  padding: 12px;
+  text-align: center;
   background:
     linear-gradient(rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.88)),
     repeating-linear-gradient(
@@ -5416,6 +5443,8 @@ h3 {
 }
 
 .trail-badge.locked .badge-art img {
+  width: 74px;
+  height: 74px;
   filter: drop-shadow(0 8px 12px rgba(36, 63, 39, 0.16));
 }
 
@@ -5461,6 +5490,7 @@ h3 {
   color: var(--ink);
   font-size: 1.12rem;
   font-weight: 900;
+  overflow-wrap: anywhere;
 }
 
 .badge-copy p {
@@ -5468,6 +5498,20 @@ h3 {
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.trail-badge.locked .badge-copy > span {
+  font-size: 0.62rem;
+}
+
+.trail-badge.locked .badge-copy strong {
+  font-size: 0.94rem;
+}
+
+.trail-badge.locked .badge-copy p {
+  font-size: 0.74rem;
+  line-height: 1.3;
 }
 
 .badge-copy small {

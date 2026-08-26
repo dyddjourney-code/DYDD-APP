@@ -109,6 +109,20 @@ const nextBadge = {
   title: "Identity",
 };
 
+const journeyBadgePath = [
+  { image: "/brand/badges/designid-badge.png", label: "DesignID", state: "earned" },
+  { image: "/brand/badges/shepherd-badge.svg", label: "Shepherd", state: "earned" },
+  { image: "/brand/badges/spiritual-gifts-badge.png", label: "Spiritual Gifts", state: "earned" },
+  { image: "/brand/badges/identity-badge.svg", label: "Identity", state: "next" },
+  { image: "/brand/badges/expertise-badge.svg", label: "Expertise", state: "ahead" },
+  { image: "/brand/badges/story-badge.svg", label: "Story", state: "ahead" },
+  { image: "/brand/badges/desire-badge.svg", label: "Desire", state: "ahead" },
+  { image: "/brand/badges/gifts-badge.svg", label: "Gifts", state: "ahead" },
+  { image: "/brand/badges/niche-badge.svg", label: "Niche", state: "ahead" },
+  { image: "/brand/badges/designpd-badge.png", label: "DesignPD", state: "ahead" },
+  { image: "/brand/badges/fruitlife-360-badge.png", label: "Fruit Life 360", state: "ahead" },
+];
+
 const assessmentFlow = [
   {
     detail:
@@ -324,13 +338,16 @@ export default function FieldKitPage() {
             <p className="section-label">Trail Badges</p>
             <p>Here are the badges you've earned so far, Jordan.</p>
           </div>
-          <aside className="next-badge-card" aria-label="Next badge">
+        </div>
+
+        <aside className="next-badge-card" aria-label="Next badge">
+          <img src={nextBadge.image} alt={`${nextBadge.title} badge`} />
+          <div>
             <span>Next badge</span>
-            <img src={nextBadge.image} alt={`${nextBadge.title} badge`} />
             <strong>{nextBadge.title}</strong>
             <p>{nextBadge.action}</p>
-          </aside>
-        </div>
+          </div>
+        </aside>
 
         <div className="earned-badge-grid" aria-label="Earned trail badges">
           {earnedBadges.map((badge) => (
@@ -347,8 +364,33 @@ export default function FieldKitPage() {
           ))}
         </div>
 
+        <section className="badge-journey-strip" aria-label="Journey badge progress">
+          <div>
+            <p className="section-label">Journey ahead</p>
+            <p>Earned badges stay visible while the next markers show what is still ahead.</p>
+          </div>
+          <ol>
+            {journeyBadgePath.map((badge, index) => (
+              <li className={`badge-path-item ${badge.state}`} key={`${badge.label}-${index}`}>
+                <img src={badge.image} alt={`${badge.label} badge`} />
+                <span>{badge.label}</span>
+                <small>
+                  {badge.state === "earned"
+                    ? "Earned"
+                    : badge.state === "next"
+                      ? "Next"
+                      : "Ahead"}
+                </small>
+              </li>
+            ))}
+          </ol>
+        </section>
+
         <details className="possible-badge-board" aria-label="Possible trail badges">
-          <summary>What badges are possible?</summary>
+          <summary>
+            <span>Discover more of the journey ahead.</span>
+            <strong>Explore possible badges</strong>
+          </summary>
           <div className="badge-accordion-groups">
             {badgeGroups.map((group) => (
               <section className="badge-group" key={group.title}>

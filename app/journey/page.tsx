@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { saveJourneyStageResponses } from "@/app/journey/actions";
 import { dyddJourney } from "@/lib/journey/dydd-journey";
 import { getFacilitatorPlaybookStage } from "@/lib/journey/facilitator-playbook";
@@ -30,10 +29,6 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
 
   return (
     <main className="journey-shell">
-      <nav className="course-nav" aria-label="Journey navigation">
-        <Link href="/hq">Back to HQ</Link>
-      </nav>
-
       <header className="journey-hero">
         <div>
           <p className="eyebrow">Full DYDD journey</p>

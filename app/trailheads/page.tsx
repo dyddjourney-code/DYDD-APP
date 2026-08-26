@@ -103,12 +103,6 @@ const courses = [
 export default function TrailheadsPage() {
   return (
     <main className="journey-shell hq-standalone-page">
-      <nav className="course-nav" aria-label="Trailheads navigation">
-        <Link href="/hq">Back to Base Camp</Link>
-        <Link href="/journey">Journey</Link>
-        <Link href="/field-kit">Field Kit</Link>
-      </nav>
-
       <header className="standalone-hero trailheads-hero">
         <div>
           <p className="eyebrow">Trailheads</p>

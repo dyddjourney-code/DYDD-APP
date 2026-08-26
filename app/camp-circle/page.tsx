@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { PageHelp } from "@/components/page-help";
 import {
   facilitatorPlaybookAppendices,
@@ -129,13 +128,6 @@ const sideBySideRows = [
 export default function CampCirclePage() {
   return (
     <main className="journey-shell hq-standalone-page camp-circle-page">
-      <nav className="course-nav" aria-label="Camp Circle navigation">
-        <Link href="/hq">Back to Base Camp</Link>
-        <Link href="/journey">Journey</Link>
-        <Link href="/field-kit">Field Kit</Link>
-        <Link href="/gear">Gear</Link>
-      </nav>
-
       <header className="standalone-hero camp-circle-hero">
         <div>
           <p className="eyebrow">Camp Circle</p>

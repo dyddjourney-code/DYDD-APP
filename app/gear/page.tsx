@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { saveGearJournalEntries } from "@/app/gear/actions";
 import { PageHelp } from "@/components/page-help";
 
@@ -14,12 +13,6 @@ export default async function GearPage({ searchParams }: GearPageProps) {
 
   return (
     <main className="journey-shell hq-standalone-page">
-      <nav className="course-nav" aria-label="Gear navigation">
-        <Link href="/hq">Back to Base Camp</Link>
-        <Link href="/journey">Journey</Link>
-        <Link href="/field-kit">Field Kit</Link>
-      </nav>
-
       <header className="standalone-hero gear-hero">
         <div>
           <p className="eyebrow">Gear</p>

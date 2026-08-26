@@ -1,15 +1,8 @@
-import Link from "next/link";
 import { PageHelp } from "@/components/page-help";
 
 export default function PathfinderPage() {
   return (
     <main className="journey-shell hq-standalone-page">
-      <nav className="course-nav" aria-label="Pathfinder navigation">
-        <Link href="/hq">Back to Base Camp</Link>
-        <Link href="/journey">Journey</Link>
-        <Link href="/gear">Gear</Link>
-      </nav>
-
       <header className="standalone-hero pathfinder-hero">
         <div>
           <p className="eyebrow">Pathfinder</p>

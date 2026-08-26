@@ -6,7 +6,7 @@ const featuredCourse = {
   description:
     "A full scope course that guides you through the complete Discover Your Divine Design journey, helping you connect the core themes and move toward clearer calling and direction.",
   href: "/journey",
-  logo: "/brand/dydd-logo.webp",
+  logo: "/brand/dydd-logo-transparent.webp",
   points: [
     "Walk through the full Discover Your Divine Design framework",
     "Teaching across identity, design, and calling",
@@ -122,6 +122,11 @@ export default function TrailheadsPage() {
       </header>
 
       <section className="course-catalog-section" aria-label="Discover Your Divine Design course catalog">
+        <div className="catalog-heading compact course-heading-row">
+          <h2>Main course</h2>
+          <p className="section-label">Courses</p>
+        </div>
+
         <article className="featured-course-banner">
           <img
             className="featured-course-guide"
@@ -129,7 +134,12 @@ export default function TrailheadsPage() {
             alt="Dydi beside the Discover Your Divine Design course signpost"
           />
           <div className="featured-course-copy">
-            <img src={featuredCourse.logo} alt="Discover Your Divine Design logo" />
+            <div className="featured-course-logo-block">
+              <img src={featuredCourse.logo} alt="Discover Your Divine Design logo" />
+              <Link className="button primary" href={featuredCourse.href}>
+                {featuredCourse.action}
+              </Link>
+            </div>
             <span>Main course</span>
             <h3>{featuredCourse.title}</h3>
             <p>{featuredCourse.description}</p>
@@ -139,15 +149,12 @@ export default function TrailheadsPage() {
               ))}
             </ul>
             <small>Prerequisite: {featuredCourse.prerequisite}</small>
-            <Link className="button primary" href={featuredCourse.href}>
-              {featuredCourse.action}
-            </Link>
           </div>
         </article>
 
-        <div className="catalog-heading compact">
-          <p className="section-label">Courses</p>
+        <div className="catalog-heading compact course-heading-row">
           <h2>Assessment-based courses</h2>
+          <p className="section-label">Courses</p>
         </div>
 
         <div className="course-catalog-grid">

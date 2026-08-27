@@ -8674,7 +8674,8 @@ h3 {
 }
 
 .journey-active-pagination button,
-.journey-active-pagination span {
+.journey-active-pagination span,
+.journey-active-pagination a {
   min-width: 0;
   min-height: 48px;
   padding: 12px 14px;
@@ -8686,6 +8687,7 @@ h3 {
   font: inherit;
   font-weight: 900;
   line-height: 1.2;
+  text-decoration: none;
 }
 
 .journey-active-pagination button:first-child {
@@ -8699,6 +8701,135 @@ h3 {
   background: rgba(234, 240, 226, 0.74);
   color: var(--green-dark);
   cursor: default;
+}
+
+.journey-active-pagination a {
+  display: grid;
+  place-items: center;
+}
+
+.designid-course-shell .polished-course-hero {
+  margin-bottom: 18px;
+}
+
+.designid-course-shell .course-hero h1 {
+  max-width: 13ch;
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
+}
+
+.designid-course-shell .course-verse {
+  align-self: stretch;
+}
+
+.designid-top-racetrack ol {
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+}
+
+.designid-course-walkthrough .journey-course-progress span {
+  background: linear-gradient(90deg, #3f8f58, #d4a451);
+}
+
+.designid-course-index .journey-module-toggle > span,
+.designid-lesson-accordion ol button span.designid,
+.designid-active-lesson .journey-active-meta span:first-child {
+  background: rgba(234, 240, 226, 0.95);
+  color: #315d3c;
+}
+
+.designid-lesson-accordion {
+  padding-top: 0;
+}
+
+.designid-active-lesson {
+  border-left-color: #3f8f58;
+}
+
+.designid-active-lesson > header {
+  grid-template-columns: minmax(0, 1fr) minmax(190px, 0.22fr);
+}
+
+.designid-active-lesson .journey-active-section-marker {
+  background:
+    linear-gradient(90deg, rgba(234, 240, 226, 0.7), rgba(255, 255, 255, 0.9)),
+    var(--panel);
+}
+
+.designid-teaching-card {
+  display: grid;
+  gap: 16px;
+}
+
+.designid-personal-walkthrough {
+  margin: 0;
+}
+
+.designid-personal-walkthrough h3 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  line-height: 1.18;
+}
+
+.designid-personal-walkthrough ul {
+  margin: 0;
+}
+
+.designid-lesson-source {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.designid-source-lesson-body {
+  padding: clamp(14px, 2vw, 22px);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(251, 250, 244, 0.94)),
+    var(--panel);
+}
+
+.designid-source-lesson-body > div {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+
+.designid-source-lesson-body div[style*="border-radius: 24px"],
+.designid-source-lesson-body div[style*="border-radius: 22px"],
+.designid-source-lesson-body div[style*="border-radius: 20px"],
+.designid-source-lesson-body div[style*="border-radius: 18px"] {
+  border-radius: 8px !important;
+}
+
+.designid-source-lesson-body img {
+  display: block;
+  width: auto !important;
+  max-width: min(100%, 760px) !important;
+  max-height: 420px !important;
+  margin-right: auto !important;
+  margin-left: auto !important;
+  object-fit: contain !important;
+}
+
+.designid-source-lesson-body a {
+  color: var(--green-dark);
+  font-weight: 900;
+}
+
+.designid-source-lesson-body p,
+.designid-source-lesson-body li {
+  font-size: clamp(0.98rem, 1.2vw, 1.05rem) !important;
+  line-height: 1.72 !important;
+}
+
+.designid-source-lesson-body h1,
+.designid-source-lesson-body h2,
+.designid-source-lesson-body h3 {
+  overflow-wrap: anywhere;
+}
+
+.designid-source-accordion {
+  max-width: none;
 }
 
 .journey-advanced-planning {

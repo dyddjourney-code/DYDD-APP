@@ -21,6 +21,18 @@ export type JourneyAssessmentCallout = {
   title: string;
 };
 
+export type JourneyLessonBlock = {
+  eyebrow: string;
+  title: string;
+  summary: string;
+  duration: string;
+  image?: string;
+  mediaLabel?: string;
+  mediaType?: "image" | "video";
+  focus: string[];
+  nextStep: string;
+};
+
 export type JourneySection = {
   slug: string;
   title: string;
@@ -47,6 +59,7 @@ export type JourneyStage = {
   databaseRecord: string;
   dydiContext: string;
   assessmentCallouts?: JourneyAssessmentCallout[];
+  sampleLessons?: JourneyLessonBlock[];
   pathfinder?: JourneyPathfinder;
   prompts: JourneyPrompt[];
   sections: JourneySection[];
@@ -103,6 +116,42 @@ export const dyddJourney: DyddJourney = {
           title: "Optional but powerful early mirror",
           body:
             "DesignID is introduced before chapter one as a way to make Identity more personal. The app should invite it early without making the book dependent on it.",
+        },
+      ],
+      sampleLessons: [
+        {
+          eyebrow: "Session 1 opening",
+          title: "Welcome to the Trail",
+          summary:
+            "A warm first lesson that helps the learner understand the larger DYDD path before they begin answering workbook questions.",
+          duration: "8-10 minutes",
+          image: "/brand/dydd-journey-road-waymarkers.png",
+          mediaLabel: "Journey overview image",
+          mediaType: "image",
+          focus: [
+            "Settle into the language of On Purpose, For Purpose.",
+            "See how the book, workbook, assessments, and companion guidance belong together.",
+            "Choose a simple pace for walking the journey without rushing the work.",
+          ],
+          nextStep:
+            "Name the reason you are beginning and the one question you want to carry into the first chapter.",
+        },
+        {
+          eyebrow: "Session 1 teaching",
+          title: "How This Journey Works",
+          summary:
+            "A video-led orientation lesson that gives John a clean space to explain the rhythm of each chapter before the learner reaches CARE prompts.",
+          duration: "6-8 minutes",
+          image: "/brand/john-author-cartoon-dydd-style.png",
+          mediaLabel: "Video teaching space with John",
+          mediaType: "video",
+          focus: [
+            "Introduce the recurring chapter flow: teaching, reflection, CARE, and Pathfinder.",
+            "Explain that assessments are mirrors that help personalize the journey.",
+            "Clarify what stays private and what can later be shared in a Camp Circle.",
+          ],
+          nextStep:
+            "Confirm your preferred pace and prepare to move from orientation into Identity.",
         },
       ],
       sections: [
@@ -215,6 +264,25 @@ export const dyddJourney: DyddJourney = {
           title: "DesignID belongs early in Identity",
           body:
             "Chapter one includes the DesignID wheel, primary/secondary reflection, integrative reflection, capacity, learning approach, contribution, shadow, and overall summary. If results exist, prefill the reflection language here.",
+        },
+      ],
+      sampleLessons: [
+        {
+          eyebrow: "Before the workbook",
+          title: "Before Who You Are, Remember Whose You Are",
+          summary:
+            "A short bridge lesson placed above the workbook section so the learner is spiritually and emotionally oriented before entering the first CARE sequence.",
+          duration: "7-9 minutes",
+          image: "/brand/badges/identity-badge.png",
+          mediaLabel: "Identity trail badge",
+          mediaType: "image",
+          focus: [
+            "Separate identity from role, achievement, failure, and comparison.",
+            "Anchor the first chapter in belonging to God before naming personal design.",
+            "Prepare the learner to answer the workbook honestly and prayerfully.",
+          ],
+          nextStep:
+            "Read the first workbook section and answer the Who Are You and Whose Are You prompts.",
         },
       ],
       sections: [

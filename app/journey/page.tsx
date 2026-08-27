@@ -108,6 +108,59 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
                 </div>
               ) : null}
 
+              {stage.sampleLessons?.length ? (
+                <section className="journey-sample-lessons" aria-label={`${stage.title} sample lessons`}>
+                  <div className="journey-sample-lessons-heading">
+                    <p className="section-label">Course receiving structure</p>
+                    <h3>Sample lessons that can sit above the workbook flow.</h3>
+                    <p>
+                      These are starter lesson blocks for the course map you are
+                      building now: module introduction, teaching media,
+                      practical focus, and the handoff into CARE or Pathfinder.
+                    </p>
+                  </div>
+                  <div className="journey-sample-lesson-grid">
+                    {stage.sampleLessons.map((lesson) => (
+                      <article className="journey-sample-lesson" key={lesson.title}>
+                        <div
+                          className={
+                            lesson.mediaType === "video"
+                              ? "journey-sample-media video"
+                              : "journey-sample-media"
+                          }
+                        >
+                          {lesson.image ? (
+                            <img src={lesson.image} alt={lesson.mediaLabel ?? lesson.title} />
+                          ) : null}
+                          {lesson.mediaType === "video" ? (
+                            <span aria-hidden="true" className="journey-video-play">
+                              <svg fill="none" viewBox="0 0 42 42">
+                                <circle cx="21" cy="21" r="20" fill="#fffaf0" stroke="#243f27" strokeWidth="2" />
+                                <path d="m18 14 11 7-11 7V14Z" fill="#476b42" stroke="#243f27" strokeLinejoin="round" strokeWidth="2" />
+                              </svg>
+                            </span>
+                          ) : null}
+                        </div>
+                        <div className="journey-sample-copy">
+                          <div>
+                            <p className="section-label">{lesson.eyebrow}</p>
+                            <h4>{lesson.title}</h4>
+                            <span>{lesson.duration}</span>
+                          </div>
+                          <p>{lesson.summary}</p>
+                          <ul>
+                            {lesson.focus.map((item) => (
+                              <li key={item}>{item}</li>
+                            ))}
+                          </ul>
+                          <strong>{lesson.nextStep}</strong>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
+
               <div className="journey-stage-grid">
                 <section>
                   <h3>Video intro</h3>

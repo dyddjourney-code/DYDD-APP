@@ -7873,6 +7873,161 @@ h3 {
   line-height: 1.58;
 }
 
+.journey-sample-lessons {
+  display: grid;
+  gap: 18px;
+  padding: clamp(20px, 3vw, 30px);
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(251, 250, 244, 0.95), rgba(234, 240, 226, 0.72)),
+    var(--panel);
+}
+
+.journey-sample-lessons-heading {
+  display: grid;
+  gap: 8px;
+  max-width: 940px;
+}
+
+.journey-sample-lessons-heading h3 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(1.45rem, 2.2vw, 2.05rem);
+  line-height: 1.08;
+}
+
+.journey-sample-lessons-heading p:not(.section-label) {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.62;
+}
+
+.journey-sample-lesson-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.journey-sample-lesson {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.42fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 16px 38px rgba(70, 58, 35, 0.07);
+}
+
+.journey-sample-media {
+  position: relative;
+  display: grid;
+  min-height: 240px;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(71, 107, 66, 0.18), rgba(184, 138, 67, 0.22)),
+    var(--green-soft);
+}
+
+.journey-sample-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.journey-sample-media.video img {
+  object-fit: contain;
+  padding: 18px 18px 0;
+  background:
+    radial-gradient(circle at 30% 18%, rgba(255, 255, 255, 0.76), transparent 34%),
+    linear-gradient(145deg, #eaf0e2, #f3e4c4);
+}
+
+.journey-video-play {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(255, 250, 240, 0.9);
+  box-shadow: 0 12px 28px rgba(36, 63, 39, 0.18);
+}
+
+.journey-video-play svg {
+  width: 42px;
+  height: 42px;
+}
+
+.journey-sample-copy {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding: clamp(18px, 3vw, 26px);
+}
+
+.journey-sample-copy > div:first-child {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 12px;
+  align-items: start;
+}
+
+.journey-sample-copy .section-label {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.journey-sample-copy h4 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(1.35rem, 2vw, 2rem);
+  line-height: 1.08;
+}
+
+.journey-sample-copy span {
+  justify-self: end;
+  padding: 7px 9px;
+  border: 1px solid rgba(184, 138, 67, 0.26);
+  border-radius: 999px;
+  background: rgba(243, 228, 196, 0.54);
+  color: #6f4d20;
+  font-size: 0.78rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.journey-sample-copy p {
+  margin: 0;
+  color: #40503e;
+  line-height: 1.62;
+}
+
+.journey-sample-copy ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.journey-sample-copy li {
+  color: #40503e;
+  line-height: 1.46;
+}
+
+.journey-sample-copy strong {
+  padding: 13px 14px;
+  border-left: 6px solid var(--brass);
+  border-radius: 8px;
+  background: rgba(251, 250, 244, 0.92);
+  color: var(--green-dark);
+  line-height: 1.4;
+}
+
 .journey-facilitator-card {
   display: grid;
   gap: 18px;
@@ -8440,6 +8595,8 @@ h3 {
   .journey-section-stack summary,
   .journey-care-grid,
   .journey-assessment-callouts,
+  .journey-sample-lessons-heading,
+  .journey-sample-lesson,
   .journey-pathfinder-card,
   .gear-grid {
     grid-template-columns: 1fr;
@@ -8638,10 +8795,22 @@ h3 {
   .journey-section-stack summary,
   .journey-care-grid,
   .journey-assessment-callouts,
+  .journey-sample-lessons-heading,
+  .journey-sample-lesson,
+  .journey-sample-copy > div:first-child,
   .journey-prompt-grid,
   .journey-pathfinder-card,
   .journey-workbook-form {
     grid-template-columns: 1fr;
+  }
+
+  .journey-sample-media {
+    min-height: 210px;
+  }
+
+  .journey-sample-copy span {
+    justify-self: start;
+    white-space: normal;
   }
 
   .hq-sidebar {

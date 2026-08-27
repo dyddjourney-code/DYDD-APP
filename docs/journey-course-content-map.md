@@ -16,6 +16,18 @@ The Journey page is now driven by two connected structures:
 The page should lead with the course outline, then keep the workbook/CARE
 engine below it.
 
+Current UX direction:
+
+- Show the course as a guided player, not a long scrolling outline.
+- Collapse modules by default except the active module.
+- Collapse sections inside each module except the active section.
+- Show one active lesson at a time.
+- Keep the lesson's workbook/checkpoint/Pathfinder response attached in the
+  active lesson view.
+- Provide previous/next controls so learners always know where they are.
+- Preserve stable unit slugs/types so Camp Circle can later show group progress
+  without exposing private workbook responses.
+
 ## Master Outline Translation
 
 Source file reviewed: `DYDD_Course_Content---1a6c7c74-a82a-48b3-a28d-dd2e4d63dc2f.xlsx`.

@@ -7892,6 +7892,439 @@ h3 {
   margin-bottom: 30px;
 }
 
+.journey-course-walkthrough {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.36fr) minmax(0, 1fr);
+  gap: clamp(18px, 3vw, 28px);
+  align-items: start;
+  margin-bottom: 28px;
+}
+
+.journey-course-index,
+.journey-active-lesson {
+  border: 1px solid rgba(228, 220, 203, 0.96);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 16px 42px rgba(70, 58, 35, 0.07);
+}
+
+.journey-course-index {
+  position: sticky;
+  top: 24px;
+  display: grid;
+  gap: 14px;
+  max-height: calc(100dvh - 48px);
+  overflow: auto;
+  padding: 18px;
+}
+
+.journey-course-index strong,
+.journey-course-index small {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.journey-course-index-heading {
+  display: grid;
+  gap: 7px;
+}
+
+.journey-course-index-heading h2 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(1.25rem, 2.1vw, 1.7rem);
+  line-height: 1.08;
+}
+
+.journey-course-progress {
+  overflow: hidden;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(71, 107, 66, 0.14);
+}
+
+.journey-course-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--green), var(--brass));
+}
+
+.journey-course-progress-label {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.journey-module-accordion,
+.journey-section-accordion {
+  display: grid;
+  gap: 9px;
+}
+
+.journey-module-accordion > section,
+.journey-section-accordion > section {
+  overflow: hidden;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(251, 250, 244, 0.75);
+}
+
+.journey-module-toggle,
+.journey-section-toggle {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+  min-width: 0;
+  padding: 11px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  list-style: none;
+}
+
+.journey-advanced-planning > summary::-webkit-details-marker {
+  display: none;
+}
+
+.journey-module-toggle > span,
+.journey-section-toggle > span {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--green-dark);
+  color: var(--white);
+  font-size: 0.72rem;
+  font-weight: 950;
+}
+
+.journey-section-toggle > span {
+  background: var(--brass);
+  color: var(--green-dark);
+}
+
+.journey-module-toggle strong,
+.journey-section-toggle strong {
+  color: var(--green-dark);
+  font-size: 0.95rem;
+  line-height: 1.14;
+}
+
+.journey-module-toggle small,
+.journey-section-toggle small {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 820;
+  white-space: nowrap;
+}
+
+.journey-section-accordion {
+  padding: 0 10px 10px;
+}
+
+.journey-section-accordion ol {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0 10px 10px;
+  list-style: none;
+}
+
+.journey-section-accordion ol button {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid rgba(71, 107, 66, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.74);
+  color: var(--green-dark);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.journey-section-accordion ol button.active {
+  border-color: rgba(36, 63, 39, 0.34);
+  background: rgba(234, 240, 226, 0.86);
+}
+
+.journey-section-accordion button:active,
+.journey-active-pagination button:active {
+  transform: translateY(1px);
+}
+
+.journey-section-accordion ol button span,
+.journey-active-meta span {
+  width: fit-content;
+  padding: 5px 7px;
+  border: 1px solid rgba(36, 63, 39, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+  color: #40503e;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.journey-section-accordion ol button span.designid,
+.journey-active-lesson.designid .journey-active-meta span:first-child {
+  background: rgba(234, 240, 226, 0.95);
+  color: #315d3c;
+}
+
+.journey-section-accordion ol button span.pathfinder,
+.journey-active-lesson.pathfinder .journey-active-meta span:first-child {
+  background: rgba(243, 228, 196, 0.86);
+  color: #6f4d20;
+}
+
+.journey-section-accordion ol button strong {
+  color: var(--green-dark);
+  font-size: 0.9rem;
+  line-height: 1.18;
+}
+
+.journey-active-lesson {
+  display: grid;
+  gap: 20px;
+  padding: clamp(20px, 4vw, 36px);
+  border-left: 8px solid rgba(71, 107, 66, 0.72);
+}
+
+.journey-active-lesson.designid {
+  border-left-color: #3f8f58;
+}
+
+.journey-active-lesson.pathfinder {
+  border-left-color: var(--brass);
+}
+
+.journey-active-lesson.assessment {
+  border-left-color: #386f91;
+}
+
+.journey-active-lesson.completion {
+  border-left-color: var(--green-dark);
+}
+
+.journey-active-lesson > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.3fr);
+  gap: 20px;
+  align-items: start;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.journey-active-lesson h2 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1;
+}
+
+.journey-active-lesson header p:not(.section-label) {
+  max-width: 72ch;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.62;
+}
+
+.journey-active-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: flex-end;
+}
+
+.journey-active-section-marker {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.28fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+  border: 1px solid rgba(71, 107, 66, 0.13);
+  border-radius: 8px;
+  background: rgba(234, 240, 226, 0.52);
+}
+
+.journey-active-section-marker span {
+  color: var(--brass);
+  font-size: 0.82rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.journey-active-section-marker strong {
+  color: var(--green-dark);
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.journey-active-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.journey-active-body > section {
+  display: grid;
+  gap: 12px;
+}
+
+.journey-active-body p:not(.section-label) {
+  margin: 0;
+  color: #40503e;
+  font-size: 1rem;
+  line-height: 1.78;
+}
+
+.journey-active-workbook {
+  padding: 18px;
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 8px;
+  background: rgba(251, 250, 244, 0.9);
+}
+
+.journey-active-lesson.pathfinder .journey-active-workbook {
+  background: rgba(243, 228, 196, 0.5);
+}
+
+.journey-active-workbook h3 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  line-height: 1.2;
+}
+
+.journey-active-workbook > span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.journey-active-workbook textarea {
+  width: 100%;
+  min-width: 0;
+  margin-top: 4px;
+  border: 1px solid rgba(71, 107, 66, 0.2);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--ink);
+  font: inherit;
+  line-height: 1.45;
+  padding: 12px 13px;
+  resize: vertical;
+}
+
+.journey-active-note {
+  margin: 0;
+  padding: 12px 14px;
+  border-left: 6px solid var(--brass);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--muted);
+  font-weight: 820;
+  line-height: 1.45;
+}
+
+.journey-active-pagination {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.journey-active-pagination button,
+.journey-active-pagination span {
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
+  background: var(--green-dark);
+  color: var(--white);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.journey-active-pagination button:first-child {
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--green-dark);
+}
+
+.journey-active-pagination span {
+  display: grid;
+  place-items: center;
+  background: rgba(234, 240, 226, 0.74);
+  color: var(--green-dark);
+  cursor: default;
+}
+
+.journey-advanced-planning {
+  overflow: hidden;
+  margin-top: 24px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.journey-advanced-planning > summary {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.24fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  cursor: pointer;
+  padding: 16px 18px;
+  list-style: none;
+}
+
+.journey-advanced-planning > summary span {
+  color: var(--brass);
+  font-size: 0.76rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.journey-advanced-planning > summary strong {
+  color: var(--green-dark);
+  line-height: 1.35;
+}
+
+.journey-advanced-planning[open] {
+  padding-bottom: 18px;
+}
+
+.journey-advanced-planning .journey-chapter-nav,
+.journey-advanced-planning .journey-stage-stack,
+.journey-advanced-planning .journey-source-band,
+.journey-advanced-planning .dydd-course-overview,
+.journey-advanced-planning .dydd-progress-racetrack {
+  margin-right: 18px;
+  margin-left: 18px;
+}
+
+.journey-advanced-planning .dydd-course-overview,
+.journey-advanced-planning .dydd-progress-racetrack {
+  margin-bottom: 18px;
+}
+
 .dydd-course-module {
   display: grid;
   gap: 18px;
@@ -8893,6 +9326,10 @@ h3 {
   .course-personalization,
   .dydd-course-overview,
   .dydd-progress-racetrack,
+  .journey-course-walkthrough,
+  .journey-active-lesson > header,
+  .journey-active-section-marker,
+  .journey-active-body,
   .module-panel,
   .lesson-page,
   .named-check,
@@ -9321,6 +9758,10 @@ h3 {
   .journey-sample-lesson,
   .dydd-course-overview,
   .dydd-progress-racetrack,
+  .journey-course-walkthrough,
+  .journey-active-lesson > header,
+  .journey-active-section-marker,
+  .journey-active-body,
   .dydd-course-stats,
   .dydd-course-module > header,
   .dydd-course-unit,
@@ -9336,6 +9777,20 @@ h3 {
   .journey-sample-media {
     width: 100%;
     max-width: 520px;
+  }
+
+  .journey-course-index {
+    position: static;
+    max-height: none;
+  }
+
+  .journey-active-meta {
+    justify-content: flex-start;
+  }
+
+  .journey-active-pagination,
+  .journey-advanced-planning > summary {
+    grid-template-columns: 1fr;
   }
 
   .dydd-course-module > header > span {

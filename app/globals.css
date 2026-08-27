@@ -7614,17 +7614,25 @@ h3 {
 
 .journey-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.32fr);
+  grid-template-columns: minmax(0, 0.74fr) minmax(220px, 1fr);
   gap: clamp(22px, 4vw, 46px);
-  align-items: stretch;
-  min-height: 420px;
-  padding: clamp(28px, 5vw, 62px);
+  align-items: end;
+  min-height: 460px;
+  padding: clamp(28px, 5vw, 64px);
   border: 1px solid rgba(228, 220, 203, 0.95);
   border-radius: 8px;
   background:
-    linear-gradient(104deg, rgba(251, 250, 244, 0.95) 0%, rgba(251, 250, 244, 0.82) 45%, rgba(36, 63, 39, 0.24) 100%),
-    url("https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/c5196bb6-f968-4aab-8b29-698d6cb71a8e/aerial-view-of-campuhan-ridge-walk-scenic-green-2024-09-20-23-45-29-utc.jpg?format=1500w") center / cover;
+    linear-gradient(102deg, rgba(251, 250, 244, 0.96) 0%, rgba(251, 250, 244, 0.82) 32%, rgba(251, 250, 244, 0.26) 56%, rgba(36, 63, 39, 0.08) 100%),
+    linear-gradient(0deg, rgba(36, 63, 39, 0.16), rgba(36, 63, 39, 0.02)),
+    url("/brand/dydd-journey-road-cartoon-hero.png") center / cover;
   box-shadow: var(--shadow);
+}
+
+.journey-hero > div {
+  display: grid;
+  gap: 18px;
+  align-content: end;
+  min-width: 0;
 }
 
 .journey-hero h1 {
@@ -7634,39 +7642,11 @@ h3 {
 }
 
 .journey-hero .lede {
-  max-width: 760px;
-}
-
-.journey-hero aside {
-  display: grid;
-  align-content: end;
-  min-height: 280px;
-  padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.64);
-  border-radius: 8px;
-  background: rgba(36, 63, 39, 0.82);
-  color: var(--white);
-}
-
-.journey-hero aside span {
-  margin-bottom: 18px;
-  color: var(--brass-soft);
-  font-size: 0.82rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.journey-hero aside strong {
-  display: block;
-  font-size: 5rem;
-  line-height: 0.9;
-}
-
-.journey-hero aside small {
-  max-width: 18ch;
-  color: rgba(255, 255, 255, 0.82);
+  max-width: 38ch;
+  color: #40503e;
+  font-size: clamp(1.12rem, 2vw, 1.5rem);
   font-weight: 800;
+  line-height: 1.35;
 }
 
 .journey-source-band {
@@ -8202,23 +8182,25 @@ h3 {
   border: 1px solid rgba(36, 63, 39, 0.14);
   border-radius: 8px;
   background:
-    linear-gradient(135deg, rgba(234, 240, 226, 0.92), rgba(251, 250, 244, 0.96)),
+    linear-gradient(135deg, rgba(234, 240, 226, 0.95), rgba(251, 250, 244, 0.96)),
     var(--panel);
 }
 
 .journey-active-lesson.pathfinder .journey-active-workbook {
-  background: rgba(243, 228, 196, 0.5);
+  background:
+    linear-gradient(135deg, rgba(226, 237, 218, 0.96), rgba(251, 250, 244, 0.96)),
+    var(--panel);
 }
 
 .journey-active-workbook.designid {
   background:
-    linear-gradient(135deg, rgba(234, 240, 226, 0.96), rgba(255, 255, 255, 0.92)),
+    linear-gradient(135deg, rgba(226, 237, 218, 0.96), rgba(255, 255, 255, 0.92)),
     var(--panel);
 }
 
 .journey-active-workbook.pathfinder {
   background:
-    linear-gradient(135deg, rgba(243, 228, 196, 0.72), rgba(255, 250, 240, 0.96)),
+    linear-gradient(135deg, rgba(218, 233, 209, 0.96), rgba(255, 250, 240, 0.96)),
     var(--panel);
 }
 
@@ -8246,21 +8228,24 @@ h3 {
 }
 
 .journey-care-divider span:nth-child(2) {
-  background: rgba(212, 164, 81, 0.9);
-  color: var(--green-dark);
+  background: #315d3c;
+  color: var(--white);
 }
 
 .journey-care-divider span:nth-child(3) {
-  background: rgba(115, 157, 94, 0.72);
+  background: #476b42;
 }
 
 .journey-care-divider span:nth-child(4) {
-  background: rgba(100, 124, 155, 0.78);
+  background: #739d5e;
+  color: var(--green-dark);
 }
 
 .journey-care-heading {
   display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 8px;
+  align-items: start;
 }
 
 .journey-active-workbook h3 {
@@ -8277,7 +8262,9 @@ h3 {
   line-height: 1.62;
 }
 
-.journey-care-heading > span {
+.journey-care-heading > div > span {
+  display: inline-grid;
+  margin-top: 10px;
   width: fit-content;
   padding: 6px 8px;
   border: 1px solid rgba(36, 63, 39, 0.12);
@@ -8286,6 +8273,33 @@ h3 {
   color: var(--muted);
   font-size: 0.82rem;
   font-weight: 850;
+}
+
+.journey-care-marker {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  width: 76px;
+  margin: 0;
+  padding: 8px;
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.journey-care-marker img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.journey-care-marker figcaption {
+  color: var(--green-dark);
+  font-size: 0.62rem;
+  font-weight: 950;
+  line-height: 1.1;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .journey-care-process {
@@ -8300,7 +8314,23 @@ h3 {
   padding: 14px;
   border: 1px solid rgba(71, 107, 66, 0.13);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.76);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.journey-care-process section:nth-child(1) {
+  background: rgba(234, 240, 226, 0.72);
+}
+
+.journey-care-process section:nth-child(2) {
+  background: rgba(226, 237, 218, 0.78);
+}
+
+.journey-care-process section:nth-child(3) {
+  background: rgba(218, 233, 209, 0.84);
+}
+
+.journey-care-process section:nth-child(4) {
+  background: rgba(206, 225, 195, 0.78);
 }
 
 .journey-care-process span {
@@ -10000,6 +10030,7 @@ h3 {
   .journey-active-lesson > header,
   .journey-active-section-marker,
   .journey-active-body,
+  .journey-care-heading,
   .dydd-course-stats,
   .dydd-course-module > header,
   .dydd-course-unit,
@@ -10024,6 +10055,11 @@ h3 {
 
   .journey-active-meta {
     justify-content: flex-start;
+  }
+
+  .journey-care-marker {
+    justify-self: start;
+    width: min(140px, 100%);
   }
 
   .journey-active-pagination,

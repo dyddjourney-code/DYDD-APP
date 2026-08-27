@@ -38,17 +38,8 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
         <div>
           <p className="eyebrow">Full DYDD journey</p>
           <h1>{dyddJourney.title}</h1>
-          <p className="lede">
-            The book, workbook, and 8-week class are now mapped into a digital
-            journey that can become video-led, workbook-driven, database-backed,
-            and companion-aware.
-          </p>
+          <p className="lede">You are on purpose, for purpose.</p>
         </div>
-        <aside>
-          <span>{dyddJourney.tagline}</span>
-          <strong>{dyddMainCourseStats.unitCount}</strong>
-          <small>course units mapped from John's master outline</small>
-        </aside>
       </header>
 
       <PageHelp

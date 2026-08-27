@@ -61,6 +61,11 @@ const responsePlaceholders: Record<JourneyPrompt["responseType"], string> = {
 type WorkbookExperience = {
   care: JourneyCarePerspective;
   kind: "care" | "designid" | "pathfinder";
+  marker?: {
+    alt: string;
+    image: string;
+    label: string;
+  };
   prompts: JourneyPrompt[];
   purpose: string;
   sourceRef?: string;
@@ -116,6 +121,11 @@ function defaultDesignIdExperience(unit: DyddCourseUnit): WorkbookExperience | n
         "Ask how this design language could guide your next faithful step without becoming a label.",
     },
     kind: "designid",
+    marker: {
+      alt: "DesignID",
+      image: "/brand/tools/badge-icons/designid-icon.png",
+      label: "DesignID reflection",
+    },
     prompts: [
       {
         id: `${unit.slug}-designid-connect`,
@@ -135,6 +145,30 @@ function defaultDesignIdExperience(unit: DyddCourseUnit): WorkbookExperience | n
     sourceRef: unit.workbookPages ? `Workbook ${unit.workbookPages}` : "DesignID reflection",
     title: unit.workbookSection ?? unit.title,
   };
+}
+
+function getAssessmentMarker(unit: DyddCourseUnit, title?: string): WorkbookExperience["marker"] {
+  const searchable = normalize(
+    [unit.title, unit.workbookSection, unit.notes, title, unit.typeLabel].filter(Boolean).join(" "),
+  );
+
+  if (unit.type === "designid-reflection" || searchable.includes("designid")) {
+    return {
+      alt: "DesignID",
+      image: "/brand/tools/badge-icons/designid-icon.png",
+      label: "DesignID reflection",
+    };
+  }
+
+  if (searchable.includes("spiritual gifts") || searchable.includes("gifts")) {
+    return {
+      alt: "Spiritual Gifts",
+      image: "/brand/tools/badge-icons/spiritual-gifts-icon.png",
+      label: "Spiritual Gifts reflection",
+    };
+  }
+
+  return undefined;
 }
 
 function defaultPathfinderExperience(unit: DyddCourseUnit): WorkbookExperience {
@@ -228,6 +262,7 @@ function getWorkbookExperience(active: FlatUnit): WorkbookExperience | null {
     return {
       care: matchedSection.care,
       kind: unit.type === "designid-reflection" ? "designid" : "care",
+      marker: getAssessmentMarker(unit, matchedSection.title),
       prompts: matchedSection.prompts,
       purpose: matchedSection.purpose,
       sourceRef: matchedSection.sourceRef,
@@ -255,6 +290,7 @@ function getWorkbookExperience(active: FlatUnit): WorkbookExperience | null {
         "Ask what this response may reveal about your design, growth, or purpose.",
     },
     kind: "care",
+    marker: getAssessmentMarker(unit, unit.workbookSection),
     prompts: [
       {
         id: `${unit.slug}-workbook-response`,
@@ -510,16 +546,24 @@ export function JourneyCourseNavigator({ modules }: JourneyCourseNavigatorProps)
                 <span>E</span>
               </div>
               <div className="journey-care-heading">
-                <p className="section-label">
-                  {workbookExperience.kind === "pathfinder"
-                    ? "Pathfinder CARE"
-                    : workbookExperience.kind === "designid"
-                      ? "DesignID CARE reflection"
-                      : "Workbook CARE reflection"}
-                </p>
-                <h3>{workbookExperience.title}</h3>
-                <p>{workbookExperience.purpose}</p>
-                {workbookExperience.sourceRef ? <span>{workbookExperience.sourceRef}</span> : null}
+                <div>
+                  <p className="section-label">
+                    {workbookExperience.kind === "pathfinder"
+                      ? "Pathfinder CARE"
+                      : workbookExperience.kind === "designid"
+                        ? "DesignID CARE reflection"
+                        : "Workbook CARE reflection"}
+                  </p>
+                  <h3>{workbookExperience.title}</h3>
+                  <p>{workbookExperience.purpose}</p>
+                  {workbookExperience.sourceRef ? <span>{workbookExperience.sourceRef}</span> : null}
+                </div>
+                {workbookExperience.marker ? (
+                  <figure className="journey-care-marker">
+                    <img src={workbookExperience.marker.image} alt={workbookExperience.marker.alt} />
+                    <figcaption>{workbookExperience.marker.label}</figcaption>
+                  </figure>
+                ) : null}
               </div>
 
               <div className="journey-care-process">

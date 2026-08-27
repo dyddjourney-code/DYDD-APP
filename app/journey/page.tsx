@@ -42,6 +42,18 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
         </div>
       </header>
 
+      <section className="dydd-progress-racetrack journey-top-racetrack" aria-label="Journey module quick reference">
+        <ol>
+          {dyddMainCourseOutline.map((module, index) => (
+            <li key={module.slug}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{module.title}</strong>
+              <small>{module.units.length} units</small>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       <PageHelp
         items={[
           "Use the course map to move lesson by lesson through the full DYDD class.",

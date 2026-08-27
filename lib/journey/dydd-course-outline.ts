@@ -20,6 +20,16 @@ export type DyddCourseUnit = {
   notes?: string;
   lessonMainIdea: string;
   anchorScripture?: string;
+  focus?: string[];
+  media?: {
+    image?: string;
+    label: string;
+    type: "image" | "video";
+  };
+  practice?: {
+    prompt: string;
+    title: string;
+  };
   reflectionPrompt: string;
   teachingBlocks: string[];
 };
@@ -69,17 +79,33 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
       },
       {
         row: 4,
-        slug: "welcome-and-orientation-navigating-the-course-4",
+        slug: "welcome-and-orientation-how-this-journey-works-4",
         type: "orientation",
         section: "Welcome & Orientation",
-        title: "Navigating the Course",
+        title: "How This Journey Works",
         typeLabel: "Orientation",
-        duration: "4-6 min",
-        lessonMainIdea: "Welcome the learner into Navigating the Course and make the next part of the journey feel clear, doable, and personal.",
-        reflectionPrompt: "What do you need to notice or practice after Navigating the Course?",
+        duration: "6-8 min",
+        lessonMainIdea: "A video-led orientation lesson that gives John a clean space to explain the rhythm of each chapter before the learner reaches CARE prompts.",
+        focus: [
+          "Introduce the recurring chapter flow: teaching, reflection, CARE, and Pathfinder.",
+          "Explain that assessments are mirrors that help personalize the journey.",
+          "Clarify what stays private and what can later be shared in a Camp Circle.",
+        ],
+        media: {
+          image: "/brand/john-author-cartoon-dydd-style.png",
+          label: "Video teaching space with John",
+          type: "video",
+        },
+        practice: {
+          title: "Pace decision",
+          prompt: "Choose whether you are walking this weekly, in a short intensive, with a partner, or inside a group. That pace will shape reminders and chapter expectations later.",
+        },
+        reflectionPrompt: "What rhythm will help you walk this journey with steadiness instead of rushing it?",
         teachingBlocks: [
-          "This lesson introduces Navigating the Course as part of the Welcome & Orientation movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+          "Every chapter should feel familiar without becoming flat. The learner begins with a short teaching section, moves into reflection, practices the CARE rhythm, and carries Pathfinder language forward when a chapter is building toward niche.",
+          "The goal is not to finish a checklist. The goal is to slow down enough to recognize what God is revealing and then take the next faithful step with it.",
+          "DesignID, Spiritual Gifts, DesignPD, and FruitLife 360 can eventually sit beside the lesson and speak directly into the learner's path. The course still needs one clear path for everyone, but the app can place personal insight beside that path when the learner is signed in and records are connected.",
+          "Journal entries, CARE reflections, and assessment records belong first to the learner. Camp Circle tools can invite shared progress, reminders, and discussion, while private workbook answers stay protected.",
         ],
       },
       {

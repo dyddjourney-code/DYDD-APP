@@ -414,6 +414,8 @@ export function JourneyCourseNavigator({ modules }: JourneyCourseNavigatorProps)
   );
   const flatUnits = useMemo(() => flattenModules(modules), [modules]);
   const [activeSlug, setActiveSlug] = useState(flatUnits[0]?.unit.slug ?? "");
+  const [openModules, setOpenModules] = useState<string[]>([]);
+  const [openSections, setOpenSections] = useState<string[]>([]);
   const activeIndex = Math.max(
     0,
     flatUnits.findIndex((item) => item.unit.slug === activeSlug),
@@ -432,6 +434,33 @@ export function JourneyCourseNavigator({ modules }: JourneyCourseNavigatorProps)
     return null;
   }
 
+  const setLesson = (item: FlatUnit) => {
+    const sectionKey = `${item.module.slug}-${item.section}`;
+    setActiveSlug(item.unit.slug);
+    setOpenModules((current) =>
+      current.includes(item.module.slug) ? current : [...current, item.module.slug],
+    );
+    setOpenSections((current) =>
+      current.includes(sectionKey) ? current : [...current, sectionKey],
+    );
+  };
+
+  const toggleModule = (moduleSlug: string) => {
+    setOpenModules((current) =>
+      current.includes(moduleSlug)
+        ? current.filter((slug) => slug !== moduleSlug)
+        : [...current, moduleSlug],
+    );
+  };
+
+  const toggleSection = (sectionKey: string) => {
+    setOpenSections((current) =>
+      current.includes(sectionKey)
+        ? current.filter((key) => key !== sectionKey)
+        : [...current, sectionKey],
+    );
+  };
+
   return (
     <section className="journey-course-walkthrough" aria-label="Guided course walkthrough">
       <aside className="journey-course-index">
@@ -449,26 +478,37 @@ export function JourneyCourseNavigator({ modules }: JourneyCourseNavigatorProps)
         <div className="journey-module-accordion">
           {moduleSections.map(({ module, sections }, moduleIndex) => {
             const moduleActive = module.slug === active.module.slug;
+            const moduleOpen = openModules.includes(module.slug);
             return (
-              <section className={moduleActive ? "open" : ""} key={module.slug}>
+              <section
+                className={`${moduleOpen ? "open" : ""} ${moduleActive ? "current" : ""}`}
+                key={module.slug}
+              >
                 <button
                   className="journey-module-toggle"
-                  onClick={() => setActiveSlug(module.units[0]?.slug ?? active.unit.slug)}
+                  aria-expanded={moduleOpen}
+                  onClick={() => toggleModule(module.slug)}
                   type="button"
                 >
                 <span>{String(moduleIndex + 1).padStart(2, "0")}</span>
                 <strong>{module.title}</strong>
                 <small>{module.units.length} units</small>
                 </button>
-                {moduleActive ? (
+                {moduleOpen ? (
                   <div className="journey-section-accordion">
                     {sections.map((section, sectionIndex) => {
                       const sectionActive = section.title === active.section;
+                      const sectionKey = `${module.slug}-${section.title}`;
+                      const sectionOpen = openSections.includes(sectionKey);
                       return (
-                        <section className={sectionActive ? "open" : ""} key={`${module.slug}-${section.title}`}>
+                        <section
+                          className={`${sectionOpen ? "open" : ""} ${sectionActive ? "current" : ""}`}
+                          key={sectionKey}
+                        >
                           <button
                             className="journey-section-toggle"
-                            onClick={() => setActiveSlug(section.units[0]?.slug ?? active.unit.slug)}
+                            aria-expanded={sectionOpen}
+                            onClick={() => toggleSection(sectionKey)}
                             type="button"
                           >
                       <span>
@@ -477,20 +517,25 @@ export function JourneyCourseNavigator({ modules }: JourneyCourseNavigatorProps)
                       <strong>{section.title}</strong>
                       <small>{section.units.length} lessons</small>
                           </button>
-                          {sectionActive ? (
+                          {sectionOpen ? (
                             <ol>
-                              {section.units.map((unit) => (
+                              {section.units.map((unit) => {
+                                const flatUnit = flatUnits.find((item) => item.unit.slug === unit.slug);
+                                return (
                                 <li key={unit.slug}>
                                   <button
                                     className={unit.slug === active.unit.slug ? "active" : ""}
-                                    onClick={() => setActiveSlug(unit.slug)}
+                                    onClick={() =>
+                                      flatUnit ? setLesson(flatUnit) : setActiveSlug(unit.slug)
+                                    }
                                     type="button"
                                   >
                                     <span className={typeClass[unit.type]}>{unit.typeLabel}</span>
                                     <strong>{unit.title}</strong>
                                   </button>
                                 </li>
-                              ))}
+                                );
+                              })}
                             </ol>
                           ) : null}
                         </section>
@@ -530,11 +575,47 @@ export function JourneyCourseNavigator({ modules }: JourneyCourseNavigatorProps)
         </section>
 
         <div className={workbookExperience ? "journey-active-body has-care" : "journey-active-body"}>
-          <section>
+          {active.unit.media ? (
+            <figure
+              className={
+                active.unit.media.type === "video"
+                  ? "journey-active-media video"
+                  : "journey-active-media"
+              }
+            >
+              {active.unit.media.image ? (
+                <img src={active.unit.media.image} alt={active.unit.media.label} />
+              ) : null}
+              {active.unit.media.type === "video" ? (
+                <span aria-hidden="true" className="journey-video-play">
+                  <svg fill="none" viewBox="0 0 42 42">
+                    <circle cx="21" cy="21" r="20" fill="#fffaf0" stroke="#243f27" strokeWidth="2" />
+                    <path d="m18 14 11 7-11 7V14Z" fill="#476b42" stroke="#243f27" strokeLinejoin="round" strokeWidth="2" />
+                  </svg>
+                </span>
+              ) : null}
+              <figcaption>{active.unit.media.label}</figcaption>
+            </figure>
+          ) : null}
+
+          <section className="journey-teaching-card">
             <p className="section-label">Teaching block</p>
+            {active.unit.focus?.length ? (
+              <div className="journey-active-focus" aria-label="Lesson focus">
+                {active.unit.focus.map((item) => (
+                  <span key={item}>{item}</span>
+                ))}
+              </div>
+            ) : null}
             {active.unit.teachingBlocks.map((block) => (
               <p key={block}>{cleanTeachingBlock(block, Boolean(workbookExperience))}</p>
             ))}
+            {active.unit.practice ? (
+              <section className="journey-active-practice" aria-label="Lesson practice">
+                <span>{active.unit.practice.title}</span>
+                <strong>{active.unit.practice.prompt}</strong>
+              </section>
+            ) : null}
           </section>
 
           {workbookExperience ? (
@@ -640,14 +721,14 @@ export function JourneyCourseNavigator({ modules }: JourneyCourseNavigatorProps)
 
         <footer className="journey-active-pagination">
           {previous ? (
-            <button onClick={() => setActiveSlug(previous.unit.slug)} type="button">
+            <button onClick={() => setLesson(previous)} type="button">
               Previous: {previous.unit.title}
             </button>
           ) : (
             <span>First lesson</span>
           )}
           {next ? (
-            <button onClick={() => setActiveSlug(next.unit.slug)} type="button">
+            <button onClick={() => setLesson(next)} type="button">
               Next: {next.unit.title}
             </button>
           ) : (

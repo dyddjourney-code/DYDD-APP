@@ -103,6 +103,66 @@ export const learningCourses = [
               "Explores how the Decide tendency can become wiser through conviction, structure, and prayerful reflection.",
             title: "Deciding with Discernment",
           },
+          {
+            body: [
+              "Doing is where design becomes visible. Some people move best when they can carry ownership alone. Others become clearer and more faithful when they move with people beside them.",
+              "A Together action pattern does not mean dependence. It means shared energy, conversation, accountability, and co-labor may be part of how the person is designed to carry work well.",
+              "The course should help the learner choose an action rhythm that is honest about capacity: what they can carry, what needs partnership, and what should wait.",
+            ],
+            focus: [
+              "Action needs a rhythm that matches the person's real wiring.",
+              "Together does not mean weak; it may mean relationally sustained.",
+              "Follow-through improves when the next step is small, named, and supported.",
+            ],
+            reflectionPrompt:
+              "What next step would become healthier if you invited the right person into it?",
+            slug: "doing-with-support",
+            summary:
+              "Connects the Do tendency to ownership, partnership, and realistic follow-through.",
+            title: "Doing With Support",
+          },
+        ],
+      },
+      {
+        slug: "integration",
+        title: "Module 3: Sustainable Alignment",
+        lessons: [
+          {
+            body: [
+              "Plan, Decide, and Do are most useful when they are read together. A person may dream broadly, decide relationally, and act best with support. Another person may plan concretely, decide analytically, and act independently.",
+              "The point is not to admire the pattern. The point is to build a repeatable alignment rhythm that helps a learner steward work, relationships, ministry, and decisions without violating how they are made.",
+              "The app can eventually turn this module into a weekly alignment tool: current decision, needed structure, needed people, next step, and review date.",
+            ],
+            focus: [
+              "Read Plan, Decide, and Do as one movement pattern.",
+              "Name what the pattern needs to stay healthy.",
+              "Turn the pattern into a weekly alignment rhythm.",
+            ],
+            reflectionPrompt:
+              "Write one sentence that names how you plan, decide, and do when you are healthy.",
+            slug: "integrating-plan-decide-do",
+            summary:
+              "Pulls the three DesignPD movements into one practical alignment rhythm.",
+            title: "Integrating Plan, Decide, and Do",
+          },
+          {
+            body: [
+              "A design pattern becomes sustainable when it has guardrails. Guardrails may include calendar blocks, decision criteria, prayer checkpoints, shared agreements, rest rhythms, or a simple review question.",
+              "The learner should leave DesignPD with a small operating agreement they can use in work, marriage, ministry, or leadership.",
+              "This lesson can eventually connect to Design Pathways by turning the agreement into one short experiment with a start date, support person, and review moment.",
+            ],
+            focus: [
+              "Sustainability needs guardrails, not just motivation.",
+              "A personal operating agreement makes the pattern usable.",
+              "Healthy follow-through should be reviewed, adjusted, and practiced.",
+            ],
+            reflectionPrompt:
+              "What guardrail would protect your best way of moving for the next two weeks?",
+            slug: "building-a-sustainable-rhythm",
+            summary:
+              "Helps the learner draft a simple operating agreement for healthier movement.",
+            title: "Building a Sustainable Rhythm",
+          },
         ],
       },
     ],
@@ -186,6 +246,66 @@ export const learningCourses = [
               "Connects gift strength to maturity, humility, and the fruit of the Spirit.",
             title: "Maturity Matters",
           },
+          {
+            body: [
+              "Gifts become trustworthy when they are practiced inside the Body of Christ. A private result becomes more mature when people who know the learner can recognize fruit, safety, love, and service.",
+              "Confirmation should be gentle and practical. The learner does not need a dramatic title. They need a place to serve, people to listen to, and feedback that helps the gift grow in love.",
+              "This lesson should help churches use the assessment without turning it into a label system.",
+            ],
+            focus: [
+              "Community confirmation keeps gifts grounded.",
+              "A gift should build others up in love.",
+              "A serving experiment is often better than a permanent assignment.",
+            ],
+            reflectionPrompt:
+              "Who could help you confirm where your gifts are already serving others well?",
+            slug: "confirmed-in-community",
+            summary:
+              "Moves the learner from private gift results into community confirmation and humble service.",
+            title: "Confirmed in Community",
+          },
+        ],
+      },
+      {
+        slug: "practice",
+        title: "Module 3: Gifts in Motion",
+        lessons: [
+          {
+            body: [
+              "A spiritual gift becomes clearer as it is practiced. The learner should choose one small serving experiment, use the gift with humility, and notice what fruit appears.",
+              "This is not about proving a gift. It is about serving faithfully and watching what God confirms through people, peace, fruit, and wise counsel.",
+              "The course can eventually let the learner connect a top gift to a ministry area, a next step, and a follow-up conversation.",
+            ],
+            focus: [
+              "Choose one serving experiment instead of trying to solve everything.",
+              "Look for fruit, peace, confirmation, and humility.",
+              "Let the experiment clarify the next faithful step.",
+            ],
+            reflectionPrompt:
+              "What small serving experiment could help you practice one gift this week?",
+            slug: "choose-a-serving-experiment",
+            summary:
+              "Turns gift language into a simple, humble serving experiment.",
+            title: "Choose a Serving Experiment",
+          },
+          {
+            body: [
+              "Spiritual Gifts should eventually sit beside DesignID inside the DYDD journey. DesignID can describe how a person naturally reflects God's image; gifts can help name how the Spirit may empower them to build others up.",
+              "The learner should notice where the two agree, where they feel different, and what new serving possibilities emerge when both are read with prayer.",
+              "This lesson can later feed directly into the Gifts chapter of the main DYDD course.",
+            ],
+            focus: [
+              "DesignID and Spiritual Gifts are different mirrors.",
+              "Overlap can reveal a strong service lane.",
+              "Difference can reveal growth, stretching, or partnership needs.",
+            ],
+            reflectionPrompt:
+              "Where do your gifts and design seem to agree, and where do they stretch each other?",
+            slug: "gifts-and-designid-together",
+            summary:
+              "Places Spiritual Gifts beside DesignID so the learner can see both design and empowerment.",
+            title: "Gifts and DesignID Together",
+          },
         ],
       },
     ],
@@ -195,6 +315,131 @@ export const learningCourses = [
       "Built from the Spiritual Gifts mirrored result fields: top gift names, scores, blurbs, maturity descriptions, growth areas, signs of immaturity, and steps to grow.",
     tagline: "Gifts for service",
     title: "Spiritual Gifts in Service",
+  },
+  {
+    accent: "sage",
+    assessmentType: "design_pathways",
+    companionNote:
+      "Dydi should help the learner turn assessment insight into a simple pathway: direction, experiment, support, review, and adjustment.",
+    description:
+      "A discernment class for choosing a faithful next path, testing it through small experiments, and learning without getting stuck.",
+    logo: "/brand/tools/design-pathways-logo.jpg",
+    modules: [
+      {
+        slug: "orientation",
+        title: "Module 1: Find the Path",
+        lessons: [
+          {
+            body: [
+              "Design Pathways is the bridge between insight and movement. It helps the learner ask what direction is emerging, what doors are open, what experiments are wise, and what support is needed.",
+              "The goal is not to predict the whole future. The goal is to discern the next faithful path and move with enough clarity to learn.",
+              "This course framework should eventually connect DesignID, Spiritual Gifts, DesignPD, and FruitLife 360 into practical pathway decisions.",
+            ],
+            focus: [
+              "A pathway is a direction to test, not a permanent label.",
+              "Discernment can move through small experiments.",
+              "The learner should look for convergence across desire, design, gifts, and fruit.",
+            ],
+            reflectionPrompt:
+              "What path seems to be opening in front of you right now?",
+            slug: "welcome-to-design-pathways",
+            summary:
+              "Introduces Design Pathways as the discernment bridge between assessment insight and faithful movement.",
+            title: "Welcome to Design Pathways",
+          },
+          {
+            body: [
+              "A pathway should be named clearly enough to test. Vague language like 'help people' can become more useful when it names who, how, where, and why.",
+              "The learner can begin by gathering signals: repeated burdens, encouragement from others, visible fruit, skill, opportunity, and holy desire.",
+              "This lesson will eventually help the learner select one possible path from several options without feeling locked into it forever.",
+            ],
+            focus: [
+              "Name the path in plain language.",
+              "Gather evidence from design, gifts, fruit, desire, story, and opportunity.",
+              "Choose one path to test first.",
+            ],
+            reflectionPrompt:
+              "Write one possible pathway sentence using who, how, where, and why.",
+            slug: "name-a-possible-path",
+            summary:
+              "Helps the learner turn broad purpose language into a testable pathway sentence.",
+            title: "Name a Possible Path",
+          },
+        ],
+      },
+      {
+        slug: "experiment",
+        title: "Module 2: Test the Path",
+        lessons: [
+          {
+            body: [
+              "A faithful experiment is small enough to finish and meaningful enough to teach the learner something. It could be a conversation, a service opportunity, a workshop outline, a volunteer role, a prototype, or a one-week rhythm.",
+              "Experiments reduce pressure. The learner does not need to know whether this is the final answer. They need to notice what happens when they act faithfully with wisdom.",
+              "The course should make experiment design practical: action, date, people involved, support needed, and what evidence will be reviewed.",
+            ],
+            focus: [
+              "Make the experiment small, specific, and time-bound.",
+              "Decide what evidence will matter before starting.",
+              "Invite support where the path needs partnership.",
+            ],
+            reflectionPrompt:
+              "What is one two-week experiment that could test your possible pathway?",
+            slug: "build-a-small-experiment",
+            summary:
+              "Turns a possible pathway into a small experiment with support and review criteria.",
+            title: "Build a Small Experiment",
+          },
+          {
+            body: [
+              "Experiments should be reviewed gently. The question is not merely whether the learner succeeded. The better question is what became clearer.",
+              "A good review notices energy, fruit, resistance, skill, confirmation, open doors, closed doors, and what still needs maturity.",
+              "This lesson should later connect to a pathway review tool that helps the learner continue, adjust, pause, or choose a different experiment.",
+            ],
+            focus: [
+              "Review for clarity, not just success.",
+              "Notice fruit, confirmation, resistance, and capacity.",
+              "Choose whether to continue, adjust, pause, or test another path.",
+            ],
+            reflectionPrompt:
+              "What did your experiment reveal that you did not know before?",
+            slug: "review-what-you-learned",
+            summary:
+              "Gives the learner a simple review rhythm for learning from pathway experiments.",
+            title: "Review What You Learned",
+          },
+        ],
+      },
+      {
+        slug: "direction",
+        title: "Module 3: Choose the Next Faithful Step",
+        lessons: [
+          {
+            body: [
+              "After a learner tests a pathway, the next step should become clearer. Sometimes the step is to continue. Sometimes it is to shrink the idea, invite help, get training, or stop forcing a door that is not open.",
+              "Design Pathways should help the learner move with peace and responsibility rather than pressure.",
+              "This can become one of the most practical companion courses because it turns reflection into experiments, review, and next steps.",
+            ],
+            focus: [
+              "Discernment includes continuing, adjusting, pausing, or stopping.",
+              "The next faithful step should fit the learner's current season.",
+              "Pathway language can feed the final niche declaration later.",
+            ],
+            reflectionPrompt:
+              "What is the next faithful step that fits your current season?",
+            slug: "choose-the-next-step",
+            summary:
+              "Helps the learner choose a realistic next step after reviewing a pathway experiment.",
+            title: "Choose the Next Faithful Step",
+          },
+        ],
+      },
+    ],
+    price: "Free assessment",
+    slug: "design-pathways-discernment",
+    sourceNote:
+      "Built as a first app-native framework for Design Pathways: direction, experiments, review, support, and next-step discernment.",
+    tagline: "Discern. Test. Adjust.",
+    title: "Design Pathways Discernment",
   },
   {
     accent: "blue",
@@ -268,6 +513,66 @@ export const learningCourses = [
             summary:
               "Helps the learner turn pressure vulnerability into preparation and Spirit-led practice.",
             title: "Pressure Patterns",
+          },
+          {
+            body: [
+              "A growth invitation should be received as an invitation, not a verdict. The learner can choose one fruit, one ordinary situation, and one practice that makes obedience more concrete.",
+              "FruitLife becomes more powerful when it is reviewed over time. A single report gives a snapshot; repeated reviews can show formation, pressure patterns, and encouragement.",
+              "This lesson can later connect directly to the native FruitLife report process already being built in the app.",
+            ],
+            focus: [
+              "Choose one growth invitation instead of trying to improve everything.",
+              "Attach the practice to an ordinary relationship or pressure point.",
+              "Let repeated review show formation over time.",
+            ],
+            reflectionPrompt:
+              "Which one fruit invitation should become your next small formation practice?",
+            slug: "choose-one-growth-practice",
+            summary:
+              "Turns FruitLife growth invitations into one concrete practice for ordinary life.",
+            title: "Choose One Growth Practice",
+          },
+        ],
+      },
+      {
+        slug: "conversation",
+        title: "Module 3: Feedback and Formation Conversations",
+        lessons: [
+          {
+            body: [
+              "FruitLife 360 can include observer feedback, which means the learner needs a healthy way to receive outside perspective. Feedback should be handled with humility, boundaries, and prayer.",
+              "The learner should look for themes rather than reacting to every sentence. What do trusted people consistently see? What surprises the learner? What encourages them?",
+              "This module can later help the user invite observers, review the report, and prepare one healthy follow-up conversation.",
+            ],
+            focus: [
+              "Receive feedback as formation input, not personal attack.",
+              "Look for themes and repeated language.",
+              "Prepare one healthy conversation after reviewing the report.",
+            ],
+            reflectionPrompt:
+              "What feedback theme deserves prayer, gratitude, or a follow-up conversation?",
+            slug: "receiving-360-feedback",
+            summary:
+              "Prepares the learner to receive observer feedback with humility and clarity.",
+            title: "Receiving 360 Feedback",
+          },
+          {
+            body: [
+              "A formation plan should be light enough to practice and clear enough to review. The learner can choose a fruit, a pressure pattern, a practice, a support person, and a date to look again.",
+              "FruitLife should not end at a report. It should lead to a small, prayerful practice and a rhythm of noticing the Spirit's work over time.",
+              "This lesson can become the course bridge into the next FruitLife 360 assessment cycle.",
+            ],
+            focus: [
+              "Choose one fruit, one practice, and one review rhythm.",
+              "Invite support without overexposing private feedback.",
+              "Treat growth as formation over time.",
+            ],
+            reflectionPrompt:
+              "What simple formation plan do you want to carry for the next 30 days?",
+            slug: "build-a-formation-plan",
+            summary:
+              "Closes the FruitLife course by turning the report into a small formation plan.",
+            title: "Build a Formation Plan",
           },
         ],
       },

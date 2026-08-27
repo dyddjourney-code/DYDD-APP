@@ -909,6 +909,8 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   const hasDyddCourseAccess = heatherPreview;
   const hasDesignIdCourseAccess = heatherPreview || ownsAssessment(assessmentReport, "designid");
   const hasDesignPdCourseAccess = heatherPreview || ownsAssessment(assessmentReport, "designpd");
+  const hasDesignPathwaysCourseAccess =
+    heatherPreview || ownsAssessment(assessmentReport, "design_pathways");
   const hasSpiritualGiftsCourseAccess =
     heatherPreview || ownsAssessment(assessmentReport, "spiritual_gifts");
   const hasFruitLifeCourseAccess = heatherPreview || ownsAssessment(assessmentReport, "fruit_360");
@@ -940,6 +942,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
 
   const courseAccessBySlug: Record<string, boolean> = {
     "designid-foundations": hasDesignIdCourseAccess,
+    "design-pathways-discernment": hasDesignPathwaysCourseAccess,
     "designpd-alignment": hasDesignPdCourseAccess,
     "discover-your-divine-design": hasDyddCourseAccess,
     "fruitlife-360-formation": hasFruitLifeCourseAccess,
@@ -974,6 +977,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     "designid-foundations-course",
     "spiritual-gifts-service-course",
     "designpd-alignment-course",
+    "design-pathways-discernment-course",
     "fruitlife-360-formation-course",
   ];
   const trailheadMetaById: Record<string, string> = {
@@ -981,6 +985,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     "designid-foundations-course": "Early marker",
     "spiritual-gifts-service-course": "Calling marker",
     "designpd-alignment-course": "Practice marker",
+    "design-pathways-discernment-course": "Direction marker",
     "fruitlife-360-formation-course": "Growth marker",
   };
   const trailheadCards = [...courseCards].sort((a, b) => {

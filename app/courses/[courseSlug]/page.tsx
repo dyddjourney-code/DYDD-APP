@@ -12,10 +12,13 @@ import {
 import { normalizeEmail } from "@/lib/identity/email";
 import {
   getHeatherReviewReport,
+  reviewQuery,
   type ReviewSearchParams,
   withReviewQuery,
 } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { AssessmentCourseNavigator } from "@/components/assessment-course-navigator";
+import { PageHelp } from "@/components/page-help";
 
 export const dynamic = "force-dynamic";
 
@@ -150,36 +153,63 @@ export default async function LearningCoursePage({
         )}
       </section>
 
-      <section className="module-stack" aria-label={`${course.title} lessons`}>
-        {course.modules.map((module, moduleIndex) => (
-          <article key={module.slug} className="module-panel">
-            <div>
-              <p className="section-label">
-                Module {String(moduleIndex + 1).padStart(2, "0")}
-              </p>
-              <h2>{module.title}</h2>
-            </div>
-            <ol>
-              {module.lessons.map((lesson, index) => (
-                <li key={lesson.slug}>
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <div>
-                    <Link
-                      href={withReviewQuery(
-                        `/learn/${course.slug}/${lesson.slug}`,
-                        reviewParams,
-                      )}
-                    >
-                      {lesson.title}
-                    </Link>
-                    <p>{lesson.summary}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </article>
-        ))}
-      </section>
+      <PageHelp
+        items={[
+          "Use the course menu to open and close modules without leaving the page.",
+          "Move one lesson at a time with the Previous and Next buttons.",
+          "Treat this as the course framework; lesson content can be tightened later without changing the structure.",
+        ]}
+        title="How to use this course"
+      />
+
+      <div id={`${course.slug}-course-player`}>
+        <AssessmentCourseNavigator
+          accent={course.accent}
+          assessmentLabel={course.title}
+          connected={insights.connected}
+          courseSlug={course.slug}
+          insights={insights.rows}
+          modules={course.modules}
+          reviewQuery={reviewQuery(reviewParams)}
+        />
+      </div>
+
+      <details className="journey-advanced-planning assessment-source-accordion">
+        <summary>
+          <span>Source lesson links</span>
+          <strong>Open the standalone lesson routes if needed</strong>
+        </summary>
+        <section className="module-stack" aria-label={`${course.title} standalone lesson links`}>
+          {course.modules.map((module, moduleIndex) => (
+            <article key={module.slug} className="module-panel">
+              <div>
+                <p className="section-label">
+                  Module {String(moduleIndex + 1).padStart(2, "0")}
+                </p>
+                <h2>{module.title}</h2>
+              </div>
+              <ol>
+                {module.lessons.map((lesson, index) => (
+                  <li key={lesson.slug}>
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <div>
+                      <Link
+                        href={withReviewQuery(
+                          `/learn/${course.slug}/${lesson.slug}`,
+                          reviewParams,
+                        )}
+                      >
+                        {lesson.title}
+                      </Link>
+                      <p>{lesson.summary}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </article>
+          ))}
+        </section>
+      </details>
     </main>
   );
 }

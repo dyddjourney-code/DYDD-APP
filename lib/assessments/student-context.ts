@@ -479,6 +479,15 @@ export function buildAssessmentCourseInsights(
       "Top1_GrowthAreas",
       "Top1_StepsToGrow",
     ],
+    design_pathways: [
+      "Pathway_Name",
+      "Primary_Pathway",
+      "Direction",
+      "Experiment",
+      "Support_Needed",
+      "Next_Step",
+      "Review_Date",
+    ],
   };
 
   return {

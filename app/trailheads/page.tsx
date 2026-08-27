@@ -51,10 +51,10 @@ const courses = [
     title: "Spiritual Gifts in Service",
   },
   {
-    action: "Take assessment",
+    action: "Launch course",
     description:
       "A self-paced course created to help you understand your DesignPD report and apply your design in the way you plan, make decisions, and move into purposeful action.",
-    href: "/field-kit#purchase-assessments",
+    href: "/courses/designpd-alignment",
     logo: "/brand/tools/designpd-logo.jpg",
     points: [
       "Understand your Plan, Decide, and Do patterns",
@@ -63,14 +63,14 @@ const courses = [
     ],
     price: "$50 assessment required",
     prerequisite: "Requires a completed DesignPD assessment.",
-    status: "locked",
+    status: "unlocked",
     title: "Unpack Your DesignPD Report",
   },
   {
-    action: "Take assessment",
+    action: "Launch course",
     description:
       "A formation course using visible fruit, observer feedback, and honest growth conversations.",
-    href: "/field-kit#free-assessments",
+    href: "/courses/fruitlife-360-formation",
     logo: "/brand/tools/fruitful-life-360-logo.jpg",
     points: [
       "Review fruit of the Spirit formation themes",
@@ -79,24 +79,24 @@ const courses = [
     ],
     price: "Free assessment required",
     prerequisite: "Requires a completed Fruit Life 360 assessment.",
-    status: "locked",
+    status: "unlocked",
     title: "Fruit Life 360 Growth Course",
   },
   {
-    action: "Take assessment",
+    action: "Launch course",
     description:
-      "A future course that will help you understand your Design Pathways results and choose the clearest next route for growth.",
-    href: "/field-kit#purchase-assessments",
+      "A discernment course that helps you understand possible pathways, test them with small experiments, and choose the next faithful step.",
+    href: "/courses/design-pathways-discernment",
     logo: "/brand/tools/design-pathways-logo.jpg",
     points: [
       "Identify your current pathway",
       "Connect pathway insight to next steps",
       "Use your results inside the larger Discover Your Divine Design journey",
     ],
-    price: "$10 assessment required",
-    prerequisite: "Will require a completed Design Pathways assessment.",
-    status: "locked",
-    title: "Design Pathways",
+    price: "Free assessment planned",
+    prerequisite: "Design Pathways can begin as a guided discernment course while the assessment is being finalized.",
+    status: "unlocked",
+    title: "Design Pathways Discernment",
   },
 ];
 

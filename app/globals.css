@@ -8434,6 +8434,15 @@ h3 {
     radial-gradient(circle at 82% 8%, rgba(138, 96, 70, 0.18), transparent 26rem);
 }
 
+.course-shell-green,
+.lesson-shell-green,
+.course-shell-sage,
+.lesson-shell-sage {
+  background:
+    linear-gradient(rgba(251, 250, 244, 0.9), rgba(251, 250, 244, 0.96)),
+    radial-gradient(circle at 82% 10%, rgba(71, 107, 66, 0.16), transparent 26rem);
+}
+
 .lesson-pagination {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -9016,6 +9025,23 @@ h3 {
 
 .journey-active-lesson.assessment {
   border-left-color: #386f91;
+}
+
+.journey-active-lesson.assessment-active-gold {
+  border-left-color: #b88a43;
+}
+
+.journey-active-lesson.assessment-active-blue {
+  border-left-color: #47647f;
+}
+
+.journey-active-lesson.assessment-active-clay {
+  border-left-color: #8a6046;
+}
+
+.journey-active-lesson.assessment-active-green,
+.journey-active-lesson.assessment-active-sage {
+  border-left-color: #476b42;
 }
 
 .journey-active-lesson.completion {

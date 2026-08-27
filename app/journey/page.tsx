@@ -120,9 +120,55 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
                     </p>
                   </div>
                   <div className="journey-sample-lesson-grid">
-                    {stage.sampleLessons.map((lesson) => (
+                    {stage.sampleLessons.map((lesson, lessonIndex) => (
                       <article className="journey-sample-lesson" key={lesson.title}>
-                        <div
+                        <div className="journey-sample-copy">
+                          <div className="journey-sample-title-row">
+                            <p className="section-label">{lesson.eyebrow}</p>
+                            <h4>{lesson.title}</h4>
+                            <span>{lesson.duration}</span>
+                          </div>
+                          <p className="journey-lesson-summary">{lesson.summary}</p>
+
+                          {lesson.anchorVerse ? (
+                            <blockquote className="journey-lesson-verse">
+                              <p>{lesson.anchorVerse.text}</p>
+                              <cite>{lesson.anchorVerse.reference}</cite>
+                            </blockquote>
+                          ) : null}
+
+                          <section className="journey-lesson-focus" aria-label={`${lesson.title} focus`}>
+                            <p className="section-label">Lesson focus</p>
+                            <ul>
+                              {lesson.focus.map((item) => (
+                                <li key={item}>{item}</li>
+                              ))}
+                            </ul>
+                          </section>
+
+                          <div className="journey-lesson-teaching-stack">
+                            {lesson.teachingSections.map((section) => (
+                              <section key={`${lesson.title}-${section.title}`}>
+                                <p className="section-label">{section.label}</p>
+                                <h5>{section.title}</h5>
+                                {section.body.map((paragraph) => (
+                                  <p key={paragraph}>{paragraph}</p>
+                                ))}
+                              </section>
+                            ))}
+                          </div>
+
+                          <section className="journey-lesson-practice" aria-label={`${lesson.title} practice`}>
+                            <p className="section-label">{lesson.practice.title}</p>
+                            <strong>{lesson.practice.prompt}</strong>
+                          </section>
+
+                          <p className="journey-lesson-next">
+                            <span>Next</span>
+                            {lesson.nextStep}
+                          </p>
+                        </div>
+                        <figure
                           className={
                             lesson.mediaType === "video"
                               ? "journey-sample-media video"
@@ -140,53 +186,48 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
                               </svg>
                             </span>
                           ) : null}
-                        </div>
-                        <div className="journey-sample-copy">
-                          <div>
-                            <p className="section-label">{lesson.eyebrow}</p>
-                            <h4>{lesson.title}</h4>
-                            <span>{lesson.duration}</span>
-                          </div>
-                          <p>{lesson.summary}</p>
-                          <ul>
-                            {lesson.focus.map((item) => (
-                              <li key={item}>{item}</li>
-                            ))}
-                          </ul>
-                          <strong>{lesson.nextStep}</strong>
-                        </div>
+                          <figcaption>
+                            Lesson {String(lessonIndex + 1).padStart(2, "0")} media space
+                          </figcaption>
+                        </figure>
                       </article>
                     ))}
                   </div>
                 </section>
               ) : null}
 
-              <div className="journey-stage-grid">
-                <section>
-                  <h3>Video intro</h3>
-                  <p>{stage.videoIntro}</p>
-                </section>
-                <section>
-                  <h3>Interactive moves</h3>
-                  <ul>
-                    {stage.contentMoves.map((move) => (
-                      <li key={move}>{move}</li>
-                    ))}
-                  </ul>
-                </section>
-                <section>
-                  <h3>Dydi context</h3>
-                  <p>{stage.dydiContext}</p>
-                </section>
-                <section>
-                  <h3>Database record</h3>
-                  <p>{stage.databaseRecord}</p>
-                </section>
-              </div>
+              <details className="journey-build-accordion">
+                <summary>
+                  <span>Build notes</span>
+                  <strong>Open the video, interaction, Dydi, and database planning layer</strong>
+                </summary>
+                <div className="journey-stage-grid">
+                  <section>
+                    <h3>Video intro</h3>
+                    <p>{stage.videoIntro}</p>
+                  </section>
+                  <section>
+                    <h3>Interactive moves</h3>
+                    <ul>
+                      {stage.contentMoves.map((move) => (
+                        <li key={move}>{move}</li>
+                      ))}
+                    </ul>
+                  </section>
+                  <section>
+                    <h3>Dydi context</h3>
+                    <p>{stage.dydiContext}</p>
+                  </section>
+                  <section>
+                    <h3>Database record</h3>
+                    <p>{stage.databaseRecord}</p>
+                  </section>
+                </div>
+              </details>
 
               {playbookStage ? (
-                <aside className="journey-facilitator-card" aria-label={`${stage.title} facilitator playbook`}>
-                  <div className="journey-facilitator-heading">
+                <details className="journey-facilitator-card" aria-label={`${stage.title} facilitator playbook`}>
+                  <summary className="journey-facilitator-heading">
                     <div className="host-playbook-icon mini" aria-hidden="true">
                       <svg fill="none" viewBox="0 0 64 64">
                         <path d="M13 12h25a10 10 0 0 1 10 10v30H23a10 10 0 0 1-10-10Z" fill="#fffaf0" stroke="#243f27" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
@@ -198,7 +239,7 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
                       <p className="section-label">Jordan's facilitator playbook</p>
                       <h3>{playbookStage.session}: {playbookStage.title}</h3>
                     </div>
-                  </div>
+                  </summary>
                   <div className="facilitator-coach-grid">
                     <section>
                       <span>In the moment</span>
@@ -233,7 +274,7 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
                       </ul>
                     </section>
                   </div>
-                </aside>
+                </details>
               ) : null}
 
               <form action={saveJourneyStageResponses} className="journey-workbook-form">

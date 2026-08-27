@@ -22,6 +22,10 @@ export type JourneyAssessmentCallout = {
 };
 
 export type JourneyLessonBlock = {
+  anchorVerse?: {
+    reference: string;
+    text: string;
+  };
   eyebrow: string;
   title: string;
   summary: string;
@@ -30,6 +34,15 @@ export type JourneyLessonBlock = {
   mediaLabel?: string;
   mediaType?: "image" | "video";
   focus: string[];
+  teachingSections: {
+    body: string[];
+    label: string;
+    title: string;
+  }[];
+  practice: {
+    prompt: string;
+    title: string;
+  };
   nextStep: string;
 };
 
@@ -133,6 +146,34 @@ export const dyddJourney: DyddJourney = {
             "See how the book, workbook, assessments, and companion guidance belong together.",
             "Choose a simple pace for walking the journey without rushing the work.",
           ],
+          anchorVerse: {
+            reference: "Ephesians 2:10",
+            text:
+              "For we are God's handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.",
+          },
+          teachingSections: [
+            {
+              label: "Big idea",
+              title: "This is a journey, not a content library.",
+              body: [
+                "Discover Your Divine Design is meant to help you walk with God through identity, story, gifts, desire, and purpose. The lessons give language, but the real work happens as you notice what God has already been shaping in your life.",
+                "The app holds the trail in order: teaching first, workbook reflection next, CARE practice after that, and Pathfinder language as you begin naming faithful next steps.",
+              ],
+            },
+            {
+              label: "What to notice",
+              title: "Start with openness before answers.",
+              body: [
+                "You do not need to understand every assessment, label, or destination on day one. Begin by paying attention to what feels alive, what feels resistant, and what questions keep returning.",
+                "Those signals become useful later when the journey begins connecting your DesignID, Spiritual Gifts, DesignPD, and FruitLife formation patterns.",
+              ],
+            },
+          ],
+          practice: {
+            title: "Starting practice",
+            prompt:
+              "Write one sentence that begins, 'I am starting this journey because...' Keep it honest, simple, and current.",
+          },
           nextStep:
             "Name the reason you are beginning and the one question you want to carry into the first chapter.",
         },
@@ -150,6 +191,36 @@ export const dyddJourney: DyddJourney = {
             "Explain that assessments are mirrors that help personalize the journey.",
             "Clarify what stays private and what can later be shared in a Camp Circle.",
           ],
+          teachingSections: [
+            {
+              label: "Lesson rhythm",
+              title: "Each chapter has a repeatable path.",
+              body: [
+                "Every chapter should feel familiar without becoming flat. You will begin with a short teaching section, then move into reflection, then practice the CARE rhythm: Connect, Act, Reflect, and Explore.",
+                "The goal is not to finish a checklist. The goal is to slow down enough to recognize what God is revealing and then take the next faithful step with it.",
+              ],
+            },
+            {
+              label: "Personalization",
+              title: "Assessments become mirrors, not boxes.",
+              body: [
+                "DesignID, Spiritual Gifts, DesignPD, and FruitLife 360 can eventually sit beside the lesson and speak directly into the learner's path. A Shepherd should not experience Identity the same way an Architect does, and a person leading a group should not see the same controls as someone walking alone.",
+                "The course still needs one clear path for everyone, but the app can place personal insight beside that path when the learner is signed in and their records are connected.",
+              ],
+            },
+            {
+              label: "Privacy",
+              title: "Some work is private before it becomes shared.",
+              body: [
+                "Journal entries, CARE reflections, and assessment records should belong first to the learner. Camp Circle tools can invite shared progress, reminders, and discussion, but private workbook answers should not be exposed casually.",
+              ],
+            },
+          ],
+          practice: {
+            title: "Pace decision",
+            prompt:
+              "Choose whether you are walking this weekly, in a short intensive, with a partner, or inside a group. That pace will shape reminders and chapter expectations later.",
+          },
           nextStep:
             "Confirm your preferred pace and prepare to move from orientation into Identity.",
         },
@@ -281,6 +352,41 @@ export const dyddJourney: DyddJourney = {
             "Anchor the first chapter in belonging to God before naming personal design.",
             "Prepare the learner to answer the workbook honestly and prayerfully.",
           ],
+          anchorVerse: {
+            reference: "1 John 3:1",
+            text:
+              "See what great love the Father has lavished on us, that we should be called children of God.",
+          },
+          teachingSections: [
+            {
+              label: "Foundation",
+              title: "Whose you are comes before what you do.",
+              body: [
+                "The first chapter cannot begin with talent, productivity, calling, or personality. Those things matter, but they are not strong enough to carry identity. Christian identity begins with belonging to God through grace.",
+                "Before the learner names their gifts or purpose, this lesson creates space to receive the deeper truth: you are not earning your way into design. You are discovering what God has already been forming in you.",
+              ],
+            },
+            {
+              label: "False names",
+              title: "Old labels can sound true without being true.",
+              body: [
+                "Many people enter this work carrying names given by performance, disappointment, comparison, family systems, ministry wounds, or failure. Those labels often feel familiar, but familiarity is not the same as truth.",
+                "This section prepares the learner to place old names beside God's truth before answering the workbook prompts. The workbook becomes more honest when the heart is not trying to defend itself.",
+              ],
+            },
+            {
+              label: "Design lens",
+              title: "DesignID helps language what identity can express.",
+              body: [
+                "DesignID can help a learner notice patterns of reflection: how they create, care, steward, or express what God placed in them. But the report is not the source of identity. It is a mirror that can support the identity work already rooted in Christ.",
+              ],
+            },
+          ],
+          practice: {
+            title: "Before the workbook",
+            prompt:
+              "Name one label you have carried, then write one truth about whose you are before God.",
+          },
           nextStep:
             "Read the first workbook section and answer the Who Are You and Whose Are You prompts.",
         },

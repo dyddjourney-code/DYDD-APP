@@ -29,24 +29,79 @@ type SampleCircle = {
 const circleTypes = [
   {
     capacity: "Solo",
-    detail: "Keep the course personal while the app preserves reflection, assessment, CARE, and Pathfinder work.",
+    detail: "One learner buys one seat, keeps a private workbook record, and moves through DYDD, DesignID, Spiritual Gifts, and Fruit Life at their own pace.",
     label: "Walk solo",
   },
   {
     capacity: "2 people",
-    detail: "Let a pair or couple walk at the same pace with opt-in sharing and private records intact.",
+    detail: "Two independent learner accounts are paired by invite so each person keeps their own answers while the pair gets shared progress and discussion prompts.",
     label: "Pair or couple",
   },
   {
     capacity: "4-10 people",
-    detail: "Give a host the guide, reminders, shared questions, and progress view for a small circle.",
+    detail: "A host buys seats up front, names the circle, sends invites, and uses the Field Guide, reminders, and progress view to keep the group moving.",
     label: "Small group",
   },
   {
     capacity: "10-25+ people",
-    detail: "Add class pacing, participant check-ins, and facilitator notes without exposing private entries.",
+    detail: "A church or organization buys a class pack, distributes invite seats, and manages participant pacing without exposing private workbook entries.",
     label: "Class",
   },
+];
+
+const accessPackages = [
+  {
+    name: "Individual Journey",
+    seats: "1 seat",
+    price: "$97",
+    discount: "Baseline",
+    perSeat: "$97 per learner",
+    detail: "Best for a solo learner who wants the full DYDD Journey with the digitized workbook and assessment connections.",
+    includes: ["DYDD Journey", "Digital CARE workbook", "DesignID access", "Spiritual Gifts + Fruit Life"],
+  },
+  {
+    name: "Couple Journey",
+    seats: "2 seats included",
+    price: "$174",
+    discount: "10% pair savings",
+    perSeat: "$87 per learner",
+    detail: "One person can purchase two seats and invite the other person into a paired dashboard.",
+    includes: ["Two private accounts", "Pair progress dashboard", "Shared conversation prompts", "Optional shared notes"],
+  },
+  {
+    name: "Circle Starter",
+    seats: "Up to 5 seats",
+    price: "$397",
+    discount: "18% group savings",
+    perSeat: "About $79 per learner",
+    detail: "A simple small-group package for a leader who wants to host a few people without a larger church setup.",
+    includes: ["Prepaid invite seats", "One leader Field Guide", "Group progress view", "Reminder tools"],
+  },
+  {
+    name: "Circle Standard",
+    seats: "Up to 10 seats",
+    price: "$697",
+    discount: "28% group savings",
+    perSeat: "About $70 per learner",
+    detail: "The clean fit for Jordan's Thursday Group: enough seats for a normal circle with strong value per person.",
+    includes: ["Prepaid invite seats", "One leader Field Guide", "People dashboard", "Journey racetrack"],
+  },
+  {
+    name: "Church Class Pack",
+    seats: "Up to 25 seats",
+    price: "$1,597",
+    discount: "34% class savings",
+    perSeat: "About $64 per learner",
+    detail: "A church-friendly class package with bulk access and room to organize a full cohort.",
+    includes: ["Church admin view", "Class invite seats", "Leader Field Guide", "Multiple circles later"],
+  },
+];
+
+const accessFlow = [
+  "Every person has their own account, seat, assessment record, workbook responses, and progress history.",
+  "Pairs, circles, and classes connect separate accounts together by invite instead of sharing a login.",
+  "Private CARE, Pathfinder, and assessment answers stay private unless a learner intentionally shares a summary.",
+  "Leaders see seat status, readiness, progress, reminders, and Field Guide notes for the circle they are leading.",
 ];
 
 const sampleCircles: SampleCircle[] = [
@@ -173,12 +228,64 @@ export default function CampCirclePage() {
       <section className="camp-circle-panel circle-options-panel" aria-label="Camp Circle options">
         <div className="card-heading wide-heading">
           <p className="section-label">Circle formats</p>
-          <h2>One structure can support solo, couple, small group, and class paths.</h2>
+          <h2>One access model can support solo, couple, small group, and church class paths.</h2>
           <p>
-            The Field Guide should not sit on top of the lesson. It belongs in
-            the circle workspace, where Jordan can prepare, guide, follow up,
-            and see progress without changing the course screen for everyone.
+            Start with one rule: every person gets their own seat. Camp Circle
+            simply links those seats into a pair, group, or class dashboard so
+            the learner experience stays personal and the leader experience
+            stays organized.
           </p>
+        </div>
+        <div className="circle-pricing-feature">
+          <div className="circle-pricing-feature-copy">
+            <p className="section-label">Provisional package model</p>
+            <h2>Sell access by seats, then let leaders invite people into the right circle.</h2>
+            <p>
+              These prices are working placeholders so the page can show the
+              business model visually. The package includes the DYDD course,
+              the digitized workbook experience, DesignID access, Spiritual
+              Gifts, and Fruit Life. Paper books are separate.
+            </p>
+          </div>
+          <div className="circle-book-disclaimer" role="note">
+            <strong>Books are not included in seat pricing.</strong>
+            <p>
+              Learners can order the paper book or workbook separately. Current
+              planning assumes a $19.99 retail book/workbook reference price.
+              Larger classes can request a bulk book quote, but bulk fulfillment
+              needs about three weeks of lead time and includes book cost plus
+              shipping.
+            </p>
+          </div>
+        </div>
+        <div className="circle-package-grid">
+          {accessPackages.map((pkg) => (
+            <article className="circle-package-card" key={pkg.name}>
+              <div className="circle-package-topline">
+                <span>{pkg.seats}</span>
+                <small>{pkg.discount}</small>
+              </div>
+              <h3>{pkg.name}</h3>
+              <div className="circle-package-price">
+                <strong>{pkg.price}</strong>
+                <span>{pkg.perSeat}</span>
+              </div>
+              <p>{pkg.detail}</p>
+              <ul>
+                {pkg.includes.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+        <div className="circle-access-flow" aria-label="How invite seats work">
+          {accessFlow.map((step, index) => (
+            <article key={step}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <p>{step}</p>
+            </article>
+          ))}
         </div>
         <div className="circle-type-grid">
           {circleTypes.map((type) => (

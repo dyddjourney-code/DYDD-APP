@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { PageHelp } from "@/components/page-help";
 import {
   facilitatorPlaybookAppendices,
@@ -23,6 +26,8 @@ type SampleCircle = {
   nextMeeting: string;
   currentStage: string;
   leaderNeed: string;
+  accessWindow: string;
+  seatUse: string;
   members: CircleMember[];
 };
 
@@ -113,6 +118,8 @@ const sampleCircles: SampleCircle[] = [
     nextMeeting: "Identity: Who and Whose",
     currentStage: "Module 3 / Section 3.1 / Lesson 3",
     leaderNeed: "Keep the group moving together while a few people finish DesignID.",
+    accessWindow: "Active through June 30, 2027 with archive access after closing.",
+    seatUse: "10 of 10 seats used",
     members: [
       { name: "Jordan Reyes", role: "Leader", progress: 41, current: "Identity Overview", assessment: "DesignID connected", shared: "Opened the week with a group summary." },
       { name: "Maya Bennett", role: "Participant", progress: 38, current: "Who Vs. Whose", assessment: "DesignID connected", shared: "Shared one identity sentence." },
@@ -134,6 +141,8 @@ const sampleCircles: SampleCircle[] = [
     nextMeeting: "Identity and DesignID conversation",
     currentStage: "Module 3 / Section 3.2 / Lesson 1",
     leaderNeed: "Protect private answers while giving the couple a side-by-side conversation lane.",
+    accessWindow: "Active through December 31, 2026 with pair archive access after closing.",
+    seatUse: "2 of 2 seats used",
     members: [
       { name: "Jordan Reyes", role: "Spouse", progress: 46, current: "Design Reflections and Love", assessment: "Shepherd - Architect", shared: "Shared love-language observation." },
       { name: "Avery Reyes", role: "Spouse", progress: 44, current: "Design Reflections and Love", assessment: "Artisan - Steward", shared: "Opted into couple comparison." },
@@ -147,6 +156,8 @@ const sampleCircles: SampleCircle[] = [
     nextMeeting: "Welcome and course rhythm",
     currentStage: "Module 1 / Welcome & Orientation / Lesson 2",
     leaderNeed: "Manage attendance, assessment readiness, and group pacing with a light-touch class view.",
+    accessWindow: "Active through March 31, 2027 with 12-month archive access after closing.",
+    seatUse: "15 of 25 seats used",
     members: [
       { name: "Amelia Brooks", role: "Participant", progress: 18, current: "Course Outline", assessment: "Invite sent", shared: "Joined circle." },
       { name: "Jonas Pike", role: "Participant", progress: 22, current: "How This Journey Works", assessment: "Invite sent", shared: "Marked present." },
@@ -167,14 +178,27 @@ const sampleCircles: SampleCircle[] = [
   },
 ];
 
-const activeCircle = sampleCircles[0];
-const activeGuideStages = facilitatorPlaybookStages.slice(0, 4);
+const archivedCircles = [
+  {
+    name: "Spring Men's Circle",
+    closed: "Closed May 2026",
+    people: "8 people",
+    archive: "Read-only summaries, attendance, and shared notes retained.",
+  },
+  {
+    name: "Marriage Foundations Pilot",
+    closed: "Closed July 2026",
+    people: "4 couples",
+    archive: "Pair dashboards archived; private workbook entries stay in learner accounts.",
+  },
+];
 
 const workspaceTabs = [
-  ["Overview", "Pace, meeting, and leader next steps"],
-  ["People", "Progress, assessment status, and reminders"],
-  ["Journey Track", "Racetrack view for the circle"],
-  ["Field Guide", "Leader notes matched to the course map"],
+  ["Overview", "Pace, meeting, and leader next steps", "circle-overview"],
+  ["People", "Progress, assessment status, and reminders", "circle-people"],
+  ["Journey Track", "Racetrack view for the circle", "circle-journey-track"],
+  ["Field Guide", "Leader notes matched to the course map", "field-guide"],
+  ["Next Meeting", "Meeting focus and quick actions", "circle-next-meeting"],
 ];
 
 const sharedLeaderNotes = [
@@ -200,7 +224,22 @@ function completionAverage(members: CircleMember[]) {
   return Math.round(members.reduce((total, member) => total + member.progress, 0) / members.length);
 }
 
+function connectedAssessments(members: CircleMember[]) {
+  return members.filter((member) => member.assessment.toLowerCase().includes("connected")).length;
+}
+
+function remindersNeeded(members: CircleMember[]) {
+  return members.filter((member) => {
+    const assessment = member.assessment.toLowerCase();
+    const shared = member.shared.toLowerCase();
+    return assessment.includes("pending") || assessment.includes("reminder") || shared.includes("needs");
+  }).length;
+}
+
 export default function CampCirclePage() {
+  const [activeCircleSlug, setActiveCircleSlug] = useState(sampleCircles[0].slug);
+  const activeCircle = sampleCircles.find((circle) => circle.slug === activeCircleSlug) ?? sampleCircles[0];
+
   return (
     <main className="journey-shell hq-standalone-page camp-circle-page">
       <header className="standalone-hero camp-circle-hero">
@@ -298,19 +337,20 @@ export default function CampCirclePage() {
         </div>
       </section>
 
-      <section className="camp-circle-panel circle-switchboard" aria-label="Jordan sample circles">
+      <section className="camp-circle-panel circle-switchboard" aria-label="Jordan current circles">
         <div className="card-heading wide-heading">
-          <p className="section-label">Jordan's login</p>
-          <h2>Jordan can lead more than one circle without mixing them together.</h2>
+          <p className="section-label">Leader workspace</p>
+          <h2>Jordan's current circles</h2>
           <p>
-            Each circle becomes its own workspace under Camp Circle. The leader
-            sees the same course map, but the people, pace, reminders, and Field
-            Guide notes belong to that specific group.
+            Current circles stay active for a defined season, then move into a
+            read-only archive. Longer groups can still move slowly through all
+            70 lessons, but the leader always knows which circles are live and
+            which ones are finished.
           </p>
         </div>
         <div className="circle-preview-grid">
           {sampleCircles.map((circle) => (
-            <article className="circle-preview-card" key={circle.slug}>
+            <article className={`circle-preview-card ${circle.slug === activeCircle.slug ? "selected" : ""}`} key={circle.slug}>
               <div>
                 <span>{circle.format}</span>
                 <h3>{circle.name}</h3>
@@ -324,22 +364,45 @@ export default function CampCirclePage() {
                 <span style={{ width: `${completionAverage(circle.members)}%` }} />
               </div>
               <p>{circle.leaderNeed}</p>
-              <a href={`#${circle.slug}`}>Preview workspace</a>
+              <small>{circle.seatUse}</small>
+              <small>{circle.accessWindow}</small>
+              <button className="button secondary" type="button" onClick={() => setActiveCircleSlug(circle.slug)}>
+                Open this circle
+              </button>
             </article>
           ))}
         </div>
+        <details className="circle-archive-drawer">
+          <summary>Archived circles</summary>
+          <div>
+            {archivedCircles.map((circle) => (
+              <article key={circle.name}>
+                <strong>{circle.name}</strong>
+                <span>{circle.closed}</span>
+                <p>{circle.people} - {circle.archive}</p>
+              </article>
+            ))}
+          </div>
+        </details>
       </section>
 
       <section className="camp-circle-workspace" id={activeCircle.slug} aria-label="Active circle workspace">
         <aside className="camp-circle-sidebar">
           <div className="card-heading">
             <p className="section-label">Active circle</p>
-            <h2>{activeCircle.name}</h2>
+            <label className="circle-selector" htmlFor="circle-select">
+              <span>Choose circle</span>
+              <select id="circle-select" value={activeCircle.slug} onChange={(event) => setActiveCircleSlug(event.target.value)}>
+                {sampleCircles.map((circle) => (
+                  <option key={circle.slug} value={circle.slug}>{circle.name}</option>
+                ))}
+              </select>
+            </label>
             <p>{activeCircle.currentStage}</p>
           </div>
           <nav aria-label="Circle workspace tabs">
-            {workspaceTabs.map(([label, detail], index) => (
-              <a className={index === 0 ? "active" : ""} href={label === "Field Guide" ? "#field-guide" : `#${activeCircle.slug}`} key={label}>
+            {workspaceTabs.map(([label, detail, anchor], index) => (
+              <a className={index === 0 ? "active" : ""} href={`#${anchor}`} key={label}>
                 <strong>{label}</strong>
                 <span>{detail}</span>
               </a>
@@ -353,10 +416,14 @@ export default function CampCirclePage() {
         </aside>
 
         <div className="camp-circle-main">
-          <section className="camp-circle-panel circle-dashboard-band" aria-label="Circle dashboard">
+          <details className="camp-circle-panel circle-dashboard-band circle-console-panel" id="circle-overview" aria-label="Circle dashboard" open>
+            <summary>
+              <span>Overview</span>
+              <strong>{activeCircle.name}</strong>
+            </summary>
             <div className="card-heading wide-heading">
               <p className="section-label">Leader dashboard</p>
-              <h2>Control center for the circle, not the learner lesson.</h2>
+              <h2>{activeCircle.currentStage}</h2>
             </div>
             <div className="circle-dashboard-metrics">
               <article>
@@ -364,21 +431,29 @@ export default function CampCirclePage() {
                 <p>average course progress</p>
               </article>
               <article>
-                <span>7</span>
+                <span>{connectedAssessments(activeCircle.members)}</span>
                 <p>DesignID records connected</p>
               </article>
               <article>
-                <span>3</span>
+                <span>{remindersNeeded(activeCircle.members)}</span>
                 <p>reminders to send</p>
               </article>
               <article>
-                <span>1</span>
-                <p>shared summary due</p>
+                <span>{activeCircle.members.length}</span>
+                <p>{activeCircle.seatUse}</p>
               </article>
             </div>
-          </section>
+            <div className="circle-lifecycle-note">
+              <strong>Access window</strong>
+              <p>{activeCircle.accessWindow}</p>
+            </div>
+          </details>
 
-          <section className="camp-circle-panel people-progress-panel" aria-label="Participant progress">
+          <details className="camp-circle-panel people-progress-panel circle-console-panel" id="circle-people" aria-label="Participant progress" open>
+            <summary>
+              <span>People</span>
+              <strong>{activeCircle.members.length} people in this circle</strong>
+            </summary>
             <div className="card-heading wide-heading">
               <p className="section-label">People</p>
               <h2>Jordan sees readiness and progress without reading private workbook entries.</h2>
@@ -404,9 +479,13 @@ export default function CampCirclePage() {
                 </article>
               ))}
             </div>
-          </section>
+          </details>
 
-          <section className="camp-circle-panel circle-racetrack-panel" aria-label="Circle racetrack">
+          <details className="camp-circle-panel circle-racetrack-panel circle-console-panel" id="circle-journey-track" aria-label="Circle racetrack" open>
+            <summary>
+              <span>Journey Track</span>
+              <strong>{activeCircle.name} racetrack</strong>
+            </summary>
             <div className="card-heading wide-heading">
               <p className="section-label">Journey Track</p>
               <h2>A racetrack view for group pacing.</h2>
@@ -427,9 +506,13 @@ export default function CampCirclePage() {
                 </div>
               ))}
             </div>
-          </section>
+          </details>
 
-          <section className="camp-circle-panel field-guide-workspace" id="field-guide" aria-label="Field Guide workspace">
+          <details className="camp-circle-panel field-guide-workspace circle-console-panel" id="field-guide" aria-label="Field Guide workspace" open>
+            <summary>
+              <span>Field Guide</span>
+              <strong>{activeCircle.name} leader guide</strong>
+            </summary>
             <div className="field-guide-head">
               <div className="host-playbook-icon" aria-hidden="true">
                 <svg fill="none" viewBox="0 0 64 64">
@@ -463,8 +546,8 @@ export default function CampCirclePage() {
             </div>
 
             <div className="field-guide-course-map">
-              {activeGuideStages.map((stage) => (
-                <details key={stage.slug} open={stage.slug === "identity"}>
+              {facilitatorPlaybookStages.map((stage) => (
+                <details key={stage.slug}>
                   <summary>
                     <span>{stage.session}</span>
                     <strong>{stage.title}</strong>
@@ -493,31 +576,25 @@ export default function CampCirclePage() {
                 </details>
               ))}
             </div>
-          </section>
-        </div>
-      </section>
+          </details>
 
-      <section className="camp-circle-sample-stack" aria-label="Other sample circle workspaces">
-        {sampleCircles.slice(1).map((circle) => (
-          <article className="camp-circle-panel compact-circle-preview" id={circle.slug} key={circle.slug}>
+          <details className="camp-circle-panel next-meeting-panel circle-console-panel" id="circle-next-meeting" aria-label="Next meeting" open>
+            <summary>
+              <span>Next Meeting</span>
+              <strong>{activeCircle.nextMeeting}</strong>
+            </summary>
             <div className="card-heading wide-heading">
-              <p className="section-label">{circle.format}</p>
-              <h2>{circle.name}</h2>
-              <p>{circle.leaderNeed}</p>
+              <p className="section-label">Next meeting</p>
+              <h2>{activeCircle.nextMeeting}</h2>
+              <p>{activeCircle.leaderNeed}</p>
             </div>
-            <div className={`compact-people-grid ${circle.members.length > 8 ? "class-size" : ""}`}>
-              {circle.members.map((member) => (
-                <section key={member.name}>
-                  <strong>{member.name}</strong>
-                  <span>{member.current}</span>
-                  <div className="person-progress-track">
-                    <span style={{ width: `${member.progress}%` }} />
-                  </div>
-                </section>
-              ))}
+            <div className="next-meeting-actions">
+              <button className="button" type="button">Send reminder</button>
+              <button className="button secondary" type="button">Copy invite link</button>
+              <button className="button text-button" type="button">Mark meeting complete</button>
             </div>
-          </article>
-        ))}
+          </details>
+        </div>
       </section>
 
       <section className="camp-circle-panel playbook-resource-hub" aria-label="Field Guide resource hub">

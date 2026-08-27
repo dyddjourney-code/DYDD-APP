@@ -6,7 +6,35 @@ Pathfinder logic that already exists.
 
 ## Current App Structure
 
-The Journey page is driven from `lib/journey/dydd-journey.ts`.
+The Journey page is now driven by two connected structures:
+
+- `lib/journey/dydd-course-outline.ts` holds John's August 27, 2026 master
+  course walkthrough from the spreadsheet.
+- `lib/journey/dydd-journey.ts` holds the deeper workbook, CARE, Pathfinder,
+  facilitator, database, and Dydi planning layer.
+
+The page should lead with the course outline, then keep the workbook/CARE
+engine below it.
+
+## Master Outline Translation
+
+Source file reviewed: `DYDD_Course_Content---1a6c7c74-a82a-48b3-a28d-dd2e4d63dc2f.xlsx`.
+
+Spreadsheet signals were converted into explicit app content indicators:
+
+- Normal rows become teaching lessons.
+- Green font rows become `DesignID reflection` units.
+- Orange/theme font rows become `Pathfinder / niche` units.
+- Assessment rows become assessment bridge/launch units.
+- Workbook-only rows become workbook checkpoints.
+- Intro rows become orientation units.
+
+Current app data totals:
+
+- 8 modules
+- 70 lessons/checkpoints
+- 10 DesignID reflection units
+- 12 Pathfinder/niche units
 
 Each journey stage currently supports:
 

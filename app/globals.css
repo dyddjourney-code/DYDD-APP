@@ -7750,6 +7750,336 @@ h3 {
   font-weight: 850;
 }
 
+.dydd-course-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1fr);
+  gap: clamp(20px, 4vw, 42px);
+  align-items: start;
+  margin-bottom: 24px;
+  padding: clamp(22px, 4vw, 38px);
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(234, 240, 226, 0.7)),
+    var(--white);
+  box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
+}
+
+.dydd-course-heading {
+  display: grid;
+  gap: 10px;
+}
+
+.dydd-course-heading h2,
+.dydd-progress-racetrack h2 {
+  max-width: 16ch;
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(2rem, 4vw, 3.35rem);
+  line-height: 1;
+}
+
+.dydd-course-heading p:not(.section-label),
+.dydd-progress-racetrack p:not(.section-label) {
+  max-width: 68ch;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.64;
+}
+
+.dydd-course-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.dydd-course-stats div {
+  min-height: 128px;
+  padding: 18px;
+  border: 1px solid rgba(36, 63, 39, 0.13);
+  border-radius: 8px;
+  background: rgba(251, 250, 244, 0.9);
+}
+
+.dydd-course-stats dt {
+  color: var(--green-dark);
+  font-size: clamp(2rem, 5vw, 3.1rem);
+  font-weight: 950;
+  line-height: 0.95;
+}
+
+.dydd-course-stats dd {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 850;
+  line-height: 1.3;
+}
+
+.dydd-progress-racetrack {
+  display: grid;
+  grid-template-columns: minmax(270px, 0.35fr) minmax(0, 1fr);
+  gap: clamp(20px, 4vw, 42px);
+  align-items: center;
+  margin-bottom: 24px;
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid rgba(212, 164, 81, 0.42);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(251, 250, 244, 0.94), rgba(243, 228, 196, 0.44)),
+    var(--panel);
+}
+
+.dydd-progress-racetrack ol {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(116px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 12px 0 0;
+  list-style: none;
+}
+
+.dydd-progress-racetrack ol::before {
+  content: "";
+  position: absolute;
+  top: 31px;
+  right: 4px;
+  left: 4px;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--green), var(--brass));
+}
+
+.dydd-progress-racetrack li {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  text-align: center;
+}
+
+.dydd-progress-racetrack li span {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 2px solid var(--green-dark);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--green-dark);
+  font-size: 0.76rem;
+  font-weight: 950;
+  box-shadow: 0 10px 24px rgba(70, 58, 35, 0.14);
+}
+
+.dydd-progress-racetrack strong {
+  color: var(--green-dark);
+  font-size: 0.9rem;
+  line-height: 1.12;
+}
+
+.dydd-progress-racetrack small {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 820;
+}
+
+.dydd-course-module-stack {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.dydd-course-module {
+  display: grid;
+  gap: 18px;
+  padding: clamp(20px, 4vw, 34px);
+  border: 1px solid rgba(228, 220, 203, 0.96);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 16px 42px rgba(70, 58, 35, 0.07);
+}
+
+.dydd-course-module > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: start;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.dydd-course-module > header h2 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(1.8rem, 3.4vw, 2.8rem);
+  line-height: 1;
+}
+
+.dydd-course-module > header p:not(.section-label) {
+  max-width: 74ch;
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.dydd-course-module > header > span {
+  padding: 8px 11px;
+  border: 1px solid rgba(184, 138, 67, 0.28);
+  border-radius: 999px;
+  background: rgba(243, 228, 196, 0.58);
+  color: #6f4d20;
+  font-size: 0.8rem;
+  font-weight: 920;
+  white-space: nowrap;
+}
+
+.dydd-course-unit-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dydd-course-unit {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.36fr) minmax(0, 1fr);
+  gap: 14px 18px;
+  align-items: start;
+  padding: 18px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-left: 7px solid rgba(71, 107, 66, 0.7);
+  border-radius: 8px;
+  background: rgba(251, 250, 244, 0.78);
+}
+
+.dydd-course-unit.designid {
+  border-left-color: #3f8f58;
+  background: rgba(234, 240, 226, 0.72);
+}
+
+.dydd-course-unit.pathfinder {
+  border-left-color: var(--brass);
+  background: rgba(243, 228, 196, 0.44);
+}
+
+.dydd-course-unit.assessment {
+  border-left-color: #386f91;
+}
+
+.dydd-course-unit.workbook {
+  border-left-color: #6f7c58;
+}
+
+.dydd-course-unit.completion {
+  border-left-color: #243f27;
+  background: rgba(234, 240, 226, 0.56);
+}
+
+.dydd-course-unit > a {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  color: var(--green-dark);
+  text-decoration: none;
+}
+
+.dydd-course-unit > a > span {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--green-dark);
+  color: var(--white);
+  font-size: 0.76rem;
+  font-weight: 950;
+}
+
+.dydd-course-unit > a small {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--brass);
+  font-size: 0.74rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.dydd-course-unit > a strong {
+  color: var(--green-dark);
+  font-size: clamp(1.08rem, 1.8vw, 1.35rem);
+  line-height: 1.13;
+}
+
+.dydd-unit-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: center;
+}
+
+.dydd-unit-meta span {
+  padding: 6px 8px;
+  border: 1px solid rgba(36, 63, 39, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #40503e;
+  font-size: 0.72rem;
+  font-weight: 880;
+  line-height: 1.1;
+}
+
+.dydd-course-unit > p,
+.dydd-unit-teaching p {
+  margin: 0;
+  color: #40503e;
+  line-height: 1.58;
+}
+
+.dydd-unit-teaching {
+  display: grid;
+  gap: 8px;
+  grid-column: 2;
+}
+
+.dydd-unit-workbook {
+  display: grid;
+  gap: 6px;
+  grid-column: 2;
+  padding: 15px;
+  border: 1px solid rgba(36, 63, 39, 0.13);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.dydd-unit-workbook h3 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: 1.02rem;
+  line-height: 1.25;
+}
+
+.dydd-unit-workbook small,
+.dydd-unit-note {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.dydd-unit-note {
+  grid-column: 2;
+  padding: 10px 12px;
+  border-left: 5px solid var(--brass);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
 .journey-stage-stack {
   display: grid;
   gap: 28px;
@@ -8561,6 +8891,8 @@ h3 {
   .waypoint-result-card,
   .polished-course-hero,
   .course-personalization,
+  .dydd-course-overview,
+  .dydd-progress-racetrack,
   .module-panel,
   .lesson-page,
   .named-check,
@@ -8720,6 +9052,23 @@ h3 {
 
   .journey-chapter-nav {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .dydd-progress-racetrack {
+    align-items: start;
+  }
+
+  .dydd-progress-racetrack ol {
+    overflow-x: auto;
+    grid-template-columns: repeat(8, minmax(128px, 1fr));
+    margin-right: calc(clamp(22px, 4vw, 34px) * -1);
+    padding-right: clamp(22px, 4vw, 34px);
+    padding-bottom: 8px;
+    scroll-snap-type: x proximity;
+  }
+
+  .dydd-progress-racetrack li {
+    scroll-snap-align: start;
   }
 
   .visual-journey-map {
@@ -8970,6 +9319,12 @@ h3 {
   .journey-assessment-callouts,
   .journey-sample-lessons-heading,
   .journey-sample-lesson,
+  .dydd-course-overview,
+  .dydd-progress-racetrack,
+  .dydd-course-stats,
+  .dydd-course-module > header,
+  .dydd-course-unit,
+  .dydd-course-unit > a,
   .journey-sample-title-row,
   .journey-build-accordion > summary,
   .journey-prompt-grid,
@@ -8981,6 +9336,16 @@ h3 {
   .journey-sample-media {
     width: 100%;
     max-width: 520px;
+  }
+
+  .dydd-course-module > header > span {
+    justify-self: start;
+  }
+
+  .dydd-unit-teaching,
+  .dydd-unit-workbook,
+  .dydd-unit-note {
+    grid-column: 1;
   }
 
   .journey-sample-copy span {

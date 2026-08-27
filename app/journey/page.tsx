@@ -1,4 +1,9 @@
 import { saveJourneyStageResponses } from "@/app/journey/actions";
+import {
+  dyddMainCourseOutline,
+  dyddMainCourseStats,
+  type DyddCourseUnitType,
+} from "@/lib/journey/dydd-course-outline";
 import { dyddJourney } from "@/lib/journey/dydd-journey";
 import { getFacilitatorPlaybookStage } from "@/lib/journey/facilitator-playbook";
 import { PageHelp } from "@/components/page-help";
@@ -15,6 +20,16 @@ const careLabels = {
   connect: "Connect",
   explore: "Explore",
   reflect: "Reflect",
+};
+
+const courseTypeClass: Record<DyddCourseUnitType, string> = {
+  "assessment-link": "assessment",
+  completion: "completion",
+  "designid-reflection": "designid",
+  normal: "normal",
+  orientation: "orientation",
+  pathfinder: "pathfinder",
+  "workbook-checkpoint": "workbook",
 };
 
 type JourneyPageProps = {
@@ -41,8 +56,8 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
         </div>
         <aside>
           <span>{dyddJourney.tagline}</span>
-          <strong>{dyddJourney.stages.length}</strong>
-          <small>journey stages from the source materials</small>
+          <strong>{dyddMainCourseStats.unitCount}</strong>
+          <small>course units mapped from John's master outline</small>
         </aside>
       </header>
 
@@ -60,12 +75,112 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
 
       <PageHelp
         items={[
-          "Use the chapter shortcuts to jump to the next unfinished part of the workbook.",
-          "Open each section to move through Connect, Act, Reflect, and Explore prompts.",
-          "Save chapter drafts as you go; Pathfinder entries build a purpose thread over time.",
+          "Use the course map to move lesson by lesson through the full DYDD class.",
+          "Workbook prompts sit at the bottom of the matching lesson so each entry can become part of the learner record.",
+          "Pathfinder lessons collect niche language chapter by chapter for the final declaration.",
         ]}
         title="How to walk the Journey"
       />
+
+      <section className="dydd-course-overview" aria-label="DYDD course map overview">
+        <div className="dydd-course-heading">
+          <p className="section-label">Main course outline</p>
+          <h2>A complete lesson path from welcome to niche declaration.</h2>
+          <p>
+            The uploaded spreadsheet is now translated into explicit course
+            units with content indicators, workbook attachments, DesignID
+            reflections, assessment steps, and Pathfinder checkpoints.
+          </p>
+        </div>
+        <dl className="dydd-course-stats">
+          <div>
+            <dt>{dyddMainCourseStats.moduleCount}</dt>
+            <dd>Modules</dd>
+          </div>
+          <div>
+            <dt>{dyddMainCourseStats.unitCount}</dt>
+            <dd>Lessons and checkpoints</dd>
+          </div>
+          <div>
+            <dt>{dyddMainCourseStats.designIdReflectionCount}</dt>
+            <dd>DesignID reflections</dd>
+          </div>
+          <div>
+            <dt>{dyddMainCourseStats.pathfinderCount}</dt>
+            <dd>Pathfinder moments</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section className="dydd-progress-racetrack" aria-label="Course progress preview">
+        <div>
+          <p className="section-label">Progress model</p>
+          <h2>Built for solo learners now and Camp Circle visibility later.</h2>
+          <p>
+            Each unit has a stable slug and type, so progress can eventually be
+            shown for every person without exposing private workbook entries.
+          </p>
+        </div>
+        <ol>
+          {dyddMainCourseOutline.map((module, index) => (
+            <li key={module.slug}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{module.title}</strong>
+              <small>{module.units.length} units</small>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="dydd-course-module-stack" aria-label="Discover Your Divine Design course outline">
+        {dyddMainCourseOutline.map((module, moduleIndex) => (
+          <article className="dydd-course-module" id={`course-${module.slug}`} key={module.slug}>
+            <header>
+              <div>
+                <p className="section-label">Module {String(moduleIndex + 1).padStart(2, "0")}</p>
+                <h2>{module.title}</h2>
+                <p>{module.summary}</p>
+              </div>
+              <span>{module.units.length} units</span>
+            </header>
+            <ol className="dydd-course-unit-list">
+              {module.units.map((unit, unitIndex) => (
+                <li className={`dydd-course-unit ${courseTypeClass[unit.type]}`} id={unit.slug} key={unit.slug}>
+                  <a href={`#${unit.slug}`}>
+                    <span>{String(unitIndex + 1).padStart(2, "0")}</span>
+                    <div>
+                      <small>{unit.section}</small>
+                      <strong>{unit.title}</strong>
+                    </div>
+                  </a>
+                  <div className="dydd-unit-meta">
+                    <span>{unit.typeLabel}</span>
+                    <span>{unit.duration}</span>
+                    {unit.bookPages ? <span>Book {unit.bookPages}</span> : null}
+                    {unit.workbookPages ? <span>Workbook {unit.workbookPages}</span> : null}
+                  </div>
+                  <p>{unit.lessonMainIdea}</p>
+                  <div className="dydd-unit-teaching">
+                    {unit.teachingBlocks.map((block) => (
+                      <p key={block}>{block}</p>
+                    ))}
+                  </div>
+                  {unit.workbookSection || unit.reflectionPrompt ? (
+                    <section className="dydd-unit-workbook" aria-label={`${unit.title} workbook prompt`}>
+                      <p className="section-label">
+                        {unit.type === "pathfinder" ? "Pathfinder builder" : "Workbook attachment"}
+                      </p>
+                      <h3>{unit.reflectionPrompt}</h3>
+                      {unit.workbookPages ? <small>{unit.workbookPages}</small> : null}
+                    </section>
+                  ) : null}
+                  {unit.notes ? <p className="dydd-unit-note">{unit.notes}</p> : null}
+                </li>
+              ))}
+            </ol>
+          </article>
+        ))}
+      </section>
 
       <section className="journey-chapter-nav" aria-label="Journey chapter shortcuts">
         {dyddJourney.stages.map((stage, index) => (

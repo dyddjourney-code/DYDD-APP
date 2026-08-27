@@ -6,124 +6,144 @@ import {
   facilitatorPlaybookStages,
 } from "@/lib/journey/facilitator-playbook";
 
+type CircleMember = {
+  name: string;
+  role: string;
+  progress: number;
+  current: string;
+  assessment: string;
+  shared: string;
+};
+
+type SampleCircle = {
+  slug: string;
+  name: string;
+  format: string;
+  rhythm: string;
+  nextMeeting: string;
+  currentStage: string;
+  leaderNeed: string;
+  members: CircleMember[];
+};
+
 const circleTypes = [
   {
     capacity: "Solo",
-    detail: "Keep your personal DYDD trail private while staying ready to share selected summaries later.",
+    detail: "Keep the course personal while the app preserves reflection, assessment, CARE, and Pathfinder work.",
     label: "Walk solo",
-    privacy: "Private account, personal pacing, optional sharing later.",
   },
   {
     capacity: "2 people",
-    detail: "Move with a friend, mentor, spouse, or ministry partner at a shared pace.",
+    detail: "Let a pair or couple walk at the same pace with opt-in sharing and private records intact.",
     label: "Pair or couple",
-    privacy: "Personal trail stays private unless both people intentionally share.",
   },
   {
     capacity: "4-10 people",
-    detail: "Built for a host-led circle where each person contributes to a shared learning thread.",
-    label: "Small Group",
-    privacy: "Members contribute only summaries, prayers, questions, and next steps.",
+    detail: "Give a host the guide, reminders, shared questions, and progress view for a small circle.",
+    label: "Small group",
   },
   {
     capacity: "10-25+ people",
-    detail: "A class format with facilitator notes, pacing, and shared discussion capture.",
+    detail: "Add class pacing, participant check-ins, and facilitator notes without exposing private entries.",
     label: "Class",
-    privacy: "Facilitator sees participation status, not private workbook entries.",
   },
 ];
 
-const privacyLanes = [
+const sampleCircles: SampleCircle[] = [
   {
-    title: "Personal Trail",
-    text: "Workbook answers, CARE entries, journal notes, Pathfinder drafts, and assessment records remain attached to the individual account.",
+    slug: "thursday-group",
+    name: "Jordan's Thursday Group",
+    format: "Small group",
+    rhythm: "Weekly at 7:00 PM",
+    nextMeeting: "Identity: Who and Whose",
+    currentStage: "Module 3 / Section 3.1 / Lesson 3",
+    leaderNeed: "Keep the group moving together while a few people finish DesignID.",
+    members: [
+      { name: "Jordan Reyes", role: "Leader", progress: 41, current: "Identity Overview", assessment: "DesignID connected", shared: "Opened the week with a group summary." },
+      { name: "Maya Bennett", role: "Participant", progress: 38, current: "Who Vs. Whose", assessment: "DesignID connected", shared: "Shared one identity sentence." },
+      { name: "Caleb Ortiz", role: "Participant", progress: 34, current: "Handiwork", assessment: "Reminder needed", shared: "Added a question for the group." },
+      { name: "Nora Whitaker", role: "Participant", progress: 43, current: "DesignID Lens", assessment: "DesignID connected", shared: "Marked CARE complete." },
+      { name: "Eli Monroe", role: "Participant", progress: 29, current: "Purpose", assessment: "Pending", shared: "Reading caught up." },
+      { name: "Priya Collins", role: "Participant", progress: 45, current: "Identity Among Believers", assessment: "DesignID connected", shared: "Shared a prayer request." },
+      { name: "Owen Mercer", role: "Participant", progress: 31, current: "Handiwork", assessment: "Pending", shared: "No shared note yet." },
+      { name: "Tessa Grant", role: "Participant", progress: 40, current: "Who Vs. Whose", assessment: "DesignID connected", shared: "Posted a group takeaway." },
+      { name: "Marcus Hale", role: "Participant", progress: 35, current: "Who Vs. Whose", assessment: "Connected", shared: "Marked present." },
+      { name: "Anika Rhodes", role: "Participant", progress: 27, current: "Purpose", assessment: "Reminder needed", shared: "Needs first check-in." },
+    ],
   },
   {
-    title: "Shared Circle Trail",
-    text: "The group receives summaries, shared questions, what-we-learned notes, prayers, and agreed next steps.",
+    slug: "couple-walk",
+    name: "Jordan + Avery",
+    format: "Couple",
+    rhythm: "Sunday evening",
+    nextMeeting: "Identity and DesignID conversation",
+    currentStage: "Module 3 / Section 3.2 / Lesson 1",
+    leaderNeed: "Protect private answers while giving the couple a side-by-side conversation lane.",
+    members: [
+      { name: "Jordan Reyes", role: "Spouse", progress: 46, current: "Design Reflections and Love", assessment: "Shepherd - Architect", shared: "Shared love-language observation." },
+      { name: "Avery Reyes", role: "Spouse", progress: 44, current: "Design Reflections and Love", assessment: "Artisan - Steward", shared: "Opted into couple comparison." },
+    ],
   },
   {
-    title: "Host Controls",
-    text: "The host manages invitations, pacing, stage openings, shared prompts, and group completion status.",
-  },
-  {
-    title: "Couple View",
-    text: "A future opt-in lane can compare DesignID, Spiritual Gifts, CARE areas, and Pathfinder themes side by side.",
-  },
-];
-
-const journeyTrack = [
-  ["Start", "Orient the circle and confirm privacy"],
-  ["Identity", "Shared summary: whose we are"],
-  ["DesignID", "Personal results, optional group language"],
-  ["Expertise", "Skills and capacities we noticed"],
-  ["Story", "Formation themes, shared carefully"],
-  ["Desire", "Motivations and holy burden"],
-  ["Spiritual Gifts", "Gifts language and service patterns"],
-  ["Gifts", "Where grace is showing up"],
-  ["Niche", "Shared calling themes and next experiments"],
-  ["Pathways", "Choose direction and support structure"],
-  ["DesignPD", "Practice decisions and accountability"],
-  ["FruitLife 360", "Growth mirror and visible fruit"],
-];
-
-const sharedPrompts = [
-  {
-    stage: "End of each chapter",
-    prompt: "What did we learn together that should not be lost?",
-    type: "Shared summary",
-  },
-  {
-    stage: "CARE reflection",
-    prompt: "What did this section invite us to connect, act, reflect, or explore?",
-    type: "Group CARE note",
-  },
-  {
-    stage: "Pathfinder",
-    prompt: "What patterns are emerging for our shared purpose and support?",
-    type: "Purpose thread",
-  },
-  {
-    stage: "Facilitator close",
-    prompt: "What is the next faithful step for this circle before we meet again?",
-    type: "Next step",
-  },
-];
-
-const samplePeople = [
-  {
-    name: "Jordan",
-    progress: "Identity complete",
-    reflection: "Shepherd - Architect",
-    shared: "Shared one Identity summary",
-  },
-  {
-    name: "Taylor",
-    progress: "DesignID connected",
-    reflection: "Artisan - Steward",
-    shared: "Added a question for Expertise",
-  },
-  {
-    name: "Morgan",
-    progress: "Spiritual Gifts next",
-    reflection: "Awaiting DesignID",
-    shared: "Reading with the circle",
-  },
-  {
-    name: "Casey",
-    progress: "Invited",
-    reflection: "Private",
-    shared: "Has not joined yet",
+    slug: "wednesday-class",
+    name: "Jordan's Wednesday Night Class",
+    format: "Class cohort",
+    rhythm: "Eight-week church class",
+    nextMeeting: "Welcome and course rhythm",
+    currentStage: "Module 1 / Welcome & Orientation / Lesson 2",
+    leaderNeed: "Manage attendance, assessment readiness, and group pacing with a light-touch class view.",
+    members: [
+      { name: "Amelia Brooks", role: "Participant", progress: 18, current: "Course Outline", assessment: "Invite sent", shared: "Joined circle." },
+      { name: "Jonas Pike", role: "Participant", progress: 22, current: "How This Journey Works", assessment: "Invite sent", shared: "Marked present." },
+      { name: "Renee Carter", role: "Participant", progress: 20, current: "Course Outline", assessment: "Pending", shared: "No shared note yet." },
+      { name: "Theo Ramsey", role: "Participant", progress: 16, current: "Welcome", assessment: "Pending", shared: "Joined circle." },
+      { name: "Bianca Flores", role: "Participant", progress: 24, current: "How This Journey Works", assessment: "Connected", shared: "Shared pace preference." },
+      { name: "Graham Ellis", role: "Participant", progress: 14, current: "Welcome", assessment: "Invite sent", shared: "Needs reminder." },
+      { name: "Sienna Vaughn", role: "Participant", progress: 19, current: "Course Outline", assessment: "Invite sent", shared: "Marked present." },
+      { name: "Derek Lane", role: "Participant", progress: 17, current: "Welcome", assessment: "Pending", shared: "No shared note yet." },
+      { name: "Naomi Price", role: "Participant", progress: 23, current: "How This Journey Works", assessment: "Connected", shared: "Posted one takeaway." },
+      { name: "Silas Reed", role: "Participant", progress: 15, current: "Welcome", assessment: "Invite sent", shared: "Joined circle." },
+      { name: "Claire Donovan", role: "Participant", progress: 21, current: "Course Outline", assessment: "Pending", shared: "Marked present." },
+      { name: "Malik Turner", role: "Participant", progress: 13, current: "Welcome", assessment: "Pending", shared: "Needs first login." },
+      { name: "Elena Marsh", role: "Participant", progress: 25, current: "How This Journey Works", assessment: "Connected", shared: "Shared one question." },
+      { name: "Victor Chen", role: "Participant", progress: 18, current: "Course Outline", assessment: "Invite sent", shared: "Joined circle." },
+      { name: "Hallie Foster", role: "Participant", progress: 16, current: "Welcome", assessment: "Pending", shared: "No shared note yet." },
+    ],
   },
 ];
 
-const sideBySideRows = [
-  ["Reflection", "Shepherd - Architect", "Artisan - Steward"],
-  ["DesignID lens", "People care and structure", "Meaning-making and responsibility"],
-  ["Spiritual Gifts", "Encouragement, mercy, leadership", "Creative service, wisdom, helps"],
-  ["CARE filter", "Reflect + Act themes", "Connect + Explore themes"],
-  ["Pathfinder", "Support and shepherding niche", "Creative formation niche"],
+const activeCircle = sampleCircles[0];
+const activeGuideStages = facilitatorPlaybookStages.slice(0, 4);
+
+const workspaceTabs = [
+  ["Overview", "Pace, meeting, and leader next steps"],
+  ["People", "Progress, assessment status, and reminders"],
+  ["Journey Track", "Racetrack view for the circle"],
+  ["Field Guide", "Leader notes matched to the course map"],
 ];
+
+const sharedLeaderNotes = [
+  {
+    label: "Before the lesson",
+    text: "Frame the next section, confirm the privacy boundary, and decide which shared question belongs in the room.",
+  },
+  {
+    label: "During the lesson",
+    text: "Listen for confusion, repeated language, and places where people need permission to slow down.",
+  },
+  {
+    label: "After CARE",
+    text: "Ask for themes, questions, and next steps only. Private workbook answers stay with the learner.",
+  },
+  {
+    label: "Close the circle",
+    text: "Name what the group is carrying forward, set the next assignment, and send one simple reminder.",
+  },
+];
+
+function completionAverage(members: CircleMember[]) {
+  return Math.round(members.reduce((total, member) => total + member.progress, 0) / members.length);
+}
 
 export default function CampCirclePage() {
   return (
@@ -133,31 +153,31 @@ export default function CampCirclePage() {
           <p className="eyebrow">Together</p>
           <h1>Camp Circle</h1>
           <p className="lede">
-            A parallel journey for people walking together. Camp Circle helps
-            pairs, couples, small groups, and classes move through DYDD with
-            shared summaries, questions, prayer, and next steps while each
-            person&apos;s private trail stays private.
+            A parallel leader workspace for people walking through DYDD together.
+            The course stays clean for the learner. The circle gives the host
+            progress, pacing, shared discussion, and the Field Guide beside the
+            Journey without crowding it.
           </p>
         </div>
       </header>
 
       <PageHelp
         items={[
-          "Choose whether the journey is solo, paired, a small group, or a class.",
-          "Invite people without exposing private workbook, journal, or assessment details.",
-          "Use shared entries for summaries, questions, prayers, and next steps.",
+          "Use the course for the learner experience and Camp Circle for leader control.",
+          "Switch between couple, small group, and class examples to test the structure.",
+          "Keep private workbook and assessment answers private while tracking shared progress.",
         ]}
         title="Camp Circle help"
       />
 
       <section className="camp-circle-panel circle-options-panel" aria-label="Camp Circle options">
         <div className="card-heading wide-heading">
-          <p className="section-label">Camp Circle</p>
-          <h2>Choose how people walk together.</h2>
+          <p className="section-label">Circle formats</p>
+          <h2>One structure can support solo, couple, small group, and class paths.</h2>
           <p>
-            The circle can stay personal, become a pair or couple rhythm, or
-            support a hosted group or class without turning private work into
-            public work.
+            The Field Guide should not sit on top of the lesson. It belongs in
+            the circle workspace, where Jordan can prepare, guide, follow up,
+            and see progress without changing the course screen for everyone.
           </p>
         </div>
         <div className="circle-type-grid">
@@ -166,215 +186,231 @@ export default function CampCirclePage() {
               <span>{type.capacity}</span>
               <h2>{type.label}</h2>
               <p>{type.detail}</p>
-              <small>{type.privacy}</small>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="camp-circle-control-grid" aria-label="Circle control dashboard">
-        <article className="camp-circle-panel circle-builder">
-          <div className="card-heading">
-            <p className="section-label">Host setup</p>
-            <h2>Create the circle.</h2>
-          </div>
-          <form className="circle-builder-form">
-            <label>
-              Circle name
-              <input name="name" placeholder="Thursday DYDD Study" />
-            </label>
-            <label>
-              Format
-              <select name="group_type" defaultValue="small_group">
-                <option value="pair">Pair</option>
-                <option value="couple">Couple</option>
-                <option value="small_group">Small group</option>
-                <option value="class_cohort">Class cohort</option>
-              </select>
-            </label>
-            <label>
-              Capacity
-              <select name="capacity" defaultValue="4-10">
-                <option value="2">2 people</option>
-                <option value="4-10">4-10 people</option>
-                <option value="10-25">10-25 people</option>
-                <option value="25-plus">25+ class</option>
-              </select>
-            </label>
-            <label>
-              Privacy lane
-              <select name="privacy" defaultValue="shared_summaries">
-                <option value="shared_summaries">Individual private, shared summaries</option>
-                <option value="couple_opt_in">Couple side-by-side opt-in</option>
-                <option value="facilitator_summary">Facilitator summary only</option>
-              </select>
-            </label>
-            <button className="button primary" type="button">
-              Stage circle
-            </button>
-            <p className="helper-text">
-              Staged for preview. The Supabase structure is ready for live create,
-              invite, and shared-entry actions.
-            </p>
-          </form>
-        </article>
-
-        <article className="camp-circle-panel invitation-panel">
-          <div className="card-heading">
-            <p className="section-label">Invitations</p>
-            <h2>Invite people into the shared trail.</h2>
-          </div>
-          <div className="invite-rail">
-            <label>
-              Invitee email
-              <input name="email" placeholder="person@example.com" />
-            </label>
-            <label>
-              Role
-              <select name="role" defaultValue="participant">
-                <option value="participant">Participant</option>
-                <option value="co_host">Co-host</option>
-                <option value="facilitator">Facilitator</option>
-              </select>
-            </label>
-            <button className="button secondary" type="button">
-              Prepare invite
-            </button>
-          </div>
-          <div className="privacy-callout">
-            <strong>Boundary rule</strong>
-            <p>
-              Accepting an invitation does not expose personal workbook,
-              journal, Pathfinder, or assessment data. It only joins the shared
-              circle lane.
-            </p>
-          </div>
-        </article>
-      </section>
-
-      <section className="camp-circle-panel privacy-lanes" aria-label="Data privacy lanes">
-        <div className="card-heading">
-          <p className="section-label">Privacy architecture</p>
-          <h2>Two journeys run beside each other.</h2>
+      <section className="camp-circle-panel circle-switchboard" aria-label="Jordan sample circles">
+        <div className="card-heading wide-heading">
+          <p className="section-label">Jordan's login</p>
+          <h2>Jordan can lead more than one circle without mixing them together.</h2>
+          <p>
+            Each circle becomes its own workspace under Camp Circle. The leader
+            sees the same course map, but the people, pace, reminders, and Field
+            Guide notes belong to that specific group.
+          </p>
         </div>
-        <div className="privacy-lane-grid">
-          {privacyLanes.map((lane) => (
-            <article key={lane.title}>
-              <strong>{lane.title}</strong>
-              <p>{lane.text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="camp-circle-panel group-track-panel" aria-label="Group journey track">
-        <div className="card-heading">
-          <p className="section-label">Shared track</p>
-          <h2>The whole journey can be paced together.</h2>
-        </div>
-        <ol className="group-journey-track">
-          {journeyTrack.map(([label, detail], index) => (
-            <li key={label}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <strong>{label}</strong>
-              <small>{detail}</small>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section className="camp-circle-panel host-playbook-feature" id="field-guide">
-        <div className="host-playbook-icon" aria-hidden="true">
-          <svg fill="none" viewBox="0 0 64 64">
-            <path d="M13 12h25a10 10 0 0 1 10 10v30H23a10 10 0 0 1-10-10Z" fill="#fffaf0" stroke="#243f27" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
-            <path d="M22 22h17M22 30h15M22 38h11" stroke="#739d5e" strokeLinecap="round" strokeWidth="3" />
-            <path d="m45 12 7-5 4 8-7 5Z" fill="#d4a451" stroke="#6f4d20" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
-            <path d="m39 27 10-7" stroke="#6f4d20" strokeLinecap="round" strokeWidth="3" />
-          </svg>
-        </div>
-        <div className="host-playbook-copy">
-          <p className="section-label">Field Guide</p>
-          <h2>{facilitatorPlaybookMeta.title.replace("Host Playbook", "Field Guide")}</h2>
-          <p>{facilitatorPlaybookMeta.value}</p>
-          <small>{facilitatorPlaybookMeta.source}</small>
-        </div>
-        <div className="host-playbook-highlights">
-          {facilitatorPlaybookHighlights.map((item) => (
-            <span key={item}>{item}</span>
-          ))}
-        </div>
-      </section>
-
-      <section className="camp-circle-panel facilitator-route-panel" aria-label="Field Guide route">
-        <div className="card-heading">
-          <p className="section-label">Field Guide route</p>
-          <h2>The guide follows the circle in real time.</h2>
-        </div>
-        <div className="facilitator-route-grid">
-          {facilitatorPlaybookStages.map((stage) => (
-            <article key={stage.slug}>
-              <span>{stage.session}</span>
-              <strong>{stage.title}</strong>
-              <p>{stage.inTheMoment[0]}</p>
-              <a href={`/journey#${stage.slug}`}>Open in Journey</a>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="camp-circle-two-column">
-        <article className="camp-circle-panel shared-workbench">
-          <div className="card-heading">
-            <p className="section-label">Shared entries</p>
-            <h2>Everyone contributes to the group memory.</h2>
-          </div>
-          {sharedPrompts.map((item) => (
-            <section key={item.prompt}>
-              <span>{item.type}</span>
-              <strong>{item.stage}</strong>
-              <p>{item.prompt}</p>
-              <textarea rows={3} placeholder="Shared group summary..." />
-            </section>
-          ))}
-        </article>
-
-        <article className="camp-circle-panel member-progress">
-          <div className="card-heading">
-            <p className="section-label">Host view</p>
-            <h2>See progress without reading private entries.</h2>
-          </div>
-          {samplePeople.map((person) => (
-            <section key={person.name}>
+        <div className="circle-preview-grid">
+          {sampleCircles.map((circle) => (
+            <article className="circle-preview-card" key={circle.slug}>
               <div>
-                <strong>{person.name}</strong>
-                <span>{person.reflection}</span>
+                <span>{circle.format}</span>
+                <h3>{circle.name}</h3>
+                <p>{circle.rhythm}</p>
               </div>
-              <p>{person.progress}</p>
-              <small>{person.shared}</small>
-            </section>
+              <div className="circle-preview-stat">
+                <strong>{circle.members.length}</strong>
+                <small>people</small>
+              </div>
+              <div className="circle-progress-line" aria-label={`${circle.name} average progress`}>
+                <span style={{ width: `${completionAverage(circle.members)}%` }} />
+              </div>
+              <p>{circle.leaderNeed}</p>
+              <a href={`#${circle.slug}`}>Preview workspace</a>
+            </article>
           ))}
-        </article>
+        </div>
       </section>
 
-      <section className="camp-circle-panel couple-view-panel" aria-label="Couple view concept">
-        <div className="card-heading">
-          <p className="section-label">Couple view concept</p>
-          <h2>Side by side only when both people choose it.</h2>
-        </div>
-        <div className="couple-comparison">
-          <div className="comparison-header">
-            <span>Filter</span>
-            <strong>Jordan</strong>
-            <strong>Taylor</strong>
+      <section className="camp-circle-workspace" id={activeCircle.slug} aria-label="Active circle workspace">
+        <aside className="camp-circle-sidebar">
+          <div className="card-heading">
+            <p className="section-label">Active circle</p>
+            <h2>{activeCircle.name}</h2>
+            <p>{activeCircle.currentStage}</p>
           </div>
-          {sideBySideRows.map(([filter, first, second]) => (
-            <div className="comparison-row" key={filter}>
-              <span>{filter}</span>
-              <p>{first}</p>
-              <p>{second}</p>
+          <nav aria-label="Circle workspace tabs">
+            {workspaceTabs.map(([label, detail], index) => (
+              <a className={index === 0 ? "active" : ""} href={label === "Field Guide" ? "#field-guide" : `#${activeCircle.slug}`} key={label}>
+                <strong>{label}</strong>
+                <span>{detail}</span>
+              </a>
+            ))}
+          </nav>
+          <div className="camp-circle-next-card">
+            <span>Next meeting</span>
+            <strong>{activeCircle.nextMeeting}</strong>
+            <p>{activeCircle.leaderNeed}</p>
+          </div>
+        </aside>
+
+        <div className="camp-circle-main">
+          <section className="camp-circle-panel circle-dashboard-band" aria-label="Circle dashboard">
+            <div className="card-heading wide-heading">
+              <p className="section-label">Leader dashboard</p>
+              <h2>Control center for the circle, not the learner lesson.</h2>
             </div>
-          ))}
+            <div className="circle-dashboard-metrics">
+              <article>
+                <span>{completionAverage(activeCircle.members)}%</span>
+                <p>average course progress</p>
+              </article>
+              <article>
+                <span>7</span>
+                <p>DesignID records connected</p>
+              </article>
+              <article>
+                <span>3</span>
+                <p>reminders to send</p>
+              </article>
+              <article>
+                <span>1</span>
+                <p>shared summary due</p>
+              </article>
+            </div>
+          </section>
+
+          <section className="camp-circle-panel people-progress-panel" aria-label="Participant progress">
+            <div className="card-heading wide-heading">
+              <p className="section-label">People</p>
+              <h2>Jordan sees readiness and progress without reading private workbook entries.</h2>
+            </div>
+            <div className="people-progress-list">
+              {activeCircle.members.map((member) => (
+                <article key={member.name}>
+                  <div className="person-line-heading">
+                    <div>
+                      <strong>{member.name}</strong>
+                      <span>{member.role}</span>
+                    </div>
+                    <small>{member.progress}%</small>
+                  </div>
+                  <div className="person-progress-track">
+                    <span style={{ width: `${member.progress}%` }} />
+                  </div>
+                  <div className="person-status-row">
+                    <p>{member.current}</p>
+                    <p>{member.assessment}</p>
+                    <p>{member.shared}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="camp-circle-panel circle-racetrack-panel" aria-label="Circle racetrack">
+            <div className="card-heading wide-heading">
+              <p className="section-label">Journey Track</p>
+              <h2>A racetrack view for group pacing.</h2>
+              <p>
+                This is the leader-level picture John described: Jordan can see
+                where each person is on the class path while the private CARE
+                and Pathfinder answers stay in each learner account.
+              </p>
+            </div>
+            <div className="circle-racetrack">
+              {activeCircle.members.map((member) => (
+                <div className="circle-racer" key={member.name}>
+                  <span>{member.name.split(" ")[0]}</span>
+                  <div>
+                    <i style={{ left: `${member.progress}%` }} />
+                  </div>
+                  <small>{member.current}</small>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="camp-circle-panel field-guide-workspace" id="field-guide" aria-label="Field Guide workspace">
+            <div className="field-guide-head">
+              <div className="host-playbook-icon" aria-hidden="true">
+                <svg fill="none" viewBox="0 0 64 64">
+                  <path d="M13 12h25a10 10 0 0 1 10 10v30H23a10 10 0 0 1-10-10Z" fill="#fffaf0" stroke="#243f27" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+                  <path d="M22 22h17M22 30h15M22 38h11" stroke="#739d5e" strokeLinecap="round" strokeWidth="3" />
+                  <path d="m45 12 7-5 4 8-7 5Z" fill="#d4a451" stroke="#6f4d20" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+                  <path d="m39 27 10-7" stroke="#6f4d20" strokeLinecap="round" strokeWidth="3" />
+                </svg>
+              </div>
+              <div className="host-playbook-copy">
+                <p className="section-label">Field Guide</p>
+                <h2>{facilitatorPlaybookMeta.title.replace("Host Playbook", "Field Guide")}</h2>
+                <p>{facilitatorPlaybookMeta.value}</p>
+                <small>{facilitatorPlaybookMeta.source}</small>
+              </div>
+            </div>
+
+            <div className="host-playbook-highlights">
+              {facilitatorPlaybookHighlights.slice(0, 4).map((item) => (
+                <span key={item}>{item}</span>
+              ))}
+            </div>
+
+            <div className="leader-moment-grid">
+              {sharedLeaderNotes.map((note) => (
+                <article key={note.label}>
+                  <strong>{note.label}</strong>
+                  <p>{note.text}</p>
+                </article>
+              ))}
+            </div>
+
+            <div className="field-guide-course-map">
+              {activeGuideStages.map((stage) => (
+                <details key={stage.slug} open={stage.slug === "identity"}>
+                  <summary>
+                    <span>{stage.session}</span>
+                    <strong>{stage.title}</strong>
+                  </summary>
+                  <div className="field-guide-session-body">
+                    <section>
+                      <h3>Leader focus</h3>
+                      {stage.inTheMoment.map((item) => (
+                        <p key={item}>{item}</p>
+                      ))}
+                    </section>
+                    <section>
+                      <h3>Prepare next</h3>
+                      {stage.prepareNext.map((item) => (
+                        <p key={item}>{item}</p>
+                      ))}
+                    </section>
+                    <section>
+                      <h3>Touchpoints</h3>
+                      {stage.emails.map((item) => (
+                        <p key={item}>{item}</p>
+                      ))}
+                    </section>
+                    <a href={`/journey#${stage.slug}`}>Open matching Journey section</a>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </section>
         </div>
+      </section>
+
+      <section className="camp-circle-sample-stack" aria-label="Other sample circle workspaces">
+        {sampleCircles.slice(1).map((circle) => (
+          <article className="camp-circle-panel compact-circle-preview" id={circle.slug} key={circle.slug}>
+            <div className="card-heading wide-heading">
+              <p className="section-label">{circle.format}</p>
+              <h2>{circle.name}</h2>
+              <p>{circle.leaderNeed}</p>
+            </div>
+            <div className={`compact-people-grid ${circle.members.length > 8 ? "class-size" : ""}`}>
+              {circle.members.map((member) => (
+                <section key={member.name}>
+                  <strong>{member.name}</strong>
+                  <span>{member.current}</span>
+                  <div className="person-progress-track">
+                    <span style={{ width: `${member.progress}%` }} />
+                  </div>
+                </section>
+              ))}
+            </div>
+          </article>
+        ))}
       </section>
 
       <section className="camp-circle-panel playbook-resource-hub" aria-label="Field Guide resource hub">

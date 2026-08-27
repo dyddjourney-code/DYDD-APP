@@ -3749,6 +3749,10 @@ h3 {
   min-height: 238px;
 }
 
+.circle-type-grid .camp-circle-panel h2 {
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+}
+
 .circle-type-grid span,
 .shared-workbench span {
   width: fit-content;
@@ -3782,6 +3786,470 @@ h3 {
 .circle-type-grid small {
   color: var(--green-dark);
   font-weight: 820;
+}
+
+.circle-switchboard {
+  gap: 18px;
+}
+
+.circle-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.circle-preview-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-content: start;
+  min-height: 292px;
+  padding: 18px;
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.circle-preview-card span,
+.camp-circle-next-card span {
+  width: fit-content;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--green-soft);
+  color: var(--brass);
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.circle-preview-card h3 {
+  margin: 10px 0 7px;
+  color: var(--green-dark);
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  line-height: 1.08;
+}
+
+.circle-preview-card p,
+.camp-circle-next-card p,
+.field-guide-session-body p,
+.leader-moment-grid p,
+.person-status-row p,
+.compact-people-grid span {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.48;
+}
+
+.circle-preview-card > p,
+.circle-preview-card > a {
+  grid-column: 1 / -1;
+}
+
+.circle-preview-card > a {
+  align-self: end;
+  color: var(--green-dark);
+  font-size: 0.84rem;
+  font-weight: 950;
+}
+
+.circle-preview-stat {
+  display: grid;
+  place-items: center;
+  min-width: 82px;
+  height: 82px;
+  border: 1px solid rgba(71, 107, 66, 0.18);
+  border-radius: 999px;
+  background: var(--paper);
+}
+
+.circle-preview-stat strong {
+  color: var(--green-dark);
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.circle-preview-stat small {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.circle-progress-line,
+.person-progress-track {
+  overflow: hidden;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(36, 63, 39, 0.1);
+}
+
+.circle-progress-line {
+  grid-column: 1 / -1;
+}
+
+.circle-progress-line span,
+.person-progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--green), var(--brass));
+}
+
+.camp-circle-workspace {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.32fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.camp-circle-sidebar {
+  position: sticky;
+  top: 18px;
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 16px 36px rgba(70, 58, 35, 0.07);
+}
+
+.camp-circle-sidebar h2 {
+  font-size: clamp(1.45rem, 2.2vw, 2rem);
+}
+
+.camp-circle-sidebar nav {
+  display: grid;
+  gap: 8px;
+}
+
+.camp-circle-sidebar nav a {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(251, 250, 244, 0.78);
+}
+
+.camp-circle-sidebar nav a.active {
+  background: var(--green-dark);
+  color: var(--white);
+}
+
+.camp-circle-sidebar nav strong {
+  font-size: 0.9rem;
+  font-weight: 950;
+}
+
+.camp-circle-sidebar nav span {
+  color: inherit;
+  font-size: 0.78rem;
+  line-height: 1.36;
+  opacity: 0.78;
+}
+
+.camp-circle-next-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(184, 138, 67, 0.24);
+  border-radius: 8px;
+  background: rgba(243, 228, 196, 0.44);
+}
+
+.camp-circle-next-card strong {
+  color: var(--green-dark);
+  line-height: 1.18;
+}
+
+.camp-circle-main {
+  display: grid;
+  gap: 18px;
+}
+
+.circle-dashboard-band {
+  gap: 18px;
+}
+
+.circle-dashboard-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background: rgba(71, 107, 66, 0.16);
+}
+
+.circle-dashboard-metrics article {
+  display: grid;
+  gap: 8px;
+  min-height: 118px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.circle-dashboard-metrics span {
+  color: var(--green-dark);
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-weight: 950;
+  line-height: 1;
+}
+
+.circle-dashboard-metrics p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 820;
+  line-height: 1.35;
+}
+
+.people-progress-list {
+  display: grid;
+  gap: 10px;
+}
+
+.people-progress-list article {
+  display: grid;
+  gap: 9px;
+  padding: 14px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.person-line-heading,
+.person-status-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+}
+
+.person-line-heading > div {
+  display: grid;
+  gap: 3px;
+}
+
+.person-line-heading strong,
+.compact-people-grid strong {
+  color: var(--green-dark);
+  font-weight: 950;
+}
+
+.person-line-heading span {
+  color: var(--brass);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.person-line-heading small {
+  color: var(--green-dark);
+  font-weight: 950;
+}
+
+.person-status-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.person-status-row p {
+  font-size: 0.84rem;
+}
+
+.circle-racetrack-panel {
+  overflow: hidden;
+}
+
+.circle-racetrack {
+  display: grid;
+  gap: 11px;
+}
+
+.circle-racer {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr) minmax(130px, 0.32fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.circle-racer > span,
+.circle-racer small {
+  color: var(--green-dark);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.circle-racer small {
+  color: var(--muted);
+  font-weight: 760;
+}
+
+.circle-racer > div {
+  position: relative;
+  height: 26px;
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 999px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(36, 63, 39, 0.12) 0 18px,
+      rgba(184, 138, 67, 0.16) 18px 30px
+    ),
+    rgba(234, 240, 226, 0.78);
+}
+
+.circle-racer i {
+  position: absolute;
+  top: 50%;
+  display: block;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--green-dark);
+  border-radius: 999px;
+  background: var(--brass-soft);
+  box-shadow: 0 6px 12px rgba(36, 63, 39, 0.14);
+  transform: translate(-50%, -50%);
+}
+
+.field-guide-workspace {
+  border-color: rgba(212, 164, 81, 0.36);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.97), rgba(234, 240, 226, 0.72)),
+    var(--panel);
+}
+
+.field-guide-head {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.leader-moment-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.leader-moment-grid article {
+  display: grid;
+  gap: 8px;
+  min-height: 150px;
+  padding: 14px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.76);
+}
+
+.leader-moment-grid strong {
+  color: var(--green-dark);
+  font-size: 0.95rem;
+  line-height: 1.18;
+}
+
+.field-guide-course-map {
+  display: grid;
+  gap: 10px;
+}
+
+.field-guide-course-map details {
+  overflow: hidden;
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 8px;
+  background: rgba(251, 250, 244, 0.72);
+}
+
+.field-guide-course-map summary {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 14px 16px;
+  cursor: pointer;
+  color: var(--green-dark);
+}
+
+.field-guide-course-map summary span {
+  color: var(--brass);
+  font-size: 0.75rem;
+  font-weight: 950;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.field-guide-course-map summary strong {
+  font-weight: 950;
+}
+
+.field-guide-session-body {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 0 16px 16px;
+}
+
+.field-guide-session-body section {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid rgba(71, 107, 66, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.field-guide-session-body h3 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: 0.95rem;
+}
+
+.field-guide-session-body p {
+  font-size: 0.86rem;
+}
+
+.field-guide-session-body > a {
+  grid-column: 1 / -1;
+  justify-self: start;
+  color: var(--green-dark);
+  font-size: 0.84rem;
+  font-weight: 950;
+}
+
+.camp-circle-sample-stack {
+  display: grid;
+  gap: 18px;
+}
+
+.compact-circle-preview {
+  gap: 18px;
+}
+
+.compact-people-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.compact-people-grid.class-size {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.compact-people-grid section {
+  display: grid;
+  gap: 8px;
+  min-height: 126px;
+  padding: 13px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.compact-people-grid span {
+  font-size: 0.82rem;
 }
 
 .privacy-lane-grid {
@@ -9871,6 +10339,10 @@ h3 {
   .camp-circle-hero,
   .camp-circle-control-grid,
   .camp-circle-two-column,
+  .camp-circle-workspace,
+  .circle-preview-grid,
+  .field-guide-head,
+  .field-guide-session-body,
   .host-playbook-feature,
   .journey-builder,
   .fireside-author-strip,
@@ -10098,13 +10570,34 @@ h3 {
     scroll-snap-align: start;
   }
 
+  .camp-circle-sidebar {
+    position: static;
+  }
+
+  .person-status-row {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .circle-racer {
+    grid-template-columns: 74px minmax(0, 1fr);
+  }
+
+  .circle-racer small {
+    grid-column: 2;
+  }
+
   .fieldkit-list,
   .fieldkit-page-grid,
   .featured-course-banner,
   .course-catalog-grid,
   .circle-type-grid,
+  .circle-dashboard-metrics,
+  .leader-moment-grid,
   .privacy-lane-grid,
   .playbook-resource-grid,
+  .compact-people-grid,
+  .compact-people-grid.class-size,
   .facilitator-coach-grid,
   .purpose-two-up,
   .journal-workbench,

@@ -23,7 +23,9 @@ const orientationSlides = [
     title: "On Purpose - For Purpose",
     body:
       "You are God's workmanship, created in Christ Jesus for good works prepared ahead of time. The journey helps that become clear and lived.",
-    scripture: "Ephesians 2:10",
+    scripture:
+      "For we are God's handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.",
+    scriptureReference: "Ephesians 2:10",
     blocks: [
       ["On Purpose", "You are a masterpiece, designed for grace."],
       ["For Purpose", "You are designed to participate and engage."],
@@ -65,7 +67,6 @@ export function DyddOrientationSlider() {
           <div className="dydd-slider-copy">
             <h2>{activeSlide.title}</h2>
             <p>{activeSlide.body}</p>
-            {activeSlide.scripture ? <cite>{activeSlide.scripture}</cite> : null}
           </div>
           {activeSlide.image ? (
             <figure className="dydd-slider-image">
@@ -81,6 +82,12 @@ export function DyddOrientationSlider() {
             </section>
           ))}
         </div>
+        {activeSlide.scripture ? (
+          <blockquote className="dydd-slider-scripture">
+            <p>{activeSlide.scripture}</p>
+            <cite>{activeSlide.scriptureReference}</cite>
+          </blockquote>
+        ) : null}
         <div className="dydd-slider-controls" aria-label="Orientation slider controls">
           <button
             aria-label={`Previous: ${orientationSlides[previousIndex].kicker}`}

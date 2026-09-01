@@ -70,7 +70,7 @@ export default function RangerStationPage() {
         <div className="ranger-welcome-scene">
           <figure className="ranger-porch-card">
             <img
-              src="/brand/dydd-cabin-porch.png"
+              src="/brand/dydd-ranger-welcome-dydi.png"
               alt="Dydi welcoming learners at the Discover Your Divine Design Ranger Station"
             />
           </figure>

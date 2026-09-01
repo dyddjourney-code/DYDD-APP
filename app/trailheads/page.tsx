@@ -24,6 +24,7 @@ const courses = [
       "A short course that helps you understand your DesignID results with clarity and confidence.",
     href: "/courses/designid-foundations",
     logo: "/brand/tools/designid-logo.webp",
+    signpost: "/brand/trailheads/designid-signpost.png",
     points: [
       "Clear walkthrough of your report",
       "Understand reflection and energy patterns",
@@ -40,6 +41,7 @@ const courses = [
       "A focused course that helps you read your Spiritual Gifts results as grace for service, maturity, and love.",
     href: "/courses/spiritual-gifts-service",
     logo: "/brand/tools/spiritual-gifts-logo.jpg",
+    signpost: "/brand/trailheads/spiritual-gifts-signpost.png",
     points: [
       "Understand your top gifts",
       "Connect gifts to humble service",
@@ -56,6 +58,7 @@ const courses = [
       "A self-paced course created to help you understand your DesignPD report and apply your design in the way you plan, make decisions, and move into purposeful action.",
     href: "/courses/designpd-alignment",
     logo: "/brand/tools/designpd-logo.jpg",
+    signpost: "/brand/trailheads/designpd-signpost.png",
     points: [
       "Understand your Plan, Decide, and Do patterns",
       "Connect report insights to real-life action",
@@ -72,6 +75,7 @@ const courses = [
       "A formation course using visible fruit, observer feedback, and honest growth conversations.",
     href: "/courses/fruitlife-360-formation",
     logo: "/brand/tools/fruitful-life-360-logo.jpg",
+    signpost: "/brand/trailheads/fruitlife-360-signpost.png",
     points: [
       "Review fruit of the Spirit formation themes",
       "Learn from self and observer feedback",
@@ -88,6 +92,7 @@ const courses = [
       "A discernment course that helps you understand possible pathways, test them with small experiments, and choose the next faithful step.",
     href: "/courses/design-pathways-discernment",
     logo: "/brand/tools/design-pathways-logo.jpg",
+    signpost: "/brand/trailheads/design-pathways-signpost.png",
     points: [
       "Identify your current pathway",
       "Connect pathway insight to next steps",
@@ -165,7 +170,11 @@ export default function TrailheadsPage() {
               key={course.title}
             >
               <div className="catalog-course-logo">
-                <img src={course.logo} alt={`${course.title} logo`} />
+                <img
+                  className="catalog-course-signpost"
+                  src={course.signpost}
+                  alt={`${course.title} signpost`}
+                />
               </div>
               <div>
                 <span>{course.status === "unlocked" ? "Course unlocked" : "Assessment required"}</span>

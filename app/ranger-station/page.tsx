@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { DyddOrientationSlider } from "@/components/dydd-orientation-slider";
-import { PageHelp } from "@/components/page-help";
 import { RangerParkMap } from "@/components/ranger-park-map";
 
 const stationStops = [
@@ -68,43 +67,23 @@ export default function RangerStationPage() {
       </div>
 
       <header className="standalone-hero ranger-station-hero">
-        <div className="ranger-welcome-copy">
-          <div>
+        <div className="ranger-welcome-scene">
+          <figure className="ranger-porch-card">
+            <img
+              src="/brand/dydd-cabin-porch.png"
+              alt="Dydi welcoming learners at the Discover Your Divine Design Ranger Station"
+            />
+          </figure>
+          <div className="ranger-welcome-copy">
             <p className="eyebrow">Ranger Station</p>
-            <h1>Welcome in before you choose the trail.</h1>
+            <h1>Welcome in.</h1>
             <p className="lede">
-              This is the first orientation stop for the Discover Your Divine
-              Design journey. Come in, get the big picture, see how the pieces
-              fit together, and then choose the route that fits the next step.
-            </p>
-            <div className="ranger-station-actions">
-              <Link className="button primary" href="/trailheads">
-                View trailheads
-              </Link>
-              <Link className="button secondary" href="/field-kit">
-                Open field kit
-              </Link>
-            </div>
-          </div>
-          <div className="ranger-welcome-note" aria-label="Ranger welcome note">
-            <span>Welcome desk</span>
-            <p>
-              Before the map, every learner gets a simple orientation: what DYD is,
-              why the journey matters, and how the tools branch from the main path.
+              You made it to the front door. Take a breath, look around, and let
+              the journey come into view.
             </p>
           </div>
         </div>
         <DyddOrientationSlider />
-        <div className="ranger-station-help">
-          <PageHelp
-            title="Ranger Station Help"
-            items={[
-              "Use Ranger Station as the learner's orientation before they choose a course or tool.",
-              "Use Trailheads for courses and guided routes.",
-              "Use Field Kit and Gear for assessments, reports, books, workshops, and practical resources.",
-            ]}
-          />
-        </div>
       </header>
 
       <section className="ranger-map-section" aria-label="Ranger Station map preview">

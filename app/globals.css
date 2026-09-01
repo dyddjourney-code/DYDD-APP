@@ -3014,16 +3014,43 @@ h3 {
   color: var(--ink);
 }
 
+.ranger-welcome-scene {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  min-width: 0;
+}
+
+.ranger-porch-card {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(360px, 44vw, 560px);
+  margin: 0;
+  border: 1px solid rgba(36, 63, 39, 0.18);
+  border-radius: 8px;
+  background: var(--green-dark);
+  box-shadow: 0 24px 52px rgba(70, 58, 35, 0.14);
+}
+
+.ranger-porch-card img {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  object-fit: cover;
+  object-position: 57% 50%;
+}
+
 .ranger-welcome-copy {
   display: grid;
-  align-content: space-between;
-  gap: clamp(18px, 3vw, 28px);
+  gap: 8px;
+  padding: 0 4px;
 }
 
 .ranger-station-hero h1 {
-  max-width: 13ch;
+  max-width: 16ch;
+  margin: 0;
   color: var(--green-dark);
-  font-size: clamp(2.15rem, 4.8vw, 4.5rem);
+  font-size: clamp(2rem, 4.2vw, 3.85rem);
 }
 
 .ranger-station-hero .eyebrow,
@@ -3031,10 +3058,11 @@ h3 {
   color: var(--muted);
 }
 
-.ranger-station-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+.ranger-station-hero .lede {
+  max-width: 46ch;
+  margin: 0;
+  font-size: clamp(1rem, 1.35vw, 1.18rem);
+  line-height: 1.55;
 }
 
 .ranger-welcome-note {
@@ -3066,7 +3094,6 @@ h3 {
 
 .dydd-orientation-slider {
   display: grid;
-  gap: 12px;
   align-content: stretch;
   min-width: 0;
 }
@@ -3117,8 +3144,8 @@ h3 {
 .dydd-slider-panel {
   display: grid;
   align-content: start;
-  gap: 14px;
-  min-height: 360px;
+  gap: 16px;
+  min-height: 100%;
   padding: clamp(18px, 3vw, 26px);
   border: 1px solid rgba(36, 63, 39, 0.16);
   border-radius: 8px;
@@ -3128,17 +3155,73 @@ h3 {
   box-shadow: 0 18px 38px rgba(70, 58, 35, 0.08);
 }
 
+.dydd-slider-panel.dydd-slide-discover {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(226, 238, 215, 0.86)),
+    var(--panel);
+}
+
+.dydd-slider-panel.dydd-slide-purpose {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(243, 228, 196, 0.78)),
+    var(--panel);
+}
+
+.dydd-slider-panel.dydd-slide-design {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(234, 240, 226, 0.8)),
+    var(--panel);
+}
+
 .dydd-slider-panel h2 {
-  max-width: 13ch;
+  max-width: none;
   color: var(--green-dark);
   font-size: clamp(1.55rem, 2.9vw, 2.55rem);
   line-height: 1;
 }
 
-.dydd-slider-panel > p:not(.section-label) {
+.dydd-slider-copy {
+  display: grid;
+  gap: 12px;
+}
+
+.dydd-slider-panel p:not(.section-label) {
   margin: 0;
   color: var(--muted);
   line-height: 1.58;
+}
+
+.dydd-slider-panel cite {
+  justify-self: start;
+  padding: 7px 10px;
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--green-dark);
+  font-size: 0.8rem;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.dydd-slider-split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(170px, 0.58fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.dydd-slider-image {
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.dydd-slider-image img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
 }
 
 .dydd-slider-blocks {
@@ -3156,9 +3239,35 @@ h3 {
   gap: 5px;
   min-height: 86px;
   padding: 12px;
-  border: 1px solid rgba(71, 107, 66, 0.15);
+  border: 1px solid rgba(71, 107, 66, 0.18);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.78);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(234, 240, 226, 0.78)),
+    var(--green-soft);
+}
+
+.dydd-slide-discover .dydd-slider-blocks section:nth-child(1) {
+  background: rgba(234, 240, 226, 0.92);
+}
+
+.dydd-slide-discover .dydd-slider-blocks section:nth-child(2) {
+  background: rgba(215, 230, 197, 0.84);
+}
+
+.dydd-slide-discover .dydd-slider-blocks section:nth-child(3) {
+  background: rgba(194, 216, 177, 0.76);
+}
+
+.dydd-slide-discover .dydd-slider-blocks section:nth-child(4) {
+  background: rgba(173, 201, 158, 0.72);
+}
+
+.dydd-slide-purpose .dydd-slider-blocks section:nth-child(1) {
+  background: rgba(243, 228, 196, 0.94);
+}
+
+.dydd-slide-purpose .dydd-slider-blocks section:nth-child(2) {
+  background: rgba(224, 235, 214, 0.92);
 }
 
 .dydd-slider-blocks strong {
@@ -3174,22 +3283,69 @@ h3 {
   line-height: 1.32;
 }
 
-.ranger-station-help {
-  position: absolute;
-  top: clamp(16px, 2.4vw, 26px);
-  right: clamp(16px, 2.4vw, 26px);
+.dydd-slider-controls {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  gap: 12px;
+  align-items: center;
+  margin-top: auto;
 }
 
-.ranger-station-help .page-help {
-  margin: 0;
-  padding: 0;
+.dydd-slider-controls button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(36, 63, 39, 0.18);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--green-dark);
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    background 180ms ease,
+    border-color 180ms ease;
 }
 
-.ranger-station-help .page-help-trigger {
-  border-color: rgba(251, 250, 244, 0.42);
-  background: rgba(23, 39, 27, 0.72);
-  color: #ffffff;
-  box-shadow: 0 12px 26px rgba(23, 39, 27, 0.22);
+.dydd-slider-controls button:hover {
+  border-color: rgba(36, 63, 39, 0.34);
+  background: rgba(255, 255, 255, 0.94);
+  transform: translateY(-1px);
+}
+
+.dydd-slider-controls button:active {
+  transform: translateY(1px);
+}
+
+.dydd-slider-controls button span {
+  width: 12px;
+  height: 12px;
+  border-left: 3px solid currentColor;
+  border-bottom: 3px solid currentColor;
+  transform: translateX(2px) rotate(45deg);
+}
+
+.dydd-slider-controls button.next span {
+  transform: translateX(-2px) rotate(225deg);
+}
+
+.dydd-slider-progress {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.dydd-slider-progress span {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(71, 107, 66, 0.2);
+}
+
+.dydd-slider-progress span.is-active {
+  width: 30px;
+  background: var(--green);
 }
 
 .ranger-map-section {
@@ -12309,8 +12465,7 @@ h3 {
     grid-template-columns: 1fr;
   }
 
-  .account-action-row .button,
-  .ranger-station-actions .button {
+  .account-action-row .button {
     flex: 1 1 180px;
   }
 

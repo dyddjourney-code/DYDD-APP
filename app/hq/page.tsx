@@ -1073,111 +1073,147 @@ export default async function HqPage({ searchParams }: HqPageProps) {
 
       <PageHelp
         items={[
-          "Start with Journey when you want the full guided DYDD path.",
-          "Use Trailheads for a focused entry point like DesignID, Spiritual Gifts, or Fruit Life 360.",
-          "Open Field Kit when you need reports, tools, artifacts, or earned badges.",
+          "Use Base Camp as the learner's account and progress home.",
+          "Check courses, artifacts, badges, purchases, and profile details here.",
+          "Use Ranger Station when the learner needs orientation, the park map, or help choosing a trail.",
         ]}
-        title="Start from Base Camp"
+        title="Base Camp Account Help"
       />
 
-      <section className="basecamp-story-grid" aria-label="Discover Your Divine Design overview">
-        <article className="basecamp-story-card">
-          <p className="section-label">What is DYDD?</p>
-          <div className="dydd-definition-cards">
-            {dyddDefinitionCards.map((card) => (
-              <section key={card.title}>
-                <h2>{card.title}</h2>
-                <p>{card.text}</p>
-              </section>
-            ))}
-          </div>
-          <p className="dydd-definition-footer">
-            You were not created randomly. You were formed, intentionally
-            invited, and invited into meaningful work.
-          </p>
-        </article>
-        <article className="basecamp-purpose-card">
-          <p className="section-label">The point</p>
-          <div className="purpose-two-up">
-            <section>
-              <h2>
-                You are <span>On Purpose</span>
-              </h2>
-              <p>
-                You are a masterpiece,
-                <br />
-                designed for grace.
-              </p>
-            </section>
-            <section>
-              <h2>
-                You are <span>For Purpose</span>
-              </h2>
-              <p>
-                You are designed to
-                <br />
-                participate and engage.
-              </p>
-            </section>
-          </div>
-          <blockquote>
+      <section className="basecamp-account-layout" aria-label="Base Camp account overview">
+        <article className="basecamp-account-card profile">
+          <div className="card-heading">
+            <p className="section-label">Account</p>
+            <h2>Profile and sign-in.</h2>
             <p>
-              “We are God&apos;s handiwork, created in Christ Jesus to do good
-              works, which God prepared in advance for us to do.”
+              Base Camp now holds the practical account view: who is signed in,
+              which records are connected, and where access details will live.
             </p>
-            <cite>Ephesians 2:10.</cite>
-          </blockquote>
-        </article>
-        <article className="design-acronym-panel">
-          <div className="design-acronym-media">
-            <img
-              src="/brand/design/design-tree-storybook.png"
-              alt="DESIGN acronym carved into a tree with Identity, Expertise, Story, Desire, Gifts, and Niche"
-            />
           </div>
-          <div className="design-acronym-content">
-            <div className="card-heading">
-              <p className="section-label">The DESIGN framework</p>
+          <dl className="account-detail-list">
+            <div>
+              <dt>Name</dt>
+              <dd>{displayName}</dd>
             </div>
-            <div className="design-acronym-grid">
-              {designAcronym.map((item) => (
-                <section key={item.title}>
-                  <span aria-hidden="true" />
-                  <p>
-                    {item.phrase} <strong>({item.title})</strong>
-                  </p>
-                </section>
-              ))}
+            <div>
+              <dt>Email</dt>
+              <dd>{profile?.email ?? user?.email ?? fruitLifeDashboardEmail ?? "Preview account"}</dd>
             </div>
+            <div>
+              <dt>Design reference</dt>
+              <dd>{designIdContext.integrativeReflection || "Awaiting DesignID"}</dd>
+            </div>
+          </dl>
+          <div className="account-action-row">
+            <Link className="button primary" href={withReviewQuery("/journey", reviewParams)}>
+              Start the Journey
+            </Link>
+            <Link className="button secondary" href="/login">
+              Password help
+            </Link>
+          </div>
+        </article>
+
+        <article className="basecamp-account-card courses">
+          <div className="card-heading">
+            <p className="section-label">Courses</p>
+            <h2>Current, finished, and next.</h2>
+          </div>
+          <div className="basecamp-course-columns">
+            <section>
+              <span>Current course</span>
+              <strong>{courseCards.find((course) => course.available)?.label ?? "Discover Your Divine Design"}</strong>
+              <p>{courseCards.find((course) => course.available)?.meta ?? "Main trail ready to begin."}</p>
+            </section>
+            <section>
+              <span>Finished courses</span>
+              <strong>{courseCards.filter((course) => course.available).length}</strong>
+              <p>Unlocked or completed course spaces connected to this account.</p>
+            </section>
+            <section>
+              <span>Next courses</span>
+              <strong>{courseCards.filter((course) => !course.available).length}</strong>
+              <p>Additional trailheads that can open as assessments or purchases are completed.</p>
+            </section>
           </div>
         </article>
       </section>
 
-      <section className="visual-journey-map" aria-label="Typical DYDD journey map">
+      <section className="basecamp-account-layout records" aria-label="Base Camp records">
+        <article className="basecamp-account-card artifacts">
+          <div className="card-heading">
+            <p className="section-label">Artifacts</p>
+            <h2>Collected reports.</h2>
+          </div>
+          {artifactSnapshots.length ? (
+            <div className="basecamp-record-list">
+              {artifactSnapshots.slice(0, 6).map((snapshot) => (
+                <Link
+                  className="basecamp-record"
+                  href={artifactDownloadHref(snapshot, reviewParams)}
+                  key={snapshot.id}
+                >
+                  <span>{artifactLabel(snapshot)}</span>
+                  <strong>{displayDate(snapshot.source_submitted_at ?? snapshot.created_at)}</strong>
+                  <small>{snapshot.source ?? "DYDD source"}</small>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="empty-account-note">
+              Completed reports will collect here as account artifacts.
+            </p>
+          )}
+        </article>
+
+        <article className="basecamp-account-card badges">
+          <div className="card-heading">
+            <p className="section-label">Trail badges</p>
+            <h2>Earned markers.</h2>
+          </div>
+          <div className="basecamp-badge-strip">
+            {badgeCards
+              .filter((badge) => badge.earned)
+              .slice(0, 6)
+              .map((badge) => (
+                <section key={badge.slug}>
+                  <img src={badge.image} alt={`${badge.title} badge`} />
+                  <strong>{badge.title}</strong>
+                  <span>{badge.status}</span>
+                </section>
+              ))}
+          </div>
+          <Link className="button secondary" href={withReviewQuery("/field-kit#trail-badges", reviewParams)}>
+            View badge details
+          </Link>
+        </article>
+      </section>
+
+      <section className="basecamp-account-card purchases" aria-label="Purchase history">
         <div className="card-heading">
-          <p className="section-label">Typical journey map</p>
-          <h2>A visible road for the whole experience.</h2>
+          <p className="section-label">Purchases</p>
+          <h2>Purchase and access reference.</h2>
           <p>
-            This can become interactive later: each marker can show the badge,
-            assessment, workbook section, unlock condition, and next action.
+            This is the beginning of the account ledger. It shows known access
+            now and can become the full payment record once purchase data is wired.
           </p>
         </div>
-        <ol>
-          {visualJourneyMap.map((marker, index) => (
-            <li key={`${marker.label}-${index}`}>
-              <div className={`journey-map-marker${marker.size === "large" ? " large" : ""}`}>
-                {marker.image ? (
-                  <img src={marker.image} alt={`${marker.label} marker`} />
-                ) : (
-                  <MenuIcon name={marker.icon ?? "hiker"} />
-                )}
-              </div>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <strong>{marker.label}</strong>
-              <small>{marker.text}</small>
-            </li>
-          ))}
-        </ol>
+        <div className="purchase-reference-grid">
+          {toolCatalog.map((tool) => {
+            const owned = ownsAssessment(assessmentReport, tool.assessmentType);
+
+            return (
+              <section key={tool.label}>
+                <img src={tool.logo} alt={`${tool.label} logo`} />
+                <div>
+                  <span>{owned ? "Purchased or completed" : "Available"}</span>
+                  <strong>{tool.label}</strong>
+                  <small>{tool.price}</small>
+                </div>
+              </section>
+            );
+          })}
+        </div>
       </section>
 
       {adminReport ? (

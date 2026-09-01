@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DyddOrientationSlider } from "@/components/dydd-orientation-slider";
 import { PageHelp } from "@/components/page-help";
 import { RangerParkMap } from "@/components/ranger-park-map";
 
@@ -32,6 +33,30 @@ const stationStops = [
   },
 ];
 
+const visualJourneyMap = [
+  { icon: "base", label: "Start", size: "large", text: "Orient at Base Camp" },
+  { icon: "dydd", label: "DYD", size: "large", text: "Open the main journey" },
+  { image: "/brand/badges/identity-badge.svg", label: "Identity", text: "Whose you are" },
+  { image: "/brand/badges/designid-badge.png", label: "DesignID", text: "Early assessment marker" },
+  { image: "/brand/badges/expertise-badge.svg", label: "Expertise", text: "Skills and capacity" },
+  { image: "/brand/badges/story-badge.svg", label: "Story", text: "Formation and testimony" },
+  { image: "/brand/badges/desire-badge.svg", label: "Desire", text: "Holy motivation" },
+  {
+    image: "/brand/badges/spiritual-gifts-badge.png",
+    label: "Gifts Tool",
+    text: "Spiritual gifts assessment",
+  },
+  { image: "/brand/badges/gifts-badge.svg", label: "Gifts", text: "Grace-given service" },
+  { image: "/brand/badges/niche-badge.svg", label: "Niche", text: "Purpose clarity" },
+  {
+    image: "/brand/badges/design-pathways-badge.png",
+    label: "Pathways",
+    text: "Choose the next path",
+  },
+  { image: "/brand/badges/designpd-badge.png", label: "DesignPD", text: "Practice and decisions" },
+  { image: "/brand/badges/fruitlife-360-badge.png", label: "FruitLife 360", text: "Visible growth" },
+];
+
 export default function RangerStationPage() {
   return (
     <main className="journey-shell hq-standalone-page ranger-station-page">
@@ -43,24 +68,33 @@ export default function RangerStationPage() {
       </div>
 
       <header className="standalone-hero ranger-station-hero">
-        <div>
-          <p className="eyebrow">Ranger Station</p>
-          <h1>Start with the map, then choose the trail.</h1>
-          <p className="lede">
-            The Ranger Station is the first orientation stop for the Discover
-            Your Divine Design app. It explains the journey, points learners
-            toward the right trailhead, and helps them gather the tools they
-            need before they move forward.
-          </p>
-          <div className="ranger-station-actions">
-            <Link className="button primary" href="/trailheads">
-              View trailheads
-            </Link>
-            <Link className="button secondary" href="/field-kit">
-              Open field kit
-            </Link>
+        <div className="ranger-welcome-copy">
+          <div>
+            <p className="eyebrow">Ranger Station</p>
+            <h1>Welcome in before you choose the trail.</h1>
+            <p className="lede">
+              This is the first orientation stop for the Discover Your Divine
+              Design journey. Come in, get the big picture, see how the pieces
+              fit together, and then choose the route that fits the next step.
+            </p>
+            <div className="ranger-station-actions">
+              <Link className="button primary" href="/trailheads">
+                View trailheads
+              </Link>
+              <Link className="button secondary" href="/field-kit">
+                Open field kit
+              </Link>
+            </div>
+          </div>
+          <div className="ranger-welcome-note" aria-label="Ranger welcome note">
+            <span>Welcome desk</span>
+            <p>
+              Before the map, every learner gets a simple orientation: what DYD is,
+              why the journey matters, and how the tools branch from the main path.
+            </p>
           </div>
         </div>
+        <DyddOrientationSlider />
         <div className="ranger-station-help">
           <PageHelp
             title="Ranger Station Help"
@@ -87,6 +121,34 @@ export default function RangerStationPage() {
         <RangerParkMap />
       </section>
 
+      <section className="visual-journey-map ranger-journey-map" aria-label="Typical DYD journey map">
+        <div className="card-heading">
+          <p className="section-label">Typical journey map</p>
+          <h2>A visible road for the whole experience.</h2>
+          <p>
+            The park map shows the branches. This road shows the normal flow of
+            the fuller journey from orientation through assessments, reflection,
+            purpose, practice, and growth.
+          </p>
+        </div>
+        <ol>
+          {visualJourneyMap.map((marker, index) => (
+            <li key={`${marker.label}-${index}`}>
+              <div className={`journey-map-marker${marker.size === "large" ? " large" : ""}`}>
+                {marker.image ? (
+                  <img src={marker.image} alt={`${marker.label} marker`} />
+                ) : (
+                  <span className="journey-map-letter">{marker.icon === "dydd" ? "DYD" : "BC"}</span>
+                )}
+              </div>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{marker.label}</strong>
+              <small>{marker.text}</small>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       <section className="ranger-stops-section" aria-label="Ranger Station sections">
         <div className="catalog-heading compact">
           <p className="section-label">Inside Ranger Station</p>
@@ -108,6 +170,36 @@ export default function RangerStationPage() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="ask-dydi-hq ranger-dydi-guide" id="ask-dydi" aria-label="Ask Dydi">
+        <div className="dydi-host">
+          <img src="/brand/characters/dydi-full-body.png" alt="Dydi host" />
+          <div>
+            <p className="section-label">Companion guide</p>
+            <h2>Dydi stays near the trail.</h2>
+            <p>
+              The companion layer belongs beside the branching journey, especially
+              where a person needs encouragement, interpretation, or a simple way
+              to keep moving.
+            </p>
+          </div>
+        </div>
+        <form className="dydi-form">
+          <label htmlFor="ranger-dydi-question">Ask from Ranger Station</label>
+          <textarea
+            id="ranger-dydi-question"
+            name="question"
+            placeholder="Which trail should I explore next?"
+            rows={4}
+          />
+          <button className="button primary" type="button">
+            Ask Dydi
+          </button>
+          <p className="helper-text">
+            Staged for preview. Live companion responses will connect later.
+          </p>
+        </form>
       </section>
     </main>
   );

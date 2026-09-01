@@ -3005,19 +3005,25 @@ h3 {
 
 .ranger-station-hero {
   position: relative;
-  grid-template-columns: minmax(0, 0.66fr);
+  grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 0.82fr);
   min-height: auto;
-  align-items: end;
+  align-items: stretch;
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(234, 240, 226, 0.72)),
     var(--panel);
   color: var(--ink);
 }
 
+.ranger-welcome-copy {
+  display: grid;
+  align-content: space-between;
+  gap: clamp(18px, 3vw, 28px);
+}
+
 .ranger-station-hero h1 {
-  max-width: 15ch;
+  max-width: 13ch;
   color: var(--green-dark);
-  font-size: clamp(2.35rem, 5.4vw, 5rem);
+  font-size: clamp(2.15rem, 4.8vw, 4.5rem);
 }
 
 .ranger-station-hero .eyebrow,
@@ -3029,6 +3035,143 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.ranger-welcome-note {
+  display: grid;
+  gap: 8px;
+  max-width: 520px;
+  padding: 16px 18px;
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.ranger-welcome-note span {
+  color: var(--brass);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ranger-welcome-note p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  font-weight: 760;
+  line-height: 1.5;
+}
+
+.dydd-orientation-slider {
+  display: grid;
+  gap: 12px;
+  align-content: stretch;
+  min-width: 0;
+}
+
+.dydd-slider-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.dydd-slider-tabs button {
+  display: grid;
+  gap: 5px;
+  min-height: 62px;
+  padding: 10px;
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--green-dark);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1.12;
+  text-align: left;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+.dydd-slider-tabs button:hover,
+.dydd-slider-tabs button.is-active {
+  border-color: rgba(36, 63, 39, 0.3);
+  background: rgba(234, 240, 226, 0.92);
+}
+
+.dydd-slider-tabs button:active {
+  transform: translateY(1px);
+}
+
+.dydd-slider-tabs span {
+  color: var(--brass);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+}
+
+.dydd-slider-panel {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-height: 360px;
+  padding: clamp(18px, 3vw, 26px);
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(251, 250, 244, 0.86)),
+    var(--panel);
+  box-shadow: 0 18px 38px rgba(70, 58, 35, 0.08);
+}
+
+.dydd-slider-panel h2 {
+  max-width: 13ch;
+  color: var(--green-dark);
+  font-size: clamp(1.55rem, 2.9vw, 2.55rem);
+  line-height: 1;
+}
+
+.dydd-slider-panel > p:not(.section-label) {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.58;
+}
+
+.dydd-slider-blocks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.dydd-slider-blocks.count-6 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.dydd-slider-blocks section {
+  display: grid;
+  gap: 5px;
+  min-height: 86px;
+  padding: 12px;
+  border: 1px solid rgba(71, 107, 66, 0.15);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.dydd-slider-blocks strong {
+  color: var(--green-dark);
+  font-size: 0.92rem;
+  line-height: 1.08;
+}
+
+.dydd-slider-blocks span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 740;
+  line-height: 1.32;
 }
 
 .ranger-station-help {
@@ -3369,6 +3512,261 @@ h3 {
   margin: 0;
   color: var(--muted);
   line-height: 1.58;
+}
+
+.ranger-journey-map {
+  margin-bottom: 0;
+}
+
+.journey-map-letter {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background: var(--green-dark);
+  color: var(--white);
+  font-size: 0.86rem;
+  font-weight: 950;
+  letter-spacing: 0.02em;
+}
+
+.ranger-dydi-guide {
+  margin-top: 0;
+}
+
+.basecamp-account-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.86fr) minmax(0, 1.14fr);
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.basecamp-account-layout.records {
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+}
+
+.basecamp-account-card {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  padding: clamp(20px, 3.2vw, 30px);
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(251, 250, 244, 0.92)),
+    var(--panel);
+  box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
+}
+
+.basecamp-account-card.profile {
+  background:
+    linear-gradient(145deg, rgba(234, 240, 226, 0.92), rgba(255, 255, 255, 0.94)),
+    var(--panel);
+}
+
+.basecamp-account-card .card-heading p:not(.section-label) {
+  max-width: 64ch;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.58;
+}
+
+.account-detail-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.account-detail-list div,
+.basecamp-course-columns section,
+.purchase-reference-grid section {
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.account-detail-list div {
+  display: grid;
+  gap: 4px;
+  padding: 13px 14px;
+}
+
+.account-detail-list dt,
+.basecamp-course-columns span,
+.purchase-reference-grid span {
+  color: var(--brass);
+  font-size: 0.7rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.account-detail-list dd {
+  margin: 0;
+  color: var(--green-dark);
+  font-weight: 900;
+  line-height: 1.24;
+  overflow-wrap: anywhere;
+}
+
+.account-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.basecamp-course-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.basecamp-course-columns section {
+  display: grid;
+  gap: 8px;
+  min-height: 150px;
+  padding: 15px;
+}
+
+.basecamp-course-columns strong {
+  color: var(--green-dark);
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  line-height: 1.02;
+}
+
+.basecamp-course-columns p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 760;
+  line-height: 1.45;
+}
+
+.basecamp-record-list {
+  display: grid;
+  gap: 10px;
+}
+
+.basecamp-record {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 14px;
+  min-height: 74px;
+  padding: 14px 16px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.basecamp-record:hover {
+  background: rgba(234, 240, 226, 0.78);
+}
+
+.basecamp-record:active {
+  transform: translateY(1px);
+}
+
+.basecamp-record span {
+  color: var(--green-dark);
+  font-weight: 900;
+}
+
+.basecamp-record strong {
+  color: var(--brass);
+  font-size: 0.82rem;
+}
+
+.basecamp-record small {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-weight: 760;
+}
+
+.empty-account-note {
+  margin: 0;
+  padding: 18px;
+  border: 1px dashed rgba(71, 107, 66, 0.24);
+  border-radius: 8px;
+  background: rgba(234, 240, 226, 0.44);
+  color: var(--muted);
+  font-weight: 760;
+}
+
+.basecamp-badge-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.basecamp-badge-strip section {
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  min-height: 148px;
+  padding: 13px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.76);
+  text-align: center;
+}
+
+.basecamp-badge-strip img {
+  width: 74px;
+  height: 74px;
+  object-fit: contain;
+}
+
+.basecamp-badge-strip strong {
+  color: var(--green-dark);
+  line-height: 1.08;
+}
+
+.basecamp-badge-strip span {
+  color: var(--brass);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.purchase-reference-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.purchase-reference-grid section {
+  display: grid;
+  gap: 10px;
+  min-height: 168px;
+  padding: 14px;
+}
+
+.purchase-reference-grid img {
+  width: 100%;
+  height: 64px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.purchase-reference-grid div {
+  display: grid;
+  gap: 5px;
+}
+
+.purchase-reference-grid strong {
+  color: var(--green-dark);
+  line-height: 1.08;
+}
+
+.purchase-reference-grid small {
+  color: var(--muted);
+  font-weight: 850;
 }
 
 .trailhead-page-list,
@@ -11161,6 +11559,9 @@ h3 {
   .waypoints-section,
   .waypoint-result-card,
   .ranger-map-section,
+  .ranger-station-hero,
+  .basecamp-account-layout,
+  .basecamp-account-layout.records,
   .polished-course-hero,
   .course-personalization,
   .dydd-course-overview,
@@ -11408,6 +11809,11 @@ h3 {
   .fieldkit-page-grid,
   .featured-course-banner,
   .ranger-stop-card,
+  .dydd-slider-blocks,
+  .dydd-slider-blocks.count-6,
+  .basecamp-course-columns,
+  .basecamp-badge-strip,
+  .purchase-reference-grid,
   .course-catalog-grid,
   .circle-package-grid,
   .circle-access-flow,
@@ -11590,6 +11996,9 @@ h3 {
   .portal-overview-cards,
   .hq-command-row,
   .dydd-definition-cards,
+  .dydd-slider-tabs,
+  .dydd-slider-blocks,
+  .dydd-slider-blocks.count-6,
   .purpose-two-up,
   .fruitlife-kpis,
   .fruitlife-insight-strip,
@@ -11737,6 +12146,7 @@ h3 {
   .basecamp-hero,
   .basecamp-story-card,
   .basecamp-purpose-card,
+  .basecamp-account-card,
   .design-acronym-panel,
   .visual-journey-map,
   .page-help,
@@ -11780,6 +12190,10 @@ h3 {
 
   .ranger-station-hero {
     min-height: auto;
+  }
+
+  .dydd-slider-panel {
+    min-height: 0;
   }
 
   .ranger-park-map-canvas {
@@ -11881,6 +12295,15 @@ h3 {
 
   .basecamp-wayfinding a {
     min-height: 128px;
+  }
+
+  .basecamp-record {
+    grid-template-columns: 1fr;
+  }
+
+  .account-action-row .button,
+  .ranger-station-actions .button {
+    flex: 1 1 180px;
   }
 
   .dydd-definition-cards section {

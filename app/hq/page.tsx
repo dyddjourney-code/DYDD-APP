@@ -141,17 +141,16 @@ const hqMenu = [
     href: "/hq",
     children: [{ icon: "hiker", label: "Journey", href: "/journey" }],
   },
-  { icon: "signpost", label: "Trailheads", href: "/trailheads" },
   {
-    icon: "map",
-    label: "Field Kit",
-    href: "/field-kit",
+    icon: "ranger",
+    label: "Ranger Station",
+    href: "/ranger-station",
     children: [
-      { icon: "camera", label: "Artifacts", href: "/field-kit#artifacts" },
-      { icon: "badge", label: "Trail Badges", href: "/field-kit#trail-badges" },
+      { icon: "signpost", label: "Trailheads", href: "/trailheads" },
+      { icon: "map", label: "Field Kit", href: "/field-kit" },
+      { icon: "backpack", label: "Gear", href: "/gear" },
     ],
   },
-  { icon: "backpack", label: "Gear", href: "/gear" },
   {
     icon: "fireside",
     label: "Fireside",
@@ -442,10 +441,10 @@ const baseCampLinks = [
     title: "Take DesignID",
   },
   {
-    detail: "Choose a trailhead when someone needs a focused entry point.",
-    href: "/trailheads",
-    kicker: "Options",
-    title: "View Trailheads",
+    detail: "Start at the Ranger Station to see the map, tools, and best next route.",
+    href: "/ranger-station",
+    kicker: "Orientation",
+    title: "Visit Ranger Station",
   },
   {
     detail: "See tools, artifacts, earned badges, and possible badges.",

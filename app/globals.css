@@ -2982,6 +2982,218 @@ h3 {
   box-shadow: 0 12px 26px rgba(23, 39, 27, 0.22);
 }
 
+.ranger-station-page {
+  display: grid;
+  gap: clamp(22px, 4vw, 34px);
+}
+
+.ranger-station-hero {
+  position: relative;
+  grid-template-columns: minmax(0, 0.66fr);
+  min-height: clamp(340px, 40vw, 500px);
+  align-items: end;
+  background:
+    linear-gradient(90deg, rgba(23, 39, 27, 0.9) 0%, rgba(23, 39, 27, 0.7) 42%, rgba(23, 39, 27, 0.16) 78%),
+    url("/brand/dydd-courses-forest-banner.webp") center / cover no-repeat;
+  color: #fbfaf4;
+}
+
+.ranger-station-hero h1 {
+  max-width: 15ch;
+  color: #ffffff;
+  font-size: clamp(2.35rem, 5.4vw, 5rem);
+}
+
+.ranger-station-hero .eyebrow,
+.ranger-station-hero .lede {
+  color: rgba(251, 250, 244, 0.9);
+}
+
+.ranger-station-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ranger-station-help {
+  position: absolute;
+  top: clamp(16px, 2.4vw, 26px);
+  right: clamp(16px, 2.4vw, 26px);
+}
+
+.ranger-station-help .page-help {
+  margin: 0;
+  padding: 0;
+}
+
+.ranger-station-help .page-help-trigger {
+  border-color: rgba(251, 250, 244, 0.42);
+  background: rgba(23, 39, 27, 0.72);
+  color: #ffffff;
+  box-shadow: 0 12px 26px rgba(23, 39, 27, 0.22);
+}
+
+.ranger-map-section {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.36fr) minmax(0, 1fr);
+  gap: clamp(18px, 3vw, 30px);
+  align-items: stretch;
+  padding: clamp(20px, 4vw, 34px);
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(251, 250, 244, 0.92)),
+    var(--panel);
+  box-shadow: 0 22px 54px rgba(70, 58, 35, 0.09);
+}
+
+.ranger-map-copy {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+}
+
+.ranger-map-copy h2 {
+  max-width: 12ch;
+  color: var(--green-dark);
+}
+
+.ranger-map-copy p:not(.section-label) {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.ranger-map-board {
+  position: relative;
+  min-height: clamp(300px, 34vw, 470px);
+  overflow: hidden;
+  border: 1px solid rgba(36, 63, 39, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(234, 240, 226, 0.86), rgba(243, 228, 196, 0.58)),
+    repeating-linear-gradient(
+      -22deg,
+      rgba(71, 107, 66, 0.09) 0,
+      rgba(71, 107, 66, 0.09) 2px,
+      transparent 2px,
+      transparent 22px
+    ),
+    radial-gradient(circle at 72% 24%, rgba(100, 124, 155, 0.28), transparent 18rem),
+    radial-gradient(circle at 28% 72%, rgba(71, 107, 66, 0.3), transparent 16rem);
+}
+
+.ranger-map-board::before,
+.ranger-map-board::after {
+  content: "";
+  position: absolute;
+  inset: 34px;
+  border: 1px dashed rgba(71, 107, 66, 0.3);
+  border-radius: 44% 56% 52% 48%;
+  transform: rotate(-8deg);
+}
+
+.ranger-map-board::after {
+  inset: 82px 60px 54px 92px;
+  border-color: rgba(184, 138, 67, 0.36);
+  transform: rotate(13deg);
+}
+
+.ranger-map-route {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(118deg, transparent 0 22%, rgba(184, 138, 67, 0.28) 22% 23.5%, transparent 23.5% 100%),
+    linear-gradient(42deg, transparent 0 45%, rgba(184, 138, 67, 0.3) 45% 46.2%, transparent 46.2% 100%);
+}
+
+.ranger-map-marker {
+  position: absolute;
+  display: grid;
+  gap: 4px;
+  min-width: 112px;
+  padding: 8px 10px;
+  border: 1px solid rgba(36, 63, 39, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--green-dark);
+  font-size: 0.78rem;
+  line-height: 1.2;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 14px 28px rgba(70, 58, 35, 0.11);
+}
+
+.ranger-map-marker::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  background: var(--brass);
+  box-shadow: 0 0 0 2px rgba(36, 63, 39, 0.22);
+}
+
+.ranger-map-marker strong {
+  font-weight: 900;
+}
+
+.ranger-stops-section {
+  display: grid;
+  gap: 18px;
+}
+
+.ranger-stop-list {
+  display: grid;
+  gap: 12px;
+}
+
+.ranger-stop-card {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  gap: clamp(14px, 2vw, 22px);
+  align-items: center;
+  min-height: 150px;
+  padding: clamp(16px, 2.6vw, 24px);
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(251, 250, 244, 0.9)),
+    var(--panel);
+}
+
+.ranger-stop-card > span {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border: 1px solid rgba(184, 138, 67, 0.3);
+  border-radius: 8px;
+  background: rgba(243, 228, 196, 0.62);
+  color: var(--brass);
+  font-weight: 950;
+}
+
+.ranger-stop-card small {
+  color: var(--brass);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ranger-stop-card h3 {
+  margin: 5px 0 8px;
+  color: var(--green-dark);
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+}
+
+.ranger-stop-card p {
+  max-width: 76ch;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.58;
+}
+
 .trailhead-page-list,
 .fieldkit-page-grid {
   display: grid;
@@ -10771,6 +10983,7 @@ h3 {
   .fireside-live-layout,
   .waypoints-section,
   .waypoint-result-card,
+  .ranger-map-section,
   .polished-course-hero,
   .course-personalization,
   .dydd-course-overview,
@@ -11017,6 +11230,7 @@ h3 {
   .fieldkit-list,
   .fieldkit-page-grid,
   .featured-course-banner,
+  .ranger-stop-card,
   .course-catalog-grid,
   .circle-package-grid,
   .circle-access-flow,
@@ -11385,6 +11599,19 @@ h3 {
   .trailheads-hero {
     min-height: 330px;
     background-position: 56% center;
+  }
+
+  .ranger-station-hero {
+    min-height: 350px;
+    background-position: 58% center;
+  }
+
+  .ranger-map-board {
+    min-height: 360px;
+  }
+
+  .ranger-stop-card .button {
+    justify-self: stretch;
   }
 
   .fieldkit-hero {

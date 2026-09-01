@@ -3,6 +3,7 @@ import Link from "next/link";
 const mobileNavItems = [
   { href: "/base-camp", label: "Base Camp" },
   { href: "/journey", label: "Journey" },
+  { href: "/ranger-station", label: "Ranger Station" },
   { href: "/trailheads", label: "Trailheads" },
   { href: "/field-kit", label: "Field Kit" },
   { href: "/gear", label: "Gear" },

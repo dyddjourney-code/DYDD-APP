@@ -5,17 +5,16 @@ const navItems = [
     href: "/base-camp",
     children: [{ icon: "hiker", label: "Journey", href: "/journey" }],
   },
-  { icon: "signpost", label: "Trailheads", href: "/trailheads" },
   {
-    icon: "map",
-    label: "Field Kit",
-    href: "/field-kit",
+    icon: "ranger",
+    label: "Ranger Station",
+    href: "/ranger-station",
     children: [
-      { icon: "camera", label: "Artifacts", href: "/field-kit#artifacts" },
-      { icon: "badge", label: "Trail Badges", href: "/field-kit#trail-badges" },
+      { icon: "signpost", label: "Trailheads", href: "/trailheads" },
+      { icon: "map", label: "Field Kit", href: "/field-kit" },
+      { icon: "backpack", label: "Gear", href: "/gear" },
     ],
   },
-  { icon: "backpack", label: "Gear", href: "/gear" },
   {
     icon: "fireside",
     label: "Fireside",
@@ -48,6 +47,14 @@ function AppNavIcon({ name }: { name: string }) {
         <path d="M4 25 15.4 6.8 28 25Z" fill="#f6d36d" stroke="var(--green-dark)" />
         <path d="M15.4 6.8V25" stroke="#6f4d20" />
         <path d="M15.4 25 20 16.8 24.4 25Z" fill="#759a5b" stroke="var(--green-dark)" />
+      </svg>
+    ) : name === "ranger" ? (
+      <svg {...common}>
+        <path d="M6 25V12.5L16 6l10 6.5V25Z" fill="#fffaf0" stroke="var(--green-dark)" />
+        <path d="M4.5 14 16 6.5 27.5 14" stroke="#6f4d20" />
+        <path d="M12 25v-7.5h8V25" fill="#d4a451" stroke="var(--green-dark)" />
+        <path d="M8.5 16.5h4M19.5 16.5h4" stroke="#759a5b" />
+        <path d="M16 6V3.5h6l-1.4 2L22 8h-6" fill="#759a5b" stroke="var(--green-dark)" />
       </svg>
     ) : name === "hiker" ? (
       <svg {...common}>

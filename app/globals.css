@@ -2987,26 +2987,42 @@ h3 {
   gap: clamp(22px, 4vw, 34px);
 }
 
+.ranger-station-header-image {
+  overflow: hidden;
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
+  background: var(--green-dark);
+  box-shadow: 0 24px 60px rgba(70, 58, 35, 0.13);
+}
+
+.ranger-station-header-image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+  object-position: center;
+}
+
 .ranger-station-hero {
   position: relative;
   grid-template-columns: minmax(0, 0.66fr);
-  min-height: clamp(340px, 40vw, 500px);
+  min-height: auto;
   align-items: end;
   background:
-    linear-gradient(90deg, rgba(23, 39, 27, 0.9) 0%, rgba(23, 39, 27, 0.7) 42%, rgba(23, 39, 27, 0.16) 78%),
-    url("/brand/dydd-courses-forest-banner.webp") center / cover no-repeat;
-  color: #fbfaf4;
+    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(234, 240, 226, 0.72)),
+    var(--panel);
+  color: var(--ink);
 }
 
 .ranger-station-hero h1 {
   max-width: 15ch;
-  color: #ffffff;
+  color: var(--green-dark);
   font-size: clamp(2.35rem, 5.4vw, 5rem);
 }
 
 .ranger-station-hero .eyebrow,
 .ranger-station-hero .lede {
-  color: rgba(251, 250, 244, 0.9);
+  color: var(--muted);
 }
 
 .ranger-station-actions {
@@ -11602,8 +11618,7 @@ h3 {
   }
 
   .ranger-station-hero {
-    min-height: 350px;
-    background-position: 58% center;
+    min-height: auto;
   }
 
   .ranger-map-board {

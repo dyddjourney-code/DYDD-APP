@@ -42,6 +42,13 @@ const mapMarkers = [
 export default function RangerStationPage() {
   return (
     <main className="journey-shell hq-standalone-page ranger-station-page">
+      <div className="ranger-station-header-image">
+        <img
+          src="/brand/dydd-ranger-station-header.png"
+          alt="Discover Your Divine Design Ranger Station forest sign"
+        />
+      </div>
+
       <header className="standalone-hero ranger-station-hero">
         <div>
           <p className="eyebrow">Ranger Station</p>

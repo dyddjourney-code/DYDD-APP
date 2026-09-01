@@ -96,14 +96,28 @@ async function createCartoonSign() {
 
 async function prepareLogo(relativePath) {
   const input = await sharp(join(root, relativePath))
-    .resize({ width: 350, height: 116, fit: "inside", withoutEnlargement: true })
+    .resize({ width: 560, height: 156, fit: "inside", withoutEnlargement: true })
     .flatten({ background: "#ffffff" })
     .modulate({ saturation: 1.06, brightness: 1.02 })
     .sharpen()
     .png()
     .toBuffer();
 
-  return removeLightBackground(input, 244);
+  const transparent = await removeLightBackground(input, 244);
+  const { width = 560, height = 156 } = await sharp(transparent).metadata();
+  const alpha = await sharp(transparent).ensureAlpha().extractChannel("alpha").toBuffer();
+
+  return sharp({
+    create: {
+      width,
+      height,
+      channels: 3,
+      background: "#ffffff",
+    },
+  })
+    .joinChannel(alpha)
+    .png()
+    .toBuffer();
 }
 
 async function build() {
@@ -115,8 +129,8 @@ async function build() {
   for (const course of courses) {
     const logo = await prepareLogo(course.logo);
     const logoMeta = await sharp(logo).metadata();
-    const left = Math.round(316 - (logoMeta.width ?? 0) / 2);
-    const top = Math.round(156 - (logoMeta.height ?? 0) / 2);
+    const left = Math.round(386 - (logoMeta.width ?? 0) / 2);
+    const top = Math.round(160 - (logoMeta.height ?? 0) / 2);
 
     await sharp(sign)
       .composite([{ input: logo, left, top }])

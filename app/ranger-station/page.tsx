@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PageHelp } from "@/components/page-help";
+import { RangerParkMap } from "@/components/ranger-park-map";
 
 const stationStops = [
   {
@@ -29,14 +30,6 @@ const stationStops = [
     marker: "03",
     title: "Pack resources",
   },
-];
-
-const mapMarkers = [
-  { label: "Base Camp", x: "20%", y: "68%" },
-  { label: "Ranger Station", x: "34%", y: "48%" },
-  { label: "Trailheads", x: "54%", y: "30%" },
-  { label: "Field Kit", x: "66%", y: "58%" },
-  { label: "Gear", x: "79%", y: "42%" },
 ];
 
 export default function RangerStationPage() {
@@ -82,28 +75,16 @@ export default function RangerStationPage() {
 
       <section className="ranger-map-section" aria-label="Ranger Station map preview">
         <div className="ranger-map-copy">
-          <p className="section-label">Park map</p>
+          <p className="section-label">DYD Park Map</p>
           <h2>The whole journey in view.</h2>
           <p>
-            This is the placeholder surface for the forestry-style map you are
-            looking for. Once the image is chosen, this area can become the
-            visual overview with trailheads, waypoints, and next-step markers
-            layered on top.
+            Start at the Ranger Station, then choose the route that matches the
+            next step. Each trail opens a short guide so learners can understand
+            what the path is for before they move.
           </p>
         </div>
 
-        <div className="ranger-map-board" aria-label="Draft journey map">
-          <div className="ranger-map-route" />
-          {mapMarkers.map((marker) => (
-            <span
-              className="ranger-map-marker"
-              key={marker.label}
-              style={{ left: marker.x, top: marker.y }}
-            >
-              <strong>{marker.label}</strong>
-            </span>
-          ))}
-        </div>
+        <RangerParkMap />
       </section>
 
       <section className="ranger-stops-section" aria-label="Ranger Station sections">

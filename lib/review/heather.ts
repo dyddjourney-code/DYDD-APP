@@ -13,7 +13,7 @@ export const heatherReviewEmails = [
   "heather.willoughby@sbesinc.com",
 ];
 export const heatherReviewNames = [heatherReviewName, "Heather Lawton"];
-export const jordanReviewEmail = "j94gray@gmail.com";
+export const jordanReviewEmail = "willoughby.john@gmail.com";
 export const jordanReviewName = "Jordan Gray";
 export const newReviewName = "Jordan Preview";
 

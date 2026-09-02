@@ -34,6 +34,16 @@ function reportLink(document: PdfMonkeyDocument) {
   return document.public_share_link ?? document.download_url ?? document.preview_url ?? "";
 }
 
+function appBaseUrl() {
+  const configuredUrl =
+    process.env.APP_BASE_URL ??
+    process.env.NEXT_PUBLIC_APP_URL ??
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ??
+    process.env.VERCEL_URL ??
+    "https://dydd-online-school.vercel.app";
+  return configuredUrl.startsWith("http") ? configuredUrl : `https://${configuredUrl}`;
+}
+
 function finalReportEmail({
   participantName,
   reportUrl,
@@ -41,13 +51,16 @@ function finalReportEmail({
   participantName: string;
   reportUrl: string;
 }) {
-  const text = `Hi ${participantName},\n\nYour FruitLife 360 report is ready.\n\nOpen your report here:\n${reportUrl}\n\nReceive it as a formation mirror, not a grade or label.`;
+  const text = `Hi ${participantName},\n\nYour FruitLife 360 report is ready.\n\nOpen your report here: ${reportUrl}\n\nReceive it as a formation mirror, not a grade or label.\n\nSincerely,\nDiscover Your Divine Design Team`;
 
   return {
-    html: text
-      .split("\n\n")
-      .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br>")}</p>`)
-      .join(""),
+    html: [
+      `<p>Hi ${participantName},</p>`,
+      "<p>Your FruitLife 360 report is ready.</p>",
+      `<p><a href="${reportUrl}">Open Your FruitLife 360 Report</a></p>`,
+      "<p>Receive it as a formation mirror, not a grade or label.</p>",
+      "<p>Sincerely,<br>Discover Your Divine Design Team</p>",
+    ].join(""),
     subject: "Your FruitLife 360 report is ready",
     text,
   };
@@ -98,7 +111,7 @@ export async function processFruitLifeReportJobs({
     const workerId = `fruitlife-report-worker:${now}`;
 
     if (!dryRun) {
-      await supabase
+      const { data: lockedJob } = await supabase
         .from("fruitlife_360_report_jobs")
         .update({
           attempt_count: job.attempt_count + 1,
@@ -107,7 +120,19 @@ export async function processFruitLifeReportJobs({
           locked_by: workerId,
           started_at: now,
         })
-        .eq("id", job.id);
+        .eq("id", job.id)
+        .in("job_status", ["queued", "retry"])
+        .select("id")
+        .maybeSingle();
+
+      if (!lockedJob?.id) {
+        results.push({
+          jobId: job.id,
+          skipped: true,
+          status: "already_locked_or_processed",
+        });
+        continue;
+      }
     }
 
     try {
@@ -139,50 +164,77 @@ export async function processFruitLifeReportJobs({
         : (await waitForPdf(createdDocument.id, dryRun)) ?? createdDocument;
       const url = reportLink(readyDocument);
       const isReady = readyDocument.status === "success" || readyDocument.status === "ready";
+      const reportUrl = isReady
+        ? `${appBaseUrl()}/fruitlife360/report?session=${encodeURIComponent(job.session_id)}`
+        : "";
 
       if (!dryRun) {
-        await supabase.from("fruitlife_360_report_artifacts").insert({
-          artifact_status: isReady ? "ready" : "draft",
-          artifact_type: "pdf",
-          content_type: "application/pdf",
-          external_url: url || null,
-          filename,
-          metadata: {
-            checksum: readyDocument.checksum ?? null,
-            pdfMonkeyStatus: readyDocument.status ?? null,
-            previewUrl: readyDocument.preview_url ?? null,
-          },
-          provider: "pdfmonkey",
-          provider_document_id: readyDocument.id,
-          report_job_id: job.id,
-          session_id: job.session_id,
-        });
+        const { data: existingPdf } = await supabase
+          .from("fruitlife_360_report_artifacts")
+          .select("id")
+          .eq("report_job_id", job.id)
+          .eq("artifact_type", "pdf")
+          .limit(1)
+          .maybeSingle();
+
+        if (!existingPdf?.id) {
+          await supabase.from("fruitlife_360_report_artifacts").insert({
+            artifact_status: isReady ? "ready" : "draft",
+            artifact_type: "pdf",
+            content_type: "application/pdf",
+            external_url: url || null,
+            filename,
+            metadata: {
+              checksum: readyDocument.checksum ?? null,
+              pdfMonkeyStatus: readyDocument.status ?? null,
+              previewUrl: readyDocument.preview_url ?? null,
+            },
+            provider: "pdfmonkey",
+            provider_document_id: readyDocument.id,
+            report_job_id: job.id,
+            session_id: job.session_id,
+          });
+        }
       }
 
       let emailSent = false;
       let emailSkipped = true;
       let emailMessage = "PDF is not ready yet.";
 
-      if (isReady && url && typedSession.participant_email) {
+      if (isReady && reportUrl && typedSession.participant_email) {
+        const { data: existingFinalEmail } = dryRun
+          ? { data: null }
+          : await supabase
+              .from("fruitlife_360_report_artifacts")
+              .select("id")
+              .eq("report_job_id", job.id)
+              .eq("artifact_type", "email")
+              .eq("provider", "resend")
+              .contains("metadata", { purpose: "final_report_email" })
+              .limit(1)
+              .maybeSingle();
+
         const emailResult = dryRun
           ? { message: "Dry run; final email not sent.", sent: false, skipped: true }
-          : await sendResendEmail({
-              ...finalReportEmail({
-                participantName: typedSession.participant_name ?? "there",
-                reportUrl: url,
-              }),
-              to: typedSession.participant_email,
-            });
+          : existingFinalEmail?.id
+            ? { message: "Final report email already sent for this job.", sent: false, skipped: true }
+            : await sendResendEmail({
+                ...finalReportEmail({
+                  participantName: typedSession.participant_name ?? "there",
+                  reportUrl,
+                }),
+                to: typedSession.participant_email,
+              });
 
         emailSent = emailResult.sent;
         emailSkipped = emailResult.skipped;
         emailMessage = emailResult.message ?? "";
 
-        if (!dryRun) {
+        if (!dryRun && !existingFinalEmail?.id) {
           await supabase.from("fruitlife_360_report_artifacts").insert({
             artifact_status: emailResult.sent ? "sent" : emailResult.skipped ? "draft" : "error",
             artifact_type: "email",
-            external_url: url,
+            external_url: reportUrl,
             metadata: {
               error: emailResult.message ?? null,
               purpose: "final_report_email",

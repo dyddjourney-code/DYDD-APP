@@ -1,7 +1,71 @@
 import Link from "next/link";
 import { PageHelp } from "@/components/page-help";
+import { FruitLifeCurrentAssessmentProcess } from "@/components/fruitlife-current-assessment-process";
+import {
+  assessmentLabels,
+  displayDate,
+  getAssessmentSnapshotsForParticipantMatch,
+  getAssessmentSnapshotsForUser,
+  latestByAssessment,
+  type AssessmentSnapshotSummary,
+} from "@/lib/assessments/student-context";
+import {
+  fruitLifeArtifactTitle,
+  fruitLifeIsActive,
+  fruitLifeReportArtifact,
+  fruitLifeReportHref,
+  fruitLifeTokenFromSession,
+  getFruitLifeDashboardSessions,
+} from "@/lib/fruitlife360/dashboard";
+import { normalizeEmail } from "@/lib/identity/email";
+import {
+  getHeatherReviewReport,
+  getNewReviewReport,
+  heatherReviewName,
+  isHeatherReviewRequest,
+  isNewReviewRequest,
+  jordanReviewEmail,
+  newReviewName,
+  type ReviewSearchParams,
+  withReviewQuery,
+} from "@/lib/review/heather";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-const purchaseAssessments = [
+type FieldKitPageProps = {
+  searchParams?: Promise<ReviewSearchParams & {
+    fruitlife?: string;
+    fruitlife_session?: string;
+    fruitlife_token?: string;
+  }>;
+};
+
+type FieldKitArtifact = {
+  action: string;
+  courseAction?: string | null;
+  courseHref?: string | null;
+  detail: string;
+  href: string;
+  logo: string;
+  meta: Array<[string, string]>;
+  title: string;
+};
+
+type AssessmentProduct = {
+  action: string;
+  courseAction: string | null;
+  courseHref: string | null;
+  detail: string;
+  href: string;
+  logo: string;
+  points: string[];
+  price: string;
+  status: string | null;
+  title: string;
+};
+
+export const dynamic = "force-dynamic";
+
+const purchaseAssessments: AssessmentProduct[] = [
   {
     action: "Purchase assessment",
     courseAction: "Continue to course",
@@ -43,7 +107,7 @@ const purchaseAssessments = [
   },
 ];
 
-const freeAssessments = [
+const freeAssessments: AssessmentProduct[] = [
   {
     action: "Start assessment",
     courseAction: "Go to course",
@@ -174,7 +238,7 @@ const badgeGroups = [
       ["Gifts", "/brand/badges/gifts-badge.svg"],
       ["Niche", "/brand/badges/niche-badge.svg"],
     ],
-    note: "Badges earned as Jordan moves through the main Discover Your Divine Design Journey.",
+    note: "Badges earned as the learner moves through the main Discover Your Divine Design Journey.",
     title: "D.E.S.I.G.N. Badges",
   },
   {
@@ -194,7 +258,7 @@ const badgeGroups = [
       ["Architect", "/brand/badges/architect-badge.svg"],
       ["Steward", "/brand/badges/steward-badge.svg"],
     ],
-    note: "For awareness. Jordan's DesignID reflection badge is Shepherd, so the other reflection badges are references only.",
+    note: "For awareness. The completed DesignID reflection badge is earned from the report, while the other reflection badges are references only.",
     title: "Reflection Badges",
   },
 ];
@@ -203,7 +267,7 @@ function AssessmentCard({
   assessment,
   kind,
 }: {
-  assessment: (typeof purchaseAssessments)[number] | (typeof freeAssessments)[number];
+  assessment: AssessmentProduct;
   kind: "Purchase" | "Free";
 }) {
   return (
@@ -243,7 +307,220 @@ function AssessmentCard({
   );
 }
 
-export default function FieldKitPage() {
+function ownsAssessment(snapshots: AssessmentSnapshotSummary[], assessmentType: string) {
+  return snapshots.some((snapshot) => snapshot.assessment_type === assessmentType);
+}
+
+function artifactDownloadHref(
+  snapshot: AssessmentSnapshotSummary,
+  reviewParams?: ReviewSearchParams | null,
+) {
+  return withReviewQuery(
+    `/api/artifacts/${encodeURIComponent(snapshot.id)}/download`,
+    reviewParams,
+  );
+}
+
+function snapshotArtifactTitle(snapshot: AssessmentSnapshotSummary) {
+  return `${assessmentLabels[snapshot.assessment_type] ?? snapshot.assessment_type} Report`;
+}
+
+async function getFieldKitAssessmentReport(
+  userId: string,
+  email: string,
+  reviewParams?: ReviewSearchParams | null,
+) {
+  if (isHeatherReviewRequest(reviewParams)) {
+    return getHeatherReviewReport(reviewParams);
+  }
+
+  if (isNewReviewRequest(reviewParams)) {
+    return getNewReviewReport(reviewParams);
+  }
+
+  if (userId) {
+    return getAssessmentSnapshotsForUser(userId, email);
+  }
+
+  if (email) {
+    return getAssessmentSnapshotsForParticipantMatch({ emails: [email] });
+  }
+
+  return { all: [], latest: [] };
+}
+
+export default async function FieldKitPage({ searchParams }: FieldKitPageProps) {
+  const reviewParams = await searchParams;
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { data: profile } = user
+    ? await supabase
+        .from("school_profiles")
+        .select("full_name,email")
+        .eq("id", user.id)
+        .maybeSingle()
+    : { data: null };
+  const reviewReport =
+    (await getHeatherReviewReport(reviewParams)) ?? (await getNewReviewReport(reviewParams));
+  const participantEmail = isHeatherReviewRequest(reviewParams)
+    ? "willoughbyhs@gmail.com"
+    : isNewReviewRequest(reviewParams)
+      ? jordanReviewEmail
+      : normalizeEmail(profile?.email ?? user?.email);
+  const displayName = isHeatherReviewRequest(reviewParams)
+    ? `${heatherReviewName} Preview`
+    : isNewReviewRequest(reviewParams)
+      ? newReviewName
+      : profile?.full_name ?? user?.email ?? "Traveler";
+  const firstName = displayName.replace(/\s+Preview$/, "").split(/\s+/)[0] ?? "Traveler";
+  const assessmentReport = reviewReport ??
+    (await getFieldKitAssessmentReport(user?.id ?? "", participantEmail, reviewParams)) ??
+    { all: [], latest: [] };
+  const snapshotHistory = assessmentReport.all;
+  const snapshotLatest = latestByAssessment(snapshotHistory);
+  const snapshotArtifactSources = [
+    ...snapshotLatest.filter((snapshot) => snapshot.assessment_type !== "fruit_360"),
+    ...snapshotHistory.filter((snapshot) => snapshot.assessment_type === "fruit_360"),
+  ];
+  const fruitLifeSessions = await getFruitLifeDashboardSessions({
+    email: participantEmail,
+    enabled: Boolean(participantEmail),
+  });
+  const selectedFruitLifeSession =
+    fruitLifeSessions.find((session) => session.id === reviewParams?.fruitlife_session) ?? null;
+  const activeFruitLifeSession =
+    (selectedFruitLifeSession && fruitLifeIsActive(selectedFruitLifeSession)
+      ? selectedFruitLifeSession
+      : fruitLifeSessions.find(fruitLifeIsActive)) ?? null;
+  const activeFruitLifeToken =
+    selectedFruitLifeSession?.id === activeFruitLifeSession?.id && reviewParams?.fruitlife_token
+      ? reviewParams.fruitlife_token
+      : fruitLifeTokenFromSession(activeFruitLifeSession);
+  const fruitLifeReportSessions = fruitLifeSessions.filter((session) =>
+    Boolean(fruitLifeReportArtifact(session)),
+  );
+  const hasDesignId = ownsAssessment(snapshotLatest, "designid");
+  const hasDesignPd = ownsAssessment(snapshotLatest, "designpd");
+  const hasDesignPathways = ownsAssessment(snapshotLatest, "design_pathways");
+  const hasSpiritualGifts = ownsAssessment(snapshotLatest, "spiritual_gifts");
+  const hasFruitLife = ownsAssessment(snapshotLatest, "fruit_360") || fruitLifeReportSessions.length > 0;
+  const purchaseCards = purchaseAssessments.map((assessment) => {
+    const status =
+      assessment.title === "DesignID"
+        ? hasDesignId ? "Completed" : assessment.status
+        : assessment.title === "DesignPD"
+          ? hasDesignPd ? "Completed" : assessment.status
+          : assessment.title === "Design Pathways"
+            ? hasDesignPathways ? "Completed" : assessment.status
+            : assessment.status;
+
+    return { ...assessment, status };
+  });
+  const freeCards = freeAssessments.map((assessment) => {
+    const status =
+      assessment.title === "Spiritual Gifts"
+        ? hasSpiritualGifts ? "Completed" : null
+        : assessment.title === "Fruit Life 360"
+          ? activeFruitLifeSession ? "In progress" : hasFruitLife ? "Completed" : null
+          : assessment.status;
+
+    return { ...assessment, status };
+  });
+  const artifacts: FieldKitArtifact[] = [
+    ...snapshotArtifactSources.map((snapshot) => ({
+      action: "Open report",
+      courseAction: "Explore course",
+      courseHref:
+        snapshot.assessment_type === "designid"
+          ? "/courses/designid-foundations"
+          : snapshot.assessment_type === "spiritual_gifts"
+            ? "/courses/spiritual-gifts-service"
+            : snapshot.assessment_type === "fruit_360"
+              ? "/courses/fruitlife-360-formation"
+              : "/trailheads",
+      detail: `Completed ${displayDate(snapshot.source_submitted_at ?? snapshot.created_at)}.`,
+      href: artifactDownloadHref(snapshot, reviewParams),
+      logo:
+        snapshot.assessment_type === "designid"
+          ? "/brand/tools/designid-logo.webp"
+          : snapshot.assessment_type === "spiritual_gifts"
+            ? "/brand/tools/spiritual-gifts-logo.jpg"
+            : snapshot.assessment_type === "designpd"
+              ? "/brand/tools/designpd-logo.jpg"
+              : snapshot.assessment_type === "fruit_360"
+                ? "/brand/tools/fruitful-life-360-logo.jpg"
+                : "/brand/tools/design-pathways-logo.jpg",
+      meta: [
+        ["Status", "Completed"],
+        ["Completed", displayDate(snapshot.source_submitted_at ?? snapshot.created_at)],
+        ["Source", snapshot.source ?? "DYDD"],
+      ] as Array<[string, string]>,
+      title: snapshotArtifactTitle(snapshot),
+    })),
+    ...fruitLifeReportSessions.map((session) => ({
+      action: "Open report",
+      courseAction: "Explore course",
+      courseHref: "/courses/fruitlife-360-formation",
+      detail: "Your completed FruitLife 360 report is ready to review.",
+      href: fruitLifeReportHref(session),
+      logo: "/brand/tools/fruitful-life-360-logo.jpg",
+      meta: [
+        ["Status", "Completed"],
+        ["Completed", displayDate(session.updated_at ?? session.created_at)],
+        ["Source", "FruitLife 360"],
+      ] as Array<[string, string]>,
+      title: fruitLifeArtifactTitle(session),
+    })),
+  ];
+  const earnedBadgeCards = [
+    hasDesignId
+      ? {
+          image: "/brand/badges/designid-badge.png",
+          note: "Earned badge: DesignID",
+          title: "DesignID",
+        }
+      : null,
+    hasSpiritualGifts
+      ? {
+          image: "/brand/badges/spiritual-gifts-badge.png",
+          note: "Earned badge: Spiritual Gifts",
+          title: "Spiritual Gifts",
+        }
+      : null,
+    hasDesignPd
+      ? {
+          image: "/brand/badges/designpd-badge.png",
+          note: "Earned badge: DesignPD",
+          title: "DesignPD",
+        }
+      : null,
+    hasFruitLife
+      ? {
+          image: "/brand/badges/fruitlife-360-badge.png",
+          note: "Earned badge: FruitLife 360",
+          title: "FruitLife 360",
+        }
+      : null,
+  ].filter(Boolean) as Array<{
+    image: string;
+    note: string;
+    title: string;
+  }>;
+  const journeyBadgePath = [
+    { image: "/brand/badges/designid-badge.png", label: "DesignID", state: hasDesignId ? "earned" : "ahead" },
+    { image: "/brand/badges/spiritual-gifts-badge.png", label: "Spiritual Gifts", state: hasSpiritualGifts ? "earned" : "ahead" },
+    { image: "/brand/badges/fruitlife-360-badge.png", label: "Fruit Life 360", state: hasFruitLife ? "earned" : "ahead" },
+    { image: "/brand/badges/identity-badge.svg", label: "Identity", state: "next" },
+    { image: "/brand/badges/expertise-badge.svg", label: "Expertise", state: "ahead" },
+    { image: "/brand/badges/story-badge.svg", label: "Story", state: "ahead" },
+    { image: "/brand/badges/desire-badge.svg", label: "Desire", state: "ahead" },
+    { image: "/brand/badges/gifts-badge.svg", label: "Gifts", state: "ahead" },
+    { image: "/brand/badges/niche-badge.svg", label: "Niche", state: "ahead" },
+    { image: "/brand/badges/designpd-badge.png", label: "DesignPD", state: hasDesignPd ? "earned" : "ahead" },
+  ];
+
   return (
     <main className="journey-shell hq-standalone-page">
       <header className="standalone-hero fieldkit-hero">
@@ -301,7 +578,7 @@ export default function FieldKitPage() {
               <h3>Purchase assessments</h3>
             </div>
             <div className="fieldkit-assessment-list">
-              {purchaseAssessments.map((assessment) => (
+              {purchaseCards.map((assessment) => (
                 <AssessmentCard assessment={assessment} kind="Purchase" key={assessment.title} />
               ))}
             </div>
@@ -317,7 +594,7 @@ export default function FieldKitPage() {
               <h3>Free assessments</h3>
             </div>
             <div className="fieldkit-assessment-list">
-              {freeAssessments.map((assessment) => (
+              {freeCards.map((assessment) => (
                 <AssessmentCard assessment={assessment} kind="Free" key={assessment.title} />
               ))}
             </div>
@@ -325,15 +602,21 @@ export default function FieldKitPage() {
         </div>
       </section>
 
+      <FruitLifeCurrentAssessmentProcess
+        created={reviewParams?.fruitlife === "created"}
+        session={activeFruitLifeSession}
+        token={activeFruitLifeToken}
+      />
+
       <section className="artifact-panel artifact-workbench" id="artifacts">
         <div className="card-heading">
           <p className="section-label">Artifacts</p>
         </div>
         <p className="fieldkit-section-note">
-          Hi Jordan, here are the artifacts you've collected from your journey so far.
+          Hi {firstName}, here are the artifacts you've collected from your journey so far.
         </p>
         <div className="artifact-download-list">
-          {artifacts.map((artifact) => (
+          {artifacts.length ? artifacts.map((artifact) => (
             <article className="artifact-download fieldkit-artifact-card" key={artifact.title}>
               <div className="fieldkit-artifact-title">
                 <img src={artifact.logo} alt={`${artifact.title} logo`} />
@@ -354,15 +637,27 @@ export default function FieldKitPage() {
                 <Link className="button primary" href={artifact.href}>
                   {artifact.action}
                 </Link>
-                <Link className="button secondary" href={artifact.courseHref}>
-                  {artifact.courseAction}
-                </Link>
+                {artifact.courseHref && artifact.courseAction ? (
+                  <Link className="button secondary" href={artifact.courseHref}>
+                    {artifact.courseAction}
+                  </Link>
+                ) : null}
                 <Link className="button secondary" href="/gear">
                   Add feedback
                 </Link>
               </div>
             </article>
-          ))}
+          )) : (
+            <article className="artifact-download fieldkit-artifact-card">
+              <div className="fieldkit-artifact-title">
+                <img src="/brand/tools/designid-logo.webp" alt="DYDD artifact logo" />
+                <div>
+                  <span>No completed artifacts yet</span>
+                  <p>Finished assessment reports will appear here with completion dates.</p>
+                </div>
+              </div>
+            </article>
+          )}
         </div>
       </section>
 
@@ -370,7 +665,7 @@ export default function FieldKitPage() {
         <div className="badge-board-heading">
           <div>
             <p className="section-label">Trail Badges</p>
-            <p>Here are the badges you've earned so far, Jordan.</p>
+            <p>Here are the badges you've earned so far, {firstName}.</p>
           </div>
         </div>
 
@@ -384,7 +679,7 @@ export default function FieldKitPage() {
         </aside>
 
         <div className="earned-badge-grid" aria-label="Earned trail badges">
-          {earnedBadges.map((badge) => (
+          {earnedBadgeCards.map((badge) => (
             <article className="trail-badge earned" key={badge.title}>
               <div className="badge-art">
                 <img src={badge.image} alt={`${badge.title} badge`} />

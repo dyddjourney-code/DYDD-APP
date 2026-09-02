@@ -68,6 +68,12 @@ function fail(path: string, message: string): never {
   redirect(`${path}?message=${encodeURIComponent(message)}`);
 }
 
+function appendFruitLifeStatusParam(returnTo: string, value: string) {
+  const [pathAndQuery, hash] = returnTo.split("#");
+  const separator = pathAndQuery.includes("?") ? "&" : "?";
+  return `${pathAndQuery}${separator}fruitlife=${encodeURIComponent(value)}${hash ? `#${hash}` : ""}`;
+}
+
 function escapeHtml(value: string) {
   return value
     .replace(/&/g, "&amp;")
@@ -674,9 +680,9 @@ export async function createFruitLifeSession(formData: FormData) {
   });
 
   redirect(
-    `/hq?fruitlife_session=${encodeURIComponent(session.id)}&fruitlife_token=${encodeURIComponent(
+    `/field-kit?fruitlife_session=${encodeURIComponent(session.id)}&fruitlife_token=${encodeURIComponent(
       selfToken,
-    )}&fruitlife=created#fruitlife360-control`,
+    )}&fruitlife=created#current-assessment-process`,
   );
 }
 
@@ -701,18 +707,18 @@ export async function sendFruitLifeReminder(formData: FormData) {
   const returnTo = getString(formData, "return_to") || "/hq";
 
   if (!sessionId) {
-    redirect(`${returnTo}${returnTo.includes("?") ? "&" : "?"}fruitlife=missing_session`);
+    redirect(appendFruitLifeStatusParam(returnTo, "missing_session"));
   }
 
   const supabase = createSupabaseAdminClient();
   const { data: session, error } = await supabase
     .from("fruitlife_360_sessions")
-    .select("id,metadata,participant_email,participant_name,observer_completed_count,observer_goal")
+    .select("id,metadata,participant_email,participant_name,observer_completed_count,observer_goal,self_completed_at")
     .eq("id", sessionId)
     .single();
 
   if (error || !session) {
-    redirect(`${returnTo}${returnTo.includes("?") ? "&" : "?"}fruitlife=reminder_failed`);
+    redirect(appendFruitLifeStatusParam(returnTo, "reminder_failed"));
   }
 
   const serverSupabase = await createSupabaseServerClient();
@@ -725,7 +731,7 @@ export async function sendFruitLifeReminder(formData: FormData) {
     (isFruitLifeAdmin(userEmail) || userEmail === normalizeEmail(String(session.participant_email ?? "")));
 
   if (!canSendReminder) {
-    redirect(`${returnTo}${returnTo.includes("?") ? "&" : "?"}fruitlife=not_allowed`);
+    redirect(appendFruitLifeStatusParam(returnTo, "not_allowed"));
   }
 
   const metadata = (session.metadata ?? {}) as {
@@ -751,7 +757,7 @@ export async function sendFruitLifeReminder(formData: FormData) {
   const participantName = String(session.participant_name ?? "your FruitLife participant");
   const participantEmail = normalizeEmail(String(session.participant_email ?? ""));
   const observerLinks = Array.isArray(metadata.observerLinks) ? metadata.observerLinks : [];
-  const participantResult = participantEmail && metadata.selfLink
+  const participantResult = participantEmail && metadata.selfLink && !session.self_completed_at
     ? await sendResendEmail({
         ...fruitLifeInviteEmail({
           participantName,
@@ -791,7 +797,7 @@ export async function sendFruitLifeReminder(formData: FormData) {
     supabase,
   });
 
-  redirect(`${returnTo}${returnTo.includes("?") ? "&" : "?"}fruitlife=reminder_sent`);
+  redirect(appendFruitLifeStatusParam(returnTo, "reminder_sent"));
 }
 
 export async function getFruitLifeObserverContext(sessionId: string, token: string) {
@@ -909,7 +915,7 @@ export async function rescindFruitLifeObserverInvite(formData: FormData) {
     .eq("session_id", sessionId);
 
   if (returnTo) {
-    redirect(`${returnTo}${returnTo.includes("?") ? "&" : "?"}fruitlife=rescind_sent#fruitlife360-control`);
+    redirect(appendFruitLifeStatusParam(returnTo, "rescind_sent"));
   }
 
   redirect(

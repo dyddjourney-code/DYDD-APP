@@ -3668,17 +3668,16 @@ body:has(.fruitlife-public) .mobile-app-nav,
   transform: translateY(1px);
 }
 
-.ranger-map-guide-item > span {
+.ranger-map-guide-item > .hq-menu-icon {
   display: grid;
   place-items: center;
   width: 34px;
   height: 34px;
-  border: 1px solid rgba(184, 138, 67, 0.28);
-  border-radius: 8px;
-  background: rgba(243, 228, 196, 0.62);
-  color: var(--brass);
-  font-size: 0.74rem;
-  font-weight: 950;
+}
+
+.ranger-map-guide-item > .hq-menu-icon svg {
+  width: 27px;
+  height: 27px;
 }
 
 .ranger-map-guide-item div {

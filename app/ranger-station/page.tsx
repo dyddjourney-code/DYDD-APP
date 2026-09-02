@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AppNavIcon } from "@/components/app-sidebar";
 import { DyddOrientationSlider } from "@/components/dydd-orientation-slider";
 import { RangerParkMap } from "@/components/ranger-park-map";
 
@@ -7,24 +8,24 @@ const stationStops = [
     detail:
       "Choose the course or guided route that fits the learner's current step.",
     href: "/trailheads",
+    icon: "signpost",
     label: "Trailheads",
-    marker: "01",
     title: "Pick a route",
   },
   {
     detail:
       "Find assessments, reports, and earned markers gathered along the way.",
     href: "/field-kit",
+    icon: "map",
     label: "Field Kit",
-    marker: "02",
     title: "Check the tools",
   },
   {
     detail:
       "Gather books, workbooks, workshops, and live experiences for the trail ahead.",
     href: "/gear",
+    icon: "backpack",
     label: "Gear",
-    marker: "03",
     title: "Pack resources",
   },
 ];
@@ -93,10 +94,10 @@ export default function RangerStationPage() {
             page into a control center.
           </p>
           <div className="ranger-map-guide" aria-label="Inside the DYDD Ranger Station">
-            <p className="section-label">Inside the station</p>
+            <p className="section-label">Inside the Ranger Station</p>
             {stationStops.map((stop) => (
               <Link className="ranger-map-guide-item" href={stop.href} key={stop.label}>
-                <span>{stop.marker}</span>
+                <AppNavIcon name={stop.icon} />
                 <div>
                   <strong>{stop.title}</strong>
                   <small>{stop.label}</small>

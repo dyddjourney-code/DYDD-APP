@@ -25,13 +25,12 @@ const navItems = [
   },
   {
     icon: "group",
-    label: "Camp Circle",
+    label: "Camp Circles",
     href: "/camp-circle",
-    children: [{ icon: "playbook", label: "Field Guide", href: "/camp-circle#field-guide" }],
   },
 ];
 
-function AppNavIcon({ name }: { name: string }) {
+export function AppNavIcon({ name }: { name: string }) {
   const common = {
     fill: "none",
     strokeLinecap: "round" as const,

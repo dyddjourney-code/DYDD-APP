@@ -933,7 +933,7 @@ function fruitLifeIsActive(session: FruitLifeDashboardSession | null) {
     return false;
   }
 
-  return !["report_ready", "completed", "sent"].includes(session.session_status);
+  return !["report_ready", "report_sent", "completed", "sent"].includes(session.session_status);
 }
 
 export default async function HqPage({ searchParams }: HqPageProps) {
@@ -1328,6 +1328,11 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                       <input name="session_id" type="hidden" value={activeFruitLifeSession.id} />
                       <input name="token" type="hidden" value={activeFruitLifeToken} />
                       <input name="invite_id" type="hidden" value={invite.id} />
+                      <input
+                        name="return_to"
+                        type="hidden"
+                        value={fruitLifeStatusHref(activeFruitLifeSession, activeFruitLifeToken)}
+                      />
                       <button type="submit">Rescind</button>
                     </form>
                   ) : null}

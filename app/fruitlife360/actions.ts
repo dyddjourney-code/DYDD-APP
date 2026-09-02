@@ -894,10 +894,11 @@ export async function rescindFruitLifeObserverInvite(formData: FormData) {
   const sessionId = getString(formData, "session_id");
   const token = getString(formData, "token");
   const inviteId = getString(formData, "invite_id");
+  const returnTo = getString(formData, "return_to");
 
   const status = await getFruitLifeSessionStatus(sessionId, token);
   if (!status?.canManage || !inviteId) {
-    fail("/fruitlife360/status", "This invite could not be changed.");
+    fail(returnTo || "/fruitlife360/status", "This invite could not be changed.");
   }
 
   const supabase = createSupabaseAdminClient();
@@ -906,6 +907,10 @@ export async function rescindFruitLifeObserverInvite(formData: FormData) {
     .update({ invite_status: "expired" })
     .eq("id", inviteId)
     .eq("session_id", sessionId);
+
+  if (returnTo) {
+    redirect(`${returnTo}${returnTo.includes("?") ? "&" : "?"}fruitlife=rescind_sent#fruitlife360-control`);
+  }
 
   redirect(
     `/fruitlife360/status?session=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(

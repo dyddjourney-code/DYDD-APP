@@ -4,6 +4,7 @@ import {
   rescindFruitLifeObserverInvite,
   sendFruitLifeReminder,
 } from "../actions";
+import { FruitLifeSessionAutoRefresh } from "../session-auto-refresh";
 
 type FruitLifeStatusPageProps = {
   searchParams?: Promise<{
@@ -62,9 +63,13 @@ export default async function FruitLifeStatusPage({
   const reportArtifact = artifacts.find(
     (artifact: any) => artifact.artifact_type === "pdf" && artifact.artifact_status === "ready",
   );
+  const shouldRefresh = !["report_ready", "report_sent", "completed", "sent"].includes(
+    session.session_status,
+  );
 
   return (
     <main className="fruitlife-shell fruitlife-public">
+      <FruitLifeSessionAutoRefresh enabled={shouldRefresh} />
       <section className="fruitlife-hero compact">
         <p className="section-label">FruitLife 360 Status</p>
         <h1>{session.participant_name ?? "FruitLife participant"}</h1>
@@ -144,6 +149,11 @@ export default async function FruitLifeStatusPage({
                   <input name="session_id" type="hidden" value={session.id} />
                   <input name="token" type="hidden" value={token} />
                   <input name="invite_id" type="hidden" value={invite.id} />
+                  <input
+                    name="return_to"
+                    type="hidden"
+                    value={`/fruitlife360/status?session=${encodeURIComponent(session.id)}&token=${encodeURIComponent(token)}`}
+                  />
                   <button type="submit">Rescind</button>
                 </form>
               ) : null}

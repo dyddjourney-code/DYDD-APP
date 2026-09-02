@@ -144,7 +144,7 @@ function getFruitRank(formData: FormData) {
 function observerSeedsFromForm(formData: FormData) {
   const seeds: ObserverSeed[] = [];
 
-  for (let index = 1; index <= 6; index += 1) {
+  for (let index = 1; index <= 12; index += 1) {
     const email = normalizeEmail(getString(formData, `observer_email_${index}`));
     const name = getString(formData, `observer_name_${index}`);
     const relationship = getString(formData, `observer_relationship_${index}`);

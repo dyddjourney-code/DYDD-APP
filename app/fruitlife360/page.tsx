@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PageHelp } from "@/components/page-help";
 import { createFruitLifeSession } from "./actions";
+import { ObserverInvitations } from "./observer-invitations";
 
 type FruitLifeSignupPageProps = {
   searchParams?: Promise<{
@@ -22,17 +23,22 @@ export default async function FruitLifeSignupPage({
         <Link href="/hq">HQ</Link>
       </nav>
 
-      <header className="fruitlife-hero">
+      <header className="fruitlife-hero fruitlife-setup-hero">
+        <div className="fruitlife-hero-copy">
+          <p className="section-label">FruitLife 360 Intake</p>
+          <h1>Begin a formation mirror.</h1>
+          <p className="lede">
+            Create the self link, invite trusted observers, and keep the full intake workflow inside
+            the DYDD app.
+          </p>
+          <div className="fruitlife-hero-badges" aria-label="FruitLife workflow summary">
+            <span>Self reflection</span>
+            <span>Observer feedback</span>
+            <span>Supabase workflow</span>
+          </div>
+        </div>
         <div className="fruitlife-hero-mark">
           <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
-        </div>
-        <div>
-          <p className="section-label">FruitLife 360 Intake</p>
-          <h1>Start the reflection.</h1>
-          <p className="lede">
-            Create the self link, invite observers, and begin the app-owned report workflow in
-            one clean pass.
-          </p>
         </div>
       </header>
 
@@ -46,6 +52,7 @@ export default async function FruitLifeSignupPage({
       />
 
       <form action={createFruitLifeSession} className="fruitlife-form fruitlife-signup">
+        <input name="signup_source" type="hidden" value="vercel-fruitlife-intake" />
         {params?.message ? <p className="form-message">{params.message}</p> : null}
         <section className="fruitlife-intake-overview">
           <p>
@@ -84,36 +91,13 @@ export default async function FruitLifeSignupPage({
               <small>Used for progress tracking if observer emails are not entered yet.</small>
               <input defaultValue="3" min="0" max="12" name="observer_goal" required type="number" />
             </label>
-            <label>
-              Signup source
-              <small>Keep this for audit/history unless you are testing a special path.</small>
-              <input defaultValue="vercel-fruitlife-intake" name="signup_source" type="text" />
-            </label>
           </div>
         </section>
 
         <section className="fruitlife-panel">
           <p className="section-label">Observer Invitations</p>
-          <h2>Add observers now, or leave them blank and share the observer link later.</h2>
-          <div className="fruitlife-observer-roster">
-            {Array.from({ length: 6 }, (_, index) => (
-              <div className="fruitlife-observer-row" key={index}>
-                <span>{index + 1}</span>
-                <label>
-                  Name
-                  <input name={`observer_name_${index + 1}`} type="text" />
-                </label>
-                <label>
-                  Email
-                  <input name={`observer_email_${index + 1}`} type="email" />
-                </label>
-                <label>
-                  Relationship
-                  <input name={`observer_relationship_${index + 1}`} type="text" />
-                </label>
-              </div>
-            ))}
-          </div>
+          <h2>Add one observer, then add more if you are ready.</h2>
+          <ObserverInvitations />
         </section>
 
         <section className="fruitlife-intake-note">

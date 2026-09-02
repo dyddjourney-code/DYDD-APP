@@ -159,10 +159,13 @@ export function FruitLifeAssessmentForm({
 
         return (
           <fieldset
+            aria-labelledby={`fruitlife-${fruit.key}-title`}
             className={`fruitlife-fruit fruitlife-step-panel ${fruit.colorClass} ${isActive ? "active" : ""}`}
             key={fruit.key}
           >
-            <legend>{fruit.label}</legend>
+            <h3 className="fruitlife-fruit-title" id={`fruitlife-${fruit.key}-title`}>
+              {fruit.label}
+            </h3>
             <p>{fruit.definition}</p>
             {questions.map((question) => (
               <label className="fruitlife-scale" key={question.code}>

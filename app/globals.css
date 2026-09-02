@@ -378,6 +378,11 @@ h3 {
   margin-left: auto;
 }
 
+.fruitlife-assessment-form {
+  margin-right: auto;
+  margin-left: auto;
+}
+
 .fruitlife-signup {
   max-width: 1080px;
 }
@@ -600,18 +605,13 @@ body:has(.fruitlife-public) .mobile-app-nav,
 .fruitlife-fruit.gentleness { border-left-color: var(--fruit-gentleness); }
 .fruitlife-fruit.self_control { border-left-color: var(--fruit-selfcontrol); }
 
-.fruitlife-fruit legend {
-  float: left;
-  width: 100%;
-  padding: 0 0 8px;
+.fruitlife-fruit-title {
+  margin: 0;
+  padding: 0 0 4px;
   color: var(--green-dark);
   font-size: 1.45rem;
   font-weight: 900;
   line-height: 1.05;
-}
-
-.fruitlife-fruit legend + p {
-  clear: both;
 }
 
 .fruitlife-fruit p,

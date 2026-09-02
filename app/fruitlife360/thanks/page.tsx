@@ -7,6 +7,7 @@ type FruitLifeThanksPageProps = {
     self?: string;
     session?: string;
     token?: string;
+    type?: string;
   }>;
 };
 
@@ -16,6 +17,7 @@ export default async function FruitLifeThanksPage({
   searchParams,
 }: FruitLifeThanksPageProps) {
   const params = await searchParams;
+  const isObserver = params?.type === "observer";
   const statusHref = params?.session && params?.token
     ? `/fruitlife360/status?session=${encodeURIComponent(params.session)}&token=${encodeURIComponent(params.token)}`
     : "/fruitlife360";
@@ -28,14 +30,20 @@ export default async function FruitLifeThanksPage({
         <p className="lede">
           {params?.message ?? "The FruitLife 360 native intake step was saved."}
         </p>
-        <div className="action-row">
-          <Link className="button secondary" href="/fruitlife360">
-            Start another session
-          </Link>
-          <Link className="button secondary" href={statusHref}>
-            View session status
-          </Link>
-        </div>
+        {isObserver ? (
+          <p className="fruitlife-thanks-note">
+            You can close this page now. Your reflection has been received.
+          </p>
+        ) : (
+          <div className="action-row">
+            <Link className="button secondary" href="/fruitlife360">
+              Start another session
+            </Link>
+            <Link className="button secondary" href={statusHref}>
+              View session status
+            </Link>
+          </div>
+        )}
       </section>
     </main>
   );

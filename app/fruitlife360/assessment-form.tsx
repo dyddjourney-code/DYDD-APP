@@ -49,13 +49,14 @@ export function FruitLifeAssessmentForm({
   token,
 }: FruitLifeAssessmentFormProps) {
   const isSelf = responseType === "self";
-  const totalSteps = fruitLifeFruits.length + 2;
+  const totalSteps = fruitLifeFruits.length + 3;
   const [stepIndex, setStepIndex] = useState(0);
-  const currentFruit = stepIndex > 0 && stepIndex <= fruitLifeFruits.length
-    ? fruitLifeFruits[stepIndex - 1]
+  const currentFruit = stepIndex >= 2 && stepIndex < fruitLifeFruits.length + 2
+    ? fruitLifeFruits[stepIndex - 2]
     : null;
   const progressLabel = useMemo(() => {
-    if (stepIndex === 0) return "Ranking";
+    if (stepIndex === 0) return "Details";
+    if (stepIndex === 1) return "Ranking";
     if (currentFruit) return currentFruit.label;
     return isSelf ? "Personal Growth" : "Observer Notes";
   }, [currentFruit, isSelf, stepIndex]);
@@ -97,9 +98,14 @@ export function FruitLifeAssessmentForm({
         </div>
       </section>
 
-      <section className="fruitlife-panel">
+      <section className={`fruitlife-panel fruitlife-step-panel ${stepIndex === 0 ? "active" : ""}`}>
         <p className="section-label">{isSelf ? "Self Reflection" : "Observer Reflection"}</p>
-        <h2>{isSelf ? "Tell the truth with hope." : "Observer details"}</h2>
+        <h2>{isSelf ? "Confirm your reflection details." : "Confirm your observer details."}</h2>
+        <p>
+          {isSelf
+            ? "This first card confirms who this FruitLife 360 reflection belongs to. The next card begins the fruit ranking."
+            : `These details were set by ${participantName ?? "the participant"} when the invitation was created. They keep the report organized without asking you to manage an account.`}
+        </p>
         <div className="fruitlife-grid two">
           <label>
             Your name
@@ -136,7 +142,7 @@ export function FruitLifeAssessmentForm({
         </div>
       </section>
 
-      <section className={`fruitlife-panel fruitlife-step-panel ${stepIndex === 0 ? "active" : ""}`}>
+      <section className={`fruitlife-panel fruitlife-step-panel ${stepIndex === 1 ? "active" : ""}`}>
         <p className="section-label">Fruit Ranking</p>
         <h2>{isSelf ? "Rank your fruit visibility." : "Rank the fruit you see."}</h2>
         <p>
@@ -149,7 +155,7 @@ export function FruitLifeAssessmentForm({
       {fruitLifeFruits.map((fruit, index) => {
         const questions = fruitLifeQuestionsByFruit.get(fruit.key) ?? [];
         const pressureQuestion = fruitLifePressureByFruit.get(fruit.key);
-        const isActive = stepIndex === index + 1;
+        const isActive = stepIndex === index + 2;
 
         return (
           <fieldset

@@ -1,5 +1,10 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import {
+  rescindFruitLifeObserverInvite,
+  sendFruitLifeReminder,
+} from "@/app/fruitlife360/actions";
+import { FruitLifeSessionAutoRefresh } from "@/app/fruitlife360/session-auto-refresh";
 import { signOut } from "@/app/login/actions";
 import {
   assessmentLabels,
@@ -59,6 +64,14 @@ type FruitLifeDashboardSession = {
   }>;
   created_at: string;
   id: string;
+  invites: Array<{
+    completed_at: string | null;
+    id: string;
+    invite_status: string;
+    observer_email: string | null;
+    observer_name: string | null;
+    relationship_label: string | null;
+  }>;
   metadata: {
     observerLinks?: Array<{ email?: string; link?: string; name?: string; relationship?: string }>;
     selfLink?: string;
@@ -76,7 +89,11 @@ type FruitLifeDashboardSession = {
 };
 
 type HqPageProps = {
-  searchParams?: Promise<ReviewSearchParams>;
+  searchParams?: Promise<ReviewSearchParams & {
+    fruitlife?: string;
+    fruitlife_session?: string;
+    fruitlife_token?: string;
+  }>;
 };
 
 const fruitTrendMetrics = [
@@ -735,8 +752,14 @@ async function getFruitLifeDashboardSessions({
     .select("session_id,artifact_type,artifact_status,provider,external_url,filename,created_at")
     .in("session_id", sessionIds)
     .order("created_at", { ascending: false });
+  const { data: invites } = await supabaseAdmin
+    .from("fruitlife_360_observer_invites")
+    .select("session_id,id,observer_name,observer_email,relationship_label,invite_status,completed_at")
+    .in("session_id", sessionIds)
+    .order("created_at", { ascending: true });
 
   const artifactsBySession = new Map<string, FruitLifeDashboardSession["artifacts"]>();
+  const invitesBySession = new Map<string, FruitLifeDashboardSession["invites"]>();
 
   for (const artifact of artifacts ?? []) {
     const sessionId = String(artifact.session_id);
@@ -752,9 +775,25 @@ async function getFruitLifeDashboardSessions({
     artifactsBySession.set(sessionId, current);
   }
 
+  for (const invite of invites ?? []) {
+    const sessionId = String(invite.session_id);
+    const current = invitesBySession.get(sessionId) ?? [];
+    current.push({
+      completed_at: typeof invite.completed_at === "string" ? invite.completed_at : null,
+      id: String(invite.id),
+      invite_status: String(invite.invite_status ?? "draft"),
+      observer_email: typeof invite.observer_email === "string" ? invite.observer_email : null,
+      observer_name: typeof invite.observer_name === "string" ? invite.observer_name : null,
+      relationship_label:
+        typeof invite.relationship_label === "string" ? invite.relationship_label : null,
+    });
+    invitesBySession.set(sessionId, current);
+  }
+
   return sessions.map((session) => ({
     ...session,
     artifacts: artifactsBySession.get(session.id) ?? [],
+    invites: invitesBySession.get(session.id) ?? [],
   }));
 }
 
@@ -869,6 +908,34 @@ function sessionModeFromMetadata(session: FruitLifeDashboardSession) {
   return reportModeLabel(mode);
 }
 
+function fruitLifeTokenFromSession(session: FruitLifeDashboardSession | null) {
+  if (!session?.metadata?.selfLink) {
+    return "";
+  }
+
+  try {
+    return new URL(session.metadata.selfLink).searchParams.get("token") ?? "";
+  } catch {
+    return "";
+  }
+}
+
+function fruitLifeStatusHref(session: FruitLifeDashboardSession, token: string) {
+  if (!token) {
+    return "/fruitlife360";
+  }
+
+  return `/fruitlife360/status?session=${encodeURIComponent(session.id)}&token=${encodeURIComponent(token)}`;
+}
+
+function fruitLifeIsActive(session: FruitLifeDashboardSession | null) {
+  if (!session) {
+    return false;
+  }
+
+  return !["report_ready", "completed", "sent"].includes(session.session_status);
+}
+
 export default async function HqPage({ searchParams }: HqPageProps) {
   const reviewParams = await searchParams;
   const heatherPreview = isHeatherReviewRequest(reviewParams);
@@ -923,8 +990,28 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     enabled: Boolean(fruitLifeDashboardEmail || isAdmin),
     isAdmin,
   });
-  const activeFruitLifeSession = fruitLifeSessions[0] ?? null;
+  const activeFruitLifeSession =
+    fruitLifeSessions.find((session) => session.id === reviewParams?.fruitlife_session) ??
+    fruitLifeSessions[0] ??
+    null;
   const fruitLifeCompletion = getFruitLifeCompletion(activeFruitLifeSession);
+  const activeFruitLifeToken =
+    reviewParams?.fruitlife_session === activeFruitLifeSession?.id && reviewParams?.fruitlife_token
+      ? reviewParams.fruitlife_token
+      : fruitLifeTokenFromSession(activeFruitLifeSession);
+  const activeFruitLifeReport = activeFruitLifeSession?.artifacts.find(
+    (artifact) => artifact.artifact_type === "pdf" && artifact.artifact_status === "ready",
+  );
+  const activeFruitLifePayload = activeFruitLifeSession?.artifacts.find(
+    (artifact) => artifact.artifact_type === "payload",
+  );
+  const activeFruitLifeCompletedObservers =
+    activeFruitLifeSession?.invites.filter((invite) => invite.invite_status === "completed").length ?? 0;
+  const activeFruitLifeProgress = Math.min(
+    100,
+    Math.round((fruitLifeCompletion.completed / Math.max(1, fruitLifeCompletion.required)) * 100),
+  );
+  const shouldRefreshFruitLife = fruitLifeIsActive(activeFruitLifeSession);
   const designIdContext = buildDesignIdContext(assessmentReport);
   const reflectionText = [
     designIdContext.primary,
@@ -1002,7 +1089,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           : badge.kind === "spiritual_gifts"
             ? hasSpiritualGiftsCourseAccess
             : badge.kind === "fruit_360"
-              ? hasFruitLifeCourseAccess || fruitLifeCompletion.completed > 0
+              ? hasFruitLifeCourseAccess || fruitLifeCompletion.completed >= fruitLifeCompletion.required
               : badge.kind === "design_pathways"
                 ? ownsAssessment(assessmentReport, "design_pathways")
                 : badge.kind === "reflection"
@@ -1139,6 +1226,125 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         </article>
       </section>
 
+      <section
+        className="basecamp-account-card fruitlife-control-center"
+        id="fruitlife360-control"
+        aria-label="FruitLife 360 operation center"
+      >
+        <FruitLifeSessionAutoRefresh enabled={shouldRefreshFruitLife} />
+        <div className="card-heading">
+          <p className="section-label">Active assessment</p>
+          <h2>FruitLife 360 control center.</h2>
+          <p>
+            Start the reflection, watch self and observer progress, send reminders,
+            and open the report record from Base Camp.
+          </p>
+        </div>
+        {reviewParams?.fruitlife === "created" ? (
+          <p className="journey-save-notice">
+            FruitLife session created. Emails were prepared and the tracker is live.
+          </p>
+        ) : null}
+        {activeFruitLifeSession ? (
+          <div className="fruitlife-control-grid">
+            <article className="fruitlife-status-console">
+              <div className="fruitlife-session-summary">
+                <p className="section-label">Session progress</p>
+                <strong>
+                  {fruitLifeCompletion.completed} of {fruitLifeCompletion.required}
+                </strong>
+                <small>
+                  {titleizeStatus(activeFruitLifeSession.session_status)} · report{" "}
+                  {titleizeStatus(activeFruitLifeSession.report_status)}
+                </small>
+              </div>
+              <div className="fruitlife-progress-meter" aria-label={`${activeFruitLifeProgress}% complete`}>
+                <span style={{ width: `${activeFruitLifeProgress}%` }} />
+              </div>
+              <div className="fruitlife-kpis">
+                <p>
+                  <span>{activeFruitLifeSession.self_completed_at ? "Complete" : "Waiting"}</span>
+                  <small>Self</small>
+                </p>
+                <p>
+                  <span>{activeFruitLifeCompletedObservers}/{activeFruitLifeSession.observer_goal}</span>
+                  <small>Observers</small>
+                </p>
+                <p>
+                  <span>{activeFruitLifeReport?.external_url ? "Ready" : titleizeStatus(activeFruitLifeSession.report_status)}</span>
+                  <small>Report</small>
+                </p>
+              </div>
+              <div className="fruitlife-latest-actions">
+                {activeFruitLifeSession.metadata?.selfLink ? (
+                  <Link href={activeFruitLifeSession.metadata.selfLink}>Open self link</Link>
+                ) : null}
+                {activeFruitLifeReport?.external_url ? (
+                  <Link href={activeFruitLifeReport.external_url}>Open report</Link>
+                ) : null}
+                {activeFruitLifePayload ? (
+                  <Link href={fruitLifeStatusHref(activeFruitLifeSession, activeFruitLifeToken)}>
+                    Open status detail
+                  </Link>
+                ) : null}
+                <form action={sendFruitLifeReminder}>
+                  <input name="session_id" type="hidden" value={activeFruitLifeSession.id} />
+                  <input name="return_to" type="hidden" value="/hq#fruitlife360-control" />
+                  <button type="submit">Send reminders</button>
+                </form>
+              </div>
+              {shouldRefreshFruitLife ? (
+                <p className="fruitlife-latest-note">
+                  This panel refreshes while the session is still active.
+                </p>
+              ) : null}
+            </article>
+
+            <div className="fruitlife-session-list fruitlife-control-roster">
+              <article>
+                <div>
+                  <strong>{activeFruitLifeSession.participant_name ?? "Participant"}</strong>
+                  <small>{activeFruitLifeSession.participant_email ?? "No email"}</small>
+                  <div className="fruitlife-session-meta">
+                    <span>Self</span>
+                    <span>{displayDate(activeFruitLifeSession.self_completed_at ?? activeFruitLifeSession.created_at)}</span>
+                  </div>
+                </div>
+                <span>{activeFruitLifeSession.self_completed_at ? "Complete" : "Waiting"}</span>
+              </article>
+              {activeFruitLifeSession.invites.map((invite) => (
+                <article key={invite.id}>
+                  <div>
+                    <strong>{invite.observer_name || "Observer"}</strong>
+                    <small>{invite.observer_email ?? "No email"}</small>
+                    <div className="fruitlife-session-meta">
+                      <span>{invite.relationship_label ?? "Observer"}</span>
+                      <span>{displayDate(invite.completed_at ?? activeFruitLifeSession.created_at)}</span>
+                    </div>
+                  </div>
+                  <span>{titleizeStatus(invite.invite_status)}</span>
+                  {invite.invite_status !== "completed" && activeFruitLifeToken ? (
+                    <form action={rescindFruitLifeObserverInvite}>
+                      <input name="session_id" type="hidden" value={activeFruitLifeSession.id} />
+                      <input name="token" type="hidden" value={activeFruitLifeToken} />
+                      <input name="invite_id" type="hidden" value={invite.id} />
+                      <button type="submit">Rescind</button>
+                    </form>
+                  ) : null}
+                </article>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="fruitlife-empty-control">
+            <p>No active FruitLife 360 session is attached to this account yet.</p>
+            <Link className="button primary" href="/fruitlife360">
+              Start FruitLife 360
+            </Link>
+          </div>
+        )}
+      </section>
+
       <section className="basecamp-account-layout records" aria-label="Base Camp records">
         <article className="basecamp-account-card artifacts">
           <div className="card-heading">
@@ -1158,6 +1364,33 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                   <small>{snapshot.source ?? "DYDD source"}</small>
                 </Link>
               ))}
+              {activeFruitLifeSession && (activeFruitLifeReport || activeFruitLifePayload) ? (
+                <Link
+                  className="basecamp-record"
+                  href={
+                    activeFruitLifeReport?.external_url ??
+                    fruitLifeStatusHref(activeFruitLifeSession, activeFruitLifeToken)
+                  }
+                >
+                  <span>FruitLife 360 · Native session</span>
+                  <strong>{titleizeStatus(activeFruitLifeSession.report_status)}</strong>
+                  <small>{displayDate(activeFruitLifeSession.updated_at)}</small>
+                </Link>
+              ) : null}
+            </div>
+          ) : activeFruitLifeSession && (activeFruitLifeReport || activeFruitLifePayload) ? (
+            <div className="basecamp-record-list">
+              <Link
+                className="basecamp-record"
+                href={
+                  activeFruitLifeReport?.external_url ??
+                  fruitLifeStatusHref(activeFruitLifeSession, activeFruitLifeToken)
+                }
+              >
+                <span>FruitLife 360 · Native session</span>
+                <strong>{titleizeStatus(activeFruitLifeSession.report_status)}</strong>
+                <small>{displayDate(activeFruitLifeSession.updated_at)}</small>
+              </Link>
             </div>
           ) : (
             <p className="empty-account-note">

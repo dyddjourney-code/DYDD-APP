@@ -279,34 +279,25 @@ async function queuePayloadJob(supabase: ReturnType<typeof createSupabaseAdminCl
 }
 
 function fruitLifeInviteEmail({
-  observerGoal,
-  observerLink,
   participantName,
   selfLink,
 }: {
-  observerGoal: number;
-  observerLink: string;
   participantName: string;
   selfLink: string;
 }) {
   const safeParticipantName = escapeHtml(participantName);
-  const observerText =
-    observerGoal > 0
-      ? `\n\nObserver link to share:\n${observerLink}\n\nShare this with ${observerGoal} trusted observer${observerGoal === 1 ? "" : "s"}.`
-      : "";
 
-  const text = `Hi ${participantName},\n\nYour FruitLife 360 reflection is ready to begin.\n\nComplete your self reflection:\n${selfLink}${observerText}\n\nFruitLife 360 is designed as a formation mirror, not a grade or label.\n\nSincerely,\nDiscover Your Divine Design Team`;
+  const text = `Hi ${participantName},\n\nYour FruitLife 360 reflection is ready to begin.\n\nComplete your self reflection:\n${selfLink}\n\nFruitLife 360 is designed as a formation mirror, not a grade or label.\n\nSincerely,\nDiscover Your Divine Design Team`;
 
   return {
     html: `
       <p>Hi ${safeParticipantName},</p>
       <p>Your FruitLife 360 reflection is ready to begin.</p>
       <p><a href="${selfLink}">Complete your FruitLife 360 self reflection</a></p>
-      ${observerGoal > 0 && observerLink ? `<p><a href="${observerLink}">Share the observer reflection link</a></p>` : ""}
       <p>FruitLife 360 is designed as a formation mirror, not a grade or label.</p>
       <p>Sincerely,<br>Discover Your Divine Design Team</p>
     `,
-    subject: "Your FruitLife 360 reflection links",
+    subject: "Your FruitLife 360 self reflection",
     text,
   };
 }
@@ -339,8 +330,6 @@ function fruitLifeObserverEmail({
 }
 
 async function recordAndSendInviteEmail({
-  observerGoal,
-  observerLink,
   observerLinks,
   participantEmail,
   participantName,
@@ -348,8 +337,6 @@ async function recordAndSendInviteEmail({
   sessionId,
   supabase,
 }: {
-  observerGoal: number;
-  observerLink: string;
   observerLinks?: Array<{ email: string; link: string; name: string; relationship: string }>;
   participantEmail: string;
   participantName: string;
@@ -358,8 +345,6 @@ async function recordAndSendInviteEmail({
   supabase: ReturnType<typeof createSupabaseAdminClient>;
 }) {
   const email = fruitLifeInviteEmail({
-    observerGoal,
-    observerLink,
     participantName,
     selfLink,
   });
@@ -373,7 +358,6 @@ async function recordAndSendInviteEmail({
     artifact_type: "email",
     metadata: {
       error: result.message ?? null,
-      observerLink,
       observerLinks: observerLinks ?? [],
       purpose: "initial_invite_email",
       resendSkipped: result.skipped,
@@ -545,13 +529,17 @@ async function saveResponse({
     }
   }
 
-  redirect(
-    `/fruitlife360/thanks?session=${encodeURIComponent(session.id)}&token=${encodeURIComponent(token)}&message=${encodeURIComponent(
+  const thanksParams = new URLSearchParams({
+    message:
       responseType === "self"
         ? "Self reflection submitted. The session status has been updated."
         : "Observer reflection submitted. Thank you for helping with this FruitLife 360 report.",
-    )}`,
-  );
+    session: session.id,
+    token,
+    type: responseType,
+  });
+
+  redirect(`/fruitlife360/thanks?${thanksParams.toString()}`);
 }
 
 export async function createFruitLifeSession(formData: FormData) {
@@ -671,8 +659,6 @@ export async function createFruitLifeSession(formData: FormData) {
     .eq("id", session.id);
 
   await recordAndSendInviteEmail({
-    observerGoal,
-    observerLink: observerLinks[0]?.link ?? "",
     observerLinks: observerLinks.filter((observer) => observer.email),
     participantEmail,
     participantName,
@@ -688,9 +674,9 @@ export async function createFruitLifeSession(formData: FormData) {
   });
 
   redirect(
-    `/fruitlife360/status?session=${encodeURIComponent(session.id)}&token=${encodeURIComponent(
+    `/hq?fruitlife_session=${encodeURIComponent(session.id)}&fruitlife_token=${encodeURIComponent(
       selfToken,
-    )}&message=${encodeURIComponent("FruitLife session created. Emails were prepared and status tracking is ready.")}`,
+    )}&fruitlife=created#fruitlife360-control`,
   );
 }
 
@@ -768,8 +754,6 @@ export async function sendFruitLifeReminder(formData: FormData) {
   const participantResult = participantEmail && metadata.selfLink
     ? await sendResendEmail({
         ...fruitLifeInviteEmail({
-          observerGoal: Number(session.observer_goal ?? 0),
-          observerLink: observerLinks[0]?.link ?? "",
           participantName,
           selfLink: metadata.selfLink,
         }),

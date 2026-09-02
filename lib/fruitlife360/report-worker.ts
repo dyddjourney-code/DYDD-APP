@@ -60,7 +60,11 @@ async function waitForPdf(documentId: string, dryRun: boolean) {
 
   let document = await getPdfMonkeyDocument(documentId);
 
-  for (let attempt = 0; attempt < 6 && document.status === "pending"; attempt += 1) {
+  for (
+    let attempt = 0;
+    attempt < 30 && ["pending", "generating"].includes(String(document.status));
+    attempt += 1
+  ) {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     document = await getPdfMonkeyDocument(documentId);
   }
@@ -231,7 +235,7 @@ export async function processFruitLifeReportJobs({
         await supabase
           .from("fruitlife_360_report_jobs")
           .update({
-            job_status: job.attempt_count >= 2 ? "error" : "retry",
+            job_status: job.attempt_count >= 5 ? "error" : "retry",
             last_error: message,
           })
           .eq("id", job.id);

@@ -64,6 +64,7 @@ export async function createPdfMonkeyDocument({
         document_template_id: templateId,
         meta: { _filename: filename },
         payload,
+        status: "pending",
       },
     }),
     method: "POST",

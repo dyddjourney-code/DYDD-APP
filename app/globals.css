@@ -371,6 +371,13 @@ h3 {
   max-width: 1080px;
 }
 
+.fruitlife-public .fruitlife-form,
+.fruitlife-public .fruitlife-hero {
+  width: min(100%, 980px);
+  margin-right: auto;
+  margin-left: auto;
+}
+
 .fruitlife-signup {
   max-width: 1080px;
 }
@@ -553,7 +560,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
   display: grid;
   gap: 12px;
   margin: 0;
-  padding: 18px 18px 18px 22px;
+  padding: 26px 18px 18px 22px;
   border: 1px solid rgba(71, 107, 66, 0.18);
   border-left: 6px solid var(--fruit-goodness);
   border-radius: 8px;
@@ -594,9 +601,17 @@ body:has(.fruitlife-public) .mobile-app-nav,
 .fruitlife-fruit.self_control { border-left-color: var(--fruit-selfcontrol); }
 
 .fruitlife-fruit legend {
-  padding: 0 8px;
+  float: left;
+  width: 100%;
+  padding: 0 0 8px;
   color: var(--green-dark);
+  font-size: 1.45rem;
   font-weight: 900;
+  line-height: 1.05;
+}
+
+.fruitlife-fruit legend + p {
+  clear: both;
 }
 
 .fruitlife-fruit p,
@@ -6558,6 +6573,71 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .fruitlife-session-list button:active {
   transform: translateY(1px);
+}
+
+.fruitlife-control-center {
+  scroll-margin-top: 24px;
+}
+
+.fruitlife-control-grid {
+  display: grid;
+  grid-template-columns: minmax(330px, 0.72fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.fruitlife-control-grid .fruitlife-status-console {
+  min-height: 100%;
+}
+
+.fruitlife-control-grid .fruitlife-latest-actions button {
+  min-height: 36px;
+  padding: 9px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.fruitlife-control-roster {
+  gap: 0;
+  padding: 2px 16px;
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.fruitlife-control-roster article {
+  border-color: rgba(71, 107, 66, 0.14);
+}
+
+.fruitlife-control-roster article:first-child {
+  border-top: 0;
+}
+
+.fruitlife-control-roster strong {
+  color: var(--ink);
+}
+
+.fruitlife-control-roster small,
+.fruitlife-control-roster .fruitlife-session-meta span {
+  color: var(--muted);
+}
+
+.fruitlife-control-roster > article > span,
+.fruitlife-control-roster button {
+  border-color: rgba(71, 107, 66, 0.18);
+  background: rgba(234, 240, 226, 0.72);
+  color: var(--green-dark);
+}
+
+.fruitlife-empty-control {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
 }
 
 .fruitlife-trend-tool {

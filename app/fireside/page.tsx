@@ -290,6 +290,13 @@ export default function FiresidePage() {
         </div>
       </section>
 
+      <section className="fireside-waypoints-banner" aria-label="DYDD Waypoints trail banner">
+        <img
+          alt="Illustrated DYDD Waypoints trail through a forest with natural places to pause"
+          src="/brand/dydd-waypoints-banner.png"
+        />
+      </section>
+
       <section className="fireside-connect-panel" id="waypoints">
         <div className="fireside-connect-heading">
           <p className="section-label">DYDD Waypoints</p>

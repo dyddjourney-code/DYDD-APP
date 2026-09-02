@@ -305,24 +305,6 @@ export default function FiresidePage() {
             <span>Pause, breathe, and keep walking.</span>
           </div>
         </div>
-        <form className="fireside-subscribe-card">
-          <label htmlFor="fireside-email">Email address</label>
-          <div>
-            <input
-              id="fireside-email"
-              name="email"
-              placeholder="jordan@example.com"
-              type="email"
-            />
-            <button className="button primary" type="button">
-              Subscribe
-            </button>
-          </div>
-          <small>
-            Subscribe to receive the weekly DYDD Waypoint by email when delivery
-            is connected.
-          </small>
-        </form>
       </section>
 
       <section className="waypoints-section" aria-label="DYDD Waypoints library">

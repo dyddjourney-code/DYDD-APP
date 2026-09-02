@@ -144,9 +144,27 @@ export function WaypointExplorer({
           ))}
         </div>
 
-        <div className="waypoint-reflection-box">
-          <strong>For your design:</strong>
-          <span>{selectedWaypoint.reflection}</span>
+        <div className="waypoint-lower-row">
+          <div className="waypoint-reflection-box">
+            <strong>For your design:</strong>
+            <span>{selectedWaypoint.reflection}</span>
+          </div>
+
+          <form className="waypoint-subscribe-card">
+            <label htmlFor="waypoint-email">Email address</label>
+            <div>
+              <input
+                id="waypoint-email"
+                name="email"
+                placeholder="jordan@example.com"
+                type="email"
+              />
+              <button className="button primary" type="button">
+                Subscribe
+              </button>
+            </div>
+            <small>Receive the weekly DYDD Waypoint when delivery is connected.</small>
+          </form>
         </div>
 
         <div className="waypoint-tag-row">

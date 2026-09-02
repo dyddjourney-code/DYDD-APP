@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { sendResendEmail } from "@/lib/email/resend";
 import {
   fruitLifeFruits,
+  fruitLifePressureQuestions,
   fruitLifeQuestionBank,
   fruitRatingField,
   type FruitLifeResponseType,
@@ -26,12 +27,24 @@ type SessionLookup = {
   participant_id: string;
   participant_email: string | null;
   participant_name: string | null;
+  self_completed_at?: string | null;
 };
 
 type ObserverSeed = {
   email: string;
   name: string;
   relationship: string;
+};
+
+type ObserverInviteLookup = {
+  id: string;
+  completed_at: string | null;
+  invite_status: string;
+  invite_token_hash?: string | null;
+  metadata: Record<string, unknown> | null;
+  observer_email: string | null;
+  observer_name: string | null;
+  relationship_label: string | null;
 };
 
 function makeToken() {
@@ -53,6 +66,15 @@ function getNumber(formData: FormData, key: string, fallback = 0) {
 
 function fail(path: string, message: string): never {
   redirect(`${path}?message=${encodeURIComponent(message)}`);
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function assertEmail(email: string, path: string) {
@@ -119,11 +141,22 @@ function buildScores(formData: FormData) {
       questionScores[question.code] = score;
     }
 
-    const values = Object.values(fruitAnswers);
-    const averageScore = values.reduce((sum, value) => sum + value, 0) / values.length;
+    const pressureQuestion = fruitLifePressureQuestions.find(
+      (question) => question.fruitKey === fruit.key,
+    );
+    const pressureScore = pressureQuestion
+      ? Math.min(5, Math.max(1, getNumber(formData, fruitRatingField(pressureQuestion.code), 3)))
+      : 0;
+    if (pressureQuestion) {
+      fruitAnswers[pressureQuestion.code] = pressureScore;
+      questionScores[pressureQuestion.code] = pressureScore;
+    }
+
+    const visibleValues = fruitQuestions.map((question) => fruitAnswers[question.code] ?? 0);
+    const averageScore = visibleValues.reduce((sum, value) => sum + value, 0) / visibleValues.length;
     fruitAnswers.visible = averageScore;
     fruitAnswers.consistent = averageScore;
-    fruitAnswers.pressure = values[2] ?? averageScore;
+    fruitAnswers.pressure = pressureScore || averageScore;
     answers[fruit.key] = fruitAnswers;
     fruitAverages[fruit.key] = averageScore;
   }
@@ -171,7 +204,7 @@ async function getSessionForToken(
   const { data: session, error } = await supabase
     .from("fruitlife_360_sessions")
     .select(
-      "id,intake_token_hash,metadata,observer_completed_count,observer_goal,participant_id,participant_email,participant_name",
+      "id,intake_token_hash,metadata,observer_completed_count,observer_goal,participant_id,participant_email,participant_name,self_completed_at",
     )
     .eq("id", sessionId)
     .single();
@@ -212,6 +245,17 @@ async function getSessionForToken(
 }
 
 async function queuePayloadJob(supabase: ReturnType<typeof createSupabaseAdminClient>, sessionId: string) {
+  const { data: existingJob } = await supabase
+    .from("fruitlife_360_report_jobs")
+    .select("id")
+    .eq("session_id", sessionId)
+    .in("job_status", ["queued", "processing", "ready", "sent"])
+    .maybeSingle();
+
+  if (existingJob?.id) {
+    return;
+  }
+
   const payload = await buildFruitLifePayloadForSession(supabase, sessionId);
   const { data: job } = await supabase.from("fruitlife_360_report_jobs").insert({
     job_status: "queued",
@@ -245,18 +289,23 @@ function fruitLifeInviteEmail({
   participantName: string;
   selfLink: string;
 }) {
+  const safeParticipantName = escapeHtml(participantName);
   const observerText =
     observerGoal > 0
       ? `\n\nObserver link to share:\n${observerLink}\n\nShare this with ${observerGoal} trusted observer${observerGoal === 1 ? "" : "s"}.`
       : "";
 
-  const text = `Hi ${participantName},\n\nYour FruitLife 360 reflection is ready to begin.\n\nSelf reflection link:\n${selfLink}${observerText}\n\nFruitLife 360 is designed as a formation mirror, not a grade or label.`;
+  const text = `Hi ${participantName},\n\nYour FruitLife 360 reflection is ready to begin.\n\nComplete your self reflection:\n${selfLink}${observerText}\n\nFruitLife 360 is designed as a formation mirror, not a grade or label.\n\nSincerely,\nDiscover Your Divine Design Team`;
 
   return {
-    html: text
-      .split("\n\n")
-      .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br>")}</p>`)
-      .join(""),
+    html: `
+      <p>Hi ${safeParticipantName},</p>
+      <p>Your FruitLife 360 reflection is ready to begin.</p>
+      <p><a href="${selfLink}">Complete your FruitLife 360 self reflection</a></p>
+      ${observerGoal > 0 && observerLink ? `<p><a href="${observerLink}">Share the observer reflection link</a></p>` : ""}
+      <p>FruitLife 360 is designed as a formation mirror, not a grade or label.</p>
+      <p>Sincerely,<br>Discover Your Divine Design Team</p>
+    `,
     subject: "Your FruitLife 360 reflection links",
     text,
   };
@@ -272,13 +321,18 @@ function fruitLifeObserverEmail({
   participantName: string;
 }) {
   const greeting = observerName ? `Hi ${observerName},` : "Hi,";
-  const text = `${greeting}\n\n${participantName} invited you to complete a FruitLife 360 observer reflection.\n\nObserver reflection link:\n${observerLink}\n\nThis is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.`;
+  const safeGreeting = escapeHtml(greeting);
+  const safeParticipantName = escapeHtml(participantName);
+  const text = `${greeting}\n\n${participantName} invited you to complete a FruitLife 360 observer reflection.\n\nComplete the FruitLife 360 assessment:\n${observerLink}\n\nThis is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.\n\nSincerely,\nDiscover Your Divine Design Team`;
 
   return {
-    html: text
-      .split("\n\n")
-      .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br>")}</p>`)
-      .join(""),
+    html: `
+      <p>${safeGreeting}</p>
+      <p>${safeParticipantName} invited you to complete a FruitLife 360 observer reflection.</p>
+      <p><a href="${observerLink}">Complete the FruitLife 360 assessment</a></p>
+      <p>This is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.</p>
+      <p>Sincerely,<br>Discover Your Divine Design Team</p>
+    `,
     subject: `FruitLife 360 reflection for ${participantName}`,
     text,
   };
@@ -441,11 +495,13 @@ async function saveResponse({
   }
 
   if (responseType === "self") {
+    const responseCount = 1 + session.observer_completed_count;
     const readyForReport = session.observer_goal <= session.observer_completed_count;
     const { error } = await supabase
       .from("fruitlife_360_sessions")
       .update({
         report_status: readyForReport ? "queued" : "waiting_for_responses",
+        response_count: responseCount,
         self_completed_at: submittedAt,
         session_status: readyForReport ? "ready_for_report" : "waiting_for_observers",
       })
@@ -460,12 +516,15 @@ async function saveResponse({
     }
   } else {
     const completedCount = session.observer_completed_count + 1;
-    const readyForReport = completedCount >= session.observer_goal;
+    const hasSelfResponse = Boolean(session.self_completed_at);
+    const readyForReport = hasSelfResponse && completedCount >= session.observer_goal;
+    const responseCount = (hasSelfResponse ? 1 : 0) + completedCount;
     const { error } = await supabase
       .from("fruitlife_360_sessions")
       .update({
         observer_completed_count: completedCount,
         report_status: readyForReport ? "queued" : "waiting_for_responses",
+        response_count: responseCount,
         session_status: readyForReport ? "ready_for_report" : "waiting_for_observers",
       })
       .eq("id", session.id);
@@ -487,10 +546,10 @@ async function saveResponse({
   }
 
   redirect(
-    `/fruitlife360/thanks?message=${encodeURIComponent(
+    `/fruitlife360/thanks?session=${encodeURIComponent(session.id)}&token=${encodeURIComponent(token)}&message=${encodeURIComponent(
       responseType === "self"
-        ? "Self reflection saved. Share the observer link with the people you invited."
-        : "Observer reflection saved. Thank you for helping with this FruitLife 360 report.",
+        ? "Self reflection submitted. The session status has been updated."
+        : "Observer reflection submitted. Thank you for helping with this FruitLife 360 report.",
     )}`,
   );
 }
@@ -629,11 +688,9 @@ export async function createFruitLifeSession(formData: FormData) {
   });
 
   redirect(
-    `/fruitlife360/thanks?message=${encodeURIComponent(
-      "FruitLife session created. Native Vercel links are ready for testing.",
-    )}&self=${encodeURIComponent(selfLink)}&observer=${encodeURIComponent(
-      observerLinks[0]?.link ?? "",
-    )}`,
+    `/fruitlife360/status?session=${encodeURIComponent(session.id)}&token=${encodeURIComponent(
+      selfToken,
+    )}&message=${encodeURIComponent("FruitLife session created. Emails were prepared and status tracking is ready.")}`,
   );
 }
 
@@ -751,4 +808,124 @@ export async function sendFruitLifeReminder(formData: FormData) {
   });
 
   redirect(`${returnTo}${returnTo.includes("?") ? "&" : "?"}fruitlife=reminder_sent`);
+}
+
+export async function getFruitLifeObserverContext(sessionId: string, token: string) {
+  if (!sessionId || !token) {
+    return null;
+  }
+
+  const supabase = createSupabaseAdminClient();
+  const tokenHash = hashToken(token);
+  const { data: session } = await supabase
+    .from("fruitlife_360_sessions")
+    .select("id,participant_name,participant_email")
+    .eq("id", sessionId)
+    .maybeSingle();
+
+  if (!session) {
+    return null;
+  }
+
+  const { data: invite } = await supabase
+    .from("fruitlife_360_observer_invites")
+    .select("id,observer_name,observer_email,relationship_label,invite_status")
+    .eq("session_id", sessionId)
+    .eq("invite_token_hash", tokenHash)
+    .maybeSingle();
+
+  if (!invite?.id || invite.invite_status === "completed") {
+    return {
+      participantName: String(session.participant_name ?? "the participant"),
+      reviewer: null,
+    };
+  }
+
+  return {
+    participantName: String(session.participant_name ?? "the participant"),
+    reviewer: {
+      email: String(invite.observer_email ?? ""),
+      name: String(invite.observer_name ?? ""),
+      relationship: String(invite.relationship_label ?? ""),
+    },
+  };
+}
+
+export async function getFruitLifeSessionStatus(sessionId: string, token: string) {
+  if (!sessionId || !token) {
+    return null;
+  }
+
+  const supabase = createSupabaseAdminClient();
+  const tokenHash = hashToken(token);
+  const { data: session } = await supabase
+    .from("fruitlife_360_sessions")
+    .select(
+      "id,intake_token_hash,metadata,observer_completed_count,observer_goal,participant_email,participant_name,report_status,report_url,response_count,self_completed_at,session_status,created_at,updated_at",
+    )
+    .eq("id", sessionId)
+    .maybeSingle();
+
+  if (!session) {
+    return null;
+  }
+
+  const isSelfToken = session.intake_token_hash === tokenHash;
+  const { data: inviteRows } = await supabase
+    .from("fruitlife_360_observer_invites")
+    .select("id,completed_at,invite_status,invite_token_hash,metadata,observer_email,observer_name,relationship_label,invited_at")
+    .eq("session_id", sessionId)
+    .order("created_at", { ascending: true });
+  const invites = (inviteRows ?? []) as Array<ObserverInviteLookup & { invited_at: string | null }>;
+  const isObserverToken = invites.some((invite) => invite.invite_token_hash === tokenHash);
+
+  if (!isSelfToken && !isObserverToken) {
+    return null;
+  }
+
+  const [{ data: responses }, { data: artifacts }] = await Promise.all([
+    supabase
+      .from("fruitlife_360_responses")
+      .select("id,response_type,reviewer_name,reviewer_email,relationship_label,submitted_at")
+      .eq("session_id", sessionId)
+      .order("submitted_at", { ascending: false }),
+    supabase
+      .from("fruitlife_360_report_artifacts")
+      .select("artifact_status,artifact_type,created_at,external_url,filename,provider")
+      .eq("session_id", sessionId)
+      .order("created_at", { ascending: false }),
+  ]);
+
+  return {
+    artifacts: artifacts ?? [],
+    canManage: isSelfToken,
+    invites,
+    responses: responses ?? [],
+    session,
+    token,
+  };
+}
+
+export async function rescindFruitLifeObserverInvite(formData: FormData) {
+  const sessionId = getString(formData, "session_id");
+  const token = getString(formData, "token");
+  const inviteId = getString(formData, "invite_id");
+
+  const status = await getFruitLifeSessionStatus(sessionId, token);
+  if (!status?.canManage || !inviteId) {
+    fail("/fruitlife360/status", "This invite could not be changed.");
+  }
+
+  const supabase = createSupabaseAdminClient();
+  await supabase
+    .from("fruitlife_360_observer_invites")
+    .update({ invite_status: "expired" })
+    .eq("id", inviteId)
+    .eq("session_id", sessionId);
+
+  redirect(
+    `/fruitlife360/status?session=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(
+      token,
+    )}&message=${encodeURIComponent("Observer link rescinded.")}`,
+  );
 }

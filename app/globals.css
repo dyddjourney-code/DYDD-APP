@@ -530,6 +530,20 @@ h3 {
   resize: vertical;
 }
 
+.app-frame:has(.fruitlife-public) {
+  display: block;
+}
+
+body:has(.fruitlife-public) .mobile-app-nav,
+.app-frame:has(.fruitlife-public) .app-sidebar,
+.app-frame:has(.fruitlife-public) .app-footer {
+  display: none;
+}
+
+.app-frame:has(.fruitlife-public) .app-frame-content {
+  max-width: none;
+}
+
 .fruitlife-rating-list {
   display: grid;
   gap: 14px;
@@ -544,6 +558,29 @@ h3 {
   border-left: 6px solid var(--fruit-goodness);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.68);
+}
+
+.fruitlife-assessment-form {
+  max-width: 980px;
+}
+
+.fruitlife-step-panel {
+  display: none;
+}
+
+.fruitlife-step-panel.active {
+  display: grid;
+}
+
+.fruitlife-step-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  max-width: 980px;
+}
+
+.fruitlife-step-controls button {
+  min-width: 132px;
 }
 
 .fruitlife-fruit.love { border-left-color: var(--fruit-love); }
@@ -574,6 +611,11 @@ h3 {
   align-items: center;
 }
 
+.fruitlife-pressure-scale {
+  padding-top: 12px;
+  border-top: 1px solid rgba(71, 107, 66, 0.14);
+}
+
 .fruitlife-rank-sorter {
   display: grid;
   gap: 8px;
@@ -590,6 +632,28 @@ h3 {
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.82);
   cursor: grab;
+}
+
+.fruitlife-rank-item.love { border-left: 6px solid var(--fruit-love); }
+.fruitlife-rank-item.joy { border-left: 6px solid var(--fruit-joy); }
+.fruitlife-rank-item.peace { border-left: 6px solid var(--fruit-peace); }
+.fruitlife-rank-item.patience { border-left: 6px solid var(--fruit-patience); }
+.fruitlife-rank-item.kindness { border-left: 6px solid var(--fruit-kindness); }
+.fruitlife-rank-item.goodness { border-left: 6px solid var(--fruit-goodness); }
+.fruitlife-rank-item.faithfulness { border-left: 6px solid var(--fruit-faithfulness); }
+.fruitlife-rank-item.gentleness { border-left: 6px solid var(--fruit-gentleness); }
+.fruitlife-rank-item.self_control { border-left: 6px solid var(--fruit-selfcontrol); }
+
+.fruitlife-rank-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fruitlife-rank-copy small {
+  color: var(--muted);
+  font-weight: 740;
+  line-height: 1.35;
 }
 
 .fruitlife-rank-item:active {
@@ -696,6 +760,89 @@ h3 {
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.fruitlife-status-page-card {
+  max-width: 1080px;
+}
+
+.fruitlife-status-page-card .fruitlife-latest-actions {
+  align-items: center;
+}
+
+.fruitlife-status-page-card form {
+  margin: 0;
+}
+
+.fruitlife-status-page-card button,
+.fruitlife-status-roster button {
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.fruitlife-roster-panel {
+  max-width: 1080px;
+}
+
+.fruitlife-status-roster,
+.fruitlife-artifact-roster {
+  display: grid;
+  gap: 8px;
+}
+
+.fruitlife-status-roster article,
+.fruitlife-artifact-roster article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.fruitlife-status-roster strong,
+.fruitlife-status-roster small,
+.fruitlife-artifact-roster strong,
+.fruitlife-artifact-roster small {
+  display: block;
+}
+
+.fruitlife-status-roster small,
+.fruitlife-artifact-roster small {
+  color: var(--muted);
+  font-weight: 780;
+}
+
+.fruitlife-status-roster span,
+.fruitlife-artifact-roster span {
+  min-height: 30px;
+  padding: 7px 9px;
+  border: 1px solid rgba(71, 107, 66, 0.18);
+  border-radius: 8px;
+  color: var(--green-dark);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.fruitlife-status-roster form {
+  margin: 0;
+}
+
+.fruitlife-status-roster button {
+  border-color: rgba(71, 107, 66, 0.18);
+  background: rgba(71, 107, 66, 0.08);
+  color: var(--green-dark);
 }
 
 .verse-card {

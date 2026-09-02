@@ -35,7 +35,7 @@ export function FruitRankSorter() {
     <div className="fruitlife-rank-sorter">
       {rankedFruits.map((fruit, index) => (
         <div
-          className="fruitlife-rank-item"
+          className={`fruitlife-rank-item ${fruit.colorClass}`}
           draggable
           key={fruit.key}
           onDragOver={(event) => event.preventDefault()}
@@ -54,7 +54,10 @@ export function FruitRankSorter() {
         >
           <input name={`fruit_rank_${index + 1}`} type="hidden" value={fruit.key} />
           <span className="fruitlife-rank-number">{index + 1}</span>
-          <strong>{fruit.label}</strong>
+          <span className="fruitlife-rank-copy">
+            <strong>{fruit.label}</strong>
+            <small>{fruit.definition}</small>
+          </span>
           <div className="fruitlife-rank-actions" aria-label={`Move ${fruit.label}`}>
             <button
               aria-label={`Move ${fruit.label} up`}

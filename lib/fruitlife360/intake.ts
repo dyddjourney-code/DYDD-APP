@@ -1,19 +1,73 @@
 export const fruitLifeFruits = [
-  { key: "love", label: "Love" },
-  { key: "joy", label: "Joy" },
-  { key: "peace", label: "Peace" },
-  { key: "patience", label: "Patience" },
-  { key: "kindness", label: "Kindness" },
-  { key: "goodness", label: "Goodness" },
-  { key: "faithfulness", label: "Faithfulness" },
-  { key: "gentleness", label: "Gentleness" },
-  { key: "self_control", label: "Self-Control" },
+  {
+    colorClass: "love",
+    definition: "Christlike regard that seeks another person's good with patience, truth, and sacrifice.",
+    key: "love",
+    label: "Love",
+    pressureCode: "Love_Pressure",
+  },
+  {
+    colorClass: "joy",
+    definition: "Resilient gladness rooted in God's presence, goodness, and promises.",
+    key: "joy",
+    label: "Joy",
+    pressureCode: "Joy_Pressure",
+  },
+  {
+    colorClass: "peace",
+    definition: "Spirit-formed steadiness that rests in God and makes room for wholeness with others.",
+    key: "peace",
+    label: "Peace",
+    pressureCode: "Peace_Pressure",
+  },
+  {
+    colorClass: "patience",
+    definition: "Long obedience and gracious endurance when people, process, or timing are slow.",
+    key: "patience",
+    label: "Patience",
+    pressureCode: "Patience_Pressure",
+  },
+  {
+    colorClass: "kindness",
+    definition: "Tender strength that treats people with dignity, mercy, and practical care.",
+    key: "kindness",
+    label: "Kindness",
+    pressureCode: "Kindness_Pressure",
+  },
+  {
+    colorClass: "goodness",
+    definition: "Moral clarity and active commitment to what reflects God's character.",
+    key: "goodness",
+    label: "Goodness",
+    pressureCode: "Goodness_Pressure",
+  },
+  {
+    colorClass: "faithfulness",
+    definition: "Reliable devotion to God, people, and entrusted responsibilities over time.",
+    key: "faithfulness",
+    label: "Faithfulness",
+    pressureCode: "Faithfulness_Pressure",
+  },
+  {
+    colorClass: "gentleness",
+    definition: "Humble strength that protects dignity while still telling the truth.",
+    key: "gentleness",
+    label: "Gentleness",
+    pressureCode: "Gentleness_Pressure",
+  },
+  {
+    colorClass: "self_control",
+    definition: "Spirit-led stewardship of desires, habits, attention, and responses.",
+    key: "self_control",
+    label: "Self-Control",
+    pressureCode: "SelfControl_Pressure",
+  },
 ] as const;
 
 export const fruitLifeRatingOptions = [
   { label: "Rarely visible", value: "1" },
   { label: "Occasionally visible", value: "2" },
-  { label: "Sometimes visible", value: "3" },
+  { label: "Somewhat visible", value: "3" },
   { label: "Often visible", value: "4" },
   { label: "Consistently visible", value: "5" },
 ] as const;
@@ -21,216 +75,230 @@ export const fruitLifeRatingOptions = [
 export const fruitLifeQuestionBank = [
   {
     code: "LOVE_01",
-    definition: "Sacrificial care that moves toward others for their good.",
     fruitKey: "love",
     observerText:
       "This person moves toward others with genuine care, even when it costs time, comfort, or convenience.",
     selfText:
-      "I move toward others with genuine care, even when it costs me time, comfort, or convenience.",
+      "I move toward others with genuine care, even when it costs time, comfort, or convenience.",
   },
   {
     code: "LOVE_02",
-    definition: "Sacrificial care that moves toward others for their good.",
     fruitKey: "love",
-    observerText:
-      "This person shows concern for people as whole persons, not just for what they can accomplish or provide.",
-    selfText:
-      "I show concern for people as whole persons, not just for what they can accomplish or provide.",
+    observerText: "This person seeks the good of others with both truth and compassion.",
+    selfText: "I seek the good of others with both truth and compassion.",
   },
   {
     code: "LOVE_03",
-    definition: "Sacrificial care that moves toward others for their good.",
     fruitKey: "love",
-    observerText:
-      "This person chooses patience, service, and compassion when others are difficult, inconvenient, or different from them.",
-    selfText:
-      "I choose patience, service, and compassion when others are difficult, inconvenient, or different from me.",
+    observerText: "People close to this person experience them as caring and present.",
+    selfText: "People close to me experience me as caring and present.",
   },
   {
     code: "JOY_01",
-    definition: "Deep gladness rooted in God that can remain present beyond circumstances.",
     fruitKey: "joy",
     observerText:
-      "This person carries a steady gladness that is not dependent only on circumstances going their way.",
-    selfText:
-      "I am able to carry a steady gladness that is not dependent only on circumstances going my way.",
+      "This person's life shows resilient gladness rooted in God, not only in circumstances.",
+    selfText: "My life shows resilient gladness rooted in God, not only in circumstances.",
   },
   {
     code: "JOY_02",
-    definition: "Deep gladness rooted in God that can remain present beyond circumstances.",
     fruitKey: "joy",
-    observerText:
-      "This person helps create hope, gratitude, and life-giving perspective in the people around them.",
-    selfText: "I help create hope, gratitude, and life-giving perspective in the people around me.",
+    observerText: "This person can notice grace and goodness even in difficult seasons.",
+    selfText: "I can notice grace and goodness even in difficult seasons.",
   },
   {
     code: "JOY_03",
-    definition: "Deep gladness rooted in God that can remain present beyond circumstances.",
     fruitKey: "joy",
-    observerText:
-      "This person can celebrate what God is doing in others without comparison, resentment, or competition.",
-    selfText:
-      "I can celebrate what God is doing in others without comparison, resentment, or competition.",
+    observerText: "Others experience hope and life through this person's presence.",
+    selfText: "Others experience hope and life through my presence.",
   },
   {
     code: "PEACE_01",
-    definition: "Settled trust in God that brings steadiness, reconciliation, and calm.",
     fruitKey: "peace",
-    observerText:
-      "This person remains grounded and steady when circumstances, people, or outcomes feel uncertain.",
-    selfText: "I remain grounded and steady when circumstances, people, or outcomes feel uncertain.",
+    observerText: "This person remains settled and prayerful when outcomes are uncertain.",
+    selfText: "I remain settled and prayerful when outcomes are uncertain.",
   },
   {
     code: "PEACE_02",
-    definition: "Settled trust in God that brings steadiness, reconciliation, and calm.",
     fruitKey: "peace",
-    observerText: "This person helps reduce anxiety, conflict, or confusion rather than adding to it.",
-    selfText: "I help reduce anxiety, conflict, or confusion rather than adding to it.",
+    observerText: "This person helps lower anxiety and make room for healthy conversation.",
+    selfText: "I help lower anxiety and make room for healthy conversation.",
   },
   {
     code: "PEACE_03",
-    definition: "Settled trust in God that brings steadiness, reconciliation, and calm.",
     fruitKey: "peace",
-    observerText: "This person pursues reconciliation and wholeness when relationships become strained.",
-    selfText: "I pursue reconciliation and wholeness when relationships become strained.",
+    observerText:
+      "This person pursues wholeness and reconciliation rather than unnecessary conflict.",
+    selfText: "I pursue wholeness and reconciliation rather than unnecessary conflict.",
   },
   {
     code: "PATIENCE_01",
-    definition: "Steadfast endurance with people, process, weakness, and delay.",
     fruitKey: "patience",
-    observerText:
-      "This person stays faithful and composed when progress is slow or outcomes take longer than expected.",
-    selfText:
-      "I can stay faithful and composed when progress is slow or outcomes take longer than expected.",
+    observerText: "This person gives people and processes room to grow without forcing control.",
+    selfText: "I give people and processes room to grow without forcing control.",
   },
   {
     code: "PATIENCE_02",
-    definition: "Steadfast endurance with people, process, weakness, and delay.",
     fruitKey: "patience",
-    observerText:
-      "This person gives people room to grow without rushing, shaming, or giving up on them too quickly.",
-    selfText: "I give people room to grow without rushing, shaming, or giving up on them too quickly.",
+    observerText: "This person can wait, listen, and respond without rushing to frustration.",
+    selfText: "I can wait, listen, and respond without rushing to frustration.",
   },
   {
     code: "PATIENCE_03",
-    definition: "Steadfast endurance with people, process, weakness, and delay.",
     fruitKey: "patience",
-    observerText: "This person responds to irritation, delay, or inconvenience with restraint and perspective.",
-    selfText: "I respond to irritation, delay, or inconvenience with restraint and perspective.",
+    observerText: "Others experience steadiness from this person when timing is slow.",
+    selfText: "Others experience steadiness from me when timing is slow.",
   },
   {
     code: "KINDNESS_01",
-    definition: "Tender, practical goodness expressed through words, presence, and action.",
     fruitKey: "kindness",
-    observerText: "This person notices practical ways to encourage, help, or bless people around them.",
-    selfText: "I notice practical ways to encourage, help, or bless people around me.",
+    observerText: "This person notices practical ways to care for people and acts on them.",
+    selfText: "I notice practical ways to care for people and act on them.",
   },
   {
     code: "KINDNESS_02",
-    definition: "Tender, practical goodness expressed through words, presence, and action.",
     fruitKey: "kindness",
-    observerText: "This person's words tend to bring dignity, encouragement, and gentleness to others.",
-    selfText: "My words tend to bring dignity, encouragement, and gentleness to others.",
+    observerText: "This person's words and actions communicate dignity, mercy, and warmth.",
+    selfText: "My words and actions communicate dignity, mercy, and warmth.",
   },
   {
     code: "KINDNESS_03",
-    definition: "Tender, practical goodness expressed through words, presence, and action.",
     fruitKey: "kindness",
-    observerText:
-      "This person is approachable and safe for people who are hurting, discouraged, or uncertain.",
-    selfText: "I am approachable and safe for people who are hurting, discouraged, or uncertain.",
+    observerText: "Others experience this person as approachable and considerate.",
+    selfText: "Others experience me as approachable and considerate.",
   },
   {
     code: "GOODNESS_01",
-    definition: "Moral integrity and active commitment to what is right, true, and life-giving.",
     fruitKey: "goodness",
-    observerText:
-      "This person chooses what is right and life-giving even when it is inconvenient or unseen.",
-    selfText: "I choose what is right and life-giving even when it is inconvenient or unseen.",
+    observerText: "This person chooses what is right even when it costs them.",
+    selfText: "I choose what is right even when it costs me.",
   },
   {
     code: "GOODNESS_02",
-    definition: "Moral integrity and active commitment to what is right, true, and life-giving.",
     fruitKey: "goodness",
-    observerText: "This person's actions are generally aligned with their stated values and convictions.",
-    selfText: "My actions are generally aligned with my stated values and convictions.",
+    observerText: "This person acts with integrity when no one is watching.",
+    selfText: "I act with integrity when no one is watching.",
   },
   {
     code: "GOODNESS_03",
-    definition: "Moral integrity and active commitment to what is right, true, and life-giving.",
     fruitKey: "goodness",
-    observerText:
-      "This person uses influence to protect, serve, and build up others rather than simply benefit themselves.",
-    selfText:
-      "I use my influence to protect, serve, and build up others rather than simply benefit myself.",
+    observerText: "Others experience this person's decisions as honorable and life-giving.",
+    selfText: "Others experience my decisions as honorable and life-giving.",
   },
   {
     code: "FAITHFULNESS_01",
-    definition: "Reliability, loyalty, and steady trustworthiness over time.",
     fruitKey: "faithfulness",
-    observerText: "This person follows through on commitments and can be counted on over time.",
-    selfText: "I follow through on commitments and can be counted on over time.",
+    observerText: "People can count on this person to follow through over time.",
+    selfText: "People can count on me to follow through over time.",
   },
   {
     code: "FAITHFULNESS_02",
-    definition: "Reliability, loyalty, and steady trustworthiness over time.",
     fruitKey: "faithfulness",
-    observerText: "This person remains loyal and steady in relationships, responsibilities, and convictions.",
-    selfText: "I remain loyal and steady in relationships, responsibilities, and convictions.",
+    observerText: "This person remains steady with commitments God has entrusted to them.",
+    selfText: "I remain steady with commitments God has entrusted to me.",
   },
   {
     code: "FAITHFULNESS_03",
-    definition: "Reliability, loyalty, and steady trustworthiness over time.",
     fruitKey: "faithfulness",
-    observerText:
-      "This person stays faithful to what God has entrusted to them, even when recognition is limited.",
-    selfText: "I stay faithful to what God has entrusted to me, even when recognition is limited.",
+    observerText: "Others experience this person as reliable and trustworthy.",
+    selfText: "Others experience me as reliable and trustworthy.",
   },
   {
     code: "GENTLENESS_01",
-    definition: "Strength under control, expressed with humility, tenderness, and care.",
     fruitKey: "gentleness",
-    observerText: "This person can bring truth, correction, or strength without harshness or intimidation.",
-    selfText: "I can bring truth, correction, or strength without harshness or intimidation.",
+    observerText: "This person brings strength without harshness.",
+    selfText: "I bring strength without harshness.",
   },
   {
     code: "GENTLENESS_02",
-    definition: "Strength under control, expressed with humility, tenderness, and care.",
     fruitKey: "gentleness",
-    observerText:
-      "This person makes it easier for others to be honest, vulnerable, or imperfect around them.",
-    selfText: "I make it easier for others to be honest, vulnerable, or imperfect around me.",
+    observerText: "This person can tell the truth while protecting another person's dignity.",
+    selfText: "I can tell the truth while protecting another person's dignity.",
   },
   {
     code: "GENTLENESS_03",
-    definition: "Strength under control, expressed with humility, tenderness, and care.",
     fruitKey: "gentleness",
     observerText:
-      "This person uses influence with humility and care rather than pressure, control, or force.",
-    selfText: "I use influence with humility and care rather than pressure, control, or force.",
+      "Others experience this person's correction, leadership, or feedback as humble and restorative.",
+    selfText: "Others experience my correction, leadership, or feedback as humble and restorative.",
   },
   {
     code: "SELFCONTROL_01",
-    definition: "Spirit-formed discipline that governs desires, reactions, words, and choices.",
     fruitKey: "self_control",
-    observerText:
-      "This person responds thoughtfully rather than being ruled by impulse, emotion, or pressure.",
-    selfText: "I respond thoughtfully rather than being ruled by impulse, emotion, or pressure.",
+    observerText: "This person's desires and reactions do not regularly rule their decisions.",
+    selfText: "My desires and reactions do not regularly rule my decisions.",
   },
   {
     code: "SELFCONTROL_02",
-    definition: "Spirit-formed discipline that governs desires, reactions, words, and choices.",
     fruitKey: "self_control",
-    observerText: "This person demonstrates discipline in speech, habits, decisions, and use of time.",
-    selfText: "I demonstrate discipline in my speech, habits, decisions, and use of time.",
+    observerText: "This person can pause, choose wisely, and respond with restraint.",
+    selfText: "I can pause, choose wisely, and respond with restraint.",
   },
   {
     code: "SELFCONTROL_03",
-    definition: "Spirit-formed discipline that governs desires, reactions, words, and choices.",
     fruitKey: "self_control",
     observerText:
-      "This person can delay immediate desires for what is wiser, healthier, or more faithful.",
-    selfText: "I can delay immediate desires for what is wiser, healthier, or more faithful.",
+      "Others experience this person as disciplined and measured under normal circumstances.",
+    selfText: "Others experience me as disciplined and measured under normal circumstances.",
+  },
+] as const;
+
+export const fruitLifePressureQuestions = [
+  {
+    code: "Love_Pressure",
+    fruitKey: "love",
+    observerText: "When someone is difficult to love, love remains visible in this person.",
+    selfText: "When someone is difficult to love, love remains visible in me.",
+  },
+  {
+    code: "Joy_Pressure",
+    fruitKey: "joy",
+    observerText: "When life is disappointing or heavy, joy remains visible in this person.",
+    selfText: "When life is disappointing or heavy, joy remains visible in me.",
+  },
+  {
+    code: "Peace_Pressure",
+    fruitKey: "peace",
+    observerText: "When outcomes are uncertain, peace remains visible in this person.",
+    selfText: "When outcomes are uncertain, peace remains visible in me.",
+  },
+  {
+    code: "Patience_Pressure",
+    fruitKey: "patience",
+    observerText: "When people or processes are slow, patience remains visible in this person.",
+    selfText: "When people or processes are slow, patience remains visible in me.",
+  },
+  {
+    code: "Kindness_Pressure",
+    fruitKey: "kindness",
+    observerText: "When this person is busy or inconvenienced, kindness remains visible in this person.",
+    selfText: "When I am busy or inconvenienced, kindness remains visible in me.",
+  },
+  {
+    code: "Goodness_Pressure",
+    fruitKey: "goodness",
+    observerText: "When doing right is costly, goodness remains visible in this person.",
+    selfText: "When doing right is costly, goodness remains visible in me.",
+  },
+  {
+    code: "Faithfulness_Pressure",
+    fruitKey: "faithfulness",
+    observerText: "When commitments become demanding, faithfulness remains visible in this person.",
+    selfText: "When commitments become demanding, faithfulness remains visible in me.",
+  },
+  {
+    code: "Gentleness_Pressure",
+    fruitKey: "gentleness",
+    observerText:
+      "When tension or correction is needed, gentleness remains visible in this person.",
+    selfText: "When tension or correction is needed, gentleness remains visible in me.",
+  },
+  {
+    code: "SelfControl_Pressure",
+    fruitKey: "self_control",
+    observerText:
+      "When this person is tired, tempted, or emotionally stirred, self-control remains visible in this person.",
+    selfText: "When I am tired, tempted, or emotionally stirred, self-control remains visible in me.",
   },
 ] as const;
 

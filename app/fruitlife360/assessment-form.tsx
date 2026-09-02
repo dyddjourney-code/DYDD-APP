@@ -1,5 +1,9 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import {
   fruitLifeFruits,
+  fruitLifePressureQuestions,
   fruitLifeQuestionBank,
   fruitLifeRatingOptions,
   fruitRatingField,
@@ -9,7 +13,13 @@ import { FruitRankSorter } from "./fruit-rank-sorter";
 
 type FruitLifeAssessmentFormProps = {
   action: (formData: FormData) => void | Promise<void>;
+  initialReviewer?: {
+    email?: string | null;
+    name?: string | null;
+    relationship?: string | null;
+  };
   message?: string;
+  participantName?: string | null;
   responseType: FruitLifeResponseType;
   sessionId?: string;
   token?: string;
@@ -22,17 +32,49 @@ const fruitLifeQuestionsByFruit = new Map(
   ]),
 );
 
+const fruitLifePressureByFruit = new Map(
+  fruitLifeFruits.map((fruit) => [
+    fruit.key,
+    fruitLifePressureQuestions.find((question) => question.fruitKey === fruit.key),
+  ]),
+);
+
 export function FruitLifeAssessmentForm({
   action,
+  initialReviewer,
   message,
+  participantName,
   responseType,
   sessionId,
   token,
 }: FruitLifeAssessmentFormProps) {
   const isSelf = responseType === "self";
+  const totalSteps = fruitLifeFruits.length + 2;
+  const [stepIndex, setStepIndex] = useState(0);
+  const currentFruit = stepIndex > 0 && stepIndex <= fruitLifeFruits.length
+    ? fruitLifeFruits[stepIndex - 1]
+    : null;
+  const progressLabel = useMemo(() => {
+    if (stepIndex === 0) return "Ranking";
+    if (currentFruit) return currentFruit.label;
+    return isSelf ? "Personal Growth" : "Observer Notes";
+  }, [currentFruit, isSelf, stepIndex]);
+
+  const reviewerName = initialReviewer?.name ?? "";
+  const reviewerEmail = initialReviewer?.email ?? "";
+  const relationship = initialReviewer?.relationship ?? (isSelf ? "Self" : "");
+  const lockIdentity = Boolean(initialReviewer?.name || initialReviewer?.email || initialReviewer?.relationship);
+
+  function goNext() {
+    setStepIndex((index) => Math.min(totalSteps - 1, index + 1));
+  }
+
+  function goBack() {
+    setStepIndex((index) => Math.max(0, index - 1));
+  }
 
   return (
-    <form action={action} className="fruitlife-form">
+    <form action={action} className="fruitlife-form fruitlife-assessment-form">
       <input name="session_id" type="hidden" value={sessionId ?? ""} />
       <input name="token" type="hidden" value={token ?? ""} />
 
@@ -44,100 +86,146 @@ export function FruitLifeAssessmentForm({
           <p className="section-label">{isSelf ? "Self path" : "Observer path"}</p>
           <h2>{isSelf ? "Notice what is visible right now." : "Help them see with kindness."}</h2>
           <p>
-            This takes about 6 minutes: identify yourself, rate 27 statements, rank the
-            fruit, and leave language the report can use.
+            {isSelf
+              ? "Rank the fruit, move through one fruit card at a time, and name one growth desire."
+              : `Reflect on ${participantName ?? "this participant"} with clear, gracious feedback.`}
           </p>
         </div>
-        <div className="fruitlife-assessment-steps">
-          <span>Identity</span>
-          <span>Ratings</span>
-          <span>Rank</span>
-          <span>Reflection</span>
+        <div className="fruitlife-assessment-steps" aria-label="Assessment progress">
+          <span>{stepIndex + 1} of {totalSteps}</span>
+          <span>{progressLabel}</span>
         </div>
       </section>
 
       <section className="fruitlife-panel">
         <p className="section-label">{isSelf ? "Self Reflection" : "Observer Reflection"}</p>
-        <h2>{isSelf ? "Tell the truth with hope." : "Offer clear, helpful feedback."}</h2>
+        <h2>{isSelf ? "Tell the truth with hope." : "Observer details"}</h2>
         <div className="fruitlife-grid two">
           <label>
             Your name
-            <small>{isSelf ? "Use the name you want connected to the report." : "So the participant knows who offered the feedback."}</small>
-            <input name="reviewer_name" required type="text" />
+            <small>{lockIdentity ? "This was set when the invitation was created." : "Use the name connected to the report."}</small>
+            <input
+              defaultValue={reviewerName}
+              name="reviewer_name"
+              readOnly={lockIdentity}
+              required
+              type="text"
+            />
           </label>
           <label>
             Your email
-            <small>{isSelf ? "Required for the self reflection." : "Optional, but helpful if follow-up is needed."}</small>
-            <input name="reviewer_email" required={isSelf} type="email" />
+            <small>{lockIdentity ? "This was set when the invitation was created." : "Required for the self reflection."}</small>
+            <input
+              defaultValue={reviewerEmail}
+              name="reviewer_email"
+              readOnly={lockIdentity}
+              required={isSelf || lockIdentity}
+              type="email"
+            />
           </label>
           <label>
             Relationship
-            <small>{isSelf ? "Locked to Self." : "Example: friend, spouse, pastor, coworker."}</small>
+            <small>{lockIdentity || isSelf ? "Locked for this invitation." : "Example: friend, spouse, pastor, coworker."}</small>
             <input
-              defaultValue={isSelf ? "Self" : ""}
+              defaultValue={relationship}
               name="relationship_label"
-              readOnly={isSelf}
+              readOnly={isSelf || lockIdentity}
               type="text"
             />
           </label>
         </div>
       </section>
 
-      <section className="fruitlife-panel">
-        <p className="section-label">Fruit Ratings</p>
-        <h2>Rate each statement from 1 to 5.</h2>
-        <div className="fruitlife-rating-list">
-          {fruitLifeFruits.map((fruit) => (
-            <fieldset className={`fruitlife-fruit ${fruit.key}`} key={fruit.key}>
-              <legend>{fruit.label}</legend>
-              <p>{fruitLifeQuestionsByFruit.get(fruit.key)?.[0]?.definition}</p>
-              {fruitLifeQuestionsByFruit.get(fruit.key)?.map((question) => (
-                <label className="fruitlife-scale" key={question.code}>
-                  <span>{isSelf ? question.selfText : question.observerText}</span>
-                  <select defaultValue="3" name={fruitRatingField(question.code)} required>
-                    {fruitLifeRatingOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.value} - {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              ))}
-            </fieldset>
-          ))}
-        </div>
-      </section>
-
-      <section className="fruitlife-panel">
+      <section className={`fruitlife-panel fruitlife-step-panel ${stepIndex === 0 ? "active" : ""}`}>
         <p className="section-label">Fruit Ranking</p>
-        <h2>{isSelf ? "Rank your fruits." : "Rank the fruits you see."}</h2>
+        <h2>{isSelf ? "Rank your fruit visibility." : "Rank the fruit you see."}</h2>
         <p>
-          Drag the fruits into order from most consistently visible at the top to greatest
-          growth invitation at the bottom.
+          Drag the fruit from most visible at the top to least visible at the bottom. The short
+          definitions are included so the ranking is meaningful.
         </p>
         <FruitRankSorter />
       </section>
 
-      <section className="fruitlife-panel">
-        <p className="section-label">Reflection</p>
-        <h2>Capture the language a report can use later.</h2>
-        <label>
-          What strength or visible fruit should be encouraged?
-          <textarea name="reflection_strength" rows={4} />
-        </label>
-        <label>
-          Where is there a growth invitation?
-          <textarea name="reflection_growth" rows={4} />
-        </label>
-        <label>
-          What encouragement would help this person keep growing?
-          <textarea name="reflection_encouragement" rows={4} />
-        </label>
+      {fruitLifeFruits.map((fruit, index) => {
+        const questions = fruitLifeQuestionsByFruit.get(fruit.key) ?? [];
+        const pressureQuestion = fruitLifePressureByFruit.get(fruit.key);
+        const isActive = stepIndex === index + 1;
+
+        return (
+          <fieldset
+            className={`fruitlife-fruit fruitlife-step-panel ${fruit.colorClass} ${isActive ? "active" : ""}`}
+            key={fruit.key}
+          >
+            <legend>{fruit.label}</legend>
+            <p>{fruit.definition}</p>
+            {questions.map((question) => (
+              <label className="fruitlife-scale" key={question.code}>
+                <span>{isSelf ? question.selfText : question.observerText}</span>
+                <select defaultValue="3" name={fruitRatingField(question.code)} required>
+                  {fruitLifeRatingOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.value} - {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ))}
+            {pressureQuestion ? (
+              <label className="fruitlife-scale fruitlife-pressure-scale">
+                <span>{isSelf ? pressureQuestion.selfText : pressureQuestion.observerText}</span>
+                <select defaultValue="3" name={fruitRatingField(pressureQuestion.code)} required>
+                  {fruitLifeRatingOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.value} - {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
+          </fieldset>
+        );
+      })}
+
+      <section className={`fruitlife-panel fruitlife-step-panel ${stepIndex === totalSteps - 1 ? "active" : ""}`}>
+        <p className="section-label">{isSelf ? "Personal Growth" : "Observer Reflection"}</p>
+        <h2>{isSelf ? "Name the formation desire." : "Offer language the report can use."}</h2>
+        {isSelf ? (
+          <label>
+            Which fruit of the Spirit do you most want God to keep forming in you this season, and why?
+            <textarea name="reflection_growth" rows={5} />
+          </label>
+        ) : (
+          <>
+            <label>
+              What fruit do you most clearly see in this person?
+              <textarea name="reflection_strength" rows={4} />
+            </label>
+            <label>
+              Where do you see a growth invitation for this person?
+              <textarea name="reflection_growth" rows={4} />
+            </label>
+            <label>
+              What encouragement should this person hear from this reflection?
+              <textarea name="reflection_encouragement" rows={4} />
+            </label>
+          </>
+        )}
       </section>
 
-      <button className="button primary" type="submit">
-        Save FruitLife Reflection
-      </button>
+      <div className="fruitlife-step-controls">
+        <button className="button secondary" disabled={stepIndex === 0} onClick={goBack} type="button">
+          Back
+        </button>
+        {stepIndex < totalSteps - 1 ? (
+          <button className="button primary" onClick={goNext} type="button">
+            Next
+          </button>
+        ) : (
+          <button className="button primary" type="submit">
+            Submit FruitLife Reflection
+          </button>
+        )}
+      </div>
     </form>
   );
 }

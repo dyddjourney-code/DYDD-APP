@@ -3943,7 +3943,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .basecamp-account-layout {
   display: grid;
-  grid-template-columns: minmax(280px, 0.86fr) minmax(0, 1.14fr);
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
   gap: 18px;
   margin-bottom: 18px;
 }
@@ -3968,6 +3968,12 @@ body:has(.fruitlife-public) .mobile-app-nav,
 .basecamp-account-card.profile {
   background:
     linear-gradient(145deg, rgba(234, 240, 226, 0.92), rgba(255, 255, 255, 0.94)),
+    var(--panel);
+}
+
+.basecamp-account-card.password {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(251, 250, 244, 0.92)),
     var(--panel);
 }
 
@@ -4020,6 +4026,24 @@ body:has(.fruitlife-public) .mobile-app-nav,
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.password-reset-panel {
+  display: grid;
+  gap: 14px;
+  align-content: end;
+  min-height: 160px;
+  padding: 16px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.password-reset-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 760;
+  line-height: 1.5;
 }
 
 .basecamp-course-columns {
@@ -4142,7 +4166,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .purchase-reference-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -4151,6 +4175,13 @@ body:has(.fruitlife-public) .mobile-app-nav,
   gap: 10px;
   min-height: 168px;
   padding: 14px;
+}
+
+.purchase-reference-grid .subscription-access-slot {
+  align-content: end;
+  background:
+    linear-gradient(145deg, rgba(234, 240, 226, 0.72), rgba(255, 255, 255, 0.84)),
+    var(--panel);
 }
 
 .purchase-reference-grid img {

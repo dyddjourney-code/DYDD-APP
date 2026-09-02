@@ -39,7 +39,6 @@ import {
 } from "@/lib/review/heather";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { PageHelp } from "@/components/page-help";
 
 type AdminSnapshotSummary = AssessmentSnapshotSummary & {
   assessment_participants:
@@ -149,32 +148,6 @@ const toolCatalog = [
     logo: "/brand/tools/fruitful-life-360-logo.jpg",
     price: "Free",
   },
-];
-
-const hqMenu = [
-  {
-    icon: "tent",
-    label: "Base Camp",
-    href: "/hq",
-    children: [{ icon: "hiker", label: "Journey", href: "/journey" }],
-  },
-  {
-    icon: "ranger",
-    label: "Ranger Station",
-    href: "/ranger-station",
-    children: [
-      { icon: "signpost", label: "Trailheads", href: "/trailheads" },
-      { icon: "map", label: "Field Kit", href: "/field-kit" },
-      { icon: "backpack", label: "Gear", href: "/gear" },
-    ],
-  },
-  {
-    icon: "fireside",
-    label: "Fireside",
-    href: "/fireside",
-    children: [{ icon: "flashlight", label: "Waypoints", href: "/fireside#waypoints" }],
-  },
-  { icon: "group", label: "Camp Circle", href: "/camp-circle" },
 ];
 
 type TrailBadge = {
@@ -443,51 +416,6 @@ function MenuIcon({ name }: { name: string }) {
     </span>
   );
 }
-
-const baseCampLinks = [
-  {
-    detail: "Begin the guided book, workbook, assessment, and companion path.",
-    href: "/journey",
-    kicker: "Main hub",
-    title: "Start the Journey",
-  },
-  {
-    detail: "Take DesignID early as a fast first win for identity and reflection language.",
-    href: "/field-kit",
-    kicker: "Week one",
-    title: "Take DesignID",
-  },
-  {
-    detail: "Start at the Ranger Station to see the map, tools, and best next route.",
-    href: "/ranger-station",
-    kicker: "Orientation",
-    title: "Visit Ranger Station",
-  },
-  {
-    detail: "See tools, artifacts, earned badges, and possible badges.",
-    href: "/field-kit",
-    kicker: "Collected",
-    title: "Open Field Kit",
-  },
-  {
-    detail: "Set up invitations, shared summaries, and couple or group progress.",
-    href: "/camp-circle",
-    kicker: "Together",
-    title: "Open Camp Circle",
-  },
-  {
-    detail: "Find the book, workbook, and live experiences that support the journey.",
-    href: "/gear",
-    kicker: "Resources",
-    title: "Open Gear",
-  },
-  {
-    detail: "Clarify the niche where identity, gifts, story, desire, and service converge.",
-    href: "/journey#niche",
-    kicker: "Purpose",
-    title: "Find the Niche",
-  },
-];
 
 const dyddDefinitionCards = [
   {
@@ -1132,8 +1060,6 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               <h2>{welcomeName}</h2>
               <p>
                 <span className="reflection-label shepherd">Shepherd</span>
-                <span aria-hidden="true">-</span>
-                <span className="reflection-label architect">Architect</span>
               </p>
             </div>
             <img src="/brand/badges/shepherd-badge.svg" alt="Shepherd badge" />
@@ -1148,33 +1074,13 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         </div>
       </section>
 
-      <nav className="basecamp-wayfinding" aria-label="Base Camp page links">
-        {baseCampLinks.map((item) => (
-          <Link href={withReviewQuery(item.href, reviewParams)} key={item.title}>
-            <span>{item.kicker}</span>
-            <strong>{item.title}</strong>
-            <small>{item.detail}</small>
-          </Link>
-        ))}
-      </nav>
-
-      <PageHelp
-        items={[
-          "Use Base Camp as the learner's account and progress home.",
-          "Check courses, artifacts, badges, purchases, and profile details here.",
-          "Use Ranger Station when the learner needs orientation, the park map, or help choosing a trail.",
-        ]}
-        title="Base Camp Account Help"
-      />
-
       <section className="basecamp-account-layout" aria-label="Base Camp account overview">
         <article className="basecamp-account-card profile">
           <div className="card-heading">
             <p className="section-label">Account</p>
-            <h2>Profile and sign-in.</h2>
+            <h2>Profile overview.</h2>
             <p>
-              Base Camp now holds the practical account view: who is signed in,
-              which records are connected, and where access details will live.
+              Basic account information for this signed-in learner.
             </p>
           </div>
           <dl className="account-detail-list">
@@ -1187,146 +1093,59 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               <dd>{profile?.email ?? user?.email ?? fruitLifeDashboardEmail ?? "Preview account"}</dd>
             </div>
             <div>
-              <dt>Design reference</dt>
-              <dd>{designIdContext.integrativeReflection || "Awaiting DesignID"}</dd>
+              <dt>Primary reflection</dt>
+              <dd>Shepherd</dd>
             </div>
           </dl>
-          <div className="account-action-row">
-            <Link className="button primary" href={withReviewQuery("/journey", reviewParams)}>
-              Start the Journey
-            </Link>
-            <Link className="button secondary" href="/login">
-              Password help
-            </Link>
-          </div>
         </article>
 
-        <article className="basecamp-account-card courses">
+        <article className="basecamp-account-card password">
           <div className="card-heading">
-            <p className="section-label">Courses</p>
-            <h2>Current, finished, and next.</h2>
-          </div>
-          <div className="basecamp-course-columns">
-            <section>
-              <span>Current course</span>
-              <strong>{courseCards.find((course) => course.available)?.label ?? "Discover Your Divine Design"}</strong>
-              <p>{courseCards.find((course) => course.available)?.meta ?? "Main trail ready to begin."}</p>
-            </section>
-            <section>
-              <span>Finished courses</span>
-              <strong>{courseCards.filter((course) => course.available).length}</strong>
-              <p>Unlocked or completed course spaces connected to this account.</p>
-            </section>
-            <section>
-              <span>Next courses</span>
-              <strong>{courseCards.filter((course) => !course.available).length}</strong>
-              <p>Additional trailheads that can open as assessments or purchases are completed.</p>
-            </section>
-          </div>
-        </article>
-      </section>
-
-      <section className="basecamp-account-layout records" aria-label="Base Camp records">
-        <article className="basecamp-account-card artifacts">
-          <div className="card-heading">
-            <p className="section-label">Artifacts</p>
-            <h2>Collected reports.</h2>
-          </div>
-          {artifactSnapshots.length ? (
-            <div className="basecamp-record-list">
-              {artifactSnapshots.slice(0, 6).map((snapshot) => (
-                <Link
-                  className="basecamp-record"
-                  href={artifactDownloadHref(snapshot, reviewParams)}
-                  key={snapshot.id}
-                >
-                  <span>{artifactLabel(snapshot)}</span>
-                  <strong>{displayDate(snapshot.source_submitted_at ?? snapshot.created_at)}</strong>
-                  <small>{snapshot.source ?? "DYDD source"}</small>
-                </Link>
-              ))}
-              {activeFruitLifeSession && (activeFruitLifeReport || activeFruitLifePayload) ? (
-                <Link
-                  className="basecamp-record"
-                  href={
-                    activeFruitLifeReport?.external_url ??
-                    fruitLifeStatusHref(activeFruitLifeSession, activeFruitLifeToken)
-                  }
-                >
-                  <span>FruitLife 360 · Native session</span>
-                  <strong>{titleizeStatus(activeFruitLifeSession.report_status)}</strong>
-                  <small>{displayDate(activeFruitLifeSession.updated_at)}</small>
-                </Link>
-              ) : null}
-            </div>
-          ) : activeFruitLifeSession && (activeFruitLifeReport || activeFruitLifePayload) ? (
-            <div className="basecamp-record-list">
-              <Link
-                className="basecamp-record"
-                href={
-                  activeFruitLifeReport?.external_url ??
-                  fruitLifeStatusHref(activeFruitLifeSession, activeFruitLifeToken)
-                }
-              >
-                <span>FruitLife 360 · Native session</span>
-                <strong>{titleizeStatus(activeFruitLifeSession.report_status)}</strong>
-                <small>{displayDate(activeFruitLifeSession.updated_at)}</small>
-              </Link>
-            </div>
-          ) : (
-            <p className="empty-account-note">
-              Completed reports will collect here as account artifacts.
+            <p className="section-label">Security</p>
+            <h2>Password reset.</h2>
+            <p>
+              Update account access without leaving the account area.
             </p>
-          )}
-        </article>
-
-        <article className="basecamp-account-card badges">
-          <div className="card-heading">
-            <p className="section-label">Trail badges</p>
-            <h2>Earned markers.</h2>
           </div>
-          <div className="basecamp-badge-strip">
-            {badgeCards
-              .filter((badge) => badge.earned)
-              .slice(0, 6)
-              .map((badge) => (
-                <section key={badge.slug}>
-                  <img src={badge.image} alt={`${badge.title} badge`} />
-                  <strong>{badge.title}</strong>
-                  <span>{badge.status}</span>
-                </section>
-              ))}
+          <div className="password-reset-panel">
+            <p>Password reset will send a secure account email when live auth is fully connected.</p>
+            <Link className="button secondary" href="/login">
+              Password reset
+            </Link>
           </div>
-          <Link className="button secondary" href={withReviewQuery("/field-kit#trail-badges", reviewParams)}>
-            View badge details
-          </Link>
         </article>
       </section>
 
       <section className="basecamp-account-card purchases" aria-label="Purchase history">
         <div className="card-heading">
           <p className="section-label">Purchases</p>
-          <h2>Purchase and access reference.</h2>
+          <h2>Billing and access.</h2>
           <p>
-            This is the beginning of the account ledger. It shows known access
-            now and can become the full payment record once purchase data is wired.
+            Purchased tools, paid courses, and future subscription access will live here.
           </p>
         </div>
         <div className="purchase-reference-grid">
-          {toolCatalog.map((tool) => {
+          {toolCatalog.filter((tool) => tool.price !== "Free").map((tool) => {
             const owned = ownsAssessment(assessmentReport, tool.assessmentType);
 
             return (
               <section key={tool.label}>
                 <img src={tool.logo} alt={`${tool.label} logo`} />
                 <div>
-                  <span>{owned ? "Purchased or completed" : "Available"}</span>
+                  <span>{owned ? "Active access" : "Not purchased"}</span>
                   <strong>{tool.label}</strong>
                   <small>{tool.price}</small>
                 </div>
               </section>
             );
           })}
+          <section className="subscription-access-slot">
+            <div>
+              <span>Future access</span>
+              <strong>Subscription</strong>
+              <small>Not connected yet</small>
+            </div>
+          </section>
         </div>
       </section>
 
@@ -1407,35 +1226,6 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         </section>
       ) : null}
 
-      <section className="ask-dydi-hq" id="ask-dydi" aria-label="Ask Dydi">
-        <div className="dydi-host">
-          <img src="/brand/characters/dydi-full-body.png" alt="Dydi host" />
-          <div>
-            <p className="section-label">Companion guide</p>
-            <h2>Dydi stays near the trail.</h2>
-            <p>
-              The guide layer belongs throughout the journey, especially where
-              a person needs encouragement, interpretation, or a simple way to
-              keep moving.
-            </p>
-          </div>
-        </div>
-        <form className="dydi-form">
-          <label htmlFor="hq-dydi-question">Ask from Base Camp</label>
-          <textarea
-            id="hq-dydi-question"
-            name="question"
-            placeholder="Where should I begin today?"
-            rows={4}
-          />
-          <button className="button primary" type="button">
-            Ask Dydi
-          </button>
-          <p className="helper-text">
-            Staged for preview. Live companion responses will connect later.
-          </p>
-        </form>
-      </section>
       </div>
     </main>
   );

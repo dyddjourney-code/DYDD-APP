@@ -3,7 +3,6 @@ const navItems = [
     icon: "tent",
     label: "Base Camp",
     href: "/base-camp",
-    children: [{ icon: "hiker", label: "Journey", href: "/journey" }],
   },
   {
     icon: "ranger",

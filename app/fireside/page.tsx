@@ -302,6 +302,8 @@ export default function FiresidePage() {
           />
           <div className="fireside-image-title waypoints-title">
             <p>DYDD Waypoints</p>
+          </div>
+          <div className="fireside-image-title waypoints-tagline">
             <span>Pause, breathe, and keep walking.</span>
           </div>
         </div>

@@ -290,24 +290,20 @@ export default function FiresidePage() {
         </div>
       </section>
 
-      <section className="fireside-waypoints-banner" aria-label="DYDD Waypoints trail banner">
-        <img
-          alt="Illustrated DYDD Waypoints trail through a forest with natural places to pause"
-          src="/brand/dydd-waypoints-banner.png"
-        />
-      </section>
-
-      <section className="fireside-connect-panel" id="waypoints">
-        <div className="fireside-connect-heading">
-          <p className="section-label">DYDD Waypoints</p>
-          <h2>Pause, breathe, and keep walking.</h2>
-          <p>
-            Weekly content designed to help you along your journey. Every now
-            and then, it is good to stand still, breathe, and notice what God is
-            forming in you. These Waypoints can speak to the whole DYDD community
-            while offering simple reflection callouts for Shepherd, Artisan,
-            Architect, and Steward design patterns.
-          </p>
+      <section
+        className="fireside-waypoints-feature"
+        id="waypoints"
+        aria-label="DYDD Waypoints trail banner"
+      >
+        <div className="fireside-image-header">
+          <img
+            alt="Illustrated DYDD Waypoints trail through a forest with natural places to pause"
+            src="/brand/dydd-waypoints-banner.png"
+          />
+          <div className="fireside-image-title waypoints-title">
+            <p>DYDD Waypoints</p>
+            <span>Pause, breathe, and keep walking.</span>
+          </div>
         </div>
         <form className="fireside-subscribe-card">
           <label htmlFor="fireside-email">Email address</label>
@@ -339,14 +335,15 @@ export default function FiresidePage() {
       </section>
 
       <section className="fireside-live-section" id="live" aria-label="Live Fireside">
-        <div className="card-heading">
-          <p className="section-label">Live Fireside</p>
-          <h2>Gatherings, teaching, and conversations.</h2>
-          <p>
-            Live Fireside can become the place where people find upcoming
-            classes, virtual gatherings, podcast episodes, teaching, and replay
-            content without leaving the journey.
-          </p>
+        <div className="fireside-image-header live-fireside-header">
+          <img
+            alt="Illustrated Live Fireside gathering around a campfire"
+            src="/brand/dydd-live-fireside-banner-concept.png"
+          />
+          <div className="fireside-image-title live-title">
+            <p>Live Fireside</p>
+            <span>Gatherings, teaching, and conversations.</span>
+          </div>
         </div>
 
         <div className="fireside-live-type-row" aria-label="Live Fireside categories">

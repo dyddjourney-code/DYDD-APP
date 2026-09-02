@@ -4,27 +4,24 @@ import { RangerParkMap } from "@/components/ranger-park-map";
 
 const stationStops = [
   {
-    action: "View trailheads",
     detail:
-      "Choose the course or guided route that fits the learner's current need: the full Discover Your Divine Design journey, assessment-based courses, or a focused next step.",
+      "Choose the course or guided route that fits the learner's current step.",
     href: "/trailheads",
     label: "Trailheads",
     marker: "01",
     title: "Pick a route",
   },
   {
-    action: "Open field kit",
     detail:
-      "Find the assessments, reports, and earned markers that help personalize the journey and show what has already been discovered.",
+      "Find assessments, reports, and earned markers gathered along the way.",
     href: "/field-kit",
     label: "Field Kit",
     marker: "02",
     title: "Check the tools",
   },
   {
-    action: "Open gear",
     detail:
-      "Gather books, workbooks, workshops, and live experiences that support the next leg of the journey.",
+      "Gather books, workbooks, workshops, and live experiences for the trail ahead.",
     href: "/gear",
     label: "Gear",
     marker: "03",
@@ -34,7 +31,7 @@ const stationStops = [
 
 const visualJourneyMap = [
   { icon: "base", label: "Start", size: "large", text: "Orient at Base Camp" },
-  { icon: "dydd", label: "DYD", size: "large", text: "Open the main journey" },
+  { icon: "dydd", label: "DYDD", size: "large", text: "Open the main journey" },
   { image: "/brand/badges/identity-badge.svg", label: "Identity", text: "Whose you are" },
   { image: "/brand/badges/designid-badge.png", label: "DesignID", text: "Early assessment marker" },
   { image: "/brand/badges/expertise-badge.svg", label: "Expertise", text: "Skills and capacity" },
@@ -75,39 +72,52 @@ export default function RangerStationPage() {
             />
           </figure>
           <div className="ranger-welcome-copy">
-            <p className="eyebrow">Ranger Station</p>
-            <h1>Welcome in.</h1>
+            <p className="eyebrow">DYDD Ranger Station</p>
+            <h1>Welcome</h1>
             <p className="lede">
-              You made it to the front door. Take a breath, look around, and let
-              the journey come into view.
+              We&apos;re glad you made it. We&apos;ve been looking forward to having
+              some adventures together.
             </p>
           </div>
         </div>
         <DyddOrientationSlider />
       </header>
 
-      <section className="ranger-map-section" aria-label="Ranger Station map preview">
+      <section className="ranger-map-section" aria-label="DYDD Ranger Station map preview">
         <div className="ranger-map-copy">
-          <p className="section-label">DYD Park Map</p>
-          <h2>The whole journey in view.</h2>
+          <p className="section-label">DYDD Park Map</p>
+          <h2>A first look around.</h2>
           <p>
-            Start at the Ranger Station, then choose the route that matches the
-            next step. Each trail opens a short guide so learners can understand
-            what the path is for before they move.
+            The map gives the learner a simple picture of the world they have
+            entered. The guide below names the main places without turning this
+            page into a control center.
           </p>
+          <div className="ranger-map-guide" aria-label="Inside the DYDD Ranger Station">
+            <p className="section-label">Inside the station</p>
+            {stationStops.map((stop) => (
+              <Link className="ranger-map-guide-item" href={stop.href} key={stop.label}>
+                <span>{stop.marker}</span>
+                <div>
+                  <strong>{stop.title}</strong>
+                  <small>{stop.label}</small>
+                  <p>{stop.detail}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
 
         <RangerParkMap />
       </section>
 
-      <section className="visual-journey-map ranger-journey-map" aria-label="Typical DYD journey map">
+      <section className="visual-journey-map ranger-journey-map" aria-label="Typical DYDD journey map">
         <div className="card-heading">
           <p className="section-label">Typical journey map</p>
-          <h2>A visible road for the whole experience.</h2>
+          <h2>The usual path from welcome to growth.</h2>
           <p>
-            The park map shows the branches. This road shows the normal flow of
-            the fuller journey from orientation through assessments, reflection,
-            purpose, practice, and growth.
+            Some learners move straight through the main route. Others take a
+            tool or trail first. This shows the normal road without forcing every
+            person to start the same way.
           </p>
         </div>
         <ol>
@@ -117,7 +127,7 @@ export default function RangerStationPage() {
                 {marker.image ? (
                   <img src={marker.image} alt={`${marker.label} marker`} />
                 ) : (
-                  <span className="journey-map-letter">{marker.icon === "dydd" ? "DYD" : "BC"}</span>
+                  <span className="journey-map-letter">{marker.icon === "dydd" ? "DYDD" : "BC"}</span>
                 )}
               </div>
               <span>{String(index + 1).padStart(2, "0")}</span>
@@ -126,29 +136,6 @@ export default function RangerStationPage() {
             </li>
           ))}
         </ol>
-      </section>
-
-      <section className="ranger-stops-section" aria-label="Ranger Station sections">
-        <div className="catalog-heading compact">
-          <p className="section-label">Inside Ranger Station</p>
-          <h2>Three places to send the learner next.</h2>
-        </div>
-
-        <div className="ranger-stop-list">
-          {stationStops.map((stop) => (
-            <article className="ranger-stop-card" key={stop.label}>
-              <span>{stop.marker}</span>
-              <div>
-                <small>{stop.label}</small>
-                <h3>{stop.title}</h3>
-                <p>{stop.detail}</p>
-              </div>
-              <Link className="button secondary" href={stop.href}>
-                {stop.action}
-              </Link>
-            </article>
-          ))}
-        </div>
       </section>
 
       <section className="ask-dydi-hq ranger-dydi-guide" id="ask-dydi" aria-label="Ask Dydi">

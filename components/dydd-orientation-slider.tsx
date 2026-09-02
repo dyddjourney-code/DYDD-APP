@@ -6,7 +6,7 @@ import { useState } from "react";
 const orientationSlides = [
   {
     accent: "discover",
-    kicker: "What is DYD?",
+    kicker: "What is DYDD?",
     title: "Discover Your Divine Design",
     body:
       "A guided journey that helps you notice how God has intentionally shaped your identity, gifts, story, desire, and purpose.",

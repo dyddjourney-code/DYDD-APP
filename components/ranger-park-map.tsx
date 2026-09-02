@@ -21,7 +21,7 @@ const trails: Trail[] = [
       "The full Discover Your Divine Design route gathers the whole story: identity, gifts, desire, expertise, story, and purpose. It is the broad trail for someone who wants the complete guided journey instead of a single assessment stop.",
     href: "/journey",
     id: "dydd-journey",
-    label: "DYD Journey Trail",
+    label: "DYDD Journey Trail",
     path: "M 268 208 C 332 126, 476 122, 552 184 S 706 290, 784 206",
     summary: "The full journey route through the major formation landmarks.",
     waypoints: ["Identity", "Gifts", "Desire", "Purpose"],
@@ -66,7 +66,7 @@ export function RangerParkMap() {
 
   return (
     <div className="ranger-park-map">
-      <div className="ranger-park-map-canvas" aria-label="Interactive DYD park map">
+      <div className="ranger-park-map-canvas" aria-label="Interactive DYDD park map">
         <svg
           aria-hidden="true"
           className="ranger-park-map-art"

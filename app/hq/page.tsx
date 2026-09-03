@@ -565,12 +565,14 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           <p className="section-label basecamp-purpose-pill">On Purpose, For Purpose</p>
           <div className="basecamp-identity-lockup">
             <div>
-              <h2>{welcomeName}</h2>
+              <h2>Welcome, {welcomeName}.</h2>
               <p>
-                <span className="reflection-label shepherd">Shepherd</span>
+                This is your quiet starting point.
               </p>
             </div>
-            <img src="/brand/badges/shepherd-badge.svg" alt="Shepherd badge" />
+            <Link className="button primary basecamp-launch-button" href="/ranger-station">
+              Let&apos;s go to Ranger Station
+            </Link>
           </div>
         </div>
         <div className="basecamp-scene" aria-hidden="true">
@@ -586,9 +588,9 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         <article className="basecamp-account-card profile">
           <div className="card-heading">
             <p className="section-label">Account</p>
-            <h2>Profile overview.</h2>
+            <h2>Your starting record.</h2>
             <p>
-              Basic account information for this signed-in learner.
+              Base Camp stays simple until you choose a path.
             </p>
           </div>
           <dl className="account-detail-list">
@@ -600,25 +602,23 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               <dt>Email</dt>
               <dd>{profile?.email ?? user?.email ?? fruitLifeDashboardEmail ?? "Preview account"}</dd>
             </div>
-            <div>
-              <dt>Primary reflection</dt>
-              <dd>Shepherd</dd>
-            </div>
           </dl>
         </article>
 
-        <article className="basecamp-account-card password">
+        <article className="basecamp-account-card launch">
           <div className="card-heading">
-            <p className="section-label">Security</p>
-            <h2>Password reset.</h2>
+            <p className="section-label">Next</p>
+            <h2>Open Ranger Station.</h2>
             <p>
-              Update account access without leaving the account area.
+              The map, quick tracks, and next-step choices belong there.
             </p>
           </div>
-          <div className="password-reset-panel">
-            <p>Password reset will send a secure account email when live auth is fully connected.</p>
-            <Link className="button secondary" href="/login">
-              Password reset
+          <div className="basecamp-launch-panel">
+            <p>
+              Start with the guide station, then choose the first trail that fits your season.
+            </p>
+            <Link className="button primary" href="/ranger-station">
+              Launch the tool
             </Link>
           </div>
         </article>
@@ -627,34 +627,15 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       <section className="basecamp-account-card purchases" aria-label="Purchase history">
         <div className="card-heading">
           <p className="section-label">Purchases</p>
-          <h2>Billing and access.</h2>
+          <h2>Nothing purchased yet.</h2>
           <p>
-            Purchased tools, paid courses, and future subscription access will live here.
+            After you begin a tool, course, or guided journey, access will appear here.
           </p>
         </div>
-        <div className="purchase-reference-grid">
-          {toolCatalog.filter((tool) => tool.price !== "Free").map((tool) => {
-            const owned = ownsAssessment(assessmentReport, tool.assessmentType);
-
-            return (
-              <section key={tool.label}>
-                <img src={tool.logo} alt={`${tool.label} logo`} />
-                <div>
-                  <span>{owned ? "Active access" : "Not purchased"}</span>
-                  <strong>{tool.label}</strong>
-                  <small>{tool.price}</small>
-                </div>
-              </section>
-            );
-          })}
-          <section className="subscription-access-slot">
-            <div>
-              <span>Future access</span>
-              <strong>Subscription</strong>
-              <small>Not connected yet</small>
-            </div>
-          </section>
-        </div>
+        <p className="empty-account-note">
+          Ranger Station will help you decide whether to start with the free Spiritual Gifts
+          assessment, FruitLife 360, DesignID, or the full Discover Your Divine Design journey.
+        </p>
       </section>
 
       {adminReport ? (

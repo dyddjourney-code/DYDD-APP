@@ -180,6 +180,69 @@ const trailLines = [
   },
 ];
 
+const trailDots = [
+  {
+    id: "dydd-journey",
+    points: [
+      [38, 6],
+      [27, 11],
+      [19, 27],
+      [21, 48],
+      [32, 65],
+      [39, 83],
+      [52, 87],
+      [87, 0],
+      [77, 20],
+      [84, 36],
+      [97, 86],
+    ],
+  },
+  {
+    id: "spiritual-gifts",
+    points: [
+      [52, 73],
+      [57, 63],
+      [62, 50],
+      [72, 45],
+      [81, 67],
+      [77, 72],
+    ],
+  },
+  {
+    id: "fruitlife-360",
+    points: [
+      [48, 39],
+      [54, 51],
+      [57, 63],
+      [62, 50],
+      [68, 25],
+      [81, 24],
+    ],
+  },
+  {
+    id: "design-pathways",
+    points: [
+      [68, 25],
+      [81, 24],
+      [89, 15],
+      [72, 45],
+      [69, 66],
+    ],
+  },
+  {
+    id: "designid",
+    points: [
+      [38, 6],
+      [41, 20],
+      [48, 39],
+      [42, 60],
+      [39, 82],
+      [80, 67],
+      [86, 86],
+    ],
+  },
+];
+
 export function RangerReliefMap() {
   const [activeId, setActiveId] = useState("ranger-station");
   const activePoint = useMemo(
@@ -204,7 +267,39 @@ export function RangerReliefMap() {
                 pathLength={100}
               />
             ))}
+            {trailDots.map((trail) => (
+              <g
+                className={`relief-route-dots relief-route-${trail.id} ${activePoint.id === trail.id ? "active" : ""}`}
+                key={`${trail.id}-dots`}
+              >
+                {trail.points.map(([cx, cy], index) => (
+                  <circle
+                    cx={cx}
+                    cy={cy}
+                    key={`${trail.id}-${cx}-${cy}`}
+                    r="0.7"
+                    style={{ animationDelay: `${index * 90}ms` }}
+                  />
+                ))}
+              </g>
+            ))}
           </svg>
+          <div
+            className={`map-feature-fire ${activePoint.id === "camp-circles" ? "active" : ""}`}
+            aria-hidden="true"
+          />
+          <div
+            className={`map-feature-fireside ${activePoint.id === "fireside" ? "active" : ""}`}
+            aria-hidden="true"
+          >
+            <span className="fireside-hut" />
+            <span className="fireside-fire" />
+            <span className="fireside-stump stump-one" />
+            <span className="fireside-stump stump-two" />
+            <span className="fireside-stump stump-three" />
+            <span className="fireside-stump stump-four" />
+            <span className="fireside-teacher" />
+          </div>
           {mapPoints.map((point) => (
             <button
               className={`relief-map-marker ${point.type} marker-${point.id} ${activePoint.id === point.id ? "active" : ""}`}

@@ -40,11 +40,11 @@ const orientationSlides = [
     image: "/brand/design/design-tree-storybook.png",
     blocks: [
       ["Identity", "Intentionally crafted"],
-      ["Expertise", "Equipped with skills"],
-      ["Story", "Given a redeemed story"],
-      ["Desire", "Stirred with holy motivations"],
-      ["Gifts", "Empowered by gifts"],
-      ["Niche", "Called to live out your purpose"],
+      ["Expertise", "Equipped skills"],
+      ["Story", "Redeemed story"],
+      ["Desire", "Holy motivation"],
+      ["Gifts", "Gifted to serve"],
+      ["Niche", "Live your purpose"],
     ],
   },
 ];
@@ -64,24 +64,36 @@ export function DyddOrientationSlider() {
       >
         <p className="section-label">{activeSlide.kicker}</p>
         <div className={activeSlide.image ? "dydd-slider-split" : ""}>
+          <div className="dydd-slider-copy">
+            <h2>{activeSlide.title}</h2>
+            <p>{activeSlide.body}</p>
+            {activeSlide.image ? (
+              <div className={`dydd-slider-blocks count-${activeSlide.blocks.length}`}>
+                {activeSlide.blocks.map(([title, text], index) => (
+                  <section key={title} style={{ "--block-index": index } as CSSProperties}>
+                    <strong>{title}</strong>
+                    <span>{text}</span>
+                  </section>
+                ))}
+              </div>
+            ) : null}
+          </div>
           {activeSlide.image ? (
             <figure className="dydd-slider-image">
               <img src={activeSlide.image} alt="DESIGN framework carved into a tree" />
             </figure>
           ) : null}
-          <div className="dydd-slider-copy">
-            <h2>{activeSlide.title}</h2>
-            <p>{activeSlide.body}</p>
+        </div>
+        {!activeSlide.image ? (
+          <div className={`dydd-slider-blocks count-${activeSlide.blocks.length}`}>
+            {activeSlide.blocks.map(([title, text], index) => (
+              <section key={title} style={{ "--block-index": index } as CSSProperties}>
+                <strong>{title}</strong>
+                <span>{text}</span>
+              </section>
+            ))}
           </div>
-        </div>
-        <div className={`dydd-slider-blocks count-${activeSlide.blocks.length}`}>
-          {activeSlide.blocks.map(([title, text], index) => (
-            <section key={title} style={{ "--block-index": index } as CSSProperties}>
-              <strong>{title}</strong>
-              <span>{text}</span>
-            </section>
-          ))}
-        </div>
+        ) : null}
         {activeSlide.scripture ? (
           <blockquote className="dydd-slider-scripture">
             <p>{activeSlide.scripture}</p>

@@ -3311,7 +3311,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
   align-self: start;
   align-content: start;
   min-width: 0;
-  min-height: 340px;
+  min-height: 412px;
 }
 
 .dydd-slider-tabs {
@@ -3358,10 +3358,11 @@ body:has(.fruitlife-public) .mobile-app-nav,
 }
 
 .dydd-slider-panel {
+  position: relative;
   display: grid;
   align-content: start;
   gap: 10px;
-  min-height: 340px;
+  min-height: 412px;
   padding: clamp(16px, 2.4vw, 22px);
   border: 1px solid rgba(36, 63, 39, 0.16);
   border-radius: 8px;
@@ -3384,6 +3385,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
 }
 
 .dydd-slider-panel.dydd-slide-design {
+  overflow: hidden;
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(234, 240, 226, 0.8)),
     var(--panel);
@@ -3399,6 +3401,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
 .dydd-slider-copy {
   display: grid;
   gap: 9px;
+  min-width: 0;
 }
 
 .dydd-slider-panel p:not(.section-label) {
@@ -3420,13 +3423,17 @@ body:has(.fruitlife-public) .mobile-app-nav,
 }
 
 .dydd-slider-split {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(120px, 0.36fr) minmax(0, 0.64fr);
-  gap: 12px;
-  align-items: center;
+  grid-template-columns: minmax(0, 0.56fr) minmax(190px, 0.44fr);
+  gap: clamp(10px, 1.8vw, 16px);
+  align-items: stretch;
+  min-height: 230px;
 }
 
 .dydd-slider-image {
+  align-self: stretch;
+  justify-self: stretch;
   overflow: hidden;
   margin: 0;
   border: 1px solid rgba(36, 63, 39, 0.16);
@@ -3436,8 +3443,32 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .dydd-slider-image img {
   width: 100%;
-  height: 112px;
-  object-fit: cover;
+  height: 100%;
+  min-height: 224px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.dydd-slide-design .dydd-slider-copy {
+  align-content: start;
+  gap: 8px;
+  max-width: 360px;
+}
+
+.dydd-slide-design .dydd-slider-copy p:not(.section-label) {
+  font-size: 0.86rem;
+  line-height: 1.34;
+}
+
+.dydd-slide-design .dydd-slider-image {
+  margin: -12px -34px -10px 0;
+  border-color: rgba(36, 63, 39, 0.1);
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.dydd-slide-design .dydd-slider-image img {
+  min-height: 252px;
+  transform: translateX(4px);
 }
 
 .dydd-slider-blocks {
@@ -3451,6 +3482,12 @@ body:has(.fruitlife-public) .mobile-app-nav,
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.dydd-slide-design .dydd-slider-blocks.count-6 {
+  grid-template-columns: repeat(3, 76px);
+  gap: 6px;
+  justify-content: start;
+}
+
 .dydd-slider-blocks section {
   display: grid;
   gap: 4px;
@@ -3461,6 +3498,15 @@ body:has(.fruitlife-public) .mobile-app-nav,
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(234, 240, 226, 0.78)),
     var(--green-soft);
+}
+
+.dydd-slide-design .dydd-slider-blocks section {
+  width: 76px;
+  min-height: 64px;
+  aspect-ratio: auto;
+  align-content: center;
+  justify-items: start;
+  padding: 7px 6px;
 }
 
 .dydd-slide-discover .dydd-slider-blocks section:nth-child(1) {
@@ -3493,6 +3539,10 @@ body:has(.fruitlife-public) .mobile-app-nav,
   line-height: 1.08;
 }
 
+.dydd-slide-design .dydd-slider-blocks strong {
+  font-size: 0.69rem;
+}
+
 .dydd-slide-discover .dydd-slider-blocks strong {
   color: #111111;
   font-size: clamp(1rem, 1.35vw, 1.18rem);
@@ -3504,6 +3554,11 @@ body:has(.fruitlife-public) .mobile-app-nav,
   font-size: 0.74rem;
   font-weight: 740;
   line-height: 1.32;
+}
+
+.dydd-slide-design .dydd-slider-blocks span {
+  font-size: 0.57rem;
+  line-height: 1.12;
 }
 
 .dydd-slider-scripture {
@@ -13002,6 +13057,14 @@ body:has(.fruitlife-public) .mobile-app-nav,
     grid-template-columns: 1fr;
   }
 
+  .dydd-slide-design .dydd-slider-split {
+    grid-template-columns: minmax(0, 0.55fr) minmax(190px, 0.45fr);
+  }
+
+  .dydd-slide-design .dydd-slider-blocks.count-6 {
+    grid-template-columns: repeat(3, 76px);
+  }
+
   .gear-book-card {
     min-height: 0;
   }
@@ -13406,6 +13469,34 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
   .dydd-slider-panel {
     min-height: 0;
+  }
+
+  .dydd-slide-design .dydd-slider-split {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .dydd-slide-design .dydd-slider-copy {
+    max-width: none;
+  }
+
+  .dydd-slide-design .dydd-slider-blocks.count-6 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dydd-slide-design .dydd-slider-blocks section {
+    width: auto;
+    min-height: 56px;
+    aspect-ratio: auto;
+  }
+
+  .dydd-slide-design .dydd-slider-image {
+    margin: 0;
+  }
+
+  .dydd-slide-design .dydd-slider-image img {
+    min-height: 210px;
+    transform: none;
   }
 
   .ranger-park-map {

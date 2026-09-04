@@ -81,7 +81,7 @@ export default function RangerStationPage() {
 
       <header className="standalone-hero ranger-station-hero">
         <div>
-          <p className="eyebrow">DYD Ranger Station</p>
+          <p className="eyebrow">DYDD Ranger Station</p>
           <h1>What should I do next?</h1>
           <p className="lede">
             Ranger Station is the place to get oriented, ask Dydi for guidance,
@@ -132,7 +132,7 @@ export default function RangerStationPage() {
                 Ask at the desk
               </button>
               <p className="helper-text">
-                Preview interaction. Live responses will use DYD guardrails, learner context,
+                Preview interaction. Live responses will use DYDD guardrails, learner context,
                 and the approved knowledge base.
               </p>
             </form>
@@ -156,7 +156,7 @@ export default function RangerStationPage() {
         </aside>
       </section>
 
-      <section className="ranger-map-section relief-map-section" aria-label="Interactive DYD relief map">
+      <section className="ranger-map-section relief-map-section" aria-label="Interactive DYDD relief map">
         <div className="ranger-map-copy">
           <p className="section-label">Relief map</p>
           <h2>The whole park at a glance.</h2>

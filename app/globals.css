@@ -3311,6 +3311,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
   align-self: start;
   align-content: start;
   min-width: 0;
+  min-height: 340px;
 }
 
 .dydd-slider-tabs {
@@ -3359,8 +3360,8 @@ body:has(.fruitlife-public) .mobile-app-nav,
 .dydd-slider-panel {
   display: grid;
   align-content: start;
-  gap: 12px;
-  min-height: 0;
+  gap: 10px;
+  min-height: 340px;
   padding: clamp(16px, 2.4vw, 22px);
   border: 1px solid rgba(36, 63, 39, 0.16);
   border-radius: 8px;
@@ -3391,8 +3392,8 @@ body:has(.fruitlife-public) .mobile-app-nav,
 .dydd-slider-panel h2 {
   max-width: none;
   color: var(--green-dark);
-  font-size: clamp(1.55rem, 2.9vw, 2.55rem);
-  line-height: 1;
+  font-size: clamp(1.35rem, 2.15vw, 2.05rem);
+  line-height: 1.04;
 }
 
 .dydd-slider-copy {
@@ -3420,8 +3421,8 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .dydd-slider-split {
   display: grid;
-  grid-template-columns: minmax(0, 0.72fr) minmax(170px, 0.58fr);
-  gap: 18px;
+  grid-template-columns: minmax(120px, 0.36fr) minmax(0, 0.64fr);
+  gap: 12px;
   align-items: center;
 }
 
@@ -3435,14 +3436,15 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .dydd-slider-image img {
   width: 100%;
-  height: auto;
+  height: 112px;
   object-fit: cover;
 }
 
 .dydd-slider-blocks {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  gap: 7px;
+  align-self: start;
 }
 
 .dydd-slider-blocks.count-6 {
@@ -3451,9 +3453,9 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .dydd-slider-blocks section {
   display: grid;
-  gap: 5px;
-  min-height: 78px;
-  padding: 11px;
+  gap: 4px;
+  min-height: 58px;
+  padding: 8px 10px;
   border: 1px solid rgba(71, 107, 66, 0.18);
   border-radius: 8px;
   background:
@@ -3487,7 +3489,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .dydd-slider-blocks strong {
   color: var(--green-dark);
-  font-size: 0.92rem;
+  font-size: 0.84rem;
   line-height: 1.08;
 }
 
@@ -3499,7 +3501,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .dydd-slider-blocks span {
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: 0.74rem;
   font-weight: 740;
   line-height: 1.32;
 }
@@ -3507,8 +3509,9 @@ body:has(.fruitlife-public) .mobile-app-nav,
 .dydd-slider-scripture {
   display: grid;
   gap: 8px;
+  align-self: start;
   margin: 0;
-  padding: 14px;
+  padding: 12px;
   border: 1px solid rgba(122, 91, 45, 0.18);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.7);
@@ -3517,7 +3520,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
 .dydd-slider-scripture p {
   margin: 0;
   color: var(--green-dark);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 800;
   line-height: 1.45;
 }
@@ -3534,11 +3537,12 @@ body:has(.fruitlife-public) .mobile-app-nav,
 }
 
 .dydd-slider-controls {
+  align-self: end;
   display: grid;
   grid-template-columns: 44px minmax(0, 1fr) 44px;
   gap: 12px;
   align-items: center;
-  margin-top: 2px;
+  margin-top: auto;
 }
 
 .dydd-slider-controls button {
@@ -3807,7 +3811,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .basecamp-orientation-band {
   display: grid;
-  grid-template-columns: minmax(240px, 0.38fr) minmax(0, 1fr);
+  grid-template-columns: minmax(250px, 0.34fr) minmax(0, 1fr);
   gap: clamp(18px, 3vw, 30px);
   align-items: stretch;
   padding: clamp(18px, 3vw, 28px);
@@ -3819,29 +3823,51 @@ body:has(.fruitlife-public) .mobile-app-nav,
   box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
 }
 
-.basecamp-orientation-copy {
+.basecamp-ranger-launch-card {
   display: grid;
-  align-content: start;
+  align-content: space-between;
   gap: 14px;
+  min-height: 340px;
+  padding: clamp(18px, 2.4vw, 24px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(32, 55, 33, 0.98), rgba(71, 107, 66, 0.92)),
+    var(--green-dark);
+  color: var(--white);
+  box-shadow: 0 20px 42px rgba(36, 63, 39, 0.18);
 }
 
-.basecamp-orientation-copy h2 {
-  margin: 0;
-  color: var(--green-dark);
-  font-size: clamp(1.8rem, 3.6vw, 3.2rem);
-  line-height: 1;
+.basecamp-ranger-launch-card .section-label {
+  width: fit-content;
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.12);
+  color: #f0d08a;
 }
 
-.basecamp-orientation-copy p:not(.section-label) {
+.basecamp-ranger-launch-card h2 {
   margin: 0;
-  color: var(--muted);
+  color: var(--white);
+  font-size: clamp(1.45rem, 2.25vw, 2.18rem);
+  line-height: 1.04;
+}
+
+.basecamp-ranger-launch-card p:not(.section-label) {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
   font-weight: 760;
-  line-height: 1.6;
+  line-height: 1.48;
+}
+
+.basecamp-ranger-launch-card .button {
+  align-self: end;
+  width: 100%;
+  justify-content: center;
 }
 
 .passport-book {
   display: grid;
-  gap: 18px;
+  gap: 14px;
   padding: clamp(18px, 3vw, 28px);
   border: 1px solid rgba(71, 107, 66, 0.16);
   border-radius: 8px;
@@ -3854,9 +3880,9 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .passport-book-cover {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(210px, 0.34fr);
-  gap: 18px;
-  align-items: end;
+  grid-template-columns: minmax(0, 1fr) minmax(190px, 0.28fr);
+  gap: 14px;
+  align-items: stretch;
 }
 
 .passport-book-cover h2,
@@ -3876,6 +3902,8 @@ body:has(.fruitlife-public) .mobile-app-nav,
 .passport-next-badge {
   display: grid;
   gap: 5px;
+  align-content: center;
+  min-height: 124px;
   padding: 14px;
   border: 1px solid rgba(184, 138, 67, 0.28);
   border-radius: 8px;
@@ -3907,7 +3935,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .passport-layout {
   display: grid;
-  grid-template-columns: minmax(190px, 0.24fr) minmax(0, 1fr) minmax(250px, 0.35fr);
+  grid-template-columns: minmax(158px, 0.18fr) minmax(0, 1fr) minmax(260px, 0.32fr);
   gap: 14px;
   align-items: stretch;
 }
@@ -3923,7 +3951,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
 .passport-earned-page {
   display: grid;
   align-content: start;
-  gap: 16px;
+  gap: 12px;
 }
 
 .passport-earned-page p {
@@ -3937,8 +3965,8 @@ body:has(.fruitlife-public) .mobile-app-nav,
 .passport-count-stamp {
   display: grid;
   place-items: center;
-  width: 114px;
-  height: 114px;
+  width: 96px;
+  height: 96px;
   border: 2px solid rgba(184, 138, 67, 0.42);
   border-radius: 50%;
   background: rgba(243, 228, 196, 0.42);
@@ -3953,16 +3981,16 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .passport-badge-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
+  gap: 8px;
 }
 
 .passport-badge-button {
   display: grid;
   justify-items: center;
   gap: 6px;
-  min-height: 146px;
-  padding: 12px 10px;
+  min-height: 128px;
+  padding: 10px 8px;
   border: 1px solid rgba(71, 107, 66, 0.14);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.72);
@@ -4001,8 +4029,8 @@ body:has(.fruitlife-public) .mobile-app-nav,
 }
 
 .passport-badge-button img {
-  width: 70px;
-  height: 70px;
+  width: 58px;
+  height: 58px;
   object-fit: contain;
   filter: drop-shadow(0 8px 12px rgba(36, 63, 39, 0.14));
 }
@@ -4017,11 +4045,14 @@ body:has(.fruitlife-public) .mobile-app-nav,
   display: grid;
   align-content: start;
   gap: 12px;
+  height: 360px;
+  min-height: 360px;
+  overflow: auto;
 }
 
 .passport-badge-popover img {
-  width: 108px;
-  height: 108px;
+  width: 96px;
+  height: 96px;
   object-fit: contain;
 }
 
@@ -4426,6 +4457,10 @@ body:has(.fruitlife-public) .mobile-app-nav,
   grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
   gap: 18px;
   margin-bottom: 18px;
+}
+
+.basecamp-account-layout-single {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .basecamp-account-layout.records {

@@ -64,15 +64,15 @@ export function DyddOrientationSlider() {
       >
         <p className="section-label">{activeSlide.kicker}</p>
         <div className={activeSlide.image ? "dydd-slider-split" : ""}>
-          <div className="dydd-slider-copy">
-            <h2>{activeSlide.title}</h2>
-            <p>{activeSlide.body}</p>
-          </div>
           {activeSlide.image ? (
             <figure className="dydd-slider-image">
               <img src={activeSlide.image} alt="DESIGN framework carved into a tree" />
             </figure>
           ) : null}
+          <div className="dydd-slider-copy">
+            <h2>{activeSlide.title}</h2>
+            <p>{activeSlide.body}</p>
+          </div>
         </div>
         <div className={`dydd-slider-blocks count-${activeSlide.blocks.length}`}>
           {activeSlide.blocks.map(([title, text], index) => (

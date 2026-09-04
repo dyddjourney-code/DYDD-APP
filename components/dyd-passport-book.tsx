@@ -27,10 +27,10 @@ export function DydPassportBook({
   const nextBadge = badges.find((badge) => badge.state === "next") ?? badges.find((badge) => badge.state !== "earned");
 
   return (
-    <section className="passport-book" id="passport" aria-label="DYD Passport Book">
+    <section className="passport-book" id="passport" aria-label="DYDD Passport Book">
       <div className="passport-book-cover">
         <div>
-          <p className="section-label">DYD Passport Book</p>
+          <p className="section-label">DYDD Passport Book</p>
           <h2>{firstName}&apos;s trail record.</h2>
           <p>
             Badges collect here as milestones are earned. Each marker shows what it means,

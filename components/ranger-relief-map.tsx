@@ -65,7 +65,7 @@ const mapPoints: MapPoint[] = [
   },
   {
     body:
-      "Camp Circles are future group spaces for leaders, cohorts, facilitators, and shared progress through the DYD journey.",
+      "Camp Circles are future group spaces for leaders, cohorts, facilitators, and shared progress through the DYDD journey.",
     cta: "Preview Camp Circles",
     href: "/camp-circle",
     id: "camp-circles",
@@ -89,11 +89,11 @@ const mapPoints: MapPoint[] = [
   },
   {
     body:
-      "The main DYD Journey is the hub. It ties together Identity, Expertise, Story, Desire, Gifts, and Niche while pulling in assessment insights as they become available.",
+      "The main DYDD Journey is the hub. It ties together Identity, Expertise, Story, Desire, Gifts, and Niche while pulling in assessment insights as they become available.",
     cta: "Open the Journey",
     href: "/journey",
     id: "dydd-journey",
-    label: "DYD Journey",
+    label: "DYDD Journey",
     left: "53%",
     title: "The main route",
     top: "63%",
@@ -126,7 +126,7 @@ const mapPoints: MapPoint[] = [
 ];
 
 const legendTrails = [
-  { id: "dydd-journey", label: "Main DYD Journey" },
+  { id: "dydd-journey", label: "Main DYDD Journey" },
   { id: "designid", label: "DesignID" },
   { id: "designpd", label: "DesignPD" },
   { id: "trailheads", label: "All Trailheads" },
@@ -141,11 +141,11 @@ export function RangerReliefMap() {
   );
 
   return (
-    <section className="relief-map-workbench" aria-label="Interactive DYD relief map">
+    <section className="relief-map-workbench" aria-label="Interactive DYDD relief map">
       <div className="relief-map-stage">
         <img
           src="/brand/dydd-park-map-concept.png"
-          alt="Illustrated DYD park map with colored trails through a forest"
+          alt="Illustrated DYDD park map with colored trails through a forest"
         />
         {mapPoints.map((point) => (
           <button

@@ -588,7 +588,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             <div>
               <h2>Welcome, {welcomeName}.</h2>
               <p>
-                Base Camp is your personal landing place for the DYD journey.
+                Base Camp is your personal landing place for the DYDD journey.
               </p>
             </div>
             <Link className="button primary basecamp-launch-button" href="/ranger-station">
@@ -605,17 +605,16 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         </div>
       </section>
 
-      <section className="basecamp-orientation-band" aria-label="What is DYD">
-        <div className="basecamp-orientation-copy">
-          <p className="section-label">Welcome</p>
-          <h2>What is DYD?</h2>
+      <section className="basecamp-orientation-band" aria-label="DYDD Base Camp next step">
+        <div className="basecamp-ranger-launch-card">
+          <p className="section-label">Next</p>
+          <h2>Open Ranger Station.</h2>
           <p>
-            Discover Your Divine Design helps you understand how God has shaped your identity,
-            design, story, desire, gifts, and purpose. Start here, then let Ranger Station help
-            you choose the best next trail.
+            Start with the guide station, then choose the first trail that fits your season.
+            Ranger Station holds the map, trailheads, quick tracks, and next-step choices.
           </p>
-          <Link className="button secondary" href="/ranger-station">
-            Ask Dydi what to do next
+          <Link className="button primary" href="/ranger-station">
+            Go to Ranger Station
           </Link>
         </div>
         <DyddOrientationSlider />
@@ -623,7 +622,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
 
       <DydPassportBook badges={passportBadges} firstName={welcomeName} />
 
-      <section className="basecamp-account-layout" aria-label="Base Camp account overview">
+      <section className="basecamp-account-layout basecamp-account-layout-single" aria-label="Base Camp account overview">
         <article className="basecamp-account-card profile">
           <div className="card-heading">
             <p className="section-label">Account</p>
@@ -642,24 +641,6 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               <dd>{profile?.email ?? user?.email ?? fruitLifeDashboardEmail ?? "Preview account"}</dd>
             </div>
           </dl>
-        </article>
-
-        <article className="basecamp-account-card launch">
-          <div className="card-heading">
-            <p className="section-label">Next</p>
-            <h2>Open Ranger Station.</h2>
-            <p>
-              The map, quick tracks, and next-step choices belong there.
-            </p>
-          </div>
-          <div className="basecamp-launch-panel">
-            <p>
-              Start with the guide station, then choose the first trail that fits your season.
-            </p>
-            <Link className="button primary" href="/ranger-station">
-              Launch the tool
-            </Link>
-          </div>
         </article>
       </section>
 

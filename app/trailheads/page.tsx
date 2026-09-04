@@ -193,7 +193,7 @@ export default function TrailheadsPage() {
         <div className="trailhead-start-note">
           <p className="section-label">Start logic</p>
           <p>
-            The main DYD Journey is the hub. Spiritual Gifts, FruitLife 360, DesignID,
+            The main DYDD Journey is the hub. Spiritual Gifts, FruitLife 360, DesignID,
             and Design Pathways can begin as entry trails. DesignPD should come after
             DesignID because it depends on that design language.
           </p>

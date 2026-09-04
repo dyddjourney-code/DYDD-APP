@@ -4,7 +4,7 @@ import {
   rescindFruitLifeObserverInvite,
   sendFruitLifeReminder,
 } from "@/app/fruitlife360/actions";
-import { DydPassportBook, defaultPassportBadges } from "@/components/dyd-passport-book";
+import { DydPassportBook } from "@/components/dyd-passport-book";
 import { DyddOrientationSlider } from "@/components/dydd-orientation-slider";
 import { FruitLifeSessionAutoRefresh } from "@/app/fruitlife360/session-auto-refresh";
 import { signOut } from "@/app/login/actions";
@@ -39,6 +39,7 @@ import {
   type ReviewSearchParams,
   withReviewQuery,
 } from "@/lib/review/heather";
+import { defaultPassportBadges } from "@/lib/passport-badges";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 

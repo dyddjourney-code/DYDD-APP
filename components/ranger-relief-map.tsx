@@ -24,7 +24,7 @@ const mapPoints: MapPoint[] = [
     label: "Base Camp",
     left: "16%",
     title: "Your personal starting place",
-    top: "67%",
+    top: "68%",
     type: "place",
   },
   {
@@ -34,9 +34,9 @@ const mapPoints: MapPoint[] = [
     href: "#ranger-desk",
     id: "ranger-station",
     label: "Ranger Station",
-    left: "39%",
+    left: "66%",
     title: "The guided orientation room",
-    top: "48%",
+    top: "76%",
     type: "place",
   },
   {
@@ -46,21 +46,21 @@ const mapPoints: MapPoint[] = [
     href: "/trailheads",
     id: "trailheads",
     label: "Trailheads",
-    left: "63%",
+    left: "48%",
     title: "Choose the route",
     top: "38%",
     type: "place",
   },
   {
     body:
-      "Fireside holds teaching, encouragement, Scripture, live gatherings, and Waypoints that help people keep walking after the lesson is over.",
+      "Fireside is a place to stop for teaching, encouragement, Scripture, live gatherings, and Waypoints that help people keep walking after the lesson is over.",
     cta: "Visit Fireside",
     href: "/fireside",
     id: "fireside",
     label: "Fireside",
-    left: "75%",
-    title: "Teaching and encouragement",
-    top: "72%",
+    left: "76%",
+    title: "A teaching stop along the way",
+    top: "68%",
     type: "place",
   },
   {
@@ -70,9 +70,9 @@ const mapPoints: MapPoint[] = [
     href: "/camp-circle",
     id: "camp-circles",
     label: "Camp Circles",
-    left: "26%",
+    left: "85%",
     title: "Walk together",
-    top: "28%",
+    top: "64%",
     type: "place",
   },
   {
@@ -84,7 +84,7 @@ const mapPoints: MapPoint[] = [
     label: "Waypoints",
     left: "84%",
     title: "Places to pause",
-    top: "23%",
+    top: "35%",
     type: "place",
   },
   {
@@ -94,9 +94,45 @@ const mapPoints: MapPoint[] = [
     href: "/journey",
     id: "dydd-journey",
     label: "DYDD Journey",
-    left: "53%",
+    left: "44%",
     title: "The main route",
-    top: "63%",
+    top: "84%",
+    type: "trail",
+  },
+  {
+    body:
+      "Spiritual Gifts is an open starting trail for naming how grace is showing up in service, maturity, and the body of Christ.",
+    cta: "Start Spiritual Gifts",
+    href: "/trailheads#spiritual-gifts",
+    id: "spiritual-gifts",
+    label: "Spiritual Gifts",
+    left: "70%",
+    title: "Grace expressed in service",
+    top: "49%",
+    type: "trail",
+  },
+  {
+    body:
+      "FruitLife 360 is an open starting trail for seeing formation, visible fruit, and growth conversations with honest encouragement.",
+    cta: "Start FruitLife 360",
+    href: "/trailheads#fruitlife-360",
+    id: "fruitlife-360",
+    label: "FruitLife 360",
+    left: "60%",
+    title: "Formation and visible fruit",
+    top: "43%",
+    type: "trail",
+  },
+  {
+    body:
+      "Design Pathways helps a person test possible next steps, notice direction, and move from insight into discernment.",
+    cta: "Open Design Pathways",
+    href: "/trailheads#design-pathways",
+    id: "design-pathways",
+    label: "Design Pathways",
+    left: "90%",
+    title: "Discernment and next steps",
+    top: "18%",
     type: "trail",
   },
   {
@@ -106,31 +142,42 @@ const mapPoints: MapPoint[] = [
     href: "/trailheads#designid",
     id: "designid",
     label: "DesignID Trail",
-    left: "47%",
+    left: "41%",
     title: "Reflection and design language",
-    top: "24%",
-    type: "trail",
-  },
-  {
-    body:
-      "DesignPD comes after DesignID because it depends on the design language already discovered. It applies design through planning, deciding, and doing.",
-    cta: "Preview DesignPD",
-    href: "/trailheads#designpd",
-    id: "designpd",
-    label: "DesignPD Trail",
-    left: "70%",
-    title: "Practice and daily alignment",
-    top: "54%",
+    top: "52%",
     type: "trail",
   },
 ];
 
 const legendTrails = [
   { id: "dydd-journey", label: "Main DYDD Journey" },
+  { id: "spiritual-gifts", label: "Spiritual Gifts" },
+  { id: "fruitlife-360", label: "FruitLife 360" },
+  { id: "design-pathways", label: "Design Pathways" },
   { id: "designid", label: "DesignID" },
-  { id: "designpd", label: "DesignPD" },
-  { id: "trailheads", label: "All Trailheads" },
-  { id: "waypoints", label: "Waypoints" },
+];
+
+const trailLines = [
+  {
+    d: "M74 0 C75 10 77 18 80 27 C82 36 83 48 85 61 C88 77 92 83 98 88 M35 82 C45 83 55 80 66 82 C77 84 89 88 98 88 M27 11 C19 16 18 32 22 48 C26 66 29 75 35 82",
+    id: "dydd-journey",
+  },
+  {
+    d: "M53 75 C51 65 58 59 62 50 C68 45 75 47 79 56 C83 65 78 72 69 75 C62 79 56 80 53 75",
+    id: "spiritual-gifts",
+  },
+  {
+    d: "M48 39 C55 36 62 31 67 24 C73 20 78 22 81 23 M48 39 C52 45 55 55 58 64 C61 73 65 80 66 86",
+    id: "fruitlife-360",
+  },
+  {
+    d: "M81 23 C88 17 94 14 100 14 M81 23 C80 35 74 45 71 57 C69 66 69 73 69 82",
+    id: "design-pathways",
+  },
+  {
+    d: "M38 6 C42 18 45 30 48 39 C45 51 41 64 39 82 C37 91 35 96 34 100 M75 72 C82 78 86 86 86 100",
+    id: "designid",
+  },
 ];
 
 export function RangerReliefMap() {
@@ -147,9 +194,19 @@ export function RangerReliefMap() {
           src="/brand/dydd-park-map-concept.png"
           alt="Illustrated DYDD park map with colored trails through a forest"
         />
+        <svg className="relief-map-routes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          {trailLines.map((trail) => (
+            <path
+              className={`relief-route relief-route-${trail.id} ${activePoint.id === trail.id ? "active" : ""}`}
+              d={trail.d}
+              key={trail.id}
+              pathLength={100}
+            />
+          ))}
+        </svg>
         {mapPoints.map((point) => (
           <button
-            className={`relief-map-marker ${point.type} ${activePoint.id === point.id ? "active" : ""}`}
+            className={`relief-map-marker ${point.type} marker-${point.id} ${activePoint.id === point.id ? "active" : ""}`}
             key={point.id}
             onClick={() => setActiveId(point.id)}
             onMouseEnter={() => setActiveId(point.id)}

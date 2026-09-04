@@ -4313,40 +4313,171 @@ body:has(.fruitlife-public) .mobile-app-nav,
 }
 
 .relief-map-stage img {
+  display: block;
   width: 100%;
   height: 100%;
   min-height: inherit;
   object-fit: cover;
 }
 
+.relief-map-routes {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.relief-route {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0);
+  stroke-width: 1.05;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1.1 4.1;
+  filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+  opacity: 0;
+  transition:
+    opacity 180ms ease,
+    stroke-width 180ms ease,
+    filter 180ms ease;
+}
+
+.relief-route.active {
+  animation: relief-route-lights 1250ms linear infinite;
+  opacity: 1;
+  stroke-width: 1.35;
+  filter:
+    drop-shadow(0 0 3px currentColor)
+    drop-shadow(0 0 8px rgba(255, 255, 255, 0.82));
+}
+
+.relief-route-dydd-journey {
+  color: #4fb36b;
+  stroke: currentColor;
+}
+
+.relief-route-spiritual-gifts {
+  color: #3d9de8;
+  stroke: currentColor;
+}
+
+.relief-route-fruitlife-360 {
+  color: #d94f34;
+  stroke: currentColor;
+}
+
+.relief-route-design-pathways {
+  color: #e88924;
+  stroke: currentColor;
+}
+
+.relief-route-designid {
+  color: #8a67db;
+  stroke: currentColor;
+}
+
+@keyframes relief-route-lights {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
 .relief-map-marker {
   position: absolute;
   transform: translate(-50%, -50%);
-  max-width: 132px;
-  padding: 7px 10px;
-  border: 2px solid rgba(255, 248, 231, 0.9);
+  max-width: 118px;
+  padding: 6px 9px;
+  border: 1px solid rgba(255, 248, 231, 0.58);
   border-radius: 999px;
-  background: rgba(36, 63, 39, 0.9);
+  background: rgba(27, 48, 31, 0.64);
+  backdrop-filter: blur(8px) saturate(1.08);
   color: white;
   cursor: pointer;
   font: inherit;
-  font-size: 0.74rem;
+  font-size: 0.69rem;
   font-weight: 950;
   line-height: 1.12;
   text-align: center;
-  box-shadow: 0 10px 20px rgba(36, 63, 39, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 10px 20px rgba(36, 63, 39, 0.2);
   transition:
     background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
     transform 180ms ease;
 }
 
 .relief-map-marker.trail {
-  background: rgba(184, 138, 67, 0.92);
+  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.46);
+  color: var(--green-dark);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.48);
 }
 
 .relief-map-marker:hover,
 .relief-map-marker.active {
+  border-color: rgba(255, 255, 255, 0.86);
+  background: rgba(36, 63, 39, 0.76);
+  color: white;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 12px 24px rgba(36, 63, 39, 0.26);
   transform: translate(-50%, -50%) scale(1.06);
+}
+
+.relief-map-marker.marker-ranger-station {
+  min-width: 108px;
+  background: rgba(18, 34, 24, 0.5);
+}
+
+.relief-map-marker.marker-camp-circles,
+.relief-map-marker.marker-fireside {
+  background: rgba(81, 47, 21, 0.56);
+}
+
+.relief-map-marker.marker-fireside::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -26px;
+  width: 52px;
+  height: 34px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255, 190, 78, 0.95) 0 12%, transparent 13%),
+    radial-gradient(circle at 28% 64%, rgba(40, 58, 37, 0.92) 0 9%, transparent 10%),
+    radial-gradient(circle at 48% 74%, rgba(40, 58, 37, 0.92) 0 9%, transparent 10%),
+    radial-gradient(circle at 70% 64%, rgba(40, 58, 37, 0.92) 0 9%, transparent 10%),
+    radial-gradient(ellipse at 50% 66%, rgba(109, 71, 38, 0.9) 0 34%, transparent 36%);
+  box-shadow: 0 6px 10px rgba(36, 30, 18, 0.18);
+  pointer-events: none;
+}
+
+.relief-map-marker.marker-dydd-journey {
+  border-color: rgba(79, 179, 107, 0.72);
+}
+
+.relief-map-marker.marker-spiritual-gifts {
+  border-color: rgba(61, 157, 232, 0.72);
+}
+
+.relief-map-marker.marker-fruitlife-360 {
+  border-color: rgba(217, 79, 52, 0.76);
+}
+
+.relief-map-marker.marker-design-pathways {
+  border-color: rgba(232, 137, 36, 0.76);
+}
+
+.relief-map-marker.marker-designid {
+  border-color: rgba(138, 103, 219, 0.76);
 }
 
 .relief-map-panel {
@@ -13451,6 +13582,20 @@ body:has(.fruitlife-public) .mobile-app-nav,
     max-width: 96px;
     padding: 6px 8px;
     font-size: 0.66rem;
+  }
+
+  .relief-route.active {
+    stroke-width: 1.7;
+  }
+
+  .relief-map-marker.marker-ranger-station {
+    min-width: 94px;
+  }
+
+  .relief-map-marker.marker-fireside::before {
+    top: -22px;
+    width: 42px;
+    height: 28px;
   }
 
   .ranger-stop-card .button {

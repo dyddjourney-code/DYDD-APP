@@ -58,9 +58,9 @@ const mapPoints: MapPoint[] = [
     href: "/fireside",
     id: "fireside",
     label: "Fireside",
-    left: "76%",
+    left: "14%",
     title: "A teaching stop along the way",
-    top: "68%",
+    top: "38%",
     type: "place",
   },
   {
@@ -94,9 +94,9 @@ const mapPoints: MapPoint[] = [
     href: "/journey",
     id: "dydd-journey",
     label: "DYDD Journey",
-    left: "44%",
+    left: "53%",
     title: "The main route",
-    top: "84%",
+    top: "85%",
     type: "trail",
   },
   {
@@ -159,7 +159,7 @@ const legendTrails = [
 
 const trailLines = [
   {
-    d: "M74 0 C75 10 77 18 80 27 C82 36 83 48 85 61 C88 77 92 83 98 88 M35 82 C45 83 55 80 66 82 C77 84 89 88 98 88 M27 11 C19 16 18 32 22 48 C26 66 29 75 35 82",
+    d: "M38 0 C36 6 29 9 23 13 C18 18 18 31 20 43 C23 58 29 72 38 82 C48 85 58 83 68 83 C77 85 88 86 98 86 M73 0 C76 7 77 15 78 24 C80 36 82 52 85 66 C88 78 92 84 98 86",
     id: "dydd-journey",
   },
   {
@@ -189,33 +189,35 @@ export function RangerReliefMap() {
 
   return (
     <section className="relief-map-workbench" aria-label="Interactive DYDD relief map">
-      <div className="relief-map-stage">
-        <img
-          src="/brand/dydd-park-map-concept.png"
-          alt="Illustrated DYDD park map with colored trails through a forest"
-        />
-        <svg className="relief-map-routes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          {trailLines.map((trail) => (
-            <path
-              className={`relief-route relief-route-${trail.id} ${activePoint.id === trail.id ? "active" : ""}`}
-              d={trail.d}
-              key={trail.id}
-              pathLength={100}
-            />
+      <div className="relief-map-stage-scroll">
+        <div className="relief-map-stage">
+          <img
+            src="/brand/dydd-park-map-concept.png"
+            alt="Illustrated DYDD park map with colored trails through a forest"
+          />
+          <svg className="relief-map-routes" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            {trailLines.map((trail) => (
+              <path
+                className={`relief-route relief-route-${trail.id} ${activePoint.id === trail.id ? "active" : ""}`}
+                d={trail.d}
+                key={trail.id}
+                pathLength={100}
+              />
+            ))}
+          </svg>
+          {mapPoints.map((point) => (
+            <button
+              className={`relief-map-marker ${point.type} marker-${point.id} ${activePoint.id === point.id ? "active" : ""}`}
+              key={point.id}
+              onClick={() => setActiveId(point.id)}
+              onMouseEnter={() => setActiveId(point.id)}
+              style={{ left: point.left, top: point.top }}
+              type="button"
+            >
+              <span>{point.label}</span>
+            </button>
           ))}
-        </svg>
-        {mapPoints.map((point) => (
-          <button
-            className={`relief-map-marker ${point.type} marker-${point.id} ${activePoint.id === point.id ? "active" : ""}`}
-            key={point.id}
-            onClick={() => setActiveId(point.id)}
-            onMouseEnter={() => setActiveId(point.id)}
-            style={{ left: point.left, top: point.top }}
-            type="button"
-          >
-            <span>{point.label}</span>
-          </button>
-        ))}
+        </div>
       </div>
 
       <aside className="relief-map-panel">

@@ -3805,6 +3805,622 @@ body:has(.fruitlife-public) .mobile-app-nav,
   margin-top: 0;
 }
 
+.basecamp-orientation-band {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.38fr) minmax(0, 1fr);
+  gap: clamp(18px, 3vw, 30px);
+  align-items: stretch;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(234, 240, 226, 0.72)),
+    var(--panel);
+  box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
+}
+
+.basecamp-orientation-copy {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.basecamp-orientation-copy h2 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(1.8rem, 3.6vw, 3.2rem);
+  line-height: 1;
+}
+
+.basecamp-orientation-copy p:not(.section-label) {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 760;
+  line-height: 1.6;
+}
+
+.passport-book {
+  display: grid;
+  gap: 18px;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(116, 76, 46, 0.12) 0 7px, transparent 7px),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(247, 242, 232, 0.9)),
+    var(--panel);
+  box-shadow: 0 20px 48px rgba(70, 58, 35, 0.09);
+}
+
+.passport-book-cover {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(210px, 0.34fr);
+  gap: 18px;
+  align-items: end;
+}
+
+.passport-book-cover h2,
+.passport-badge-popover h3 {
+  margin: 0;
+  color: var(--green-dark);
+}
+
+.passport-book-cover p {
+  max-width: 72ch;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-weight: 760;
+  line-height: 1.58;
+}
+
+.passport-next-badge {
+  display: grid;
+  gap: 5px;
+  padding: 14px;
+  border: 1px solid rgba(184, 138, 67, 0.28);
+  border-radius: 8px;
+  background: rgba(243, 228, 196, 0.62);
+}
+
+.passport-next-badge span,
+.passport-badge-popover span,
+.passport-count-stamp small,
+.passport-badge-button span {
+  color: var(--brass);
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.passport-next-badge strong {
+  color: var(--green-dark);
+  font-size: 1.2rem;
+  line-height: 1.1;
+}
+
+.passport-next-badge small {
+  color: var(--muted);
+  font-weight: 760;
+  line-height: 1.36;
+}
+
+.passport-layout {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.24fr) minmax(0, 1fr) minmax(250px, 0.35fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+.passport-earned-page,
+.passport-badge-popover {
+  padding: 16px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.passport-earned-page {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+}
+
+.passport-earned-page p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 760;
+  line-height: 1.52;
+}
+
+.passport-count-stamp {
+  display: grid;
+  place-items: center;
+  width: 114px;
+  height: 114px;
+  border: 2px solid rgba(184, 138, 67, 0.42);
+  border-radius: 50%;
+  background: rgba(243, 228, 196, 0.42);
+}
+
+.passport-count-stamp span {
+  color: var(--green-dark);
+  font-size: 2.25rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.passport-badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  gap: 10px;
+}
+
+.passport-badge-button {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  min-height: 146px;
+  padding: 12px 10px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  text-align: center;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+
+.passport-badge-button:hover,
+.passport-badge-button.selected {
+  border-color: rgba(71, 107, 66, 0.34);
+  background: rgba(234, 240, 226, 0.82);
+  transform: translateY(-1px);
+}
+
+.passport-badge-button:active {
+  transform: translateY(1px);
+}
+
+.passport-badge-button.ahead {
+  opacity: 0.68;
+}
+
+.passport-badge-button.earned {
+  background: rgba(234, 240, 226, 0.92);
+}
+
+.passport-badge-button.next {
+  background: rgba(243, 228, 196, 0.72);
+}
+
+.passport-badge-button img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 12px rgba(36, 63, 39, 0.14));
+}
+
+.passport-badge-button strong {
+  color: var(--green-dark);
+  font-size: 0.9rem;
+  line-height: 1.12;
+}
+
+.passport-badge-popover {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+}
+
+.passport-badge-popover img {
+  width: 108px;
+  height: 108px;
+  object-fit: contain;
+}
+
+.passport-badge-popover p {
+  margin: 7px 0 12px;
+  color: var(--muted);
+  font-weight: 760;
+  line-height: 1.48;
+}
+
+.passport-badge-popover dl {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+}
+
+.passport-badge-popover dt {
+  color: var(--brass);
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.passport-badge-popover dd {
+  margin: 3px 0 0;
+  color: var(--green-dark);
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.36;
+}
+
+.ranger-station-fast-links {
+  display: grid;
+  gap: 10px;
+}
+
+.ranger-desk-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.36fr);
+  gap: clamp(18px, 3vw, 28px);
+  align-items: stretch;
+}
+
+.ranger-desk-card,
+.ranger-video-card,
+.trailhead-start-note {
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 8px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.94), rgba(251, 250, 244, 0.9)),
+    var(--panel);
+  box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
+}
+
+.ranger-desk-card {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.42fr) minmax(0, 1fr);
+  gap: clamp(16px, 3vw, 26px);
+  padding: clamp(18px, 3vw, 28px);
+}
+
+.ranger-desk-art {
+  position: relative;
+  display: grid;
+  align-items: end;
+  justify-items: center;
+  min-height: 390px;
+  overflow: hidden;
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(234, 240, 226, 0.42), rgba(243, 228, 196, 0.55)),
+    repeating-linear-gradient(90deg, rgba(71, 107, 66, 0.08) 0 1px, transparent 1px 48px);
+}
+
+.ranger-desk-art img {
+  position: relative;
+  width: min(260px, 82%);
+  max-height: 345px;
+  object-fit: contain;
+  z-index: 1;
+}
+
+.ranger-desk-surface {
+  position: absolute;
+  right: 8%;
+  bottom: 0;
+  left: 8%;
+  height: 112px;
+  border: 2px solid rgba(88, 55, 28, 0.32);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background:
+    linear-gradient(180deg, #b78952, #7d5634);
+  box-shadow: 0 -16px 30px rgba(70, 58, 35, 0.12);
+}
+
+.desk-map,
+.desk-compass,
+.desk-pencil {
+  position: absolute;
+  display: block;
+}
+
+.desk-map {
+  top: 18px;
+  left: 13%;
+  width: 116px;
+  height: 58px;
+  border: 1px solid rgba(36, 63, 39, 0.28);
+  border-radius: 4px;
+  background:
+    linear-gradient(135deg, transparent 38%, rgba(71, 107, 66, 0.3) 39% 42%, transparent 43%),
+    linear-gradient(45deg, transparent 52%, rgba(184, 138, 67, 0.34) 53% 56%, transparent 57%),
+    #f9efd2;
+  transform: rotate(-7deg);
+}
+
+.desk-compass {
+  top: 22px;
+  right: 20%;
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(36, 63, 39, 0.5);
+  border-radius: 50%;
+  background: #fff8e7;
+}
+
+.desk-compass::after {
+  content: "";
+  position: absolute;
+  inset: 12px 18px;
+  background: var(--brass);
+  clip-path: polygon(50% 0, 100% 100%, 50% 74%, 0 100%);
+  transform: rotate(35deg);
+}
+
+.desk-pencil {
+  right: 11%;
+  bottom: 22px;
+  width: 82px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--green-dark);
+  transform: rotate(-16deg);
+}
+
+.ranger-desk-copy {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+}
+
+.ranger-desk-copy h2,
+.relief-map-panel h3 {
+  margin: 0;
+  color: var(--green-dark);
+}
+
+.ranger-desk-copy p:not(.section-label),
+.ranger-video-card p,
+.relief-map-panel p,
+.trailhead-start-note p:not(.section-label) {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 760;
+  line-height: 1.58;
+}
+
+.ranger-desk-form {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.ranger-desk-prompts {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.ranger-desk-prompts button,
+.relief-map-legend button {
+  min-height: 38px;
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--green-dark);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 850;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+.ranger-desk-prompts button {
+  padding: 8px 12px;
+}
+
+.ranger-desk-prompts button:hover,
+.relief-map-legend button:hover,
+.relief-map-legend button.active {
+  border-color: rgba(71, 107, 66, 0.34);
+  background: rgba(234, 240, 226, 0.92);
+}
+
+.ranger-desk-prompts button:active,
+.relief-map-legend button:active {
+  transform: translateY(1px);
+}
+
+.ranger-video-card {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding: clamp(18px, 3vw, 24px);
+}
+
+.video-placeholder {
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  min-height: 250px;
+  border: 1px solid rgba(36, 63, 39, 0.2);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(243, 228, 196, 0.95), transparent 28%),
+    linear-gradient(135deg, rgba(36, 63, 39, 0.96), rgba(71, 107, 66, 0.9));
+  color: white;
+  text-align: center;
+}
+
+.video-placeholder span {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.74rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.video-placeholder strong {
+  max-width: 15ch;
+  color: #ffffff;
+  font-size: clamp(1.45rem, 2.4vw, 2.2rem);
+  line-height: 1.05;
+}
+
+.relief-map-section {
+  grid-template-columns: minmax(220px, 0.26fr) minmax(0, 1fr);
+}
+
+.relief-map-workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 0.32fr);
+  gap: 14px;
+  min-width: 0;
+}
+
+.relief-map-stage {
+  position: relative;
+  min-height: clamp(360px, 46vw, 600px);
+  overflow: hidden;
+  border: 1px solid rgba(36, 63, 39, 0.18);
+  border-radius: 8px;
+  background: var(--green-soft);
+}
+
+.relief-map-stage img {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+  object-fit: cover;
+}
+
+.relief-map-marker {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  max-width: 132px;
+  padding: 7px 10px;
+  border: 2px solid rgba(255, 248, 231, 0.9);
+  border-radius: 999px;
+  background: rgba(36, 63, 39, 0.9);
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 950;
+  line-height: 1.12;
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(36, 63, 39, 0.22);
+  transition:
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.relief-map-marker.trail {
+  background: rgba(184, 138, 67, 0.92);
+}
+
+.relief-map-marker:hover,
+.relief-map-marker.active {
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+.relief-map-panel {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.relief-map-panel .button {
+  justify-self: start;
+}
+
+.relief-map-legend {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid rgba(71, 107, 66, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.relief-map-legend span {
+  margin-right: 4px;
+  color: var(--brass);
+  font-size: 0.74rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.relief-map-legend button {
+  padding: 7px 11px;
+}
+
+.ranger-start-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.trailhead-start-note {
+  margin: 18px 0;
+  padding: 18px;
+}
+
+.trailhead-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.trailhead-facts div {
+  min-height: 78px;
+  padding: 10px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.trailhead-facts dt {
+  color: var(--brass);
+  font-size: 0.64rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.trailhead-facts dd {
+  margin: 5px 0 0;
+  color: var(--green-dark);
+  font-weight: 900;
+  line-height: 1.18;
+}
+
+.trailhead-facts.compact {
+  grid-template-columns: repeat(3, minmax(96px, 1fr));
+  margin: 12px 0;
+}
+
+.trailhead-facts.compact div {
+  min-height: 62px;
+}
+
 .basecamp-account-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
@@ -12060,6 +12676,13 @@ body:has(.fruitlife-public) .mobile-app-nav,
   .waypoint-result-card,
   .ranger-map-section,
   .ranger-station-hero,
+  .ranger-desk-section,
+  .ranger-desk-card,
+  .relief-map-section,
+  .relief-map-workbench,
+  .passport-book-cover,
+  .passport-layout,
+  .basecamp-orientation-band,
   .basecamp-account-layout,
   .basecamp-account-layout.records,
   .polished-course-hero,
@@ -12332,6 +12955,8 @@ body:has(.fruitlife-public) .mobile-app-nav,
   .gear-experience-grid,
   .artifact-workbench .artifact-download-list,
   .badge-system-intro,
+  .trailhead-facts,
+  .trailhead-facts.compact,
   .journey-section-stack summary,
   .journey-care-grid,
   .journey-assessment-callouts,
@@ -12750,6 +13375,20 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
   .ranger-park-map {
     min-height: 360px;
+  }
+
+  .ranger-desk-art {
+    min-height: 340px;
+  }
+
+  .relief-map-stage {
+    min-height: 380px;
+  }
+
+  .relief-map-marker {
+    max-width: 96px;
+    padding: 6px 8px;
+    font-size: 0.66rem;
   }
 
   .ranger-stop-card .button {

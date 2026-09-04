@@ -4,6 +4,8 @@ import {
   rescindFruitLifeObserverInvite,
   sendFruitLifeReminder,
 } from "@/app/fruitlife360/actions";
+import { DydPassportBook, defaultPassportBadges } from "@/components/dyd-passport-book";
+import { DyddOrientationSlider } from "@/components/dydd-orientation-slider";
 import { FruitLifeSessionAutoRefresh } from "@/app/fruitlife360/session-auto-refresh";
 import { signOut } from "@/app/login/actions";
 import {
@@ -538,6 +540,24 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     : newPreview
       ? jordanReviewEmail
       : normalizeEmail(profile?.email ?? user?.email);
+  const hasDesignId = ownsAssessment(assessmentReport, "designid");
+  const hasDesignPd = ownsAssessment(assessmentReport, "designpd");
+  const hasDesignPathways = ownsAssessment(assessmentReport, "design_pathways");
+  const hasSpiritualGifts = ownsAssessment(assessmentReport, "spiritual_gifts");
+  const hasFruitLife = ownsAssessment(assessmentReport, "fruit_360");
+  const passportBadges = defaultPassportBadges.map((badge) => {
+    const isEarned =
+      (badge.title === "DesignID" && hasDesignId) ||
+      (badge.title === "DesignPD" && hasDesignPd) ||
+      (badge.title === "Design Pathways" && hasDesignPathways) ||
+      (badge.title === "Spiritual Gifts" && hasSpiritualGifts) ||
+      (badge.title === "FruitLife 360" && hasFruitLife);
+
+    return {
+      ...badge,
+      state: isEarned ? "earned" as const : badge.state,
+    };
+  });
 
   return (
     <main className="hq-shell hq-app-shell">
@@ -567,11 +587,11 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             <div>
               <h2>Welcome, {welcomeName}.</h2>
               <p>
-                This is your quiet starting point.
+                Base Camp is your personal landing place for the DYD journey.
               </p>
             </div>
             <Link className="button primary basecamp-launch-button" href="/ranger-station">
-              Let&apos;s go to Ranger Station
+              Go to Ranger Station
             </Link>
           </div>
         </div>
@@ -583,6 +603,24 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           </div>
         </div>
       </section>
+
+      <section className="basecamp-orientation-band" aria-label="What is DYD">
+        <div className="basecamp-orientation-copy">
+          <p className="section-label">Welcome</p>
+          <h2>What is DYD?</h2>
+          <p>
+            Discover Your Divine Design helps you understand how God has shaped your identity,
+            design, story, desire, gifts, and purpose. Start here, then let Ranger Station help
+            you choose the best next trail.
+          </p>
+          <Link className="button secondary" href="/ranger-station">
+            Ask Dydi what to do next
+          </Link>
+        </div>
+        <DyddOrientationSlider />
+      </section>
+
+      <DydPassportBook badges={passportBadges} firstName={welcomeName} />
 
       <section className="basecamp-account-layout" aria-label="Base Camp account overview">
         <article className="basecamp-account-card profile">

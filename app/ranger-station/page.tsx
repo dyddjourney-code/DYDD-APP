@@ -105,12 +105,7 @@ export default function RangerStationPage() {
       <section className="ranger-desk-section" id="ranger-desk" aria-label="Ranger desk">
         <article className="ranger-desk-card">
           <div className="ranger-desk-art" aria-label="Dydi at the ranger desk">
-            <img src="/brand/characters/dydi-full-body.png" alt="Dydi at the Ranger Station desk" />
-            <div className="ranger-desk-surface">
-              <span className="desk-map" />
-              <span className="desk-compass" />
-              <span className="desk-pencil" />
-            </div>
+            <img src="/brand/dydi-ranger-hallway.webp" alt="Dydi standing in the Ranger Station hall" />
           </div>
           <div className="ranger-desk-copy">
             <p className="section-label">Ranger desk</p>

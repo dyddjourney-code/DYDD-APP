@@ -14169,3 +14169,206 @@ body:has(.fruitlife-public) .mobile-app-nav,
     max-width: none;
   }
 }
+
+.spiritual-gifts-shell {
+  --gift-accent: #3f6f78;
+  --gift-accent-soft: rgba(63, 111, 120, 0.12);
+  --gift-ink: #183338;
+}
+
+.spiritual-gifts-hero {
+  background:
+    radial-gradient(circle at 82% 18%, rgba(222, 238, 232, 0.96), transparent 32%),
+    linear-gradient(135deg, #f7fbf8 0%, #e8f1ed 48%, #f7efe1 100%);
+}
+
+.spiritual-gifts-hero .fruitlife-hero-copy h1,
+.spiritual-gifts-shell .fruitlife-hero h1 {
+  color: var(--gift-ink);
+}
+
+.spiritual-gifts-form {
+  display: grid;
+  gap: 22px;
+  margin: 0 auto;
+  max-width: 1040px;
+}
+
+.spiritual-gifts-progress-card,
+.spiritual-gifts-panel {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(63, 111, 120, 0.16);
+  border-radius: 8px;
+  box-shadow: 0 20px 44px rgba(42, 69, 57, 0.08);
+}
+
+.spiritual-gifts-progress-card {
+  align-items: center;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 132px minmax(0, 1fr) 190px;
+  padding: 18px;
+}
+
+.spiritual-gifts-progress-card img {
+  border-radius: 8px;
+  height: 88px;
+  object-fit: contain;
+  width: 132px;
+}
+
+.spiritual-gifts-progress-card h2,
+.spiritual-gifts-panel h2,
+.spiritual-gift-heading h3 {
+  color: var(--gift-ink);
+}
+
+.spiritual-gifts-progress-card p {
+  color: #516762;
+  margin: 0;
+}
+
+.spiritual-gifts-step-meter {
+  display: grid;
+  gap: 8px;
+}
+
+.spiritual-gifts-step-meter span,
+.spiritual-gifts-step-meter strong {
+  color: var(--gift-ink);
+}
+
+.spiritual-gifts-step-meter div {
+  background: rgba(63, 111, 120, 0.14);
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.spiritual-gifts-step-meter div span {
+  background: linear-gradient(90deg, #3f6f78, #78a087);
+  display: block;
+  height: 100%;
+}
+
+.spiritual-gifts-panel {
+  padding: 24px;
+}
+
+.spiritual-gifts-step-panel {
+  display: none;
+}
+
+.spiritual-gifts-step-panel.active {
+  display: grid;
+  gap: 18px;
+}
+
+.spiritual-gift-heading {
+  display: grid;
+  gap: 8px;
+}
+
+.spiritual-gift-heading p,
+.spiritual-gift-heading small {
+  color: #536a64;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.spiritual-gift-reflections {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.spiritual-gift-reflections p {
+  background: var(--gift-accent-soft);
+  border: 1px solid rgba(63, 111, 120, 0.14);
+  border-radius: 8px;
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 12px;
+}
+
+.spiritual-gift-reflections strong {
+  color: var(--gift-ink);
+}
+
+.spiritual-gift-reflections span {
+  color: #52675f;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.spiritual-gifts-scale select {
+  border-color: rgba(63, 111, 120, 0.28);
+}
+
+.spiritual-gifts-results-panel {
+  gap: 20px;
+}
+
+.spiritual-gifts-result-list {
+  display: grid;
+  gap: 16px;
+}
+
+.spiritual-gifts-result-list article {
+  border: 1px solid rgba(63, 111, 120, 0.14);
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.spiritual-gifts-result-list article > div:first-child {
+  align-items: center;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 42px minmax(0, 1fr);
+}
+
+.spiritual-gifts-result-list article > div:first-child > span {
+  align-items: center;
+  background: var(--gift-accent);
+  border-radius: 999px;
+  color: #fff;
+  display: inline-flex;
+  font-weight: 800;
+  height: 42px;
+  justify-content: center;
+  width: 42px;
+}
+
+.spiritual-gifts-result-list strong {
+  color: var(--gift-ink);
+}
+
+.spiritual-gifts-result-list small,
+.spiritual-gifts-result-list p {
+  color: #52675f;
+}
+
+.spiritual-gifts-result-list meter {
+  height: 14px;
+  width: 100%;
+}
+
+.spiritual-gift-reflections.compact {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 760px) {
+  .spiritual-gifts-progress-card,
+  .spiritual-gift-reflections,
+  .spiritual-gift-reflections.compact {
+    grid-template-columns: 1fr;
+  }
+
+  .spiritual-gifts-progress-card img {
+    height: auto;
+    width: min(220px, 100%);
+  }
+}

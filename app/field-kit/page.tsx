@@ -114,7 +114,7 @@ const freeAssessments: AssessmentProduct[] = [
     courseHref: "/courses/spiritual-gifts-service",
     detail:
       "A first-step tool for naming how the Spirit may be empowering service, maturity, and love.",
-    href: "/field-kit",
+    href: "/spiritual-gifts",
     logo: "/brand/tools/spiritual-gifts-logo.jpg",
     points: ["Gifts language", "Service reflection", "Trailhead course included"],
     price: "Free",

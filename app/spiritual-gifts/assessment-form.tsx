@@ -5,7 +5,6 @@ import {
   spiritualGiftQuestionBank,
   spiritualGiftRatingField,
   spiritualGiftRatingOptions,
-  spiritualGifts,
 } from "@/lib/spiritual-gifts/intake";
 
 type SpiritualGiftsAssessmentFormProps = {
@@ -19,11 +18,10 @@ type SpiritualGiftsAssessmentFormProps = {
   token?: string;
 };
 
-const questionsByGift = new Map(
-  spiritualGifts.map((gift) => [
-    gift.key,
-    spiritualGiftQuestionBank.filter((question) => question.giftKey === gift.key),
-  ]),
+const questionsPerStep = 6;
+const questionGroups = Array.from(
+  { length: Math.ceil(spiritualGiftQuestionBank.length / questionsPerStep) },
+  (_, index) => spiritualGiftQuestionBank.slice(index * questionsPerStep, index * questionsPerStep + questionsPerStep),
 );
 
 export function SpiritualGiftsAssessmentForm({
@@ -33,16 +31,13 @@ export function SpiritualGiftsAssessmentForm({
   sessionId,
   token,
 }: SpiritualGiftsAssessmentFormProps) {
-  const totalSteps = spiritualGifts.length + 2;
+  const totalSteps = questionGroups.length + 2;
   const [stepIndex, setStepIndex] = useState(0);
-  const currentGift = stepIndex > 0 && stepIndex <= spiritualGifts.length
-    ? spiritualGifts[stepIndex - 1]
-    : null;
   const progressLabel = useMemo(() => {
     if (stepIndex === 0) return "Details";
-    if (currentGift) return currentGift.label;
+    if (stepIndex <= questionGroups.length) return `Set ${stepIndex}`;
     return "Reflection";
-  }, [currentGift, stepIndex]);
+  }, [stepIndex]);
   const progress = Math.round(((stepIndex + 1) / totalSteps) * 100);
   const lockIdentity = Boolean(initialReviewer?.email || initialReviewer?.name);
 
@@ -65,10 +60,10 @@ export function SpiritualGiftsAssessmentForm({
         <img src="/brand/tools/spiritual-gifts-logo.jpg" alt="Spiritual Gifts logo" />
         <div>
           <p className="section-label">Spiritual Gifts App Channel</p>
-          <h2>Move through one gift at a time.</h2>
+          <h2>Move through the reflection statements.</h2>
           <p>
-            This native assessment saves inside the DYDD app and keeps the current live assessment
-            process separate.
+            Answer prayerfully and instinctively. The scoring stays blind here so the result is not
+            shaped by seeing gift labels while you respond.
           </p>
         </div>
         <div className="spiritual-gifts-step-meter">
@@ -109,33 +104,29 @@ export function SpiritualGiftsAssessmentForm({
         </div>
       </section>
 
-      {spiritualGifts.map((gift, index) => {
-        const questions = questionsByGift.get(gift.key) ?? [];
+      {questionGroups.map((questions, index) => {
         const isActive = stepIndex === index + 1;
 
         return (
           <fieldset
-            aria-labelledby={`spiritual-gifts-${gift.key}-title`}
+            aria-labelledby={`spiritual-gifts-set-${index + 1}-title`}
             className={`spiritual-gifts-panel spiritual-gifts-step-panel spiritual-gift-card ${isActive ? "active" : ""}`}
-            key={gift.key}
+            key={`question-set-${index + 1}`}
           >
-            <div className="spiritual-gift-heading">
-              <p className="section-label">Gift {index + 1}</p>
-              <h3 id={`spiritual-gifts-${gift.key}-title`}>{gift.label}</h3>
-              <p>{gift.definition}</p>
-              <small>{gift.scriptures}</small>
-            </div>
-            <div className="spiritual-gift-reflections" aria-label={`${gift.label} DesignID correlations`}>
-              {Object.entries(gift.reflections).map(([reflection, text]) => (
-                <p key={reflection}>
-                  <strong>{reflection}</strong>
-                  <span>{text}</span>
-                </p>
-              ))}
+            <div className="spiritual-gift-heading blind">
+              <p className="section-label">Reflection Set {index + 1}</p>
+              <h3 id={`spiritual-gifts-set-${index + 1}-title`}>Answer what is true most of the time.</h3>
+              <p>
+                These statements are mixed across the assessment so you can respond honestly without
+                tracking which gift is being scored.
+              </p>
             </div>
             {questions.map((question) => (
               <label className="fruitlife-scale spiritual-gifts-scale" key={question.code}>
-                <span>{question.text}</span>
+                <span>
+                  <small>Statement {question.displayOrder}</small>
+                  {question.text}
+                </span>
                 <select defaultValue="3" name={spiritualGiftRatingField(question.code)} required>
                   {spiritualGiftRatingOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -151,7 +142,15 @@ export function SpiritualGiftsAssessmentForm({
 
       <section className={`spiritual-gifts-panel spiritual-gifts-step-panel ${stepIndex === totalSteps - 1 ? "active" : ""}`}>
         <p className="section-label">Reflection</p>
-        <h2>Connect the result to service.</h2>
+        <h2>Connect the result to real fruit.</h2>
+        <label>
+          Where have others consistently affirmed gift or ministry fruit in you?
+          <textarea name="others_affirmed" rows={4} />
+        </label>
+        <label>
+          Where have you served repeatedly with grace, joy, and impact?
+          <textarea name="service_fruit" rows={4} />
+        </label>
         <label>
           Where are you currently serving, leading, helping, or sensing a pull to serve?
           <textarea name="service_context" rows={4} />

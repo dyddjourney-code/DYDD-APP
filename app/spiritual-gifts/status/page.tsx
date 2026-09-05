@@ -57,10 +57,38 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
     definition: string;
     key: string;
     label: string;
+    percent: number;
     rank: number;
+    reportBlurb?: string;
     score: number;
     scriptures: string;
+    tier?: number;
+    tiedAtScore?: boolean;
   }>;
+  const rankedGifts = (response?.derived_scores?.rankedGifts ?? topGifts) as typeof topGifts;
+  const deepDiveGifts = (response?.derived_scores?.deepDiveGifts ?? topGifts.slice(0, 2)) as Array<
+    (typeof topGifts)[number] & {
+      maturity?: {
+        anchorScripture?: string;
+        description?: string;
+        growthAreas?: string;
+        signsOfImmaturity?: string;
+        stepsToGrow?: string;
+      };
+    }
+  >;
+  const tiers = (response?.derived_scores?.tiers ?? []) as Array<{
+    gifts: Array<{ key: string; label: string; percent: number; rank: number; score: number; tiedAtScore?: boolean }>;
+    tier: number;
+  }>;
+  const tieSummary = response?.derived_scores?.tieSummary as
+    | {
+        cleanTopThree?: boolean;
+        tiedAtTopFiveCutoff?: boolean;
+        topFiveWouldOmitTiedGifts?: boolean;
+        topTierCount?: number;
+      }
+    | undefined;
   const selfLink = typeof session.metadata?.selfLink === "string" ? session.metadata.selfLink : "";
   const progress = session.submitted_at ? 100 : 50;
 
@@ -108,38 +136,80 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
       </section>
 
       <section className="spiritual-gifts-panel spiritual-gifts-results-panel">
-        <p className="section-label">Top 5 Gifts</p>
-        <h2>First app-native result</h2>
+        <p className="section-label">App Report</p>
+        <h2>Spiritual Gifts exploration result</h2>
         {topGifts.length ? (
-          <div className="spiritual-gifts-result-list">
-            {topGifts.map((gift) => {
-              const sourceGift = getSpiritualGiftByKey(gift.key);
+          <>
+            <div className="spiritual-gifts-report-note">
+              <strong>
+                {tieSummary?.topTierCount && tieSummary.topTierCount > 1
+                  ? `${tieSummary.topTierCount} gifts share the top score.`
+                  : "Your strongest gift emerged with the highest score."}
+              </strong>
+              <span>
+                Use this as a first point of exploration. Spiritual gifts are best confirmed
+                through prayer, actual fruit, and trusted people who have seen your life in motion.
+              </span>
+            </div>
 
-              return (
-                <article key={gift.key}>
-                  <div>
-                    <span>{gift.rank}</span>
+            {tiers.length ? (
+              <div className="spiritual-gifts-tier-board" aria-label="Spiritual Gifts tiers">
+                {tiers.map((tier) => (
+                  <article key={tier.tier}>
+                    <p className="section-label">Tier {tier.tier}</p>
+                    <h3>
+                      {tier.tier === 1
+                        ? "First exploration"
+                        : tier.tier === 2
+                          ? "Strong supporting signals"
+                          : "Additional signals to watch"}
+                    </h3>
                     <div>
-                      <strong>{gift.label}</strong>
-                      <small>{gift.scriptures}</small>
-                    </div>
-                  </div>
-                  <meter max={5} min={1} value={gift.score} />
-                  <p>{gift.definition}</p>
-                  {sourceGift ? (
-                    <div className="spiritual-gift-reflections compact">
-                      {Object.entries(sourceGift.reflections).map(([reflection, text]) => (
-                        <p key={reflection}>
-                          <strong>{reflection}</strong>
-                          <span>{text}</span>
-                        </p>
+                      {tier.gifts.map((gift) => (
+                        <span key={gift.key}>
+                          {gift.label} <small>{gift.score}/15</small>
+                        </span>
                       ))}
                     </div>
-                  ) : null}
-                </article>
-              );
-            })}
-          </div>
+                  </article>
+                ))}
+              </div>
+            ) : null}
+
+            <div className="spiritual-gifts-result-list">
+              {topGifts.map((gift) => {
+                const sourceGift = getSpiritualGiftByKey(gift.key);
+
+                return (
+                  <article key={gift.key}>
+                    <div>
+                      <span>{gift.rank}</span>
+                      <div>
+                        <strong>{gift.label}</strong>
+                        <small>{gift.scriptures}</small>
+                      </div>
+                    </div>
+                    <meter max={15} min={3} value={gift.score} />
+                    <p>{gift.reportBlurb ?? gift.definition}</p>
+                    <small>
+                      Score {gift.score}/15 · {gift.percent}% strength
+                      {gift.tiedAtScore ? " · tied score" : ""}
+                    </small>
+                    {sourceGift ? (
+                      <div className="spiritual-gift-reflections compact">
+                        {Object.entries(sourceGift.reflections).map(([reflection, text]) => (
+                          <p key={reflection}>
+                            <strong>{reflection}</strong>
+                            <span>{text}</span>
+                          </p>
+                        ))}
+                      </div>
+                    ) : null}
+                  </article>
+                );
+              })}
+            </div>
+          </>
         ) : (
           <p>
             The result will appear here after the self assessment is submitted. This is separate from
@@ -147,6 +217,72 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
           </p>
         )}
       </section>
+
+      {deepDiveGifts.length ? (
+        <section className="spiritual-gifts-panel spiritual-gifts-deep-dives">
+          <p className="section-label">Deep Dives</p>
+          <h2>Top gifts to explore first</h2>
+          <p>
+            These are capped intentionally. The goal is not to tell someone they walk in every gift,
+            but to give them a focused starting point for conversation, prayer, and confirmation.
+          </p>
+          {tieSummary?.topTierCount && tieSummary.topTierCount > 3 ? (
+            <div className="spiritual-gifts-report-note warning">
+              <strong>Large top-tier tie detected.</strong>
+              <span>
+                These deep dives are provisional because more than three gifts share the top score.
+                A guided follow-up conversation should decide which gifts deserve deeper attention.
+              </span>
+            </div>
+          ) : null}
+          <div className="spiritual-gifts-deep-list">
+            {deepDiveGifts.map((gift) => (
+              <article key={gift.key}>
+                <div>
+                  <span>{gift.rank}</span>
+                  <div>
+                    <h3>{gift.label}</h3>
+                    <small>{gift.maturity?.anchorScripture ?? gift.scriptures}</small>
+                  </div>
+                </div>
+                <p>{gift.maturity?.description ?? gift.definition}</p>
+                <div className="spiritual-gifts-growth-grid">
+                  <p>
+                    <strong>Growth areas</strong>
+                    <span>{gift.maturity?.growthAreas ?? "Review with a trusted leader or mentor."}</span>
+                  </p>
+                  <p>
+                    <strong>Watch for</strong>
+                    <span>{gift.maturity?.signsOfImmaturity ?? "Overstatement, pressure, or self-definition without fruit."}</span>
+                  </p>
+                  <p>
+                    <strong>Next steps</strong>
+                    <span>{gift.maturity?.stepsToGrow ?? "Pray, serve, ask others what fruit they see, and test this humbly."}</span>
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {rankedGifts.length > 5 ? (
+        <section className="spiritual-gifts-panel spiritual-gifts-ranked-list">
+          <p className="section-label">Full Order</p>
+          <h2>All gift scores</h2>
+          <div>
+            {rankedGifts.map((gift) => (
+              <p key={gift.key}>
+                <span>{gift.rank}</span>
+                <strong>{gift.label}</strong>
+                <small>
+                  {gift.score}/15 · {gift.percent}%{gift.tiedAtScore ? " · tied" : ""}
+                </small>
+              </p>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="fruitlife-panel fruitlife-roster-panel">
         <p className="section-label">Session Record</p>

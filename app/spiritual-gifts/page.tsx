@@ -23,15 +23,15 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
       <header className="fruitlife-hero spiritual-gifts-hero">
         <div className="fruitlife-hero-copy">
           <p className="section-label">Spiritual Gifts Intake</p>
-          <h1>Build the gifts channel inside the app.</h1>
+          <h1>Explore how God may be gifting your service.</h1>
           <p className="lede">
-            Start a separate native Spiritual Gifts assessment session without touching the current
-            live-facing assessment, form, sheet, Make, or PDFMonkey process.
+            Start a private app-based assessment using the full Spiritual Gifts question set. Your
+            result is a starting point for prayer, conversation, and confirmation through real fruit.
           </p>
           <div className="fruitlife-hero-badges" aria-label="Spiritual Gifts workflow summary">
-            <span>App-native intake</span>
-            <span>22-gift inventory</span>
-            <span>Result snapshot</span>
+            <span>72 statements</span>
+            <span>24 gifts</span>
+            <span>Tie-aware report</span>
           </div>
         </div>
         <div className="fruitlife-hero-mark">
@@ -43,8 +43,8 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
         title="How this channel works"
         items={[
           "Create an app-owned Spiritual Gifts session first.",
-          "Use the generated self link to complete the native assessment.",
-          "The current live Spiritual Gifts process stays untouched while this channel is rebuilt.",
+          "Use the generated self link to complete the blind assessment flow.",
+          "The current live Spiritual Gifts form, sheet, Make, and PDFMonkey process stay untouched.",
         ]}
       />
 
@@ -89,7 +89,7 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
           <strong>What happens when you click create:</strong>
           <span>
             The app writes a separate Spiritual Gifts session, creates the self assessment link, and
-            keeps all live external automation channels untouched.
+            stores the result inside the DYDD app for review and refinement.
           </span>
         </section>
         <button className="button primary" type="submit">

@@ -189,6 +189,8 @@ export async function saveSpiritualGiftsSelfResponse(formData: FormData) {
   const token = getString(formData, "token");
   const reviewerName = getString(formData, "reviewer_name");
   const reviewerEmail = normalizeEmail(getString(formData, "reviewer_email"));
+  const othersAffirmed = getString(formData, "others_affirmed");
+  const serviceFruit = getString(formData, "service_fruit");
   const serviceContext = getString(formData, "service_context");
   const growthPrayer = getString(formData, "growth_prayer");
   const nextStep = getString(formData, "next_step");
@@ -209,9 +211,55 @@ export async function saveSpiritualGiftsSelfResponse(formData: FormData) {
     key: gift.key,
     label: gift.label,
     rank: index + 1,
+    reportBlurb: gift.reportBlurb,
     reflections: gift.reflections,
     score: gift.score,
+    percent: gift.percent,
     scriptures: gift.scriptures,
+    sourceId: gift.sourceId,
+    tier: gift.tier,
+    tiedAtScore: gift.tiedAtScore,
+  }));
+  const rankedGiftPayload = scores.rankedGifts.map((gift) => ({
+    alwaysCount: gift.alwaysCount,
+    consistencyFloor: gift.consistencyFloor,
+    definition: gift.definition,
+    key: gift.key,
+    label: gift.label,
+    percent: gift.percent,
+    rank: gift.rank,
+    reportBlurb: gift.reportBlurb,
+    score: gift.score,
+    scriptures: gift.scriptures,
+    sourceId: gift.sourceId,
+    tier: gift.tier,
+    tiedAtScore: gift.tiedAtScore,
+  }));
+  const deepDivePayload = scores.deepDiveGifts.map((gift) => ({
+    definition: gift.definition,
+    key: gift.key,
+    label: gift.label,
+    maturity: gift.maturity,
+    percent: gift.percent,
+    rank: gift.rank,
+    reportBlurb: gift.reportBlurb,
+    score: gift.score,
+    scriptures: gift.scriptures,
+    sourceId: gift.sourceId,
+    tier: gift.tier,
+    tiedAtScore: gift.tiedAtScore,
+  }));
+  const tierPayload = scores.tiers.map((tier) => ({
+    tier: tier.tier,
+    gifts: tier.gifts.map((gift) => ({
+      key: gift.key,
+      label: gift.label,
+      percent: gift.percent,
+      rank: gift.rank,
+      score: gift.score,
+      sourceId: gift.sourceId,
+      tiedAtScore: gift.tiedAtScore,
+    })),
   }));
 
   const { data: response, error: responseError } = await supabase
@@ -222,12 +270,19 @@ export async function saveSpiritualGiftsSelfResponse(formData: FormData) {
         reflections: {
           growthPrayer,
           nextStep,
+          othersAffirmed,
           serviceContext,
+          serviceFruit,
         },
       },
       derived_scores: {
+        deepDiveGifts: deepDivePayload,
+        giftPercents: scores.giftPercents,
         giftScores: scores.giftScores,
         questionScores: scores.questionScores,
+        rankedGifts: rankedGiftPayload,
+        tieSummary: scores.tieSummary,
+        tiers: tierPayload,
         topGifts: topGiftPayload,
       },
       gift_rank: scores.rankedGiftKeys,
@@ -252,7 +307,11 @@ export async function saveSpiritualGiftsSelfResponse(formData: FormData) {
       participant_id: session.participant_id,
       scores: {
         channel: "native_app",
+        deepDiveGifts: deepDivePayload,
+        rankedGifts: rankedGiftPayload,
         sourceResponseId,
+        tieSummary: scores.tieSummary,
+        tiers: tierPayload,
         topGifts: topGiftPayload,
         totals: scores.giftScores,
       },

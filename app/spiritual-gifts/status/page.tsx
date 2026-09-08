@@ -66,7 +66,7 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
     tiedAtScore?: boolean;
   }>;
   const rankedGifts = (response?.derived_scores?.rankedGifts ?? topGifts) as typeof topGifts;
-  const deepDiveGifts = (response?.derived_scores?.deepDiveGifts ?? topGifts.slice(0, 2)) as Array<
+  const deepDiveSource = (response?.derived_scores?.rankedGifts ?? topGifts) as Array<
     (typeof topGifts)[number] & {
       maturity?: {
         anchorScripture?: string;
@@ -77,10 +77,7 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
       };
     }
   >;
-  const tiers = (response?.derived_scores?.tiers ?? []) as Array<{
-    gifts: Array<{ key: string; label: string; percent: number; rank: number; score: number; tiedAtScore?: boolean }>;
-    tier: number;
-  }>;
+  const deepDiveGifts = deepDiveSource.slice(0, 3);
   const tieSummary = response?.derived_scores?.tieSummary as
     | {
         cleanTopThree?: boolean;
@@ -94,11 +91,18 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
 
   return (
     <main className="fruitlife-shell fruitlife-public spiritual-gifts-shell">
-      <section className="fruitlife-hero compact">
-        <p className="section-label">Spiritual Gifts Status</p>
-        <h1>{session.participant_name ?? "Spiritual Gifts participant"}</h1>
+      <section className="fruitlife-hero compact spiritual-gifts-status-hero">
+        <div>
+          <p className="section-label">Spiritual Gifts</p>
+          <h1>{session.submitted_at ? "Your results are ready." : "Your assessment is waiting."}</h1>
+          <p className="spiritual-gifts-result-owner">
+            {session.participant_name ?? "Participant"}
+            {session.participant_email ? ` · ${session.participant_email}` : ""}
+          </p>
+        </div>
         <p className="lede">
-          Track the app-owned Spiritual Gifts assessment session and review the first native result.
+          This is an early app-based result. Use it as a starting point for prayer,
+          service, and confirmation from people who know your fruit.
         </p>
         {params?.message ? <p className="form-message">{params.message}</p> : null}
       </section>
@@ -136,8 +140,8 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
       </section>
 
       <section className="spiritual-gifts-panel spiritual-gifts-results-panel">
-        <p className="section-label">App Report</p>
-        <h2>Spiritual Gifts exploration result</h2>
+        <p className="section-label">Result</p>
+        <h2>Your strongest gift patterns</h2>
         {topGifts.length ? (
           <>
             <div className="spiritual-gifts-report-note">
@@ -151,30 +155,6 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
                 through prayer, actual fruit, and trusted people who have seen your life in motion.
               </span>
             </div>
-
-            {tiers.length ? (
-              <div className="spiritual-gifts-tier-board" aria-label="Spiritual Gifts tiers">
-                {tiers.map((tier) => (
-                  <article key={tier.tier}>
-                    <p className="section-label">Tier {tier.tier}</p>
-                    <h3>
-                      {tier.tier === 1
-                        ? "First exploration"
-                        : tier.tier === 2
-                          ? "Strong supporting signals"
-                          : "Additional signals to watch"}
-                    </h3>
-                    <div>
-                      {tier.gifts.map((gift) => (
-                        <span key={gift.key}>
-                          {gift.label} <small>{gift.score}/15</small>
-                        </span>
-                      ))}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            ) : null}
 
             <div className="spiritual-gifts-result-list">
               {topGifts.map((gift) => {
@@ -195,7 +175,7 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
                       Score {gift.score}/15 · {gift.percent}% strength
                       {gift.tiedAtScore ? " · tied score" : ""}
                     </small>
-                    {sourceGift ? (
+                    {sourceGift && gift.rank <= 3 ? (
                       <div className="spiritual-gift-reflections compact">
                         {Object.entries(sourceGift.reflections).map(([reflection, text]) => (
                           <p key={reflection}>
@@ -220,11 +200,11 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
 
       {deepDiveGifts.length ? (
         <section className="spiritual-gifts-panel spiritual-gifts-deep-dives">
-          <p className="section-label">Deep Dives</p>
-          <h2>Top gifts to explore first</h2>
+          <p className="section-label">Explore First</p>
+          <h2>Start with these three</h2>
           <p>
-            These are capped intentionally. The goal is not to tell someone they walk in every gift,
-            but to give them a focused starting point for conversation, prayer, and confirmation.
+            These are not labels to wear. They are the first places to look for repeated grace,
+            service fruit, and confirmation from trusted people.
           </p>
           {tieSummary?.topTierCount && tieSummary.topTierCount > 3 ? (
             <div className="spiritual-gifts-report-note warning">
@@ -268,8 +248,8 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
 
       {rankedGifts.length > 5 ? (
         <section className="spiritual-gifts-panel spiritual-gifts-ranked-list">
-          <p className="section-label">Full Order</p>
-          <h2>All gift scores</h2>
+          <p className="section-label">Full List</p>
+          <h2>All gifts in current order</h2>
           <div>
             {rankedGifts.map((gift) => (
               <p key={gift.key}>
@@ -286,7 +266,7 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
 
       <section className="fruitlife-panel fruitlife-roster-panel">
         <p className="section-label">Session Record</p>
-        <h2>App-owned channel</h2>
+        <h2>Saved in the DYDD app</h2>
         <div className="fruitlife-status-roster">
           <article>
             <div>

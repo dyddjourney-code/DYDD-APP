@@ -591,7 +591,10 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                 Base Camp is your personal landing place for the DYDD journey.
               </p>
             </div>
-            <Link className="button primary basecamp-launch-button" href="/ranger-station">
+            <Link
+              className="button primary basecamp-launch-button"
+              href={withReviewQuery("/ranger-station", reviewParams)}
+            >
               Go to Ranger Station
             </Link>
           </div>
@@ -613,7 +616,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             Start with the guide station, then choose the first trail that fits your season.
             Ranger Station holds the map, trailheads, quick tracks, and next-step choices.
           </p>
-          <Link className="button primary" href="/ranger-station">
+          <Link className="button primary" href={withReviewQuery("/ranger-station", reviewParams)}>
             Go to Ranger Station
           </Link>
         </div>

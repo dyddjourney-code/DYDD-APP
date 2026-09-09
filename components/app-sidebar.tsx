@@ -1,3 +1,5 @@
+import { ReviewAwareLink } from "@/components/review-aware-link";
+
 const navItems = [
   {
     icon: "tent",
@@ -146,23 +148,23 @@ export function AppNavIcon({ name }: { name: string }) {
 export function AppSidebar() {
   return (
     <aside className="hq-sidebar app-sidebar" aria-label="DYDD navigation">
-      <a className="hq-sidebar-brand" href="/base-camp">
+      <ReviewAwareLink className="hq-sidebar-brand" href="/base-camp">
         <img src="/brand/dydd-logo.webp" alt="Discover Your Divine Design" />
-      </a>
+      </ReviewAwareLink>
       <nav className="hq-sidebar-nav">
         {navItems.map((item) => (
           <div className="hq-nav-group" key={item.label}>
-            <a className="hq-nav-item" href={item.href}>
+            <ReviewAwareLink className="hq-nav-item" href={item.href}>
               <AppNavIcon name={item.icon} />
               <span>{item.label}</span>
-            </a>
+            </ReviewAwareLink>
             {item.children ? (
               <div className="hq-subnav">
                 {item.children.map((child) => (
-                  <a className="hq-subnav-item" href={child.href} key={child.label}>
+                  <ReviewAwareLink className="hq-subnav-item" href={child.href} key={child.label}>
                     <AppNavIcon name={child.icon} />
                     <span>{child.label}</span>
-                  </a>
+                  </ReviewAwareLink>
                 ))}
               </div>
             ) : null}

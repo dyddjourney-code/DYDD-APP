@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ReviewAwareLink } from "@/components/review-aware-link";
 
 const mobileNavItems = [
   { href: "/base-camp", label: "Base Camp" },
@@ -21,9 +21,9 @@ export function AppMobileNav() {
       </summary>
       <nav aria-label="Mobile app navigation">
         {mobileNavItems.map((item) => (
-          <Link href={item.href} key={item.href}>
+          <ReviewAwareLink href={item.href} key={item.href}>
             {item.label}
-          </Link>
+          </ReviewAwareLink>
         ))}
       </nav>
     </details>

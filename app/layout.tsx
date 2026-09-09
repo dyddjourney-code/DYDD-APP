@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { AppMobileNav } from "@/components/app-mobile-nav";
 import { AppSidebar } from "@/components/app-sidebar";
 import "./globals.css";
@@ -18,9 +19,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AppMobileNav />
+        <Suspense fallback={null}>
+          <AppMobileNav />
+        </Suspense>
         <div className="app-frame">
-          <AppSidebar />
+          <Suspense fallback={null}>
+            <AppSidebar />
+          </Suspense>
           <div className="app-frame-content">
             {children}
             <footer className="app-footer" aria-label="App support links">

@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { AppNavIcon } from "@/components/app-sidebar";
 import { RangerReliefMap } from "@/components/ranger-relief-map";
+import { type ReviewSearchParams, withReviewQuery } from "@/lib/review/heather";
+
+type RangerStationPageProps = {
+  searchParams?: Promise<ReviewSearchParams>;
+};
 
 const rangerDeskPrompts = [
   "What should I do next?",
@@ -69,7 +74,13 @@ const trailheadStarts = [
   },
 ];
 
-export default function RangerStationPage() {
+export default async function RangerStationPage({ searchParams }: RangerStationPageProps) {
+  const reviewParams = await searchParams;
+  const stops = stationStops.map((stop) => ({
+    ...stop,
+    href: withReviewQuery(stop.href, reviewParams),
+  }));
+
   return (
     <main className="journey-shell hq-standalone-page ranger-station-page">
       <div className="ranger-station-header-image">
@@ -89,7 +100,7 @@ export default function RangerStationPage() {
           </p>
         </div>
         <div className="ranger-station-fast-links" aria-label="Ranger Station quick links">
-          {stationStops.map((stop) => (
+          {stops.map((stop) => (
             <Link className="ranger-map-guide-item" href={stop.href} key={stop.label}>
               <AppNavIcon name={stop.icon} />
               <div>
@@ -188,10 +199,10 @@ export default function RangerStationPage() {
           ))}
         </ol>
         <div className="ranger-start-actions">
-          <Link className="button primary" href="/trailheads">
+          <Link className="button primary" href={withReviewQuery("/trailheads", reviewParams)}>
             Open Trailheads
           </Link>
-          <Link className="button secondary" href="/journey">
+          <Link className="button secondary" href={withReviewQuery("/journey", reviewParams)}>
             Preview main journey
           </Link>
         </div>

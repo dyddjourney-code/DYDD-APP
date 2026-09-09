@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   spiritualGiftQuestionBank,
   spiritualGiftRatingField,
   spiritualGiftRatingOptions,
 } from "@/lib/spiritual-gifts/intake";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type SpiritualGiftsAssessmentFormProps = {
   action: (formData: FormData) => void | Promise<void>;
@@ -40,8 +41,11 @@ export function SpiritualGiftsAssessmentForm({
   const formRef = useRef<HTMLFormElement>(null);
   const totalSteps = questionGroups.length + 3;
   const [stepIndex, setStepIndex] = useState(0);
+  const [clientReviewer, setClientReviewer] = useState(initialReviewer);
+  const [accountLookupComplete, setAccountLookupComplete] = useState(channel !== "app" || Boolean(initialReviewer));
   const reflectionStep = questionGroups.length + 1;
   const reviewStep = questionGroups.length + 2;
+  const accountReviewer = initialReviewer ?? clientReviewer;
   const progressLabel = useMemo(() => {
     if (stepIndex === 0) return "Start";
     if (stepIndex <= questionGroups.length) return `Set ${stepIndex} of ${questionGroups.length}`;
@@ -49,8 +53,52 @@ export function SpiritualGiftsAssessmentForm({
     return "Review";
   }, [reflectionStep, stepIndex]);
   const progress = Math.round(((stepIndex + 1) / totalSteps) * 100);
-  const lockIdentity = Boolean(initialReviewer?.email || initialReviewer?.name);
+  const lockIdentity = Boolean(accountReviewer?.email || accountReviewer?.name);
   const identitySource = lockIdentity ? "account" : "public";
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadAccountIdentity() {
+      if (channel !== "app" || initialReviewer) {
+        setAccountLookupComplete(true);
+        return;
+      }
+
+      const supabase = createSupabaseBrowserClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        if (isMounted) {
+          setAccountLookupComplete(true);
+        }
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("school_profiles")
+        .select("full_name,email")
+        .eq("id", user.id)
+        .maybeSingle();
+      const authDisplayName = String(user.user_metadata?.full_name ?? user.user_metadata?.name ?? "").trim();
+
+      if (isMounted) {
+        setClientReviewer({
+          email: profile?.email ?? user.email ?? "",
+          name: profile?.full_name?.trim() || authDisplayName || user.email?.split("@")[0] || "",
+        });
+        setAccountLookupComplete(true);
+      }
+    }
+
+    void loadAccountIdentity();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [channel, initialReviewer]);
 
   function goNext() {
     const activePanel = formRef.current?.querySelector(".spiritual-gifts-step-panel.active");
@@ -113,19 +161,33 @@ export function SpiritualGiftsAssessmentForm({
         <input name="identity_source" type="hidden" value={identitySource} />
         {lockIdentity ? (
           <>
-            <input name="reviewer_name" type="hidden" value={initialReviewer?.name ?? ""} />
-            <input name="reviewer_email" type="hidden" value={initialReviewer?.email ?? ""} />
+            <input name="reviewer_name" type="hidden" value={accountReviewer?.name ?? ""} />
+            <input name="reviewer_email" type="hidden" value={accountReviewer?.email ?? ""} />
             <div className="spiritual-gifts-locked-identity" aria-label="Assessment account identity">
               <div>
                 <span>Name</span>
-                <strong>{initialReviewer?.name}</strong>
+                <strong>{accountReviewer?.name}</strong>
               </div>
               <div>
                 <span>Email</span>
-                <strong>{initialReviewer?.email}</strong>
+                <strong>{accountReviewer?.email}</strong>
               </div>
             </div>
           </>
+        ) : channel === "app" ? (
+          <div className="spiritual-gifts-account-pending">
+            <span>{accountLookupComplete ? "Account not found" : "Checking account"}</span>
+            <p>
+              {accountLookupComplete
+                ? "Please sign in again before starting this app-linked assessment."
+                : "Loading the account name and email for this assessment."}
+            </p>
+            {accountLookupComplete ? (
+              <a className="button secondary" href="/login?message=Sign in before starting Spiritual Gifts.">
+                Sign in
+              </a>
+            ) : null}
+          </div>
         ) : (
           <div className="spiritual-gifts-start-fields">
             <label>
@@ -232,7 +294,12 @@ export function SpiritualGiftsAssessmentForm({
           Back
         </button>
         {stepIndex < reviewStep ? (
-          <button className="button primary" onClick={goNext} type="button">
+          <button
+            className="button primary"
+            disabled={channel === "app" && !lockIdentity}
+            onClick={goNext}
+            type="button"
+          >
             {stepIndex === 0 ? "Start questions" : stepIndex === reflectionStep ? "Review results" : "Next"}
           </button>
         ) : (

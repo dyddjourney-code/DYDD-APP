@@ -14381,6 +14381,30 @@ body:has(.fruitlife-public) .mobile-app-nav,
   overflow-wrap: anywhere;
 }
 
+.spiritual-gifts-account-pending {
+  background: #fbfdfb;
+  border: 1px solid rgba(63, 111, 120, 0.18);
+  border-radius: 8px;
+  color: #52675f;
+  display: grid;
+  gap: 10px;
+  grid-column: 2;
+  padding: 16px;
+}
+
+.spiritual-gifts-account-pending span {
+  color: var(--gift-ink);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.spiritual-gifts-account-pending p {
+  margin: 0;
+}
+
 .spiritual-gifts-step-panel {
   display: none;
 }
@@ -14941,6 +14965,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
   .spiritual-gifts-scale,
   .spiritual-gifts-tier-board,
   .spiritual-gifts-growth-grid,
+  .spiritual-gifts-account-pending,
   .spiritual-gifts-locked-identity,
   .spiritual-gifts-ranked-list p {
     grid-template-columns: 1fr;
@@ -14951,6 +14976,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
   }
 
   .spiritual-gifts-start-fields,
+  .spiritual-gifts-account-pending,
   .spiritual-gifts-locked-identity {
     grid-column: 1;
   }

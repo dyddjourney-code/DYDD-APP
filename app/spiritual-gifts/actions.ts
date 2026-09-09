@@ -3,7 +3,11 @@
 import crypto from "node:crypto";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { buildSpiritualGiftScores } from "@/lib/spiritual-gifts/intake";
+import {
+  buildSpiritualGiftScores,
+  spiritualGiftQuestionBank,
+  spiritualGiftRatingField,
+} from "@/lib/spiritual-gifts/intake";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -42,6 +46,17 @@ function fail(path: string, message: string): never {
 function assertEmail(email: string, path: string) {
   if (!email || !email.includes("@")) {
     fail(path, "Enter a valid email address.");
+  }
+}
+
+function assertCompleteGiftRatings(formData: FormData, path: string) {
+  const missingQuestion = spiritualGiftQuestionBank.find((question) => {
+    const value = String(formData.get(spiritualGiftRatingField(question.code)) ?? "");
+    return !["1", "2", "3", "4", "5"].includes(value);
+  });
+
+  if (missingQuestion) {
+    fail(path, "Please answer every Spiritual Gifts statement before submitting.");
   }
 }
 
@@ -113,6 +128,7 @@ async function saveCompletedSpiritualGiftsResponse({
   userId,
   supabase,
   formData,
+  path,
 }: {
   participantId: string;
   participantName: string;
@@ -122,7 +138,10 @@ async function saveCompletedSpiritualGiftsResponse({
   userId?: string | null;
   supabase: ReturnType<typeof createSupabaseAdminClient>;
   formData: FormData;
+  path: string;
 }) {
+  assertCompleteGiftRatings(formData, path);
+
   const othersAffirmed = getString(formData, "others_affirmed");
   const serviceFruit = getString(formData, "service_fruit");
   const serviceContext = getString(formData, "service_context");
@@ -399,8 +418,8 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
       participant_email: participantEmail,
       participant_id: participant.id,
       participant_name: participantName,
-      report_status: "queued",
-      session_status: "in_progress",
+      report_status: "not_started",
+      session_status: "active",
       signup_source: signupSource,
       source_system: "spiritual_gifts_app",
       metadata: {
@@ -426,6 +445,7 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
       userId: user?.id ?? null,
       supabase,
       formData,
+      path: "/spiritual-gifts",
     });
   } catch (error) {
     fail(
@@ -467,6 +487,7 @@ export async function saveSpiritualGiftsSelfResponse(formData: FormData) {
       userId: session.created_by_user_id,
       supabase,
       formData,
+      path,
     });
   } catch (error) {
     fail(path, error instanceof Error ? error.message : "Unable to save Spiritual Gifts response.");

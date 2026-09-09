@@ -179,12 +179,12 @@ export function SpiritualGiftsAssessmentForm({
             <span>{accountLookupComplete ? "Account not found" : "Checking account"}</span>
             <p>
               {accountLookupComplete
-                ? "Please sign in again before starting this app-linked assessment."
+                ? "Return to Field Kit and refresh your account session before starting."
                 : "Loading the account name and email for this assessment."}
             </p>
             {accountLookupComplete ? (
-              <a className="button secondary" href="/login?message=Sign in before starting Spiritual Gifts.">
-                Sign in
+              <a className="button secondary" href="/field-kit">
+                Back to Field Kit
               </a>
             ) : null}
           </div>

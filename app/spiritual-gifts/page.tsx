@@ -9,7 +9,6 @@ import {
   jordanReviewName,
 } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 
 type SpiritualGiftsPageProps = {
   searchParams?: Promise<{
@@ -34,10 +33,6 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  if (channel === "app" && !user && !reviewIdentity) {
-    redirect("/login?message=Sign in before starting your app-linked Spiritual Gifts assessment.");
-  }
 
   const { data: profile } = user
     ? await supabase

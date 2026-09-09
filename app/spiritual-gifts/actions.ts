@@ -500,6 +500,7 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
   }
 
   const resultParams = new URLSearchParams({
+    channel: isAppChannel ? "app" : "public",
     message: "Your Spiritual Gifts assessment has been saved.",
     session: session.id,
     token,
@@ -539,6 +540,7 @@ export async function saveSpiritualGiftsSelfResponse(formData: FormData) {
   }
 
   const resultParams = new URLSearchParams({
+    channel: "app",
     message: "Your Spiritual Gifts assessment was saved inside the app.",
     session: session.id,
     token,

@@ -41,6 +41,7 @@ export function SpiritualGiftsAssessmentForm({
   }, [stepIndex]);
   const progress = Math.round(((stepIndex + 1) / totalSteps) * 100);
   const lockIdentity = Boolean(initialReviewer?.email || initialReviewer?.name);
+  const identitySource = lockIdentity ? "account" : "public";
 
   function goNext() {
     const activePanel = formRef.current?.querySelector(".spiritual-gifts-step-panel.active");
@@ -70,51 +71,60 @@ export function SpiritualGiftsAssessmentForm({
 
       {message ? <p className="form-message">{message}</p> : null}
 
+      {stepIndex > 0 ? (
       <section className="spiritual-gifts-progress-card">
         <img src="/brand/tools/spiritual-gifts-logo.jpg" alt="Spiritual Gifts logo" />
         <div>
-          <p className="section-label">Spiritual Gifts App Channel</p>
-          <h2>Spiritual Gifts assessment</h2>
-          <p>
-            Use the 1-5 scale for each statement. The gift labels stay hidden while you answer.
-          </p>
+          <p className="section-label">Spiritual Gifts</p>
+          <h2>{progressLabel}</h2>
         </div>
         <div className="spiritual-gifts-step-meter">
           <span>Progress</span>
-          <strong>{progressLabel}</strong>
+          <strong>{progress}%</strong>
           <div aria-label={`${progress}% complete`}>
             <span style={{ width: `${progress}%` }} />
           </div>
         </div>
       </section>
+      ) : null}
 
-      <section className={`spiritual-gifts-panel spiritual-gifts-step-panel ${stepIndex === 0 ? "active" : ""}`}>
-        <p className="section-label">Start assessment</p>
-        <h2>Enter your name and email.</h2>
-        <div className="fruitlife-grid two">
-          <label>
-            Your name
-            <small>{lockIdentity ? "This came from the app session." : "Use the name for the result."}</small>
-            <input
-              defaultValue={initialReviewer?.name ?? ""}
-              name="reviewer_name"
-              readOnly={lockIdentity}
-              required
-              type="text"
-            />
-          </label>
-          <label>
-            Your email
-            <small>{lockIdentity ? "This came from the app session." : "Required for the result record."}</small>
-            <input
-              defaultValue={initialReviewer?.email ?? ""}
-              name="reviewer_email"
-              readOnly={lockIdentity}
-              required
-              type="email"
-            />
-          </label>
+      <section className={`spiritual-gifts-panel spiritual-gifts-step-panel spiritual-gifts-start-card ${stepIndex === 0 ? "active" : ""}`}>
+        <img src="/brand/tools/spiritual-gifts-logo.jpg" alt="Spiritual Gifts logo" />
+        <div>
+          <p className="section-label">Spiritual Gifts</p>
+          <h1>{lockIdentity ? "Start your assessment." : "Start your Spiritual Gifts assessment."}</h1>
+          <p>Discover how God may be gifting your service.</p>
         </div>
+        <input name="identity_source" type="hidden" value={identitySource} />
+        {lockIdentity ? (
+          <>
+            <input name="reviewer_name" type="hidden" value={initialReviewer?.name ?? ""} />
+            <input name="reviewer_email" type="hidden" value={initialReviewer?.email ?? ""} />
+          </>
+        ) : (
+          <div className="spiritual-gifts-start-fields">
+            <label>
+              Name
+              <input
+                autoComplete="name"
+                defaultValue={initialReviewer?.name ?? ""}
+                name="reviewer_name"
+                required
+                type="text"
+              />
+            </label>
+            <label>
+              Email
+              <input
+                autoComplete="email"
+                defaultValue={initialReviewer?.email ?? ""}
+                name="reviewer_email"
+                required
+                type="email"
+              />
+            </label>
+          </div>
+        )}
       </section>
 
       {questionGroups.map((questions, index) => {

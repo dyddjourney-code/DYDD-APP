@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { SpiritualGiftsAssessmentForm } from "./assessment-form";
 import { saveSpiritualGiftsPublicResponse } from "./actions";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type SpiritualGiftsPageProps = {
   searchParams?: Promise<{
@@ -12,28 +12,29 @@ export const dynamic = "force-dynamic";
 
 export default async function SpiritualGiftsPage({ searchParams }: SpiritualGiftsPageProps) {
   const params = await searchParams;
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { data: profile } = user
+    ? await supabase
+        .from("school_profiles")
+        .select("full_name,email")
+        .eq("id", user.id)
+        .maybeSingle()
+    : { data: null };
+  const reviewer = user
+    ? {
+        email: profile?.email ?? user.email ?? "",
+        name: profile?.full_name ?? user.email?.split("@")[0] ?? "",
+      }
+    : undefined;
 
   return (
-    <main className="fruitlife-shell spiritual-gifts-shell">
-      <nav className="course-nav" aria-label="Spiritual Gifts navigation">
-        <Link href="/">DYDD School</Link>
-        <Link href="/field-kit">Field Kit</Link>
-      </nav>
-
-      <header className="spiritual-gifts-public-intro">
-        <img src="/brand/tools/spiritual-gifts-logo.jpg" alt="Spiritual Gifts logo" />
-        <div>
-          <p className="section-label">Spiritual Gifts</p>
-          <h1>Discover how God may be gifting your service.</h1>
-          <p className="lede">
-            Enter your name and email, answer the reflection statements, and your result will be
-            saved to your DYDD record.
-          </p>
-        </div>
-      </header>
-
+    <main className="fruitlife-shell fruitlife-public spiritual-gifts-shell spiritual-gifts-standalone">
       <SpiritualGiftsAssessmentForm
         action={saveSpiritualGiftsPublicResponse}
+        initialReviewer={reviewer}
         message={params?.message}
       />
     </main>

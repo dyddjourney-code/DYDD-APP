@@ -14226,9 +14226,9 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .spiritual-gifts-form {
   display: grid;
-  gap: 22px;
+  gap: 14px;
   margin: 0 auto;
-  max-width: 1040px;
+  max-width: 960px;
 }
 
 .spiritual-gifts-shell .fruitlife-hero-badges span {
@@ -14238,25 +14238,25 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .spiritual-gifts-progress-card,
 .spiritual-gifts-panel {
-  background: rgba(255, 255, 255, 0.86);
-  border: 1px solid rgba(63, 111, 120, 0.16);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(63, 111, 120, 0.18);
   border-radius: 8px;
-  box-shadow: 0 20px 44px rgba(42, 69, 57, 0.08);
+  box-shadow: 0 18px 42px rgba(42, 69, 57, 0.07);
 }
 
 .spiritual-gifts-progress-card {
   align-items: center;
   display: grid;
-  gap: 18px;
-  grid-template-columns: 132px minmax(0, 1fr) 190px;
-  padding: 18px;
+  gap: 16px;
+  grid-template-columns: 118px minmax(0, 1fr) 220px;
+  padding: 14px 16px;
 }
 
 .spiritual-gifts-progress-card img {
   border-radius: 8px;
-  height: 88px;
+  height: 96px;
   object-fit: contain;
-  width: 132px;
+  width: 118px;
 }
 
 .spiritual-gifts-progress-card h2,
@@ -14295,6 +14295,55 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 .spiritual-gifts-panel {
   padding: 24px;
+}
+
+.spiritual-gifts-standalone {
+  min-height: 100dvh;
+  padding-top: clamp(20px, 5vw, 56px);
+}
+
+.spiritual-gifts-start-card {
+  align-items: start;
+  gap: 18px;
+  grid-template-columns: 150px minmax(0, 1fr);
+  padding: clamp(22px, 4vw, 34px);
+}
+
+.spiritual-gifts-start-card img {
+  border-radius: 8px;
+  width: min(150px, 42vw);
+}
+
+.spiritual-gifts-start-card h1 {
+  color: var(--gift-ink);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  line-height: 1.08;
+  margin: 0;
+}
+
+.spiritual-gifts-start-card p:not(.section-label) {
+  color: #52675f;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 8px 0 0;
+}
+
+.spiritual-gifts-start-fields {
+  display: grid;
+  gap: 12px;
+  grid-column: 2;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.spiritual-gifts-start-fields label {
+  color: var(--gift-ink);
+  gap: 7px;
+}
+
+.spiritual-gifts-start-fields input {
+  background: #fbfdfb;
+  border-color: rgba(63, 111, 120, 0.22);
+  min-height: 50px;
 }
 
 .spiritual-gifts-step-panel {
@@ -14730,6 +14779,7 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
 @media (max-width: 760px) {
   .spiritual-gifts-progress-card,
+  .spiritual-gifts-start-card,
   .spiritual-gifts-public-intro,
   .spiritual-gift-reflections,
   .spiritual-gift-reflections.compact,
@@ -14744,9 +14794,14 @@ body:has(.fruitlife-public) .mobile-app-nav,
     justify-items: start;
   }
 
+  .spiritual-gifts-start-fields {
+    grid-column: 1;
+    grid-template-columns: 1fr;
+  }
+
   .spiritual-gifts-progress-card img {
     height: auto;
-    width: min(220px, 100%);
+    width: min(180px, 100%);
   }
 
   .spiritual-gifts-rubric {

@@ -11,6 +11,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 const productionAppUrl = "https://dydd-online-school.vercel.app";
 
 type SpiritualGiftsSessionLookup = {
+  created_by_user_id: string | null;
   id: string;
   intake_token_hash: string | null;
   participant_email: string | null;
@@ -85,7 +86,7 @@ async function getSessionForToken(sessionId: string, token: string, path: string
   const { data: session, error } = await supabase
     .from("spiritual_gifts_sessions")
     .select(
-      "id,intake_token_hash,participant_email,participant_id,participant_name,report_status,result_snapshot_id,session_status,submitted_at",
+      "created_by_user_id,id,intake_token_hash,participant_email,participant_id,participant_name,report_status,result_snapshot_id,session_status,submitted_at",
     )
     .eq("id", sessionId)
     .single();
@@ -109,6 +110,7 @@ async function saveCompletedSpiritualGiftsResponse({
   participantEmail,
   sessionId,
   token,
+  userId,
   supabase,
   formData,
 }: {
@@ -117,6 +119,7 @@ async function saveCompletedSpiritualGiftsResponse({
   participantEmail: string;
   sessionId: string;
   token: string;
+  userId?: string | null;
   supabase: ReturnType<typeof createSupabaseAdminClient>;
   formData: FormData;
 }) {
@@ -240,7 +243,7 @@ async function saveCompletedSpiritualGiftsResponse({
       source: "spiritual_gifts_app",
       source_response_id: sourceResponseId,
       source_submitted_at: submittedAt,
-      user_id: null,
+      user_id: userId ?? null,
     })
     .select("id")
     .maybeSingle();
@@ -344,22 +347,32 @@ export async function createSpiritualGiftsSession(formData: FormData) {
 }
 
 export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
-  const participantName = getString(formData, "reviewer_name");
-  const participantEmail = normalizeEmail(getString(formData, "reviewer_email"));
   const signupSource = getString(formData, "signup_source") || "public-spiritual-gifts-assessment";
   const token = makeToken();
+  const supabase = createSupabaseAdminClient();
+  const serverSupabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await serverSupabase.auth.getUser();
+  const { data: profile } = user
+    ? await supabase
+        .from("school_profiles")
+        .select("full_name,email")
+        .eq("id", user.id)
+        .maybeSingle()
+    : { data: null };
+  const participantEmail = normalizeEmail(
+    user ? profile?.email ?? user.email : getString(formData, "reviewer_email"),
+  );
+  const participantName = user
+    ? profile?.full_name ?? user.email?.split("@")[0] ?? ""
+    : getString(formData, "reviewer_name");
 
   if (!participantName) {
     fail("/spiritual-gifts", "Enter your name.");
   }
 
   assertEmail(participantEmail, "/spiritual-gifts");
-
-  const supabase = createSupabaseAdminClient();
-  const serverSupabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await serverSupabase.auth.getUser();
 
   const { data: participant, error: participantError } = await supabase
     .from("assessment_participants")
@@ -410,6 +423,7 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
       participantName,
       sessionId: session.id,
       token,
+      userId: user?.id ?? null,
       supabase,
       formData,
     });
@@ -450,6 +464,7 @@ export async function saveSpiritualGiftsSelfResponse(formData: FormData) {
       participantName: reviewerName,
       sessionId: session.id,
       token,
+      userId: session.created_by_user_id,
       supabase,
       formData,
     });

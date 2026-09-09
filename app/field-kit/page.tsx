@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { PageHelp } from "@/components/page-help";
 import { FruitLifeCurrentAssessmentProcess } from "@/components/fruitlife-current-assessment-process";
 import {
@@ -372,6 +373,11 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     : { data: null };
   const reviewReport =
     (await getHeatherReviewReport(reviewParams)) ?? (await getNewReviewReport(reviewParams));
+
+  if (!user && !reviewReport && process.env.DYDD_REVIEW_TOKEN) {
+    redirect(`/field-kit?review=new&key=${encodeURIComponent(process.env.DYDD_REVIEW_TOKEN)}`);
+  }
+
   const participantEmail = isHeatherReviewRequest(reviewParams)
     ? "willoughbyhs@gmail.com"
     : isNewReviewRequest(reviewParams)

@@ -20,16 +20,20 @@ export default async function SpiritualGiftsThanksPage({ searchParams }: Spiritu
     <main className="fruitlife-shell fruitlife-public spiritual-gifts-shell">
       <section className="fruitlife-hero compact">
         <p className="section-label">Spiritual Gifts</p>
-        <h1>Submitted</h1>
+        <h1>Your assessment has been submitted.</h1>
         <p className="lede">
-          {params?.message ?? "The Spiritual Gifts native app assessment was saved."}
+          {params?.message ?? "Your Spiritual Gifts assessment has been saved."}
+        </p>
+        <p className="lede">
+          You can review your result now. You can also create a Discover Your Divine Design account
+          with the same email so this result can travel with your learning path.
         </p>
         <div className="action-row">
-          <Link className="button secondary" href="/spiritual-gifts">
-            Start another session
-          </Link>
-          <Link className="button secondary" href={statusHref}>
+          <Link className="button primary" href={statusHref}>
             View result
+          </Link>
+          <Link className="button secondary" href="/login">
+            Create or sign in to account
           </Link>
         </div>
       </section>

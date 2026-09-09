@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   spiritualGiftQuestionBank,
   spiritualGiftRatingField,
@@ -31,17 +31,30 @@ export function SpiritualGiftsAssessmentForm({
   sessionId,
   token,
 }: SpiritualGiftsAssessmentFormProps) {
+  const formRef = useRef<HTMLFormElement>(null);
   const totalSteps = questionGroups.length + 2;
   const [stepIndex, setStepIndex] = useState(0);
   const progressLabel = useMemo(() => {
-    if (stepIndex === 0) return "Details";
-    if (stepIndex <= questionGroups.length) return `Set ${stepIndex}`;
-    return "Reflection";
+    if (stepIndex === 0) return "Start";
+    if (stepIndex <= questionGroups.length) return `Set ${stepIndex} of ${questionGroups.length}`;
+    return "Finish";
   }, [stepIndex]);
   const progress = Math.round(((stepIndex + 1) / totalSteps) * 100);
   const lockIdentity = Boolean(initialReviewer?.email || initialReviewer?.name);
 
   function goNext() {
+    const activePanel = formRef.current?.querySelector(".spiritual-gifts-step-panel.active");
+    const requiredFields = Array.from(
+      activePanel?.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input[required], textarea[required]") ??
+        [],
+    );
+    const invalidField = requiredFields.find((field) => !field.checkValidity());
+
+    if (invalidField) {
+      invalidField.reportValidity();
+      return;
+    }
+
     setStepIndex((index) => Math.min(totalSteps - 1, index + 1));
   }
 
@@ -50,9 +63,10 @@ export function SpiritualGiftsAssessmentForm({
   }
 
   return (
-    <form action={action} className="spiritual-gifts-form">
+    <form action={action} className="spiritual-gifts-form" ref={formRef}>
       <input name="session_id" type="hidden" value={sessionId ?? ""} />
       <input name="token" type="hidden" value={token ?? ""} />
+      <input name="signup_source" type="hidden" value="public-spiritual-gifts-assessment" />
 
       {message ? <p className="form-message">{message}</p> : null}
 
@@ -60,14 +74,13 @@ export function SpiritualGiftsAssessmentForm({
         <img src="/brand/tools/spiritual-gifts-logo.jpg" alt="Spiritual Gifts logo" />
         <div>
           <p className="section-label">Spiritual Gifts App Channel</p>
-          <h2>Move through the reflection statements.</h2>
+          <h2>Spiritual Gifts assessment</h2>
           <p>
-            Answer prayerfully and instinctively. The scoring stays blind here so the result is not
-            shaped by seeing gift labels while you respond.
+            Use the 1-5 scale for each statement. The gift labels stay hidden while you answer.
           </p>
         </div>
         <div className="spiritual-gifts-step-meter">
-          <span>{stepIndex + 1} of {totalSteps}</span>
+          <span>Progress</span>
           <strong>{progressLabel}</strong>
           <div aria-label={`${progress}% complete`}>
             <span style={{ width: `${progress}%` }} />
@@ -76,8 +89,8 @@ export function SpiritualGiftsAssessmentForm({
       </section>
 
       <section className={`spiritual-gifts-panel spiritual-gifts-step-panel ${stepIndex === 0 ? "active" : ""}`}>
-        <p className="section-label">Participant</p>
-        <h2>Confirm who this assessment belongs to.</h2>
+        <p className="section-label">Start assessment</p>
+        <h2>Enter your name and email.</h2>
         <div className="fruitlife-grid two">
           <label>
             Your name
@@ -116,25 +129,35 @@ export function SpiritualGiftsAssessmentForm({
             <div className="spiritual-gift-heading blind">
               <p className="section-label">Reflection Set {index + 1}</p>
               <h3 id={`spiritual-gifts-set-${index + 1}-title`}>Answer what is true most of the time.</h3>
-              <p>
-                These statements are mixed across the assessment so you can respond honestly without
-                tracking which gift is being scored.
-              </p>
+              <div className="spiritual-gifts-rubric" aria-label="Rating scale">
+                {spiritualGiftRatingOptions.map((option) => (
+                  <span key={option.value}>
+                    <strong>{option.value}</strong>
+                    {option.label}
+                  </span>
+                ))}
+              </div>
             </div>
             {questions.map((question) => (
-              <label className="fruitlife-scale spiritual-gifts-scale" key={question.code}>
-                <span>
+              <fieldset className="fruitlife-scale spiritual-gifts-scale" key={question.code}>
+                <legend>
                   <small>Statement {question.displayOrder}</small>
                   {question.text}
-                </span>
-                <select defaultValue="3" name={spiritualGiftRatingField(question.code)} required>
+                </legend>
+                <div className="spiritual-gifts-rating-buttons" aria-label={`Rate statement ${question.displayOrder}`}>
                   {spiritualGiftRatingOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.value} - {option.label}
-                    </option>
+                    <label key={option.value}>
+                      <input
+                        name={spiritualGiftRatingField(question.code)}
+                        required
+                        type="radio"
+                        value={option.value}
+                      />
+                      <span>{option.value}</span>
+                    </label>
                   ))}
-                </select>
-              </label>
+                </div>
+              </fieldset>
             ))}
           </fieldset>
         );
@@ -171,7 +194,7 @@ export function SpiritualGiftsAssessmentForm({
         </button>
         {stepIndex < totalSteps - 1 ? (
           <button className="button primary" onClick={goNext} type="button">
-            Next
+            {stepIndex === 0 ? "Start questions" : "Next"}
           </button>
         ) : (
           <button className="button primary" type="submit">

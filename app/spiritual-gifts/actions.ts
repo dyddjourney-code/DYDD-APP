@@ -103,6 +103,165 @@ async function getSessionForToken(sessionId: string, token: string, path: string
   return { session: typedSession, supabase };
 }
 
+async function saveCompletedSpiritualGiftsResponse({
+  participantId,
+  participantName,
+  participantEmail,
+  sessionId,
+  token,
+  supabase,
+  formData,
+}: {
+  participantId: string;
+  participantName: string;
+  participantEmail: string;
+  sessionId: string;
+  token: string;
+  supabase: ReturnType<typeof createSupabaseAdminClient>;
+  formData: FormData;
+}) {
+  const othersAffirmed = getString(formData, "others_affirmed");
+  const serviceFruit = getString(formData, "service_fruit");
+  const serviceContext = getString(formData, "service_context");
+  const growthPrayer = getString(formData, "growth_prayer");
+  const nextStep = getString(formData, "next_step");
+  const submittedAt = new Date().toISOString();
+  const scores = buildSpiritualGiftScores(formData);
+  const sourceResponseId = `vercel:spiritual_gifts:self:${sessionId}:${crypto.randomUUID()}`;
+  const topGiftPayload = scores.topGifts.map((gift, index) => ({
+    definition: gift.definition,
+    key: gift.key,
+    label: gift.label,
+    rank: index + 1,
+    reportBlurb: gift.reportBlurb,
+    reflections: gift.reflections,
+    score: gift.score,
+    percent: gift.percent,
+    scriptures: gift.scriptures,
+    sourceId: gift.sourceId,
+    tier: gift.tier,
+    tiedAtScore: gift.tiedAtScore,
+  }));
+  const rankedGiftPayload = scores.rankedGifts.map((gift) => ({
+    alwaysCount: gift.alwaysCount,
+    consistencyFloor: gift.consistencyFloor,
+    definition: gift.definition,
+    key: gift.key,
+    label: gift.label,
+    percent: gift.percent,
+    rank: gift.rank,
+    reportBlurb: gift.reportBlurb,
+    score: gift.score,
+    scriptures: gift.scriptures,
+    sourceId: gift.sourceId,
+    tier: gift.tier,
+    tiedAtScore: gift.tiedAtScore,
+  }));
+  const deepDivePayload = scores.deepDiveGifts.map((gift) => ({
+    definition: gift.definition,
+    key: gift.key,
+    label: gift.label,
+    maturity: gift.maturity,
+    percent: gift.percent,
+    rank: gift.rank,
+    reportBlurb: gift.reportBlurb,
+    score: gift.score,
+    scriptures: gift.scriptures,
+    sourceId: gift.sourceId,
+    tier: gift.tier,
+    tiedAtScore: gift.tiedAtScore,
+  }));
+  const tierPayload = scores.tiers.map((tier) => ({
+    tier: tier.tier,
+    gifts: tier.gifts.map((gift) => ({
+      key: gift.key,
+      label: gift.label,
+      percent: gift.percent,
+      rank: gift.rank,
+      score: gift.score,
+      sourceId: gift.sourceId,
+      tiedAtScore: gift.tiedAtScore,
+    })),
+  }));
+
+  const { data: response, error: responseError } = await supabase
+    .from("spiritual_gifts_responses")
+    .insert({
+      answers: {
+        giftRatings: scores.answers,
+        reflections: {
+          growthPrayer,
+          nextStep,
+          othersAffirmed,
+          serviceContext,
+          serviceFruit,
+        },
+      },
+      derived_scores: {
+        deepDiveGifts: deepDivePayload,
+        giftPercents: scores.giftPercents,
+        giftScores: scores.giftScores,
+        questionScores: scores.questionScores,
+        rankedGifts: rankedGiftPayload,
+        tieSummary: scores.tieSummary,
+        tiers: tierPayload,
+        topGifts: topGiftPayload,
+      },
+      gift_rank: scores.rankedGiftKeys,
+      participant_email: participantEmail,
+      participant_name: participantName,
+      response_type: "self",
+      session_id: sessionId,
+      source_response_id: sourceResponseId,
+      submitted_at: submittedAt,
+    })
+    .select("id")
+    .single();
+
+  if (responseError || !response?.id) {
+    throw new Error(responseError?.message ?? "Unable to save Spiritual Gifts response.");
+  }
+
+  const { data: snapshot } = await supabase
+    .from("assessment_snapshots")
+    .insert({
+      assessment_type: "spiritual_gifts",
+      participant_id: participantId,
+      scores: {
+        channel: "native_app",
+        deepDiveGifts: deepDivePayload,
+        rankedGifts: rankedGiftPayload,
+        sourceResponseId,
+        tieSummary: scores.tieSummary,
+        tiers: tierPayload,
+        topGifts: topGiftPayload,
+        totals: scores.giftScores,
+      },
+      source: "spiritual_gifts_app",
+      source_response_id: sourceResponseId,
+      source_submitted_at: submittedAt,
+      user_id: null,
+    })
+    .select("id")
+    .maybeSingle();
+
+  await supabase
+    .from("spiritual_gifts_sessions")
+    .update({
+      report_status: "ready",
+      result_snapshot_id: snapshot?.id ?? null,
+      session_status: "completed",
+      submitted_at: submittedAt,
+    })
+    .eq("id", sessionId);
+
+  return {
+    sessionId,
+    submittedAt,
+    token,
+  };
+}
+
 export async function createSpiritualGiftsSession(formData: FormData) {
   const participantName = getString(formData, "participant_name");
   const participantEmail = normalizeEmail(getString(formData, "participant_email"));
@@ -184,16 +343,97 @@ export async function createSpiritualGiftsSession(formData: FormData) {
   );
 }
 
+export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
+  const participantName = getString(formData, "reviewer_name");
+  const participantEmail = normalizeEmail(getString(formData, "reviewer_email"));
+  const signupSource = getString(formData, "signup_source") || "public-spiritual-gifts-assessment";
+  const token = makeToken();
+
+  if (!participantName) {
+    fail("/spiritual-gifts", "Enter your name.");
+  }
+
+  assertEmail(participantEmail, "/spiritual-gifts");
+
+  const supabase = createSupabaseAdminClient();
+  const serverSupabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await serverSupabase.auth.getUser();
+
+  const { data: participant, error: participantError } = await supabase
+    .from("assessment_participants")
+    .upsert(
+      {
+        display_name: participantName,
+        normalized_email: participantEmail,
+        user_id: user?.id ?? null,
+      },
+      { onConflict: "normalized_email" },
+    )
+    .select("id")
+    .single();
+
+  if (participantError || !participant?.id) {
+    fail("/spiritual-gifts", participantError?.message ?? "Unable to create participant.");
+  }
+
+  const { data: session, error: sessionError } = await supabase
+    .from("spiritual_gifts_sessions")
+    .insert({
+      created_by_user_id: user?.id ?? null,
+      intake_token_hash: hashToken(token),
+      participant_email: participantEmail,
+      participant_id: participant.id,
+      participant_name: participantName,
+      report_status: "queued",
+      session_status: "in_progress",
+      signup_source: signupSource,
+      source_system: "spiritual_gifts_app",
+      metadata: {
+        channel: "public_assessment",
+        liveProcessTouched: false,
+        source: signupSource,
+      },
+    })
+    .select("id")
+    .single();
+
+  if (sessionError || !session?.id) {
+    fail("/spiritual-gifts", sessionError?.message ?? "Unable to create Spiritual Gifts record.");
+  }
+
+  try {
+    await saveCompletedSpiritualGiftsResponse({
+      participantEmail,
+      participantId: participant.id,
+      participantName,
+      sessionId: session.id,
+      token,
+      supabase,
+      formData,
+    });
+  } catch (error) {
+    fail(
+      "/spiritual-gifts",
+      error instanceof Error ? error.message : "Unable to save Spiritual Gifts response.",
+    );
+  }
+
+  const resultParams = new URLSearchParams({
+    message: "Your Spiritual Gifts assessment has been saved.",
+    session: session.id,
+    token,
+  });
+
+  redirect(`/spiritual-gifts/thanks?${resultParams.toString()}`);
+}
+
 export async function saveSpiritualGiftsSelfResponse(formData: FormData) {
   const sessionId = getString(formData, "session_id");
   const token = getString(formData, "token");
   const reviewerName = getString(formData, "reviewer_name");
   const reviewerEmail = normalizeEmail(getString(formData, "reviewer_email"));
-  const othersAffirmed = getString(formData, "others_affirmed");
-  const serviceFruit = getString(formData, "service_fruit");
-  const serviceContext = getString(formData, "service_context");
-  const growthPrayer = getString(formData, "growth_prayer");
-  const nextStep = getString(formData, "next_step");
   const path = "/spiritual-gifts/self";
 
   if (!reviewerName) {
@@ -203,135 +443,19 @@ export async function saveSpiritualGiftsSelfResponse(formData: FormData) {
   assertEmail(reviewerEmail, path);
 
   const { session, supabase } = await getSessionForToken(sessionId, token, path);
-  const submittedAt = new Date().toISOString();
-  const scores = buildSpiritualGiftScores(formData);
-  const sourceResponseId = `vercel:spiritual_gifts:self:${session.id}:${crypto.randomUUID()}`;
-  const topGiftPayload = scores.topGifts.map((gift, index) => ({
-    definition: gift.definition,
-    key: gift.key,
-    label: gift.label,
-    rank: index + 1,
-    reportBlurb: gift.reportBlurb,
-    reflections: gift.reflections,
-    score: gift.score,
-    percent: gift.percent,
-    scriptures: gift.scriptures,
-    sourceId: gift.sourceId,
-    tier: gift.tier,
-    tiedAtScore: gift.tiedAtScore,
-  }));
-  const rankedGiftPayload = scores.rankedGifts.map((gift) => ({
-    alwaysCount: gift.alwaysCount,
-    consistencyFloor: gift.consistencyFloor,
-    definition: gift.definition,
-    key: gift.key,
-    label: gift.label,
-    percent: gift.percent,
-    rank: gift.rank,
-    reportBlurb: gift.reportBlurb,
-    score: gift.score,
-    scriptures: gift.scriptures,
-    sourceId: gift.sourceId,
-    tier: gift.tier,
-    tiedAtScore: gift.tiedAtScore,
-  }));
-  const deepDivePayload = scores.deepDiveGifts.map((gift) => ({
-    definition: gift.definition,
-    key: gift.key,
-    label: gift.label,
-    maturity: gift.maturity,
-    percent: gift.percent,
-    rank: gift.rank,
-    reportBlurb: gift.reportBlurb,
-    score: gift.score,
-    scriptures: gift.scriptures,
-    sourceId: gift.sourceId,
-    tier: gift.tier,
-    tiedAtScore: gift.tiedAtScore,
-  }));
-  const tierPayload = scores.tiers.map((tier) => ({
-    tier: tier.tier,
-    gifts: tier.gifts.map((gift) => ({
-      key: gift.key,
-      label: gift.label,
-      percent: gift.percent,
-      rank: gift.rank,
-      score: gift.score,
-      sourceId: gift.sourceId,
-      tiedAtScore: gift.tiedAtScore,
-    })),
-  }));
-
-  const { data: response, error: responseError } = await supabase
-    .from("spiritual_gifts_responses")
-    .insert({
-      answers: {
-        giftRatings: scores.answers,
-        reflections: {
-          growthPrayer,
-          nextStep,
-          othersAffirmed,
-          serviceContext,
-          serviceFruit,
-        },
-      },
-      derived_scores: {
-        deepDiveGifts: deepDivePayload,
-        giftPercents: scores.giftPercents,
-        giftScores: scores.giftScores,
-        questionScores: scores.questionScores,
-        rankedGifts: rankedGiftPayload,
-        tieSummary: scores.tieSummary,
-        tiers: tierPayload,
-        topGifts: topGiftPayload,
-      },
-      gift_rank: scores.rankedGiftKeys,
-      participant_email: reviewerEmail,
-      participant_name: reviewerName,
-      response_type: "self",
-      session_id: session.id,
-      source_response_id: sourceResponseId,
-      submitted_at: submittedAt,
-    })
-    .select("id")
-    .single();
-
-  if (responseError || !response?.id) {
-    fail(path, responseError?.message ?? "Unable to save Spiritual Gifts response.");
+  try {
+    await saveCompletedSpiritualGiftsResponse({
+      participantEmail: reviewerEmail,
+      participantId: session.participant_id,
+      participantName: reviewerName,
+      sessionId: session.id,
+      token,
+      supabase,
+      formData,
+    });
+  } catch (error) {
+    fail(path, error instanceof Error ? error.message : "Unable to save Spiritual Gifts response.");
   }
-
-  const { data: snapshot } = await supabase
-    .from("assessment_snapshots")
-    .insert({
-      assessment_type: "spiritual_gifts",
-      participant_id: session.participant_id,
-      scores: {
-        channel: "native_app",
-        deepDiveGifts: deepDivePayload,
-        rankedGifts: rankedGiftPayload,
-        sourceResponseId,
-        tieSummary: scores.tieSummary,
-        tiers: tierPayload,
-        topGifts: topGiftPayload,
-        totals: scores.giftScores,
-      },
-      source: "spiritual_gifts_app",
-      source_response_id: sourceResponseId,
-      source_submitted_at: submittedAt,
-      user_id: null,
-    })
-    .select("id")
-    .maybeSingle();
-
-  await supabase
-    .from("spiritual_gifts_sessions")
-    .update({
-      report_status: "ready",
-      result_snapshot_id: snapshot?.id ?? null,
-      session_status: "completed",
-      submitted_at: submittedAt,
-    })
-    .eq("id", session.id);
 
   const resultParams = new URLSearchParams({
     message: "Your Spiritual Gifts assessment was saved inside the app.",

@@ -53,6 +53,7 @@ type FieldKitArtifact = {
 type AssessmentProduct = {
   action: string;
   courseAction: string | null;
+  courseAvailable?: boolean;
   courseHref: string | null;
   detail: string;
   href: string;
@@ -298,9 +299,15 @@ function AssessmentCard({
           </Link>
         )}
         {assessment.courseAction && assessment.courseHref ? (
-          <Link className="button primary" href={assessment.courseHref}>
-            {assessment.courseAction}
-          </Link>
+          assessment.courseAvailable === false ? (
+            <span className="button secondary fieldkit-status-button">
+              {assessment.courseAction}
+            </span>
+          ) : (
+            <Link className="button primary" href={assessment.courseHref}>
+              {assessment.courseAction}
+            </Link>
+          )
         ) : null}
       </div>
     </article>
@@ -425,6 +432,15 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         : assessment.title === "Fruit Life 360"
           ? activeFruitLifeSession ? "In progress" : hasFruitLife ? "Completed" : null
           : assessment.status;
+
+    if (assessment.title === "Spiritual Gifts") {
+      return {
+        ...assessment,
+        courseAction: hasSpiritualGifts ? "Go to course" : "Course available after assessment",
+        courseAvailable: hasSpiritualGifts,
+        status,
+      };
+    }
 
     return { ...assessment, status };
   });

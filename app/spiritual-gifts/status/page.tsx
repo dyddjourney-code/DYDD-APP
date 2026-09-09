@@ -135,7 +135,11 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
         <div className="fruitlife-latest-actions">
           {!session.submitted_at && selfLink ? <Link href={selfLink}>Open self assessment</Link> : null}
           <Link href="/field-kit">Open Field Kit</Link>
-          <Link href="/courses/spiritual-gifts-service">Open course</Link>
+          {session.submitted_at ? (
+            <Link href="/courses/spiritual-gifts-service">Open course</Link>
+          ) : (
+            <span>Course available after assessment</span>
+          )}
         </div>
       </section>
 

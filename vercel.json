@@ -7,6 +7,10 @@
     {
       "path": "/api/fruitlife360/report-worker",
       "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/waypoints-release",
+      "schedule": "0 12 * * 5"
     }
   ]
 }

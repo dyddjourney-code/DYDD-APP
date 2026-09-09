@@ -15,6 +15,8 @@ type SpiritualGiftsAssessmentFormProps = {
     name?: string | null;
   };
   message?: string;
+  reviewKey?: string;
+  reviewMode?: string;
   sessionId?: string;
   token?: string;
 };
@@ -30,6 +32,8 @@ export function SpiritualGiftsAssessmentForm({
   channel = "public",
   initialReviewer,
   message,
+  reviewKey,
+  reviewMode,
   sessionId,
   token,
 }: SpiritualGiftsAssessmentFormProps) {
@@ -77,6 +81,8 @@ export function SpiritualGiftsAssessmentForm({
         type="hidden"
         value={channel === "app" ? "app-spiritual-gifts-assessment" : "public-spiritual-gifts-assessment"}
       />
+      <input name="review" type="hidden" value={reviewMode ?? ""} />
+      <input name="key" type="hidden" value={reviewKey ?? ""} />
 
       {message ? <p className="form-message">{message}</p> : null}
 
@@ -109,6 +115,16 @@ export function SpiritualGiftsAssessmentForm({
           <>
             <input name="reviewer_name" type="hidden" value={initialReviewer?.name ?? ""} />
             <input name="reviewer_email" type="hidden" value={initialReviewer?.email ?? ""} />
+            <div className="spiritual-gifts-locked-identity" aria-label="Assessment account identity">
+              <div>
+                <span>Name</span>
+                <strong>{initialReviewer?.name}</strong>
+              </div>
+              <div>
+                <span>Email</span>
+                <strong>{initialReviewer?.email}</strong>
+              </div>
+            </div>
           </>
         ) : (
           <div className="spiritual-gifts-start-fields">

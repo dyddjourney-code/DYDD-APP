@@ -9,6 +9,14 @@ import {
   spiritualGiftRatingField,
 } from "@/lib/spiritual-gifts/intake";
 import { normalizeEmail } from "@/lib/identity/email";
+import {
+  heatherReviewEmail,
+  heatherReviewName,
+  isHeatherReviewRequest,
+  isNewReviewRequest,
+  jordanReviewEmail,
+  jordanReviewName,
+} from "@/lib/review/heather";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -368,6 +376,15 @@ export async function createSpiritualGiftsSession(formData: FormData) {
 export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
   const signupSource = getString(formData, "signup_source") || "public-spiritual-gifts-assessment";
   const isAppChannel = signupSource === "app-spiritual-gifts-assessment";
+  const reviewParams = {
+    key: getString(formData, "key"),
+    review: getString(formData, "review"),
+  };
+  const reviewIdentity = isHeatherReviewRequest(reviewParams)
+    ? { email: heatherReviewEmail, name: heatherReviewName }
+    : isNewReviewRequest(reviewParams)
+      ? { email: jordanReviewEmail, name: jordanReviewName }
+      : null;
   const token = makeToken();
   const supabase = createSupabaseAdminClient();
   const serverSupabase = await createSupabaseServerClient();
@@ -382,16 +399,17 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
         .maybeSingle()
     : { data: null };
 
-  if (isAppChannel && !user) {
+  if (isAppChannel && !user && !reviewIdentity) {
     fail("/spiritual-gifts", "Sign in before starting your app-linked Spiritual Gifts assessment.");
   }
 
   const participantEmail = normalizeEmail(
-    user ? profile?.email ?? user.email : getString(formData, "reviewer_email"),
+    user ? profile?.email ?? user.email : reviewIdentity?.email ?? getString(formData, "reviewer_email"),
   );
+  const userMetadataName = String(user?.user_metadata?.full_name ?? user?.user_metadata?.name ?? "").trim();
   const participantName = user
-    ? profile?.full_name ?? user.email?.split("@")[0] ?? ""
-    : getString(formData, "reviewer_name");
+    ? profile?.full_name?.trim() || userMetadataName || user.email?.split("@")[0] || ""
+    : reviewIdentity?.name ?? getString(formData, "reviewer_name");
 
   if (!participantName) {
     fail("/spiritual-gifts", "Enter your name.");

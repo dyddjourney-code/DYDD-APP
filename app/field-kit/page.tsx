@@ -24,6 +24,7 @@ import {
   heatherReviewName,
   isHeatherReviewRequest,
   isNewReviewRequest,
+  isReviewRequest,
   jordanReviewEmail,
   newReviewName,
   type ReviewSearchParams,
@@ -438,7 +439,9 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         ...assessment,
         courseAction: hasSpiritualGifts ? "Go to course" : "Course available after assessment",
         courseAvailable: hasSpiritualGifts,
-        href: user ? "/spiritual-gifts?channel=app" : assessment.href,
+        href: user || isReviewRequest(reviewParams)
+          ? withReviewQuery("/spiritual-gifts?channel=app", reviewParams)
+          : assessment.href,
         status,
       };
     }

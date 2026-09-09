@@ -53,7 +53,13 @@ export function reviewQuery(params?: ReviewSearchParams | null) {
 }
 
 export function withReviewQuery(path: string, params?: ReviewSearchParams | null) {
-  return `${path}${reviewQuery(params)}`;
+  const query = reviewQuery(params);
+
+  if (!query) {
+    return path;
+  }
+
+  return `${path}${path.includes("?") ? "&" : "?"}${query.slice(1)}`;
 }
 
 export async function getHeatherReviewReport(params?: ReviewSearchParams | null) {

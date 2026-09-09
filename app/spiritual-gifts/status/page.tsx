@@ -102,6 +102,12 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
   const selfLink = typeof session.metadata?.selfLink === "string" ? session.metadata.selfLink : "";
   const channel = typeof session.metadata?.channel === "string" ? session.metadata.channel : "public_assessment";
   const isAppChannel = channel === "native_app";
+  const shellClassName = [
+    "fruitlife-shell",
+    isAppChannel ? "spiritual-gifts-app-report" : "fruitlife-public",
+    "spiritual-gifts-shell",
+    "spiritual-gifts-report-page",
+  ].join(" ");
   const topFiveCutoff = topGifts[4]?.score ?? null;
   const omittedTiedGifts =
     topFiveCutoff === null
@@ -109,7 +115,7 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
       : rankedGifts.filter((gift) => gift.rank > 5 && gift.score === topFiveCutoff);
 
   return (
-    <main className="fruitlife-shell fruitlife-public spiritual-gifts-shell">
+    <main className={shellClassName}>
       <section className="spiritual-gifts-report-cover">
         <div className="spiritual-gifts-report-titlebar">
           <div>

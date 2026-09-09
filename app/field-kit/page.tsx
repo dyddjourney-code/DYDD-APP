@@ -29,6 +29,7 @@ import {
   type ReviewSearchParams,
   withReviewQuery,
 } from "@/lib/review/heather";
+import { withSpiritualGiftsAppIdentity } from "@/lib/spiritual-gifts/app-identity";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type FieldKitPageProps = {
@@ -438,7 +439,13 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         ...assessment,
         courseAction: hasSpiritualGifts ? "Go to course" : "Course available after assessment",
         courseAvailable: hasSpiritualGifts,
-        href: withReviewQuery("/spiritual-gifts?channel=app", reviewParams),
+        href: withSpiritualGiftsAppIdentity(
+          withReviewQuery("/spiritual-gifts?channel=app", reviewParams),
+          {
+            email: participantEmail,
+            name: displayName.replace(/\s+Preview$/, ""),
+          },
+        ),
         status,
       };
     }

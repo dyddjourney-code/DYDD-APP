@@ -17,6 +17,7 @@ import {
   jordanReviewEmail,
   jordanReviewName,
 } from "@/lib/review/heather";
+import { verifySpiritualGiftsAppIdentity } from "@/lib/spiritual-gifts/app-identity";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -385,6 +386,13 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
     : isNewReviewRequest(reviewParams)
       ? { email: jordanReviewEmail, name: jordanReviewName }
       : null;
+  const signedAppIdentity = isAppChannel
+    ? verifySpiritualGiftsAppIdentity({
+        email: getString(formData, "reviewer_email"),
+        name: getString(formData, "reviewer_name"),
+        signature: getString(formData, "app_identity_signature"),
+      })
+    : null;
   const token = makeToken();
   const supabase = createSupabaseAdminClient();
   const serverSupabase = await createSupabaseServerClient();
@@ -399,17 +407,19 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
         .maybeSingle()
     : { data: null };
 
-  if (isAppChannel && !user && !reviewIdentity) {
+  if (isAppChannel && !user && !reviewIdentity && !signedAppIdentity) {
     fail("/spiritual-gifts", "Sign in before starting your app-linked Spiritual Gifts assessment.");
   }
 
   const participantEmail = normalizeEmail(
-    user ? profile?.email ?? user.email : reviewIdentity?.email ?? getString(formData, "reviewer_email"),
+    user
+      ? profile?.email ?? user.email
+      : reviewIdentity?.email ?? signedAppIdentity?.email ?? getString(formData, "reviewer_email"),
   );
   const userMetadataName = String(user?.user_metadata?.full_name ?? user?.user_metadata?.name ?? "").trim();
   const participantName = user
     ? profile?.full_name?.trim() || userMetadataName || user.email?.split("@")[0] || ""
-    : reviewIdentity?.name ?? getString(formData, "reviewer_name");
+    : reviewIdentity?.name ?? signedAppIdentity?.name ?? getString(formData, "reviewer_name");
 
   if (!participantName) {
     fail("/spiritual-gifts", "Enter your name.");
@@ -417,13 +427,24 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
 
   assertEmail(participantEmail, "/spiritual-gifts");
 
+  const linkedUserId =
+    user?.id ??
+    (
+      await supabase
+        .from("school_profiles")
+        .select("id")
+        .ilike("email", participantEmail)
+        .maybeSingle()
+    ).data?.id ??
+    null;
+
   const { data: participant, error: participantError } = await supabase
     .from("assessment_participants")
     .upsert(
       {
         display_name: participantName,
         normalized_email: participantEmail,
-        user_id: user?.id ?? null,
+        user_id: linkedUserId,
       },
       { onConflict: "normalized_email" },
     )
@@ -437,7 +458,7 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
   const { data: session, error: sessionError } = await supabase
     .from("spiritual_gifts_sessions")
     .insert({
-      created_by_user_id: user?.id ?? null,
+      created_by_user_id: linkedUserId,
       intake_token_hash: hashToken(token),
       participant_email: participantEmail,
       participant_id: participant.id,
@@ -466,7 +487,7 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
       participantName,
       sessionId: session.id,
       token,
-      userId: user?.id ?? null,
+      userId: linkedUserId,
       supabase,
       formData,
       path: "/spiritual-gifts",

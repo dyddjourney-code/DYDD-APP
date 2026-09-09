@@ -15,6 +15,7 @@ type SpiritualGiftsAssessmentFormProps = {
     email?: string | null;
     name?: string | null;
   };
+  identitySignature?: string;
   message?: string;
   reviewKey?: string;
   reviewMode?: string;
@@ -31,6 +32,7 @@ const questionGroups = Array.from(
 export function SpiritualGiftsAssessmentForm({
   action,
   channel = "public",
+  identitySignature,
   initialReviewer,
   message,
   reviewKey,
@@ -131,6 +133,7 @@ export function SpiritualGiftsAssessmentForm({
       />
       <input name="review" type="hidden" value={reviewMode ?? ""} />
       <input name="key" type="hidden" value={reviewKey ?? ""} />
+      <input name="app_identity_signature" type="hidden" value={identitySignature ?? ""} />
 
       {message ? <p className="form-message">{message}</p> : null}
 

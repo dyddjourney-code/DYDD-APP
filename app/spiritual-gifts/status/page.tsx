@@ -23,6 +23,46 @@ const reflectionClasses: Record<string, string> = {
   Steward: "steward",
 };
 
+type SpiritualGiftResult = {
+  definition: string;
+  key: string;
+  label: string;
+  maturity?: {
+    anchorScripture?: string;
+    description?: string;
+    growthAreas?: string;
+    signsOfImmaturity?: string;
+    stepsToGrow?: string;
+  };
+  percent: number;
+  rank: number;
+  reflections?: Record<string, string>;
+  reportBlurb?: string;
+  score: number;
+  scriptures: string;
+  tier?: number;
+  tiedAtScore?: boolean;
+};
+
+function splitReportList(value?: string) {
+  return (value ?? "")
+    .split(";")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function valueForGift(
+  gift: SpiritualGiftResult,
+  sourceGift: ReturnType<typeof getSpiritualGiftByKey>,
+  key: "definition" | "reportBlurb" | "scriptures",
+) {
+  return sourceGift?.[key] ?? gift[key];
+}
+
+function maturityForGift(gift: SpiritualGiftResult) {
+  return gift.maturity ?? getSpiritualGiftByKey(gift.key)?.maturity;
+}
+
 export default async function SpiritualGiftsStatusPage({ searchParams }: SpiritualGiftsStatusPageProps) {
   const params = await searchParams;
   const status = params?.session && params?.token
@@ -46,31 +86,10 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
 
   const { responses, session, token } = status;
   const response = responses[0] as any;
-  const topGifts = (response?.derived_scores?.topGifts ?? []) as Array<{
-    definition: string;
-    key: string;
-    label: string;
-    percent: number;
-    rank: number;
-    reflections?: Record<string, string>;
-    reportBlurb?: string;
-    score: number;
-    scriptures: string;
-    tier?: number;
-    tiedAtScore?: boolean;
-  }>;
+  const topGifts = (response?.derived_scores?.topGifts ?? []) as SpiritualGiftResult[];
   const rankedGifts = (response?.derived_scores?.rankedGifts ?? topGifts) as typeof topGifts;
-  const deepDiveSource = (response?.derived_scores?.rankedGifts ?? topGifts) as Array<
-    (typeof topGifts)[number] & {
-      maturity?: {
-        anchorScripture?: string;
-        description?: string;
-        growthAreas?: string;
-        signsOfImmaturity?: string;
-        stepsToGrow?: string;
-      };
-    }
-  >;
+  const savedDeepDiveGifts = (response?.derived_scores?.deepDiveGifts ?? []) as SpiritualGiftResult[];
+  const deepDiveSource = savedDeepDiveGifts.length >= 3 ? savedDeepDiveGifts : rankedGifts;
   const deepDiveGifts = deepDiveSource.slice(0, 3);
   const tieSummary = response?.derived_scores?.tieSummary as
     | {
@@ -91,19 +110,47 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
 
   return (
     <main className="fruitlife-shell fruitlife-public spiritual-gifts-shell">
-      <section className="fruitlife-hero compact spiritual-gifts-status-hero">
-        <div>
-          <p className="section-label">Spiritual Gifts</p>
-          <h1>{session.submitted_at ? "Your Spiritual Gifts results." : "Your assessment is waiting."}</h1>
-          <p className="spiritual-gifts-result-owner">
-            {session.participant_name ?? "Participant"}
-            {session.participant_email ? ` · ${session.participant_email}` : ""}
-          </p>
+      <section className="spiritual-gifts-report-cover">
+        <div className="spiritual-gifts-report-titlebar">
+          <div>
+            <p className="section-label">Spiritual Gifts</p>
+            <h1>
+              {session.submitted_at
+                ? "Spiritual Gifts Assessment Report"
+                : "Your assessment is waiting"}
+            </h1>
+            <dl className="spiritual-gifts-report-identity">
+              <div>
+                <dt>Name</dt>
+                <dd>{session.participant_name ?? "Participant"}</dd>
+              </div>
+              {session.participant_email ? (
+                <div>
+                  <dt>Email</dt>
+                  <dd>{session.participant_email}</dd>
+                </div>
+              ) : null}
+            </dl>
+          </div>
+          <img src="/brand/tools/spiritual-gifts-logo.jpg" alt="Spiritual Gifts logo" />
         </div>
-        <p className="lede">
-          Use these results as a starting point for prayer, service, and confirmation from
-          people who have seen the fruit of your life.
-        </p>
+
+        <div className="spiritual-gifts-welcome-panel">
+          <h2>Welcome to Your Spiritual Gifts Assessment Report</h2>
+          <p>
+            Thank you for taking the time to explore how God has uniquely equipped you
+            to serve His Kingdom. Your design is not accidental, and your gifts have
+            purpose, meaning, and eternal significance.
+          </p>
+          <p>
+            Our prayer is that this report encourages you, helps clarify your calling,
+            and helps you step confidently into the good works God has prepared for you.
+          </p>
+          <blockquote>
+            Now to each one the manifestation of the Spirit is given for the common good.
+            <cite>1 Corinthians 12:7</cite>
+          </blockquote>
+        </div>
         {params?.message ? <p className="form-message">{params.message}</p> : null}
       </section>
 
@@ -117,7 +164,7 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
       ) : null}
 
       <section className="spiritual-gifts-panel spiritual-gifts-results-panel">
-        <p className="section-label">Result</p>
+        <p className="section-label">Top Results</p>
         <h2>Your Top 5 Spiritual Gifts</h2>
         {topGifts.length ? (
           <>
@@ -141,25 +188,41 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
             <div className="spiritual-gifts-result-list">
               {topGifts.map((gift) => {
                 const sourceGift = getSpiritualGiftByKey(gift.key);
+                const definition = valueForGift(gift, sourceGift, "definition");
+                const howItShowsUp = valueForGift(gift, sourceGift, "reportBlurb");
+                const scriptures = valueForGift(gift, sourceGift, "scriptures");
+                const reflections = sourceGift?.reflections ?? gift.reflections;
 
                 return (
                   <article key={gift.key}>
-                    <div>
+                    <div className="spiritual-gifts-result-heading">
                       <span>{gift.rank}</span>
                       <div>
                         <strong>{gift.label}</strong>
-                        <small>{gift.scriptures}</small>
+                        <small>
+                          Score {gift.score}/15
+                          {gift.tiedAtScore ? " - tied score" : ""}
+                        </small>
                       </div>
                     </div>
                     <meter max={15} min={3} value={gift.score} />
-                    <p>{gift.reportBlurb ?? gift.definition}</p>
-                    <small>
-                      Score {gift.score}/15 · {gift.percent}% strength
-                      {gift.tiedAtScore ? " · tied score" : ""}
-                    </small>
-                    {sourceGift ? (
+                    <div className="spiritual-gifts-result-copy-grid">
+                      <p>
+                        <strong>Definition</strong>
+                        <span>{definition}</span>
+                      </p>
+                      <p>
+                        <strong>Scripture references</strong>
+                        <span>{scriptures}</span>
+                      </p>
+                      <p className="wide">
+                        <strong>How it shows up</strong>
+                        <span>{howItShowsUp}</span>
+                      </p>
+                    </div>
+                    {reflections ? (
                       <div className="spiritual-gift-reflections compact">
-                        {Object.entries(sourceGift.reflections).map(([reflection, text]) => (
+                        {Object.entries(reflections).map(([reflection, text]) => (
                           <p
                             className={`reflection-${reflectionClasses[reflection] ?? "default"}`}
                             key={reflection}
@@ -193,7 +256,7 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
 
       {deepDiveGifts.length ? (
         <section className="spiritual-gifts-panel spiritual-gifts-deep-dives">
-          <p className="section-label">Explore First</p>
+          <p className="section-label">Deep Dive</p>
           <h2>Start with these three</h2>
           <p>
             These are not labels to wear. They are the first places to look for repeated grace,
@@ -209,32 +272,42 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
             </div>
           ) : null}
           <div className="spiritual-gifts-deep-list">
-            {deepDiveGifts.map((gift) => (
-              <article key={gift.key}>
-                <div>
-                  <span>{gift.rank}</span>
-                  <div>
-                    <h3>{gift.label}</h3>
-                    <small>{gift.maturity?.anchorScripture ?? gift.scriptures}</small>
+            {deepDiveGifts.map((gift) => {
+              const maturity = maturityForGift(gift);
+              const growthAreas = splitReportList(maturity?.growthAreas);
+              const signsOfImmaturity = splitReportList(maturity?.signsOfImmaturity);
+              const stepsToGrow = splitReportList(maturity?.stepsToGrow);
+
+              return (
+                <article key={gift.key}>
+                  <div className="spiritual-gifts-deep-heading">
+                    <span>{gift.rank}</span>
+                    <div>
+                      <h3>Deep Dive: {gift.label}</h3>
+                      <small>{maturity?.anchorScripture ?? gift.scriptures}</small>
+                    </div>
                   </div>
-                </div>
-                <p>{gift.maturity?.description ?? gift.definition}</p>
-                <div className="spiritual-gifts-growth-grid">
-                  <p>
-                    <strong>Growth areas</strong>
-                    <span>{gift.maturity?.growthAreas ?? "Review with a trusted leader or mentor."}</span>
-                  </p>
-                  <p>
-                    <strong>Watch for</strong>
-                    <span>{gift.maturity?.signsOfImmaturity ?? "Overstatement, pressure, or self-definition without fruit."}</span>
-                  </p>
-                  <p>
-                    <strong>Next steps</strong>
-                    <span>{gift.maturity?.stepsToGrow ?? "Pray, serve, ask others what fruit they see, and test this humbly."}</span>
-                  </p>
-                </div>
-              </article>
-            ))}
+                  <div className="spiritual-gifts-growth-grid">
+                    <p>
+                      <strong>Maturity overview</strong>
+                      <span>{maturity?.description ?? gift.definition}</span>
+                    </p>
+                    <p>
+                      <strong>Growth areas</strong>
+                      <span>{growthAreas.length ? growthAreas.join(", ") : "Review with a trusted leader or mentor."}</span>
+                    </p>
+                    <p>
+                      <strong>Signs of immaturity</strong>
+                      <span>{signsOfImmaturity.length ? signsOfImmaturity.join(", ") : "Overstatement, pressure, or self-definition without fruit."}</span>
+                    </p>
+                    <p>
+                      <strong>Steps to grow</strong>
+                      <span>{stepsToGrow.length ? stepsToGrow.join(", ") : "Pray, serve, ask others what fruit they see, and test this humbly."}</span>
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </section>
       ) : null}

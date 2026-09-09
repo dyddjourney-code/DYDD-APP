@@ -324,6 +324,12 @@ function artifactDownloadHref(
   snapshot: AssessmentSnapshotSummary,
   reviewParams?: ReviewSearchParams | null,
 ) {
+  const statusHref = snapshot.scores?.statusHref;
+
+  if (snapshot.assessment_type === "spiritual_gifts" && typeof statusHref === "string" && statusHref) {
+    return statusHref;
+  }
+
   return withReviewQuery(
     `/api/artifacts/${encodeURIComponent(snapshot.id)}/download`,
     reviewParams,

@@ -1379,7 +1379,7 @@ export function buildSpiritualGiftScores(formData: FormData) {
 
   return {
     answers,
-    deepDiveGifts: cleanTopThree ? topTier.slice(0, 3) : rankedGifts.slice(0, 3),
+    deepDiveGifts: rankedGifts.slice(0, 3),
     giftPercents,
     giftScores,
     questionScores,

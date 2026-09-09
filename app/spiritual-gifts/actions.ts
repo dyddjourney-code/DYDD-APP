@@ -159,6 +159,7 @@ async function saveCompletedSpiritualGiftsResponse({
   const submittedAt = new Date().toISOString();
   const scores = buildSpiritualGiftScores(formData);
   const sourceResponseId = `vercel:spiritual_gifts:self:${sessionId}:${crypto.randomUUID()}`;
+  const statusHref = `/spiritual-gifts/status?session=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(token)}`;
   const topGiftPayload = scores.topGifts.map((gift, index) => ({
     definition: gift.definition,
     key: gift.key,
@@ -262,6 +263,7 @@ async function saveCompletedSpiritualGiftsResponse({
         channel: "native_app",
         deepDiveGifts: deepDivePayload,
         rankedGifts: rankedGiftPayload,
+        statusHref,
         sourceResponseId,
         tieSummary: scores.tieSummary,
         tiers: tierPayload,
@@ -288,6 +290,7 @@ async function saveCompletedSpiritualGiftsResponse({
 
   return {
     sessionId,
+    statusHref,
     submittedAt,
     token,
   };

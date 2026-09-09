@@ -438,6 +438,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         ...assessment,
         courseAction: hasSpiritualGifts ? "Go to course" : "Course available after assessment",
         courseAvailable: hasSpiritualGifts,
+        href: user ? "/spiritual-gifts?channel=app" : assessment.href,
         status,
       };
     }

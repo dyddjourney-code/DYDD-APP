@@ -9,6 +9,7 @@ import {
 
 type SpiritualGiftsAssessmentFormProps = {
   action: (formData: FormData) => void | Promise<void>;
+  channel?: "app" | "public";
   initialReviewer?: {
     email?: string | null;
     name?: string | null;
@@ -26,19 +27,23 @@ const questionGroups = Array.from(
 
 export function SpiritualGiftsAssessmentForm({
   action,
+  channel = "public",
   initialReviewer,
   message,
   sessionId,
   token,
 }: SpiritualGiftsAssessmentFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
-  const totalSteps = questionGroups.length + 2;
+  const totalSteps = questionGroups.length + 3;
   const [stepIndex, setStepIndex] = useState(0);
+  const reflectionStep = questionGroups.length + 1;
+  const reviewStep = questionGroups.length + 2;
   const progressLabel = useMemo(() => {
     if (stepIndex === 0) return "Start";
     if (stepIndex <= questionGroups.length) return `Set ${stepIndex} of ${questionGroups.length}`;
-    return "Finish";
-  }, [stepIndex]);
+    if (stepIndex === reflectionStep) return "Reflection";
+    return "Review";
+  }, [reflectionStep, stepIndex]);
   const progress = Math.round(((stepIndex + 1) / totalSteps) * 100);
   const lockIdentity = Boolean(initialReviewer?.email || initialReviewer?.name);
   const identitySource = lockIdentity ? "account" : "public";
@@ -67,7 +72,11 @@ export function SpiritualGiftsAssessmentForm({
     <form action={action} className="spiritual-gifts-form" ref={formRef}>
       <input name="session_id" type="hidden" value={sessionId ?? ""} />
       <input name="token" type="hidden" value={token ?? ""} />
-      <input name="signup_source" type="hidden" value="public-spiritual-gifts-assessment" />
+      <input
+        name="signup_source"
+        type="hidden"
+        value={channel === "app" ? "app-spiritual-gifts-assessment" : "public-spiritual-gifts-assessment"}
+      />
 
       {message ? <p className="form-message">{message}</p> : null}
 
@@ -173,38 +182,42 @@ export function SpiritualGiftsAssessmentForm({
         );
       })}
 
-      <section className={`spiritual-gifts-panel spiritual-gifts-step-panel ${stepIndex === totalSteps - 1 ? "active" : ""}`}>
+      <section className={`spiritual-gifts-panel spiritual-gifts-step-panel spiritual-gifts-reflection-card ${stepIndex === reflectionStep ? "active" : ""}`}>
         <p className="section-label">Reflection</p>
         <h2>Connect the result to real fruit.</h2>
-        <label>
-          Where have others consistently affirmed gift or ministry fruit in you?
-          <textarea name="others_affirmed" rows={4} />
-        </label>
-        <label>
-          Where have you served repeatedly with grace, joy, and impact?
-          <textarea name="service_fruit" rows={4} />
-        </label>
-        <label>
-          Where are you currently serving, leading, helping, or sensing a pull to serve?
-          <textarea name="service_context" rows={4} />
-        </label>
-        <label>
-          What do you want to ask God to clarify or mature as you review your gifts?
-          <textarea name="growth_prayer" rows={4} />
-        </label>
-        <label>
-          What is one small next step you can take after seeing your results?
-          <textarea name="next_step" rows={4} />
-        </label>
+        <p>These are optional, but they help connect your score to actual service, confirmation, and next steps.</p>
+        <div className="spiritual-gifts-reflection-fields">
+          {[
+            ["others_affirmed", "Where have others consistently affirmed gift or ministry fruit in you?"],
+            ["service_fruit", "Where have you served repeatedly with grace, joy, and impact?"],
+            ["service_context", "Where are you currently serving, leading, helping, or sensing a pull to serve?"],
+            ["growth_prayer", "What do you want to ask God to clarify or mature as you review your gifts?"],
+            ["next_step", "What is one small next step you can take after seeing your results?"],
+          ].map(([name, label]) => (
+            <label key={name}>
+              <span>{label}</span>
+              <textarea name={name} rows={4} />
+            </label>
+          ))}
+        </div>
+      </section>
+
+      <section className={`spiritual-gifts-panel spiritual-gifts-step-panel spiritual-gifts-review-card ${stepIndex === reviewStep ? "active" : ""}`}>
+        <p className="section-label">Ready</p>
+        <h2>Submit your Spiritual Gifts assessment.</h2>
+        <p>
+          Your 1-5 responses are complete. When you submit, your result will be saved
+          and opened on the results page.
+        </p>
       </section>
 
       <div className="fruitlife-step-controls">
         <button className="button secondary" disabled={stepIndex === 0} onClick={goBack} type="button">
           Back
         </button>
-        {stepIndex < totalSteps - 1 ? (
+        {stepIndex < reviewStep ? (
           <button className="button primary" onClick={goNext} type="button">
-            {stepIndex === 0 ? "Start questions" : "Next"}
+            {stepIndex === 0 ? "Start questions" : stepIndex === reflectionStep ? "Review results" : "Next"}
           </button>
         ) : (
           <button className="button primary" type="submit">

@@ -367,6 +367,7 @@ export async function createSpiritualGiftsSession(formData: FormData) {
 
 export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
   const signupSource = getString(formData, "signup_source") || "public-spiritual-gifts-assessment";
+  const isAppChannel = signupSource === "app-spiritual-gifts-assessment";
   const token = makeToken();
   const supabase = createSupabaseAdminClient();
   const serverSupabase = await createSupabaseServerClient();
@@ -380,6 +381,11 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
         .eq("id", user.id)
         .maybeSingle()
     : { data: null };
+
+  if (isAppChannel && !user) {
+    fail("/spiritual-gifts", "Sign in before starting your app-linked Spiritual Gifts assessment.");
+  }
+
   const participantEmail = normalizeEmail(
     user ? profile?.email ?? user.email : getString(formData, "reviewer_email"),
   );
@@ -423,7 +429,7 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
       signup_source: signupSource,
       source_system: "spiritual_gifts_app",
       metadata: {
-        channel: "public_assessment",
+        channel: isAppChannel ? "native_app" : "public_assessment",
         liveProcessTouched: false,
         source: signupSource,
       },

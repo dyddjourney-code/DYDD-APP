@@ -12,23 +12,16 @@ type SpiritualGiftsStatusPageProps = {
 
 export const dynamic = "force-dynamic";
 
-function titleize(value: string | null | undefined) {
-  return value ? value.replace(/_/g, " ") : "not started";
-}
-
-function displayDate(value: string | null | undefined) {
-  if (!value) return "Waiting";
-  return new Intl.DateTimeFormat("en-US", {
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    month: "short",
-  }).format(new Date(value));
-}
-
 function getSpiritualGiftByKey(key: string) {
   return spiritualGifts.find((gift) => gift.key === key);
 }
+
+const reflectionClasses: Record<string, string> = {
+  Architect: "architect",
+  Artisan: "artisan",
+  Shepherd: "shepherd",
+  Steward: "steward",
+};
 
 export default async function SpiritualGiftsStatusPage({ searchParams }: SpiritualGiftsStatusPageProps) {
   const params = await searchParams;
@@ -59,6 +52,7 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
     label: string;
     percent: number;
     rank: number;
+    reflections?: Record<string, string>;
     reportBlurb?: string;
     score: number;
     scriptures: string;
@@ -87,76 +81,60 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
       }
     | undefined;
   const selfLink = typeof session.metadata?.selfLink === "string" ? session.metadata.selfLink : "";
-  const progress = session.submitted_at ? 100 : 50;
+  const channel = typeof session.metadata?.channel === "string" ? session.metadata.channel : "public_assessment";
+  const isAppChannel = channel === "native_app";
+  const topFiveCutoff = topGifts[4]?.score ?? null;
+  const omittedTiedGifts =
+    topFiveCutoff === null
+      ? []
+      : rankedGifts.filter((gift) => gift.rank > 5 && gift.score === topFiveCutoff);
 
   return (
     <main className="fruitlife-shell fruitlife-public spiritual-gifts-shell">
       <section className="fruitlife-hero compact spiritual-gifts-status-hero">
         <div>
           <p className="section-label">Spiritual Gifts</p>
-          <h1>{session.submitted_at ? "Your results are ready." : "Your assessment is waiting."}</h1>
+          <h1>{session.submitted_at ? "Your Spiritual Gifts results." : "Your assessment is waiting."}</h1>
           <p className="spiritual-gifts-result-owner">
             {session.participant_name ?? "Participant"}
             {session.participant_email ? ` · ${session.participant_email}` : ""}
           </p>
         </div>
         <p className="lede">
-          This is an early app-based result. Use it as a starting point for prayer,
-          service, and confirmation from people who know your fruit.
+          Use these results as a starting point for prayer, service, and confirmation from
+          people who have seen the fruit of your life.
         </p>
         {params?.message ? <p className="form-message">{params.message}</p> : null}
       </section>
 
-      <section className="fruitlife-status-console fruitlife-status-page-card">
-        <div className="fruitlife-session-summary">
-          <p className="section-label">Session progress</p>
-          <strong>{session.submitted_at ? "Result ready" : "Waiting for self"}</strong>
-          <small>
-            {titleize(session.session_status)} · report {titleize(session.report_status)}
-          </small>
-        </div>
-        <div className="fruitlife-progress-meter" aria-label={`${progress}% complete`}>
-          <span style={{ width: `${progress}%` }} />
-        </div>
-        <div className="fruitlife-kpis">
-          <p>
-            <span>{session.submitted_at ? "Submitted" : "Waiting"}</span>
-            <small>Self</small>
-          </p>
-          <p>
-            <span>{topGifts.length ? topGifts[0]?.label : "Pending"}</span>
-            <small>Top gift</small>
-          </p>
-          <p>
-            <span>{session.result_snapshot_id ? "Saved" : "Local result"}</span>
-            <small>Snapshot</small>
-          </p>
-        </div>
-        <div className="fruitlife-latest-actions">
-          {!session.submitted_at && selfLink ? <Link href={selfLink}>Open self assessment</Link> : null}
-          <Link href="/field-kit">Open Field Kit</Link>
-          {session.submitted_at ? (
-            <Link href="/courses/spiritual-gifts-service">Open course</Link>
-          ) : (
-            <span>Course available after assessment</span>
-          )}
-        </div>
-      </section>
+      {!session.submitted_at && selfLink ? (
+        <section className="spiritual-gifts-panel spiritual-gifts-result-cta">
+          <p className="section-label">Continue</p>
+          <h2>Your assessment is waiting.</h2>
+          <p>Open the assessment link to complete your Spiritual Gifts responses.</p>
+          <Link className="button primary" href={selfLink}>Open assessment</Link>
+        </section>
+      ) : null}
 
       <section className="spiritual-gifts-panel spiritual-gifts-results-panel">
         <p className="section-label">Result</p>
-        <h2>Your strongest gift patterns</h2>
+        <h2>Your Top 5 Spiritual Gifts</h2>
         {topGifts.length ? (
           <>
             <div className="spiritual-gifts-report-note">
               <strong>
-                {tieSummary?.topTierCount && tieSummary.topTierCount > 1
-                  ? `${tieSummary.topTierCount} gifts share the top score.`
-                  : "Your strongest gift emerged with the highest score."}
+                {omittedTiedGifts.length
+                  ? "Several gifts share the fifth-place score."
+                  : tieSummary?.topTierCount && tieSummary.topTierCount > 1
+                    ? `${tieSummary.topTierCount} gifts share the top score.`
+                    : "These five gifts rose to the top of your responses."}
               </strong>
               <span>
-                Use this as a first point of exploration. Spiritual gifts are best confirmed
-                through prayer, actual fruit, and trusted people who have seen your life in motion.
+                Spiritual gifts are best confirmed through prayer, actual service fruit,
+                and trusted people who have seen your life in motion.
+                {omittedTiedGifts.length
+                  ? ` ${omittedTiedGifts.map((gift) => gift.label).join(", ")} also tied at ${topFiveCutoff}/15.`
+                  : ""}
               </span>
             </div>
 
@@ -179,10 +157,13 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
                       Score {gift.score}/15 · {gift.percent}% strength
                       {gift.tiedAtScore ? " · tied score" : ""}
                     </small>
-                    {sourceGift && gift.rank <= 3 ? (
+                    {sourceGift ? (
                       <div className="spiritual-gift-reflections compact">
                         {Object.entries(sourceGift.reflections).map(([reflection, text]) => (
-                          <p key={reflection}>
+                          <p
+                            className={`reflection-${reflectionClasses[reflection] ?? "default"}`}
+                            key={reflection}
+                          >
                             <strong>{reflection}</strong>
                             <span>{text}</span>
                           </p>
@@ -192,6 +173,14 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
                   </article>
                 );
               })}
+            </div>
+            <div className="spiritual-gifts-design-note">
+              <h3>What were the Architect, Artisan, Shepherd, and Steward boxes?</h3>
+              <p>
+                Those short notes show how each Spiritual Gift may connect with the four DesignID
+                reflections. They are not the main result. They are simple clues for how the same
+                gift may express itself differently through identity, care, creativity, or stewardship.
+              </p>
             </div>
           </>
         ) : (
@@ -250,41 +239,34 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
         </section>
       ) : null}
 
-      {rankedGifts.length > 5 ? (
-        <section className="spiritual-gifts-panel spiritual-gifts-ranked-list">
-          <p className="section-label">Full List</p>
-          <h2>All gifts in current order</h2>
-          <div>
-            {rankedGifts.map((gift) => (
-              <p key={gift.key}>
-                <span>{gift.rank}</span>
-                <strong>{gift.label}</strong>
-                <small>
-                  {gift.score}/15 · {gift.percent}%{gift.tiedAtScore ? " · tied" : ""}
-                </small>
-              </p>
-            ))}
+      {session.submitted_at ? (
+        <section className="spiritual-gifts-panel spiritual-gifts-result-cta">
+          <p className="section-label">{isAppChannel ? "Next Step" : "Invitation"}</p>
+          <h2>
+            {isAppChannel
+              ? "Continue into the Spiritual Gifts course."
+              : "Your Spiritual Gifts course is waiting inside DYDD."}
+          </h2>
+          <p>
+            {isAppChannel
+              ? "Because this result is connected to your account, the course can use your saved score as you work through the Trailhead."
+              : "Create or sign into your Discover Your Divine Design account with this same email, then go to Trailheads and open the Spiritual Gifts course. The course is designed to help you explore these gifts with service, humility, and confirmation."}
+          </p>
+          <div className="spiritual-gifts-cta-actions">
+            {isAppChannel ? (
+              <>
+                <Link className="button primary" href="/courses/spiritual-gifts-service">Open course</Link>
+                <Link className="button secondary" href="/field-kit">Open Field Kit</Link>
+              </>
+            ) : (
+              <>
+                <Link className="button primary" href="/login">Create or sign into DYDD</Link>
+                <Link className="button secondary" href="/trailheads#spiritual-gifts">View Spiritual Gifts Trailhead</Link>
+              </>
+            )}
           </div>
         </section>
       ) : null}
-
-      <section className="fruitlife-panel fruitlife-roster-panel">
-        <p className="section-label">Session Record</p>
-        <h2>Saved in the DYDD app</h2>
-        <div className="fruitlife-status-roster">
-          <article>
-            <div>
-              <strong>{session.participant_name ?? "Participant"}</strong>
-              <small>{session.participant_email ?? "No email"}</small>
-            </div>
-            <span>{session.submitted_at ? "submitted" : "waiting"}</span>
-            <small>{displayDate(session.submitted_at ?? session.created_at)}</small>
-          </article>
-        </div>
-        <p className="fruitlife-latest-note">
-          Source: native app channel. Live-facing Spiritual Gifts automations remain separate.
-        </p>
-      </section>
     </main>
   );
 }

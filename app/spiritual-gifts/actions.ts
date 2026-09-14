@@ -154,6 +154,7 @@ function spiritualGiftsResultEmail({
     from:
       process.env.SPIRITUAL_GIFTS_EMAIL_FROM ??
       process.env.DYDD_EMAIL_FROM ??
+      process.env.FRUITLIFE_EMAIL_FROM ??
       "Discover Your Divine Design <hello@discoverdivine.design>",
     html: `
       <p>Hi ${safeParticipantName},</p>

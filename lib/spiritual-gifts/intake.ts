@@ -124,7 +124,7 @@ export const spiritualGifts = [
       "Steward": "Supports evangelism through consistent conversations, faithful witness, and dependable outreach."
     },
     "maturity": {
-      "description": "A mature evangelist shares the gospel with love, patience, clarity, and Spirit-led boldness-trusting God with the results.",
+      "description": "A mature evangelist shares the gospel with love, patience, clarity, and Spirit-led boldness, trusting God with the results.",
       "growthAreas": "Listening well; Patience with spiritual process; Avoiding pressure; Building true relationships",
       "signsOfImmaturity": "Forcing conversations; Oversimplifying issues; Discouragement; Neglecting discipleship",
       "stepsToGrow": "Pray for opportunities; Cultivate empathy; Share your story; Follow up faithfully",
@@ -181,7 +181,7 @@ export const spiritualGifts = [
     "key": "giving",
     "label": "Giving",
     "definition": "Produce wealth to give for others by tithes and offerings for the purpose of advancing the Kingdom of God on earth.",
-    "scriptures": "Mark 12:41-44; Romans 12:8; 2 Corinthians 8:1-7, 9:2-7 65",
+    "scriptures": "Mark 12:41-44; Romans 12:8; 2 Corinthians 8:1-7, 9:2-7",
     "reportBlurb": "You see resources as tools for Kingdom work. Your generosity fuels ministry and blesses others in profound ways.",
     "reflections": {
       "Architect": "Gives strategically, channeling resources toward impactful kingdom outcomes.",
@@ -268,7 +268,7 @@ export const spiritualGifts = [
     "sourceId": "PRAY",
     "key": "intercession",
     "label": "Intercession",
-    "definition": "Stand in the gap in prayer dilegenlty for someone, something, or someplace, believing for profound results.",
+    "definition": "Stand in the gap in prayer diligently for someone, something, or someplace, believing for profound results.",
     "scriptures": "Hebrews 7:25; Colossians 1:9-12, 4:12-13; James 5:14-16",
     "reportBlurb": "You carry others in prayer with persistence and faith. God uses your prayers to bring breakthrough, protection, and blessing.",
     "reflections": {
@@ -312,7 +312,7 @@ export const spiritualGifts = [
     "sourceId": "LEAD",
     "key": "leadership",
     "label": "Leadership",
-    "definition": "Delegate resposibility and motivate or influence people at their level to accomplish tasks while directing and focusing them on the big picture, vision, or idea.",
+    "definition": "Delegate responsibility and motivate or influence people at their level to accomplish tasks while directing and focusing them on the big picture, vision, or idea.",
     "scriptures": "Romans 12:8; 1 Timothy 3:1-13, 5:17; Hebrews 13:17",
     "reportBlurb": "You mobilize and inspire others toward vision. Your ability to guide and motivate equips people to accomplish great things for God.",
     "reflections": {
@@ -356,7 +356,7 @@ export const spiritualGifts = [
     "sourceId": "MIRAC",
     "key": "miracles",
     "label": "Miracles",
-    "definition": "Believe, trust and have the courage to partisipate in altering the natural outcomes of life in a supernatural way through prayer, faith, and divine direction.",
+    "definition": "Believe, trust and have the courage to participate in altering the natural outcomes of life in a supernatural way through prayer, faith, and divine direction.",
     "scriptures": "Acts 9:36-42, 19:11-12, 20:7-12; Romans 15:18-19; 1 Corinthians 12:10, 28",
     "reportBlurb": "You believe God for the extraordinary. Through your faith and courage, others witness His supernatural power.",
     "reflections": {
@@ -410,7 +410,7 @@ export const spiritualGifts = [
       "Steward": "Supports worship through preparation, faithfulness, and dependable skill."
     },
     "maturity": {
-      "description": "Mature worship gifting leads others into God's presence with humility, purity, and spiritual sensitivity-not performance.",
+      "description": "Mature worship gifting leads others into God's presence with humility, purity, and spiritual sensitivity, not performance.",
       "growthAreas": "Guarding motives; Remaining teachable; Prioritizing character; Serving offstage",
       "signsOfImmaturity": "Performing for approval; Comparison; Leading unprepared; Depending on response",
       "stepsToGrow": "Worship privately; Invite feedback; Study worship; Serve unseen",
@@ -432,7 +432,7 @@ export const spiritualGifts = [
       "Steward": "Shepherds with reliability, accountability, and faithful support in daily life."
     },
     "maturity": {
-      "description": "Mature shepherding cares for people with patience, humility, guidance, and protection-reflecting Christ's heart.",
+      "description": "Mature shepherding cares for people with patience, humility, guidance, and protection, reflecting Christ's heart.",
       "growthAreas": "Avoiding burnout; Delegating care; Setting boundaries; Balancing truth and grace",
       "signsOfImmaturity": "Overattachment; Fixing everyone; Avoiding conflict; Neglecting rest",
       "stepsToGrow": "Seek mentorship; Prioritize prayer; Build a care team; Practice Sabbath",

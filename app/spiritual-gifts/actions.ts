@@ -58,14 +58,14 @@ function assertEmail(email: string, path: string) {
   }
 }
 
-function assertCompleteGiftRatings(formData: FormData, path: string) {
+function assertCompleteGiftRatings(formData: FormData) {
   const missingQuestion = spiritualGiftQuestionBank.find((question) => {
     const value = String(formData.get(spiritualGiftRatingField(question.code)) ?? "");
     return !["1", "2", "3", "4", "5"].includes(value);
   });
 
   if (missingQuestion) {
-    fail(path, "Please answer every Spiritual Gifts statement before submitting.");
+    throw new Error("Please answer every Spiritual Gifts statement before submitting.");
   }
 }
 
@@ -149,7 +149,7 @@ async function saveCompletedSpiritualGiftsResponse({
   formData: FormData;
   path: string;
 }) {
-  assertCompleteGiftRatings(formData, path);
+  assertCompleteGiftRatings(formData);
 
   const othersAffirmed = getString(formData, "others_affirmed");
   const serviceFruit = getString(formData, "service_fruit");

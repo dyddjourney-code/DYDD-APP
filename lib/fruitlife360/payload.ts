@@ -270,8 +270,23 @@ function consistencyNote(fruitName: string, hasObservers: boolean) {
   return `${fruitName} is ranked from ${hasObservers ? "self and observer feedback" : "your own reflection"} in this ${hasObservers ? "360" : "self-only"} report. Use it as a prayerful formation signal.`;
 }
 
-function buildRank(responses: FruitLifeResponse[]) {
-  const selfRank = responses.find((response) => response.response_type === "self")?.fruit_rank ?? [];
+function rankByAverage(responses: FruitLifeResponse[]) {
+  return fruitLifeFruits
+    .map((fruit, index) => ({
+      index,
+      key: fruit.key,
+      score: averageFruitScore(responses, fruit.key),
+    }))
+    .sort((a, b) => b.score - a.score || a.index - b.index)
+    .map((fruit) => fruit.key);
+}
+
+function buildRank(selfResponses: FruitLifeResponse[], observerResponses: FruitLifeResponse[]) {
+  if (observerResponses.length > 0) {
+    return rankByAverage(observerResponses);
+  }
+
+  const selfRank = selfResponses[0]?.fruit_rank ?? [];
   const cleaned = selfRank.filter((key) => fruitLifeFruits.some((fruit) => fruit.key === key));
 
   if (cleaned.length === fruitLifeFruits.length) return cleaned;
@@ -294,7 +309,7 @@ export function buildFruitLifePayload(session: FruitLifeSession, responses: Frui
   const selfResponses = responses.filter((response) => response.response_type === "self");
   const observerResponses = responses.filter((response) => response.response_type === "observer");
   const hasObservers = observerResponses.length > 0;
-  const rank = buildRank(responses);
+  const rank = buildRank(selfResponses, observerResponses);
   const mostVisible = rank.slice(0, 3);
   const steadyForming = rank.slice(3, 6);
   const growthInvitation = rank.slice(6);

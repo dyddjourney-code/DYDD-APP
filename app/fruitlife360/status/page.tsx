@@ -30,6 +30,10 @@ function titleize(value: string | null | undefined) {
   return value ? value.replace(/_/g, " ") : "waiting";
 }
 
+function reportHref(sessionId: string) {
+  return `/fruitlife360/report?session=${encodeURIComponent(sessionId)}`;
+}
+
 export default async function FruitLifeStatusPage({
   searchParams,
 }: FruitLifeStatusPageProps) {
@@ -106,7 +110,7 @@ export default async function FruitLifeStatusPage({
         </div>
         <div className="fruitlife-latest-actions">
           {reportArtifact?.external_url ? (
-            <Link href={reportArtifact.external_url}>Open report</Link>
+            <Link href={reportHref(session.id)}>Open report</Link>
           ) : null}
           {canManage ? (
             <form action={sendFruitLifeReminder}>
@@ -174,7 +178,15 @@ export default async function FruitLifeStatusPage({
                   <small>{artifact.filename ?? artifact.provider}</small>
                 </div>
                 <span>{titleize(artifact.artifact_status)}</span>
-                {artifact.external_url ? <Link href={artifact.external_url}>Open</Link> : null}
+                {artifact.external_url ? (
+                  <Link
+                    href={
+                      artifact.artifact_type === "pdf" ? reportHref(session.id) : artifact.external_url
+                    }
+                  >
+                    Open
+                  </Link>
+                ) : null}
               </article>
             ))}
           </div>

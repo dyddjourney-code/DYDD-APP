@@ -1,4 +1,5 @@
 type SendEmailInput = {
+  from?: string;
   html: string;
   subject: string;
   text: string;
@@ -12,10 +13,11 @@ type SendEmailResult = {
   skipped: boolean;
 };
 
-function getResendConfig() {
+function getResendConfig(fromOverride?: string) {
   return {
     apiKey: process.env.RESEND_API_KEY ?? process.env.DYDD_RESEND_API_KEY ?? "",
     from:
+      fromOverride ??
       process.env.FRUITLIFE_EMAIL_FROM ??
       process.env.DYDD_EMAIL_FROM ??
       "FruitLife 360 <fruitlife@discoverdivine.design>",
@@ -23,12 +25,13 @@ function getResendConfig() {
 }
 
 export async function sendResendEmail({
+  from: fromOverride,
   html,
   subject,
   text,
   to,
 }: SendEmailInput): Promise<SendEmailResult> {
-  const { apiKey, from } = getResendConfig();
+  const { apiKey, from } = getResendConfig(fromOverride);
 
   if (!apiKey) {
     return {

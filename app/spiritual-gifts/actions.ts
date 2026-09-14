@@ -8,6 +8,7 @@ import {
   spiritualGiftQuestionBank,
   spiritualGiftRatingField,
 } from "@/lib/spiritual-gifts/intake";
+import { sendResendEmail } from "@/lib/email/resend";
 import { normalizeEmail } from "@/lib/identity/email";
 import {
   heatherReviewEmail,
@@ -27,6 +28,7 @@ type SpiritualGiftsSessionLookup = {
   created_by_user_id: string | null;
   id: string;
   intake_token_hash: string | null;
+  metadata?: Record<string, unknown> | null;
   participant_email: string | null;
   participant_id: string;
   participant_name: string | null;
@@ -46,6 +48,15 @@ function hashToken(token: string) {
 
 function getString(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 function fail(path: string, message: string): never {
@@ -110,7 +121,7 @@ async function getSessionForToken(sessionId: string, token: string, path: string
   const { data: session, error } = await supabase
     .from("spiritual_gifts_sessions")
     .select(
-      "created_by_user_id,id,intake_token_hash,participant_email,participant_id,participant_name,report_status,result_snapshot_id,session_status,submitted_at",
+      "created_by_user_id,id,intake_token_hash,metadata,participant_email,participant_id,participant_name,report_status,result_snapshot_id,session_status,submitted_at",
     )
     .eq("id", sessionId)
     .single();
@@ -128,6 +139,49 @@ async function getSessionForToken(sessionId: string, token: string, path: string
   return { session: typedSession, supabase };
 }
 
+function spiritualGiftsResultEmail({
+  participantName,
+  resultUrl,
+}: {
+  participantName: string;
+  resultUrl: string;
+}) {
+  const safeParticipantName = escapeHtml(participantName);
+  const safeResultUrl = escapeHtml(resultUrl);
+  const text = `Hi ${participantName},\n\nYour Spiritual Gifts Assessment report is ready.\n\nOpen your result here:\n${resultUrl}\n\nUse this report prayerfully as a confirmation tool. Spiritual gifts are best clarified through Scripture, prayer, faithful service, and trusted people who have seen your life in motion.\n\nSincerely,\nDiscover Your Divine Design Team`;
+
+  return {
+    from:
+      process.env.SPIRITUAL_GIFTS_EMAIL_FROM ??
+      process.env.DYDD_EMAIL_FROM ??
+      "Discover Your Divine Design <hello@discoverdivine.design>",
+    html: `
+      <p>Hi ${safeParticipantName},</p>
+      <p>Your Spiritual Gifts Assessment report is ready.</p>
+      <p><a href="${safeResultUrl}">Open your Spiritual Gifts report</a></p>
+      <p>Use this report prayerfully as a confirmation tool. Spiritual gifts are best clarified through Scripture, prayer, faithful service, and trusted people who have seen your life in motion.</p>
+      <p>Sincerely,<br>Discover Your Divine Design Team</p>
+    `,
+    subject: "Your Spiritual Gifts Assessment report is ready",
+    text,
+  };
+}
+
+async function sendSpiritualGiftsResultEmail({
+  participantEmail,
+  participantName,
+  resultUrl,
+}: {
+  participantEmail: string;
+  participantName: string;
+  resultUrl: string;
+}) {
+  return sendResendEmail({
+    ...spiritualGiftsResultEmail({ participantName, resultUrl }),
+    to: participantEmail,
+  });
+}
+
 async function saveCompletedSpiritualGiftsResponse({
   participantId,
   participantName,
@@ -138,6 +192,7 @@ async function saveCompletedSpiritualGiftsResponse({
   supabase,
   formData,
   path,
+  sessionMetadata,
 }: {
   participantId: string;
   participantName: string;
@@ -148,6 +203,7 @@ async function saveCompletedSpiritualGiftsResponse({
   supabase: ReturnType<typeof createSupabaseAdminClient>;
   formData: FormData;
   path: string;
+  sessionMetadata?: Record<string, unknown> | null;
 }) {
   assertCompleteGiftRatings(formData);
 
@@ -160,6 +216,7 @@ async function saveCompletedSpiritualGiftsResponse({
   const scores = buildSpiritualGiftScores(formData);
   const sourceResponseId = `vercel:spiritual_gifts:self:${sessionId}:${crypto.randomUUID()}`;
   const statusHref = `/spiritual-gifts/status?session=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(token)}`;
+  const resultUrl = `${await getAppBaseUrl()}${statusHref}`;
   const topGiftPayload = scores.topGifts.map((gift, index) => ({
     definition: gift.definition,
     key: gift.key,
@@ -278,10 +335,30 @@ async function saveCompletedSpiritualGiftsResponse({
     .select("id")
     .maybeSingle();
 
+  const emailResult = participantEmail
+    ? await sendSpiritualGiftsResultEmail({
+        participantEmail,
+        participantName,
+        resultUrl,
+      })
+    : { message: "Participant email is missing.", sent: false, skipped: true };
+
   await supabase
     .from("spiritual_gifts_sessions")
     .update({
-      report_status: "ready",
+      metadata: {
+        ...(sessionMetadata ?? {}),
+        resultEmail: {
+          error: emailResult.message ?? null,
+          purpose: "spiritual_gifts_result_email",
+          resendId: emailResult.id ?? null,
+          resendSkipped: emailResult.skipped,
+          resendSent: emailResult.sent,
+          sentAt: new Date().toISOString(),
+        },
+        resultUrl,
+      },
+      report_status: emailResult.sent ? "sent" : "ready",
       result_snapshot_id: snapshot?.id ?? null,
       session_status: "completed",
       submitted_at: submittedAt,
@@ -293,6 +370,7 @@ async function saveCompletedSpiritualGiftsResponse({
     statusHref,
     submittedAt,
     token,
+    resultEmail: emailResult,
   };
 }
 
@@ -332,6 +410,12 @@ export async function createSpiritualGiftsSession(formData: FormData) {
     fail("/spiritual-gifts", participantError?.message ?? "Unable to create participant.");
   }
 
+  const sessionMetadata = {
+    channel: "native_app",
+    liveProcessTouched: false,
+    source: signupSource,
+  };
+
   const { data: session, error: sessionError } = await supabase
     .from("spiritual_gifts_sessions")
     .insert({
@@ -342,11 +426,7 @@ export async function createSpiritualGiftsSession(formData: FormData) {
       participant_name: participantName,
       signup_source: signupSource,
       source_system: "spiritual_gifts_app",
-      metadata: {
-        channel: "native_app",
-        liveProcessTouched: false,
-        source: signupSource,
-      },
+      metadata: sessionMetadata,
     })
     .select("id")
     .single();
@@ -361,10 +441,8 @@ export async function createSpiritualGiftsSession(formData: FormData) {
     .from("spiritual_gifts_sessions")
     .update({
       metadata: {
-        channel: "native_app",
-        liveProcessTouched: false,
+        ...sessionMetadata,
         selfLink,
-        source: signupSource,
       },
       session_status: "waiting_for_self",
     })
@@ -458,6 +536,12 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
     fail("/spiritual-gifts", participantError?.message ?? "Unable to create participant.");
   }
 
+  const sessionMetadata = {
+    channel: isAppChannel ? "native_app" : "public_assessment",
+    liveProcessTouched: false,
+    source: signupSource,
+  };
+
   const { data: session, error: sessionError } = await supabase
     .from("spiritual_gifts_sessions")
     .insert({
@@ -470,11 +554,7 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
       session_status: "active",
       signup_source: signupSource,
       source_system: "spiritual_gifts_app",
-      metadata: {
-        channel: isAppChannel ? "native_app" : "public_assessment",
-        liveProcessTouched: false,
-        source: signupSource,
-      },
+      metadata: sessionMetadata,
     })
     .select("id")
     .single();
@@ -494,6 +574,7 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
       supabase,
       formData,
       path: "/spiritual-gifts",
+      sessionMetadata,
     });
   } catch (error) {
     fail(
@@ -537,6 +618,7 @@ export async function saveSpiritualGiftsSelfResponse(formData: FormData) {
       supabase,
       formData,
       path,
+      sessionMetadata: session.metadata,
     });
   } catch (error) {
     fail(path, error instanceof Error ? error.message : "Unable to save Spiritual Gifts response.");

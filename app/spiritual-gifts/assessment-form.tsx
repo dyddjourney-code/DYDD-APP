@@ -289,22 +289,16 @@ export function SpiritualGiftsAssessmentForm({
       })}
 
       <section className={`spiritual-gifts-panel spiritual-gifts-step-panel spiritual-gifts-reflection-card ${stepIndex === reflectionStep ? "active" : ""}`}>
-        <p className="section-label">Reflection</p>
-        <h2>Connect the result to real fruit.</h2>
-        <p>These are optional, but they help connect your score to actual service, confirmation, and next steps.</p>
+        <p className="section-label">Next Step</p>
+        <h2>Connect your result to faithful action.</h2>
+        <p>
+          This is optional, but your answer will appear in your PDF report as a starting place for reflection and prayer.
+        </p>
         <div className="spiritual-gifts-reflection-fields">
-          {[
-            ["others_affirmed", "Where have others consistently affirmed gift or ministry fruit in you?"],
-            ["service_fruit", "Where have you served repeatedly with grace, joy, and impact?"],
-            ["service_context", "Where are you currently serving, leading, helping, or sensing a pull to serve?"],
-            ["growth_prayer", "What do you want to ask God to clarify or mature as you review your gifts?"],
-            ["next_step", "What is one small next step you can take after seeing your results?"],
-          ].map(([name, label]) => (
-            <label key={name}>
-              <span>{label}</span>
-              <textarea name={name} rows={4} />
-            </label>
-          ))}
+          <label>
+            <span>What is one place you may want to serve, grow, or explore next?</span>
+            <textarea name="next_step" rows={5} />
+          </label>
         </div>
       </section>
 

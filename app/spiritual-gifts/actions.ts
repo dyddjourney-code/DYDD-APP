@@ -271,10 +271,6 @@ async function saveCompletedSpiritualGiftsResponse({
 }) {
   assertCompleteGiftRatings(formData);
 
-  const othersAffirmed = getString(formData, "others_affirmed");
-  const serviceFruit = getString(formData, "service_fruit");
-  const serviceContext = getString(formData, "service_context");
-  const growthPrayer = getString(formData, "growth_prayer");
   const nextStep = getString(formData, "next_step");
   const submittedAt = new Date().toISOString();
   const scores = buildSpiritualGiftScores(formData);
@@ -345,11 +341,7 @@ async function saveCompletedSpiritualGiftsResponse({
       answers: {
         giftRatings: scores.answers,
         reflections: {
-          growthPrayer,
           nextStep,
-          othersAffirmed,
-          serviceContext,
-          serviceFruit,
         },
       },
       derived_scores: {
@@ -421,6 +413,7 @@ async function saveCompletedSpiritualGiftsResponse({
         deepDiveGifts: scores.deepDiveGifts,
         participantEmail,
         participantName,
+        nextStepReflection: nextStep,
         tieSummary: scores.tieSummary,
         topGifts: scores.topGifts,
       }),

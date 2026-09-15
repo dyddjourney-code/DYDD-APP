@@ -28,7 +28,9 @@ export default async function SpiritualGiftsThanksPage({ searchParams }: Spiritu
   return (
     <main className="fruitlife-shell fruitlife-public spiritual-gifts-shell spiritual-gifts-thanks-shell">
       <section className="spiritual-gifts-thanks-card">
-        <img src="/brand/tools/spiritual-gifts-logo.jpg" alt="Spiritual Gifts logo" />
+        <div className="spiritual-gifts-thanks-brand">
+          <img src="/brand/tools/spiritual-gifts-logo.jpg" alt="Spiritual Gifts logo" />
+        </div>
         <div className="spiritual-gifts-thanks-copy">
           <p className="section-label">Assessment submitted</p>
           <h1>{isAppChannel ? "Saved to your account." : "Check your email for your PDF report."}</h1>
@@ -39,6 +41,19 @@ export default async function SpiritualGiftsThanksPage({ searchParams }: Spiritu
                 "Your Spiritual Gifts assessment has been submitted. Your PDF report is being delivered to the email address you provided."}
           </p>
         </div>
+        {!isAppChannel ? (
+          <div className="spiritual-gifts-thanks-cta">
+            <p className="section-label">Keep exploring</p>
+            <h2>Explore the Discover Your Divine Design journey.</h2>
+            <p>
+              Spiritual gifts are one piece of a larger path for recognizing how God has shaped your life
+              for purpose, service, and faithful action.
+            </p>
+            <a className="button primary" href="https://www.discoverdivine.design/journey">
+              Explore the journey
+            </a>
+          </div>
+        ) : null}
         {isAppChannel ? (
           <div className="spiritual-gifts-thanks-actions">
             <Link className="button primary" href={statusHref}>

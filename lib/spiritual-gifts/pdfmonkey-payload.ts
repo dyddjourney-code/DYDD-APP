@@ -68,12 +68,14 @@ function giftFields(gift: SpiritualGiftReportGift | undefined, index: number) {
 }
 
 export function buildSpiritualGiftsPdfMonkeyPayload({
+  nextStepReflection,
   participantEmail,
   participantName,
   deepDiveGifts,
   tieSummary,
   topGifts,
 }: {
+  nextStepReflection?: string;
   participantEmail: string;
   participantName: string;
   deepDiveGifts: SpiritualGiftReportGift[];
@@ -90,6 +92,7 @@ export function buildSpiritualGiftsPdfMonkeyPayload({
     }),
     Result_Note:
       "Use these results as a prayerful starting point. Spiritual gifts are best confirmed through Scripture, faithful service, and trusted people who have seen your life in motion.",
+    Next_Step_Reflection: nextStepReflection?.trim() ?? "",
     Tie_Note: tieNote(tieSummary),
     ...giftFields(topGifts[0], 1),
     ...giftFields(topGifts[1], 2),

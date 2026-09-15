@@ -451,14 +451,27 @@ async function saveCompletedSpiritualGiftsResponse({
     };
   }
 
-  const emailResult = participantEmail
+  let emailResult = participantEmail
     ? await sendSpiritualGiftsResultEmail({
         attachment: pdfAttachment,
         participantEmail,
         participantName,
-        reportUrl: pdfMetadata?.providerUrl ? reportAccessUrl : undefined,
+        reportUrl: pdfMetadata?.providerUrl || pdfMetadata?.documentId ? reportAccessUrl : undefined,
       })
     : { message: "Participant email is missing.", sent: false, skipped: true };
+  let emailRetryResult: Awaited<ReturnType<typeof sendSpiritualGiftsResultEmail>> | null = null;
+
+  if (participantEmail && !emailResult.sent && pdfAttachment) {
+    emailRetryResult = await sendSpiritualGiftsResultEmail({
+      participantEmail,
+      participantName,
+      reportUrl: pdfMetadata?.providerUrl || pdfMetadata?.documentId ? reportAccessUrl : undefined,
+    });
+
+    if (emailRetryResult.sent) {
+      emailResult = emailRetryResult;
+    }
+  }
 
   await supabase
     .from("spiritual_gifts_sessions")
@@ -470,6 +483,14 @@ async function saveCompletedSpiritualGiftsResponse({
           error: emailResult.message ?? null,
           purpose: "spiritual_gifts_result_email",
           resendId: emailResult.id ?? null,
+          retryWithoutAttachment: emailRetryResult
+            ? {
+                error: emailRetryResult.message ?? null,
+                resendId: emailRetryResult.id ?? null,
+                resendSkipped: emailRetryResult.skipped,
+                resendSent: emailRetryResult.sent,
+              }
+            : null,
           resendSkipped: emailResult.skipped,
           resendSent: emailResult.sent,
           sentAt: new Date().toISOString(),

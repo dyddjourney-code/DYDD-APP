@@ -41,19 +41,17 @@ export function SpiritualGiftsAssessmentForm({
   token,
 }: SpiritualGiftsAssessmentFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
-  const totalSteps = questionGroups.length + 3;
+  const totalSteps = questionGroups.length + 2;
   const [stepIndex, setStepIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [clientReviewer, setClientReviewer] = useState(initialReviewer);
   const [accountLookupComplete, setAccountLookupComplete] = useState(channel !== "app" || Boolean(initialReviewer));
   const reflectionStep = questionGroups.length + 1;
-  const reviewStep = questionGroups.length + 2;
   const accountReviewer = initialReviewer ?? clientReviewer;
   const progressLabel = useMemo(() => {
     if (stepIndex === 0) return "Start";
     if (stepIndex <= questionGroups.length) return `Set ${stepIndex} of ${questionGroups.length}`;
-    if (stepIndex === reflectionStep) return "Reflection";
-    return "Review";
+    return "Reflection";
   }, [reflectionStep, stepIndex]);
   const progress = stepIndex === 0
     ? 0
@@ -134,7 +132,7 @@ export function SpiritualGiftsAssessmentForm({
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    if (stepIndex !== reviewStep) {
+    if (stepIndex !== reflectionStep) {
       event.preventDefault();
       goNext();
       return;
@@ -147,9 +145,7 @@ export function SpiritualGiftsAssessmentForm({
     ? "Start questions"
     : stepIndex === questionGroups.length
       ? "Continue to next step"
-      : stepIndex === reflectionStep
-        ? "Review before submitting"
-        : "Next";
+      : "Next";
 
   return (
     <form action={action} className="spiritual-gifts-form" onSubmit={handleSubmit} ref={formRef}>
@@ -316,22 +312,13 @@ export function SpiritualGiftsAssessmentForm({
         </div>
       </section>
 
-      <section className={`spiritual-gifts-panel spiritual-gifts-step-panel spiritual-gifts-review-card ${stepIndex === reviewStep ? "active" : ""}`}>
-        <p className="section-label">Ready</p>
-        <h2>Submit your Spiritual Gifts assessment.</h2>
-        <p>
-          Your responses are complete. This final button generates your report and sends the PDF
-          to the email address you provided.
-        </p>
-      </section>
-
       <div className={`fruitlife-step-controls spiritual-gifts-step-controls ${stepIndex === 0 ? "start" : ""}`}>
         {stepIndex > 0 ? (
           <button className="button secondary" onClick={goBack} type="button">
             Back
           </button>
         ) : null}
-        {stepIndex < reviewStep ? (
+        {stepIndex < reflectionStep ? (
           <button
             className="button primary"
             disabled={channel === "app" && !lockIdentity}
@@ -342,7 +329,7 @@ export function SpiritualGiftsAssessmentForm({
           </button>
         ) : (
           <button className="button primary" disabled={isSubmitting} type="submit">
-            {isSubmitting ? "Submitting and building your PDF..." : "Submit Spiritual Gifts Assessment"}
+            {isSubmitting ? "Submitting and building your PDF..." : "Submit"}
           </button>
         )}
       </div>

@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { getSpiritualGiftsSessionStatus } from "../actions";
 
-const publicJourneyHref =
-  process.env.NEXT_PUBLIC_DYDD_JOURNEY_URL ?? "https://www.discoverdivine.design/";
+const configuredJourneyHref = process.env.NEXT_PUBLIC_DYDD_JOURNEY_URL?.trim();
+const publicJourneyHref = configuredJourneyHref && configuredJourneyHref !== "https://www.discoverdivine.design/"
+  ? configuredJourneyHref
+  : "https://www.discoverdivine.design/journey";
 
 type SpiritualGiftsThanksPageProps = {
   searchParams?: Promise<{

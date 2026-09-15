@@ -1,4 +1,8 @@
 type SendEmailInput = {
+  attachments?: Array<{
+    content: string;
+    filename: string;
+  }>;
   from?: string;
   html: string;
   subject: string;
@@ -25,6 +29,7 @@ function getResendConfig(fromOverride?: string) {
 }
 
 export async function sendResendEmail({
+  attachments,
   from: fromOverride,
   html,
   subject,
@@ -43,6 +48,7 @@ export async function sendResendEmail({
 
   const response = await fetch("https://api.resend.com/emails", {
     body: JSON.stringify({
+      ...(attachments?.length ? { attachments } : {}),
       from,
       html,
       subject,

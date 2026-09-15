@@ -11,6 +11,11 @@ import {
 import { sendResendEmail } from "@/lib/email/resend";
 import { normalizeEmail } from "@/lib/identity/email";
 import {
+  createPdfMonkeyDocument,
+  getPdfMonkeyDocument,
+  type PdfMonkeyDocument,
+} from "@/lib/pdfmonkey/client";
+import {
   heatherReviewEmail,
   heatherReviewName,
   isHeatherReviewRequest,
@@ -19,10 +24,13 @@ import {
   jordanReviewName,
 } from "@/lib/review/heather";
 import { verifySpiritualGiftsAppIdentity } from "@/lib/spiritual-gifts/app-identity";
+import { buildSpiritualGiftsPdfMonkeyPayload } from "@/lib/spiritual-gifts/pdfmonkey-payload";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const productionAppUrl = "https://dydd-online-school.vercel.app";
+const spiritualGiftsTemplateId =
+  process.env.SPIRITUAL_GIFTS_PDFMONKEY_TEMPLATE_ID ?? "1c56c723-1210-4690-968f-a1aa5e5faeb5";
 
 type SpiritualGiftsSessionLookup = {
   created_by_user_id: string | null;
@@ -57,6 +65,53 @@ function escapeHtml(value: string) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function cleanFilename(value: string) {
+  return value.replace(/[^\w .'-]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function pdfReportFilename(participantName: string, sessionId: string) {
+  const participant = cleanFilename(participantName || "Spiritual Gifts Participant");
+  return `Spiritual Gifts Report - ${participant} - ${sessionId.slice(0, 8)}.pdf`;
+}
+
+function pdfReportLink(document: PdfMonkeyDocument) {
+  return document.public_share_link ?? document.download_url ?? document.preview_url ?? "";
+}
+
+async function waitForPdfMonkeyDocument(documentId: string) {
+  let document = await getPdfMonkeyDocument(documentId);
+
+  for (
+    let attempt = 0;
+    attempt < 12 && ["pending", "generating"].includes(String(document.status));
+    attempt += 1
+  ) {
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    document = await getPdfMonkeyDocument(documentId);
+  }
+
+  return document;
+}
+
+async function pdfAttachmentFromUrl(reportUrl: string, filename: string) {
+  if (!reportUrl) {
+    return null;
+  }
+
+  const response = await fetch(reportUrl);
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const arrayBuffer = await response.arrayBuffer();
+
+  return {
+    content: Buffer.from(arrayBuffer).toString("base64"),
+    filename,
+  };
 }
 
 function fail(path: string, message: string): never {
@@ -141,14 +196,17 @@ async function getSessionForToken(sessionId: string, token: string, path: string
 
 function spiritualGiftsResultEmail({
   participantName,
+  reportUrl,
   resultUrl,
 }: {
   participantName: string;
+  reportUrl?: string;
   resultUrl: string;
 }) {
   const safeParticipantName = escapeHtml(participantName);
+  const safeReportUrl = escapeHtml(reportUrl || resultUrl);
   const safeResultUrl = escapeHtml(resultUrl);
-  const text = `Hi ${participantName},\n\nYour Spiritual Gifts Assessment report is ready.\n\nOpen your result here:\n${resultUrl}\n\nUse this report prayerfully as a confirmation tool. Spiritual gifts are best clarified through Scripture, prayer, faithful service, and trusted people who have seen your life in motion.\n\nSincerely,\nDiscover Your Divine Design Team`;
+  const text = `Hi ${participantName},\n\nYour Spiritual Gifts Assessment report is ready.\n\nOpen your PDF report here:\n${reportUrl || resultUrl}\n\nYou can also view your result page here:\n${resultUrl}\n\nUse this report prayerfully as a confirmation tool. Spiritual gifts are best clarified through Scripture, prayer, faithful service, and trusted people who have seen your life in motion.\n\nSincerely,\nDiscover Your Divine Design Team`;
 
   return {
     from:
@@ -159,7 +217,8 @@ function spiritualGiftsResultEmail({
     html: `
       <p>Hi ${safeParticipantName},</p>
       <p>Your Spiritual Gifts Assessment report is ready.</p>
-      <p><a href="${safeResultUrl}">Open your Spiritual Gifts report</a></p>
+      <p><a href="${safeReportUrl}">Open your Spiritual Gifts PDF report</a></p>
+      <p><a href="${safeResultUrl}">View your result page</a></p>
       <p>Use this report prayerfully as a confirmation tool. Spiritual gifts are best clarified through Scripture, prayer, faithful service, and trusted people who have seen your life in motion.</p>
       <p>Sincerely,<br>Discover Your Divine Design Team</p>
     `,
@@ -169,16 +228,21 @@ function spiritualGiftsResultEmail({
 }
 
 async function sendSpiritualGiftsResultEmail({
+  attachment,
   participantEmail,
   participantName,
+  reportUrl,
   resultUrl,
 }: {
+  attachment?: { content: string; filename: string } | null;
   participantEmail: string;
   participantName: string;
+  reportUrl?: string;
   resultUrl: string;
 }) {
   return sendResendEmail({
-    ...spiritualGiftsResultEmail({ participantName, resultUrl }),
+    ...spiritualGiftsResultEmail({ participantName, reportUrl, resultUrl }),
+    ...(attachment ? { attachments: [attachment] } : {}),
     to: participantEmail,
   });
 }
@@ -218,6 +282,8 @@ async function saveCompletedSpiritualGiftsResponse({
   const sourceResponseId = `vercel:spiritual_gifts:self:${sessionId}:${crypto.randomUUID()}`;
   const statusHref = `/spiritual-gifts/status?session=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(token)}`;
   const resultUrl = `${await getAppBaseUrl()}${statusHref}`;
+  const reportHref = `/spiritual-gifts/report?session=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(token)}`;
+  const reportAccessUrl = `${await getAppBaseUrl()}${reportHref}`;
   const topGiftPayload = scores.topGifts.map((gift, index) => ({
     definition: gift.definition,
     key: gift.key,
@@ -336,10 +402,62 @@ async function saveCompletedSpiritualGiftsResponse({
     .select("id")
     .maybeSingle();
 
-  const emailResult = participantEmail
-    ? await sendSpiritualGiftsResultEmail({
+  const pdfFilename = pdfReportFilename(participantName, sessionId);
+  let pdfMetadata:
+    | {
+        documentId: string;
+        error?: string | null;
+        filename: string;
+        providerUrl?: string;
+        reportAccessUrl?: string;
+        status?: string | null;
+      }
+    | null = null;
+  let pdfAttachment: { content: string; filename: string } | null = null;
+
+  try {
+    const createdDocument = await createPdfMonkeyDocument({
+      filename: pdfFilename,
+      payload: buildSpiritualGiftsPdfMonkeyPayload({
+        deepDiveGifts: scores.deepDiveGifts,
         participantEmail,
         participantName,
+        tieSummary: scores.tieSummary,
+        topGifts: scores.topGifts,
+      }),
+      templateId: spiritualGiftsTemplateId,
+    });
+    const readyDocument = await waitForPdfMonkeyDocument(createdDocument.id);
+    const providerUrl = pdfReportLink(readyDocument);
+
+    pdfMetadata = {
+      documentId: readyDocument.id,
+      error: readyDocument.failure_cause ?? null,
+      filename: pdfFilename,
+      providerUrl: providerUrl || undefined,
+      reportAccessUrl,
+      status: readyDocument.status ?? null,
+    };
+
+    if (providerUrl && ["ready", "success"].includes(String(readyDocument.status))) {
+      pdfAttachment = await pdfAttachmentFromUrl(providerUrl, pdfFilename);
+    }
+  } catch (error) {
+    pdfMetadata = {
+      documentId: "",
+      error: error instanceof Error ? error.message : "Unable to generate Spiritual Gifts PDF.",
+      filename: pdfFilename,
+      reportAccessUrl,
+      status: "error",
+    };
+  }
+
+  const emailResult = participantEmail
+    ? await sendSpiritualGiftsResultEmail({
+        attachment: pdfAttachment,
+        participantEmail,
+        participantName,
+        reportUrl: pdfMetadata?.providerUrl ? reportAccessUrl : resultUrl,
         resultUrl,
       })
     : { message: "Participant email is missing.", sent: false, skipped: true };
@@ -350,6 +468,7 @@ async function saveCompletedSpiritualGiftsResponse({
       metadata: {
         ...(sessionMetadata ?? {}),
         resultEmail: {
+          attachmentIncluded: Boolean(pdfAttachment),
           error: emailResult.message ?? null,
           purpose: "spiritual_gifts_result_email",
           resendId: emailResult.id ?? null,
@@ -357,9 +476,11 @@ async function saveCompletedSpiritualGiftsResponse({
           resendSent: emailResult.sent,
           sentAt: new Date().toISOString(),
         },
+        pdfMonkey: pdfMetadata,
+        reportAccessUrl,
         resultUrl,
       },
-      report_status: emailResult.sent ? "sent" : "ready",
+      report_status: emailResult.sent ? "sent" : pdfMetadata?.providerUrl ? "ready" : "error",
       result_snapshot_id: snapshot?.id ?? null,
       session_status: "completed",
       submitted_at: submittedAt,

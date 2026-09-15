@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { getSpiritualGiftsSessionStatus } from "../actions";
 
+const publicJourneyHref =
+  process.env.NEXT_PUBLIC_DYDD_JOURNEY_URL ?? "https://www.discoverdivine.design/";
+
 type SpiritualGiftsThanksPageProps = {
   searchParams?: Promise<{
     channel?: string;
@@ -49,7 +52,7 @@ export default async function SpiritualGiftsThanksPage({ searchParams }: Spiritu
               Spiritual gifts are one piece of a larger path for recognizing how God has shaped your life
               for purpose, service, and faithful action.
             </p>
-            <Link className="button primary" href="/journey">
+            <Link className="button primary" href={publicJourneyHref}>
               Explore the journey
             </Link>
           </div>

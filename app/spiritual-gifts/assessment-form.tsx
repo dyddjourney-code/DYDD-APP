@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   spiritualGiftQuestionBank,
   spiritualGiftRatingField,
@@ -133,9 +133,23 @@ export function SpiritualGiftsAssessmentForm({
     setStepIndex((index) => Math.max(0, index - 1));
   }
 
-  function handleSubmit() {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    if (stepIndex !== reviewStep) {
+      event.preventDefault();
+      goNext();
+      return;
+    }
+
     setIsSubmitting(true);
   }
+
+  const primaryStepLabel = stepIndex === 0
+    ? "Start questions"
+    : stepIndex === questionGroups.length
+      ? "Continue to next step"
+      : stepIndex === reflectionStep
+        ? "Review before submitting"
+        : "Next";
 
   return (
     <form action={action} className="spiritual-gifts-form" onSubmit={handleSubmit} ref={formRef}>
@@ -306,8 +320,8 @@ export function SpiritualGiftsAssessmentForm({
         <p className="section-label">Ready</p>
         <h2>Submit your Spiritual Gifts assessment.</h2>
         <p>
-          Your 1-5 responses are complete. When you submit, your report will be generated
-          and emailed to you as a PDF.
+          Your responses are complete. This final button generates your report and sends the PDF
+          to the email address you provided.
         </p>
       </section>
 
@@ -324,7 +338,7 @@ export function SpiritualGiftsAssessmentForm({
             onClick={goNext}
             type="button"
           >
-            {stepIndex === 0 ? "Start questions" : "Next"}
+            {primaryStepLabel}
           </button>
         ) : (
           <button className="button primary" disabled={isSubmitting} type="submit">

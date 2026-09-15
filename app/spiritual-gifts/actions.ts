@@ -210,12 +210,18 @@ function spiritualGiftsResultEmail({
     ? `<p><a href="${safeReportUrl}">Open your Spiritual Gifts PDF report</a></p>`
     : "<p>Your PDF report is attached to this email.</p>";
   const text = `Hi ${participantName},\n\nYour Spiritual Gifts Assessment report is ready.\n\n${pdfLine}Use this report prayerfully as a confirmation tool. Spiritual gifts are best clarified through Scripture, prayer, faithful service, and trusted people who have seen your life in motion.\n\nSincerely,\nDiscover Your Divine Design Team`;
+  const fallbackVerifiedSender = process.env.FRUITLIFE_EMAIL_FROM;
+  const spiritualGiftsSender = fallbackVerifiedSender
+    ? fallbackVerifiedSender.includes("<")
+      ? fallbackVerifiedSender.replace(/^.*<([^>]+)>.*$/, "Discover Your Divine Design <$1>")
+      : `Discover Your Divine Design <${fallbackVerifiedSender}>`
+    : "Discover Your Divine Design <fruitlife@discoverdivine.design>";
 
   return {
     from:
       process.env.SPIRITUAL_GIFTS_EMAIL_FROM ??
       process.env.DYDD_EMAIL_FROM ??
-      "Discover Your Divine Design <hello@discoverdivine.design>",
+      spiritualGiftsSender,
     html: `
       <p>Hi ${safeParticipantName},</p>
       <p>Your Spiritual Gifts Assessment report is ready.</p>

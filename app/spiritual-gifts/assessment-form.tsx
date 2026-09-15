@@ -155,11 +155,21 @@ export function SpiritualGiftsAssessmentForm({
       ) : null}
 
       <section className={`spiritual-gifts-panel spiritual-gifts-step-panel spiritual-gifts-start-card ${stepIndex === 0 ? "active" : ""}`}>
-        <img src="/brand/tools/spiritual-gifts-logo.jpg" alt="Spiritual Gifts logo" />
-        <div>
-          <p className="section-label">Spiritual Gifts</p>
-          <h1>{lockIdentity ? "Start your assessment." : "Start your Spiritual Gifts assessment."}</h1>
-          <p>Discover how God may be gifting your service.</p>
+        <div className="spiritual-gifts-start-brand">
+          <img src="/brand/tools/spiritual-gifts-logo.jpg" alt="Spiritual Gifts logo" />
+        </div>
+        <div className="spiritual-gifts-start-copy">
+          <p className="section-label">Discover Your Divine Design</p>
+          <h1>{lockIdentity ? "Begin discovering your spiritual gifts." : "Discover your spiritual gifts."}</h1>
+          <p>
+            A free assessment designed to help you recognize how God may have gifted you to serve,
+            love, and build up the Body of Christ.
+          </p>
+          <div className="spiritual-gifts-start-cues" aria-label="Assessment details">
+            <span>Free assessment</span>
+            <span>Personal PDF report</span>
+            <span>Top 3 deep dive</span>
+          </div>
         </div>
         <input name="identity_source" type="hidden" value={identitySource} />
         {lockIdentity ? (
@@ -194,7 +204,7 @@ export function SpiritualGiftsAssessmentForm({
         ) : (
           <div className="spiritual-gifts-start-fields">
             <label>
-              Name
+              <span>Name</span>
               <input
                 autoComplete="name"
                 defaultValue={initialReviewer?.name ?? ""}
@@ -204,7 +214,7 @@ export function SpiritualGiftsAssessmentForm({
               />
             </label>
             <label>
-              Email
+              <span>Email</span>
               <input
                 autoComplete="email"
                 defaultValue={initialReviewer?.email ?? ""}
@@ -292,10 +302,12 @@ export function SpiritualGiftsAssessmentForm({
         </p>
       </section>
 
-      <div className="fruitlife-step-controls">
-        <button className="button secondary" disabled={stepIndex === 0} onClick={goBack} type="button">
-          Back
-        </button>
+      <div className={`fruitlife-step-controls spiritual-gifts-step-controls ${stepIndex === 0 ? "start" : ""}`}>
+        {stepIndex > 0 ? (
+          <button className="button secondary" onClick={goBack} type="button">
+            Back
+          </button>
+        ) : null}
         {stepIndex < reviewStep ? (
           <button
             className="button primary"

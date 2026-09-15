@@ -4,7 +4,7 @@ import { getSpiritualGiftsSessionStatus } from "../actions";
 const configuredJourneyHref = process.env.NEXT_PUBLIC_DYDD_JOURNEY_URL?.trim();
 const publicJourneyHref = configuredJourneyHref && configuredJourneyHref !== "https://www.discoverdivine.design/"
   ? configuredJourneyHref
-  : "https://www.discoverdivine.design/journey";
+  : "https://www.discoverdivine.design/discover-your-divine-design-journey";
 
 type SpiritualGiftsThanksPageProps = {
   searchParams?: Promise<{

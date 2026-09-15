@@ -31,27 +31,24 @@ export default async function SpiritualGiftsThanksPage({ searchParams }: Spiritu
         <img src="/brand/tools/spiritual-gifts-logo.jpg" alt="Spiritual Gifts logo" />
         <div className="spiritual-gifts-thanks-copy">
           <p className="section-label">Assessment submitted</p>
-          <h1>{isAppChannel ? "Saved to your account." : "Your result is ready."}</h1>
+          <h1>{isAppChannel ? "Saved to your account." : "Check your email for your PDF report."}</h1>
           <p>
             {isAppChannel
               ? "Your Spiritual Gifts assessment is connected to this DYDD account. You can review the result now or return to Field Kit."
-              : params?.message ?? "Your Spiritual Gifts assessment has been saved. You can review your result now."}
+              : params?.message ??
+                "Your Spiritual Gifts assessment has been submitted. Your PDF report is being delivered to the email address you provided."}
           </p>
         </div>
-        <div className="spiritual-gifts-thanks-actions">
-          <Link className="button primary" href={statusHref}>
-            View results
-          </Link>
-          {isAppChannel ? (
+        {isAppChannel ? (
+          <div className="spiritual-gifts-thanks-actions">
+            <Link className="button primary" href={statusHref}>
+              View results
+            </Link>
             <Link className="button secondary" href="/field-kit">
               Back to Field Kit
             </Link>
-          ) : (
-            <Link className="button secondary" href="/login">
-              Create or sign in
-            </Link>
-          )}
-        </div>
+          </div>
+        ) : null}
       </section>
     </main>
   );

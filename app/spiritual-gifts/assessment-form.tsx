@@ -43,6 +43,7 @@ export function SpiritualGiftsAssessmentForm({
   const formRef = useRef<HTMLFormElement>(null);
   const totalSteps = questionGroups.length + 3;
   const [stepIndex, setStepIndex] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [clientReviewer, setClientReviewer] = useState(initialReviewer);
   const [accountLookupComplete, setAccountLookupComplete] = useState(channel !== "app" || Boolean(initialReviewer));
   const reflectionStep = questionGroups.length + 1;
@@ -54,7 +55,11 @@ export function SpiritualGiftsAssessmentForm({
     if (stepIndex === reflectionStep) return "Reflection";
     return "Review";
   }, [reflectionStep, stepIndex]);
-  const progress = Math.round(((stepIndex + 1) / totalSteps) * 100);
+  const progress = stepIndex === 0
+    ? 0
+    : stepIndex <= questionGroups.length
+      ? Math.round(((stepIndex - 1) / questionGroups.length) * 100)
+      : 100;
   const lockIdentity = Boolean(accountReviewer?.email || accountReviewer?.name);
   const identitySource = lockIdentity ? "account" : "public";
 
@@ -102,6 +107,12 @@ export function SpiritualGiftsAssessmentForm({
     };
   }, [channel, initialReviewer]);
 
+  useEffect(() => {
+    if (stepIndex > 0) {
+      window.scrollTo({ behavior: "smooth", top: 0 });
+    }
+  }, [stepIndex]);
+
   function goNext() {
     const activePanel = formRef.current?.querySelector(".spiritual-gifts-step-panel.active");
     const requiredFields = Array.from(
@@ -122,8 +133,12 @@ export function SpiritualGiftsAssessmentForm({
     setStepIndex((index) => Math.max(0, index - 1));
   }
 
+  function handleSubmit() {
+    setIsSubmitting(true);
+  }
+
   return (
-    <form action={action} className="spiritual-gifts-form" ref={formRef}>
+    <form action={action} className="spiritual-gifts-form" onSubmit={handleSubmit} ref={formRef}>
       <input name="session_id" type="hidden" value={sessionId ?? ""} />
       <input name="token" type="hidden" value={token ?? ""} />
       <input
@@ -297,8 +312,8 @@ export function SpiritualGiftsAssessmentForm({
         <p className="section-label">Ready</p>
         <h2>Submit your Spiritual Gifts assessment.</h2>
         <p>
-          Your 1-5 responses are complete. When you submit, your result will be saved
-          and opened on the results page.
+          Your 1-5 responses are complete. When you submit, your report will be generated
+          and emailed to you as a PDF.
         </p>
       </section>
 
@@ -315,11 +330,11 @@ export function SpiritualGiftsAssessmentForm({
             onClick={goNext}
             type="button"
           >
-            {stepIndex === 0 ? "Start questions" : stepIndex === reflectionStep ? "Review results" : "Next"}
+            {stepIndex === 0 ? "Start questions" : "Next"}
           </button>
         ) : (
-          <button className="button primary" type="submit">
-            Submit Spiritual Gifts Assessment
+          <button className="button primary" disabled={isSubmitting} type="submit">
+            {isSubmitting ? "Submitting and building your PDF..." : "Submit Spiritual Gifts Assessment"}
           </button>
         )}
       </div>

@@ -102,9 +102,28 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
   const selfLink = typeof session.metadata?.selfLink === "string" ? session.metadata.selfLink : "";
   const channel = typeof session.metadata?.channel === "string" ? session.metadata.channel : "public_assessment";
   const isAppChannel = channel === "native_app";
+
+  if (!isAppChannel) {
+    return (
+      <main className="fruitlife-shell fruitlife-public spiritual-gifts-shell">
+        <section className="spiritual-gifts-thanks-card">
+          <img src="/brand/tools/spiritual-gifts-logo.jpg" alt="Spiritual Gifts logo" />
+          <div className="spiritual-gifts-thanks-copy">
+            <p className="section-label">Assessment submitted</p>
+            <h1>Check your email for your PDF report.</h1>
+            <p>
+              Your Spiritual Gifts assessment has been submitted. For this public version,
+              the report is delivered by email as a PDF instead of being shown as an app page.
+            </p>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   const shellClassName = [
     "fruitlife-shell",
-    isAppChannel ? "spiritual-gifts-app-report" : "fruitlife-public",
+    "spiritual-gifts-app-report",
     "spiritual-gifts-shell",
     "spiritual-gifts-report-page",
   ].join(" ");
@@ -320,29 +339,15 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
 
       {session.submitted_at ? (
         <section className="spiritual-gifts-panel spiritual-gifts-result-cta">
-          <p className="section-label">{isAppChannel ? "Next Step" : "Invitation"}</p>
-          <h2>
-            {isAppChannel
-              ? "Continue into the Spiritual Gifts course."
-              : "Your Spiritual Gifts course is waiting inside DYDD."}
-          </h2>
+          <p className="section-label">Next Step</p>
+          <h2>Continue into the Spiritual Gifts course.</h2>
           <p>
-            {isAppChannel
-              ? "Because this result is connected to your account, the course can use your saved score as you work through the Trailhead."
-              : "Create or sign into your Discover Your Divine Design account with this same email, then go to Trailheads and open the Spiritual Gifts course. The course is designed to help you explore these gifts with service, humility, and confirmation."}
+            Because this result is connected to your account, the course can use your saved
+            score as you work through the Trailhead.
           </p>
           <div className="spiritual-gifts-cta-actions">
-            {isAppChannel ? (
-              <>
-                <Link className="button primary" href="/courses/spiritual-gifts-service">Open course</Link>
-                <Link className="button secondary" href="/field-kit">Open Field Kit</Link>
-              </>
-            ) : (
-              <>
-                <Link className="button primary" href="/login">Create or sign into DYDD</Link>
-                <Link className="button secondary" href="/trailheads#spiritual-gifts">View Spiritual Gifts Trailhead</Link>
-              </>
-            )}
+            <Link className="button primary" href="/courses/spiritual-gifts-service">Open course</Link>
+            <Link className="button secondary" href="/field-kit">Open Field Kit</Link>
           </div>
         </section>
       ) : null}

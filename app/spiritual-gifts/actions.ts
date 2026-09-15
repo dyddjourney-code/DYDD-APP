@@ -197,28 +197,29 @@ async function getSessionForToken(sessionId: string, token: string, path: string
 function spiritualGiftsResultEmail({
   participantName,
   reportUrl,
-  resultUrl,
 }: {
   participantName: string;
   reportUrl?: string;
-  resultUrl: string;
 }) {
   const safeParticipantName = escapeHtml(participantName);
-  const safeReportUrl = escapeHtml(reportUrl || resultUrl);
-  const safeResultUrl = escapeHtml(resultUrl);
-  const text = `Hi ${participantName},\n\nYour Spiritual Gifts Assessment report is ready.\n\nOpen your PDF report here:\n${reportUrl || resultUrl}\n\nYou can also view your result page here:\n${resultUrl}\n\nUse this report prayerfully as a confirmation tool. Spiritual gifts are best clarified through Scripture, prayer, faithful service, and trusted people who have seen your life in motion.\n\nSincerely,\nDiscover Your Divine Design Team`;
+  const safeReportUrl = escapeHtml(reportUrl ?? "");
+  const pdfLine = reportUrl
+    ? `Open your PDF report here:\n${reportUrl}\n\n`
+    : "Your PDF report is attached to this email.\n\n";
+  const htmlPdfLine = reportUrl
+    ? `<p><a href="${safeReportUrl}">Open your Spiritual Gifts PDF report</a></p>`
+    : "<p>Your PDF report is attached to this email.</p>";
+  const text = `Hi ${participantName},\n\nYour Spiritual Gifts Assessment report is ready.\n\n${pdfLine}Use this report prayerfully as a confirmation tool. Spiritual gifts are best clarified through Scripture, prayer, faithful service, and trusted people who have seen your life in motion.\n\nSincerely,\nDiscover Your Divine Design Team`;
 
   return {
     from:
       process.env.SPIRITUAL_GIFTS_EMAIL_FROM ??
       process.env.DYDD_EMAIL_FROM ??
-      process.env.FRUITLIFE_EMAIL_FROM ??
       "Discover Your Divine Design <hello@discoverdivine.design>",
     html: `
       <p>Hi ${safeParticipantName},</p>
       <p>Your Spiritual Gifts Assessment report is ready.</p>
-      <p><a href="${safeReportUrl}">Open your Spiritual Gifts PDF report</a></p>
-      <p><a href="${safeResultUrl}">View your result page</a></p>
+      ${htmlPdfLine}
       <p>Use this report prayerfully as a confirmation tool. Spiritual gifts are best clarified through Scripture, prayer, faithful service, and trusted people who have seen your life in motion.</p>
       <p>Sincerely,<br>Discover Your Divine Design Team</p>
     `,
@@ -232,16 +233,14 @@ async function sendSpiritualGiftsResultEmail({
   participantEmail,
   participantName,
   reportUrl,
-  resultUrl,
 }: {
   attachment?: { content: string; filename: string } | null;
   participantEmail: string;
   participantName: string;
   reportUrl?: string;
-  resultUrl: string;
 }) {
   return sendResendEmail({
-    ...spiritualGiftsResultEmail({ participantName, reportUrl, resultUrl }),
+    ...spiritualGiftsResultEmail({ participantName, reportUrl }),
     ...(attachment ? { attachments: [attachment] } : {}),
     to: participantEmail,
   });
@@ -457,8 +456,7 @@ async function saveCompletedSpiritualGiftsResponse({
         attachment: pdfAttachment,
         participantEmail,
         participantName,
-        reportUrl: pdfMetadata?.providerUrl ? reportAccessUrl : resultUrl,
-        resultUrl,
+        reportUrl: pdfMetadata?.providerUrl ? reportAccessUrl : undefined,
       })
     : { message: "Participant email is missing.", sent: false, skipped: true };
 
@@ -707,10 +705,15 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
 
   const resultParams = new URLSearchParams({
     channel: isAppChannel ? "app" : "public",
-    message: "Your Spiritual Gifts assessment has been saved.",
-    session: session.id,
-    token,
+    message: isAppChannel
+      ? "Your Spiritual Gifts assessment has been saved."
+      : "Your Spiritual Gifts assessment has been submitted. Your PDF report is being delivered to your email.",
   });
+
+  if (isAppChannel) {
+    resultParams.set("session", session.id);
+    resultParams.set("token", token);
+  }
 
   redirect(`/spiritual-gifts/thanks?${resultParams.toString()}`);
 }

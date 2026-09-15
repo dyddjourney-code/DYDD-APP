@@ -249,6 +249,12 @@ h3 {
   transform: translateY(1px);
 }
 
+.button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+}
+
 .primary {
   border-color: var(--green-dark);
   background: var(--green-dark);

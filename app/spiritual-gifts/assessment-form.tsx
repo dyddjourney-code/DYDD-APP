@@ -44,6 +44,7 @@ export function SpiritualGiftsAssessmentForm({
   const totalSteps = questionGroups.length + 2;
   const [stepIndex, setStepIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [reflectionSubmitLocked, setReflectionSubmitLocked] = useState(false);
   const [clientReviewer, setClientReviewer] = useState(initialReviewer);
   const [accountLookupComplete, setAccountLookupComplete] = useState(channel !== "app" || Boolean(initialReviewer));
   const reflectionStep = questionGroups.length + 1;
@@ -124,7 +125,14 @@ export function SpiritualGiftsAssessmentForm({
       return;
     }
 
-    setStepIndex((index) => Math.min(totalSteps - 1, index + 1));
+    const nextStep = Math.min(totalSteps - 1, stepIndex + 1);
+
+    if (nextStep === reflectionStep && stepIndex < reflectionStep) {
+      setReflectionSubmitLocked(true);
+      window.setTimeout(() => setReflectionSubmitLocked(false), 900);
+    }
+
+    setStepIndex(nextStep);
   }
 
   function goBack() {
@@ -135,6 +143,11 @@ export function SpiritualGiftsAssessmentForm({
     if (stepIndex !== reflectionStep) {
       event.preventDefault();
       goNext();
+      return;
+    }
+
+    if (reflectionSubmitLocked) {
+      event.preventDefault();
       return;
     }
 
@@ -328,7 +341,7 @@ export function SpiritualGiftsAssessmentForm({
             {primaryStepLabel}
           </button>
         ) : (
-          <button className="button primary" disabled={isSubmitting} type="submit">
+          <button className="button primary" disabled={isSubmitting || reflectionSubmitLocked} type="submit">
             {isSubmitting ? "Submitting and building your PDF..." : "Submit"}
           </button>
         )}

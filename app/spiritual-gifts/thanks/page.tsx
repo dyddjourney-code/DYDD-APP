@@ -49,9 +49,9 @@ export default async function SpiritualGiftsThanksPage({ searchParams }: Spiritu
               Spiritual gifts are one piece of a larger path for recognizing how God has shaped your life
               for purpose, service, and faithful action.
             </p>
-            <a className="button primary" href="https://www.discoverdivine.design/journey">
+            <Link className="button primary" href="/journey">
               Explore the journey
-            </a>
+            </Link>
           </div>
         ) : null}
         {isAppChannel ? (

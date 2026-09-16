@@ -18,6 +18,7 @@ import {
   fruitLifeIsActive,
   fruitLifeReportArtifact,
   fruitLifeReportHref,
+  fruitLifeReportModeLabel,
   fruitLifeTokenFromSession,
   getFruitLifeDashboardSessions,
 } from "@/lib/fruitlife360/dashboard";
@@ -508,20 +509,26 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
       ] as Array<[string, string]>,
       title: snapshotArtifactTitle(snapshot),
     })),
-    ...fruitLifeReportSessions.map((session) => ({
-      action: "Open report",
-      courseAction: "Explore course",
-      courseHref: "/courses/fruitlife-360-formation",
-      detail: "Your completed FruitLife 360 report is ready to review.",
-      href: fruitLifeReportHref(session),
-      logo: "/brand/tools/fruitful-life-360-logo.jpg",
-      meta: [
-        ["Status", "Completed"],
-        ["Completed", displayDateTime(session.updated_at ?? session.created_at)],
-        ["Source", "FruitLife 360"],
-      ] as Array<[string, string]>,
-      title: fruitLifeArtifactTitle(session),
-    })),
+    ...fruitLifeReportSessions.map((session) => {
+      const reportArtifact = fruitLifeReportArtifact(session);
+      const reportTimestamp = reportArtifact?.created_at ?? session.updated_at ?? session.created_at;
+
+      return {
+        action: "Open report",
+        courseAction: "Explore course",
+        courseHref: "/courses/fruitlife-360-formation",
+        detail: `Your ${fruitLifeReportModeLabel(session).toLowerCase()} FruitLife 360 report is ready to review.`,
+        href: fruitLifeReportHref(session),
+        logo: "/brand/tools/fruitful-life-360-logo.jpg",
+        meta: [
+          ["Status", "Completed"],
+          ["Report type", fruitLifeReportModeLabel(session)],
+          ["Completed", displayDateTime(reportTimestamp)],
+          ["Source", "FruitLife 360"],
+        ] as Array<[string, string]>,
+        title: fruitLifeArtifactTitle(session),
+      };
+    }),
   ];
   if (fruitLifeLane) {
     const fruitLifeReturnPath = selectedFruitLifeSession

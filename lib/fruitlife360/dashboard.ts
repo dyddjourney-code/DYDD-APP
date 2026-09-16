@@ -124,8 +124,25 @@ export function fruitLifePayloadArtifact(session: FruitLifeDashboardSession | nu
   return session?.artifacts.find((artifact) => artifact.artifact_type === "payload");
 }
 
+export function fruitLifeReportModeLabel(session: FruitLifeDashboardSession) {
+  const observerCount = Math.max(session.observer_goal, session.observer_completed_count);
+
+  if (observerCount > 1) {
+    return "Self + Observers";
+  }
+
+  if (observerCount === 1) {
+    return "Self + Observer";
+  }
+
+  return "Self-only";
+}
+
 export function fruitLifeArtifactTitle(session: FruitLifeDashboardSession) {
-  return `FruitLife 360 Report - ${displayDateTime(session.updated_at ?? session.created_at)}`;
+  const artifact = fruitLifeReportArtifact(session);
+  const timestamp = artifact?.created_at ?? session.updated_at ?? session.created_at;
+
+  return `FruitLife 360 Report - ${fruitLifeReportModeLabel(session)} - ${displayDateTime(timestamp)}`;
 }
 
 export async function getFruitLifeDashboardSessions({

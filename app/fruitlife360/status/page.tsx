@@ -27,6 +27,23 @@ function displayDate(value: string | null | undefined) {
   }).format(new Date(value));
 }
 
+function displayDateTime(value: string | null | undefined) {
+  if (!value) return "Date unavailable";
+  return `${new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "America/New_York",
+  }).format(new Date(value))} Eastern`;
+}
+
+function reportModeLabel(session: { observer_completed_count?: number | null; observer_goal?: number | null }) {
+  const observerCount = Math.max(session.observer_goal ?? 0, session.observer_completed_count ?? 0);
+
+  if (observerCount > 1) return "Self + Observers";
+  if (observerCount === 1) return "Self + Observer";
+  return "Self-only";
+}
+
 function titleize(value: string | null | undefined) {
   switch (value) {
     case "queued":
@@ -203,8 +220,16 @@ export default async function FruitLifeStatusPage({
             {artifacts.slice(0, 8).map((artifact: any) => (
               <article key={`${artifact.artifact_type}-${artifact.created_at}`}>
                 <div>
-                  <strong>{titleize(artifact.artifact_type)}</strong>
-                  <small>{artifact.filename ?? artifact.provider}</small>
+                  <strong>
+                    {artifact.artifact_type === "pdf"
+                      ? `PDF report - ${reportModeLabel(session)}`
+                      : titleize(artifact.artifact_type)}
+                  </strong>
+                  <small>
+                    {artifact.artifact_type === "pdf"
+                      ? displayDateTime(artifact.created_at)
+                      : artifact.filename ?? artifact.provider}
+                  </small>
                 </div>
                 <span>{titleize(artifact.artifact_status)}</span>
                 {artifact.external_url ? (

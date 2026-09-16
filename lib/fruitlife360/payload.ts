@@ -270,6 +270,44 @@ function consistencyNote(fruitName: string, hasObservers: boolean) {
   return `${fruitName} is ranked from ${hasObservers ? "self and observer feedback" : "your own reflection"} in this ${hasObservers ? "360" : "self-only"} report. Use it as a prayerful formation signal.`;
 }
 
+function fruitCssClass(fruitKey: string) {
+  return fruitKey === "self_control" ? "selfcontrol" : fruitKey;
+}
+
+function formationCardHtml(fruitKey: string, rankIndex: number) {
+  const fruitName = titleCaseFruit(fruitKey);
+  const content = fruitContent[fruitKey];
+
+  if (!content) {
+    return "";
+  }
+
+  return [
+    `<div class="formation-card">`,
+    `<div class="formation-head fruit-${fruitCssClass(fruitKey)}">`,
+    `<div class="formation-name"><span class="formation-rank">#${rankIndex + 1}</span>${fruitName}</div>`,
+    `<div class="formation-tier">${tierLabel(rankIndex)}</div>`,
+    `</div>`,
+    `<div class="formation-body">`,
+    `<p><strong>Scripture:</strong> ${content.scripture}</p>`,
+    `<p>${content.definition}</p>`,
+    `<div class="formation-cols">`,
+    `<div class="formation-col"><div class="mini-label">Maturity looks like</div><p>${content.maturity}</p><div class="mini-label">Practice</div><p>${content.practice}</p></div>`,
+    `<div class="formation-col"><div class="mini-label">Growth invitation</div><p>${content.growthInvitation}</p><div class="mini-label">Prayer</div><p>${content.reflectionQuestion}</p></div>`,
+    `</div>`,
+    `</div>`,
+    `</div>`,
+  ].join("");
+}
+
+function formationCardsHtml(rank: string[], start: number, end: number) {
+  return rank
+    .slice(start, end)
+    .map((fruitKey, offset) => formationCardHtml(fruitKey, start + offset))
+    .filter(Boolean)
+    .join("");
+}
+
 function rankByAverage(responses: FruitLifeResponse[]) {
   return fruitLifeFruits
     .map((fruit, index) => ({
@@ -329,10 +367,12 @@ export function buildFruitLifePayload(session: FruitLifeSession, responses: Frui
     design_id_primary: "",
     design_id_secondary: "",
     growth_invitation_fruit_list: listLabels(growthInvitation),
+    growth_invitation_formation_cards: formationCardsHtml(rank, 6, 9),
     growth_invitation_tier_description:
       "These are the fruit least visible in this current report. Treat them as invitations, not accusations. Low visibility may reflect season, stress, role, or missed opportunities.",
     growth_invitations: `${listLabels(growthInvitation)} may be current formation invitations. Treat these as places for prayer, practice, and trusted conversation rather than as accusations or fixed labels.`,
     most_visible_fruit: `${hasObservers ? "Observers especially highlight" : "Your self-reflection especially highlights"} ${listLabels(mostVisible)} as visible fruit in this season.`,
+    most_visible_formation_cards: formationCardsHtml(rank, 0, 3),
     most_visible_fruit_list: listLabels(mostVisible),
     most_visible_tier_description:
       "These are the fruit most clearly visible in this current report. Begin here with gratitude, because these scores may point to places where the Spirit's work is already becoming evident.",
@@ -364,6 +404,7 @@ export function buildFruitLifePayload(session: FruitLifeSession, responses: Frui
     self_overall: selfOverall,
     spiritual_gifts_cta:
       "The Spiritual Gifts assessment can add another layer by helping you notice how the Spirit may work through you to strengthen others and serve the body of Christ.",
+    steady_forming_formation_cards: formationCardsHtml(rank, 3, 6),
     steady_forming_fruit_list: listLabels(steadyForming),
     steady_forming_tier_description:
       "These fruit appear present and developing, but may be more situational or less visible under stress. They are worth noticing without overinterpreting.",

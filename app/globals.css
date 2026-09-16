@@ -632,25 +632,30 @@ h3 {
 
 .app-frame:has(.login-shell),
 .app-frame:has(.fruitlife-basecamp-lane),
-.app-frame:has(.fruitlife-public) {
+.app-frame:has(.fruitlife-public),
+.app-frame:has(.fruitlife-release-shell) {
   display: block;
 }
 
 body:has(.fruitlife-public) .mobile-app-nav,
 body:has(.login-shell) .mobile-app-nav,
 body:has(.fruitlife-basecamp-lane) .mobile-app-nav,
+body:has(.fruitlife-release-shell) .mobile-app-nav,
 .app-frame:has(.login-shell) .app-sidebar,
 .app-frame:has(.fruitlife-basecamp-lane) .app-sidebar,
 .app-frame:has(.fruitlife-public) .app-sidebar,
+.app-frame:has(.fruitlife-release-shell) .app-sidebar,
 .app-frame:has(.login-shell) .app-footer,
 .app-frame:has(.fruitlife-basecamp-lane) .app-footer,
-.app-frame:has(.fruitlife-public) .app-footer {
+.app-frame:has(.fruitlife-public) .app-footer,
+.app-frame:has(.fruitlife-release-shell) .app-footer {
   display: none;
 }
 
 .app-frame:has(.login-shell) .app-frame-content,
 .app-frame:has(.fruitlife-basecamp-lane) .app-frame-content,
-.app-frame:has(.fruitlife-public) .app-frame-content {
+.app-frame:has(.fruitlife-public) .app-frame-content,
+.app-frame:has(.fruitlife-release-shell) .app-frame-content {
   max-width: none;
 }
 
@@ -1847,6 +1852,16 @@ body:has(.fruitlife-basecamp-lane) .mobile-app-nav,
   margin-bottom: 0;
 }
 
+.fruitlife-access-shell h1 {
+  max-width: 12ch;
+  font-size: clamp(2.7rem, 6.2vw, 5.2rem);
+  line-height: 0.96;
+}
+
+.fruitlife-access-shell .eyebrow {
+  margin-bottom: 10px;
+}
+
 .login-panel,
 .companion-brief,
 .journey-map,
@@ -1886,6 +1901,44 @@ body:has(.fruitlife-basecamp-lane) .mobile-app-nav,
   width: min(220px, 62vw);
   height: auto;
   margin-bottom: clamp(18px, 4vw, 28px);
+}
+
+.login-choice {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 6px;
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 8px;
+  background: rgba(234, 240, 226, 0.64);
+}
+
+.login-choice a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: var(--green-dark);
+  font-size: 0.92rem;
+  font-weight: 850;
+  text-align: center;
+}
+
+.login-choice a.active,
+.login-choice a[aria-selected="true"] {
+  background: var(--panel);
+  box-shadow: 0 8px 22px rgba(36, 63, 39, 0.09);
+}
+
+.login-recovery-toggle {
+  justify-self: start;
+  color: var(--green-dark);
+  font-size: 0.92rem;
+  font-weight: 850;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .code-panel {
@@ -7334,6 +7387,45 @@ body:has(.fruitlife-basecamp-lane) .mobile-app-nav,
 .fruitlife-basecamp-content {
   width: min(1120px, 100%);
   margin: 0 auto;
+}
+
+.fruitlife-mini-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: min(960px, 100%);
+  margin: 0 auto clamp(18px, 3vw, 28px);
+  padding: 8px;
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 14px 34px rgba(70, 58, 35, 0.07);
+}
+
+.fruitlife-mini-nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--green-dark);
+  font-size: 0.88rem;
+  font-weight: 850;
+  background: rgba(234, 240, 226, 0.62);
+  transition:
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.fruitlife-mini-nav a:hover {
+  background: rgba(184, 138, 67, 0.14);
+}
+
+.fruitlife-mini-nav a:active {
+  transform: translateY(1px);
 }
 
 .fruitlife-basecamp-topbar {
@@ -13113,7 +13205,8 @@ body:has(.fruitlife-basecamp-lane) .mobile-app-nav,
 
   body:has(.login-shell),
   body:has(.fruitlife-basecamp-lane),
-  body:has(.fruitlife-public) {
+  body:has(.fruitlife-public),
+  body:has(.fruitlife-release-shell) {
     padding-top: 0;
   }
 

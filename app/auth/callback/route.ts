@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function GET(request: NextRequest) {
@@ -22,6 +23,33 @@ export async function GET(request: NextRequest) {
           requestUrl.origin,
         ),
       );
+    }
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user?.email) {
+      const fullName =
+        typeof user.user_metadata?.full_name === "string"
+          ? user.user_metadata.full_name
+          : null;
+
+      try {
+        const supabaseAdmin = createSupabaseAdminClient();
+
+        await supabaseAdmin.from("school_profiles").upsert(
+          {
+            email: user.email.toLowerCase(),
+            full_name: fullName,
+            id: user.id,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "id" },
+        );
+      } catch (profileError) {
+        console.error("Unable to sync school profile during auth callback", profileError);
+      }
     }
   } else {
     return NextResponse.redirect(

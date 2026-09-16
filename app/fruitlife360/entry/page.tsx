@@ -11,7 +11,7 @@ export default async function FruitLifeEntryPage() {
   const fruitLifeBaseCampPath = "/hq?lane=fruitlife";
   const accessHref = user
     ? fruitLifeBaseCampPath
-    : `/login?next=${encodeURIComponent(fruitLifeBaseCampPath)}`;
+    : `/login?mode=signup&next=${encodeURIComponent(fruitLifeBaseCampPath)}`;
 
   return (
     <main className="fruitlife-shell fruitlife-public fruitlife-entry-shell">

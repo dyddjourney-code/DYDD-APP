@@ -18,6 +18,7 @@ import {
 } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { AssessmentCourseNavigator } from "@/components/assessment-course-navigator";
+import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { PageHelp } from "@/components/page-help";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +27,9 @@ type LearningCoursePageProps = {
   params: Promise<{
     courseSlug: string;
   }>;
-  searchParams?: Promise<ReviewSearchParams>;
+  searchParams?: Promise<ReviewSearchParams & {
+    lane?: string;
+  }>;
 };
 
 export function generateStaticParams() {
@@ -51,6 +54,8 @@ export default async function LearningCoursePage({
   const { courseSlug } = await params;
   const reviewParams = await searchParams;
   const course = getLearningCourse(courseSlug);
+  const fruitLifeLane = reviewParams?.lane === "fruitlife";
+  const courseQuery = fruitLifeLane ? "?lane=fruitlife" : reviewQuery(reviewParams);
 
   if (!course) {
     notFound();
@@ -71,10 +76,15 @@ export default async function LearningCoursePage({
   );
 
   return (
-    <main className={`course-shell course-shell-${course.accent}`}>
+    <main className={`course-shell course-shell-${course.accent}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}>
+      {fruitLifeLane ? <FruitLifeMiniNav /> : null}
       <nav className="course-nav" aria-label="Course navigation">
-        <Link href={withReviewQuery("/hq", reviewParams)}>Back to HQ</Link>
-        <Link href={withReviewQuery("/journey", reviewParams)}>Journey map</Link>
+        <Link href={fruitLifeLane ? "/hq?lane=fruitlife" : withReviewQuery("/hq", reviewParams)}>
+          Back to Base Camp
+        </Link>
+        <Link href={fruitLifeLane ? "/trailheads?lane=fruitlife" : withReviewQuery("/journey", reviewParams)}>
+          {fruitLifeLane ? "Trailheads" : "Journey map"}
+        </Link>
       </nav>
 
       <header className="course-hero polished-course-hero multi-course-hero">
@@ -93,20 +103,21 @@ export default async function LearningCoursePage({
           <p className="source-note">{course.sourceNote}</p>
           <Link
             className="button primary"
-            href={withReviewQuery(
-              `/learn/${course.slug}/${lessons[0]?.slug ?? ""}`,
-              reviewParams,
-            )}
+            href={
+              fruitLifeLane
+                ? `/learn/${course.slug}/${lessons[0]?.slug ?? ""}?lane=fruitlife`
+                : withReviewQuery(`/learn/${course.slug}/${lessons[0]?.slug ?? ""}`, reviewParams)
+            }
           >
             Start first lesson
           </Link>
         </div>
         <aside className="course-verse assessment-snapshot-card">
-          <p className="section-label">Sample wiring</p>
-          <h2>{insights.connected ? "Heather data is connected." : "Awaiting data."}</h2>
+          <p className="section-label">Personalized course</p>
+          <h2>{insights.connected ? "Your report is connected." : "Awaiting report data."}</h2>
           <p>
             {insights.connected
-              ? "This course can read the learner's mirrored assessment snapshot and place it beside the lesson."
+              ? "This course can read your assessment snapshot and place personal insight beside the lesson."
               : "When a matching assessment is attached, this panel fills with learner-specific insight."}
           </p>
         </aside>
@@ -129,10 +140,10 @@ export default async function LearningCoursePage({
 
       <section className="course-personalization" aria-label="Course personalization">
         <div>
-          <p className="section-label">Heather preview lane</p>
+          <p className="section-label">Personalization</p>
           <h2>
             {insights.connected
-              ? "The lesson can now carry real assessment language beside the teaching."
+              ? "The lesson can carry your assessment language beside the teaching."
               : "The structure is ready for the learner's own assessment data."}
           </h2>
           <p className="panel-copy">{course.companionNote}</p>
@@ -170,7 +181,7 @@ export default async function LearningCoursePage({
           courseSlug={course.slug}
           insights={insights.rows}
           modules={course.modules}
-          reviewQuery={reviewQuery(reviewParams)}
+          reviewQuery={courseQuery}
         />
       </div>
 
@@ -194,10 +205,11 @@ export default async function LearningCoursePage({
                     <span>{String(index + 1).padStart(2, "0")}</span>
                     <div>
                       <Link
-                        href={withReviewQuery(
-                          `/learn/${course.slug}/${lesson.slug}`,
-                          reviewParams,
-                        )}
+                        href={
+                          fruitLifeLane
+                            ? `/learn/${course.slug}/${lesson.slug}?lane=fruitlife`
+                            : withReviewQuery(`/learn/${course.slug}/${lesson.slug}`, reviewParams)
+                        }
                       >
                         {lesson.title}
                       </Link>

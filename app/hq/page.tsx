@@ -6,6 +6,7 @@ import {
 } from "@/app/fruitlife360/actions";
 import { DydPassportBook } from "@/components/dyd-passport-book";
 import { DyddOrientationSlider } from "@/components/dydd-orientation-slider";
+import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeCurrentAssessmentProcess } from "@/components/fruitlife-current-assessment-process";
 import { FruitLifeSessionAutoRefresh } from "@/app/fruitlife360/session-auto-refresh";
 import { signOut } from "@/app/login/actions";
@@ -606,6 +607,8 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             )}
           </header>
 
+          <FruitLifeMiniNav />
+
           <section className="fruitlife-basecamp-hero" aria-label="FruitLife 360 Base Camp">
             <div>
               <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360" />
@@ -623,10 +626,10 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               </Link>
             </div>
             <div className="fruitlife-basecamp-note">
-              <span>Limited launch lane</span>
+              <span>Your FruitLife workspace</span>
               <p>
-                This Base Camp is focused on FruitLife 360 while the larger DYD app is still
-                being prepared.
+                Your report process, course path, weekly Waypoints, and DYDD resources
+                stay connected to this account.
               </p>
             </div>
           </section>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { PageHelp } from "@/components/page-help";
 
 const featuredCourse = {
@@ -123,7 +124,89 @@ const courses = [
   },
 ];
 
-export default function TrailheadsPage() {
+type TrailheadsPageProps = {
+  searchParams?: Promise<{
+    lane?: string;
+  }>;
+};
+
+export default async function TrailheadsPage({ searchParams }: TrailheadsPageProps) {
+  const params = await searchParams;
+  const fruitLifeLane = params?.lane === "fruitlife";
+  const fruitLifeCourse = courses.find((course) => course.slug === "fruitlife-360");
+
+  if (fruitLifeLane && fruitLifeCourse) {
+    return (
+      <main className="journey-shell hq-standalone-page fruitlife-release-shell">
+        <FruitLifeMiniNav />
+        <header className="standalone-hero trailheads-hero">
+          <div>
+            <p className="eyebrow">Trailheads</p>
+            <h1>Unpack your FruitLife 360 report.</h1>
+            <p className="lede">
+              This first release keeps the course path focused on FruitLife 360.
+              Spiritual Gifts and the broader DYDD trailheads will open when
+              those course experiences are ready.
+            </p>
+          </div>
+        </header>
+
+        <section className="course-catalog-section" aria-label="FruitLife 360 course">
+          <div className="catalog-heading compact course-heading-row">
+            <h2>Available now</h2>
+          </div>
+          <div className="course-catalog-grid fruitlife-single-course">
+            <article className="catalog-course-card open" id={fruitLifeCourse.slug}>
+              <div className="catalog-course-logo">
+                <img
+                  className="catalog-course-signpost"
+                  src={fruitLifeCourse.signpost}
+                  alt={`${fruitLifeCourse.title} signpost`}
+                />
+              </div>
+              <div>
+                <span>Included with FruitLife 360</span>
+                <h3>{fruitLifeCourse.title}</h3>
+                <p>{fruitLifeCourse.description}</p>
+                <dl className="trailhead-facts compact">
+                  <div>
+                    <dt>Effort</dt>
+                    <dd>{fruitLifeCourse.effort}</dd>
+                  </div>
+                  <div>
+                    <dt>Difficulty</dt>
+                    <dd>{fruitLifeCourse.difficulty}</dd>
+                  </div>
+                  <div>
+                    <dt>Permit</dt>
+                    <dd>FruitLife 360 report</dd>
+                  </div>
+                </dl>
+                <ul>
+                  {fruitLifeCourse.points.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              </div>
+              <Link className="button primary" href={`${fruitLifeCourse.href}?lane=fruitlife`}>
+                {fruitLifeCourse.action}
+              </Link>
+            </article>
+          </div>
+        </section>
+
+        <section className="trailhead-start-note">
+          <p className="section-label">Coming next</p>
+          <p>
+            The Spiritual Gifts course will open here after it is finished so
+            learners can move from the free assessment into a personalized class
+            experience.
+          </p>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="journey-shell hq-standalone-page">
       <header className="standalone-hero trailheads-hero">

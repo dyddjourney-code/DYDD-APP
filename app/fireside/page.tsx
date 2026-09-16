@@ -1,3 +1,4 @@
+import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { PageHelp } from "@/components/page-help";
 import { WaypointExplorer } from "@/components/waypoint-explorer";
 
@@ -241,7 +242,62 @@ const podcastNameIdeas = [
   "Along the Way",
 ];
 
-export default function FiresidePage() {
+type FiresidePageProps = {
+  searchParams?: Promise<{
+    lane?: string;
+  }>;
+};
+
+export default async function FiresidePage({ searchParams }: FiresidePageProps) {
+  const params = await searchParams;
+  const fruitLifeLane = params?.lane === "fruitlife";
+
+  if (fruitLifeLane) {
+    return (
+      <main className="journey-shell hq-standalone-page fireside-page fruitlife-release-shell">
+        <FruitLifeMiniNav />
+        <header className="standalone-hero fireside-page-hero">
+          <div>
+            <p className="eyebrow">Waypoints</p>
+            <h1>Pause, breathe, and keep walking.</h1>
+            <p className="lede">
+              Weekly DYDD Waypoints give you short Scripture-rooted reflections
+              for carrying formation into ordinary life.
+            </p>
+          </div>
+        </header>
+
+        <section
+          className="fireside-waypoints-feature"
+          id="waypoints"
+          aria-label="DYDD Waypoints trail banner"
+        >
+          <div className="fireside-image-header">
+            <img
+              alt="Illustrated DYDD Waypoints trail through a forest with natural places to pause"
+              src="/brand/dydd-waypoints-banner.png"
+            />
+            <div className="fireside-image-title waypoints-title">
+              <p>DYDD Waypoints</p>
+            </div>
+            <div className="fireside-image-title waypoints-tagline">
+              <span>Pause, breathe, and keep walking.</span>
+            </div>
+          </div>
+        </section>
+
+        <section className="waypoints-section" aria-label="DYDD Waypoints library">
+          <WaypointExplorer
+            categories={waypointCategories}
+            currentId={currentWaypoint.id}
+            previousId={previousWaypoint.id}
+            waypoints={waypointArchive}
+          />
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main className="journey-shell hq-standalone-page fireside-page">
       <header className="standalone-hero fireside-page-hero">

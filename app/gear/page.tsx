@@ -1,3 +1,5 @@
+import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
+
 const bookResources = [
   {
     title: "Discover Your Divine Design",
@@ -47,9 +49,19 @@ const liveExperiences = [
   },
 ];
 
-export default function GearPage() {
+type GearPageProps = {
+  searchParams?: Promise<{
+    lane?: string;
+  }>;
+};
+
+export default async function GearPage({ searchParams }: GearPageProps) {
+  const params = await searchParams;
+  const fruitLifeLane = params?.lane === "fruitlife";
+
   return (
-    <main className="journey-shell hq-standalone-page">
+    <main className={`journey-shell hq-standalone-page${fruitLifeLane ? " fruitlife-release-shell" : ""}`}>
+      {fruitLifeLane ? <FruitLifeMiniNav /> : null}
       <header className="standalone-hero gear-hero">
         <div>
           <p className="eyebrow">Gear</p>

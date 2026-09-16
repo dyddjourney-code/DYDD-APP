@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PageHelp } from "@/components/page-help";
+import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeCurrentAssessmentProcess } from "@/components/fruitlife-current-assessment-process";
 import {
   assessmentLabels,
@@ -38,6 +39,7 @@ type FieldKitPageProps = {
     fruitlife?: string;
     fruitlife_session?: string;
     fruitlife_token?: string;
+    lane?: string;
   }>;
 };
 
@@ -510,6 +512,115 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
       title: fruitLifeArtifactTitle(session),
     })),
   ];
+  const fruitLifeLane = reviewParams?.lane === "fruitlife";
+
+  if (fruitLifeLane) {
+    const fruitLifeReturnPath = selectedFruitLifeSession
+      ? `/field-kit?lane=fruitlife&fruitlife_session=${encodeURIComponent(selectedFruitLifeSession.id)}${
+          activeFruitLifeToken ? `&fruitlife_token=${encodeURIComponent(activeFruitLifeToken)}` : ""
+        }#current-assessment-process`
+      : "/field-kit?lane=fruitlife#current-assessment-process";
+    const fruitLifeArtifacts = artifacts.filter((artifact) =>
+      artifact.title.toLowerCase().includes("fruitlife") ||
+      artifact.title.toLowerCase().includes("fruit 360")
+    );
+
+    return (
+      <main className="journey-shell hq-standalone-page fruitlife-release-shell">
+        <FruitLifeMiniNav />
+        <header className="standalone-hero fieldkit-hero">
+          <div>
+            <p className="eyebrow">FruitLife 360</p>
+            <h1>Your report process.</h1>
+            <p className="lede">
+              Start your FruitLife 360, track self and observer responses, send
+              reminders, and return for your completed report.
+            </p>
+          </div>
+        </header>
+
+        <section className="fieldkit-assessments-section" aria-label="FruitLife 360 access">
+          <div className="fieldkit-assessment-list single">
+            <AssessmentCard
+              assessment={{
+                action: activeFruitLifeSession ? "Open progress" : "Start FruitLife 360",
+                courseAction: hasFruitLife ? "Explore course" : "Course opens with your report",
+                courseAvailable: hasFruitLife,
+                courseHref: "/courses/fruitlife-360-formation",
+                detail:
+                  "A formation mirror using self reflection and observer feedback to notice visible fruit, pressure patterns, and growth invitations.",
+                href: activeFruitLifeSession
+                  ? fruitLifeReturnPath
+                  : `/fruitlife360?return_to=${encodeURIComponent("/field-kit?lane=fruitlife#current-assessment-process")}`,
+                logo: "/brand/tools/fruitful-life-360-logo.jpg",
+                points: ["Participant setup", "Observer invitations", "Progress tracking", "Report artifact"],
+                price: "$10",
+                status: activeFruitLifeSession ? "In progress" : hasFruitLife ? "Completed" : null,
+                title: "FruitLife 360",
+              }}
+              kind="Purchase"
+            />
+          </div>
+        </section>
+
+        <FruitLifeCurrentAssessmentProcess
+          created={reviewParams?.fruitlife === "created"}
+          returnTo={fruitLifeReturnPath}
+          session={activeFruitLifeSession}
+          token={activeFruitLifeToken}
+        />
+
+        <section className="artifact-panel artifact-workbench" id="artifacts">
+          <div className="card-heading">
+            <p className="section-label">Reports</p>
+            <h2>FruitLife 360 artifacts</h2>
+          </div>
+          <div className="artifact-download-list">
+            {fruitLifeArtifacts.length ? fruitLifeArtifacts.map((artifact) => (
+              <article className="artifact-download fieldkit-artifact-card" key={artifact.title}>
+                <div className="fieldkit-artifact-title">
+                  <img src={artifact.logo} alt={`${artifact.title} logo`} />
+                  <div>
+                    <span>{artifact.title}</span>
+                    <p>{artifact.detail}</p>
+                  </div>
+                </div>
+                <dl>
+                  {artifact.meta.map(([label, value]) => (
+                    <div key={label}>
+                      <dt>{label}</dt>
+                      <dd>{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <div className="fieldkit-artifact-actions">
+                  <Link className="button primary" href={artifact.href}>
+                    {artifact.action}
+                  </Link>
+                  {artifact.courseHref && artifact.courseAction ? (
+                    <Link className="button secondary" href={`${artifact.courseHref}?lane=fruitlife`}>
+                      {artifact.courseAction}
+                    </Link>
+                  ) : null}
+                </div>
+              </article>
+            )) : (
+              <article className="artifact-download fieldkit-artifact-card">
+                <div className="fieldkit-artifact-title">
+                  <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
+                  <div>
+                    <span>No FruitLife 360 report yet</span>
+                    <p>Your completed report will appear here when it is ready.</p>
+                  </div>
+                </div>
+              </article>
+            )}
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   const earnedBadgeCards = [
     hasDesignId
       ? {

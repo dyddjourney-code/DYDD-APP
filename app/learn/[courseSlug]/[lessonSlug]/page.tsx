@@ -15,13 +15,16 @@ import {
   withReviewQuery,
 } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 
 type LearningLessonPageProps = {
   params: Promise<{
     courseSlug: string;
     lessonSlug: string;
   }>;
-  searchParams?: Promise<ReviewSearchParams>;
+  searchParams?: Promise<ReviewSearchParams & {
+    lane?: string;
+  }>;
 };
 
 export const dynamic = "force-dynamic";
@@ -53,6 +56,7 @@ export default async function LearningLessonPage({
   const { courseSlug, lessonSlug } = await params;
   const reviewParams = await searchParams;
   const match = getLearningLesson(courseSlug, lessonSlug);
+  const fruitLifeLane = reviewParams?.lane === "fruitlife";
 
   if (!match) {
     notFound();
@@ -74,14 +78,18 @@ export default async function LearningLessonPage({
     assessmentReport,
     course.assessmentType,
   );
+  const courseMapHref = fruitLifeLane
+    ? `/courses/${course.slug}?lane=fruitlife`
+    : withReviewQuery(`/courses/${course.slug}`, reviewParams);
 
   return (
-    <main className={`lesson-shell lesson-shell-${course.accent}`}>
+    <main className={`lesson-shell lesson-shell-${course.accent}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}>
+      {fruitLifeLane ? <FruitLifeMiniNav /> : null}
       <nav className="course-nav" aria-label="Lesson navigation">
-        <Link href={withReviewQuery(`/courses/${course.slug}`, reviewParams)}>
-          Course map
+        <Link href={courseMapHref}>Course map</Link>
+        <Link href={fruitLifeLane ? "/hq?lane=fruitlife" : withReviewQuery("/hq", reviewParams)}>
+          Base Camp
         </Link>
-        <Link href={withReviewQuery("/hq", reviewParams)}>HQ</Link>
       </nav>
 
       <article className="lesson-page polished-lesson multi-lesson-page">
@@ -109,11 +117,13 @@ export default async function LearningLessonPage({
           </section>
 
           <section className="personal-walkthrough" aria-label="Learner data panel">
-            <p className="section-label">Heather sample data</p>
+            <p className="section-label">
+              {fruitLifeLane ? "Personalized insight" : "Heather sample data"}
+            </p>
             <h2>
               {insights.connected
-                ? "This lesson is reading a real mirrored record."
-                : "This lesson is ready for a learner record."}
+                ? "This lesson is connected to your assessment record."
+                : "This lesson is ready for your assessment record."}
             </h2>
             {insights.rows.length ? (
               <dl className="lesson-insight-list">
@@ -126,8 +136,9 @@ export default async function LearningLessonPage({
               </dl>
             ) : (
               <p>
-                Sign in with the assessment email, or open Heather review mode,
-                to see assessment-backed lesson language here.
+                {fruitLifeLane
+                  ? "When your FruitLife 360 report is ready, this space can carry report-aware guidance beside the lesson."
+                  : "Sign in with the assessment email, or open Heather review mode, to see assessment-backed lesson language here."}
               </p>
             )}
           </section>
@@ -152,10 +163,11 @@ export default async function LearningLessonPage({
           <footer className="lesson-pagination" aria-label="Lesson pagination">
             {previousLesson ? (
               <Link
-                href={withReviewQuery(
-                  `/learn/${course.slug}/${previousLesson.slug}`,
-                  reviewParams,
-                )}
+                href={
+                  fruitLifeLane
+                    ? `/learn/${course.slug}/${previousLesson.slug}?lane=fruitlife`
+                    : withReviewQuery(`/learn/${course.slug}/${previousLesson.slug}`, reviewParams)
+                }
               >
                 Previous: {previousLesson.title}
               </Link>
@@ -164,15 +176,16 @@ export default async function LearningLessonPage({
             )}
             {nextLesson ? (
               <Link
-                href={withReviewQuery(
-                  `/learn/${course.slug}/${nextLesson.slug}`,
-                  reviewParams,
-                )}
+                href={
+                  fruitLifeLane
+                    ? `/learn/${course.slug}/${nextLesson.slug}?lane=fruitlife`
+                    : withReviewQuery(`/learn/${course.slug}/${nextLesson.slug}`, reviewParams)
+                }
               >
                 Next: {nextLesson.title}
               </Link>
             ) : (
-              <Link href={withReviewQuery(`/courses/${course.slug}`, reviewParams)}>
+              <Link href={courseMapHref}>
                 Back to course map
               </Link>
             )}

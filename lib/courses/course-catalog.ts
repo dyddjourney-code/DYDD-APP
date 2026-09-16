@@ -1,4 +1,6 @@
 import { designIdCourse } from "./designid-foundations";
+import { fruitLife360Course } from "./fruitlife-360-formation";
+import { spiritualGiftsCourse } from "./spiritual-gifts-service";
 
 export type CourseLesson = {
   body: readonly string[];
@@ -29,7 +31,7 @@ export type CourseDefinition = {
   title: string;
 };
 
-export const learningCourses = [
+const baseLearningCourses = [
   {
     accent: "green",
     assessmentType: "designpd",
@@ -644,6 +646,15 @@ export const learningCourses = [
     title: "Discover Your Divine Design",
   },
 ] as const satisfies CourseDefinition[];
+
+const courseReplacements: Record<string, CourseDefinition> = {
+  [fruitLife360Course.slug]: fruitLife360Course,
+  [spiritualGiftsCourse.slug]: spiritualGiftsCourse,
+};
+
+export const learningCourses = baseLearningCourses.map(
+  (course) => courseReplacements[course.slug] ?? course,
+) satisfies readonly CourseDefinition[];
 
 export const allCourseSummaries = [
   {

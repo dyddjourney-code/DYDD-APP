@@ -630,16 +630,26 @@ h3 {
   resize: vertical;
 }
 
+.app-frame:has(.login-shell),
+.app-frame:has(.fruitlife-basecamp-lane),
 .app-frame:has(.fruitlife-public) {
   display: block;
 }
 
 body:has(.fruitlife-public) .mobile-app-nav,
+body:has(.login-shell) .mobile-app-nav,
+body:has(.fruitlife-basecamp-lane) .mobile-app-nav,
+.app-frame:has(.login-shell) .app-sidebar,
+.app-frame:has(.fruitlife-basecamp-lane) .app-sidebar,
 .app-frame:has(.fruitlife-public) .app-sidebar,
+.app-frame:has(.login-shell) .app-footer,
+.app-frame:has(.fruitlife-basecamp-lane) .app-footer,
 .app-frame:has(.fruitlife-public) .app-footer {
   display: none;
 }
 
+.app-frame:has(.login-shell) .app-frame-content,
+.app-frame:has(.fruitlife-basecamp-lane) .app-frame-content,
 .app-frame:has(.fruitlife-public) .app-frame-content {
   max-width: none;
 }
@@ -1834,6 +1844,13 @@ body:has(.fruitlife-public) .mobile-app-nav,
   display: grid;
   gap: 28px;
   padding: clamp(24px, 4vw, 42px);
+}
+
+.fruitlife-login-logo {
+  display: block;
+  width: min(260px, 70vw);
+  height: auto;
+  margin-bottom: clamp(24px, 5vw, 44px);
 }
 
 .code-panel {
@@ -7269,6 +7286,94 @@ body:has(.fruitlife-public) .mobile-app-nav,
   gap: 18px;
   align-items: stretch;
   margin-bottom: 18px;
+}
+
+.fruitlife-basecamp-lane {
+  min-height: 100dvh;
+  padding: clamp(20px, 4vw, 48px);
+  background:
+    linear-gradient(120deg, rgba(251, 250, 244, 0.97), rgba(234, 240, 226, 0.82)),
+    var(--paper);
+}
+
+.fruitlife-basecamp-content {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.fruitlife-basecamp-topbar {
+  margin-bottom: clamp(18px, 3vw, 30px);
+}
+
+.fruitlife-basecamp-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+  gap: clamp(18px, 4vw, 38px);
+  align-items: stretch;
+  margin-bottom: 18px;
+  padding: clamp(24px, 5vw, 48px);
+  border: 1px solid rgba(71, 107, 66, 0.16);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(251, 250, 244, 0.88)),
+    repeating-linear-gradient(
+      135deg,
+      rgba(71, 107, 66, 0.07) 0,
+      rgba(71, 107, 66, 0.07) 1px,
+      transparent 1px,
+      transparent 24px
+    );
+  box-shadow: 0 18px 42px rgba(70, 58, 35, 0.07);
+}
+
+.fruitlife-basecamp-hero img {
+  display: block;
+  width: min(230px, 64vw);
+  height: auto;
+  margin-bottom: clamp(22px, 4vw, 34px);
+}
+
+.fruitlife-basecamp-hero h2 {
+  max-width: 16ch;
+  margin-bottom: 16px;
+  color: var(--green-dark);
+  font-size: clamp(2rem, 4vw, 3.9rem);
+  line-height: 0.98;
+}
+
+.fruitlife-basecamp-hero p:not(.section-label),
+.fruitlife-basecamp-note p {
+  max-width: 62ch;
+  color: var(--muted);
+  line-height: 1.68;
+}
+
+.fruitlife-basecamp-hero .button {
+  width: fit-content;
+  margin-top: 12px;
+}
+
+.fruitlife-basecamp-note {
+  display: grid;
+  align-content: end;
+  gap: 14px;
+  min-height: 100%;
+  padding: clamp(20px, 3vw, 30px);
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(234, 240, 226, 0.72);
+}
+
+.fruitlife-basecamp-note span {
+  width: fit-content;
+  padding: 6px 9px;
+  border: 1px solid rgba(71, 107, 66, 0.2);
+  border-radius: 999px;
+  color: var(--green-dark);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .fruitlife-workbench-lead,
@@ -12971,6 +13076,12 @@ body:has(.fruitlife-public) .mobile-app-nav,
     padding-top: 70px;
   }
 
+  body:has(.login-shell),
+  body:has(.fruitlife-basecamp-lane),
+  body:has(.fruitlife-public) {
+    padding-top: 0;
+  }
+
   .app-frame {
     display: block;
   }
@@ -13487,6 +13598,10 @@ body:has(.fruitlife-public) .mobile-app-nav,
 
   .fruitlife-run-timeline em {
     grid-column: 1 / -1;
+  }
+
+  .fruitlife-basecamp-hero {
+    grid-template-columns: 1fr;
   }
 }
 

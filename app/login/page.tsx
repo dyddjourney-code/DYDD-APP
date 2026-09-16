@@ -12,19 +12,38 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
   const message = params?.message;
   const next = params?.next?.startsWith("/") ? params.next : "/hq";
+  const isFruitLifeAccess = next.includes("lane=fruitlife") || next.startsWith("/fruitlife360");
 
   return (
-    <main className="login-shell">
+    <main className={`login-shell${isFruitLifeAccess ? " fruitlife-access-shell" : ""}`}>
       <section className="login-copy">
-        <Link className="text-link" href="/">
-          Discover Your Divine Design
-        </Link>
-        <p className="eyebrow">DYDD HQ access</p>
-        <h1>Enter the headquarters.</h1>
-        <p className="lede">
-          Sign in to continue the DYDD Journey, collect your artifacts, and
-          prepare for companion-guided reflection around your design.
-        </p>
+        {isFruitLifeAccess ? (
+          <>
+            <img
+              className="fruitlife-login-logo"
+              src="/brand/tools/fruitful-life-360-logo.jpg"
+              alt="FruitLife 360"
+            />
+            <p className="eyebrow">FruitLife 360 access</p>
+            <h1>Enter Base Camp.</h1>
+            <p className="lede">
+              Use your email to open the FruitLife 360 process, set up your assessment,
+              track observer progress, and return while responses come in.
+            </p>
+          </>
+        ) : (
+          <>
+            <Link className="text-link" href="/">
+              Discover Your Divine Design
+            </Link>
+            <p className="eyebrow">DYDD Base Camp access</p>
+            <h1>Enter Base Camp.</h1>
+            <p className="lede">
+              Sign in to continue the DYDD Journey, collect your artifacts, and
+              prepare for companion-guided reflection around your design.
+            </p>
+          </>
+        )}
       </section>
 
       <section className="login-panel" aria-label="Request sign-in link">
@@ -87,7 +106,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             current default Supabase email may only include the link.
           </p>
           <button className="button primary" type="submit">
-            Enter HQ
+            Enter Base Camp
           </button>
         </form>
       </section>

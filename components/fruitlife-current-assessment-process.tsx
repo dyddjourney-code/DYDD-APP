@@ -18,12 +18,14 @@ import {
 
 type FruitLifeCurrentAssessmentProcessProps = {
   created?: boolean;
+  returnTo?: string;
   session: FruitLifeDashboardSession | null;
   token: string;
 };
 
 export function FruitLifeCurrentAssessmentProcess({
   created = false,
+  returnTo: returnToPath,
   session,
   token,
 }: FruitLifeCurrentAssessmentProcessProps) {
@@ -42,9 +44,11 @@ export function FruitLifeCurrentAssessmentProcess({
     (invite) => invite.invite_status === "completed",
   ).length;
   const statusHref = fruitLifeStatusHref(session, token);
-  const returnTo = `/field-kit?fruitlife_session=${encodeURIComponent(session.id)}${
-    token ? `&fruitlife_token=${encodeURIComponent(token)}` : ""
-  }#current-assessment-process`;
+  const returnTo =
+    returnToPath ??
+    `/field-kit?fruitlife_session=${encodeURIComponent(session.id)}${
+      token ? `&fruitlife_token=${encodeURIComponent(token)}` : ""
+    }#current-assessment-process`;
 
   return (
     <section
@@ -149,7 +153,7 @@ export function FruitLifeCurrentAssessmentProcess({
                   <input name="token" type="hidden" value={token} />
                   <input name="invite_id" type="hidden" value={invite.id} />
                   <input name="return_to" type="hidden" value={returnTo} />
-                  <button type="submit">Rescind</button>
+                  <button type="submit">Cancel invite</button>
                 </form>
               ) : null}
             </article>

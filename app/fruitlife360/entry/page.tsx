@@ -8,6 +8,10 @@ export default async function FruitLifeEntryPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const fruitLifeBaseCampPath = "/hq?lane=fruitlife";
+  const accessHref = user
+    ? fruitLifeBaseCampPath
+    : `/login?next=${encodeURIComponent(fruitLifeBaseCampPath)}`;
 
   return (
     <main className="fruitlife-shell fruitlife-public fruitlife-entry-shell">
@@ -30,7 +34,7 @@ export default async function FruitLifeEntryPage() {
           </p>
           <Link
             className="button primary fruitlife-entry-primary"
-            href={user ? "/fruitlife360?return_to=/fruitlife360/entry" : "/login?next=/fruitlife360/entry"}
+            href={accessHref}
           >
             {user ? "Continue to FruitLife 360" : "Create account or sign in"}
           </Link>

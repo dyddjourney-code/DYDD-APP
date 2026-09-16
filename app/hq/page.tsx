@@ -6,6 +6,7 @@ import {
 } from "@/app/fruitlife360/actions";
 import { DydPassportBook } from "@/components/dyd-passport-book";
 import { DyddOrientationSlider } from "@/components/dydd-orientation-slider";
+import { FruitLifeCurrentAssessmentProcess } from "@/components/fruitlife-current-assessment-process";
 import { FruitLifeSessionAutoRefresh } from "@/app/fruitlife360/session-auto-refresh";
 import { signOut } from "@/app/login/actions";
 import {
@@ -95,6 +96,7 @@ type HqPageProps = {
     fruitlife?: string;
     fruitlife_session?: string;
     fruitlife_token?: string;
+    lane?: string;
   }>;
 };
 
@@ -541,6 +543,22 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     : newPreview
       ? jordanReviewEmail
       : normalizeEmail(profile?.email ?? user?.email);
+  const fruitLifeLane = reviewParams?.lane === "fruitlife";
+  const fruitLifeSessions = await getFruitLifeDashboardSessions({
+    email: fruitLifeDashboardEmail,
+    enabled: fruitLifeLane && Boolean(fruitLifeDashboardEmail),
+    isAdmin,
+  });
+  const selectedFruitLifeSession =
+    fruitLifeSessions.find((session) => session.id === reviewParams?.fruitlife_session) ?? null;
+  const activeFruitLifeSession =
+    (selectedFruitLifeSession && fruitLifeIsActive(selectedFruitLifeSession)
+      ? selectedFruitLifeSession
+      : fruitLifeSessions.find(fruitLifeIsActive)) ?? null;
+  const activeFruitLifeToken =
+    selectedFruitLifeSession?.id === activeFruitLifeSession?.id && reviewParams?.fruitlife_token
+      ? reviewParams.fruitlife_token
+      : fruitLifeTokenFromSession(activeFruitLifeSession);
   const hasDesignId = ownsAssessment(assessmentReport, "designid");
   const hasDesignPd = ownsAssessment(assessmentReport, "designpd");
   const hasDesignPathways = ownsAssessment(assessmentReport, "design_pathways");
@@ -559,6 +577,119 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       state: isEarned ? "earned" as const : badge.state,
     };
   });
+
+  if (fruitLifeLane) {
+    const fruitLifeReturnPath = selectedFruitLifeSession
+      ? `/hq?lane=fruitlife&fruitlife_session=${encodeURIComponent(selectedFruitLifeSession.id)}${
+          activeFruitLifeToken ? `&fruitlife_token=${encodeURIComponent(activeFruitLifeToken)}` : ""
+        }#current-assessment-process`
+      : "/hq?lane=fruitlife#current-assessment-process";
+
+    return (
+      <main className="hq-shell hq-app-shell fruitlife-basecamp-lane">
+        <div className="hq-content fruitlife-basecamp-content">
+          <header className="hq-topbar fruitlife-basecamp-topbar">
+            <div>
+              <p className="eyebrow">FruitLife 360 Base Camp</p>
+              <h1>Welcome, {welcomeName}.</h1>
+            </div>
+            {reviewReport ? (
+              <Link className="button secondary" href="/login">
+                Real sign-in
+              </Link>
+            ) : (
+              <form action={signOut}>
+                <button className="button secondary" type="submit">
+                  Sign out
+                </button>
+              </form>
+            )}
+          </header>
+
+          <section className="fruitlife-basecamp-hero" aria-label="FruitLife 360 Base Camp">
+            <div>
+              <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360" />
+              <p className="section-label">Start here</p>
+              <h2>Set up your FruitLife 360 process.</h2>
+              <p>
+                Create the participant record, add observers, send links, and return here to
+                track self-reflection, observer responses, reminders, and report progress.
+              </p>
+              <Link
+                className="button primary"
+                href={`/fruitlife360?return_to=${encodeURIComponent("/hq?lane=fruitlife#current-assessment-process")}`}
+              >
+                Start FruitLife 360
+              </Link>
+            </div>
+            <div className="fruitlife-basecamp-note">
+              <span>Limited launch lane</span>
+              <p>
+                This Base Camp is focused on FruitLife 360 while the larger DYD app is still
+                being prepared.
+              </p>
+            </div>
+          </section>
+
+          <FruitLifeCurrentAssessmentProcess
+            created={reviewParams?.fruitlife === "created"}
+            returnTo={fruitLifeReturnPath}
+            session={activeFruitLifeSession}
+            token={activeFruitLifeToken}
+          />
+
+          {!activeFruitLifeSession ? (
+            <section className="fruitlife-empty-control basecamp-account-card">
+              <div className="card-heading">
+                <p className="section-label">Progress tracker</p>
+                <h2>No active FruitLife 360 process yet.</h2>
+                <p>
+                  Once you start the assessment, this area will show the self link,
+                  observer completion status, reminder controls, and report status.
+                </p>
+              </div>
+            </section>
+          ) : null}
+
+          <section className="basecamp-account-layout basecamp-account-layout-single" aria-label="FruitLife account overview">
+            <article className="basecamp-account-card profile">
+              <div className="card-heading">
+                <p className="section-label">Account</p>
+                <h2>Your access record.</h2>
+                <p>
+                  This account keeps your FruitLife 360 process connected to your email.
+                </p>
+              </div>
+              <dl className="account-detail-list">
+                <div>
+                  <dt>Name</dt>
+                  <dd>{displayName}</dd>
+                </div>
+                <div>
+                  <dt>Email</dt>
+                  <dd>{profile?.email ?? user?.email ?? fruitLifeDashboardEmail ?? "Preview account"}</dd>
+                </div>
+              </dl>
+            </article>
+          </section>
+
+          <section className="basecamp-account-card purchases" aria-label="Purchase history">
+            <div className="card-heading">
+              <p className="section-label">Purchases</p>
+              <h2>FruitLife 360 access.</h2>
+              <p>
+                Payment records will appear here when the live purchase layer is connected.
+              </p>
+            </div>
+            <p className="empty-account-note">
+              The rest of the Discover Your Divine Design app will open from this same account
+              when those pieces are ready.
+            </p>
+          </section>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="hq-shell hq-app-shell">

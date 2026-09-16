@@ -371,6 +371,144 @@ h3 {
   height: auto;
 }
 
+.fruitlife-entry-shell {
+  display: grid;
+  gap: clamp(18px, 3vw, 28px);
+}
+
+.fruitlife-entry-hero,
+.fruitlife-entry-grid,
+.fruitlife-entry-purchase {
+  width: min(1080px, 100%);
+  margin: 0 auto;
+}
+
+.fruitlife-entry-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 310px);
+  gap: clamp(22px, 5vw, 54px);
+  align-items: end;
+  min-height: clamp(420px, 52vw, 600px);
+  padding: clamp(28px, 6vw, 64px);
+  overflow: hidden;
+  border: 1px solid rgba(36, 63, 39, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(92deg, rgba(23, 39, 27, 0.9) 0%, rgba(23, 39, 27, 0.66) 45%, rgba(23, 39, 27, 0.12) 78%),
+    url("/brand/trailheads/fruitlife-360-signpost.png") right 5% bottom 4% / min(440px, 42vw) auto no-repeat,
+    linear-gradient(135deg, #f8faf7, #eaf0e2);
+  color: #fbfaf4;
+  box-shadow: 0 24px 70px rgba(70, 58, 35, 0.14);
+}
+
+.fruitlife-entry-hero .text-link,
+.fruitlife-entry-hero .section-label,
+.fruitlife-entry-hero .lede {
+  color: rgba(251, 250, 244, 0.88);
+}
+
+.fruitlife-entry-hero h1 {
+  max-width: 12ch;
+  color: #ffffff;
+  font-size: clamp(2.7rem, 6.6vw, 5.8rem);
+  line-height: 0.94;
+}
+
+.fruitlife-entry-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.fruitlife-entry-price,
+.fruitlife-entry-panel {
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--ink);
+  box-shadow: 0 16px 42px rgba(70, 58, 35, 0.1);
+}
+
+.fruitlife-entry-price {
+  display: grid;
+  gap: 10px;
+  align-self: stretch;
+  align-content: end;
+  padding: 18px;
+}
+
+.fruitlife-entry-price img {
+  width: 100%;
+  max-height: 150px;
+  object-fit: contain;
+  justify-self: center;
+}
+
+.fruitlife-entry-price strong {
+  color: var(--green-dark);
+  font-size: clamp(3rem, 6vw, 5rem);
+  line-height: 0.9;
+}
+
+.fruitlife-entry-price span {
+  color: var(--brass);
+  font-size: 0.78rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fruitlife-entry-price p,
+.fruitlife-entry-panel p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.fruitlife-entry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.fruitlife-entry-panel {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  padding: clamp(20px, 3vw, 30px);
+}
+
+.fruitlife-entry-panel h2 {
+  max-width: 14ch;
+  color: var(--green-dark);
+  font-size: clamp(1.55rem, 3vw, 2.6rem);
+}
+
+.fruitlife-entry-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.fruitlife-entry-steps span {
+  display: grid;
+  place-items: center;
+  min-height: 54px;
+  padding: 8px;
+  border: 1px solid rgba(71, 107, 66, 0.18);
+  border-radius: 8px;
+  background: var(--green-soft);
+  color: var(--green-dark);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.fruitlife-entry-purchase {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
 .fruitlife-form {
   display: grid;
   gap: 18px;
@@ -13594,8 +13732,27 @@ body:has(.fruitlife-public) .mobile-app-nav,
   .journey-build-accordion > summary,
   .journey-prompt-grid,
   .journey-pathfinder-card,
+  .fruitlife-entry-hero,
+  .fruitlife-entry-grid,
+  .fruitlife-entry-purchase,
   .journey-workbook-form {
     grid-template-columns: 1fr;
+  }
+
+  .fruitlife-entry-hero {
+    min-height: auto;
+    background:
+      linear-gradient(180deg, rgba(23, 39, 27, 0.9), rgba(23, 39, 27, 0.72)),
+      url("/brand/trailheads/fruitlife-360-signpost.png") right bottom / min(300px, 80vw) auto no-repeat,
+      linear-gradient(135deg, #f8faf7, #eaf0e2);
+  }
+
+  .fruitlife-entry-price {
+    max-width: 280px;
+  }
+
+  .fruitlife-entry-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .journey-sample-media {

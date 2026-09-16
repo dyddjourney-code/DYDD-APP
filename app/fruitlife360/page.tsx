@@ -1,11 +1,14 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { PageHelp } from "@/components/page-help";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createFruitLifeSession } from "./actions";
 import { ObserverInvitations } from "./observer-invitations";
 
 type FruitLifeSignupPageProps = {
   searchParams?: Promise<{
     message?: string;
+    return_to?: string;
   }>;
 };
 
@@ -15,9 +18,18 @@ export default async function FruitLifeSignupPage({
   searchParams,
 }: FruitLifeSignupPageProps) {
   const params = await searchParams;
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const returnTo = params?.return_to?.startsWith("/") ? params.return_to : "/fruitlife360/entry";
+
+  if (!user) {
+    redirect(`/login?next=${encodeURIComponent(`/fruitlife360?return_to=${returnTo}`)}`);
+  }
 
   return (
-    <main className="fruitlife-shell">
+    <main className="fruitlife-shell fruitlife-public">
       <nav className="course-nav" aria-label="FruitLife navigation">
         <Link href="/">DYDD School</Link>
         <Link href="/hq">HQ</Link>
@@ -53,6 +65,7 @@ export default async function FruitLifeSignupPage({
 
       <form action={createFruitLifeSession} className="fruitlife-form fruitlife-signup">
         <input name="signup_source" type="hidden" value="vercel-fruitlife-intake" />
+        <input name="return_to" type="hidden" value={returnTo} />
         {params?.message ? <p className="form-message">{params.message}</p> : null}
         <section className="fruitlife-intake-overview">
           <p>

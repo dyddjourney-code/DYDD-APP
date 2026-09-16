@@ -74,6 +74,14 @@ function appendFruitLifeStatusParam(returnTo: string, value: string) {
   return `${pathAndQuery}${separator}fruitlife=${encodeURIComponent(value)}${hash ? `#${hash}` : ""}`;
 }
 
+function safeReturnPath(value: string, fallback = "/fruitlife360/entry") {
+  if (!value.startsWith("/") || value.startsWith("//")) {
+    return fallback;
+  }
+
+  return value;
+}
+
 function escapeHtml(value: string) {
   return value
     .replace(/&/g, "&amp;")
@@ -555,6 +563,7 @@ export async function createFruitLifeSession(formData: FormData) {
   const observerGoalInput = Math.max(0, Math.min(12, getNumber(formData, "observer_goal", 3)));
   const observerGoal = observerSeeds.length || observerGoalInput;
   const signupSource = getString(formData, "signup_source") || "vercel-fruitlife-intake";
+  const returnTo = safeReturnPath(getString(formData, "return_to"));
 
   if (!participantName) {
     fail("/fruitlife360", "Enter the participant name.");
@@ -563,20 +572,45 @@ export async function createFruitLifeSession(formData: FormData) {
   assertEmail(participantEmail, "/fruitlife360");
 
   const supabase = createSupabaseAdminClient();
+  const serverSupabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await serverSupabase.auth.getUser();
   const now = new Date().toISOString();
 
-  const { data: participant, error: participantError } = await supabase
-    .from("assessment_participants")
-    .upsert(
-      {
-        display_name: participantName,
-        normalized_email: participantEmail,
-        updated_at: now,
-      },
-      { onConflict: "normalized_email" },
-    )
-    .select("id")
-    .single();
+  const { data: linkedParticipant } = user
+    ? await supabase
+        .from("assessment_participants")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle()
+    : { data: null };
+
+  const participantResult = linkedParticipant?.id
+    ? await supabase
+        .from("assessment_participants")
+        .update({
+          display_name: participantName,
+          updated_at: now,
+        })
+        .eq("id", linkedParticipant.id)
+        .select("id")
+        .single()
+    : await supabase
+        .from("assessment_participants")
+        .upsert(
+          {
+            display_name: participantName,
+            normalized_email: participantEmail,
+            ...(user?.id ? { user_id: user.id } : {}),
+            updated_at: now,
+          },
+          { onConflict: "normalized_email" },
+        )
+        .select("id")
+        .single();
+
+  const { data: participant, error: participantError } = participantResult;
 
   if (participantError || !participant) {
     fail("/fruitlife360", participantError?.message ?? "Unable to create participant.");
@@ -597,6 +631,7 @@ export async function createFruitLifeSession(formData: FormData) {
       participant_email: participantEmail,
       participant_id: participant.id,
       participant_name: participantName,
+      created_by_user_id: user?.id ?? null,
       report_status: "waiting_for_responses",
       session_status: "waiting_for_self",
       signup_source: signupSource,
@@ -679,11 +714,7 @@ export async function createFruitLifeSession(formData: FormData) {
     supabase,
   });
 
-  redirect(
-    `/field-kit?fruitlife_session=${encodeURIComponent(session.id)}&fruitlife_token=${encodeURIComponent(
-      selfToken,
-    )}&fruitlife=created#current-assessment-process`,
-  );
+  redirect(appendFruitLifeStatusParam(returnTo, "created"));
 }
 
 export async function saveFruitLifeSelfResponse(formData: FormData) {

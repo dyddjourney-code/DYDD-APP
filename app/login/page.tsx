@@ -4,12 +4,14 @@ import { signInWithMagicLink, verifyEmailCode } from "./actions";
 type LoginPageProps = {
   searchParams?: Promise<{
     message?: string;
+    next?: string;
   }>;
 };
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
   const message = params?.message;
+  const next = params?.next?.startsWith("/") ? params.next : "/hq";
 
   return (
     <main className="login-shell">
@@ -31,6 +33,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           <h2>Request access</h2>
         </div>
         <form action={signInWithMagicLink} className="auth-form">
+          <input name="next" type="hidden" value={next} />
           <label htmlFor="email">Email address</label>
           <input
             autoComplete="email"
@@ -42,7 +45,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           />
           <p className="helper-text">
             Supabase sends a one-use sign-in email that should return you to
-            the live DYDD HQ.
+            the next DYDD step.
           </p>
           <button className="button primary" type="submit">
             Send sign-in email
@@ -57,6 +60,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           <h2>Enter email code</h2>
         </div>
         <form action={verifyEmailCode} className="auth-form">
+          <input name="next" type="hidden" value={next} />
           <label htmlFor="code-email">Email address</label>
           <input
             autoComplete="email"

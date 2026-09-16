@@ -81,6 +81,9 @@ export default function Home() {
                 New person review
               </button>
             </form>
+            <Link href="/fruitlife360/entry?preview=fruit-person" className="button secondary">
+              FruitLife buyer preview
+            </Link>
             <Link href="/login" className="button secondary">
               Register or email sign-in
             </Link>

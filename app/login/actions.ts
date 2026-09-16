@@ -6,8 +6,22 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const productionAppUrl = "https://dydd-online-school.vercel.app";
 
-function loginRedirect(message: string): never {
-  redirect(`/login?message=${encodeURIComponent(message)}`);
+function safeNextPath(value: FormDataEntryValue | string | null | undefined) {
+  const next = String(value ?? "").trim();
+
+  if (!next.startsWith("/") || next.startsWith("//")) {
+    return "/hq";
+  }
+
+  return next;
+}
+
+function loginRedirect(message: string, next = "/hq"): never {
+  const params = new URLSearchParams({
+    message,
+    next,
+  });
+  redirect(`/login?${params.toString()}`);
 }
 
 function getAppBaseUrl(requestHeaders: Headers) {
@@ -40,12 +54,13 @@ function getAppBaseUrl(requestHeaders: Headers) {
 }
 
 export async function signInWithMagicLink(formData: FormData) {
+  const next = safeNextPath(formData.get("next"));
   const email = String(formData.get("email") ?? "")
     .trim()
     .toLowerCase();
 
   if (!email || !email.includes("@")) {
-    loginRedirect("Enter a valid email address.");
+    loginRedirect("Enter a valid email address.", next);
   }
 
   const requestHeaders = await headers();
@@ -54,18 +69,19 @@ export async function signInWithMagicLink(formData: FormData) {
   const { error } = await supabase.auth.signInWithOtp({
     email,
     options: {
-      emailRedirectTo: `${appBaseUrl}/auth/callback?next=/hq`,
+      emailRedirectTo: `${appBaseUrl}/auth/callback?next=${encodeURIComponent(next)}`,
     },
   });
 
   if (error) {
-    loginRedirect(error.message);
+    loginRedirect(error.message, next);
   }
 
-  loginRedirect("Check your email for the DYDD HQ sign-in link.");
+  loginRedirect("Check your email for the DYDD sign-in link.", next);
 }
 
 export async function verifyEmailCode(formData: FormData) {
+  const next = safeNextPath(formData.get("next"));
   const email = String(formData.get("email") ?? "")
     .trim()
     .toLowerCase();
@@ -74,11 +90,11 @@ export async function verifyEmailCode(formData: FormData) {
     .trim();
 
   if (!email || !email.includes("@")) {
-    loginRedirect("Enter the same email address that received the code.");
+    loginRedirect("Enter the same email address that received the code.", next);
   }
 
   if (token.length !== 6) {
-    loginRedirect("Enter the 6-digit code from the email.");
+    loginRedirect("Enter the 6-digit code from the email.", next);
   }
 
   const supabase = await createSupabaseServerClient();
@@ -89,10 +105,10 @@ export async function verifyEmailCode(formData: FormData) {
   });
 
   if (error) {
-    loginRedirect(error.message);
+    loginRedirect(error.message, next);
   }
 
-  redirect("/hq");
+  redirect(next);
 }
 
 export async function enterHeatherPreview() {

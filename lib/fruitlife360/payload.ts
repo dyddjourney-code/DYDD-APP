@@ -321,7 +321,7 @@ function rankByAverage(responses: FruitLifeResponse[]) {
 
 function buildRank(selfResponses: FruitLifeResponse[], observerResponses: FruitLifeResponse[]) {
   if (observerResponses.length > 0) {
-    return rankByAverage(observerResponses);
+    return rankByAverage([...selfResponses, ...observerResponses]);
   }
 
   const selfRank = selfResponses[0]?.fruit_rank ?? [];
@@ -371,7 +371,7 @@ export function buildFruitLifePayload(session: FruitLifeSession, responses: Frui
     growth_invitation_tier_description:
       "These are the fruit least visible in this current report. Treat them as invitations, not accusations. Low visibility may reflect season, stress, role, or missed opportunities.",
     growth_invitations: `${listLabels(growthInvitation)} may be current formation invitations. Treat these as places for prayer, practice, and trusted conversation rather than as accusations or fixed labels.`,
-    most_visible_fruit: `${hasObservers ? "Observers especially highlight" : "Your self-reflection especially highlights"} ${listLabels(mostVisible)} as visible fruit in this season.`,
+    most_visible_fruit: `${hasObservers ? "This 360 report especially highlights" : "Your self-reflection especially highlights"} ${listLabels(mostVisible)} as visible fruit in this season.`,
     most_visible_formation_cards: formationCardsHtml(rank, 0, 3),
     most_visible_fruit_list: listLabels(mostVisible),
     most_visible_tier_description:

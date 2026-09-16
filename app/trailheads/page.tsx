@@ -2,6 +2,14 @@ import Link from "next/link";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 import { PageHelp } from "@/components/page-help";
+import {
+  fruitLifeReportArtifact,
+  getFruitLifeDashboardSessions,
+} from "@/lib/fruitlife360/dashboard";
+import { normalizeEmail } from "@/lib/identity/email";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+
+export const dynamic = "force-dynamic";
 
 const featuredCourse = {
   action: "Start journey",
@@ -137,6 +145,26 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
   const fruitLifeCourse = courses.find((course) => course.slug === "fruitlife-360");
 
   if (fruitLifeLane && fruitLifeCourse) {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const { data: profile } = user
+      ? await supabase
+          .from("school_profiles")
+          .select("email")
+          .eq("id", user.id)
+          .maybeSingle()
+      : { data: null };
+    const fruitLifeEmail = normalizeEmail(profile?.email ?? user?.email);
+    const fruitLifeSessions = await getFruitLifeDashboardSessions({
+      email: fruitLifeEmail,
+      enabled: Boolean(fruitLifeEmail),
+    });
+    const hasFruitLifeReport = fruitLifeSessions.some((session) =>
+      Boolean(fruitLifeReportArtifact(session)),
+    );
+
     return (
       <main className="journey-shell hq-standalone-page fruitlife-release-shell">
         <FruitLifeMiniNav />
@@ -154,10 +182,13 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
 
         <section className="course-catalog-section" aria-label="FruitLife 360 course">
           <div className="catalog-heading compact course-heading-row">
-            <h2>Available now</h2>
+            <h2>{hasFruitLifeReport ? "Available now" : "Unlocked after your report"}</h2>
           </div>
           <div className="course-catalog-grid fruitlife-single-course">
-            <article className="catalog-course-card open" id={fruitLifeCourse.slug}>
+            <article
+              className={`catalog-course-card ${hasFruitLifeReport ? "open" : "locked"}`}
+              id={fruitLifeCourse.slug}
+            >
               <div className="catalog-course-logo">
                 <img
                   className="catalog-course-signpost"
@@ -166,7 +197,11 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
                 />
               </div>
               <div>
-                <span>Included with FruitLife 360</span>
+                <span>
+                  {hasFruitLifeReport
+                    ? "Included with FruitLife 360"
+                    : "Complete FruitLife 360 first"}
+                </span>
                 <h3>{fruitLifeCourse.title}</h3>
                 <p>{fruitLifeCourse.description}</p>
                 <dl className="trailhead-facts compact">
@@ -189,9 +224,15 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
                   ))}
                 </ul>
               </div>
-              <Link className="button primary" href={`${fruitLifeCourse.href}?lane=fruitlife`}>
-                {fruitLifeCourse.action}
-              </Link>
+              {hasFruitLifeReport ? (
+                <Link className="button primary" href={`${fruitLifeCourse.href}?lane=fruitlife`}>
+                  {fruitLifeCourse.action}
+                </Link>
+              ) : (
+                <Link className="button secondary" href="/field-kit?lane=fruitlife">
+                  Take FruitLife 360 first
+                </Link>
+              )}
             </article>
           </div>
         </section>

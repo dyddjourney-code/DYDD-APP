@@ -7434,7 +7434,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .fruitlife-basecamp-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(18px, 4vw, 38px);
   align-items: stretch;
   margin-bottom: 18px;

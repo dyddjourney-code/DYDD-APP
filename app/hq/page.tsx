@@ -654,18 +654,6 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                 Open FruitLife 360
               </Link>
             </div>
-            <div className="fruitlife-basecamp-note">
-              <img
-                src="/brand/characters/dydi-full-body.png"
-                alt=""
-                aria-hidden="true"
-              />
-              <span>Your FruitLife workspace</span>
-              <p>
-                Your report process, course path, weekly Waypoints, and DYDD resources
-                stay connected to this account.
-              </p>
-            </div>
           </section>
 
           <FruitLifeCurrentAssessmentProcess

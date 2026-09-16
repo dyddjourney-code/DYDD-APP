@@ -408,10 +408,12 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     { all: [], latest: [] };
   const snapshotHistory = assessmentReport.all;
   const snapshotLatest = latestByAssessment(snapshotHistory);
-  const snapshotArtifactSources = [
-    ...snapshotLatest.filter((snapshot) => snapshot.assessment_type !== "fruit_360"),
-    ...snapshotHistory.filter((snapshot) => snapshot.assessment_type === "fruit_360"),
-  ];
+  const snapshotArtifactSources = fruitLifeLane
+    ? snapshotLatest.filter((snapshot) => snapshot.assessment_type !== "fruit_360")
+    : [
+        ...snapshotLatest.filter((snapshot) => snapshot.assessment_type !== "fruit_360"),
+        ...snapshotHistory.filter((snapshot) => snapshot.assessment_type === "fruit_360"),
+      ];
   const fruitLifeSessions = await getFruitLifeDashboardSessions({
     email: participantEmail,
     enabled: Boolean(participantEmail),
@@ -433,7 +435,9 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
   const hasDesignPd = ownsAssessment(snapshotLatest, "designpd");
   const hasDesignPathways = ownsAssessment(snapshotLatest, "design_pathways");
   const hasSpiritualGifts = ownsAssessment(snapshotLatest, "spiritual_gifts");
-  const hasFruitLife = ownsAssessment(snapshotLatest, "fruit_360") || fruitLifeReportSessions.length > 0;
+  const hasFruitLife = fruitLifeLane
+    ? fruitLifeReportSessions.length > 0
+    : ownsAssessment(snapshotLatest, "fruit_360") || fruitLifeReportSessions.length > 0;
   const purchaseCards = purchaseAssessments.map((assessment) => {
     const status =
       assessment.title === "DesignID"
@@ -525,8 +529,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         }#current-assessment-process`
       : "/field-kit?lane=fruitlife#current-assessment-process";
     const fruitLifeArtifacts = artifacts.filter((artifact) =>
-      artifact.title.toLowerCase().includes("fruitlife") ||
-      artifact.title.toLowerCase().includes("fruit 360")
+      artifact.meta.some(([label, value]) => label === "Source" && value === "FruitLife 360")
     );
 
     return (

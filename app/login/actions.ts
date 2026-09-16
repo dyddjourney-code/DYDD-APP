@@ -77,7 +77,12 @@ export async function signInWithMagicLink(formData: FormData) {
     loginRedirect(error.message, next);
   }
 
-  loginRedirect("Check your email for the DYDD sign-in link.", next);
+  loginRedirect(
+    next.includes("lane=fruitlife") || next.startsWith("/fruitlife360")
+      ? "Check your email for your FruitLife 360 access link or code."
+      : "Check your email for your DYDD access link or code.",
+    next,
+  );
 }
 
 export async function verifyEmailCode(formData: FormData) {

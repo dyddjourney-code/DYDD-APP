@@ -1,4 +1,5 @@
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
+import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 
 const bookResources = [
   {
@@ -130,6 +131,7 @@ export default async function GearPage({ searchParams }: GearPageProps) {
           ))}
         </div>
       </section>
+      {fruitLifeLane ? <FruitLifeMiniFooter /> : null}
     </main>
   );
 }

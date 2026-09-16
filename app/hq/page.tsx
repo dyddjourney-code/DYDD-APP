@@ -7,6 +7,7 @@ import {
 import { DydPassportBook } from "@/components/dyd-passport-book";
 import { DyddOrientationSlider } from "@/components/dydd-orientation-slider";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
+import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 import { FruitLifeCurrentAssessmentProcess } from "@/components/fruitlife-current-assessment-process";
 import { FruitLifeSessionAutoRefresh } from "@/app/fruitlife360/session-auto-refresh";
 import { signOut } from "@/app/login/actions";
@@ -503,6 +504,33 @@ function fruitLifeIsActive(session: FruitLifeDashboardSession | null) {
   return !["report_ready", "report_sent", "completed", "sent"].includes(session.session_status);
 }
 
+function toDisplayName(value: string | null | undefined) {
+  const cleaned = value?.trim().replace(/\s+/g, " ");
+
+  if (!cleaned) {
+    return "Traveler";
+  }
+
+  if (cleaned.includes("@")) {
+    return cleaned.split("@")[0]
+      .split(/[._-]+/)
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ") || "Traveler";
+  }
+
+  return cleaned
+    .split(" ")
+    .map((part) => {
+      if (!part) {
+        return part;
+      }
+
+      return part.charAt(0).toUpperCase() + part.slice(1);
+    })
+    .join(" ");
+}
+
 export default async function HqPage({ searchParams }: HqPageProps) {
   const reviewParams = await searchParams;
   const heatherPreview = isHeatherReviewRequest(reviewParams);
@@ -533,12 +561,13 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   const adminReport = await getAdminAssessmentReport(isAdmin);
   const heatherReport = await getHeatherAssessmentReport(isAdmin);
 
-  const displayName = heatherPreview
+  const rawDisplayName = heatherPreview
     ? `${heatherReviewName} Preview`
     : newPreview
       ? newReviewName
       : profile?.full_name ?? user?.email ?? "Traveler";
-  const welcomeName = displayName.replace(/\s+Preview$/, "").split(/\s+/)[0] ?? "Traveler";
+  const displayName = toDisplayName(rawDisplayName);
+  const welcomeName = toDisplayName(displayName.replace(/\s+Preview$/, "").split(/\s+/)[0]);
   const fruitLifeDashboardEmail = heatherPreview
     ? "willoughbyhs@gmail.com"
     : newPreview
@@ -626,6 +655,11 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               </Link>
             </div>
             <div className="fruitlife-basecamp-note">
+              <img
+                src="/brand/characters/dydi-full-body.png"
+                alt=""
+                aria-hidden="true"
+              />
               <span>Your FruitLife workspace</span>
               <p>
                 Your report process, course path, weekly Waypoints, and DYDD resources
@@ -675,20 +709,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               </dl>
             </article>
           </section>
-
-          <section className="basecamp-account-card purchases" aria-label="Purchase history">
-            <div className="card-heading">
-              <p className="section-label">Purchases</p>
-              <h2>FruitLife 360 access.</h2>
-              <p>
-                Payment records will appear here when the live purchase layer is connected.
-              </p>
-            </div>
-            <p className="empty-account-note">
-              The rest of the Discover Your Divine Design app will open from this same account
-              when those pieces are ready.
-            </p>
-          </section>
+          <FruitLifeMiniFooter />
         </div>
       </main>
     );

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
+import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 import { PageHelp } from "@/components/page-help";
 
 const featuredCourse = {
@@ -203,6 +204,7 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
             experience.
           </p>
         </section>
+        <FruitLifeMiniFooter />
       </main>
     );
   }

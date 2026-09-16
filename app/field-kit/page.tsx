@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PageHelp } from "@/components/page-help";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
+import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 import { FruitLifeCurrentAssessmentProcess } from "@/components/fruitlife-current-assessment-process";
 import {
   assessmentLabels,
@@ -528,7 +529,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     return (
       <main className="journey-shell hq-standalone-page fruitlife-release-shell">
         <FruitLifeMiniNav />
-        <header className="standalone-hero fieldkit-hero">
+        <header className="standalone-hero fieldkit-hero fruitlife-fieldkit-hero">
           <div>
             <p className="eyebrow">FruitLife 360</p>
             <h1>Your report process.</h1>
@@ -617,6 +618,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
             )}
           </div>
         </section>
+        <FruitLifeMiniFooter />
       </main>
     );
   }

@@ -1,4 +1,5 @@
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
+import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 import { PageHelp } from "@/components/page-help";
 import { WaypointExplorer } from "@/components/waypoint-explorer";
 
@@ -256,16 +257,6 @@ export default async function FiresidePage({ searchParams }: FiresidePageProps) 
     return (
       <main className="journey-shell hq-standalone-page fireside-page fruitlife-release-shell">
         <FruitLifeMiniNav />
-        <header className="standalone-hero fireside-page-hero">
-          <div>
-            <p className="eyebrow">Waypoints</p>
-            <h1>Pause, breathe, and keep walking.</h1>
-            <p className="lede">
-              Weekly DYDD Waypoints give you short Scripture-rooted reflections
-              for carrying formation into ordinary life.
-            </p>
-          </div>
-        </header>
 
         <section
           className="fireside-waypoints-feature"
@@ -294,6 +285,7 @@ export default async function FiresidePage({ searchParams }: FiresidePageProps) 
             waypoints={waypointArchive}
           />
         </section>
+        <FruitLifeMiniFooter />
       </main>
     );
   }

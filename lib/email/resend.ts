@@ -24,7 +24,7 @@ function getResendConfig(fromOverride?: string) {
       fromOverride ??
       process.env.FRUITLIFE_EMAIL_FROM ??
       process.env.DYDD_EMAIL_FROM ??
-      "FruitLife 360 <fruitlife@discoverdivine.design>",
+      "FruitLife 360 <support@discoverdivine.design>",
   };
 }
 

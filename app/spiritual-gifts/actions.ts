@@ -215,7 +215,7 @@ function spiritualGiftsResultEmail({
     ? fallbackVerifiedSender.includes("<")
       ? fallbackVerifiedSender.replace(/^.*<([^>]+)>.*$/, "Discover Your Divine Design <$1>")
       : `Discover Your Divine Design <${fallbackVerifiedSender}>`
-    : "Discover Your Divine Design <fruitlife@discoverdivine.design>";
+    : "Discover Your Divine Design <support@discoverdivine.design>";
 
   return {
     from:

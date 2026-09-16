@@ -291,7 +291,7 @@ h3 {
 
 .fruitlife-shell {
   min-height: 100dvh;
-  padding: clamp(22px, 5vw, 56px);
+  padding: clamp(14px, 3vw, 34px);
   background:
     radial-gradient(circle at 84% 12%, rgba(212, 164, 81, 0.12), transparent 24rem),
     radial-gradient(circle at 8% 38%, rgba(117, 154, 91, 0.1), transparent 22rem);
@@ -475,6 +475,49 @@ h3 {
   max-width: 1080px;
 }
 
+.fruitlife-flow-header {
+  display: flex;
+  gap: 16px;
+  align-items: start;
+  justify-content: space-between;
+  padding: clamp(16px, 3vw, 24px);
+  border: 1px solid rgba(74, 98, 57, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 14px 34px rgba(70, 58, 35, 0.08);
+}
+
+.fruitlife-flow-header > div:first-child {
+  display: grid;
+  grid-template-columns: 118px minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+}
+
+.fruitlife-flow-header img {
+  width: 118px;
+  height: auto;
+}
+
+.fruitlife-flow-header h1 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(1.7rem, 3vw, 2.6rem);
+  line-height: 1;
+}
+
+.fruitlife-flow-header p:not(.section-label) {
+  max-width: 62ch;
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.fruitlife-flow-header .page-help {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
 .fruitlife-intake-overview {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -527,12 +570,38 @@ h3 {
   line-height: 1.08;
 }
 
+.fruitlife-panel > p:not(.section-label),
+.fruitlife-message-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.fruitlife-message-card {
+  width: min(640px, 100%);
+  margin: clamp(36px, 10vh, 90px) auto;
+  text-align: center;
+}
+
+.fruitlife-message-card img {
+  width: min(210px, 70vw);
+  height: auto;
+  margin: 0 auto 8px;
+}
+
+.fruitlife-message-card h1 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.02;
+}
+
 .fruitlife-assessment-card {
   display: grid;
-  grid-template-columns: minmax(180px, 230px) minmax(0, 1fr) minmax(160px, 210px);
-  gap: clamp(18px, 3vw, 30px);
+  grid-template-columns: minmax(110px, 150px) minmax(0, 1fr) minmax(130px, 180px);
+  gap: clamp(14px, 2vw, 22px);
   align-items: center;
-  padding: clamp(18px, 3vw, 28px);
+  padding: clamp(14px, 2vw, 22px);
   border: 1px solid rgba(74, 98, 57, 0.18);
   border-radius: 8px;
   background:
@@ -543,15 +612,15 @@ h3 {
 
 .fruitlife-assessment-card h2 {
   max-width: 22ch;
-  font-size: clamp(1.45rem, 2.8vw, 2.65rem);
-  line-height: 0.98;
+  font-size: clamp(1.35rem, 2.2vw, 2.1rem);
+  line-height: 1.02;
 }
 
 .fruitlife-assessment-card p:not(.section-label) {
   max-width: 54ch;
-  margin: 10px 0 0;
+  margin: 8px 0 0;
   color: var(--muted);
-  line-height: 1.65;
+  line-height: 1.55;
 }
 
 .fruitlife-assessment-steps {
@@ -812,6 +881,27 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .fruitlife-observer-roster {
   display: grid;
   gap: 10px;
+}
+
+.fruitlife-empty-note,
+.fruitlife-inline-status-detail {
+  margin: 0;
+  padding: 13px 14px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(246, 248, 243, 0.74);
+  color: var(--muted);
+  font-weight: 780;
+  line-height: 1.5;
+}
+
+.fruitlife-inline-status-detail {
+  display: grid;
+  gap: 8px;
+}
+
+.fruitlife-inline-status-detail p {
+  margin: 0;
 }
 
 .fruitlife-observer-row {
@@ -14542,10 +14632,15 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .fruitlife-scale,
   .fruitlife-hero,
   .fruitlife-assessment-card,
+  .fruitlife-flow-header > div:first-child,
   .fruitlife-observer-row,
   .fruitlife-intake-note,
   .fruitlife-session-list article {
     grid-template-columns: 1fr;
+  }
+
+  .fruitlife-flow-header {
+    display: grid;
   }
 
   .fruitlife-intake-overview {
@@ -14553,6 +14648,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   }
 
   .fruitlife-hero-mark,
+  .fruitlife-flow-header img,
   .fruitlife-assessment-card img {
     max-width: 260px;
   }

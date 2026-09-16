@@ -48,6 +48,16 @@ export function getFruitLifeCompletion(session: FruitLifeDashboardSession | null
   return { completed, required };
 }
 
+export function fruitLifeVisibleInvites(session: FruitLifeDashboardSession | null) {
+  return (session?.invites ?? []).filter((invite) => {
+    if (["expired", "rescinded", "cancelled", "canceled"].includes(invite.invite_status)) {
+      return false;
+    }
+
+    return Boolean(invite.observer_email || invite.observer_name || invite.completed_at);
+  });
+}
+
 export function titleizeFruitLifeStatus(value: string | null | undefined) {
   return value ? value.replace(/_/g, " ") : "not started";
 }
@@ -182,6 +192,10 @@ export async function getFruitLifeDashboardSessions({
   return sessions.map((session) => ({
     ...session,
     artifacts: artifactsBySession.get(session.id) ?? [],
-    invites: invitesBySession.get(session.id) ?? [],
+    invites: fruitLifeVisibleInvites({
+      ...session,
+      artifacts: artifactsBySession.get(session.id) ?? [],
+      invites: invitesBySession.get(session.id) ?? [],
+    }),
   }));
 }

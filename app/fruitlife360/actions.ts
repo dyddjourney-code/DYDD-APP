@@ -560,7 +560,7 @@ export async function createFruitLifeSession(formData: FormData) {
   const participantName = getString(formData, "participant_name");
   const participantEmail = normalizeEmail(getString(formData, "participant_email"));
   const observerSeeds = observerSeedsFromForm(formData);
-  const observerGoalInput = Math.max(0, Math.min(12, getNumber(formData, "observer_goal", 3)));
+  const observerGoalInput = Math.max(0, Math.min(12, getNumber(formData, "observer_goal", 0)));
   const observerGoal = observerSeeds.length || observerGoalInput;
   const signupSource = getString(formData, "signup_source") || "vercel-fruitlife-intake";
   const returnTo = safeReturnPath(getString(formData, "return_to"));
@@ -647,20 +647,10 @@ export async function createFruitLifeSession(formData: FormData) {
   }
 
   const selfLink = `${baseUrl}/fruitlife360/self?session=${session.id}&token=${selfToken}`;
-  const observerLinks =
-    observerSeeds.length > 0
-      ? observerSeeds.map((observer) => ({
-          ...observer,
-          link: `${baseUrl}/fruitlife360/observer?session=${session.id}&token=${makeToken()}`,
-        }))
-      : [
-          {
-            email: "",
-            link: `${baseUrl}/fruitlife360/observer?session=${session.id}&token=${makeToken()}`,
-            name: "",
-            relationship: "",
-          },
-        ];
+  const observerLinks = observerSeeds.map((observer) => ({
+    ...observer,
+    link: `${baseUrl}/fruitlife360/observer?session=${session.id}&token=${makeToken()}`,
+  }));
 
   const inviteRows = observerLinks.map((observer) => {
     const token = new URL(observer.link).searchParams.get("token") ?? "";
@@ -680,12 +670,14 @@ export async function createFruitLifeSession(formData: FormData) {
     };
   });
 
-  const { error: inviteError } = await supabase
-    .from("fruitlife_360_observer_invites")
-    .insert(inviteRows);
+  if (inviteRows.length) {
+    const { error: inviteError } = await supabase
+      .from("fruitlife_360_observer_invites")
+      .insert(inviteRows);
 
-  if (inviteError) {
-    fail("/fruitlife360", inviteError.message);
+    if (inviteError) {
+      fail("/fruitlife360", inviteError.message);
+    }
   }
 
   await supabase

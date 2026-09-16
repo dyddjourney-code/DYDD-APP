@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 type FruitLifeThanksPageProps = {
   searchParams?: Promise<{
     message?: string;
@@ -17,33 +15,19 @@ export default async function FruitLifeThanksPage({
   searchParams,
 }: FruitLifeThanksPageProps) {
   const params = await searchParams;
-  const isObserver = params?.type === "observer";
-  const statusHref = params?.session && params?.token
-    ? `/fruitlife360/status?session=${encodeURIComponent(params.session)}&token=${encodeURIComponent(params.token)}`
-    : "/fruitlife360";
 
   return (
     <main className="fruitlife-shell fruitlife-public">
-      <section className="fruitlife-hero compact">
-        <p className="section-label">FruitLife 360</p>
-        <h1>Submitted</h1>
-        <p className="lede">
+      <section className="fruitlife-panel fruitlife-message-card">
+        <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
+        <p className="section-label">Submitted</p>
+        <h1>Thank you for completing your FruitLife 360 reflection.</h1>
+        <p>
           {params?.message ?? "The FruitLife 360 native intake step was saved."}
         </p>
-        {isObserver ? (
-          <p className="fruitlife-thanks-note">
-            You can close this page now. Your reflection has been received.
-          </p>
-        ) : (
-          <div className="action-row">
-            <Link className="button secondary" href="/fruitlife360">
-              Start another session
-            </Link>
-            <Link className="button secondary" href={statusHref}>
-              View session status
-            </Link>
-          </div>
-        )}
+        <p className="fruitlife-thanks-note">
+          You can close this page now. Your progress is saved in the FruitLife 360 app.
+        </p>
       </section>
     </main>
   );

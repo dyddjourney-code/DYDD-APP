@@ -85,7 +85,7 @@ export function FruitLifeAssessmentForm({
         <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
         <div>
           <p className="section-label">{isSelf ? "Self path" : "Observer path"}</p>
-          <h2>{isSelf ? "Notice what is visible right now." : "Help them see with kindness."}</h2>
+          <h2>{isSelf ? "FruitLife 360 Self Reflection" : "FruitLife 360 Observer Reflection"}</h2>
           <p>
             {isSelf
               ? "Rank the fruit, move through one fruit card at a time, and name one growth desire."
@@ -100,11 +100,11 @@ export function FruitLifeAssessmentForm({
 
       <section className={`fruitlife-panel fruitlife-step-panel ${stepIndex === 0 ? "active" : ""}`}>
         <p className="section-label">{isSelf ? "Self Reflection" : "Observer Reflection"}</p>
-        <h2>{isSelf ? "Confirm your reflection details." : "Confirm your observer details."}</h2>
+        <h2>{isSelf ? "Your reflection details" : "Your observer details"}</h2>
         <p>
           {isSelf
-            ? "This first card confirms who this FruitLife 360 reflection belongs to. The next card begins the fruit ranking."
-            : `These details were set by ${participantName ?? "the participant"} when the invitation was created. They keep the report organized without asking you to manage an account.`}
+            ? "These details connect this reflection to your FruitLife 360 report."
+            : `These details connect your feedback to ${participantName ?? "the participant"}'s report.`}
         </p>
         <div className="fruitlife-grid two">
           <label>
@@ -146,8 +146,8 @@ export function FruitLifeAssessmentForm({
         <p className="section-label">Fruit Ranking</p>
         <h2>{isSelf ? "Rank your fruit visibility." : "Rank the fruit you see."}</h2>
         <p>
-          Drag the fruit from most visible at the top to least visible at the bottom. The short
-          definitions are included so the ranking is meaningful.
+          Drag the fruit, or use the Up and Down buttons, to place the most visible fruit at the
+          top and the least visible fruit at the bottom.
         </p>
         <FruitRankSorter />
       </section>
@@ -201,21 +201,21 @@ export function FruitLifeAssessmentForm({
         {isSelf ? (
           <label>
             Which fruit of the Spirit do you most want God to keep forming in you this season, and why?
-            <textarea name="reflection_growth" rows={5} />
+            <textarea name="reflection_growth" required rows={5} />
           </label>
         ) : (
           <>
             <label>
               What fruit do you most clearly see in this person?
-              <textarea name="reflection_strength" rows={4} />
+              <textarea name="reflection_strength" required rows={4} />
             </label>
             <label>
               Where do you see a growth invitation for this person?
-              <textarea name="reflection_growth" rows={4} />
+              <textarea name="reflection_growth" required rows={4} />
             </label>
             <label>
               What encouragement should this person hear from this reflection?
-              <textarea name="reflection_encouragement" rows={4} />
+              <textarea name="reflection_encouragement" required rows={4} />
             </label>
           </>
         )}

@@ -10,7 +10,7 @@ import {
   fruitLifePayloadArtifact,
   fruitLifeReportArtifact,
   fruitLifeReportHref,
-  fruitLifeStatusHref,
+  fruitLifeVisibleInvites,
   getFruitLifeCompletion,
   titleizeFruitLifeStatus,
   type FruitLifeDashboardSession,
@@ -40,10 +40,14 @@ export function FruitLifeCurrentAssessmentProcess({
   );
   const reportArtifact = fruitLifeReportArtifact(session);
   const payloadArtifact = fruitLifePayloadArtifact(session);
-  const completedObservers = session.invites.filter(
+  const visibleInvites = fruitLifeVisibleInvites(session);
+  const completedObservers = visibleInvites.filter(
     (invite) => invite.invite_status === "completed",
   ).length;
-  const statusHref = fruitLifeStatusHref(session, token);
+  const pendingInvites = visibleInvites.filter((invite) => invite.invite_status !== "completed");
+  const canSendReminders = Boolean(
+    (session.metadata?.selfLink && !session.self_completed_at) || pendingInvites.length,
+  );
   const returnTo =
     returnToPath ??
     `/field-kit?fruitlife_session=${encodeURIComponent(session.id)}${
@@ -92,7 +96,7 @@ export function FruitLifeCurrentAssessmentProcess({
             </p>
             <p>
               <span>
-                {completedObservers}/{session.observer_goal}
+                {session.observer_goal > 0 ? `${completedObservers}/${session.observer_goal}` : "Self"}
               </span>
               <small>Observers</small>
             </p>
@@ -112,12 +116,13 @@ export function FruitLifeCurrentAssessmentProcess({
             {reportArtifact?.external_url ? (
               <Link href={fruitLifeReportHref(session)}>Open report</Link>
             ) : null}
-            {payloadArtifact || token ? <Link href={statusHref}>Open status details</Link> : null}
-            <form action={sendFruitLifeReminder}>
-              <input name="session_id" type="hidden" value={session.id} />
-              <input name="return_to" type="hidden" value={returnTo} />
-              <button type="submit">Send reminders</button>
-            </form>
+            {canSendReminders ? (
+              <form action={sendFruitLifeReminder}>
+                <input name="session_id" type="hidden" value={session.id} />
+                <input name="return_to" type="hidden" value={returnTo} />
+                <button type="submit">Send reminders</button>
+              </form>
+            ) : null}
           </div>
           <p className="fruitlife-latest-note">
             This area refreshes while the assessment is still moving.
@@ -136,7 +141,20 @@ export function FruitLifeCurrentAssessmentProcess({
             </div>
             <span>{session.self_completed_at ? "Complete" : "Waiting"}</span>
           </article>
-          {session.invites.map((invite) => (
+          {visibleInvites.length === 0 ? (
+            <article>
+              <div>
+                <strong>No observers</strong>
+                <small>This session is set up as a self-assessment.</small>
+                <div className="fruitlife-session-meta">
+                  <span>Self-only</span>
+                  <span>{displayDate(session.created_at)}</span>
+                </div>
+              </div>
+              <span>Not needed</span>
+            </article>
+          ) : null}
+          {visibleInvites.map((invite) => (
             <article key={invite.id}>
               <div>
                 <strong>{invite.observer_name || "Observer"}</strong>
@@ -159,6 +177,19 @@ export function FruitLifeCurrentAssessmentProcess({
             </article>
           ))}
         </div>
+      </div>
+      <div className="fruitlife-inline-status-detail">
+        <p>
+          <strong>Status detail:</strong>{" "}
+          {session.self_completed_at ? "Self reflection submitted." : "Waiting for self reflection."}{" "}
+          {session.observer_goal > 0
+            ? `${completedObservers} of ${session.observer_goal} observer responses submitted.`
+            : "No observer responses are required for this self-assessment."}{" "}
+          Report status: {titleizeFruitLifeStatus(session.report_status)}.
+        </p>
+        {payloadArtifact && !reportArtifact?.external_url ? (
+          <p>The report payload is queued. The PDF artifact will appear when the report worker finishes.</p>
+        ) : null}
       </div>
     </section>
   );

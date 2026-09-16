@@ -5,18 +5,23 @@ import { useState } from "react";
 const maxObserverCount = 12;
 
 export function ObserverInvitations() {
-  const [observerCount, setObserverCount] = useState(1);
+  const [observerCount, setObserverCount] = useState(0);
 
   function addObserver() {
     setObserverCount((count) => Math.min(maxObserverCount, count + 1));
   }
 
   function removeObserver() {
-    setObserverCount((count) => Math.max(1, count - 1));
+    setObserverCount((count) => Math.max(0, count - 1));
   }
 
   return (
     <div className="fruitlife-observer-roster">
+      {observerCount === 0 ? (
+        <p className="fruitlife-empty-note">
+          No observers added. This will begin as a self-assessment.
+        </p>
+      ) : null}
       {Array.from({ length: observerCount }, (_, index) => {
         const observerNumber = index + 1;
 
@@ -52,12 +57,12 @@ export function ObserverInvitations() {
         >
           Add Observer
         </button>
-        {observerCount > 1 ? (
+        {observerCount > 0 ? (
           <button className="button text-button" onClick={removeObserver} type="button">
             Remove Last
           </button>
         ) : null}
-        <small>{observerCount} of {maxObserverCount} observer spots shown.</small>
+        <small>{observerCount} of {maxObserverCount} observer spots added.</small>
       </div>
     </div>
   );

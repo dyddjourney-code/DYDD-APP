@@ -5,6 +5,7 @@ import {
   sendFruitLifeReminder,
 } from "../actions";
 import { FruitLifeSessionAutoRefresh } from "../session-auto-refresh";
+import { fruitLifeVisibleInvites } from "@/lib/fruitlife360/dashboard";
 
 type FruitLifeStatusPageProps = {
   searchParams?: Promise<{
@@ -59,8 +60,8 @@ export default async function FruitLifeStatusPage({
 
   const { artifacts, canManage, invites, responses, session, token } = status;
   const selfResponse = responses.find((response: any) => response.response_type === "self");
-  const completedObservers = invites.filter((invite) => invite.invite_status === "completed").length;
-  const activeInvites = invites.filter((invite) => invite.invite_status !== "expired");
+  const activeInvites = fruitLifeVisibleInvites({ invites } as any);
+  const completedObservers = activeInvites.filter((invite) => invite.invite_status === "completed").length;
   const requiredCount = 1 + Math.max(0, Number(session.observer_goal ?? 0));
   const completedCount = (session.self_completed_at ? 1 : 0) + completedObservers;
   const progress = Math.min(100, Math.round((completedCount / Math.max(1, requiredCount)) * 100));
@@ -112,7 +113,7 @@ export default async function FruitLifeStatusPage({
           {reportArtifact?.external_url ? (
             <Link href={reportHref(session.id)}>Open report</Link>
           ) : null}
-          {canManage ? (
+          {canManage && ((session.metadata as any)?.selfLink && !session.self_completed_at || activeInvites.some((invite) => invite.invite_status !== "completed")) ? (
             <form action={sendFruitLifeReminder}>
               <input name="session_id" type="hidden" value={session.id} />
               <input
@@ -128,8 +129,8 @@ export default async function FruitLifeStatusPage({
       </section>
 
       <section className="fruitlife-panel fruitlife-roster-panel">
-        <p className="section-label">People</p>
-        <h2>Self and observers</h2>
+          <p className="section-label">People</p>
+          <h2>Self and observers</h2>
         <div className="fruitlife-status-roster">
           <article>
             <div>
@@ -139,6 +140,16 @@ export default async function FruitLifeStatusPage({
             <span>{selfResponse ? "submitted" : "waiting"}</span>
             <small>{displayDate(session.self_completed_at)}</small>
           </article>
+          {activeInvites.length === 0 ? (
+            <article>
+              <div>
+                <strong>No observers</strong>
+                <small>This session is set up as a self-assessment.</small>
+              </div>
+              <span>Not needed</span>
+              <small>{displayDate(session.created_at)}</small>
+            </article>
+          ) : null}
           {activeInvites.map((invite) => (
             <article key={invite.id}>
               <div>

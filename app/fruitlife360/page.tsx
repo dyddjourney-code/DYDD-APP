@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PageHelp } from "@/components/page-help";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -30,43 +29,31 @@ export default async function FruitLifeSignupPage({
 
   return (
     <main className="fruitlife-shell fruitlife-public">
-      <nav className="course-nav" aria-label="FruitLife navigation">
-        <Link href="/">DYDD School</Link>
-        <Link href="/hq">HQ</Link>
-      </nav>
-
-      <header className="fruitlife-hero fruitlife-setup-hero">
-        <div className="fruitlife-hero-copy">
-          <p className="section-label">FruitLife 360 Intake</p>
-          <h1>Begin a formation mirror.</h1>
-          <p className="lede">
-            Create the self link, invite trusted observers, and keep the full intake workflow inside
-            the DYDD app.
-          </p>
-          <div className="fruitlife-hero-badges" aria-label="FruitLife workflow summary">
-            <span>Self reflection</span>
-            <span>Observer feedback</span>
-            <span>Supabase workflow</span>
-          </div>
-        </div>
-        <div className="fruitlife-hero-mark">
-          <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
-        </div>
-      </header>
-
-      <PageHelp
-        items={[
-          "Create the self-reflection session before inviting observers.",
-          "Add observers now if you have them, or use the saved observer link later.",
-          "Watch the status area after creation so reports, reminders, and artifacts stay organized.",
-        ]}
-        title="How FruitLife 360 works"
-      />
-
       <form action={createFruitLifeSession} className="fruitlife-form fruitlife-signup">
         <input name="signup_source" type="hidden" value="vercel-fruitlife-intake" />
         <input name="return_to" type="hidden" value={returnTo} />
         {params?.message ? <p className="form-message">{params.message}</p> : null}
+        <section className="fruitlife-flow-header">
+          <div>
+            <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
+            <div>
+              <p className="section-label">FruitLife 360</p>
+              <h1>Set up your assessment</h1>
+              <p>
+                Start with your own reflection. Add observers only if you want trusted feedback
+                included in this report.
+              </p>
+            </div>
+          </div>
+          <PageHelp
+            items={[
+              "Use 0 observers for a self-assessment.",
+              "Add observer names and emails only when you want feedback from others.",
+              "After setup, the app sends your self-reflection link and tracks the report process.",
+            ]}
+            title="Help"
+          />
+        </section>
         <section className="fruitlife-intake-overview">
           <p>
             <span>1</span>
@@ -87,42 +74,45 @@ export default async function FruitLifeSignupPage({
         </section>
         <section className="fruitlife-panel">
           <p className="section-label">Participant Setup</p>
-          <h2>Create the session and send the first link.</h2>
+          <h2>Who is this assessment for?</h2>
+          <p>
+            Enter the participant details. For a self-assessment, leave the observer goal at 0.
+          </p>
           <div className="fruitlife-grid two">
             <label>
               Participant name
-              <small>The name printed in the workflow and report queue.</small>
+              <small>This name appears in the app and report process.</small>
               <input name="participant_name" required type="text" />
             </label>
             <label>
               Participant email
-              <small>The app sends the self-reflection link here.</small>
+              <small>The self-reflection link is sent here.</small>
               <input name="participant_email" required type="email" />
             </label>
             <label>
               Observer goal
-              <small>Used for progress tracking if observer emails are not entered yet.</small>
-              <input defaultValue="3" min="0" max="12" name="observer_goal" required type="number" />
+              <small>Use 0 for self-assessment. Increase this only when inviting observers.</small>
+              <input defaultValue="0" min="0" max="12" name="observer_goal" required type="number" />
             </label>
           </div>
         </section>
 
         <section className="fruitlife-panel">
-          <p className="section-label">Observer Invitations</p>
-          <h2>Add one observer, then add more if you are ready.</h2>
+          <p className="section-label">Optional Observers</p>
+          <h2>Add trusted observers only if this report should include outside feedback.</h2>
           <ObserverInvitations />
         </section>
 
         <section className="fruitlife-intake-note">
-          <strong>What happens when you click create:</strong>
+          <strong>What happens next:</strong>
           <span>
-            The app writes the session to Supabase, sends the participant email through Resend,
-            sends observer emails when entered, and stores the links for HQ reminders.
+            The app creates the session, emails the participant link, and tracks the report process
+            in Base Camp.
           </span>
         </section>
 
         <button className="button primary" type="submit">
-          Create and Send Links
+          Create Assessment
         </button>
       </form>
     </main>

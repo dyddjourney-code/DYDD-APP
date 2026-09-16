@@ -515,8 +515,8 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
 
       return {
         action: "Open report",
-        courseAction: "Explore course",
-        courseHref: "/courses/fruitlife-360-formation",
+        courseAction: null,
+        courseHref: null,
         detail: `Your ${fruitLifeReportModeLabel(session).toLowerCase()} FruitLife 360 report is ready to review.`,
         href: fruitLifeReportHref(session),
         logo: "/brand/tools/fruitful-life-360-logo.jpg",
@@ -569,8 +569,8 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
                   : `/fruitlife360?return_to=${encodeURIComponent("/field-kit?lane=fruitlife#current-assessment-process")}`,
                 logo: "/brand/tools/fruitful-life-360-logo.jpg",
                 points: ["Participant setup", "Observer invitations", "Progress tracking", "Report artifact"],
-                price: "$10",
-                status: activeFruitLifeSession ? "In progress" : hasFruitLife ? "Completed" : null,
+                price: "$10 each time",
+                status: activeFruitLifeSession ? "In progress" : null,
                 title: "FruitLife 360",
               }}
               kind="Purchase"

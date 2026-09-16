@@ -7493,8 +7493,8 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .fruitlife-basecamp-note img {
   justify-self: end;
-  width: min(140px, 44vw);
-  max-height: 170px;
+  width: min(260px, 58vw);
+  max-height: 290px;
   margin: 0 0 auto;
   object-fit: contain;
   object-position: bottom center;

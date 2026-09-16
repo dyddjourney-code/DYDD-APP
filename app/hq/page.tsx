@@ -649,9 +649,9 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               </p>
               <Link
                 className="button primary"
-                href={`/fruitlife360?return_to=${encodeURIComponent("/hq?lane=fruitlife#current-assessment-process")}`}
+                href="/field-kit?lane=fruitlife"
               >
-                Start FruitLife 360
+                Open FruitLife 360
               </Link>
             </div>
             <div className="fruitlife-basecamp-note">

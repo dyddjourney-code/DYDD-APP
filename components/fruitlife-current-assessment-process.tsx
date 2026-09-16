@@ -188,7 +188,7 @@ export function FruitLifeCurrentAssessmentProcess({
           Report status: {titleizeFruitLifeStatus(session.report_status)}.
         </p>
         {payloadArtifact && !reportArtifact?.external_url ? (
-          <p>The report payload is queued. The PDF artifact will appear when the report worker finishes.</p>
+          <p>The report is being generated. The PDF artifact will appear here when it is ready.</p>
         ) : null}
       </div>
     </section>

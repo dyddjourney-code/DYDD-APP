@@ -28,7 +28,25 @@ function displayDate(value: string | null | undefined) {
 }
 
 function titleize(value: string | null | undefined) {
-  return value ? value.replace(/_/g, " ") : "waiting";
+  switch (value) {
+    case "queued":
+    case "ready_for_report":
+      return "generating report";
+    case "report_ready":
+    case "ready":
+      return "report ready";
+    case "report_sent":
+    case "sent":
+      return "report sent";
+    case "waiting_for_responses":
+      return "waiting for responses";
+    case "waiting_for_observers":
+      return "waiting for observers";
+    case "waiting_for_self":
+      return "waiting for self reflection";
+    default:
+      return value ? value.replace(/_/g, " ") : "waiting";
+  }
 }
 
 function reportHref(sessionId: string) {

@@ -1,4 +1,4 @@
-import { displayDate } from "@/lib/assessments/student-context";
+import { displayDateTime } from "@/lib/assessments/student-context";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export type FruitLifeDashboardSession = {
@@ -59,7 +59,25 @@ export function fruitLifeVisibleInvites(session: FruitLifeDashboardSession | nul
 }
 
 export function titleizeFruitLifeStatus(value: string | null | undefined) {
-  return value ? value.replace(/_/g, " ") : "not started";
+  switch (value) {
+    case "queued":
+    case "ready_for_report":
+      return "generating report";
+    case "report_ready":
+    case "ready":
+      return "report ready";
+    case "report_sent":
+    case "sent":
+      return "report sent";
+    case "waiting_for_responses":
+      return "waiting for responses";
+    case "waiting_for_observers":
+      return "waiting for observers";
+    case "waiting_for_self":
+      return "waiting for self reflection";
+    default:
+      return value ? value.replace(/_/g, " ") : "not started";
+  }
 }
 
 export function fruitLifeTokenFromSession(session: FruitLifeDashboardSession | null) {
@@ -107,7 +125,7 @@ export function fruitLifePayloadArtifact(session: FruitLifeDashboardSession | nu
 }
 
 export function fruitLifeArtifactTitle(session: FruitLifeDashboardSession) {
-  return `FruitLife 360 Report - ${displayDate(session.updated_at ?? session.created_at)}`;
+  return `FruitLife 360 Report - ${displayDateTime(session.updated_at ?? session.created_at)}`;
 }
 
 export async function getFruitLifeDashboardSessions({

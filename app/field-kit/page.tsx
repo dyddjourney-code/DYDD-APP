@@ -7,6 +7,7 @@ import { FruitLifeCurrentAssessmentProcess } from "@/components/fruitlife-curren
 import {
   assessmentLabels,
   displayDate,
+  displayDateTime,
   getAssessmentSnapshotsForParticipantMatch,
   getAssessmentSnapshotsForUser,
   latestByAssessment,
@@ -488,7 +489,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
             : snapshot.assessment_type === "fruit_360"
               ? "/courses/fruitlife-360-formation"
               : "/trailheads",
-      detail: `Completed ${displayDate(snapshot.source_submitted_at ?? snapshot.created_at)}.`,
+      detail: `Completed ${displayDateTime(snapshot.source_submitted_at ?? snapshot.created_at)}.`,
       href: artifactDownloadHref(snapshot, reviewParams),
       logo:
         snapshot.assessment_type === "designid"
@@ -502,7 +503,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
                 : "/brand/tools/design-pathways-logo.jpg",
       meta: [
         ["Status", "Completed"],
-        ["Completed", displayDate(snapshot.source_submitted_at ?? snapshot.created_at)],
+        ["Completed", displayDateTime(snapshot.source_submitted_at ?? snapshot.created_at)],
         ["Source", snapshot.source ?? "DYDD"],
       ] as Array<[string, string]>,
       title: snapshotArtifactTitle(snapshot),
@@ -516,7 +517,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
       logo: "/brand/tools/fruitful-life-360-logo.jpg",
       meta: [
         ["Status", "Completed"],
-        ["Completed", displayDate(session.updated_at ?? session.created_at)],
+        ["Completed", displayDateTime(session.updated_at ?? session.created_at)],
         ["Source", "FruitLife 360"],
       ] as Array<[string, string]>,
       title: fruitLifeArtifactTitle(session),

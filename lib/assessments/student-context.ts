@@ -46,6 +46,18 @@ export function displayDate(value: string | null) {
   }).format(new Date(value));
 }
 
+export function displayDateTime(value: string | null) {
+  if (!value) {
+    return "Date unavailable";
+  }
+
+  return `${new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "America/New_York",
+  }).format(new Date(value))} Eastern`;
+}
+
 export function latestByAssessment(snapshots: AssessmentSnapshotSummary[]) {
   const latest = new Map<string, AssessmentSnapshotSummary>();
 

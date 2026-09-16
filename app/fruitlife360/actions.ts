@@ -12,6 +12,7 @@ import {
   type FruitLifeResponseType,
 } from "@/lib/fruitlife360/intake";
 import { buildFruitLifePayloadForSession } from "@/lib/fruitlife360/payload";
+import { processFruitLifeReportJobs } from "@/lib/fruitlife360/report-worker";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -292,6 +293,14 @@ async function queuePayloadJob(supabase: ReturnType<typeof createSupabaseAdminCl
   });
 }
 
+async function processQueuedFruitLifeReport() {
+  try {
+    await processFruitLifeReportJobs({ limit: 1 });
+  } catch (error) {
+    console.error("FruitLife report worker did not finish immediately.", error);
+  }
+}
+
 function fruitLifeInviteEmail({
   participantName,
   selfLink,
@@ -511,6 +520,7 @@ async function saveResponse({
 
     if (readyForReport) {
       await queuePayloadJob(supabase, session.id);
+      await processQueuedFruitLifeReport();
     }
   } else {
     const completedCount = session.observer_completed_count + 1;
@@ -540,6 +550,7 @@ async function saveResponse({
 
     if (readyForReport) {
       await queuePayloadJob(supabase, session.id);
+      await processQueuedFruitLifeReport();
     }
   }
 

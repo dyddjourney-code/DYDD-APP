@@ -369,6 +369,7 @@ async function getFieldKitAssessmentReport(
 
 export default async function FieldKitPage({ searchParams }: FieldKitPageProps) {
   const reviewParams = await searchParams;
+  const fruitLifeLane = reviewParams?.lane === "fruitlife";
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -382,6 +383,10 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     : { data: null };
   const reviewReport =
     (await getHeatherReviewReport(reviewParams)) ?? (await getNewReviewReport(reviewParams));
+
+  if (!user && fruitLifeLane) {
+    redirect(`/login?next=${encodeURIComponent("/field-kit?lane=fruitlife")}`);
+  }
 
   if (!user && !reviewReport && process.env.DYDD_REVIEW_TOKEN) {
     redirect(`/field-kit?review=new&key=${encodeURIComponent(process.env.DYDD_REVIEW_TOKEN)}`);
@@ -513,8 +518,6 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
       title: fruitLifeArtifactTitle(session),
     })),
   ];
-  const fruitLifeLane = reviewParams?.lane === "fruitlife";
-
   if (fruitLifeLane) {
     const fruitLifeReturnPath = selectedFruitLifeSession
       ? `/field-kit?lane=fruitlife&fruitlife_session=${encodeURIComponent(selectedFruitLifeSession.id)}${

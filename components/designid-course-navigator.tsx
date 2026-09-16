@@ -1,9 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { CompanionMoment } from "@/lib/courses/companion-moments";
+import { CompanionAudioCard } from "@/components/companion-audio-card";
 
 type DesignIdLessonView = {
   bodyHtml: string;
+  companionMoment?: CompanionMoment;
   focus: readonly string[];
   personalizedNotes: readonly string[];
   slug: string;
@@ -181,6 +184,8 @@ export function DesignIdCourseNavigator({
                 <span key={item}>{item}</span>
               ))}
             </div>
+
+            <CompanionAudioCard moment={active.lesson.companionMoment} />
 
             <section className="personal-walkthrough designid-personal-walkthrough">
               <p className="section-label">Personal walkthrough</p>

@@ -20,6 +20,7 @@ import {
   withReviewQuery,
 } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { CompanionAudioCard } from "@/components/companion-audio-card";
 
 type LessonPageProps = {
   params: Promise<{
@@ -122,6 +123,10 @@ export default async function DesignIdLessonPage({
               your relationships, work, ministry, or next faithful step.
             </p>
           </section>
+
+          <CompanionAudioCard
+            moment={"companionMoment" in lesson ? lesson.companionMoment : undefined}
+          />
 
           <section
             className="personal-walkthrough"

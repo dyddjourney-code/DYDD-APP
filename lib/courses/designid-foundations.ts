@@ -1,4 +1,6 @@
 import { designIdLessonBodies } from "./designid-source-html";
+import type { CompanionMoment } from "./companion-moments";
+import { designIdCompanionMoments } from "./course-companion-moment-data";
 
 export type DesignIdLesson = {
   slug: string;
@@ -7,6 +9,7 @@ export type DesignIdLesson = {
   summary: string;
   focus: string[];
   bodyHtml: string;
+  companionMoment?: CompanionMoment;
 };
 
 export type DesignIdModule = {
@@ -38,6 +41,7 @@ export const designIdCourse = {
             "The class helps the learner understand results and begin applying them.",
             "The journey starts with receiving the assessment as an invitation.",
           ],
+          companionMoment: designIdCompanionMoments.welcome,
         },
         {
           slug: "biblical-foundation",
@@ -104,6 +108,7 @@ export const designIdCourse = {
             "The profile gives language for how a person naturally contributes.",
             "The goal is stewardship, not comparison.",
           ],
+          companionMoment: designIdCompanionMoments.profile,
         },
         {
           slug: "reflection-capacity",
@@ -116,6 +121,7 @@ export const designIdCourse = {
             "Low capacity is information, not failure.",
             "Healthy rhythms include boundaries, rest, and collaboration.",
           ],
+          companionMoment: designIdCompanionMoments.capacity,
         },
         {
           slug: "integrative-reflections",
@@ -152,6 +158,7 @@ export const designIdCourse = {
             "Strengths can distort under pressure or disconnection.",
             "Redemption turns shadow patterns into places of formation.",
           ],
+          companionMoment: designIdCompanionMoments.shadow,
         },
       ],
     },

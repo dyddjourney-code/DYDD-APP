@@ -16,6 +16,7 @@ import {
 } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
+import { CompanionAudioCard } from "@/components/companion-audio-card";
 
 type LearningLessonPageProps = {
   params: Promise<{
@@ -115,6 +116,8 @@ export default async function LearningLessonPage({
               ))}
             </ul>
           </section>
+
+          <CompanionAudioCard moment={lesson.companionMoment} />
 
           <section className="personal-walkthrough" aria-label="Learner data panel">
             <p className="section-label">

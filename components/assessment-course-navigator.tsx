@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { CourseModule } from "@/lib/courses/course-catalog";
+import { CompanionAudioCard } from "@/components/companion-audio-card";
 
 type AssessmentInsightRow = {
   label: string;
@@ -183,6 +184,8 @@ export function AssessmentCourseNavigator({
                 <span key={item}>{item}</span>
               ))}
             </div>
+
+            <CompanionAudioCard moment={active.lesson.companionMoment} />
 
             <section className="personal-walkthrough assessment-personal-walkthrough">
               <p className="section-label">Assessment connection</p>

@@ -68,6 +68,7 @@ export default async function DesignIdCoursePage({
         slug: lesson.slug,
         summary: lesson.summary,
         title: lesson.title,
+        companionMoment: "companionMoment" in lesson ? lesson.companionMoment : undefined,
       };
     }),
   }));

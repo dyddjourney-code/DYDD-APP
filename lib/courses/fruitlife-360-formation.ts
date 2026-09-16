@@ -1,4 +1,5 @@
 import type { CourseDefinition } from "./course-catalog";
+import { fruitLifeCompanionMoments } from "./course-companion-moment-data";
 
 export const fruitLife360Course = {
   accent: "blue",
@@ -31,6 +32,7 @@ export const fruitLife360Course = {
           summary:
             "Introduces FruitLife 360 as a gentle mirror for noticing grace, growth, and one faithful next step.",
           title: "Welcome to FruitLife 360",
+          companionMoment: fruitLifeCompanionMoments.welcome,
         },
       ],
     },
@@ -94,6 +96,7 @@ export const fruitLife360Course = {
           summary:
             "Supports both self-only and observer pathways with a healthy posture for receiving feedback.",
           title: "Considering the Observer Results",
+          companionMoment: fruitLifeCompanionMoments.observers,
         },
       ],
     },
@@ -119,6 +122,7 @@ export const fruitLife360Course = {
           summary:
             "Explains fruit as visible Christlikeness formed through abiding and ordinary obedience.",
           title: "What Are the Fruits of the Spirit?",
+          companionMoment: fruitLifeCompanionMoments.abiding,
         },
         {
           body: [
@@ -315,6 +319,7 @@ export const fruitLife360Course = {
           summary:
             "Moves fruit language into ordinary settings, pressure moments, and one seven-day practice.",
           title: "Fruit in Action",
+          companionMoment: fruitLifeCompanionMoments.practice,
         },
         {
           body: [
@@ -397,6 +402,7 @@ export const fruitLife360Course = {
           summary:
             "Connects FruitLife 360 to DesignID, Spiritual Gifts, DesignPD, purpose, and abiding.",
           title: "DYDD Connections",
+          companionMoment: fruitLifeCompanionMoments.connection,
         },
       ],
     },

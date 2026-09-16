@@ -1,4 +1,5 @@
 import type { CourseDefinition } from "./course-catalog";
+import { spiritualGiftsCompanionMoments } from "./course-companion-moment-data";
 
 export const spiritualGiftsCourse = {
   accent: "gold",
@@ -31,6 +32,7 @@ export const spiritualGiftsCourse = {
           summary:
             "Frames spiritual gifts as grace for service rather than labels for identity or status.",
           title: "Welcome to Spiritual Gifts",
+          companionMoment: spiritualGiftsCompanionMoments.welcome,
         },
       ],
     },
@@ -75,6 +77,7 @@ export const spiritualGiftsCourse = {
           summary:
             "Turns report insight into prayer, service, feedback, humility, and patient discernment.",
           title: "How to Use the Report",
+          companionMoment: spiritualGiftsCompanionMoments.report,
         },
       ],
     },
@@ -163,6 +166,7 @@ export const spiritualGiftsCourse = {
           summary:
             "Places gift discernment inside trusted community, confirmation, correction, and coordinated service.",
           title: "Within Community",
+          companionMoment: spiritualGiftsCompanionMoments.community,
         },
       ],
     },
@@ -251,6 +255,7 @@ export const spiritualGiftsCourse = {
           summary:
             "Helps learners build a practical plan to steward one gift with humility and dependence.",
           title: "Grow in Your Gifts",
+          companionMoment: spiritualGiftsCompanionMoments.growth,
         },
         {
           body: [

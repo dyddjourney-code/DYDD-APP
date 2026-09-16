@@ -1,9 +1,11 @@
 import { designIdCourse } from "./designid-foundations";
 import { fruitLife360Course } from "./fruitlife-360-formation";
 import { spiritualGiftsCourse } from "./spiritual-gifts-service";
+import type { CompanionMoment } from "./companion-moments";
 
 export type CourseLesson = {
   body: readonly string[];
+  companionMoment?: CompanionMoment;
   focus: readonly string[];
   reflectionPrompt: string;
   slug: string;

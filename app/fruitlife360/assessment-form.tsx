@@ -51,6 +51,12 @@ export function FruitLifeAssessmentForm({
   const isSelf = responseType === "self";
   const totalSteps = fruitLifeFruits.length + 3;
   const [stepIndex, setStepIndex] = useState(0);
+  const [ratingValues, setRatingValues] = useState<Record<string, string>>({});
+  const [reflectionValues, setReflectionValues] = useState({
+    encouragement: "",
+    growth: "",
+    strength: "",
+  });
   const currentFruit = stepIndex >= 2 && stepIndex < fruitLifeFruits.length + 2
     ? fruitLifeFruits[stepIndex - 2]
     : null;
@@ -72,6 +78,13 @@ export function FruitLifeAssessmentForm({
 
   function goBack() {
     setStepIndex((index) => Math.max(0, index - 1));
+  }
+
+  function setRating(fieldName: string, value: string) {
+    setRatingValues((current) => ({
+      ...current,
+      [fieldName]: value,
+    }));
   }
 
   return (
@@ -170,7 +183,12 @@ export function FruitLifeAssessmentForm({
             {questions.map((question) => (
               <label className="fruitlife-scale" key={question.code}>
                 <span>{isSelf ? question.selfText : question.observerText}</span>
-                <select defaultValue="3" name={fruitRatingField(question.code)} required>
+                <select
+                  name={fruitRatingField(question.code)}
+                  onChange={(event) => setRating(fruitRatingField(question.code), event.target.value)}
+                  required
+                  value={ratingValues[fruitRatingField(question.code)] ?? "3"}
+                >
                   {fruitLifeRatingOptions.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.value} - {option.label}
@@ -182,7 +200,14 @@ export function FruitLifeAssessmentForm({
             {pressureQuestion ? (
               <label className="fruitlife-scale fruitlife-pressure-scale">
                 <span>{isSelf ? pressureQuestion.selfText : pressureQuestion.observerText}</span>
-                <select defaultValue="3" name={fruitRatingField(pressureQuestion.code)} required>
+                <select
+                  name={fruitRatingField(pressureQuestion.code)}
+                  onChange={(event) =>
+                    setRating(fruitRatingField(pressureQuestion.code), event.target.value)
+                  }
+                  required
+                  value={ratingValues[fruitRatingField(pressureQuestion.code)] ?? "3"}
+                >
                   {fruitLifeRatingOptions.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.value} - {option.label}
@@ -201,21 +226,56 @@ export function FruitLifeAssessmentForm({
         {isSelf ? (
           <label>
             Which fruit of the Spirit do you most want God to keep forming in you this season, and why?
-            <textarea name="reflection_growth" required rows={5} />
+            <textarea
+              name="reflection_growth"
+              onChange={(event) =>
+                setReflectionValues((current) => ({ ...current, growth: event.target.value }))
+              }
+              required
+              rows={5}
+              value={reflectionValues.growth}
+            />
           </label>
         ) : (
           <>
             <label>
               What fruit do you most clearly see in this person?
-              <textarea name="reflection_strength" required rows={4} />
+              <textarea
+                name="reflection_strength"
+                onChange={(event) =>
+                  setReflectionValues((current) => ({ ...current, strength: event.target.value }))
+                }
+                required
+                rows={4}
+                value={reflectionValues.strength}
+              />
             </label>
             <label>
               Where do you see a growth invitation for this person?
-              <textarea name="reflection_growth" required rows={4} />
+              <textarea
+                name="reflection_growth"
+                onChange={(event) =>
+                  setReflectionValues((current) => ({ ...current, growth: event.target.value }))
+                }
+                required
+                rows={4}
+                value={reflectionValues.growth}
+              />
             </label>
             <label>
               What encouragement should this person hear from this reflection?
-              <textarea name="reflection_encouragement" required rows={4} />
+              <textarea
+                name="reflection_encouragement"
+                onChange={(event) =>
+                  setReflectionValues((current) => ({
+                    ...current,
+                    encouragement: event.target.value,
+                  }))
+                }
+                required
+                rows={4}
+                value={reflectionValues.encouragement}
+              />
             </label>
           </>
         )}

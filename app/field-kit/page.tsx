@@ -333,14 +333,17 @@ function artifactDownloadHref(
   const reportAccessUrl = snapshot.scores?.reportAccessUrl;
 
   if (
-    (snapshot.assessment_type === "designid" || snapshot.assessment_type === "designpd") &&
     typeof reportAccessUrl === "string" &&
     reportAccessUrl
   ) {
     return reportAccessUrl;
   }
 
-  if (snapshot.assessment_type === "spiritual_gifts" && typeof statusHref === "string" && statusHref) {
+  if (
+    snapshot.assessment_type !== "spiritual_gifts" &&
+    typeof statusHref === "string" &&
+    statusHref
+  ) {
     return statusHref;
   }
 

@@ -340,6 +340,17 @@ async function saveCompletedSpiritualGiftsResponse({
       tiedAtScore: gift.tiedAtScore,
     })),
   }));
+  const snapshotScorePayload = {
+    channel: "native_app",
+    deepDiveGifts: deepDivePayload,
+    rankedGifts: rankedGiftPayload,
+    statusHref,
+    sourceResponseId,
+    tieSummary: scores.tieSummary,
+    tiers: tierPayload,
+    topGifts: topGiftPayload,
+    totals: scores.giftScores,
+  };
 
   const { data: response, error: responseError } = await supabase
     .from("spiritual_gifts_responses")
@@ -380,17 +391,7 @@ async function saveCompletedSpiritualGiftsResponse({
     .insert({
       assessment_type: "spiritual_gifts",
       participant_id: participantId,
-      scores: {
-        channel: "native_app",
-        deepDiveGifts: deepDivePayload,
-        rankedGifts: rankedGiftPayload,
-        statusHref,
-        sourceResponseId,
-        tieSummary: scores.tieSummary,
-        tiers: tierPayload,
-        topGifts: topGiftPayload,
-        totals: scores.giftScores,
-      },
+      scores: snapshotScorePayload,
       source: "spiritual_gifts_app",
       source_response_id: sourceResponseId,
       source_submitted_at: submittedAt,
@@ -470,6 +471,23 @@ async function saveCompletedSpiritualGiftsResponse({
     if (emailRetryResult.sent) {
       emailResult = emailRetryResult;
     }
+  }
+
+  if (snapshot?.id) {
+    await supabase
+      .from("assessment_snapshots")
+      .update({
+        scores: {
+          ...snapshotScorePayload,
+          pdfMonkey: pdfMetadata,
+          reportAccessUrl,
+          resultEmail: {
+            attachmentIncluded: Boolean(pdfAttachment),
+            resendSent: emailResult.sent,
+          },
+        },
+      })
+      .eq("id", snapshot.id);
   }
 
   await supabase

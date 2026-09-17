@@ -86,12 +86,14 @@ export default async function LearningLessonPage({
   return (
     <main className={`lesson-shell lesson-shell-${course.accent}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}>
       {fruitLifeLane ? <FruitLifeMiniNav /> : null}
-      <nav className="course-nav" aria-label="Lesson navigation">
-        <Link href={courseMapHref}>Course map</Link>
-        <Link href={fruitLifeLane ? "/hq?lane=fruitlife" : withReviewQuery("/hq", reviewParams)}>
-          Base Camp
-        </Link>
-      </nav>
+      {!fruitLifeLane ? (
+        <nav className="course-nav" aria-label="Lesson navigation">
+          <Link href={courseMapHref}>Course map</Link>
+          <Link href={withReviewQuery("/hq", reviewParams)}>
+            Base Camp
+          </Link>
+        </nav>
+      ) : null}
 
       <article className="lesson-page polished-lesson multi-lesson-page">
         <aside className="lesson-index">

@@ -10884,6 +10884,18 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   border: 1px solid var(--line);
 }
 
+.mini-course-logo-intro {
+  display: grid;
+  justify-items: center;
+  padding: clamp(22px, 4vw, 42px) 0 8px;
+}
+
+.mini-course-logo-intro img {
+  width: min(260px, 72vw);
+  height: auto;
+  object-fit: contain;
+}
+
 .course-personalization {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 0.75fr);

@@ -26,9 +26,6 @@ export default async function SpiritualGiftsThanksPage({ searchParams }: Spiritu
     ? status.session.metadata.channel
     : params?.channel;
   const isAppChannel = channel === "native_app" || channel === "app";
-  const statusHref = params?.session && params?.token
-    ? `/spiritual-gifts/status?session=${encodeURIComponent(params.session)}&token=${encodeURIComponent(params.token)}`
-    : "/spiritual-gifts";
 
   return (
     <main className="fruitlife-shell fruitlife-public spiritual-gifts-shell spiritual-gifts-thanks-shell">
@@ -38,10 +35,10 @@ export default async function SpiritualGiftsThanksPage({ searchParams }: Spiritu
         </div>
         <div className="spiritual-gifts-thanks-copy">
           <p className="section-label">Assessment submitted</p>
-          <h1>{isAppChannel ? "Saved to your account." : "Check your email for your PDF report."}</h1>
+          <h1>{isAppChannel ? "Your report has been emailed to you." : "Check your email for your PDF report."}</h1>
           <p>
             {isAppChannel
-              ? "Your Spiritual Gifts assessment is connected to this DYDD account. You can review the result now or return to Field Kit."
+              ? "Your Spiritual Gifts assessment is connected to this DYDD account. The PDF report has also been saved as an account artifact so you can return to it inside the app."
               : params?.message ??
                 "Your Spiritual Gifts assessment has been submitted. Your PDF report is being delivered to the email address you provided."}
           </p>
@@ -61,10 +58,7 @@ export default async function SpiritualGiftsThanksPage({ searchParams }: Spiritu
         ) : null}
         {isAppChannel ? (
           <div className="spiritual-gifts-thanks-actions">
-            <Link className="button primary" href={statusHref}>
-              View results
-            </Link>
-            <Link className="button secondary" href="/spiritual-gifts?lane=fruitlife">
+            <Link className="button primary" href="/spiritual-gifts?lane=fruitlife">
               Back to Spiritual Gifts
             </Link>
           </div>

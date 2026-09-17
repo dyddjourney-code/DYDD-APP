@@ -78,100 +78,104 @@ export default async function LearningCoursePage({
   return (
     <main className={`course-shell course-shell-${course.accent}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}>
       {fruitLifeLane ? <FruitLifeMiniNav /> : null}
-      <nav className="course-nav" aria-label="Course navigation">
-        <Link href={fruitLifeLane ? "/hq?lane=fruitlife" : withReviewQuery("/hq", reviewParams)}>
-          Back to Base Camp
-        </Link>
-        <Link href={fruitLifeLane ? "/trailheads?lane=fruitlife" : withReviewQuery("/journey", reviewParams)}>
-          {fruitLifeLane ? "Trailheads" : "Journey map"}
-        </Link>
-      </nav>
+      {!fruitLifeLane ? (
+        <>
+          <nav className="course-nav" aria-label="Course navigation">
+            <Link href={withReviewQuery("/hq", reviewParams)}>
+              Back to Base Camp
+            </Link>
+            <Link href={withReviewQuery("/journey", reviewParams)}>
+              Journey map
+            </Link>
+          </nav>
 
-      <header className="course-hero polished-course-hero multi-course-hero">
-        <div>
-          <div className="course-logo-row">
-            <img className="course-logo" src={course.logo} alt={`${course.title} logo`} />
-            <img
-              className="course-logo small"
-              src="/brand/dydd-logo.webp"
-              alt="Discover Your Divine Design"
-            />
-          </div>
-          <p className="eyebrow">{course.tagline}</p>
-          <h1>{course.title}</h1>
-          <p className="lede">{course.description}</p>
-          <p className="source-note">{course.sourceNote}</p>
-          <Link
-            className="button primary"
-            href={
-              fruitLifeLane
-                ? `/learn/${course.slug}/${lessons[0]?.slug ?? ""}?lane=fruitlife`
-                : withReviewQuery(`/learn/${course.slug}/${lessons[0]?.slug ?? ""}`, reviewParams)
-            }
-          >
-            Start first lesson
-          </Link>
-        </div>
-        <aside className="course-verse assessment-snapshot-card">
-          <p className="section-label">Personalized course</p>
-          <h2>{insights.connected ? "Your report is connected." : "Awaiting report data."}</h2>
-          <p>
-            {insights.connected
-              ? "This course can read your assessment snapshot and place personal insight beside the lesson."
-              : "When a matching assessment is attached, this panel fills with learner-specific insight."}
-          </p>
-        </aside>
-      </header>
-
-      <section className="course-map" aria-label="Course facts">
-        <div className="course-stat">
-          <span>{course.modules.length}</span>
-          <small>Modules mapped</small>
-        </div>
-        <div className="course-stat">
-          <span>{lessons.length}</span>
-          <small>Lessons staged</small>
-        </div>
-        <div className="course-stat">
-          <span>{insights.rows.length}</span>
-          <small>Personal fields available</small>
-        </div>
-      </section>
-
-      <section className="course-personalization" aria-label="Course personalization">
-        <div>
-          <p className="section-label">Personalization</p>
-          <h2>
-            {insights.connected
-              ? "The lesson can carry your assessment language beside the teaching."
-              : "The structure is ready for the learner's own assessment data."}
-          </h2>
-          <p className="panel-copy">{course.companionNote}</p>
-        </div>
-        {insights.rows.length ? (
-          <dl>
-            {insights.rows.slice(0, 5).map((row) => (
-              <div key={row.label}>
-                <dt>{row.label}</dt>
-                <dd>{row.value}</dd>
+          <header className="course-hero polished-course-hero multi-course-hero">
+            <div>
+              <div className="course-logo-row">
+                <img className="course-logo" src={course.logo} alt={`${course.title} logo`} />
+                <img
+                  className="course-logo small"
+                  src="/brand/dydd-logo.webp"
+                  alt="Discover Your Divine Design"
+                />
               </div>
-            ))}
-          </dl>
-        ) : (
-          <Link className="button secondary" href="/login">
-            Sign in to connect records
-          </Link>
-        )}
-      </section>
+              <p className="eyebrow">{course.tagline}</p>
+              <h1>{course.title}</h1>
+              <p className="lede">{course.description}</p>
+              <p className="source-note">{course.sourceNote}</p>
+              <Link
+                className="button primary"
+                href={withReviewQuery(`/learn/${course.slug}/${lessons[0]?.slug ?? ""}`, reviewParams)}
+              >
+                Start first lesson
+              </Link>
+            </div>
+            <aside className="course-verse assessment-snapshot-card">
+              <p className="section-label">Personalized course</p>
+              <h2>{insights.connected ? "Your report is connected." : "Awaiting report data."}</h2>
+              <p>
+                {insights.connected
+                  ? "This course can read your assessment snapshot and place personal insight beside the lesson."
+                  : "When a matching assessment is attached, this panel fills with learner-specific insight."}
+              </p>
+            </aside>
+          </header>
 
-      <PageHelp
-        items={[
-          "Use the course menu to open and close modules without leaving the page.",
-          "Move one lesson at a time with the Previous and Next buttons.",
-          "Treat this as the course framework; lesson content can be tightened later without changing the structure.",
-        ]}
-        title="How to use this course"
-      />
+          <section className="course-map" aria-label="Course facts">
+            <div className="course-stat">
+              <span>{course.modules.length}</span>
+              <small>Modules mapped</small>
+            </div>
+            <div className="course-stat">
+              <span>{lessons.length}</span>
+              <small>Lessons staged</small>
+            </div>
+            <div className="course-stat">
+              <span>{insights.rows.length}</span>
+              <small>Personal fields available</small>
+            </div>
+          </section>
+
+          <section className="course-personalization" aria-label="Course personalization">
+            <div>
+              <p className="section-label">Personalization</p>
+              <h2>
+                {insights.connected
+                  ? "The lesson can carry your assessment language beside the teaching."
+                  : "The structure is ready for the learner's own assessment data."}
+              </h2>
+              <p className="panel-copy">{course.companionNote}</p>
+            </div>
+            {insights.rows.length ? (
+              <dl>
+                {insights.rows.slice(0, 5).map((row) => (
+                  <div key={row.label}>
+                    <dt>{row.label}</dt>
+                    <dd>{row.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : (
+              <Link className="button secondary" href="/login">
+                Sign in to connect records
+              </Link>
+            )}
+          </section>
+
+          <PageHelp
+            items={[
+              "Use the course menu to open and close modules without leaving the page.",
+              "Move one lesson at a time with the Previous and Next buttons.",
+              "Treat this as the course framework; lesson content can be tightened later without changing the structure.",
+            ]}
+            title="How to use this course"
+          />
+        </>
+      ) : (
+        <header className="mini-course-logo-intro">
+          <img src={course.logo} alt={`${course.title} logo`} />
+        </header>
+      )}
 
       <div id={`${course.slug}-course-player`}>
         <AssessmentCourseNavigator

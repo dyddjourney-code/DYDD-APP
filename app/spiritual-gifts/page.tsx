@@ -19,6 +19,7 @@ import {
   jordanReviewName,
 } from "@/lib/review/heather";
 import { verifySpiritualGiftsAppIdentity } from "@/lib/spiritual-gifts/app-identity";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type SpiritualGiftsPageProps = {
@@ -35,6 +36,66 @@ type SpiritualGiftsPageProps = {
 };
 
 export const dynamic = "force-dynamic";
+
+function snapshotReportAccessHref(
+  snapshot: NonNullable<ReturnType<typeof latestByAssessment>[number]> | undefined,
+) {
+  const reportAccessUrl = snapshot?.scores?.reportAccessUrl;
+
+  if (typeof reportAccessUrl === "string" && reportAccessUrl) {
+    return reportAccessUrl;
+  }
+
+  return null;
+}
+
+function snapshotSessionId(
+  snapshot: NonNullable<ReturnType<typeof latestByAssessment>[number]> | undefined,
+) {
+  const sourceResponseId = snapshot?.scores?.sourceResponseId;
+
+  if (typeof sourceResponseId !== "string") {
+    return null;
+  }
+
+  const [, , , sessionId] = sourceResponseId.split(":");
+
+  return sessionId || null;
+}
+
+async function spiritualGiftsSessionReportHref(
+  snapshot: NonNullable<ReturnType<typeof latestByAssessment>[number]> | undefined,
+  userId: string | undefined,
+) {
+  const directHref = snapshotReportAccessHref(snapshot);
+
+  if (directHref || !snapshot || !userId) {
+    return directHref;
+  }
+
+  const sessionId = snapshotSessionId(snapshot);
+
+  if (!sessionId) {
+    return null;
+  }
+
+  const { data: session } = await createSupabaseAdminClient()
+    .from("spiritual_gifts_sessions")
+    .select("created_by_user_id,metadata")
+    .eq("id", sessionId)
+    .maybeSingle();
+
+  if (session?.created_by_user_id !== userId) {
+    return null;
+  }
+
+  const metadata = (session.metadata ?? {}) as Record<string, unknown>;
+  const reportAccessUrl = metadata.reportAccessUrl;
+
+  return typeof reportAccessUrl === "string" && reportAccessUrl
+    ? reportAccessUrl
+    : null;
+}
 
 export default async function SpiritualGiftsPage({ searchParams }: SpiritualGiftsPageProps) {
   const params = await searchParams;
@@ -79,13 +140,12 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
   const spiritualGiftsSnapshot = latestByAssessment(assessmentReport.all).find(
     (snapshot) => snapshot.assessment_type === "spiritual_gifts",
   );
-  const spiritualGiftsStatusHref =
-    typeof spiritualGiftsSnapshot?.scores?.statusHref === "string" &&
-    spiritualGiftsSnapshot.scores.statusHref
-      ? spiritualGiftsSnapshot.scores.statusHref
-      : null;
+  const spiritualGiftsPdfHref = await spiritualGiftsSessionReportHref(
+    spiritualGiftsSnapshot,
+    user?.id,
+  );
   const spiritualGiftsReportHref =
-    spiritualGiftsStatusHref ??
+    spiritualGiftsPdfHref ??
     (spiritualGiftsSnapshot
       ? `/api/artifacts/${encodeURIComponent(spiritualGiftsSnapshot.id)}/download`
       : "/spiritual-gifts?channel=app&lane=fruitlife");
@@ -175,7 +235,7 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
                 </dl>
                 <div className="fieldkit-artifact-actions">
                   <Link className="button primary" href={spiritualGiftsReportHref}>
-                    Open report
+                    Download report
                   </Link>
                   <Link className="button secondary" href="/courses/spiritual-gifts-service?lane=fruitlife">
                     Explore course

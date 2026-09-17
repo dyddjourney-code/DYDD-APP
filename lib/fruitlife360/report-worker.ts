@@ -22,6 +22,11 @@ type FruitLifeSession = {
   source_participant_id: string | null;
 };
 
+type FruitLifeSessionBackfill = FruitLifeSession & {
+  report_snapshot_id: string | null;
+  report_status: string;
+};
+
 const fruitLifeTemplateId =
   process.env.FRUITLIFE_PDFMONKEY_TEMPLATE_ID ?? "84de6c4d-e279-42e5-a5cc-28248d1149dd";
 
@@ -125,6 +130,65 @@ async function upsertFruitLifeSnapshot({
   return snapshot.id as string;
 }
 
+async function backfillReadyFruitLifeSnapshots({
+  limit,
+  supabase,
+}: {
+  limit: number;
+  supabase: ReturnType<typeof createSupabaseAdminClient>;
+}) {
+  const { data: sessions, error } = await supabase
+    .from("fruitlife_360_sessions")
+    .select(
+      "id,created_by_user_id,participant_id,participant_email,participant_name,source_participant_id,report_snapshot_id,report_status",
+    )
+    .is("report_snapshot_id", null)
+    .in("report_status", ["ready", "sent"])
+    .order("updated_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const backfilled = [];
+
+  for (const session of ((sessions ?? []) as FruitLifeSessionBackfill[])) {
+    const { data: job } = await supabase
+      .from("fruitlife_360_report_jobs")
+      .select("id,payload,job_status")
+      .eq("session_id", session.id)
+      .in("job_status", ["ready", "sent"])
+      .order("completed_at", { ascending: false, nullsFirst: false })
+      .order("updated_at", { ascending: false, nullsFirst: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (!job?.payload || typeof job.payload !== "object" || Array.isArray(job.payload)) {
+      continue;
+    }
+
+    const snapshotId = await upsertFruitLifeSnapshot({
+      payload: job.payload as Record<string, unknown>,
+      session,
+      supabase,
+    });
+
+    await supabase
+      .from("fruitlife_360_sessions")
+      .update({ report_snapshot_id: snapshotId })
+      .eq("id", session.id);
+
+    backfilled.push({
+      jobId: job.id as string,
+      sessionId: session.id,
+      snapshotId,
+    });
+  }
+
+  return backfilled;
+}
+
 function finalReportEmail({
   participantName,
   reportUrl,
@@ -174,6 +238,9 @@ export async function processFruitLifeReportJobs({
   limit?: number;
 }) {
   const supabase = createSupabaseAdminClient();
+  const backfilledSnapshots = dryRun
+    ? []
+    : await backfillReadyFruitLifeSnapshots({ limit, supabase });
   const { data: jobs, error: jobsError } = await supabase
     .from("fruitlife_360_report_jobs")
     .select("id,session_id,payload,attempt_count")
@@ -391,6 +458,7 @@ export async function processFruitLifeReportJobs({
   }
 
   return {
+    backfilledSnapshots,
     dryRun,
     processed: results.length,
     results,

@@ -31,7 +31,6 @@ export function WaypointExplorer({
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [selectedId, setSelectedId] = useState(currentId);
-  const [shareState, setShareState] = useState("Share");
   const [subscribeEmail, setSubscribeEmail] = useState("");
   const [subscribeState, setSubscribeState] = useState<
     "idle" | "loading" | "success" | "error"
@@ -91,30 +90,6 @@ export function WaypointExplorer({
 
   function selectWaypoint(id: string) {
     setSelectedId(id);
-    setShareState("Share");
-  }
-
-  async function handleShare() {
-    const shareUrl = `${window.location.origin}/fireside#waypoints`;
-    const shareText = `${selectedWaypoint.title} - ${selectedWaypoint.scripture}`;
-
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: selectedWaypoint.title,
-          text: shareText,
-          url: shareUrl,
-        });
-      } else {
-        await navigator.clipboard.writeText(
-          `${selectedWaypoint.title}\n${shareText}\n${shareUrl}`,
-        );
-        setShareState("Link copied");
-        window.setTimeout(() => setShareState("Share"), 1800);
-      }
-    } catch {
-      setShareState("Share");
-    }
   }
 
   async function handleSubscribe(event: FormEvent<HTMLFormElement>) {
@@ -154,6 +129,46 @@ export function WaypointExplorer({
     }
   }
 
+  async function handleUnsubscribe() {
+    if (!subscribeEmail) {
+      return;
+    }
+
+    setSubscribeState("loading");
+    setSubscribeMessage("Updating your subscription...");
+
+    try {
+      const response = await fetch("/api/waypoints/unsubscribe", {
+        body: JSON.stringify({ email: subscribeEmail }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      });
+      const payload = (await response.json().catch(() => ({}))) as {
+        message?: string;
+      };
+
+      if (!response.ok) {
+        setSubscribeState("error");
+        setSubscribeMessage(
+          payload.message ?? "We could not update that subscription yet.",
+        );
+        return;
+      }
+
+      setSubscribeState("idle");
+      setSubscribeEmail("");
+      setSubscribeMessage(
+        payload.message ??
+          "You're unsubscribed from weekly DYDD Waypoint emails.",
+      );
+    } catch {
+      setSubscribeState("error");
+      setSubscribeMessage("Connection issue. Try again in a moment.");
+    }
+  }
+
   return (
     <>
       <article className="waypoint-display-card">
@@ -174,13 +189,6 @@ export function WaypointExplorer({
             <h2>{selectedWaypoint.title}</h2>
             <p className="waypoint-scripture">{selectedWaypoint.scripture}</p>
           </div>
-          <button
-            className="button secondary waypoint-share-button"
-            onClick={handleShare}
-            type="button"
-          >
-            {shareState}
-          </button>
         </div>
 
         <div className="waypoint-body">
@@ -195,38 +203,50 @@ export function WaypointExplorer({
             <span>{selectedWaypoint.reflection}</span>
           </div>
 
-          <form className="waypoint-subscribe-card" onSubmit={handleSubscribe}>
-            <label htmlFor="waypoint-email">Email address</label>
-            <div>
-              <input
-                id="waypoint-email"
-                name="email"
-                placeholder="jordan@example.com"
-                onChange={(event) => setSubscribeEmail(event.target.value)}
-                required
-                type="email"
-                value={subscribeEmail}
-              />
+          {subscribeState === "success" ? (
+            <div className="waypoint-subscribed-card">
+              <strong>Subscribed</strong>
+              <small>{subscribeMessage}</small>
               <button
-                className="button primary"
-                disabled={subscribeState === "loading"}
-                type="submit"
+                className="waypoint-unsubscribe-link"
+                onClick={handleUnsubscribe}
+                type="button"
               >
-                {subscribeState === "loading" ? "Saving..." : "Subscribe"}
+                Unsubscribe
               </button>
             </div>
-            <small
-              className={
-                subscribeState === "error"
-                  ? "waypoint-subscribe-message error"
-                  : subscribeState === "success"
-                    ? "waypoint-subscribe-message success"
+          ) : (
+            <form className="waypoint-subscribe-card" onSubmit={handleSubscribe}>
+              <label htmlFor="waypoint-email">Email address</label>
+              <div>
+                <input
+                  id="waypoint-email"
+                  name="email"
+                  placeholder="jordan@example.com"
+                  onChange={(event) => setSubscribeEmail(event.target.value)}
+                  required
+                  type="email"
+                  value={subscribeEmail}
+                />
+                <button
+                  className="button primary"
+                  disabled={subscribeState === "loading"}
+                  type="submit"
+                >
+                  {subscribeState === "loading" ? "Saving..." : "Subscribe"}
+                </button>
+              </div>
+              <small
+                className={
+                  subscribeState === "error"
+                    ? "waypoint-subscribe-message error"
                     : "waypoint-subscribe-message"
-              }
-            >
-              {subscribeMessage}
-            </small>
-          </form>
+                }
+              >
+                {subscribeMessage}
+              </small>
+            </form>
+          )}
         </div>
 
         <div className="waypoint-tag-row">

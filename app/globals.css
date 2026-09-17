@@ -8726,6 +8726,36 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   font-weight: 800;
 }
 
+.waypoint-subscribed-card {
+  display: grid;
+  gap: 4px;
+  padding: 10px 0 0;
+  color: var(--green-dark);
+}
+
+.waypoint-subscribed-card strong {
+  font-size: 0.92rem;
+  font-weight: 950;
+}
+
+.waypoint-subscribed-card small {
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.waypoint-unsubscribe-link {
+  width: fit-content;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: rgba(36, 63, 39, 0.72);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
 .fireside-content-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -8966,13 +8996,6 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
     radial-gradient(circle at 18% 16%, rgba(184, 138, 67, 0.16), transparent 32%);
 }
 
-.waypoint-display-heading {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px;
-  align-items: start;
-}
-
 .waypoint-display-card h2 {
   max-width: 26ch;
   margin: 0;
@@ -9015,10 +9038,6 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .waypoint-scripture {
   color: var(--green-dark) !important;
   font-weight: 900;
-}
-
-.waypoint-share-button {
-  white-space: nowrap;
 }
 
 .waypoint-category-chip {
@@ -13743,10 +13762,6 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .fireside-event-card .button {
     grid-row: auto;
     justify-self: start;
-  }
-
-  .waypoint-share-button {
-    width: fit-content;
   }
 
   .brand-hero {

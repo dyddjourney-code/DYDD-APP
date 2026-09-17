@@ -1,3 +1,4 @@
+import { createHash, randomBytes } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { sendResendEmail } from "@/lib/email/resend";
@@ -41,6 +42,29 @@ function isAuthorized(request: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
 
   return Boolean(token && token === cronSecret);
+}
+
+function hashToken(token: string) {
+  return createHash("sha256").update(token).digest("hex");
+}
+
+function getAppBaseUrl() {
+  const configured =
+    process.env.DYDD_APP_URL ??
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    process.env.NEXT_PUBLIC_APP_URL;
+
+  if (configured) {
+    return configured.replace(/\/$/, "");
+  }
+
+  const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+
+  if (vercelUrl) {
+    return `https://${vercelUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}`;
+  }
+
+  return "https://dydd-online-school.vercel.app";
 }
 
 export async function GET(request: NextRequest) {
@@ -129,6 +153,29 @@ export async function GET(request: NextRequest) {
     }
 
     for (const subscription of activeSubscriptions) {
+      const unsubscribeToken = randomBytes(32).toString("hex");
+      const unsubscribeUrl = `${getAppBaseUrl()}/api/waypoints/unsubscribe?token=${encodeURIComponent(unsubscribeToken)}`;
+      const { error: tokenError } = await supabase
+        .from("dydd_waypoint_subscriptions")
+        .update({
+          unsubscribe_token_hash: hashToken(unsubscribeToken),
+        })
+        .eq("id", subscription.id);
+
+      if (tokenError) {
+        erroredEmails += 1;
+        await supabase
+          .from("dydd_waypoint_delivery_jobs")
+          .update({
+            error_message: tokenError.message,
+            status: "error",
+          })
+          .eq("release_id", release.id)
+          .eq("subscription_id", subscription.id)
+          .eq("delivery_channel", "email");
+        continue;
+      }
+
       const text = [
         waypoint.title,
         waypoint.scripture_reference ?? "",
@@ -140,6 +187,7 @@ export async function GET(request: NextRequest) {
           : "",
         "",
         "You are receiving this because you subscribed to DYDD Waypoints.",
+        `Unsubscribe: ${unsubscribeUrl}`,
       ]
         .filter(Boolean)
         .join("\n");
@@ -156,6 +204,7 @@ export async function GET(request: NextRequest) {
             : ""
         }
         <p style="color:#667085;font-size:13px;">You are receiving this because you subscribed to DYDD Waypoints.</p>
+        <p style="color:#667085;font-size:13px;"><a href="${unsubscribeUrl}">Unsubscribe from DYDD Waypoints</a></p>
       `;
 
       const result = await sendResendEmail({

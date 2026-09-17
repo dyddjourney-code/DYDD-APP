@@ -7612,10 +7612,6 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   align-content: end;
 }
 
-.fruitlife-mini-basecamp-hero .basecamp-scene img {
-  width: min(520px, 42vw);
-}
-
 .fruitlife-basecamp-intro,
 .spiritual-gifts-mini-intro {
   display: grid;
@@ -14041,13 +14037,14 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
       linear-gradient(180deg, rgba(16, 36, 25, 0.08) 0%, rgba(16, 36, 25, 0.18) 38%, rgba(16, 36, 25, 0.9) 100%),
       url("/brand/spiritual-gifts-miniapp-banner.png");
     background-position: 28% center;
+    background-size: cover;
   }
 
   .spiritual-gifts-mini-copy {
     grid-column: 1;
     align-content: end;
     max-width: none;
-    min-height: 440px;
+    min-height: 340px;
   }
 }
 
@@ -14880,11 +14877,13 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   overflow: hidden;
   margin-top: clamp(18px, 3vw, 28px);
   background:
-    linear-gradient(90deg, rgba(16, 36, 25, 0.04) 0%, rgba(16, 36, 25, 0.1) 43%, rgba(16, 36, 25, 0.76) 65%, rgba(16, 36, 25, 0.92) 100%),
+    linear-gradient(90deg, rgba(16, 36, 25, 0.02) 0%, rgba(16, 36, 25, 0.08) 42%, rgba(16, 36, 25, 0.78) 66%, rgba(16, 36, 25, 0.94) 100%),
     url("/brand/spiritual-gifts-miniapp-banner.png");
-  background-position: center;
-  background-size: cover;
-  min-height: clamp(440px, 48vw, 620px);
+  background-color: #162419;
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  min-height: clamp(300px, 34vw, 430px);
 }
 
 .spiritual-gifts-mini-copy {

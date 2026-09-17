@@ -112,11 +112,6 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
               <Link className="button primary" href="/spiritual-gifts?channel=app&lane=fruitlife">
                 Take the free assessment
               </Link>
-              {spiritualGiftsSnapshot ? (
-                <Link className="button secondary" href={spiritualGiftsReportHref}>
-                  Open report
-                </Link>
-              ) : null}
             </div>
           </div>
         </header>

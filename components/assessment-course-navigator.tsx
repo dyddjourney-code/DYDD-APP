@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { CourseModule } from "@/lib/courses/course-catalog";
 import { CompanionAudioCard } from "@/components/companion-audio-card";
 
@@ -53,6 +53,7 @@ export function AssessmentCourseNavigator({
   const flatLessons = useMemo(() => flattenModules(modules), [modules]);
   const [activeSlug, setActiveSlug] = useState(flatLessons[0]?.lesson.slug ?? "");
   const [openModules, setOpenModules] = useState<string[]>([]);
+  const activeLessonRef = useRef<HTMLElement | null>(null);
   const activeIndex = Math.max(
     0,
     flatLessons.findIndex((item) => item.lesson.slug === activeSlug),
@@ -73,6 +74,9 @@ export function AssessmentCourseNavigator({
     setOpenModules((current) =>
       current.includes(item.module.slug) ? current : [...current, item.module.slug],
     );
+    window.setTimeout(() => {
+      activeLessonRef.current?.scrollIntoView({ block: "start" });
+    }, 0);
   };
 
   const toggleModule = (moduleSlug: string) => {
@@ -132,9 +136,7 @@ export function AssessmentCourseNavigator({
                           <li key={lesson.slug}>
                             <button
                               className={lesson.slug === active.lesson.slug ? "active" : ""}
-                              onClick={() =>
-                                flatLesson ? setLesson(flatLesson) : setActiveSlug(lesson.slug)
-                              }
+                              onClick={() => flatLesson ? setLesson(flatLesson) : undefined}
                               type="button"
                             >
                               <span>{`Lesson ${lessonIndex + 1}`}</span>
@@ -152,7 +154,10 @@ export function AssessmentCourseNavigator({
         </div>
       </aside>
 
-      <article className={`journey-active-lesson assessment assessment-active-lesson assessment-active-${accent}`}>
+      <article
+        className={`journey-active-lesson assessment assessment-active-lesson assessment-active-${accent}`}
+        ref={activeLessonRef}
+      >
         <header>
           <div>
             <p className="section-label">

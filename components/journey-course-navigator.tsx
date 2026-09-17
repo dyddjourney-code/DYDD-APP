@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { CompanionAudioCard } from "@/components/companion-audio-card";
 import { dyddJourney } from "@/lib/journey/dydd-journey";
 import type {
@@ -417,6 +417,7 @@ export function JourneyCourseNavigator({ modules }: JourneyCourseNavigatorProps)
   const [activeSlug, setActiveSlug] = useState(flatUnits[0]?.unit.slug ?? "");
   const [openModules, setOpenModules] = useState<string[]>([]);
   const [openSections, setOpenSections] = useState<string[]>([]);
+  const activeLessonRef = useRef<HTMLElement | null>(null);
   const activeIndex = Math.max(
     0,
     flatUnits.findIndex((item) => item.unit.slug === activeSlug),
@@ -444,6 +445,9 @@ export function JourneyCourseNavigator({ modules }: JourneyCourseNavigatorProps)
     setOpenSections((current) =>
       current.includes(sectionKey) ? current : [...current, sectionKey],
     );
+    window.setTimeout(() => {
+      activeLessonRef.current?.scrollIntoView({ block: "start" });
+    }, 0);
   };
 
   const toggleModule = (moduleSlug: string) => {
@@ -526,9 +530,7 @@ export function JourneyCourseNavigator({ modules }: JourneyCourseNavigatorProps)
                                 <li key={unit.slug}>
                                   <button
                                     className={unit.slug === active.unit.slug ? "active" : ""}
-                                    onClick={() =>
-                                      flatUnit ? setLesson(flatUnit) : setActiveSlug(unit.slug)
-                                    }
+                                    onClick={() => flatUnit ? setLesson(flatUnit) : undefined}
                                     type="button"
                                   >
                                     <span className={typeClass[unit.type]}>{unit.typeLabel}</span>
@@ -550,7 +552,10 @@ export function JourneyCourseNavigator({ modules }: JourneyCourseNavigatorProps)
         </div>
       </aside>
 
-      <article className={`journey-active-lesson ${typeClass[active.unit.type]}`}>
+      <article
+        className={`journey-active-lesson ${typeClass[active.unit.type]}`}
+        ref={activeLessonRef}
+      >
         <header>
           <div>
             <p className="section-label">

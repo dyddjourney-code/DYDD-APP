@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { CompanionMoment } from "@/lib/courses/companion-moments";
 import { CompanionAudioCard } from "@/components/companion-audio-card";
 
@@ -54,6 +54,7 @@ export function DesignIdCourseNavigator({
   const flatLessons = useMemo(() => flattenModules(modules), [modules]);
   const [activeSlug, setActiveSlug] = useState(flatLessons[0]?.lesson.slug ?? "");
   const [openModules, setOpenModules] = useState<string[]>([]);
+  const activeLessonRef = useRef<HTMLElement | null>(null);
   const activeIndex = Math.max(
     0,
     flatLessons.findIndex((item) => item.lesson.slug === activeSlug),
@@ -74,6 +75,9 @@ export function DesignIdCourseNavigator({
     setOpenModules((current) =>
       current.includes(item.module.slug) ? current : [...current, item.module.slug],
     );
+    window.setTimeout(() => {
+      activeLessonRef.current?.scrollIntoView({ block: "start" });
+    }, 0);
   };
 
   const toggleModule = (moduleSlug: string) => {
@@ -133,9 +137,7 @@ export function DesignIdCourseNavigator({
                           <li key={lesson.slug}>
                             <button
                               className={lesson.slug === active.lesson.slug ? "active" : ""}
-                              onClick={() =>
-                                flatLesson ? setLesson(flatLesson) : setActiveSlug(lesson.slug)
-                              }
+                              onClick={() => flatLesson ? setLesson(flatLesson) : undefined}
                               type="button"
                             >
                               <span className="designid">Lesson {lessonIndex + 1}</span>
@@ -153,7 +155,10 @@ export function DesignIdCourseNavigator({
         </div>
       </aside>
 
-      <article className="journey-active-lesson designid designid-active-lesson">
+      <article
+        className="journey-active-lesson designid designid-active-lesson"
+        ref={activeLessonRef}
+      >
         <header>
           <div>
             <p className="section-label">

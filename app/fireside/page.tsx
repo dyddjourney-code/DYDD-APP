@@ -5,8 +5,8 @@ import { WaypointExplorer } from "@/components/waypoint-explorer";
 import {
   currentWaypoint as scheduledCurrentWaypoint,
   previousWaypoint as scheduledPreviousWaypoint,
-  waypointArchive as scheduledWaypointArchive,
   waypointCategories as scheduledWaypointCategories,
+  getReleasedWaypoints,
 } from "@/lib/waypoints/waypoint-data";
 
 const waypointCategories = [
@@ -258,6 +258,18 @@ type FiresidePageProps = {
 export default async function FiresidePage({ searchParams }: FiresidePageProps) {
   const params = await searchParams;
   const fruitLifeLane = params?.lane === "fruitlife";
+  const releasedScheduledWaypoints = getReleasedWaypoints();
+  const releasedWaypointArchive = [
+    ...releasedScheduledWaypoints,
+    ...waypointArchive.filter(
+      (waypoint) =>
+        !releasedScheduledWaypoints.some((released) => released.id === waypoint.id),
+    ),
+  ];
+  const activeCurrentWaypoint =
+    releasedWaypointArchive[0] ?? scheduledCurrentWaypoint;
+  const activePreviousWaypoint =
+    releasedWaypointArchive[1] ?? scheduledPreviousWaypoint;
 
   if (fruitLifeLane) {
     return (
@@ -286,9 +298,9 @@ export default async function FiresidePage({ searchParams }: FiresidePageProps) 
         <section className="waypoints-section" aria-label="DYDD Waypoints library">
           <WaypointExplorer
             categories={scheduledWaypointCategories}
-            currentId={scheduledCurrentWaypoint.id}
-            previousId={scheduledPreviousWaypoint.id}
-            waypoints={scheduledWaypointArchive}
+            currentId={activeCurrentWaypoint.id}
+            previousId={activePreviousWaypoint.id}
+            waypoints={releasedWaypointArchive}
           />
         </section>
         <FruitLifeMiniFooter />
@@ -366,9 +378,9 @@ export default async function FiresidePage({ searchParams }: FiresidePageProps) 
       <section className="waypoints-section" aria-label="DYDD Waypoints library">
         <WaypointExplorer
           categories={scheduledWaypointCategories}
-          currentId={scheduledCurrentWaypoint.id}
-          previousId={scheduledPreviousWaypoint.id}
-          waypoints={scheduledWaypointArchive}
+          currentId={activeCurrentWaypoint.id}
+          previousId={activePreviousWaypoint.id}
+          waypoints={releasedWaypointArchive}
         />
       </section>
 

@@ -27,3 +27,14 @@ export const waypointCategories = [
 
 export const currentWaypoint = waypointArchive[0];
 export const previousWaypoint = waypointArchive[1];
+
+export function getReleasedWaypoints(now = new Date()) {
+  const nowTime = now.getTime();
+
+  return waypointArchive
+    .filter((waypoint) => new Date(waypoint.releaseAt).getTime() <= nowTime)
+    .sort(
+      (a, b) =>
+        new Date(b.releaseAt).getTime() - new Date(a.releaseAt).getTime(),
+    );
+}

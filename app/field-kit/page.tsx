@@ -582,7 +582,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
                 action: activeFruitLifeSession ? "Open progress" : "Start FruitLife 360",
                 courseAction: hasFruitLife ? "Explore course" : "Course opens with your report",
                 courseAvailable: hasFruitLife,
-                courseHref: "/courses/fruitlife-360-formation",
+                courseHref: "/courses/fruitlife-360-formation?lane=fruitlife",
                 detail:
                   "A formation mirror using self reflection and observer feedback to notice visible fruit, pressure patterns, and growth invitations.",
                 href: activeFruitLifeSession

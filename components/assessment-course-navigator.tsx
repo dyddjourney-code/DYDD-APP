@@ -17,6 +17,8 @@ type AssessmentCourseNavigatorProps = {
   insights: readonly AssessmentInsightRow[];
   modules: readonly CourseModule[];
   reviewQuery: string;
+  showPersonalization?: boolean;
+  showStandaloneLessonLink?: boolean;
 };
 
 type FlatLesson = {
@@ -49,6 +51,8 @@ export function AssessmentCourseNavigator({
   insights,
   modules,
   reviewQuery,
+  showPersonalization = true,
+  showStandaloneLessonLink = true,
 }: AssessmentCourseNavigatorProps) {
   const flatLessons = useMemo(() => flattenModules(modules), [modules]);
   const [activeSlug, setActiveSlug] = useState(flatLessons[0]?.lesson.slug ?? "");
@@ -192,25 +196,27 @@ export function AssessmentCourseNavigator({
 
             <CompanionAudioCard moment={active.lesson.companionMoment} />
 
-            <section className="personal-walkthrough assessment-personal-walkthrough">
-              <p className="section-label">Assessment connection</p>
-              <h3>{connected ? "Connected data can speak into this lesson." : "Ready for connected data."}</h3>
-              {insights.length ? (
-                <dl className="lesson-insight-list">
-                  {insights.slice(0, 6).map((row) => (
-                    <div key={`${row.label}-${row.value}`}>
-                      <dt>{row.label}</dt>
-                      <dd>{row.value}</dd>
-                    </div>
-                  ))}
-                </dl>
-              ) : (
-                <p>
-                  Once this assessment is connected, this space can carry the
-                  learner's report language beside the teaching.
-                </p>
-              )}
-            </section>
+            {showPersonalization ? (
+              <section className="personal-walkthrough assessment-personal-walkthrough">
+                <p className="section-label">Assessment connection</p>
+                <h3>{connected ? "Connected data can speak into this lesson." : "Ready for connected data."}</h3>
+                {insights.length ? (
+                  <dl className="lesson-insight-list">
+                    {insights.slice(0, 6).map((row) => (
+                      <div key={`${row.label}-${row.value}`}>
+                        <dt>{row.label}</dt>
+                        <dd>{row.value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                ) : (
+                  <p>
+                    Once this assessment is connected, this space can carry the
+                    learner's report language beside the teaching.
+                  </p>
+                )}
+              </section>
+            ) : null}
 
             <section className="lesson-source readable-lesson-body" aria-label="Lesson body">
               <p className="section-label">Rough lesson body</p>
@@ -246,9 +252,11 @@ export function AssessmentCourseNavigator({
           ) : (
             <a href={withReview("/hq", reviewQuery)}>Return to HQ</a>
           )}
-          <a href={withReview(`/learn/${courseSlug}/${active.lesson.slug}`, reviewQuery)}>
-            Open lesson route
-          </a>
+          {showStandaloneLessonLink ? (
+            <a href={withReview(`/learn/${courseSlug}/${active.lesson.slug}`, reviewQuery)}>
+              Open lesson route
+            </a>
+          ) : null}
         </footer>
       </article>
     </section>

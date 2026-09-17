@@ -121,32 +121,31 @@ export default async function LearningLessonPage({
 
           <CompanionAudioCard moment={lesson.companionMoment} />
 
-          <section className="personal-walkthrough" aria-label="Learner data panel">
-            <p className="section-label">
-              {fruitLifeLane ? "Personalized insight" : "Heather sample data"}
-            </p>
-            <h2>
-              {insights.connected
-                ? "This lesson is connected to your assessment record."
-                : "This lesson is ready for your assessment record."}
-            </h2>
-            {insights.rows.length ? (
-              <dl className="lesson-insight-list">
-                {insights.rows.slice(0, 6).map((row) => (
-                  <div key={row.label}>
-                    <dt>{row.label}</dt>
-                    <dd>{row.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            ) : (
-              <p>
-                {fruitLifeLane
-                  ? "When your FruitLife 360 report is ready, this space can carry report-aware guidance beside the lesson."
-                  : "Sign in with the assessment email, or open Heather review mode, to see assessment-backed lesson language here."}
-              </p>
-            )}
-          </section>
+          {!fruitLifeLane ? (
+            <section className="personal-walkthrough" aria-label="Learner data panel">
+              <p className="section-label">Heather sample data</p>
+              <h2>
+                {insights.connected
+                  ? "This lesson is connected to your assessment record."
+                  : "This lesson is ready for your assessment record."}
+              </h2>
+              {insights.rows.length ? (
+                <dl className="lesson-insight-list">
+                  {insights.rows.slice(0, 6).map((row) => (
+                    <div key={row.label}>
+                      <dt>{row.label}</dt>
+                      <dd>{row.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : (
+                <p>
+                  Sign in with the assessment email, or open Heather review mode,
+                  to see assessment-backed lesson language here.
+                </p>
+              )}
+            </section>
+          ) : null}
 
           <section className="lesson-source readable-lesson-body" aria-label="Lesson body">
             <p className="section-label">Lesson body</p>

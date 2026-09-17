@@ -186,9 +186,12 @@ export default async function LearningCoursePage({
           insights={insights.rows}
           modules={course.modules}
           reviewQuery={courseQuery}
+          showPersonalization={!fruitLifeLane}
+          showStandaloneLessonLink={!fruitLifeLane}
         />
       </div>
 
+      {!fruitLifeLane ? (
       <details className="journey-advanced-planning assessment-source-accordion">
         <summary>
           <span>Source lesson links</span>
@@ -226,6 +229,7 @@ export default async function LearningCoursePage({
           ))}
         </section>
       </details>
+      ) : null}
     </main>
   );
 }

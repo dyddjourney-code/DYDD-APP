@@ -12204,7 +12204,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .companion-audio-card {
   display: grid;
-  grid-template-columns: minmax(86px, 0.18fr) minmax(0, 1fr);
+  grid-template-columns: minmax(132px, 0.26fr) minmax(0, 1fr);
   gap: 16px;
   align-items: stretch;
   margin: 4px 0;
@@ -12220,7 +12220,8 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   display: flex;
   align-items: end;
   justify-content: center;
-  min-height: 148px;
+  overflow: hidden;
+  min-height: 178px;
   border: 1px solid rgba(36, 63, 39, 0.12);
   border-radius: 8px;
   background:
@@ -12230,16 +12231,19 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .companion-audio-portraits img {
   width: auto;
-  max-width: 92%;
-  height: 144px;
+  max-width: 122%;
+  height: 210px;
   object-fit: contain;
   object-position: center bottom;
+  transform: translateY(8px);
 }
 
 .companion-audio-portraits img.duo {
-  max-width: 58%;
+  max-width: 64%;
+  height: 176px;
   margin-right: -10px;
   margin-left: -10px;
+  transform: translateY(6px);
 }
 
 .companion-audio-content {
@@ -14511,11 +14515,15 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   }
 
   .companion-audio-portraits {
-    min-height: 120px;
+    min-height: 168px;
   }
 
   .companion-audio-portraits img {
-    height: 118px;
+    height: 198px;
+  }
+
+  .companion-audio-portraits img.duo {
+    height: 158px;
   }
 
   .fruitlife-entry-shell {

@@ -259,13 +259,7 @@ export default async function FiresidePage({ searchParams }: FiresidePageProps) 
   const params = await searchParams;
   const fruitLifeLane = params?.lane === "fruitlife";
   const releasedScheduledWaypoints = getReleasedWaypoints();
-  const releasedWaypointArchive = [
-    ...releasedScheduledWaypoints,
-    ...waypointArchive.filter(
-      (waypoint) =>
-        !releasedScheduledWaypoints.some((released) => released.id === waypoint.id),
-    ),
-  ];
+  const releasedWaypointArchive = releasedScheduledWaypoints;
   const activeCurrentWaypoint =
     releasedWaypointArchive[0] ?? scheduledCurrentWaypoint;
   const activePreviousWaypoint =

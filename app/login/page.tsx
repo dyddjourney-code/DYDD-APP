@@ -22,26 +22,34 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     : "signin";
   const isFruitLifeAccess =
     next.includes("lane=fruitlife") || next.startsWith("/fruitlife360");
-  const accessTitle = isFruitLifeAccess ? "FruitLife 360 access" : "DYDD Base Camp access";
-  const accessHeading = isFruitLifeAccess
-    ? "Create your FruitLife 360 account."
+  const isSpiritualGiftsAccess = next.startsWith("/spiritual-gifts");
+  const isMiniAppAccess = isFruitLifeAccess || isSpiritualGiftsAccess;
+  const accessTitle = isSpiritualGiftsAccess
+    ? "Spiritual Gifts access"
+    : isFruitLifeAccess ? "FruitLife 360 access" : "DYDD Base Camp access";
+  const accessHeading = isMiniAppAccess
+    ? isSpiritualGiftsAccess
+      ? "Create your Spiritual Gifts account."
+      : "Create your FruitLife 360 account."
     : "Enter Base Camp.";
-  const accessCopy = isFruitLifeAccess
-    ? "Use an email and password so you can return to your FruitLife 360 process, track observer progress, send reminders, and access your report."
+  const accessCopy = isMiniAppAccess
+    ? isSpiritualGiftsAccess
+      ? "Use an email and password so your free Spiritual Gifts report, course access, and future DYDD app history stay connected."
+      : "Use an email and password so you can return to your FruitLife 360 process, track observer progress, send reminders, and access your report."
     : "Sign in to continue the DYDD Journey, collect your artifacts, and prepare for guided reflection around your design.";
   const signInHref = `/login?${new URLSearchParams({ mode: "signin", next }).toString()}`;
   const signUpHref = `/login?${new URLSearchParams({ mode: "signup", next }).toString()}`;
   const recoveryHref = `/login?${new URLSearchParams({ mode: "recovery", next }).toString()}`;
 
   return (
-    <main className={`login-shell${isFruitLifeAccess ? " fruitlife-access-shell" : ""}`}>
+    <main className={`login-shell${isMiniAppAccess ? " fruitlife-access-shell" : ""}`}>
       <section className="login-copy">
-        {isFruitLifeAccess ? (
+        {isMiniAppAccess ? (
           <>
             <img
               className="fruitlife-login-logo"
-              src="/brand/tools/fruitful-life-360-logo.jpg"
-              alt="FruitLife 360"
+              src={isSpiritualGiftsAccess ? "/brand/tools/spiritual-gifts-logo.jpg" : "/brand/tools/fruitful-life-360-logo.jpg"}
+              alt={isSpiritualGiftsAccess ? "Spiritual Gifts" : "FruitLife 360"}
             />
             <p className="eyebrow">{accessTitle}</p>
             <h1>{accessHeading}</h1>
@@ -192,10 +200,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
         {message ? <p className="status-note">{message}</p> : null}
 
-        {isFruitLifeAccess ? (
+        {isMiniAppAccess ? (
           <p className="helper-text">
-            Your account keeps your FruitLife 360 process connected to you so
-            you can return while observer responses come in.
+            Your account keeps this assessment connected to you so
+            your reports and courses are ready when you return.
           </p>
         ) : null}
       </section>

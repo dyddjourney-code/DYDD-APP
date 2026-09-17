@@ -2,6 +2,7 @@ import Link from "next/link";
 
 const fruitLifeNavItems = [
   { href: "/hq?lane=fruitlife", label: "Base Camp" },
+  { href: "/spiritual-gifts?lane=fruitlife", label: "Spiritual Gifts" },
   { href: "/field-kit?lane=fruitlife", label: "FruitLife 360" },
   { href: "/trailheads?lane=fruitlife", label: "Trailheads" },
   { href: "/fireside?lane=fruitlife#waypoints", label: "Waypoints" },

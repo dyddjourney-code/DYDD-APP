@@ -609,18 +609,12 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   });
 
   if (fruitLifeLane) {
-    const fruitLifeReturnPath = selectedFruitLifeSession
-      ? `/hq?lane=fruitlife&fruitlife_session=${encodeURIComponent(selectedFruitLifeSession.id)}${
-          activeFruitLifeToken ? `&fruitlife_token=${encodeURIComponent(activeFruitLifeToken)}` : ""
-        }#current-assessment-process`
-      : "/hq?lane=fruitlife#current-assessment-process";
-
     return (
       <main className="hq-shell hq-app-shell fruitlife-basecamp-lane">
         <div className="hq-content fruitlife-basecamp-content">
           <header className="hq-topbar fruitlife-basecamp-topbar">
             <div>
-              <p className="eyebrow">FruitLife 360 Base Camp</p>
+              <p className="eyebrow">DYDD Base Camp</p>
               <h1>Welcome, {welcomeName}.</h1>
             </div>
             {reviewReport ? (
@@ -638,43 +632,63 @@ export default async function HqPage({ searchParams }: HqPageProps) {
 
           <FruitLifeMiniNav />
 
-          <section className="fruitlife-basecamp-hero" aria-label="FruitLife 360 Base Camp">
-            <div>
-              <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360" />
-              <p className="section-label">Start here</p>
-              <h2>Set up your FruitLife 360 process.</h2>
-              <p>
-                Create the participant record, add observers, send links, and return here to
-                track self-reflection, observer responses, reminders, and report progress.
-              </p>
-              <Link
-                className="button primary"
-                href="/field-kit?lane=fruitlife"
-              >
-                Open FruitLife 360
-              </Link>
+          <section className="basecamp-hero fruitlife-mini-basecamp-hero" id="basecamp" aria-label="DYDD Base Camp">
+            <div className="basecamp-copy">
+              <p className="section-label basecamp-purpose-pill">On Purpose, For Purpose</p>
+              <div className="basecamp-identity-lockup">
+                <div>
+                  <h2>Welcome, {welcomeName}.</h2>
+                  <p>
+                    This is your early DYDD app space for free Spiritual Gifts,
+                    FruitLife 360, course support, weekly Waypoints, and your account record.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="basecamp-scene" aria-hidden="true">
+              <img src="/brand/dydd-cabin-hut-only.png" alt="" />
+              <div className="camp-sign">
+                <span>DYDD</span>
+                <strong>Base Camp</strong>
+              </div>
             </div>
           </section>
 
-          <FruitLifeCurrentAssessmentProcess
-            created={reviewParams?.fruitlife === "created"}
-            returnTo={fruitLifeReturnPath}
-            session={activeFruitLifeSession}
-            token={activeFruitLifeToken}
-          />
-
-          {!activeFruitLifeSession ? (
-            <section className="fruitlife-empty-control basecamp-account-card">
-              <div className="card-heading">
-                <p className="section-label">Progress tracker</p>
-                <h2>No active FruitLife 360 process yet.</h2>
-                <p>
-                  Once you start the assessment, this area will show the self link,
-                  observer completion status, reminder controls, and report status.
-                </p>
-              </div>
-            </section>
-          ) : null}
+          <section className="fruitlife-basecamp-intro" aria-label="What you can do here">
+            <article>
+              <p className="section-label">Free first step</p>
+              <h2>Spiritual Gifts</h2>
+              <p>
+                Take the free Spiritual Gifts assessment inside your account.
+                Your report becomes an artifact here and opens the connected course.
+              </p>
+              <Link className="button primary" href="/spiritual-gifts?lane=fruitlife">
+                Open Spiritual Gifts
+              </Link>
+            </article>
+            <article>
+              <p className="section-label">Formation mirror</p>
+              <h2>FruitLife 360</h2>
+              <p>
+                Start FruitLife 360, invite observers, track report progress,
+                and return for your completed formation artifact.
+              </p>
+              <Link className="button secondary" href="/field-kit?lane=fruitlife">
+                Open FruitLife 360
+              </Link>
+            </article>
+            <article>
+              <p className="section-label">Keep walking</p>
+              <h2>Trailheads and Waypoints</h2>
+              <p>
+                Use Trailheads for course support and Waypoints for the weekly
+                Friday reflection as each one releases.
+              </p>
+              <Link className="button secondary" href="/trailheads?lane=fruitlife">
+                Open Trailheads
+              </Link>
+            </article>
+          </section>
 
           <section className="basecamp-account-layout basecamp-account-layout-single" aria-label="FruitLife account overview">
             <article className="basecamp-account-card profile">
@@ -682,7 +696,8 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                 <p className="section-label">Account</p>
                 <h2>Your access record.</h2>
                 <p>
-                  This account keeps your FruitLife 360 process connected to your email.
+                  This account keeps your reports, artifacts, courses, and future DYDD app access
+                  connected to the same email.
                 </p>
               </div>
               <dl className="account-detail-list">

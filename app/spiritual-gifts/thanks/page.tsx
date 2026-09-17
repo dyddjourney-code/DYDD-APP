@@ -64,8 +64,8 @@ export default async function SpiritualGiftsThanksPage({ searchParams }: Spiritu
             <Link className="button primary" href={statusHref}>
               View results
             </Link>
-            <Link className="button secondary" href="/field-kit">
-              Back to Field Kit
+            <Link className="button secondary" href="/spiritual-gifts?lane=fruitlife">
+              Back to Spiritual Gifts
             </Link>
           </div>
         ) : null}

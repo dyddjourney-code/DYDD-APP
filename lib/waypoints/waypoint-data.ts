@@ -25,9 +25,6 @@ export const waypointCategories = [
   "Work & Leadership",
 ];
 
-export const currentWaypoint = waypointArchive[0];
-export const previousWaypoint = waypointArchive[1];
-
 export function getReleasedWaypoints(now = new Date()) {
   const nowTime = now.getTime();
 
@@ -38,3 +35,8 @@ export function getReleasedWaypoints(now = new Date()) {
         new Date(b.releaseAt).getTime() - new Date(a.releaseAt).getTime(),
     );
 }
+
+const releasedWaypoints = getReleasedWaypoints();
+
+export const currentWaypoint = releasedWaypoints[0] ?? waypointArchive[0];
+export const previousWaypoint = releasedWaypoints[1] ?? waypointArchive[1];

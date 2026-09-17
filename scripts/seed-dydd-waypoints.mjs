@@ -23,6 +23,7 @@ const supabase = createClient(supabaseUrl, serviceRoleKey, {
     persistSession: false,
   },
 });
+const nowTime = Date.now();
 
 for (const waypoint of data) {
   const { data: waypointRow, error: waypointError } = await supabase
@@ -63,7 +64,14 @@ for (const waypoint of data) {
         public_channels: ["website"],
         release_at: waypoint.releaseAt,
         release_timezone: "America/New_York",
-        status: "scheduled",
+        released_at:
+          new Date(waypoint.releaseAt).getTime() <= nowTime
+            ? waypoint.releaseAt
+            : null,
+        status:
+          new Date(waypoint.releaseAt).getTime() <= nowTime
+            ? "released"
+            : "scheduled",
         subscriber_channels: ["email", "app"],
         waypoint_id: waypointRow.id,
       },

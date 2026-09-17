@@ -295,14 +295,6 @@ export function WaypointExplorer({
       ) : null}
 
       <div className="waypoint-archive-panel">
-        <div className="card-heading">
-          <p className="section-label">Find a Waypoint</p>
-          <p>
-            Search by title, Scripture, category, reflection theme, or tag as
-            the Waypoint library grows.
-          </p>
-        </div>
-
         <div className="waypoint-explorer">
           <div className="waypoint-search-row">
             <label>

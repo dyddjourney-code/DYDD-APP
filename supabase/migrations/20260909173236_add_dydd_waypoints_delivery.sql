@@ -50,6 +50,12 @@ create table if not exists public.dydd_waypoint_subscriptions (
 create unique index if not exists dydd_waypoint_subscriptions_email_uidx
 on public.dydd_waypoint_subscriptions (lower(email));
 
+alter table public.dydd_waypoint_subscriptions
+drop constraint if exists dydd_waypoint_subscriptions_email_key;
+
+alter table public.dydd_waypoint_subscriptions
+add constraint dydd_waypoint_subscriptions_email_key unique (email);
+
 create index if not exists dydd_waypoint_subscriptions_user_id_idx
 on public.dydd_waypoint_subscriptions (user_id);
 

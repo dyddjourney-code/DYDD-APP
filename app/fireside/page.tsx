@@ -2,6 +2,12 @@ import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 import { PageHelp } from "@/components/page-help";
 import { WaypointExplorer } from "@/components/waypoint-explorer";
+import {
+  currentWaypoint as scheduledCurrentWaypoint,
+  previousWaypoint as scheduledPreviousWaypoint,
+  waypointArchive as scheduledWaypointArchive,
+  waypointCategories as scheduledWaypointCategories,
+} from "@/lib/waypoints/waypoint-data";
 
 const waypointCategories = [
   "Identity",
@@ -279,10 +285,10 @@ export default async function FiresidePage({ searchParams }: FiresidePageProps) 
 
         <section className="waypoints-section" aria-label="DYDD Waypoints library">
           <WaypointExplorer
-            categories={waypointCategories}
-            currentId={currentWaypoint.id}
-            previousId={previousWaypoint.id}
-            waypoints={waypointArchive}
+            categories={scheduledWaypointCategories}
+            currentId={scheduledCurrentWaypoint.id}
+            previousId={scheduledPreviousWaypoint.id}
+            waypoints={scheduledWaypointArchive}
           />
         </section>
         <FruitLifeMiniFooter />
@@ -359,10 +365,10 @@ export default async function FiresidePage({ searchParams }: FiresidePageProps) 
 
       <section className="waypoints-section" aria-label="DYDD Waypoints library">
         <WaypointExplorer
-          categories={waypointCategories}
-          currentId={currentWaypoint.id}
-          previousId={previousWaypoint.id}
-          waypoints={waypointArchive}
+          categories={scheduledWaypointCategories}
+          currentId={scheduledCurrentWaypoint.id}
+          previousId={scheduledPreviousWaypoint.id}
+          waypoints={scheduledWaypointArchive}
         />
       </section>
 

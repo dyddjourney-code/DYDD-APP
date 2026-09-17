@@ -233,3 +233,153 @@ export const designIdCompanionMoments = {
     ],
   },
 } satisfies Record<string, CompanionMoment>;
+
+export const dyddJourneyCompanionMoments = {
+  welcome: {
+    audioSrc: "/audio/companions/course-moments/dydd-journey-welcome-dydi.mp3",
+    duration: "About 1 minute",
+    kicker: "Journey welcome",
+    speakers: [dydi],
+    title: "Begin the Journey Without Rushing",
+    transcript: [
+      {
+        speaker: "Dydi",
+        text: "Welcome to Discover Your Divine Design. Do not treat this like a race to finish content. This journey is meant to help you notice what God has already been forming in you: identity, story, gifts, desire, expertise, and purpose. Start simply. Bring honesty. Ask God for one faithful step at a time.",
+      },
+    ],
+  },
+  care: {
+    audioSrc: "/audio/companions/course-moments/dydd-journey-care-daniel-mara.mp3",
+    duration: "About 1 minute",
+    kicker: "CARE rhythm",
+    speakers: [daniel, mara],
+    title: "Let CARE Slow the Work Down",
+    transcript: [
+      {
+        speaker: "Daniel",
+        text: "CARE is not a worksheet trick. It is a way of slowing down enough to connect with God before you act.",
+      },
+      {
+        speaker: "Mara",
+        text: "And after you act, you reflect. You notice what happened in your heart, your relationships, and your courage. Then you explore what God may be inviting next.",
+      },
+      {
+        speaker: "Daniel",
+        text: "So when a lesson feels big, bring it back to the next small faithful step.",
+      },
+    ],
+  },
+  identity: {
+    audioSrc: "/audio/companions/course-moments/dydd-journey-identity-mara.mp3",
+    duration: "Under 1 minute",
+    kicker: "Identity reminder",
+    speakers: [mara],
+    title: "Whose Comes Before Who",
+    transcript: [
+      {
+        speaker: "Mara",
+        text: "Before you try to name what you do, let God remind you whose you are. Identity is not something you perform into existence. It is received in Christ and then expressed through love. As you answer these questions, be gentle with yourself. Let truth come before pressure.",
+      },
+    ],
+  },
+  expertise: {
+    audioSrc: "/audio/companions/course-moments/dydd-journey-expertise-naomi-miles.mp3",
+    duration: "About 1 minute",
+    kicker: "Expertise reflection",
+    speakers: [naomi, miles],
+    title: "Steward What Has Been Formed",
+    transcript: [
+      {
+        speaker: "Naomi",
+        text: "Expertise often grows quietly through practice, repetition, failure, learning, and care. Do not only look for what feels impressive.",
+      },
+      {
+        speaker: "Miles",
+        text: "Look for what has been entrusted to you over time. Talents, competencies, and hard-won wisdom can all become stewardship when they are offered back to God.",
+      },
+    ],
+  },
+  story: {
+    audioSrc: "/audio/companions/course-moments/dydd-journey-story-leo-mara.mp3",
+    duration: "About 1 minute",
+    kicker: "Story reflection",
+    speakers: [leo, mara],
+    title: "God Does Not Waste the Story",
+    transcript: [
+      {
+        speaker: "Leo",
+        text: "Your story is not just a timeline of events. It carries themes, wounds, provision, courage, and moments where God was writing more than you could see.",
+      },
+      {
+        speaker: "Mara",
+        text: "Hold it tenderly. Some memories need gratitude. Some need grief. Some need redemption language. Ask what God has been forming through the story, not only what happened in it.",
+      },
+    ],
+  },
+  desire: {
+    audioSrc: "/audio/companions/course-moments/dydd-journey-desire-elena.mp3",
+    duration: "Under 1 minute",
+    kicker: "Desire discernment",
+    speakers: [
+      {
+        image: "/brand/characters/full-body/architect-female-full-body.png",
+        imageAlt: "Elena standing as a catalytic strategist",
+        name: "Elena",
+        role: "catalytic strategist",
+      },
+    ],
+    title: "Pay Attention to Holy Desire",
+    transcript: [
+      {
+        speaker: "Elena",
+        text: "Desire can become noisy when it is ruled by fear, comparison, or ambition. But desire can also become a clue. Pay attention to the burdens, hopes, and possibilities that keep returning in prayer. Do not force them into a final answer yet. Name them honestly and ask what faithful direction they may be pointing toward.",
+      },
+    ],
+  },
+  gifts: {
+    audioSrc: "/audio/companions/course-moments/dydd-journey-gifts-clara-daniel.mp3",
+    duration: "About 1 minute",
+    kicker: "Gifts bridge",
+    speakers: [clara, daniel],
+    title: "Let Gifts Serve the Whole Journey",
+    transcript: [
+      {
+        speaker: "Clara",
+        text: "When you reach the Gifts chapter, keep your results connected to everything you have already named: identity, expertise, story, and desire.",
+      },
+      {
+        speaker: "Daniel",
+        text: "A gift is not meant to stand alone. It becomes fruitful when love governs it and community confirms it. Ask where your gifts can serve the people God is placing in front of you.",
+      },
+    ],
+  },
+  nicheConversation: {
+    audioSrc: "/audio/companions/course-moments/dydd-journey-niche-four-voices.mp3",
+    duration: "About 2 minutes",
+    kicker: "Pathfinder conversation",
+    speakers: [dydi, daniel, naomi, marcus],
+    title: "Four Voices Before the Niche Declaration",
+    transcript: [
+      {
+        speaker: "Dydi",
+        text: "Before you draft the final declaration, gather the pieces slowly. Identity, story, expertise, desire, and gifts are not separate piles. They are becoming one faithful picture.",
+      },
+      {
+        speaker: "Daniel",
+        text: "And if the picture still feels incomplete, that is all right. Purpose often becomes clearer through obedience, not before it.",
+      },
+      {
+        speaker: "Naomi",
+        text: "Use plain words first. Do not try to make the sentence sound impressive. Make it honest, usable, and faithful to what you have actually discovered.",
+      },
+      {
+        speaker: "Marcus",
+        text: "Then give it structure. Who are you called to serve? What has God formed in you? What kind of good work is beginning to take shape?",
+      },
+      {
+        speaker: "Dydi",
+        text: "Let this be a working declaration, not a final prison. God can keep refining the language as you keep walking.",
+      },
+    ],
+  },
+} satisfies Record<string, CompanionMoment>;

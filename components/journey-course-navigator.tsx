@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { CompanionAudioCard } from "@/components/companion-audio-card";
 import { dyddJourney } from "@/lib/journey/dydd-journey";
 import type {
   CareStep,
@@ -617,6 +618,8 @@ export function JourneyCourseNavigator({ modules }: JourneyCourseNavigatorProps)
               </section>
             ) : null}
           </section>
+
+          <CompanionAudioCard moment={active.unit.companionMoment} />
 
           {workbookExperience ? (
             <section className={`journey-active-workbook ${workbookExperience.kind}`}>

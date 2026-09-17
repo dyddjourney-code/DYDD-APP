@@ -8669,6 +8669,16 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   line-height: 1.45;
 }
 
+.waypoint-subscribe-message.success {
+  color: #2f5e34;
+  font-weight: 800;
+}
+
+.waypoint-subscribe-message.error {
+  color: #9f3a2f;
+  font-weight: 800;
+}
+
 .fireside-content-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

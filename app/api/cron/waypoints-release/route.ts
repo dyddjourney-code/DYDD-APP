@@ -1,9 +1,30 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+import { sendResendEmail } from "@/lib/email/resend";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
+
+type DueRelease = {
+  id: string;
+  release_at: string;
+  subscriber_channels: string[];
+  dydd_waypoints: {
+    base_content: string;
+    base_reflection_prompt: string | null;
+    category: string;
+    scripture_reference: string | null;
+    slug: string;
+    status: string;
+    title: string;
+  };
+};
+
+type ActiveSubscription = {
+  email: string;
+  id: string;
+};
 
 function getBearerToken(request: NextRequest) {
   const header = request.headers.get("authorization") ?? "";
@@ -32,10 +53,13 @@ export async function GET(request: NextRequest) {
 
   const { data: releases, error: releaseError } = await supabase
     .from("dydd_waypoint_releases")
-    .select("id, waypoint_id, subscriber_channels, dydd_waypoints!inner(status)")
+    .select(
+      "id, release_at, subscriber_channels, dydd_waypoints!inner(slug,title,category,scripture_reference,base_content,base_reflection_prompt,status)",
+    )
     .eq("status", "scheduled")
     .eq("dydd_waypoints.status", "published")
-    .lte("release_at", now);
+    .lte("release_at", now)
+    .returns<DueRelease[]>();
 
   if (releaseError) {
     return NextResponse.json({ error: releaseError.message }, { status: 500 });
@@ -51,14 +75,14 @@ export async function GET(request: NextRequest) {
 
   const { data: subscriptions, error: subscriptionError } = await supabase
     .from("dydd_waypoint_subscriptions")
-    .select("id")
+    .select("id,email")
     .eq("status", "active");
 
   if (subscriptionError) {
     return NextResponse.json({ error: subscriptionError.message }, { status: 500 });
   }
 
-  const activeSubscriptions = subscriptions ?? [];
+  const activeSubscriptions = (subscriptions ?? []) as ActiveSubscription[];
   const jobs = releases.flatMap((release) => {
     const channels =
       Array.isArray(release.subscriber_channels) &&
@@ -88,6 +112,88 @@ export async function GET(request: NextRequest) {
     }
   }
 
+  let sentEmails = 0;
+  let skippedEmails = 0;
+  let erroredEmails = 0;
+
+  for (const release of releases) {
+    const waypoint = release.dydd_waypoints;
+    const channels =
+      Array.isArray(release.subscriber_channels) &&
+      release.subscriber_channels.length > 0
+        ? release.subscriber_channels
+        : ["email", "app"];
+
+    if (!channels.includes("email")) {
+      continue;
+    }
+
+    for (const subscription of activeSubscriptions) {
+      const text = [
+        waypoint.title,
+        waypoint.scripture_reference ?? "",
+        "",
+        waypoint.base_content,
+        "",
+        waypoint.base_reflection_prompt
+          ? `Reflection: ${waypoint.base_reflection_prompt}`
+          : "",
+        "",
+        "You are receiving this because you subscribed to DYDD Waypoints.",
+      ]
+        .filter(Boolean)
+        .join("\n");
+      const html = `
+        <h1>${waypoint.title}</h1>
+        ${waypoint.scripture_reference ? `<p><strong>${waypoint.scripture_reference}</strong></p>` : ""}
+        ${waypoint.base_content
+          .split(/\n{2,}/)
+          .map((paragraph) => `<p>${paragraph}</p>`)
+          .join("")}
+        ${
+          waypoint.base_reflection_prompt
+            ? `<p><strong>Reflection:</strong> ${waypoint.base_reflection_prompt}</p>`
+            : ""
+        }
+        <p style="color:#667085;font-size:13px;">You are receiving this because you subscribed to DYDD Waypoints.</p>
+      `;
+
+      const result = await sendResendEmail({
+        from: process.env.DYDD_WAYPOINTS_EMAIL_FROM ?? "DYDD Waypoints <support@discoverdivine.design>",
+        html,
+        subject: `DYDD Waypoint: ${waypoint.title}`,
+        text,
+        to: subscription.email,
+      });
+
+      if (result.sent) {
+        sentEmails += 1;
+        await supabase
+          .from("dydd_waypoint_delivery_jobs")
+          .update({
+            sent_at: now,
+            status: "sent",
+          })
+          .eq("release_id", release.id)
+          .eq("subscription_id", subscription.id)
+          .eq("delivery_channel", "email");
+      } else if (result.skipped) {
+        skippedEmails += 1;
+      } else {
+        erroredEmails += 1;
+        await supabase
+          .from("dydd_waypoint_delivery_jobs")
+          .update({
+            error_message: result.message ?? "Email send failed.",
+            status: "error",
+          })
+          .eq("release_id", release.id)
+          .eq("subscription_id", subscription.id)
+          .eq("delivery_channel", "email");
+      }
+    }
+  }
+
   const { error: updateError } = await supabase
     .from("dydd_waypoint_releases")
     .update({
@@ -105,8 +211,11 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json({
     generatedAt: now,
+    erroredEmails,
     queuedJobs: jobs.length,
     releases: releases.length,
+    sentEmails,
+    skippedEmails,
     subscriptions: activeSubscriptions.length,
   });
 }

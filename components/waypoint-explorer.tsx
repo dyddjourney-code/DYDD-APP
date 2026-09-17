@@ -1,5 +1,6 @@
 "use client";
 
+import type { FormEvent } from "react";
 import { useMemo, useState } from "react";
 
 type Waypoint = {
@@ -31,6 +32,13 @@ export function WaypointExplorer({
   const [category, setCategory] = useState("All");
   const [selectedId, setSelectedId] = useState(currentId);
   const [shareState, setShareState] = useState("Share");
+  const [subscribeEmail, setSubscribeEmail] = useState("");
+  const [subscribeState, setSubscribeState] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+  const [subscribeMessage, setSubscribeMessage] = useState(
+    "Receive the weekly DYDD Waypoint every Friday at 8:00 AM Eastern.",
+  );
 
   const selectedWaypoint =
     waypoints.find((waypoint) => waypoint.id === selectedId) ?? waypoints[0];
@@ -109,6 +117,43 @@ export function WaypointExplorer({
     }
   }
 
+  async function handleSubscribe(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSubscribeState("loading");
+    setSubscribeMessage("Saving your subscription...");
+
+    try {
+      const response = await fetch("/api/waypoints/subscribe", {
+        body: JSON.stringify({
+          email: subscribeEmail,
+          source: "fireside_waypoints",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      });
+      const payload = (await response.json().catch(() => ({}))) as {
+        message?: string;
+      };
+
+      if (!response.ok) {
+        setSubscribeState("error");
+        setSubscribeMessage(payload.message ?? "We could not save that email yet.");
+        return;
+      }
+
+      setSubscribeState("success");
+      setSubscribeMessage(
+        payload.message ??
+          "You're subscribed. The next Waypoint releases Friday at 8:00 AM Eastern.",
+      );
+    } catch {
+      setSubscribeState("error");
+      setSubscribeMessage("Connection issue. Try again in a moment.");
+    }
+  }
+
   return (
     <>
       <article className="waypoint-display-card">
@@ -150,20 +195,37 @@ export function WaypointExplorer({
             <span>{selectedWaypoint.reflection}</span>
           </div>
 
-          <form className="waypoint-subscribe-card">
+          <form className="waypoint-subscribe-card" onSubmit={handleSubscribe}>
             <label htmlFor="waypoint-email">Email address</label>
             <div>
               <input
                 id="waypoint-email"
                 name="email"
                 placeholder="jordan@example.com"
+                onChange={(event) => setSubscribeEmail(event.target.value)}
+                required
                 type="email"
+                value={subscribeEmail}
               />
-              <button className="button primary" type="button">
-                Subscribe
+              <button
+                className="button primary"
+                disabled={subscribeState === "loading"}
+                type="submit"
+              >
+                {subscribeState === "loading" ? "Saving..." : "Subscribe"}
               </button>
             </div>
-            <small>Receive the weekly DYDD Waypoint when delivery is connected.</small>
+            <small
+              className={
+                subscribeState === "error"
+                  ? "waypoint-subscribe-message error"
+                  : subscribeState === "success"
+                    ? "waypoint-subscribe-message success"
+                    : "waypoint-subscribe-message"
+              }
+            >
+              {subscribeMessage}
+            </small>
           </form>
         </div>
 

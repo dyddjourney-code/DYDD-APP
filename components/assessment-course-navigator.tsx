@@ -17,6 +17,8 @@ type AssessmentCourseNavigatorProps = {
   insights: readonly AssessmentInsightRow[];
   modules: readonly CourseModule[];
   reviewQuery: string;
+  savedReflections?: Record<string, string>;
+  savedReflectionsEnabled?: boolean;
   showPersonalization?: boolean;
   showStandaloneLessonLink?: boolean;
 };
@@ -51,12 +53,18 @@ export function AssessmentCourseNavigator({
   insights,
   modules,
   reviewQuery,
+  savedReflections = {},
+  savedReflectionsEnabled = false,
   showPersonalization = true,
   showStandaloneLessonLink = true,
 }: AssessmentCourseNavigatorProps) {
   const flatLessons = useMemo(() => flattenModules(modules), [modules]);
   const [activeSlug, setActiveSlug] = useState(flatLessons[0]?.lesson.slug ?? "");
   const [openModules, setOpenModules] = useState<string[]>([]);
+  const [reflectionDrafts, setReflectionDrafts] =
+    useState<Record<string, string>>(savedReflections);
+  const [reflectionStatus, setReflectionStatus] =
+    useState<Record<string, "idle" | "saving" | "saved" | "error">>({});
   const activeLessonRef = useRef<HTMLElement | null>(null);
   const activeIndex = Math.max(
     0,
@@ -90,6 +98,38 @@ export function AssessmentCourseNavigator({
         : [...current, moduleSlug],
     );
   };
+
+  const saveReflection = async () => {
+    if (!savedReflectionsEnabled) {
+      return;
+    }
+
+    setReflectionStatus((current) => ({
+      ...current,
+      [active.lesson.slug]: "saving",
+    }));
+
+    const response = await fetch("/api/course-reflections", {
+      body: JSON.stringify({
+        courseSlug,
+        lessonSlug: active.lesson.slug,
+        lessonTitle: active.lesson.title,
+        prompt: active.lesson.reflectionPrompt,
+        response: reflectionDrafts[active.lesson.slug] ?? "",
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+    });
+
+    setReflectionStatus((current) => ({
+      ...current,
+      [active.lesson.slug]: response.ok ? "saved" : "error",
+    }));
+  };
+
+  const activeReflectionStatus = reflectionStatus[active.lesson.slug] ?? "idle";
 
   return (
     <section
@@ -168,21 +208,13 @@ export function AssessmentCourseNavigator({
               Module {active.moduleIndex + 1} / Lesson {active.lessonIndex + 1}
             </p>
             <h2>{active.lesson.title}</h2>
-            <p>{active.lesson.summary}</p>
-          </div>
-          <div className="journey-active-meta">
-            <span>{assessmentLabel}</span>
-            <span>{active.module.title}</span>
           </div>
         </header>
 
         <section className="journey-active-section-marker" aria-label="Current module">
-          <span>{active.module.title}</span>
-          <strong>
-            This rough course framework is staged for review. The next content
-            pass can replace the lesson copy while preserving the module,
-            progress, and course-player structure.
-          </strong>
+          <span>
+            Module {active.moduleIndex + 1}: {active.module.title.replace(/^Module\s+\d+:\s*/i, "")}
+          </span>
         </section>
 
         <div className="journey-active-body has-care">
@@ -219,20 +251,60 @@ export function AssessmentCourseNavigator({
             ) : null}
 
             <section className="lesson-source readable-lesson-body" aria-label="Lesson body">
-              <p className="section-label">Rough lesson body</p>
+              <p className="section-label">{active.lesson.title}</p>
               {active.lesson.body.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
             </section>
 
             <section className="lesson-callout assessment-reflection-direction" aria-label="Reflection direction">
-              <p className="section-label">Future reflection direction</p>
+              <div className="assessment-reflection-heading">
+                <p className="section-label">Reflection</p>
+                {savedReflectionsEnabled ? (
+                  <details>
+                    <summary>Why save this?</summary>
+                    <p>
+                      Class reflections are stored privately in your account so
+                      they can support future summaries, ministry declarations,
+                      and the larger Discover Your Divine Design journey if you
+                      choose to use them. Only you can access these reflections
+                      while signed in.
+                    </p>
+                  </details>
+                ) : null}
+              </div>
               <h3>{active.lesson.reflectionPrompt}</h3>
-              <p>
-                No journal field is active here yet. This is the placeholder for
-                the later decision about whether this course needs a saved
-                response, a simple note, or no input at all.
-              </p>
+              {savedReflectionsEnabled ? (
+                <div className="assessment-reflection-entry">
+                  <label htmlFor={`reflection-${active.lesson.slug}`}>
+                    <span>Your private reflection</span>
+                    <textarea
+                      id={`reflection-${active.lesson.slug}`}
+                      onChange={(event) =>
+                        setReflectionDrafts((current) => ({
+                          ...current,
+                          [active.lesson.slug]: event.target.value,
+                        }))
+                      }
+                      placeholder="Write what you want to remember from this lesson."
+                      value={reflectionDrafts[active.lesson.slug] ?? ""}
+                    />
+                  </label>
+                  <div className="assessment-reflection-actions">
+                    <button
+                      disabled={activeReflectionStatus === "saving"}
+                      onClick={saveReflection}
+                      type="button"
+                    >
+                      {activeReflectionStatus === "saving" ? "Saving..." : "Save reflection"}
+                    </button>
+                    {activeReflectionStatus === "saved" ? <span>Saved</span> : null}
+                    {activeReflectionStatus === "error" ? (
+                      <span className="error">Could not save. Try again.</span>
+                    ) : null}
+                  </div>
+                </div>
+              ) : null}
             </section>
           </section>
         </div>

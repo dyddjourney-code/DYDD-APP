@@ -74,6 +74,25 @@ export default async function LearningCoursePage({
     assessmentReport,
     course.assessmentType,
   );
+  const savedReflectionsEnabled = [
+    "fruitlife-360-formation",
+    "spiritual-gifts-service",
+  ].includes(course.slug);
+  const savedReflections = user && savedReflectionsEnabled
+    ? await supabase
+        .from("course_lesson_reflections")
+        .select("lesson_slug,response")
+        .eq("user_id", user.id)
+        .eq("course_slug", course.slug)
+        .then(({ data }) =>
+          Object.fromEntries(
+            (data ?? []).map((row) => [
+              row.lesson_slug as string,
+              (row.response as string | null) ?? "",
+            ]),
+          ),
+        )
+    : {};
 
   return (
     <main className={`course-shell course-shell-${course.accent}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}>
@@ -214,6 +233,8 @@ export default async function LearningCoursePage({
           insights={insights.rows}
           modules={course.modules}
           reviewQuery={courseQuery}
+          savedReflections={savedReflections}
+          savedReflectionsEnabled={savedReflectionsEnabled}
           showPersonalization={!fruitLifeLane}
           showStandaloneLessonLink={!fruitLifeLane}
         />

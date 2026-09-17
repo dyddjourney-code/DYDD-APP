@@ -11902,7 +11902,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .journey-active-lesson > header {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.3fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
   align-items: start;
   padding-bottom: 18px;
@@ -11932,11 +11932,11 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .journey-active-section-marker {
-  display: grid;
-  grid-template-columns: minmax(180px, 0.28fr) minmax(0, 1fr);
-  gap: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   align-items: center;
-  padding: 14px 16px;
+  padding: 10px 12px;
   border: 1px solid rgba(71, 107, 66, 0.13);
   border-radius: 8px;
   background: rgba(234, 240, 226, 0.52);
@@ -11948,12 +11948,6 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   font-weight: 950;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-}
-
-.journey-active-section-marker strong {
-  color: var(--green-dark);
-  font-weight: 850;
-  line-height: 1.35;
 }
 
 .journey-active-body {
@@ -12025,13 +12019,16 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .journey-active-focus {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   margin-bottom: 4px;
 }
 
 .journey-active-focus span {
-  display: block;
-  padding: 10px 12px;
+  display: grid;
+  align-content: center;
+  min-height: 74px;
+  padding: 11px 12px;
   border: 1px solid rgba(71, 107, 66, 0.14);
   border-radius: 8px;
   background: rgba(234, 240, 226, 0.62);
@@ -12039,6 +12036,124 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   font-size: 0.9rem;
   font-weight: 850;
   line-height: 1.36;
+}
+
+.assessment-reflection-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.assessment-reflection-heading .section-label {
+  margin: 0;
+}
+
+.assessment-reflection-heading details {
+  position: relative;
+  max-width: 390px;
+}
+
+.assessment-reflection-heading summary {
+  cursor: pointer;
+  width: fit-content;
+  margin-left: auto;
+  padding: 7px 10px;
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+  color: var(--green-dark);
+  font-size: 0.78rem;
+  font-weight: 900;
+  list-style: none;
+}
+
+.assessment-reflection-heading summary::-webkit-details-marker {
+  display: none;
+}
+
+.assessment-reflection-heading details p {
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px solid rgba(36, 63, 39, 0.13);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.86);
+  color: #40503e;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.assessment-reflection-entry {
+  display: grid;
+  gap: 10px;
+}
+
+.assessment-reflection-entry label {
+  display: grid;
+  gap: 7px;
+}
+
+.assessment-reflection-entry label span {
+  color: var(--green-dark);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.assessment-reflection-entry textarea {
+  width: 100%;
+  min-height: 132px;
+  resize: vertical;
+  padding: 12px 13px;
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+  font: inherit;
+  line-height: 1.55;
+}
+
+.assessment-reflection-entry textarea:focus {
+  border-color: rgba(71, 107, 66, 0.44);
+  outline: 3px solid rgba(71, 107, 66, 0.16);
+}
+
+.assessment-reflection-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  align-items: center;
+}
+
+.assessment-reflection-actions button {
+  cursor: pointer;
+  padding: 9px 13px;
+  border: 1px solid rgba(36, 63, 39, 0.18);
+  border-radius: 8px;
+  background: var(--green-dark);
+  color: var(--white);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.assessment-reflection-actions button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.assessment-reflection-actions button:active {
+  transform: translateY(1px);
+}
+
+.assessment-reflection-actions span {
+  color: var(--green-dark);
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.assessment-reflection-actions span.error {
+  color: #8a342e;
 }
 
 .companion-audio-card {
@@ -14389,6 +14504,18 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
   .journey-active-meta {
     justify-content: flex-start;
+  }
+
+  .journey-active-focus {
+    grid-template-columns: 1fr;
+  }
+
+  .assessment-reflection-heading {
+    display: grid;
+  }
+
+  .assessment-reflection-heading summary {
+    margin-left: 0;
   }
 
   .journey-active-body:has(.journey-active-media),

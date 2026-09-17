@@ -578,6 +578,9 @@ h3 {
 }
 
 .fruitlife-message-card {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
   width: min(640px, 100%);
   margin: clamp(36px, 10vh, 90px) auto;
   text-align: center;
@@ -10887,13 +10890,44 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .mini-course-logo-intro {
   display: grid;
   justify-items: center;
-  padding: clamp(22px, 4vw, 42px) 0 8px;
+  padding: clamp(18px, 3vw, 30px) 0 8px;
 }
 
 .mini-course-logo-intro img {
-  width: min(260px, 72vw);
+  width: min(250px, 70vw);
   height: auto;
   object-fit: contain;
+}
+
+.mini-course-personalization {
+  display: grid;
+  gap: 10px;
+  max-width: 1180px;
+  margin: 0 auto clamp(14px, 2vw, 20px);
+  padding: clamp(14px, 2vw, 18px);
+  border: 1px solid rgba(71, 107, 66, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(246, 249, 242, 0.86)),
+    #fff;
+  box-shadow: 0 12px 30px rgba(70, 58, 35, 0.07);
+}
+
+.mini-course-personalization > .section-label {
+  margin: 0;
+}
+
+.mini-course-insight-list {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+.mini-course-insight-list div {
+  padding: 11px 12px;
+}
+
+.mini-course-insight-list dd {
+  font-size: 0.86rem;
+  line-height: 1.32;
 }
 
 .course-personalization {

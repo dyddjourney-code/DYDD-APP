@@ -172,9 +172,27 @@ export default async function LearningCoursePage({
           />
         </>
       ) : (
-        <header className="mini-course-logo-intro">
-          <img src={course.logo} alt={`${course.title} logo`} />
-        </header>
+        <>
+          <header className="mini-course-logo-intro">
+            <img src={course.logo} alt={`${course.title} logo`} />
+          </header>
+          {insights.rows.length ? (
+            <section
+              className={`mini-course-personalization mini-course-personalization-${course.accent}`}
+              aria-label={`${course.title} personalization`}
+            >
+              <p className="section-label">Personalization</p>
+              <dl className="lesson-insight-list mini-course-insight-list">
+                {insights.rows.slice(0, 5).map((row) => (
+                  <div key={`${row.label}-${row.value}`}>
+                    <dt>{row.label}</dt>
+                    <dd>{row.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          ) : null}
+        </>
       )}
 
       <div id={`${course.slug}-course-player`}>

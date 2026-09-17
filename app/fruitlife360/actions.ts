@@ -557,8 +557,9 @@ async function saveResponse({
   const thanksParams = new URLSearchParams({
     message:
       responseType === "self"
-        ? "Self reflection submitted. The session status has been updated."
+        ? "Your self reflection has been submitted. Your FruitLife 360 report has been emailed to you."
         : "Observer reflection submitted. Thank you for helping with this FruitLife 360 report.",
+    return_to: "/field-kit?lane=fruitlife",
     session: session.id,
     token,
     type: responseType,

@@ -14,8 +14,12 @@ type ReportJob = {
 };
 
 type FruitLifeSession = {
+  created_by_user_id: string | null;
+  id: string;
+  participant_id: string;
   participant_email: string | null;
   participant_name: string | null;
+  source_participant_id: string | null;
 };
 
 const fruitLifeTemplateId =
@@ -42,6 +46,83 @@ function appBaseUrl() {
     process.env.VERCEL_URL ??
     "https://dydd-online-school.vercel.app";
   return configuredUrl.startsWith("http") ? configuredUrl : `https://${configuredUrl}`;
+}
+
+function stringPayload(payload: Record<string, unknown>, key: string) {
+  const value = payload[key];
+  return value === null || value === undefined ? "" : String(value);
+}
+
+function numberPayload(payload: Record<string, unknown>, key: string) {
+  const value = payload[key];
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  const parsed = Number(String(value ?? "").replaceAll(",", "").trim());
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function fruitLifeSnapshotScores(payload: Record<string, unknown>) {
+  return {
+    profileLanguage: {
+      Overview_Note: stringPayload(payload, "overview_note"),
+    },
+    scores: {
+      Observer_Count: numberPayload(payload, "observer_count"),
+      Observer_Overall: numberPayload(payload, "observer_overall"),
+      Overall_Gap: numberPayload(payload, "overall_gap"),
+      Response_Count: numberPayload(payload, "response_count"),
+      Self_Overall: numberPayload(payload, "self_overall"),
+    },
+    summary: {
+      Growth_Invitation_Fruit_List: stringPayload(payload, "growth_invitation_fruit_list"),
+      Growth_Invitations: stringPayload(payload, "growth_invitations"),
+      Most_Visible_Fruit: stringPayload(payload, "most_visible_fruit"),
+      Most_Visible_Fruit_List: stringPayload(payload, "most_visible_fruit_list"),
+      Participant_ID: stringPayload(payload, "participant_id"),
+      Pressure_Vulnerabilities: stringPayload(payload, "pressure_vulnerabilities"),
+      Report_Date: stringPayload(payload, "report_date"),
+      Report_Mode: stringPayload(payload, "report_mode"),
+      Reviewer_Mix: stringPayload(payload, "reviewer_mix"),
+      Steady_Forming_Fruit_List: stringPayload(payload, "steady_forming_fruit_list"),
+    },
+  };
+}
+
+async function upsertFruitLifeSnapshot({
+  payload,
+  session,
+  supabase,
+}: {
+  payload: Record<string, unknown>;
+  session: FruitLifeSession;
+  supabase: ReturnType<typeof createSupabaseAdminClient>;
+}) {
+  const submittedAt = new Date().toISOString();
+  const sourceResponseId = session.source_participant_id || `fruitlife_360_session:${session.id}`;
+  const { data: snapshot, error } = await supabase
+    .from("assessment_snapshots")
+    .upsert(
+      {
+        assessment_type: "fruit_360",
+        participant_id: session.participant_id,
+        scores: fruitLifeSnapshotScores(payload),
+        source: "fruitlife_360_native_app",
+        source_response_id: sourceResponseId,
+        source_submitted_at: submittedAt,
+        user_id: session.created_by_user_id,
+      },
+      { onConflict: "assessment_type,source,source_response_id" },
+    )
+    .select("id")
+    .single();
+
+  if (error || !snapshot?.id) {
+    throw new Error(error?.message ?? "Unable to save FruitLife assessment snapshot.");
+  }
+
+  return snapshot.id as string;
 }
 
 function finalReportEmail({
@@ -138,7 +219,7 @@ export async function processFruitLifeReportJobs({
     try {
       const { data: session, error: sessionError } = await supabase
         .from("fruitlife_360_sessions")
-        .select("participant_email,participant_name")
+        .select("id,created_by_user_id,participant_id,participant_email,participant_name,source_participant_id")
         .eq("id", job.session_id)
         .single();
 
@@ -167,6 +248,13 @@ export async function processFruitLifeReportJobs({
       const reportUrl = isReady
         ? `${appBaseUrl()}/fruitlife360/report?session=${encodeURIComponent(job.session_id)}`
         : "";
+      const snapshotId = !dryRun && isReady
+        ? await upsertFruitLifeSnapshot({
+            payload: job.payload,
+            session: typedSession,
+            supabase,
+          })
+        : null;
 
       if (!dryRun) {
         const { data: existingPdf } = await supabase
@@ -262,6 +350,7 @@ export async function processFruitLifeReportJobs({
         await supabase
           .from("fruitlife_360_sessions")
           .update({
+            ...(snapshotId ? { report_snapshot_id: snapshotId } : {}),
             report_status: isReady && emailSent ? "sent" : isReady ? "ready" : "queued",
             report_url: url || null,
             session_status: isReady && emailSent ? "report_sent" : isReady ? "report_ready" : "ready_for_report",

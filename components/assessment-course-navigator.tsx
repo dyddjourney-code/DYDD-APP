@@ -13,6 +13,7 @@ type AssessmentCourseNavigatorProps = {
   accent: string;
   assessmentLabel: string;
   connected: boolean;
+  completionHref?: string;
   courseSlug: string;
   insights: readonly AssessmentInsightRow[];
   modules: readonly CourseModule[];
@@ -49,6 +50,7 @@ export function AssessmentCourseNavigator({
   accent,
   assessmentLabel,
   connected,
+  completionHref,
   courseSlug,
   insights,
   modules,
@@ -333,7 +335,7 @@ export function AssessmentCourseNavigator({
               Next: {next.lesson.title}
             </button>
           ) : (
-            <a href={withReview("/hq", reviewQuery)}>Return to HQ</a>
+            <a href={completionHref ?? withReview("/field-kit", reviewQuery)}>Complete Course</a>
           )}
           {showStandaloneLessonLink ? (
             <a href={withReview(`/learn/${courseSlug}/${active.lesson.slug}`, reviewQuery)}>

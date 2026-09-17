@@ -34,6 +34,29 @@ export function generateStaticParams() {
   }));
 }
 
+function getCourseCompletionHref(courseSlug: string, fruitLifeLane: boolean) {
+  if (fruitLifeLane) {
+    if (courseSlug === "spiritual-gifts-service") {
+      return "/spiritual-gifts?lane=fruitlife";
+    }
+
+    if (courseSlug === "fruitlife-360-formation") {
+      return "/field-kit?lane=fruitlife";
+    }
+
+    return "/trailheads?lane=fruitlife";
+  }
+
+  if (
+    courseSlug === "spiritual-gifts-service" ||
+    courseSlug === "fruitlife-360-formation"
+  ) {
+    return "/field-kit";
+  }
+
+  return "/trailheads";
+}
+
 export async function generateMetadata({ params }: LearningCoursePageProps) {
   const { courseSlug } = await params;
   const course = getLearningCourse(courseSlug);
@@ -123,6 +146,7 @@ export default async function LearningCoursePage({
           accent={course.accent}
           assessmentLabel={course.title}
           connected={insights.connected}
+          completionHref={getCourseCompletionHref(course.slug, fruitLifeLane)}
           courseSlug={course.slug}
           insights={insights.rows}
           modules={course.modules}

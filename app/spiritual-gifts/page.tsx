@@ -101,7 +101,7 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
       <main className="journey-shell hq-standalone-page fruitlife-release-shell spiritual-gifts-mini-app">
         <FruitLifeMiniNav />
         <header className="standalone-hero spiritual-gifts-mini-hero">
-          <div>
+          <div className="spiritual-gifts-mini-copy">
             <p className="eyebrow">Spiritual Gifts</p>
             <h1>Discover how God may have gifted you to serve.</h1>
             <p className="lede">
@@ -119,9 +119,6 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
               ) : null}
             </div>
           </div>
-          <figure className="spiritual-gifts-mini-image">
-            <img src="/brand/trailheads/spiritual-gifts-signpost.png" alt="Spiritual Gifts trail sign" />
-          </figure>
         </header>
 
         <section className="spiritual-gifts-mini-intro" aria-label="Spiritual Gifts overview">

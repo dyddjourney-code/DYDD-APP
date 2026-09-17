@@ -3,6 +3,10 @@ import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 import { PageHelp } from "@/components/page-help";
 import {
+  getAssessmentSnapshotsForUser,
+  latestByAssessment,
+} from "@/lib/assessments/student-context";
+import {
   fruitLifeReportArtifact,
   getFruitLifeDashboardSessions,
 } from "@/lib/fruitlife360/dashboard";
@@ -143,8 +147,9 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
   const params = await searchParams;
   const fruitLifeLane = params?.lane === "fruitlife";
   const fruitLifeCourse = courses.find((course) => course.slug === "fruitlife-360");
+  const spiritualGiftsCourse = courses.find((course) => course.slug === "spiritual-gifts");
 
-  if (fruitLifeLane && fruitLifeCourse) {
+  if (fruitLifeLane && fruitLifeCourse && spiritualGiftsCourse) {
     const supabase = await createSupabaseServerClient();
     const {
       data: { user },
@@ -164,6 +169,35 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
     const hasFruitLifeReport = fruitLifeSessions.some((session) =>
       Boolean(fruitLifeReportArtifact(session)),
     );
+    const assessmentReport = user
+      ? await getAssessmentSnapshotsForUser(user.id, fruitLifeEmail)
+      : { all: [], latest: [] };
+    const latestSnapshots = latestByAssessment(assessmentReport.all);
+    const hasSpiritualGiftsReport = latestSnapshots.some(
+      (snapshot) => snapshot.assessment_type === "spiritual_gifts",
+    );
+    const miniAppCourses = [
+      {
+        course: spiritualGiftsCourse,
+        isUnlocked: hasSpiritualGiftsReport,
+        lockedAction: "Take Spiritual Gifts first",
+        lockedHref: "/spiritual-gifts?lane=fruitlife",
+        permit: "Spiritual Gifts report",
+        statusText: hasSpiritualGiftsReport
+          ? "Included with Spiritual Gifts"
+          : "Complete Spiritual Gifts first",
+      },
+      {
+        course: fruitLifeCourse,
+        isUnlocked: hasFruitLifeReport,
+        lockedAction: "Take FruitLife 360 first",
+        lockedHref: "/field-kit?lane=fruitlife",
+        permit: "FruitLife 360 report",
+        statusText: hasFruitLifeReport
+          ? "Included with FruitLife 360"
+          : "Complete FruitLife 360 first",
+      },
+    ];
 
     return (
       <main className="journey-shell hq-standalone-page fruitlife-release-shell">
@@ -171,79 +205,69 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
         <header className="standalone-hero trailheads-hero">
           <div>
             <p className="eyebrow">Trailheads</p>
-            <h1>Unpack your FruitLife 360 report.</h1>
+            <h1>Courses for your completed assessments.</h1>
             <p className="lede">
-              This first release keeps the course path focused on FruitLife 360.
-              Spiritual Gifts and the broader DYDD trailheads will open when
-              those course experiences are ready.
+              Spiritual Gifts and FruitLife 360 each open the course support
+              connected to that report. Finish the assessment, then launch the
+              matching course from here.
             </p>
           </div>
         </header>
 
-        <section className="course-catalog-section" aria-label="FruitLife 360 course">
+        <section className="course-catalog-section" aria-label="Mini app courses">
           <div className="catalog-heading compact course-heading-row">
-            <h2>{hasFruitLifeReport ? "Available now" : "Unlocked after your report"}</h2>
+            <h2>{hasSpiritualGiftsReport || hasFruitLifeReport ? "Available now" : "Unlocked after your reports"}</h2>
           </div>
-          <div className="course-catalog-grid fruitlife-single-course">
-            <article
-              className={`catalog-course-card ${hasFruitLifeReport ? "open" : "locked"}`}
-              id={fruitLifeCourse.slug}
-            >
-              <div className="catalog-course-logo">
-                <img
-                  className="catalog-course-signpost"
-                  src={fruitLifeCourse.signpost}
-                  alt={`${fruitLifeCourse.title} signpost`}
-                />
-              </div>
-              <div>
-                <span>
-                  {hasFruitLifeReport
-                    ? "Included with FruitLife 360"
-                    : "Complete FruitLife 360 first"}
-                </span>
-                <h3>{fruitLifeCourse.title}</h3>
-                <p>{fruitLifeCourse.description}</p>
-                <dl className="trailhead-facts compact">
-                  <div>
-                    <dt>Effort</dt>
-                    <dd>{fruitLifeCourse.effort}</dd>
-                  </div>
-                  <div>
-                    <dt>Difficulty</dt>
-                    <dd>{fruitLifeCourse.difficulty}</dd>
-                  </div>
-                  <div>
-                    <dt>Permit</dt>
-                    <dd>FruitLife 360 report</dd>
-                  </div>
-                </dl>
-                <ul>
-                  {fruitLifeCourse.points.map((point) => (
-                    <li key={point}>{point}</li>
-                  ))}
-                </ul>
-              </div>
-              {hasFruitLifeReport ? (
-                <Link className="button primary" href={`${fruitLifeCourse.href}?lane=fruitlife`}>
-                  {fruitLifeCourse.action}
-                </Link>
-              ) : (
-                <Link className="button secondary" href="/field-kit?lane=fruitlife">
-                  Take FruitLife 360 first
-                </Link>
-              )}
-            </article>
+          <div className="course-catalog-grid">
+            {miniAppCourses.map(({ course, isUnlocked, lockedAction, lockedHref, permit, statusText }) => (
+              <article
+                className={`catalog-course-card ${isUnlocked ? "open" : "locked"}`}
+                id={course.slug}
+                key={course.slug}
+              >
+                <div className="catalog-course-logo">
+                  <img
+                    className="catalog-course-signpost"
+                    src={course.signpost}
+                    alt={`${course.title} signpost`}
+                  />
+                </div>
+                <div>
+                  <span>{statusText}</span>
+                  <h3>{course.title}</h3>
+                  <p>{course.description}</p>
+                  <dl className="trailhead-facts compact">
+                    <div>
+                      <dt>Effort</dt>
+                      <dd>{course.effort}</dd>
+                    </div>
+                    <div>
+                      <dt>Difficulty</dt>
+                      <dd>{course.difficulty}</dd>
+                    </div>
+                    <div>
+                      <dt>Permit</dt>
+                      <dd>{permit}</dd>
+                    </div>
+                  </dl>
+                  <ul>
+                    {course.points.map((point) => (
+                      <li key={point}>{point}</li>
+                    ))}
+                  </ul>
+                </div>
+                {isUnlocked ? (
+                  <Link className="button primary" href={`${course.href}?lane=fruitlife`}>
+                    {course.action}
+                  </Link>
+                ) : (
+                  <Link className="button secondary" href={lockedHref}>
+                    {lockedAction}
+                  </Link>
+                )}
+              </article>
+            ))}
           </div>
-        </section>
-
-        <section className="trailhead-start-note">
-          <p className="section-label">Coming next</p>
-          <p>
-            The Spiritual Gifts course will open here after it is finished so
-            learners can move from the free assessment into a personalized class
-            experience.
-          </p>
         </section>
         <FruitLifeMiniFooter />
       </main>

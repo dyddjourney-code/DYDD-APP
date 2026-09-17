@@ -7475,7 +7475,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .fruitlife-basecamp-content {
-  width: min(1120px, 100%);
+  width: min(1380px, 100%);
   margin: 0 auto;
 }
 
@@ -7605,6 +7605,15 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .fruitlife-mini-basecamp-hero {
   margin-bottom: 18px;
+  min-height: clamp(420px, 44vw, 600px);
+}
+
+.fruitlife-mini-basecamp-hero .basecamp-copy {
+  align-content: end;
+}
+
+.fruitlife-mini-basecamp-hero .basecamp-scene img {
+  width: min(520px, 42vw);
 }
 
 .fruitlife-basecamp-intro,
@@ -14026,6 +14035,20 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .spiritual-gifts-mini-intro {
     grid-template-columns: 1fr;
   }
+
+  .spiritual-gifts-mini-hero {
+    background:
+      linear-gradient(180deg, rgba(16, 36, 25, 0.08) 0%, rgba(16, 36, 25, 0.18) 38%, rgba(16, 36, 25, 0.9) 100%),
+      url("/brand/spiritual-gifts-miniapp-banner.png");
+    background-position: 28% center;
+  }
+
+  .spiritual-gifts-mini-copy {
+    grid-column: 1;
+    align-content: end;
+    max-width: none;
+    min-height: 440px;
+  }
 }
 
 @media (max-width: 560px) {
@@ -14851,10 +14874,37 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .spiritual-gifts-mini-hero {
-  grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.72fr);
-  align-items: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.72fr);
+  align-items: end;
   overflow: hidden;
   margin-top: clamp(18px, 3vw, 28px);
+  background:
+    linear-gradient(90deg, rgba(16, 36, 25, 0.04) 0%, rgba(16, 36, 25, 0.1) 43%, rgba(16, 36, 25, 0.76) 65%, rgba(16, 36, 25, 0.92) 100%),
+    url("/brand/spiritual-gifts-miniapp-banner.png");
+  background-position: center;
+  background-size: cover;
+  min-height: clamp(440px, 48vw, 620px);
+}
+
+.spiritual-gifts-mini-copy {
+  grid-column: 2;
+  align-self: stretch;
+  display: grid;
+  align-content: center;
+  max-width: 520px;
+  padding: clamp(26px, 4vw, 54px);
+  color: #fffaf0;
+}
+
+.spiritual-gifts-mini-copy .eyebrow,
+.spiritual-gifts-mini-copy h1,
+.spiritual-gifts-mini-copy .lede {
+  color: inherit;
+}
+
+.spiritual-gifts-mini-copy .lede {
+  opacity: 0.9;
 }
 
 .spiritual-gifts-mini-actions {
@@ -14862,31 +14912,6 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 18px;
-}
-
-.spiritual-gifts-mini-image {
-  display: grid;
-  place-items: center;
-  min-height: 280px;
-  margin: 0;
-  padding: clamp(18px, 3vw, 30px);
-  border: 1px solid rgba(71, 107, 66, 0.14);
-  border-radius: 8px;
-  background:
-    linear-gradient(145deg, rgba(234, 240, 226, 0.92), rgba(255, 255, 255, 0.72)),
-    repeating-linear-gradient(
-      135deg,
-      rgba(71, 107, 66, 0.06) 0,
-      rgba(71, 107, 66, 0.06) 1px,
-      transparent 1px,
-      transparent 22px
-    );
-}
-
-.spiritual-gifts-mini-image img {
-  width: min(280px, 70vw);
-  height: auto;
-  filter: drop-shadow(0 18px 20px rgba(36, 63, 39, 0.16));
 }
 
 .spiritual-gifts-mini-intro article span {

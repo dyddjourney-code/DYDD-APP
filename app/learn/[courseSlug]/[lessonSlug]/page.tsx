@@ -146,12 +146,23 @@ export default async function LearningLessonPage({
             </section>
           ) : null}
 
-          <section className="lesson-source readable-lesson-body" aria-label="Lesson body">
-            <p className="section-label">{lesson.title}</p>
-            {lesson.body.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </section>
+          <div className={lesson.image ? "assessment-lesson-content with-image" : "assessment-lesson-content"}>
+            <section className="lesson-source readable-lesson-body" aria-label="Lesson body">
+              <p className="section-label">{lesson.title}</p>
+              {lesson.body.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </section>
+            {lesson.image ? (
+              <figure className="assessment-lesson-image">
+                <img
+                  src={lesson.image.src}
+                  alt={lesson.image.alt}
+                  loading="lazy"
+                />
+              </figure>
+            ) : null}
+          </div>
 
           <section className="lesson-callout assessment-reflection-direction" aria-label="Reflection prompt">
             <p className="section-label">Reflection</p>

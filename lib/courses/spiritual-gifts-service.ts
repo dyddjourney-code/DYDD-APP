@@ -21,6 +21,10 @@ export const spiritualGiftsCourse = {
             "Your assessment highlights gifts that may be active or emerging right now. The report gives you language, Scripture, practical expressions, and deeper guidance, but it is meant for discernment rather than diagnosis.",
             "Hold your report prayerfully. Stay curious. Look for confirmation through service and community. Let love govern every gift.",
           ],
+          image: {
+            alt: "Open Bible and notebook for Spiritual Gifts course orientation",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b4818d6f-7792-449a-befc-0840d2c50966/381da578-b867-4ad2-92d2-146916bd994a-2026-03-11.jpeg?format=300w",
+          },
           focus: [
             "Spiritual gifts are grace for the common good.",
             "Assessment results offer insight, not certainty.",
@@ -47,6 +51,10 @@ export const spiritualGiftsCourse = {
             "The definitions and Scripture references create language, but Scripture remains the foundation. Use the practical expressions to ask where you have already seen these gifts strengthen someone else.",
             "The deep-dive sections help you focus not only on what the gift is, but how it can mature. A strong gift still needs love, humility, correction, and practice.",
           ],
+          image: {
+            alt: "Spiritual Gifts report cover for lesson on reading results",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/39e07952-dc25-436b-8d4e-3efd59a72e81/SG+Report.jpg?format=2500w",
+          },
           focus: [
             "Read the report slowly and prayerfully.",
             "Treat top gifts as discernment invitations.",
@@ -66,6 +74,10 @@ export const spiritualGiftsCourse = {
             "Use the report through service. Gifts become clearer when they are practiced in small, faithful ways. Notice what strengthens others, bears fruit, and aligns with Scripture.",
             "Use the report over time. Some gifts remain consistent, while others emerge through need, calling, training, and obedience in a new season.",
           ],
+          image: {
+            alt: "Hands clasped together around a table in unity",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/948124bb-6d94-42fe-96be-3006c43cc8a8/hands-clasped-together-in-unity-at-wooden-table-2026-09-15-20-10-17-utc.jpg?format=2500w",
+          },
           focus: [
             "Pray through the Scriptures connected to your gifts.",
             "Ask trusted people what they see confirmed in your life.",
@@ -92,6 +104,10 @@ export const spiritualGiftsCourse = {
             "Paul describes believers as one Body with many members. No one carries every gift, every member matters, and difference is part of God's design.",
             "Gifts require love. First Corinthians 12 flows directly into First Corinthians 13 because gifts without love become distorted. Love gives gifts their Christlike shape.",
           ],
+          image: {
+            alt: "Hands reaching toward a heart on a wooden table",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/d9c32b17-5849-4ddb-a3f0-039b4eddf3e4/hands-reaching-for-a-heart-on-a-wooden-table-2026-01-05-06-26-34-utc.jpg?format=2500w",
+          },
           focus: [
             "Gifts come from God and serve the common good.",
             "Difference in the Body is part of God's design.",
@@ -111,6 +127,10 @@ export const spiritualGiftsCourse = {
             "They are not a spiritual status system. Hidden service is not less valuable than visible service, and no gift should become a ranking of importance.",
             "They are not a limitation on God. Your report does not tell God what He can or cannot do through you. Gifts clarify patterns; they do not create boundaries around obedience.",
           ],
+          image: {
+            alt: "Man holding a trophy to illustrate spiritual gifts are not status",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/77d00833-4ba7-47d0-b502-fc93647337a3/man-celebrates-win-holding-trophy-against-yellow-b-2026-03-17-04-15-02-utc.jpeg?format=2500w",
+          },
           focus: [
             "A gift is not a personality label or identity replacement.",
             "A gift does not excuse immaturity.",
@@ -136,6 +156,10 @@ export const spiritualGiftsCourse = {
             "Pay attention to fruit. Ask whether people experience love, whether the Body is strengthened, whether the practice aligns with Scripture, and whether humility is growing.",
             "Learn through feedback. Ask trusted people what they saw, what was helpful, and what could mature. Correction is part of stewardship.",
           ],
+          image: {
+            alt: "Women working together at a modern workplace",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/9f8f9d52-4016-4898-a0fb-fcad95e41c1b/smiling-women-working-together-at-modern-workplace-2026-03-25-01-30-58-utc.jpg?format=300w",
+          },
           focus: [
             "Discernment requires movement.",
             "A small serving experiment is often better than a permanent assignment.",
@@ -155,6 +179,10 @@ export const spiritualGiftsCourse = {
             "Community also corrects. Gifts can be used immaturely, and loving feedback helps us notice when a gift has become harsh, hidden, controlling, unclear, prideful, or disconnected from love.",
             "Different gifts work together. The Body grows as each part does its work in love, and humility grows when we honor gifts different from our own.",
           ],
+          image: {
+            alt: "Diverse group working together around a shared table",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/6799e381-1255-4ac9-9b23-20567c2a2673/diverse-group-of-young-business-people-working-in-2026-03-18-05-03-41-utc+800.jpg?format=2500w",
+          },
           focus: [
             "Gifts are best discerned in community.",
             "Correction is not rejection; it is formation.",
@@ -181,6 +209,10 @@ export const spiritualGiftsCourse = {
             "If a top gift surprises you, treat the surprise as an invitation to explore. Ask where the gift may have already appeared, ask others what they see, and practice before dismissing it.",
             "If you do not like your results, bring that reaction honestly to God. Avoid comparison. Remember that the report is a tool, not a verdict, and focus on service rather than status.",
           ],
+          image: {
+            alt: "Student reading carefully at a wooden table",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/7e91e9dd-c8e8-418e-aa72-63084a529fed/focused-student-reads-carefully-at-wooden-table-2026-01-06-09-26-55-utc.jpg?format=2500w",
+          },
           focus: [
             "Discern gifts through Scripture, service, community, and fruit.",
             "Surprise can become an invitation to explore.",
@@ -200,6 +232,10 @@ export const spiritualGiftsCourse = {
             "Where churches differ on how certain gifts operate today, the posture should be Scripture, pastoral wisdom, humility, and love. Participants should honor their church leadership and remain teachable.",
             "Shared foundations remain steady: gifts come from God, gifts serve others, gifts build up the Body, gifts require love, and gifts need maturity.",
           ],
+          image: {
+            alt: "Hand holding a cross against golden sky",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/a347531f-a916-4ee2-8f8a-da3deefe6682/hand-holding-cross-against-the-golden-sky-2026-01-09-06-14-29-utc.jpg?format=300w",
+          },
           focus: [
             "Different traditions may group gifts differently.",
             "Gift language should help people serve faithfully.",
@@ -219,6 +255,10 @@ export const spiritualGiftsCourse = {
             "The larger journey includes identity, design, story, desire, gifts, and niche. Spiritual gifts help name how the Spirit equips you to strengthen others within that broader journey.",
             "FruitLife keeps the gifts conversation grounded in Christlike formation. Gifts ask, \"How might I be empowered to serve?\" Fruit asks, \"Is the life of Christ becoming visible in how I serve?\"",
           ],
+          image: {
+            alt: "DYDD pathway illustration connecting gifts and formation",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/a41a6cf7-fbee-4855-97d2-323bfe455241/envato-labs-image-edit+%2861%29.png?format=2500w",
+          },
           focus: [
             "Spiritual gifts are part of the larger DYDD journey.",
             "Design, gifts, fruit, story, and desire belong together.",
@@ -244,6 +284,10 @@ export const spiritualGiftsCourse = {
             "Make a simple growth plan: pray through the gift, study the Scriptures connected to it, practice in a small setting, ask for feedback, seek training or mentoring, and review fruit over time.",
             "Not every gift needs a platform. Some gifts mature in hidden faithfulness. Confidence should grow with humility because the aim is not self-expression, but faithful service.",
           ],
+          image: {
+            alt: "Barefoot walk along a sandy beach shoreline",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/e67da71a-517c-42c4-9a1d-aa9fd8c1a0ec/barefoot-stroll-along-the-sandy-beach-shoreline-2026-03-20-04-41-26-utc.jpg?format=2500w",
+          },
           focus: [
             "Gifts can be neglected or developed.",
             "Maturity and love shape trustworthy service.",
@@ -264,6 +308,10 @@ export const spiritualGiftsCourse = {
             "A gift is not only for formal ministry. Gifts may appear in homes, workplaces, churches, friendships, creative work, leadership, and ordinary service.",
             "Humility keeps gifts from becoming pride. Courage keeps gifts from being buried. Love teaches when and how to offer what God has given.",
           ],
+          image: {
+            alt: "Illustration of DYDD assessment pathways connected together",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/df578735-33b3-4bc5-a9be-26f3a80fd535/image-gen+%2823%29.png?format=300w",
+          },
           focus: [
             "Gifts are stewardship.",
             "The DYDD ecosystem brings gifts, design, fruit, and action together.",

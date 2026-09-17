@@ -12038,6 +12038,52 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   line-height: 1.36;
 }
 
+.assessment-lesson-content {
+  display: grid;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.assessment-lesson-content.with-image {
+  grid-template-columns: minmax(0, 0.58fr) minmax(220px, 0.42fr);
+}
+
+.assessment-lesson-content .lesson-source {
+  min-width: 0;
+}
+
+.assessment-lesson-image {
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 100%;
+  margin: 0;
+  border: 1px solid rgba(36, 63, 39, 0.15);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(234, 240, 226, 0.44)),
+    var(--panel);
+  box-shadow: 0 16px 34px -28px rgba(36, 63, 39, 0.48);
+}
+
+.assessment-lesson-image::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  border-radius: 6px;
+}
+
+.assessment-lesson-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  object-fit: cover;
+  object-position: center;
+}
+
 .assessment-reflection-heading {
   display: flex;
   flex-wrap: wrap;
@@ -14508,6 +14554,19 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
   .journey-active-focus {
     grid-template-columns: 1fr;
+  }
+
+  .assessment-lesson-content.with-image {
+    grid-template-columns: 1fr;
+  }
+
+  .assessment-lesson-image {
+    min-height: auto;
+  }
+
+  .assessment-lesson-image img {
+    aspect-ratio: 16 / 10;
+    min-height: 0;
   }
 
   .assessment-reflection-heading {

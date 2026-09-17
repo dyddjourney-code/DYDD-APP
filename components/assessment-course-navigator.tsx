@@ -250,12 +250,23 @@ export function AssessmentCourseNavigator({
               </section>
             ) : null}
 
-            <section className="lesson-source readable-lesson-body" aria-label="Lesson body">
-              <p className="section-label">{active.lesson.title}</p>
-              {active.lesson.body.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-            </section>
+            <div className={active.lesson.image ? "assessment-lesson-content with-image" : "assessment-lesson-content"}>
+              <section className="lesson-source readable-lesson-body" aria-label="Lesson body">
+                <p className="section-label">{active.lesson.title}</p>
+                {active.lesson.body.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </section>
+              {active.lesson.image ? (
+                <figure className="assessment-lesson-image">
+                  <img
+                    src={active.lesson.image.src}
+                    alt={active.lesson.image.alt}
+                    loading="lazy"
+                  />
+                </figure>
+              ) : null}
+            </div>
 
             <section className="lesson-callout assessment-reflection-direction" aria-label="Reflection direction">
               <div className="assessment-reflection-heading">

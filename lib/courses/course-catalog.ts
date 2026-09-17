@@ -7,6 +7,10 @@ export type CourseLesson = {
   body: readonly string[];
   companionMoment?: CompanionMoment;
   focus: readonly string[];
+  image?: {
+    alt: string;
+    src: string;
+  };
   reflectionPrompt: string;
   slug: string;
   summary: string;

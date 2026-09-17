@@ -3,6 +3,10 @@
 import crypto from "node:crypto";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import {
+  consumeFruitLifeEntitlement,
+  getActiveFruitLifeEntitlement,
+} from "@/lib/commerce/fruitlife-entitlements";
 import { sendResendEmail } from "@/lib/email/resend";
 import {
   fruitLifeFruits,
@@ -589,6 +593,15 @@ export async function createFruitLifeSession(formData: FormData) {
     data: { user },
   } = await serverSupabase.auth.getUser();
   const now = new Date().toISOString();
+  const activeEntitlement = user?.id ? await getActiveFruitLifeEntitlement(user.id) : null;
+  const canCreatePaidSession =
+    Boolean(user?.id && activeEntitlement) || isFruitLifeAdmin(user?.email);
+
+  if (!canCreatePaidSession) {
+    redirect(
+      `/field-kit?lane=fruitlife&checkout=required#current-assessment-process`,
+    );
+  }
 
   const { data: linkedParticipant } = user
     ? await supabase
@@ -656,6 +669,19 @@ export async function createFruitLifeSession(formData: FormData) {
 
   if (sessionError || !session) {
     fail("/fruitlife360", sessionError?.message ?? "Unable to create FruitLife session.");
+  }
+
+  if (user?.id && activeEntitlement) {
+    try {
+      await consumeFruitLifeEntitlement(user.id, session.id);
+    } catch (error) {
+      fail(
+        "/fruitlife360",
+        error instanceof Error
+          ? error.message
+          : "Unable to connect your FruitLife purchase to this session.",
+      );
+    }
   }
 
   const selfLink = `${baseUrl}/fruitlife360/self?session=${session.id}&token=${selfToken}`;

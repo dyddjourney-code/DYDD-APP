@@ -4,6 +4,7 @@ import { PageHelp } from "@/components/page-help";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 import { FruitLifeCurrentAssessmentProcess } from "@/components/fruitlife-current-assessment-process";
+import { userHasFruitLifeEntitlement } from "@/lib/commerce/fruitlife-entitlements";
 import {
   assessmentLabels,
   displayDate,
@@ -42,6 +43,7 @@ type FieldKitPageProps = {
     fruitlife?: string;
     fruitlife_session?: string;
     fruitlife_token?: string;
+    checkout?: string;
     lane?: string;
   }>;
 };
@@ -442,6 +444,9 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     selectedFruitLifeSession?.id === activeFruitLifeSession?.id && reviewParams?.fruitlife_token
       ? reviewParams.fruitlife_token
       : fruitLifeTokenFromSession(activeFruitLifeSession);
+  const hasFruitLifePurchaseAccess = user?.id
+    ? await userHasFruitLifeEntitlement(user.id)
+    : false;
   const fruitLifeReportSessions = fruitLifeSessions.filter((session) =>
     Boolean(fruitLifeReportArtifact(session)),
   );
@@ -563,6 +568,23 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     const fruitLifeArtifacts = artifacts.filter((artifact) =>
       artifact.meta.some(([label, value]) => label === "Source" && value === "FruitLife 360")
     );
+    const fruitLifeStartHref = activeFruitLifeSession
+      ? fruitLifeReturnPath
+      : hasFruitLifePurchaseAccess
+        ? `/fruitlife360?return_to=${encodeURIComponent("/field-kit?lane=fruitlife#current-assessment-process")}`
+        : `/api/stripe/fruitlife-checkout?return_to=${encodeURIComponent("/field-kit?lane=fruitlife#current-assessment-process")}`;
+    const checkoutMessage =
+      reviewParams?.checkout === "success"
+        ? "FruitLife 360 is unlocked. You can start your assessment now."
+        : reviewParams?.checkout === "required"
+          ? "Purchase FruitLife 360 to start a new assessment."
+          : reviewParams?.checkout === "cancelled"
+            ? "Checkout was cancelled. You can return whenever you are ready."
+            : reviewParams?.checkout === "unverified"
+              ? "Stripe did not verify that checkout yet. If payment completed, refresh in a moment."
+              : reviewParams?.checkout === "config-error"
+                ? "FruitLife 360 checkout is not fully configured yet."
+                : null;
 
     return (
       <main className="journey-shell hq-standalone-page fruitlife-release-shell">
@@ -579,22 +601,29 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         </header>
 
         <section className="fieldkit-assessments-section" aria-label="FruitLife 360 access">
+          {checkoutMessage ? <p className="form-message">{checkoutMessage}</p> : null}
           <div className="fieldkit-assessment-list single">
             <AssessmentCard
               assessment={{
-                action: activeFruitLifeSession ? "Open progress" : "Start FruitLife 360",
+                action: activeFruitLifeSession
+                  ? "Open progress"
+                  : hasFruitLifePurchaseAccess
+                    ? "Start FruitLife 360"
+                    : "Purchase FruitLife 360",
                 courseAction: hasFruitLife ? "Explore course" : "Course opens with your report",
                 courseAvailable: hasFruitLife,
                 courseHref: "/courses/fruitlife-360-formation?lane=fruitlife",
                 detail:
                   "A formation mirror using self reflection and observer feedback to notice visible fruit, pressure patterns, and growth invitations.",
-                href: activeFruitLifeSession
-                  ? fruitLifeReturnPath
-                  : `/fruitlife360?return_to=${encodeURIComponent("/field-kit?lane=fruitlife#current-assessment-process")}`,
+                href: fruitLifeStartHref,
                 logo: "/brand/tools/fruitful-life-360-logo.jpg",
                 points: ["Participant setup", "Observer invitations", "Progress tracking", "Report artifact"],
                 price: "$10 each time",
-                status: activeFruitLifeSession ? "In progress" : null,
+                status: activeFruitLifeSession
+                  ? "In progress"
+                  : hasFruitLifePurchaseAccess
+                    ? "Ready to start"
+                    : null,
                 title: "FruitLife 360",
               }}
               kind="Purchase"

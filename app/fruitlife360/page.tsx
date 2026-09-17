@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 import { PageHelp } from "@/components/page-help";
+import { userHasFruitLifeEntitlement } from "@/lib/commerce/fruitlife-entitlements";
+import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createFruitLifeSession } from "./actions";
 import { ObserverInvitations } from "./observer-invitations";
@@ -13,6 +15,14 @@ type FruitLifeSignupPageProps = {
 
 export const dynamic = "force-dynamic";
 
+function isFruitLifeAdmin(email: string | null | undefined) {
+  const configured = (process.env.DYDD_ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((value) => normalizeEmail(value))
+    .filter(Boolean);
+  return new Set(["dyddjourney@gmail.com", ...configured]).has(normalizeEmail(email));
+}
+
 export default async function FruitLifeSignupPage({
   searchParams,
 }: FruitLifeSignupPageProps) {
@@ -25,6 +35,14 @@ export default async function FruitLifeSignupPage({
 
   if (!user) {
     redirect(`/login?next=${encodeURIComponent(`/fruitlife360?return_to=${returnTo}`)}`);
+  }
+
+  const hasAccess = await userHasFruitLifeEntitlement(user.id);
+
+  if (!hasAccess && !isFruitLifeAdmin(user.email)) {
+    redirect(
+      `/field-kit?lane=fruitlife&checkout=required#current-assessment-process`,
+    );
   }
 
   return (

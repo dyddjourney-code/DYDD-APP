@@ -108,26 +108,25 @@ export default async function LearningLessonPage({
         <div className="lesson-main">
           <p className="eyebrow">{lesson.moduleTitle}</p>
           <h1>{lesson.title}</h1>
-          <p className="lede">{lesson.summary}</p>
 
           <section className="lesson-brief" aria-label="Lesson focus">
             <p className="section-label">Lesson focus</p>
-            <ul>
+            <div className="journey-active-focus" aria-label="Lesson focus">
               {lesson.focus.map((item) => (
-                <li key={item}>{item}</li>
+                <span key={item}>{item}</span>
               ))}
-            </ul>
+            </div>
           </section>
 
           <CompanionAudioCard moment={lesson.companionMoment} />
 
           {!fruitLifeLane ? (
             <section className="personal-walkthrough" aria-label="Learner data panel">
-              <p className="section-label">Heather sample data</p>
+              <p className="section-label">Assessment connection</p>
               <h2>
                 {insights.connected
-                  ? "This lesson is connected to your assessment record."
-                  : "This lesson is ready for your assessment record."}
+                  ? "Connected data can speak into this lesson."
+                  : "Ready for connected data."}
               </h2>
               {insights.rows.length ? (
                 <dl className="lesson-insight-list">
@@ -140,28 +139,23 @@ export default async function LearningLessonPage({
                 </dl>
               ) : (
                 <p>
-                  Sign in with the assessment email, or open Heather review mode,
-                  to see assessment-backed lesson language here.
+                  Once this assessment is connected, this space can carry the
+                  learner's report language beside the teaching.
                 </p>
               )}
             </section>
           ) : null}
 
           <section className="lesson-source readable-lesson-body" aria-label="Lesson body">
-            <p className="section-label">Lesson body</p>
+            <p className="section-label">{lesson.title}</p>
             {lesson.body.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
           </section>
 
-          <section className="lesson-callout" aria-label="Reflection prompt">
-            <p className="section-label">Reflection prompt</p>
+          <section className="lesson-callout assessment-reflection-direction" aria-label="Reflection prompt">
+            <p className="section-label">Reflection</p>
             <h2>{lesson.reflectionPrompt}</h2>
-            <p>
-              This is staged as the workbook prompt for the class review pass.
-              The next layer can save the response into the learner journey
-              record.
-            </p>
           </section>
 
           <footer className="lesson-pagination" aria-label="Lesson pagination">

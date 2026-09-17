@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   buildAssessmentCourseInsights,
@@ -6,7 +5,6 @@ import {
 } from "@/lib/assessments/student-context";
 import {
   getLearningCourse,
-  getLearningLessons,
   learningCourses,
 } from "@/lib/courses/course-catalog";
 import { normalizeEmail } from "@/lib/identity/email";
@@ -14,12 +12,10 @@ import {
   getHeatherReviewReport,
   reviewQuery,
   type ReviewSearchParams,
-  withReviewQuery,
 } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { AssessmentCourseNavigator } from "@/components/assessment-course-navigator";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
-import { PageHelp } from "@/components/page-help";
 
 export const dynamic = "force-dynamic";
 
@@ -61,7 +57,6 @@ export default async function LearningCoursePage({
     notFound();
   }
 
-  const lessons = getLearningLessons(course);
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -97,132 +92,31 @@ export default async function LearningCoursePage({
   return (
     <main className={`course-shell course-shell-${course.accent}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}>
       {fruitLifeLane ? <FruitLifeMiniNav /> : null}
-      {!fruitLifeLane ? (
-        <>
-          <nav className="course-nav" aria-label="Course navigation">
-            <Link href={withReviewQuery("/hq", reviewParams)}>
-              Back to Base Camp
-            </Link>
-            <Link href={withReviewQuery("/journey", reviewParams)}>
-              Journey map
-            </Link>
-          </nav>
+      <header className="mini-course-logo-intro">
+        <img src={course.logo} alt={`${course.title} logo`} />
+      </header>
 
-          <header className="course-hero polished-course-hero multi-course-hero">
-            <div>
-              <div className="course-logo-row">
-                <img className="course-logo" src={course.logo} alt={`${course.title} logo`} />
-                <img
-                  className="course-logo small"
-                  src="/brand/dydd-logo.webp"
-                  alt="Discover Your Divine Design"
-                />
+      {insights.rows.length ? (
+        <section
+          className={`mini-course-personalization mini-course-personalization-${course.accent}`}
+          aria-label={`${course.title} personalization`}
+        >
+          <div className="course-personalization-label-row">
+            <p className="section-label">Personalization</p>
+            {insights.note ? (
+              <p className="course-personalization-note">{insights.note}</p>
+            ) : null}
+          </div>
+          <dl className="lesson-insight-list mini-course-insight-list">
+            {insights.rows.slice(0, 5).map((row) => (
+              <div key={`${row.label}-${row.value}`}>
+                <dt>{row.label}</dt>
+                <dd>{row.value}</dd>
               </div>
-              <p className="eyebrow">{course.tagline}</p>
-              <h1>{course.title}</h1>
-              <p className="lede">{course.description}</p>
-              <p className="source-note">{course.sourceNote}</p>
-              <Link
-                className="button primary"
-                href={withReviewQuery(`/learn/${course.slug}/${lessons[0]?.slug ?? ""}`, reviewParams)}
-              >
-                Start first lesson
-              </Link>
-            </div>
-            <aside className="course-verse assessment-snapshot-card">
-              <p className="section-label">Personalized course</p>
-              <h2>{insights.connected ? "Your report is connected." : "Awaiting report data."}</h2>
-              <p>
-                {insights.connected
-                  ? "This course can read your assessment snapshot and place personal insight beside the lesson."
-                  : "When a matching assessment is attached, this panel fills with learner-specific insight."}
-              </p>
-            </aside>
-          </header>
-
-          <section className="course-map" aria-label="Course facts">
-            <div className="course-stat">
-              <span>{course.modules.length}</span>
-              <small>Modules mapped</small>
-            </div>
-            <div className="course-stat">
-              <span>{lessons.length}</span>
-              <small>Lessons staged</small>
-            </div>
-            <div className="course-stat">
-              <span>{insights.rows.length}</span>
-              <small>Personal fields available</small>
-            </div>
-          </section>
-
-          <section className="course-personalization" aria-label="Course personalization">
-            <div>
-              <div className="course-personalization-label-row">
-                <p className="section-label">Personalization</p>
-                {insights.note ? (
-                  <p className="course-personalization-note">{insights.note}</p>
-                ) : null}
-              </div>
-              <h2>
-                {insights.connected
-                  ? "The lesson can carry your assessment language beside the teaching."
-                  : "The structure is ready for the learner's own assessment data."}
-              </h2>
-              <p className="panel-copy">{course.companionNote}</p>
-            </div>
-            {insights.rows.length ? (
-              <dl>
-                {insights.rows.slice(0, 5).map((row) => (
-                  <div key={row.label}>
-                    <dt>{row.label}</dt>
-                    <dd>{row.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            ) : (
-              <Link className="button secondary" href="/login">
-                Sign in to connect records
-              </Link>
-            )}
-          </section>
-
-          <PageHelp
-            items={[
-              "Use the course menu to open and close modules without leaving the page.",
-              "Move one lesson at a time with the Previous and Next buttons.",
-              "Treat this as the course framework; lesson content can be tightened later without changing the structure.",
-            ]}
-            title="How to use this course"
-          />
-        </>
-      ) : (
-        <>
-          <header className="mini-course-logo-intro">
-            <img src={course.logo} alt={`${course.title} logo`} />
-          </header>
-          {insights.rows.length ? (
-            <section
-              className={`mini-course-personalization mini-course-personalization-${course.accent}`}
-              aria-label={`${course.title} personalization`}
-            >
-              <div className="course-personalization-label-row">
-                <p className="section-label">Personalization</p>
-                {insights.note ? (
-                  <p className="course-personalization-note">{insights.note}</p>
-                ) : null}
-              </div>
-              <dl className="lesson-insight-list mini-course-insight-list">
-                {insights.rows.slice(0, 5).map((row) => (
-                  <div key={`${row.label}-${row.value}`}>
-                    <dt>{row.label}</dt>
-                    <dd>{row.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            </section>
-          ) : null}
-        </>
-      )}
+            ))}
+          </dl>
+        </section>
+      ) : null}
 
       <div id={`${course.slug}-course-player`}>
         <AssessmentCourseNavigator
@@ -235,50 +129,10 @@ export default async function LearningCoursePage({
           reviewQuery={courseQuery}
           savedReflections={savedReflections}
           savedReflectionsEnabled={savedReflectionsEnabled}
-          showPersonalization={!fruitLifeLane}
-          showStandaloneLessonLink={!fruitLifeLane}
+          showPersonalization={false}
+          showStandaloneLessonLink={false}
         />
       </div>
-
-      {!fruitLifeLane ? (
-      <details className="journey-advanced-planning assessment-source-accordion">
-        <summary>
-          <span>Source lesson links</span>
-          <strong>Open the standalone lesson routes if needed</strong>
-        </summary>
-        <section className="module-stack" aria-label={`${course.title} standalone lesson links`}>
-          {course.modules.map((module, moduleIndex) => (
-            <article key={module.slug} className="module-panel">
-              <div>
-                <p className="section-label">
-                  Module {String(moduleIndex + 1).padStart(2, "0")}
-                </p>
-                <h2>{module.title}</h2>
-              </div>
-              <ol>
-                {module.lessons.map((lesson, index) => (
-                  <li key={lesson.slug}>
-                    <span>{String(index + 1).padStart(2, "0")}</span>
-                    <div>
-                      <Link
-                        href={
-                          fruitLifeLane
-                            ? `/learn/${course.slug}/${lesson.slug}?lane=fruitlife`
-                            : withReviewQuery(`/learn/${course.slug}/${lesson.slug}`, reviewParams)
-                        }
-                      >
-                        {lesson.title}
-                      </Link>
-                      <p>{lesson.summary}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </article>
-          ))}
-        </section>
-      </details>
-      ) : null}
     </main>
   );
 }

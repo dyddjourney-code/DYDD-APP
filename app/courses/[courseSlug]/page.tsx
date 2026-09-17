@@ -138,7 +138,12 @@ export default async function LearningCoursePage({
 
           <section className="course-personalization" aria-label="Course personalization">
             <div>
-              <p className="section-label">Personalization</p>
+              <div className="course-personalization-label-row">
+                <p className="section-label">Personalization</p>
+                {insights.note ? (
+                  <p className="course-personalization-note">{insights.note}</p>
+                ) : null}
+              </div>
               <h2>
                 {insights.connected
                   ? "The lesson can carry your assessment language beside the teaching."
@@ -181,7 +186,12 @@ export default async function LearningCoursePage({
               className={`mini-course-personalization mini-course-personalization-${course.accent}`}
               aria-label={`${course.title} personalization`}
             >
-              <p className="section-label">Personalization</p>
+              <div className="course-personalization-label-row">
+                <p className="section-label">Personalization</p>
+                {insights.note ? (
+                  <p className="course-personalization-note">{insights.note}</p>
+                ) : null}
+              </div>
               <dl className="lesson-insight-list mini-course-insight-list">
                 {insights.rows.slice(0, 5).map((row) => (
                   <div key={`${row.label}-${row.value}`}>

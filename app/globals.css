@@ -10913,8 +10913,29 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   box-shadow: 0 12px 30px rgba(70, 58, 35, 0.07);
 }
 
-.mini-course-personalization > .section-label {
+.mini-course-personalization > .section-label,
+.course-personalization-label-row .section-label {
   margin: 0;
+}
+
+.course-personalization-label-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.course-personalization-note {
+  margin: 0;
+  padding: 7px 10px;
+  border: 1px solid rgba(71, 107, 66, 0.22);
+  border-radius: 8px;
+  background: rgba(71, 107, 66, 0.12);
+  color: var(--green-dark);
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1.25;
 }
 
 .mini-course-insight-list {

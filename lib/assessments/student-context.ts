@@ -83,6 +83,40 @@ export function snapshotSection(
   return value as Record<string, unknown>;
 }
 
+function giftSummaryFromAppSnapshot(snapshot: AssessmentSnapshotSummary) {
+  const topGifts = snapshot.scores?.topGifts;
+
+  if (snapshot.assessment_type !== "spiritual_gifts" || !Array.isArray(topGifts)) {
+    return {};
+  }
+
+  return topGifts.slice(0, 5).reduce<Record<string, unknown>>((summary, gift, index) => {
+    if (!gift || typeof gift !== "object" || Array.isArray(gift)) {
+      return summary;
+    }
+
+    const typedGift = gift as Record<string, unknown>;
+    const rank = index + 1;
+
+    summary[`Top${rank}_Name`] = typedGift.label ?? "";
+    summary[`Top${rank}_Score`] = typedGift.score ?? "";
+    summary[`Top${rank}_Blurb`] = typedGift.reportBlurb ?? "";
+    summary[`Top${rank}_Definition`] = typedGift.definition ?? "";
+
+    return summary;
+  }, {});
+}
+
+function snapshotReadableSections(snapshot: AssessmentSnapshotSummary) {
+  return [
+    snapshotSection(snapshot, "summary"),
+    snapshotSection(snapshot, "profileLanguage"),
+    snapshotSection(snapshot, "scores"),
+    giftSummaryFromAppSnapshot(snapshot),
+    snapshot.scores ?? {},
+  ];
+}
+
 export function compactValue(value: unknown) {
   if (value === null || value === undefined || value === "") {
     return "";
@@ -140,6 +174,8 @@ export function snapshotHighlights(snapshot: AssessmentSnapshotSummary) {
       "Top1_Name",
       "Top2_Name",
       "Top3_Name",
+      "Top4_Name",
+      "Top5_Name",
       "Top1_Score",
       "Top2_Score",
       "Top3_Score",
@@ -165,11 +201,7 @@ export function snapshotHighlights(snapshot: AssessmentSnapshotSummary) {
     "Do_Tendency",
   ];
   const items: Array<{ label: string; value: string }> = [];
-  const sections = [
-    snapshotSection(snapshot, "summary"),
-    snapshotSection(snapshot, "profileLanguage"),
-    snapshotSection(snapshot, "scores"),
-  ];
+  const sections = snapshotReadableSections(snapshot);
 
   for (const source of sections) {
     for (const key of preferredKeys) {
@@ -197,11 +229,7 @@ export function snapshotInsightRows(
   }
 
   const rows: Array<{ label: string; value: string }> = [];
-  const sections = [
-    snapshotSection(snapshot, "summary"),
-    snapshotSection(snapshot, "profileLanguage"),
-    snapshotSection(snapshot, "scores"),
-  ];
+  const sections = snapshotReadableSections(snapshot);
 
   for (const key of keys) {
     for (const section of sections) {
@@ -369,11 +397,7 @@ function readFirstValue(
     return "";
   }
 
-  const sections = [
-    snapshotSection(snapshot, "summary"),
-    snapshotSection(snapshot, "profileLanguage"),
-    snapshotSection(snapshot, "scores"),
-  ];
+  const sections = snapshotReadableSections(snapshot);
 
   for (const key of keys) {
     for (const section of sections) {
@@ -444,6 +468,7 @@ export function buildAssessmentCourseInsights(
   if (!assessmentType) {
     return {
       connected: report.latest.length > 0,
+      note: "",
       rows: report.latest.flatMap((snapshot) =>
         snapshotHighlights(snapshot).slice(0, 2).map((item) => ({
           label: `${assessmentLabels[snapshot.assessment_type] ?? snapshot.assessment_type}: ${item.label}`,
@@ -458,6 +483,7 @@ export function buildAssessmentCourseInsights(
   if (!snapshot) {
     return {
       connected: false,
+      note: "",
       rows: [] as Array<{ label: string; value: string }>,
     };
   }
@@ -486,10 +512,8 @@ export function buildAssessmentCourseInsights(
       "Top1_Name",
       "Top2_Name",
       "Top3_Name",
-      "Top1_Blurb",
-      "Top1_MaturityDescription",
-      "Top1_GrowthAreas",
-      "Top1_StepsToGrow",
+      "Top4_Name",
+      "Top5_Name",
     ],
     design_pathways: [
       "Pathway_Name",
@@ -504,6 +528,10 @@ export function buildAssessmentCourseInsights(
 
   return {
     connected: true,
+    note:
+      assessmentType === "fruit_360"
+        ? "This data represents the most recent FruitLife 360 submission."
+        : "",
     rows: snapshotInsightRows(
       snapshot,
       detailKeysByAssessment[assessmentType] ?? [],

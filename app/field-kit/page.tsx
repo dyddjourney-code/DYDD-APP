@@ -84,7 +84,7 @@ const purchaseAssessments: AssessmentProduct[] = [
     logo: "/brand/tools/designid-logo.webp",
     points: ["Reflection pattern", "Report artifact", "Trailhead course included"],
     price: "$20",
-    status: "Purchased",
+    status: null,
     title: "DesignID",
   },
   {
@@ -93,7 +93,7 @@ const purchaseAssessments: AssessmentProduct[] = [
     courseHref: null,
     detail:
       "Helps people see how they plan, decide, and move into action so purpose becomes more practical.",
-    href: "/field-kit",
+    href: "/designpd",
     logo: "/brand/tools/designpd-logo.jpg",
     points: ["Plan, Decide, Do patterns", "Practical rhythms", "Trailhead course included"],
     price: "$50",
@@ -330,6 +330,15 @@ function artifactDownloadHref(
   reviewParams?: ReviewSearchParams | null,
 ) {
   const statusHref = snapshot.scores?.statusHref;
+  const reportAccessUrl = snapshot.scores?.reportAccessUrl;
+
+  if (
+    (snapshot.assessment_type === "designid" || snapshot.assessment_type === "designpd") &&
+    typeof reportAccessUrl === "string" &&
+    reportAccessUrl
+  ) {
+    return reportAccessUrl;
+  }
 
   if (snapshot.assessment_type === "spiritual_gifts" && typeof statusHref === "string" && statusHref) {
     return statusHref;
@@ -445,10 +454,22 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
       assessment.title === "DesignID"
         ? hasDesignId ? "Completed" : assessment.status
         : assessment.title === "DesignPD"
-          ? hasDesignPd ? "Completed" : assessment.status
+          ? hasDesignPd ? "Completed" : hasDesignId ? assessment.status : "Requires DesignID"
           : assessment.title === "Design Pathways"
             ? hasDesignPathways ? "Completed" : assessment.status
             : assessment.status;
+
+    if (assessment.title === "DesignPD") {
+      return {
+        ...assessment,
+        action: hasDesignId ? assessment.action : "Complete DesignID first",
+        courseAction: hasDesignPd ? "Explore course" : "Course opens with report",
+        courseAvailable: hasDesignPd,
+        courseHref: "/courses/designpd-alignment",
+        href: hasDesignId ? assessment.href : "/designid",
+        status,
+      };
+    }
 
     return { ...assessment, status };
   });

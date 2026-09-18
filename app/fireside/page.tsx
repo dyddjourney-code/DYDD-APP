@@ -2,12 +2,16 @@ import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 import { PageHelp } from "@/components/page-help";
 import { WaypointExplorer } from "@/components/waypoint-explorer";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   currentWaypoint as scheduledCurrentWaypoint,
   previousWaypoint as scheduledPreviousWaypoint,
   waypointCategories as scheduledWaypointCategories,
   getReleasedWaypoints,
 } from "@/lib/waypoints/waypoint-data";
+
+export const dynamic = "force-dynamic";
 
 const liveGatherings = [
   {
@@ -62,6 +66,70 @@ type FiresidePageProps = {
   }>;
 };
 
+async function getWaypointSubscriptionState() {
+  const serverClient = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await serverClient.auth.getUser();
+  const email = user?.email?.trim().toLowerCase() ?? "";
+
+  if (!user || !email) {
+    return {
+      initialSubscribeEmail: "",
+      initialSubscribeMessage:
+        "Receive the weekly DYDD Waypoint every Friday at 8:00 AM Eastern.",
+      initialSubscribeState: "idle" as const,
+    };
+  }
+
+  const supabase = createSupabaseAdminClient();
+  const { data: userSubscription } = await supabase
+    .from("dydd_waypoint_subscriptions")
+    .select("id,email,status,user_id")
+    .eq("user_id", user.id)
+    .eq("status", "active")
+    .maybeSingle();
+
+  if (userSubscription) {
+    return {
+      initialSubscribeEmail: userSubscription.email ?? email,
+      initialSubscribeMessage:
+        "You're subscribed to weekly DYDD Waypoint emails.",
+      initialSubscribeState: "success" as const,
+    };
+  }
+
+  const { data: emailSubscription } = await supabase
+    .from("dydd_waypoint_subscriptions")
+    .select("id,email,status,user_id")
+    .eq("email", email)
+    .eq("status", "active")
+    .maybeSingle();
+
+  if (emailSubscription) {
+    if (!emailSubscription.user_id) {
+      await supabase
+        .from("dydd_waypoint_subscriptions")
+        .update({ user_id: user.id })
+        .eq("id", emailSubscription.id);
+    }
+
+    return {
+      initialSubscribeEmail: emailSubscription.email ?? email,
+      initialSubscribeMessage:
+        "You're subscribed to weekly DYDD Waypoint emails.",
+      initialSubscribeState: "success" as const,
+    };
+  }
+
+  return {
+    initialSubscribeEmail: email,
+    initialSubscribeMessage:
+      "Receive the weekly DYDD Waypoint every Friday at 8:00 AM Eastern.",
+    initialSubscribeState: "idle" as const,
+  };
+}
+
 export default async function FiresidePage({
   searchParams,
 }: FiresidePageProps) {
@@ -73,6 +141,7 @@ export default async function FiresidePage({
     releasedWaypointArchive[0] ?? scheduledCurrentWaypoint;
   const activePreviousWaypoint =
     releasedWaypointArchive[1] ?? scheduledPreviousWaypoint;
+  const waypointSubscriptionState = await getWaypointSubscriptionState();
 
   if (fruitLifeLane) {
     return (
@@ -105,6 +174,7 @@ export default async function FiresidePage({
           <WaypointExplorer
             categories={scheduledWaypointCategories}
             currentId={activeCurrentWaypoint.id}
+            {...waypointSubscriptionState}
             previousId={activePreviousWaypoint.id}
             waypoints={releasedWaypointArchive}
           />
@@ -188,6 +258,7 @@ export default async function FiresidePage({
         <WaypointExplorer
           categories={scheduledWaypointCategories}
           currentId={activeCurrentWaypoint.id}
+          {...waypointSubscriptionState}
           previousId={activePreviousWaypoint.id}
           waypoints={releasedWaypointArchive}
         />

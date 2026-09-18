@@ -18,6 +18,9 @@ type Waypoint = {
 type WaypointExplorerProps = {
   categories: string[];
   currentId: string;
+  initialSubscribeEmail?: string;
+  initialSubscribeMessage?: string;
+  initialSubscribeState?: "idle" | "success";
   previousId: string;
   waypoints: Waypoint[];
 };
@@ -25,18 +28,21 @@ type WaypointExplorerProps = {
 export function WaypointExplorer({
   categories,
   currentId,
+  initialSubscribeEmail = "",
+  initialSubscribeMessage = "Receive the weekly DYDD Waypoint every Friday at 8:00 AM Eastern.",
+  initialSubscribeState = "idle",
   previousId,
   waypoints,
 }: WaypointExplorerProps) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [selectedId, setSelectedId] = useState(currentId);
-  const [subscribeEmail, setSubscribeEmail] = useState("");
+  const [subscribeEmail, setSubscribeEmail] = useState(initialSubscribeEmail);
   const [subscribeState, setSubscribeState] = useState<
     "idle" | "loading" | "success" | "error"
-  >("idle");
+  >(initialSubscribeState);
   const [subscribeMessage, setSubscribeMessage] = useState(
-    "Receive the weekly DYDD Waypoint every Friday at 8:00 AM Eastern.",
+    initialSubscribeMessage,
   );
 
   const selectedWaypoint =

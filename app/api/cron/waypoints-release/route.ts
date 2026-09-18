@@ -186,7 +186,7 @@ export async function GET(request: NextRequest) {
           ? `Reflection: ${waypoint.base_reflection_prompt}`
           : "",
         "",
-        "You are receiving this because you subscribed to DYDD Waypoints.",
+        "You are receiving this because you subscribed to DYDD Waypoints. Log into the app to unsubscribe if desired.",
         `Unsubscribe: ${unsubscribeUrl}`,
       ]
         .filter(Boolean)
@@ -203,7 +203,7 @@ export async function GET(request: NextRequest) {
             ? `<p><strong>Reflection:</strong> ${waypoint.base_reflection_prompt}</p>`
             : ""
         }
-        <p style="color:#667085;font-size:13px;">You are receiving this because you subscribed to DYDD Waypoints.</p>
+        <p style="color:#667085;font-size:13px;">You are receiving this because you subscribed to DYDD Waypoints. Log into the app to unsubscribe if desired.</p>
         <p style="color:#667085;font-size:13px;"><a href="${unsubscribeUrl}">Unsubscribe from DYDD Waypoints</a></p>
       `;
 

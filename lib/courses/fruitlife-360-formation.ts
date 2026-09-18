@@ -21,6 +21,14 @@ export const fruitLife360Course = {
             "A mirror helps us notice what is true. FruitLife 360 reflects what appears visible in this season, but it does not define your worth, maturity, or standing before God.",
             "Self-reflection helps you begin with prayerful honesty. Trusted observers can help you notice grace, growth, and blind spots. Receive the process with humility, hope, and discernment.",
           ],
+          image: {
+            alt: "FruitLife 360 logo for course orientation",
+            caption: [
+              "But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness, gentleness and self-control.",
+              "Galatians 5:22-23",
+            ],
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/418710fa-3116-4f5f-a68a-8b1c9f415678/FL360-logo.jpg?format=2500w",
+          },
           focus: [
             "Fruit is formed by the Spirit, not manufactured by self-effort.",
             "The report is for reflection, not comparison.",
@@ -47,6 +55,10 @@ export const fruitLife360Course = {
             "Fruit tiers help you read the report with wisdom. Most Visible Fruit invites gratitude and stewardship. Steady Forming Fruit names what is present and developing. Growth Invitation Fruit should be received with grace and a focused practice.",
             "Pressure notes show where fruit may feel less steady under stress, conflict, fatigue, disappointment, temptation, uncertainty, or delay. Pressure does not create the whole story; it reveals places where support, prayer, and practice may be needed.",
           ],
+          image: {
+            alt: "FruitLife 360 report review image",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/21593100-0e06-4060-a22f-cae3d78c0cdf/2026-09-17_16-53-11.jpg?format=2500w",
+          },
           focus: [
             "Ask what is visible, what is forming, and what is one faithful next step.",
             "Read scores and tiers as formation language, not identity labels.",
@@ -66,6 +78,10 @@ export const fruitLife360Course = {
             "Choose one practice. Transformation often grows through repeated small steps. A seven-day practice helps turn insight into formation when it is concrete, relational, and prayerful.",
             "Invite conversation with a trusted mentor, friend, pastor, spouse, small group leader, or spiritual companion. Ask for encouragement before correction, and ask what they see God forming in you.",
           ],
+          image: {
+            alt: "Man with arms outstretched looking over a mountain view",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/a217e198-d3bc-4ac3-bc36-3a86083665ab/man-enjoying-mountain-view-with-arms-outstretched-2026-03-17-00-43-30-utc.jpg?format=2500w",
+          },
           focus: [
             "Begin with gratitude before analysis.",
             "Choose one concrete seven-day practice.",
@@ -85,6 +101,10 @@ export const fruitLife360Course = {
             "If your report includes observers, read their feedback slowly. Look for repeated themes rather than isolated comments, notice agreement between self and observers, and notice gaps between self-perception and what others experience.",
             "Receive feedback with prayer. Thank God for encouragement, resist defensiveness, ask clarifying questions when needed, and choose one next step instead of trying to address everything at once.",
           ],
+          image: {
+            alt: "Man using a magnifying glass for closer observation",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/fe4d3399-607b-4a26-b8fd-d3ca11c9050c/man-using-magnifying-glass-for-a-closer-look-2026-03-13-01-16-07-utc.jpg?format=2500w",
+          },
           focus: [
             "Self-only reports are a valid quiet beginning.",
             "Observer reports invite encouragement, perspective, and humility.",
@@ -111,6 +131,10 @@ export const fruitLife360Course = {
             "John 15 teaches that fruit grows through remaining in Christ. Practice matters, but practice flows from dependence. Formation is not passive, but it is not self-powered.",
             "Fruit forms in ordinary places: home, work, church, friendship, conflict, delay, disappointment, pressure, hidden obedience, and daily responsibility.",
           ],
+          image: {
+            alt: "Open Bible and notebook for reflecting on the fruit of the Spirit",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b4818d6f-7792-449a-befc-0840d2c50966/381da578-b867-4ad2-92d2-146916bd994a-2026-03-11.jpeg?format=2500w",
+          },
           focus: [
             "Fruit is evidence of the Spirit's transforming work.",
             "Abiding comes before striving.",
@@ -131,6 +155,10 @@ export const fruitLife360Course = {
             "Love grows as we receive Christ's love and practice giving it away, often in inconvenient relationships. It matures when care remains present even when it costs us something.",
             "Mature love looks like consistent care in complex relationships, truth spoken without contempt, sacrifice without resentment, and attention to what another person actually needs.",
           ],
+          image: {
+            alt: "Hands reaching toward a heart on a wooden table",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/d9c32b17-5849-4ddb-a3f0-039b4eddf3e4/hands-reaching-for-a-heart-on-a-wooden-table-2026-01-05-06-26-34-utc.jpg?format=2500w",
+          },
           focus: [
             "Love seeks another person's good.",
             "Love gives shape to every other fruit.",
@@ -150,6 +178,10 @@ export const fruitLife360Course = {
             "Joy grows through abiding, gratitude, worship, remembrance, and trust. It often begins by noticing signs of grace.",
             "Mature joy looks like honest gladness without denial, hope that does not need to perform happiness, and the ability to encourage others from a grounded place.",
           ],
+          image: {
+            alt: "Barefoot walk along a sandy beach shoreline",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/e67da71a-517c-42c4-9a1d-aa9fd8c1a0ec/barefoot-stroll-along-the-sandy-beach-shoreline-2026-03-20-04-41-26-utc.jpg?format=2500w",
+          },
           focus: [
             "Joy is rooted in God, not ideal circumstances.",
             "Joy can coexist with grief and pressure.",
@@ -169,6 +201,10 @@ export const fruitLife360Course = {
             "Peace grows through prayer, surrender, truth-telling, and trust. It deepens when we bring anxiety to God instead of carrying it alone.",
             "Mature peace looks like calm presence without passivity, truth spoken without panic, and rest in God while taking appropriate responsibility.",
           ],
+          image: {
+            alt: "Group of seniors embracing on the beach",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/d880b242-866d-4cd8-a598-7e6ddfd8cbc2/group-of-seniors-embracing-on-the-beach-2026-09-15-20-15-26-utc.jpg?format=500w",
+          },
           focus: [
             "Peace is steadiness rooted in trust.",
             "Peace creates room for wise response.",
@@ -188,6 +224,10 @@ export const fruitLife360Course = {
             "Patience grows in delay, interruption, repetition, and disappointment. It grows when we learn to wait with God rather than merely wait for circumstances to change.",
             "Mature patience looks like slowing down before speaking, enduring without contempt, remaining faithful when outcomes take time, and making room for people to grow.",
           ],
+          image: {
+            alt: "Tired man resting on a laptop in an office",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/5ab92aa6-4d20-40a0-905f-165f19bc6123/tired-man-napping-on-laptop-in-office-2026-03-19-05-42-56-utc.jpg?format=2500w",
+          },
           focus: [
             "Patience trusts God when timing is slow.",
             "Hurry can reveal a formation invitation.",
@@ -207,6 +247,10 @@ export const fruitLife360Course = {
             "Kindness grows as we become attentive to people. It grows when we slow down enough to notice need, and it matures when mercy becomes action.",
             "Mature kindness looks like practical care, merciful speech, attention to overlooked people, and strength used to help rather than dismiss.",
           ],
+          image: {
+            alt: "Diverse group working together around a shared table",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/6799e381-1255-4ac9-9b23-20567c2a2673/diverse-group-of-young-business-people-working-in-2026-03-18-05-03-41-utc+800.jpg?format=2500w",
+          },
           focus: [
             "Kindness is mercy made practical.",
             "Kindness treats people with dignity.",
@@ -226,6 +270,10 @@ export const fruitLife360Course = {
             "Goodness grows through obedience, repentance, integrity, and repair. It often forms in small decisions no one else sees.",
             "Mature goodness looks like clean yeses and honest nos, repair when harm has been done, integrity in hidden places, and courage to do good when fatigue or self-interest presses in.",
           ],
+          image: {
+            alt: "Hand holding a cross against a golden sky",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/a347531f-a916-4ee2-8f8a-da3deefe6682/hand-holding-cross-against-the-golden-sky-2026-01-09-06-14-29-utc.jpg?format=300w",
+          },
           focus: [
             "Goodness chooses what reflects God's character.",
             "Integrity often forms in hidden places.",
@@ -245,6 +293,10 @@ export const fruitLife360Course = {
             "Faithfulness grows through ordinary obedience, rhythms, repair, perseverance, and wise limits. It matures when commitments are carried with humility and truth.",
             "Mature faithfulness looks like keeping promises, repairing missed commitments, showing up when responsibility is demanding, and setting boundaries that make faithful presence possible.",
           ],
+          image: {
+            alt: "Focused student reading carefully at a wooden table",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/7e91e9dd-c8e8-418e-aa72-63084a529fed/focused-student-reads-carefully-at-wooden-table-2026-01-06-09-26-55-utc.jpg?format=2500w",
+          },
           focus: [
             "Faithfulness is dependable devotion over time.",
             "Wise limits can protect faithful presence.",
@@ -264,6 +316,10 @@ export const fruitLife360Course = {
             "Gentleness grows through humility, restraint, listening, and timing. It often forms in tense conversations, leadership moments, disappointment, and correction.",
             "Mature gentleness looks like truth without harshness, strength without domination, correction without contempt, and tenderness without avoidance.",
           ],
+          image: {
+            alt: "Group offering support and comfort in a sunny office",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/fbc61307-9bf7-48de-9457-61a66f776c29/group-support-and-comforting-in-a-sunny-office-2026-09-15-20-10-20-utc.jpg?format=2500w",
+          },
           focus: [
             "Gentleness is strength under the rule of love.",
             "Truth and tenderness belong together.",
@@ -283,6 +339,10 @@ export const fruitLife360Course = {
             "Self-control grows through grace-trained practice, wise boundaries, honest confession, embodied rhythms, and Spirit dependence. It matures as discipline becomes freedom rather than rigidity.",
             "Mature self-control looks like ordered freedom, wise restraint, follow-through, and boundaries that protect what matters.",
           ],
+          image: {
+            alt: "People with hands raised in worship and prayer",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/672e6329-4600-4a7c-9d36-071c33429e4f/people-with-hands-raised-in-worship-and-prayer-2026-09-15-20-10-25-utc.jpg?format=500w",
+          },
           focus: [
             "Self-control is submitted strength.",
             "Wise boundaries can serve love rather than pride.",
@@ -305,9 +365,13 @@ export const fruitLife360Course = {
           body: [
             "Fruit becomes visible in ordinary life, especially under pressure. Jesus taught that fruit can be recognized, so fruit is not merely an internal aspiration.",
             "Fruit becomes visible in speech, tone, choices, habits, relationships, and responses. Ordinary places of practice include family conversations, work pressure, church service, leadership responsibility, conflict, waiting, and hidden obedience.",
-            "Pressure may expose where fruit needs support, but pressure can also reveal grace that has become more deeply rooted. The question is not, \"Why am I not perfect?\" The better question is, \"What is the Spirit forming here?\"",
+            'Pressure may expose where fruit needs support, but pressure can also reveal grace that has become more deeply rooted. The question is not, "Why am I not perfect?" The better question is, "What is the Spirit forming here?"',
             "A simple seven-day practice can help: choose one fruit, choose one ordinary setting, choose one concrete action, pray before and after, and notice what happens.",
           ],
+          image: {
+            alt: "Group of friends navigating with a map",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/ab079d99-1045-490b-ae19-880ce271bb09/group-of-friends-during-trip-navigating-with-map-a-2026-01-05-23-13-46-utc.jpg?format=2500w",
+          },
           focus: [
             "Fruit is visible in ordinary life.",
             "Pressure reveals places for prayer and support.",
@@ -323,11 +387,15 @@ export const fruitLife360Course = {
         },
         {
           body: [
-            "Jesus teaches that true fruit grows through abiding in Him and becomes visible through love, obedience, and witness. He does not begin with \"try harder\"; He invites disciples to remain in Him.",
-            "Apart from Jesus, we can do nothing. This confronts both pride and despair: pride says, \"I can form myself,\" while despair says, \"I cannot change.\" Abiding says, \"Christ is the source of life in me.\"",
+            'Jesus teaches that true fruit grows through abiding in Him and becomes visible through love, obedience, and witness. He does not begin with "try harder"; He invites disciples to remain in Him.',
+            'Apart from Jesus, we can do nothing. This confronts both pride and despair: pride says, "I can form myself," while despair says, "I cannot change." Abiding says, "Christ is the source of life in me."',
             "Jesus is interested in lasting fruit. Lasting fruit is shaped by love, obedience, dependence, and prayer rather than temporary behavior management.",
             "Jesus connects abiding, obedience, joy, and love. Growth in fruit is growth in visible Christlikeness.",
           ],
+          image: {
+            alt: "DYDD pathway illustration connecting growth and formation",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/a41a6cf7-fbee-4855-97d2-323bfe455241/envato-labs-image-edit+%2861%29.png?format=2500w",
+          },
           focus: [
             "Fruit formation begins with abiding in Jesus.",
             "Apart from Christ, both pride and despair lose their grip.",
@@ -347,6 +415,10 @@ export const fruitLife360Course = {
             "Shepherd expression may bring empathy, protection, encouragement, and relational care. Steward expression may bring reliability, order, practical service, and faithful follow-through.",
             "Different expression does not mean different value. A quiet fruit may still be deeply mature, and a visible fruit may still need humility and dependence.",
           ],
+          image: {
+            alt: "Friends enjoying a zip line adventure in a park",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/2be2b5cc-97bf-452c-9c27-d060faf8a794/friends-enjoying-zip-line-adventure-in-park-2025-04-03-10-03-09-utc.jpg?format=2500w",
+          },
           focus: [
             "The same fruit can look different through different design reflections.",
             "Difference expands imagination for formation.",
@@ -372,6 +444,10 @@ export const fruitLife360Course = {
             "Create a review rhythm. Revisit your report monthly for prayer, repeat the self-reflection after a meaningful season, consider inviting trusted observers when ready, and track practices, not just scores.",
             "Keep the center clear. Growth is not about obsessing over assessment results; it is about walking with Jesus in ways that bear fruit others can experience.",
           ],
+          image: {
+            alt: "Peaceful Maldives shoreline for ongoing formation rhythm",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/db4d7aec-60da-4747-a7f5-41d330231363/maldives-2025-01-09-05-46-53-utc.jpg?format=500w",
+          },
           focus: [
             "Formation grows over time.",
             "Seasonal pressure can reveal a focused practice.",
@@ -391,6 +467,10 @@ export const fruitLife360Course = {
             "Gifts need fruit. Leadership needs love, discernment needs gentleness, service needs joy and faithfulness, and courage needs self-control.",
             "Purpose without abiding can become striving. Abiding without action can become passivity. The DYDD journey holds both: remaining in Christ and walking in prepared good works.",
           ],
+          image: {
+            alt: "Discover Your Divine Design journey image",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/8bf5c368-8caf-4050-b0fa-3f6d022209eb/20260817_1901432.jpg?format=2500w",
+          },
           focus: [
             "FruitLife grounds the whole DYDD journey in Christlike formation.",
             "Gifts and design become healthier when shaped by fruit.",

@@ -266,6 +266,13 @@ export function AssessmentCourseNavigator({
                     alt={active.lesson.image.alt}
                     loading="lazy"
                   />
+                  {active.lesson.image.caption?.length ? (
+                    <figcaption>
+                      {active.lesson.image.caption.map((line) => (
+                        <span key={line}>{line}</span>
+                      ))}
+                    </figcaption>
+                  ) : null}
                 </figure>
               ) : null}
             </div>

@@ -9,6 +9,7 @@ export type CourseLesson = {
   focus: readonly string[];
   image?: {
     alt: string;
+    caption?: readonly string[];
     src: string;
   };
   reflectionPrompt: string;

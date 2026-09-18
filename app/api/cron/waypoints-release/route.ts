@@ -208,7 +208,10 @@ export async function GET(request: NextRequest) {
       `;
 
       const result = await sendResendEmail({
-        from: process.env.DYDD_WAYPOINTS_EMAIL_FROM ?? "DYDD Waypoints <support@discoverdivine.design>",
+        from:
+          process.env.DYDD_WAYPOINTS_EMAIL_FROM ??
+          process.env.DYDD_EMAIL_FROM ??
+          "DYDD Waypoints <reports@mail.discoverdivine.design>",
         html,
         subject: `DYDD Waypoint: ${waypoint.title}`,
         text,

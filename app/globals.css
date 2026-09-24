@@ -5870,6 +5870,318 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   align-items: center;
 }
 
+.command-center-shell {
+  background:
+    linear-gradient(180deg, rgba(255, 250, 240, 0.92), rgba(247, 247, 245, 0.96)),
+    var(--paper);
+  min-height: 100vh;
+  padding: 32px;
+}
+
+.command-center-hero {
+  align-items: stretch;
+  background:
+    linear-gradient(135deg, rgba(74, 98, 57, 0.94), rgba(36, 63, 39, 0.94)),
+    url("/brand/dydd-camp-circle-campfire-banner.png") center / cover;
+  color: #fffaf0;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  margin-bottom: 22px;
+  padding: 34px;
+}
+
+.command-center-hero h1 {
+  color: #fffaf0;
+  font-size: clamp(2rem, 4vw, 4.2rem);
+  line-height: 1;
+  margin: 8px 0 14px;
+}
+
+.command-center-hero p:not(.section-label) {
+  color: rgba(255, 250, 240, 0.9);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 760px;
+}
+
+.command-center-hero .section-label {
+  color: #f6d36d;
+}
+
+.command-center-hero-card {
+  align-items: flex-start;
+  background: rgba(255, 250, 240, 0.14);
+  border: 1px solid rgba(255, 250, 240, 0.22);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 190px;
+  padding: 22px;
+}
+
+.command-center-hero-card .hq-menu-icon {
+  background: rgba(255, 250, 240, 0.2);
+  margin-bottom: 18px;
+}
+
+.command-center-hero-card span,
+.command-center-hero-card small {
+  color: rgba(255, 250, 240, 0.82);
+}
+
+.command-center-hero-card strong {
+  color: #fffaf0;
+  font-size: 3.2rem;
+  line-height: 1;
+  margin: 8px 0;
+}
+
+.command-center-message {
+  background: #fffaf0;
+  border-left: 5px solid var(--gold);
+  color: var(--green-dark);
+  font-weight: 800;
+  margin: 0 0 18px;
+  padding: 14px 18px;
+}
+
+.command-center-metrics {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 18px;
+}
+
+.command-center-metrics article,
+.command-center-panel,
+.command-center-person,
+.command-center-assessment {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(36, 63, 39, 0.12);
+}
+
+.command-center-metrics article {
+  padding: 18px;
+}
+
+.command-center-metrics span,
+.command-center-metrics small,
+.command-center-assessment small,
+.command-center-person-header p,
+.command-center-group-list small {
+  color: var(--muted);
+}
+
+.command-center-metrics strong {
+  color: var(--green-dark);
+  display: block;
+  font-size: 2rem;
+  line-height: 1;
+  margin: 8px 0;
+}
+
+.command-center-layout {
+  align-items: start;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 340px minmax(0, 1fr);
+}
+
+.command-center-panel {
+  padding: 22px;
+}
+
+.command-center-panel-heading {
+  margin-bottom: 18px;
+}
+
+.command-center-panel-heading h2 {
+  color: var(--green-dark);
+  font-size: 1.7rem;
+  margin: 4px 0 0;
+}
+
+.command-center-form,
+.command-center-filters,
+.command-center-person-header form {
+  display: grid;
+  gap: 12px;
+}
+
+.command-center-form label {
+  color: var(--green-dark);
+  display: grid;
+  font-weight: 800;
+  gap: 6px;
+}
+
+.command-center-form input,
+.command-center-form select,
+.command-center-form textarea,
+.command-center-filters input,
+.command-center-filters select,
+.command-center-person-header select {
+  background: #fffaf0;
+  border: 1px solid rgba(36, 63, 39, 0.18);
+  color: var(--ink);
+  font: inherit;
+  padding: 12px 13px;
+}
+
+.command-center-group-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.command-center-group-list a {
+  background: rgba(247, 247, 245, 0.9);
+  border: 1px solid transparent;
+  color: var(--green-dark);
+  display: grid;
+  gap: 4px;
+  padding: 13px;
+  text-decoration: none;
+}
+
+.command-center-group-list a.active,
+.command-center-group-list a:hover {
+  background: #fffaf0;
+  border-color: rgba(74, 98, 57, 0.28);
+}
+
+.command-center-group-list span {
+  font-weight: 900;
+}
+
+.command-center-filters {
+  grid-template-columns: minmax(180px, 1fr) 220px auto;
+  margin-bottom: 16px;
+}
+
+.command-center-person-list {
+  display: grid;
+  gap: 14px;
+}
+
+.command-center-person {
+  padding: 18px;
+}
+
+.command-center-person-header {
+  align-items: start;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 330px);
+}
+
+.command-center-person-header h3 {
+  color: var(--green-dark);
+  font-size: 1.35rem;
+  margin: 0 0 4px;
+}
+
+.command-center-person-header p {
+  margin: 0;
+}
+
+.command-center-person-header form {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.command-center-group-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.command-center-group-tags button {
+  background: rgba(117, 154, 91, 0.12);
+  border: 1px solid rgba(74, 98, 57, 0.18);
+  color: var(--green-dark);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 900;
+  padding: 7px 10px;
+}
+
+.command-center-assessment-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 16px;
+}
+
+.command-center-assessment {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+}
+
+.command-center-assessment span {
+  color: var(--green-dark);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.command-center-assessment strong {
+  color: var(--ink);
+  line-height: 1.35;
+}
+
+.command-center-assessment em,
+.command-center-empty {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.command-center-empty.large {
+  background: rgba(247, 247, 245, 0.9);
+  padding: 34px;
+  text-align: center;
+}
+
+.command-center-empty.large h3 {
+  color: var(--green-dark);
+  margin: 0 0 8px;
+}
+
+@media (max-width: 980px) {
+  .command-center-shell {
+    padding: 18px;
+  }
+
+  .command-center-hero,
+  .command-center-layout,
+  .command-center-person-header {
+    grid-template-columns: 1fr;
+  }
+
+  .command-center-metrics,
+  .command-center-assessment-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .command-center-hero {
+    padding: 24px;
+  }
+
+  .command-center-metrics,
+  .command-center-assessment-grid,
+  .command-center-filters,
+  .command-center-person-header form {
+    grid-template-columns: 1fr;
+  }
+}
+
 .fieldkit-status-button {
   cursor: default;
 }

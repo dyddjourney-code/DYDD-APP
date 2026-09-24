@@ -30,6 +30,11 @@ const navItems = [
     label: "Camp Circles",
     href: "/camp-circle",
   },
+  {
+    icon: "compass",
+    label: "Command Center",
+    href: "/command-center",
+  },
 ];
 
 export function AppNavIcon({ name }: { name: string }) {

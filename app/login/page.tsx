@@ -23,20 +23,29 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const isFruitLifeAccess =
     next.includes("lane=fruitlife") || next.startsWith("/fruitlife360");
   const isSpiritualGiftsAccess = next.startsWith("/spiritual-gifts");
+  const isCommandCenterAccess = next.startsWith("/command-center");
   const isMiniAppAccess = isFruitLifeAccess || isSpiritualGiftsAccess;
   const accessTitle = isSpiritualGiftsAccess
     ? "Spiritual Gifts access"
-    : isFruitLifeAccess ? "FruitLife 360 access" : "DYDD Base Camp access";
+    : isFruitLifeAccess
+      ? "FruitLife 360 access"
+      : isCommandCenterAccess
+        ? "Owner Command Center access"
+        : "DYDD Journey access";
   const accessHeading = isMiniAppAccess
     ? isSpiritualGiftsAccess
       ? "Create your Spiritual Gifts account."
       : "Create your FruitLife 360 account."
-    : "Enter Base Camp.";
+    : isCommandCenterAccess
+      ? "Open the Command Center."
+      : "Enter your DYDD account.";
   const accessCopy = isMiniAppAccess
     ? isSpiritualGiftsAccess
       ? "Use an email and password so your free Spiritual Gifts report, course access, and future DYDD app history stay connected."
       : "Use an email and password so you can return to your FruitLife 360 process, track observer progress, send reminders, and access your report."
-    : "Sign in to continue the DYDD Journey, collect your artifacts, and prepare for guided reflection around your design.";
+    : isCommandCenterAccess
+      ? "Use the owner account to review assessment activity, create groups, and manage the people connected to classes, circles, and future dashboards."
+      : "Sign in to continue the DYDD Journey, collect your artifacts, and prepare for guided reflection around your design.";
   const signInHref = `/login?${new URLSearchParams({ mode: "signin", next }).toString()}`;
   const signUpHref = `/login?${new URLSearchParams({ mode: "signup", next }).toString()}`;
   const recoveryHref = `/login?${new URLSearchParams({ mode: "recovery", next }).toString()}`;
@@ -82,7 +91,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               ? "Create your account once, then return anytime with your email and password."
               : mode === "recovery"
                 ? "Enter your account email and we will send a reset link."
-                : "Use your email and password to continue."}
+                : isCommandCenterAccess
+                  ? "Use the owner email and password. If the password is not clear, use Forgot password from this page."
+                  : "Use your email and password to continue."}
           </p>
         </div>
 

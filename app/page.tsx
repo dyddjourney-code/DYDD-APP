@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { enterHeatherPreview, enterNewPreview } from "@/app/login/actions";
+import { enterNewPreview } from "@/app/login/actions";
 import { allCourseSummaries } from "@/lib/courses/course-catalog";
 import { designIdCourse } from "@/lib/courses/designid-foundations";
 
@@ -71,16 +71,17 @@ export default function Home() {
               <p className="section-label">Portal entry</p>
               <h2>Sign in or register to open your personal view.</h2>
             </div>
-            <form action={enterHeatherPreview}>
-              <button className="button primary portal-login-button" type="submit">
-                Heather review
-              </button>
-            </form>
             <form action={enterNewPreview}>
-              <button className="button secondary portal-login-button" type="submit">
+              <button className="button primary portal-login-button" type="submit">
                 New person review
               </button>
             </form>
+            <Link
+              href="/login?next=%2Fcommand-center"
+              className="button secondary"
+            >
+              Owner Command Center
+            </Link>
             <Link href="/fruitlife360/entry?preview=fruit-person" className="button secondary">
               FruitLife buyer preview
             </Link>

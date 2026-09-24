@@ -69,7 +69,7 @@ export default function Home() {
           <div className="portal-access-panel" aria-label="Portal access">
             <div>
               <p className="section-label">Portal entry</p>
-              <h2>Sign in or register to open your personal view.</h2>
+              <h2>Open the active work surfaces.</h2>
             </div>
             <form action={enterNewPreview}>
               <button className="button primary portal-login-button" type="submit">
@@ -79,24 +79,12 @@ export default function Home() {
             <Link href="/owner" className="button secondary">
               Owner Command Center
             </Link>
-            <Link href="/ranger-station?review=new-person" className="button secondary">
-              DYDD Mini Base Camp
-            </Link>
-            <Link href="/trailheads?review=new-person" className="button secondary">
-              Trailheads and Courses
-            </Link>
-            <Link href="/spiritual-gifts?channel=app&lane=fruitlife" className="button secondary">
-              Spiritual Gifts mini app
-            </Link>
-            <Link href="/fruitlife360/entry?preview=fruit-person" className="button secondary">
-              FruitLife 360 mini app
-            </Link>
-            <Link href="/login" className="button secondary">
-              Learner sign-in
+            <Link href="/first-launch" className="button secondary">
+              First Launch Mini App
             </Link>
             <p className="helper-text">
-              Review mode opens the current staged personal view. The public
-              portal does not display individual assessment records.
+              Vercel-protected preview access opens these review surfaces
+              without using a learner account.
             </p>
           </div>
         </div>

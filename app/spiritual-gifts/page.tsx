@@ -17,6 +17,8 @@ import {
   isNewReviewRequest,
   jordanReviewEmail,
   jordanReviewName,
+  reviewQuery,
+  withReviewQuery,
 } from "@/lib/review/heather";
 import { verifySpiritualGiftsAppIdentity } from "@/lib/spiritual-gifts/app-identity";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -106,6 +108,7 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
     : isNewReviewRequest(params)
       ? { email: jordanReviewEmail, name: jordanReviewName }
       : null;
+  const fruitLifeReviewQuery = reviewQuery(params);
   const appIdentity =
     channel === "app"
       ? verifySpiritualGiftsAppIdentity({
@@ -119,7 +122,7 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (fruitLifeLane && channel !== "app" && !user) {
+  if (fruitLifeLane && channel !== "app" && !user && !reviewIdentity) {
     redirect(`/login?next=${encodeURIComponent("/spiritual-gifts?lane=fruitlife")}`);
   }
 
@@ -159,7 +162,7 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
   if (fruitLifeLane && channel !== "app") {
     return (
       <main className="journey-shell hq-standalone-page fruitlife-release-shell spiritual-gifts-mini-app">
-        <FruitLifeMiniNav />
+        <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} />
         <header className="standalone-hero spiritual-gifts-mini-hero">
           <div className="spiritual-gifts-mini-copy">
             <p className="eyebrow">Spiritual Gifts</p>
@@ -169,7 +172,7 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
               receive a personal report, and continue into the Spiritual Gifts course.
             </p>
             <div className="spiritual-gifts-mini-actions">
-              <Link className="button primary" href="/spiritual-gifts?channel=app&lane=fruitlife">
+              <Link className="button primary" href={withReviewQuery("/spiritual-gifts?channel=app&lane=fruitlife", params)}>
                 Take the free assessment
               </Link>
             </div>
@@ -237,7 +240,7 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
                   <Link className="button primary" href={spiritualGiftsReportHref}>
                     Download report
                   </Link>
-                  <Link className="button secondary" href="/courses/spiritual-gifts-service?lane=fruitlife">
+                  <Link className="button secondary" href={withReviewQuery("/courses/spiritual-gifts-service?lane=fruitlife", params)}>
                     Explore course
                   </Link>
                 </div>

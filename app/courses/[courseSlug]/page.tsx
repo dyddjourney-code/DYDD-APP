@@ -74,7 +74,10 @@ export default async function LearningCoursePage({
   const reviewParams = await searchParams;
   const course = getLearningCourse(courseSlug);
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
-  const courseQuery = fruitLifeLane ? "?lane=fruitlife" : reviewQuery(reviewParams);
+  const fruitLifeReviewQuery = reviewQuery(reviewParams);
+  const courseQuery = fruitLifeLane
+    ? `?lane=fruitlife${fruitLifeReviewQuery ? `&${fruitLifeReviewQuery.slice(1)}` : ""}`
+    : fruitLifeReviewQuery;
 
   if (!course) {
     notFound();
@@ -114,7 +117,7 @@ export default async function LearningCoursePage({
 
   return (
     <main className={`course-shell course-shell-${course.accent}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}>
-      {fruitLifeLane ? <FruitLifeMiniNav /> : null}
+      {fruitLifeLane ? <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} /> : null}
       <header className="mini-course-logo-intro">
         <img src={course.logo} alt={`${course.title} logo`} />
       </header>

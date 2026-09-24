@@ -11,6 +11,7 @@ import {
 import { normalizeEmail } from "@/lib/identity/email";
 import {
   getHeatherReviewReport,
+  reviewQuery,
   type ReviewSearchParams,
   withReviewQuery,
 } from "@/lib/review/heather";
@@ -58,6 +59,7 @@ export default async function LearningLessonPage({
   const reviewParams = await searchParams;
   const match = getLearningLesson(courseSlug, lessonSlug);
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
+  const fruitLifeReviewQuery = reviewQuery(reviewParams);
 
   if (!match) {
     notFound();
@@ -80,12 +82,12 @@ export default async function LearningLessonPage({
     course.assessmentType,
   );
   const courseMapHref = fruitLifeLane
-    ? `/courses/${course.slug}?lane=fruitlife`
+    ? withReviewQuery(`/courses/${course.slug}?lane=fruitlife`, reviewParams)
     : withReviewQuery(`/courses/${course.slug}`, reviewParams);
 
   return (
     <main className={`lesson-shell lesson-shell-${course.accent}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}>
-      {fruitLifeLane ? <FruitLifeMiniNav /> : null}
+      {fruitLifeLane ? <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} /> : null}
       {!fruitLifeLane ? (
         <nav className="course-nav" aria-label="Lesson navigation">
           <Link href={courseMapHref}>Course map</Link>
@@ -174,7 +176,7 @@ export default async function LearningLessonPage({
               <Link
                 href={
                   fruitLifeLane
-                    ? `/learn/${course.slug}/${previousLesson.slug}?lane=fruitlife`
+                    ? withReviewQuery(`/learn/${course.slug}/${previousLesson.slug}?lane=fruitlife`, reviewParams)
                     : withReviewQuery(`/learn/${course.slug}/${previousLesson.slug}`, reviewParams)
                 }
               >
@@ -187,7 +189,7 @@ export default async function LearningLessonPage({
               <Link
                 href={
                   fruitLifeLane
-                    ? `/learn/${course.slug}/${nextLesson.slug}?lane=fruitlife`
+                    ? withReviewQuery(`/learn/${course.slug}/${nextLesson.slug}?lane=fruitlife`, reviewParams)
                     : withReviewQuery(`/learn/${course.slug}/${nextLesson.slug}`, reviewParams)
                 }
               >

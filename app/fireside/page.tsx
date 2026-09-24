@@ -10,6 +10,7 @@ import {
   waypointCategories as scheduledWaypointCategories,
   getReleasedWaypoints,
 } from "@/lib/waypoints/waypoint-data";
+import { reviewQuery, type ReviewSearchParams } from "@/lib/review/heather";
 
 export const dynamic = "force-dynamic";
 
@@ -61,7 +62,7 @@ const podcastNameIdeas = [
 ];
 
 type FiresidePageProps = {
-  searchParams?: Promise<{
+  searchParams?: Promise<ReviewSearchParams & {
     lane?: string;
   }>;
 };
@@ -135,6 +136,7 @@ export default async function FiresidePage({
 }: FiresidePageProps) {
   const params = await searchParams;
   const fruitLifeLane = params?.lane === "fruitlife";
+  const fruitLifeReviewQuery = reviewQuery(params);
   const releasedScheduledWaypoints = getReleasedWaypoints();
   const releasedWaypointArchive = releasedScheduledWaypoints;
   const activeCurrentWaypoint =
@@ -146,7 +148,7 @@ export default async function FiresidePage({
   if (fruitLifeLane) {
     return (
       <main className="journey-shell hq-standalone-page fireside-page fruitlife-release-shell">
-        <FruitLifeMiniNav />
+        <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} />
 
         <section
           className="fireside-waypoints-feature"

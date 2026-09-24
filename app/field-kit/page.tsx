@@ -32,6 +32,7 @@ import {
   isNewReviewRequest,
   jordanReviewEmail,
   newReviewName,
+  reviewQuery,
   type ReviewSearchParams,
   withReviewQuery,
 } from "@/lib/review/heather";
@@ -399,8 +400,9 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     : { data: null };
   const reviewReport =
     (await getHeatherReviewReport(reviewParams)) ?? (await getNewReviewReport(reviewParams));
+  const fruitLifeReviewQuery = reviewQuery(reviewParams);
 
-  if (!user && fruitLifeLane) {
+  if (!user && fruitLifeLane && !reviewReport) {
     redirect(`/login?next=${encodeURIComponent("/field-kit?lane=fruitlife")}`);
   }
 
@@ -588,7 +590,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
 
     return (
       <main className="journey-shell hq-standalone-page fruitlife-release-shell">
-        <FruitLifeMiniNav />
+        <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} />
         <header className="standalone-hero fieldkit-hero fruitlife-fieldkit-hero">
           <div>
             <p className="eyebrow">FruitLife 360</p>
@@ -666,7 +668,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
                     {artifact.action}
                   </Link>
                   {artifact.courseHref && artifact.courseAction ? (
-                    <Link className="button secondary" href={`${artifact.courseHref}?lane=fruitlife`}>
+                    <Link className="button secondary" href={withReviewQuery(artifact.courseHref, reviewParams)}>
                       {artifact.courseAction}
                     </Link>
                   ) : null}

@@ -1,5 +1,6 @@
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
+import { reviewQuery, type ReviewSearchParams } from "@/lib/review/heather";
 
 const bookResources = [
   {
@@ -51,7 +52,7 @@ const liveExperiences = [
 ];
 
 type GearPageProps = {
-  searchParams?: Promise<{
+  searchParams?: Promise<ReviewSearchParams & {
     lane?: string;
   }>;
 };
@@ -59,10 +60,11 @@ type GearPageProps = {
 export default async function GearPage({ searchParams }: GearPageProps) {
   const params = await searchParams;
   const fruitLifeLane = params?.lane === "fruitlife";
+  const fruitLifeReviewQuery = reviewQuery(params);
 
   return (
     <main className={`journey-shell hq-standalone-page${fruitLifeLane ? " fruitlife-release-shell" : ""}`}>
-      {fruitLifeLane ? <FruitLifeMiniNav /> : null}
+      {fruitLifeLane ? <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} /> : null}
       <header className="standalone-hero gear-hero">
         <div>
           <p className="eyebrow">Gear</p>

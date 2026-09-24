@@ -9,11 +9,29 @@ const fruitLifeNavItems = [
   { href: "/gear?lane=fruitlife", label: "Gear" },
 ];
 
-export function FruitLifeMiniNav() {
+type FruitLifeMiniNavProps = {
+  reviewQuery?: string;
+};
+
+function appendReviewQuery(href: string, reviewQuery?: string) {
+  if (!reviewQuery) {
+    return href;
+  }
+
+  const cleanedQuery = reviewQuery.replace(/^\?/, "");
+
+  if (!cleanedQuery) {
+    return href;
+  }
+
+  return `${href}${href.includes("?") ? "&" : "?"}${cleanedQuery}`;
+}
+
+export function FruitLifeMiniNav({ reviewQuery }: FruitLifeMiniNavProps) {
   return (
     <nav className="fruitlife-mini-nav" aria-label="FruitLife 360 navigation">
       {fruitLifeNavItems.map((item) => (
-        <Link href={item.href} key={item.href}>
+        <Link href={appendReviewQuery(item.href, reviewQuery)} key={item.href}>
           {item.label}
         </Link>
       ))}

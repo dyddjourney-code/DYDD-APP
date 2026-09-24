@@ -11,6 +11,7 @@ import {
   getFruitLifeDashboardSessions,
 } from "@/lib/fruitlife360/dashboard";
 import { normalizeEmail } from "@/lib/identity/email";
+import { reviewQuery, type ReviewSearchParams, withReviewQuery } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -138,7 +139,7 @@ const courses = [
 ];
 
 type TrailheadsPageProps = {
-  searchParams?: Promise<{
+  searchParams?: Promise<ReviewSearchParams & {
     lane?: string;
   }>;
 };
@@ -146,6 +147,7 @@ type TrailheadsPageProps = {
 export default async function TrailheadsPage({ searchParams }: TrailheadsPageProps) {
   const params = await searchParams;
   const fruitLifeLane = params?.lane === "fruitlife";
+  const fruitLifeReviewQuery = reviewQuery(params);
   const fruitLifeCourse = courses.find((course) => course.slug === "fruitlife-360");
   const spiritualGiftsCourse = courses.find((course) => course.slug === "spiritual-gifts");
 
@@ -201,7 +203,7 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
 
     return (
       <main className="journey-shell hq-standalone-page fruitlife-release-shell">
-        <FruitLifeMiniNav />
+        <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} />
         <header className="standalone-hero trailheads-hero">
           <div>
             <p className="eyebrow">Trailheads</p>
@@ -257,11 +259,11 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
                   </ul>
                 </div>
                 {isUnlocked ? (
-                  <Link className="button primary" href={`${course.href}?lane=fruitlife`}>
+                  <Link className="button primary" href={withReviewQuery(`${course.href}?lane=fruitlife`, params)}>
                     {course.action}
                   </Link>
                 ) : (
-                  <Link className="button secondary" href={lockedHref}>
+                  <Link className="button secondary" href={withReviewQuery(lockedHref, params)}>
                     {lockedAction}
                   </Link>
                 )}

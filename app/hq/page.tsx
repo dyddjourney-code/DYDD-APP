@@ -39,6 +39,7 @@ import {
   isNewReviewRequest,
   jordanReviewEmail,
   newReviewName,
+  reviewQuery,
   type ReviewSearchParams,
   withReviewQuery,
 } from "@/lib/review/heather";
@@ -574,6 +575,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       ? jordanReviewEmail
       : normalizeEmail(profile?.email ?? user?.email);
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
+  const fruitLifeReviewQuery = reviewQuery(reviewParams);
   const fruitLifeSessions = await getFruitLifeDashboardSessions({
     email: fruitLifeDashboardEmail,
     enabled: fruitLifeLane && Boolean(fruitLifeDashboardEmail),
@@ -630,7 +632,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             )}
           </header>
 
-          <FruitLifeMiniNav />
+          <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} />
 
           <section className="basecamp-hero fruitlife-mini-basecamp-hero" id="basecamp" aria-label="DYDD Base Camp">
             <div className="basecamp-copy">
@@ -662,7 +664,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                 Take the free Spiritual Gifts assessment inside your account.
                 Your report becomes an artifact here and opens the connected course.
               </p>
-              <Link className="button primary" href="/spiritual-gifts?lane=fruitlife">
+              <Link className="button primary" href={withReviewQuery("/spiritual-gifts?lane=fruitlife", reviewParams)}>
                 Open Spiritual Gifts
               </Link>
             </article>
@@ -673,7 +675,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                 Start FruitLife 360, invite observers, track report progress,
                 and return for your completed formation artifact.
               </p>
-              <Link className="button secondary" href="/field-kit?lane=fruitlife">
+              <Link className="button secondary" href={withReviewQuery("/field-kit?lane=fruitlife", reviewParams)}>
                 Open FruitLife 360
               </Link>
             </article>
@@ -684,7 +686,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                 Use Trailheads for course support and Waypoints for the weekly
                 Friday reflection as each one releases.
               </p>
-              <Link className="button secondary" href="/trailheads?lane=fruitlife">
+              <Link className="button secondary" href={withReviewQuery("/trailheads?lane=fruitlife", reviewParams)}>
                 Open Trailheads
               </Link>
             </article>

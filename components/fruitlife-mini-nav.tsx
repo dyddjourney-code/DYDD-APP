@@ -24,7 +24,11 @@ function appendReviewQuery(href: string, reviewQuery?: string) {
     return href;
   }
 
-  return `${href}${href.includes("?") ? "&" : "?"}${cleanedQuery}`;
+  const [pathWithQuery, hash] = href.split("#");
+
+  return `${pathWithQuery}${pathWithQuery.includes("?") ? "&" : "?"}${cleanedQuery}${
+    hash ? `#${hash}` : ""
+  }`;
 }
 
 export function FruitLifeMiniNav({ reviewQuery }: FruitLifeMiniNavProps) {

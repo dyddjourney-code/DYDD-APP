@@ -13,8 +13,10 @@ import {
 type CommandCenterSearchParams = {
   assessment?: string;
   group?: string;
+  key?: string;
   message?: string;
   q?: string;
+  review?: string;
 };
 
 type CommandCenterPageProps = {
@@ -192,6 +194,36 @@ function reportHref(snapshot: AssessmentSnapshot) {
   return compactValue(pdfMonkey.providerUrl);
 }
 
+function isOwnerPreviewRequest(params?: CommandCenterSearchParams | null) {
+  return (
+    params?.review === "owner" &&
+    Boolean(params.key) &&
+    Boolean(process.env.DYDD_REVIEW_TOKEN) &&
+    params.key === process.env.DYDD_REVIEW_TOKEN
+  );
+}
+
+function commandCenterHref(
+  values: Record<string, string | null | undefined>,
+  params?: CommandCenterSearchParams | null,
+) {
+  const query = new URLSearchParams();
+
+  if (isOwnerPreviewRequest(params)) {
+    query.set("review", "owner");
+    query.set("key", params?.key ?? "");
+  }
+
+  for (const [key, value] of Object.entries(values)) {
+    if (value) {
+      query.set(key, value);
+    }
+  }
+
+  const queryString = query.toString();
+  return queryString ? `/command-center?${queryString}` : "/command-center";
+}
+
 function groupParticipants(snapshots: AssessmentSnapshot[], memberships: AssessmentGroupMember[]) {
   const records = new Map<string, ParticipantRecord>();
 
@@ -317,17 +349,18 @@ async function getCommandCenterData({
 
 export default async function CommandCenterPage({ searchParams }: CommandCenterPageProps) {
   const params = await searchParams;
+  const isOwnerPreview = isOwnerPreviewRequest(params);
   const serverSupabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await serverSupabase.auth.getUser();
 
-  if (!user) {
+  if (!user && !isOwnerPreview) {
     redirect(`/login?next=${encodeURIComponent("/command-center")}`);
   }
 
-  const isAdmin = isDyddAdminEmail(user.email);
-  const data = await getCommandCenterData({ isAdmin, userId: user.id });
+  const isAdmin = isOwnerPreview || isDyddAdminEmail(user?.email);
+  const data = await getCommandCenterData({ isAdmin, userId: user?.id ?? "owner-preview" });
   const participants = groupParticipants(data.snapshots, data.memberships);
   const filteredParticipants = filterParticipants(participants, {
     assessment: params?.assessment,
@@ -361,6 +394,11 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
       </section>
 
       {params?.message ? <p className="command-center-message">{params.message}</p> : null}
+      {isOwnerPreview ? (
+        <p className="command-center-message">
+          Owner preview is open for review. Sign in later to create groups or make account-level changes.
+        </p>
+      ) : null}
 
       <section className="command-center-metrics" aria-label="Assessment command center summary">
         <article>
@@ -391,38 +429,46 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
             <p className="section-label">Groups and batches</p>
             <h2>Create a container</h2>
           </div>
-          <form action={createAssessmentGroup} className="command-center-form">
-            <label>
-              Group name
-              <input name="name" placeholder="Grace Church Gifts Class" required />
-            </label>
-            <label>
-              Type
-              <select name="group_type" defaultValue="class_cohort">
-                {Object.entries(groupTypeLabels).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Note
-              <textarea
-                name="description"
-                placeholder="Optional context: class date, church, cohort, or workshop."
-                rows={3}
-              />
-            </label>
-            <button className="button primary" type="submit">
-              Create Group
-            </button>
-          </form>
+          {isOwnerPreview ? (
+            <div className="command-center-empty">
+              <p>
+                Preview mode shows the owner dashboard data without opening write actions.
+              </p>
+            </div>
+          ) : (
+            <form action={createAssessmentGroup} className="command-center-form">
+              <label>
+                Group name
+                <input name="name" placeholder="Grace Church Gifts Class" required />
+              </label>
+              <label>
+                Type
+                <select name="group_type" defaultValue="class_cohort">
+                  {Object.entries(groupTypeLabels).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Note
+                <textarea
+                  name="description"
+                  placeholder="Optional context: class date, church, cohort, or workshop."
+                  rows={3}
+                />
+              </label>
+              <button className="button primary" type="submit">
+                Create Group
+              </button>
+            </form>
+          )}
 
           <div className="command-center-group-list">
             <Link
               className={!params?.group ? "active" : ""}
-              href="/command-center"
+              href={commandCenterHref({}, params)}
             >
               <span>All people</span>
               <small>{participants.length} people</small>
@@ -435,7 +481,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
               return (
                 <Link
                   className={params?.group === group.id ? "active" : ""}
-                  href={`/command-center?group=${encodeURIComponent(group.id)}`}
+                  href={commandCenterHref({ group: group.id }, params)}
                   key={group.id}
                 >
                   <span>{group.name}</span>
@@ -457,6 +503,12 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
           </div>
 
           <form className="command-center-filters">
+            {isOwnerPreview ? (
+              <>
+                <input name="review" type="hidden" value="owner" />
+                <input name="key" type="hidden" value={params?.key ?? ""} />
+              </>
+            ) : null}
             {params?.group ? <input name="group" type="hidden" value={params.group} /> : null}
             <input
               defaultValue={params?.q ?? ""}
@@ -486,22 +538,24 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                       <h3>{participant.name}</h3>
                       <p>{participant.email}</p>
                     </div>
-                    <form action={assignParticipantToAssessmentGroup}>
-                      <input name="participant_id" type="hidden" value={participant.id} />
-                      <select name="group_id" required defaultValue="">
-                        <option value="" disabled>
-                          Assign to group
-                        </option>
-                        {data.groups.map((group) => (
-                          <option key={group.id} value={group.id}>
-                            {group.name}
+                    {isOwnerPreview ? null : (
+                      <form action={assignParticipantToAssessmentGroup}>
+                        <input name="participant_id" type="hidden" value={participant.id} />
+                        <select name="group_id" required defaultValue="">
+                          <option value="" disabled>
+                            Assign to group
                           </option>
-                        ))}
-                      </select>
-                      <button className="button secondary" type="submit">
-                        Add
-                      </button>
-                    </form>
+                          {data.groups.map((group) => (
+                            <option key={group.id} value={group.id}>
+                              {group.name}
+                            </option>
+                          ))}
+                        </select>
+                        <button className="button secondary" type="submit">
+                          Add
+                        </button>
+                      </form>
+                    )}
                   </div>
 
                   {participant.groups.length ? (
@@ -510,13 +564,17 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                         const group = data.groups.find((item) => item.id === membership.group_id);
 
                         return group ? (
-                          <form action={archiveAssessmentGroupMember} key={membership.id}>
-                            <input name="group_id" type="hidden" value={group.id} />
-                            <input name="membership_id" type="hidden" value={membership.id} />
-                            <button type="submit" title="Remove from active group view">
-                              {group.name}
-                            </button>
-                          </form>
+                          isOwnerPreview ? (
+                            <span key={membership.id}>{group.name}</span>
+                          ) : (
+                            <form action={archiveAssessmentGroupMember} key={membership.id}>
+                              <input name="group_id" type="hidden" value={group.id} />
+                              <input name="membership_id" type="hidden" value={membership.id} />
+                              <button type="submit" title="Remove from active group view">
+                                {group.name}
+                              </button>
+                            </form>
+                          )
                         ) : null;
                       })}
                     </div>

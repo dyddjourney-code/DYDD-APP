@@ -1,5 +1,8 @@
 import Link from "next/link";
-import { enterNewPreview } from "@/app/login/actions";
+import {
+  enterNewPreview,
+  enterOwnerCommandCenterPreview,
+} from "@/app/login/actions";
 import { allCourseSummaries } from "@/lib/courses/course-catalog";
 import { designIdCourse } from "@/lib/courses/designid-foundations";
 
@@ -49,9 +52,6 @@ const previewStats = [
   { label: "Mapped classes", value: allCourseSummaries.length },
 ];
 
-const dpgMvpSandboxHref =
-  "https://dpg-website-code-git-dpg-sandbox-rol-ff85c8-dydd-6069s-projects.vercel.app/admin/sandbox-entry";
-
 export default function Home() {
   return (
     <main className="portal-shell">
@@ -79,22 +79,16 @@ export default function Home() {
                 New person review
               </button>
             </form>
-            <Link
-              href="/login?next=%2Fcommand-center"
-              className="button secondary"
-            >
-              Owner Command Center
+            <form action={enterOwnerCommandCenterPreview}>
+              <button className="button secondary portal-login-button" type="submit">
+                Owner Command Center
+              </button>
+            </form>
+            <Link href="/spiritual-gifts?channel=app&lane=fruitlife" className="button secondary">
+              Spiritual Gifts mini app
             </Link>
-            <a
-              className="button secondary"
-              href={dpgMvpSandboxHref}
-              rel="noreferrer"
-              target="_blank"
-            >
-              DPG MVP Sandbox
-            </a>
             <Link href="/fruitlife360/entry?preview=fruit-person" className="button secondary">
-              FruitLife 360 test purchase
+              FruitLife 360 mini app
             </Link>
             <Link href="/login" className="button secondary">
               Learner sign-in

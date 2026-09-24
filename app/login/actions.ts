@@ -306,6 +306,16 @@ export async function enterNewPreview() {
   redirect(`/hq?review=new&key=${encodeURIComponent(reviewToken)}`);
 }
 
+export async function enterOwnerCommandCenterPreview() {
+  const reviewToken = process.env.DYDD_REVIEW_TOKEN;
+
+  if (!reviewToken) {
+    loginRedirect("Owner Command Center preview access is not configured yet.");
+  }
+
+  redirect(`/command-center?review=owner&key=${encodeURIComponent(reviewToken)}`);
+}
+
 export async function signOut() {
   const supabase = await createSupabaseServerClient();
   await supabase.auth.signOut();

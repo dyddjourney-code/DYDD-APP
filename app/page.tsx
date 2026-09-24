@@ -79,6 +79,12 @@ export default function Home() {
             <Link href="/owner" className="button secondary">
               Owner Command Center
             </Link>
+            <Link href="/ranger-station?review=new-person" className="button secondary">
+              DYDD Mini Base Camp
+            </Link>
+            <Link href="/trailheads?review=new-person" className="button secondary">
+              Trailheads and Courses
+            </Link>
             <Link href="/spiritual-gifts?channel=app&lane=fruitlife" className="button secondary">
               Spiritual Gifts mini app
             </Link>

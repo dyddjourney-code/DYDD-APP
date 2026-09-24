@@ -6057,8 +6057,19 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .command-center-filters {
-  grid-template-columns: minmax(180px, 1fr) 220px auto;
+  align-items: end;
+  grid-template-columns: minmax(180px, 1.4fr) minmax(150px, 0.8fr) 150px 150px 160px auto;
   margin-bottom: 16px;
+}
+
+.command-center-date-filter {
+  color: var(--green-dark);
+  display: grid;
+  font-size: 0.78rem;
+  font-weight: 900;
+  gap: 5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .command-center-person-list {
@@ -6120,6 +6131,38 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   display: grid;
   gap: 8px;
   padding: 14px;
+}
+
+.command-center-score-list {
+  display: grid;
+  gap: 6px;
+  margin: 2px 0 4px;
+}
+
+.command-center-score-list div {
+  align-items: baseline;
+  border-top: 1px solid rgba(36, 63, 39, 0.09);
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  padding-top: 6px;
+}
+
+.command-center-score-list dt,
+.command-center-score-list dd {
+  margin: 0;
+}
+
+.command-center-score-list dt {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.command-center-score-list dd {
+  color: var(--green-dark);
+  font-weight: 950;
+  text-align: right;
 }
 
 .command-center-assessment span {

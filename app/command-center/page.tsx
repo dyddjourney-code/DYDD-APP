@@ -12,11 +12,14 @@ import {
 
 type CommandCenterSearchParams = {
   assessment?: string;
+  from?: string;
   group?: string;
   key?: string;
   message?: string;
   q?: string;
   review?: string;
+  sort?: string;
+  to?: string;
 };
 
 type CommandCenterPageProps = {
@@ -38,6 +41,11 @@ type AssessmentSnapshot = {
   scores: Record<string, unknown> | null;
   source: string | null;
   source_submitted_at: string | null;
+};
+
+type SnapshotDetail = {
+  label: string;
+  value: string;
 };
 
 type AssessmentGroup = {
@@ -100,10 +108,33 @@ function displayDate(value: string | null | undefined) {
   }).format(new Date(value));
 }
 
+function snapshotDateValue(snapshot: AssessmentSnapshot) {
+  return new Date(snapshot.source_submitted_at ?? snapshot.created_at).getTime();
+}
+
+function inputDateValue(value: string | null | undefined) {
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return "";
+  return value;
+}
+
+function dateBoundary(value: string | null | undefined, endOfDay = false) {
+  const input = inputDateValue(value);
+  if (!input) return null;
+
+  const date = new Date(`${input}T${endOfDay ? "23:59:59.999" : "00:00:00.000"}`);
+  return Number.isFinite(date.getTime()) ? date.getTime() : null;
+}
+
 function compactValue(value: unknown) {
   if (typeof value === "string") return value.trim();
   if (typeof value === "number" && Number.isFinite(value)) return String(value);
   return "";
+}
+
+function compactPercent(value: unknown) {
+  if (typeof value === "number" && Number.isFinite(value)) return `${value}%`;
+  const stringValue = compactValue(value);
+  return stringValue ? `${stringValue.replace(/%$/, "")}%` : "";
 }
 
 function scoreObject(snapshot: AssessmentSnapshot, key: string) {
@@ -127,6 +158,32 @@ function spiritualGiftsSummary(snapshot: AssessmentSnapshot) {
     : [];
 
   return giftNames.length ? giftNames.join(", ") : "Top gifts saved";
+}
+
+function spiritualGiftDetails(snapshot: AssessmentSnapshot): SnapshotDetail[] {
+  const topGifts = snapshot.scores?.topGifts;
+
+  if (!Array.isArray(topGifts)) return [];
+
+  return topGifts
+    .slice(0, 5)
+    .map((gift, index) => {
+      if (typeof gift !== "object" || gift === null) return null;
+      const data = gift as Record<string, unknown>;
+      const label = compactValue(data.label) || compactValue(data.name);
+      const score =
+        compactValue(data.score) ||
+        compactValue(data.value) ||
+        compactPercent(data.percentile);
+
+      if (!label) return null;
+
+      return {
+        label: `#${index + 1} ${label}`,
+        value: score || "Saved",
+      };
+    })
+    .filter((detail): detail is SnapshotDetail => Boolean(detail));
 }
 
 function designIdSummary(snapshot: AssessmentSnapshot) {
@@ -167,6 +224,42 @@ function fruitLifeSummary(snapshot: AssessmentSnapshot) {
   );
 }
 
+function snapshotDetails(snapshot: AssessmentSnapshot): SnapshotDetail[] {
+  if (snapshot.assessment_type === "spiritual_gifts") {
+    return spiritualGiftDetails(snapshot);
+  }
+
+  if (snapshot.assessment_type === "designid") {
+    const summary = scoreObject(snapshot, "summary");
+    return [
+      { label: "Primary", value: compactValue(summary.primaryReflection) || compactValue(summary.primary) },
+      { label: "Secondary", value: compactValue(summary.secondaryReflection) || compactValue(summary.secondary) },
+      { label: "Confidence", value: compactValue(summary.confidence) },
+    ].filter((detail) => detail.value);
+  }
+
+  if (snapshot.assessment_type === "designpd") {
+    const axis = snapshot.scores?.axisTendencies;
+    if (typeof axis === "object" && axis !== null && !Array.isArray(axis)) {
+      return Object.entries(axis as Record<string, unknown>)
+        .slice(0, 6)
+        .map(([label, value]) => ({ label, value: compactValue(value) }))
+        .filter((detail) => detail.value);
+    }
+  }
+
+  if (snapshot.assessment_type === "fruit_360") {
+    const summary = scoreObject(snapshot, "summary");
+    return [
+      { label: "Most visible", value: compactValue(summary.Most_Visible_Fruit_List) || compactValue(summary.mostVisibleFruit) },
+      { label: "Growth edge", value: compactValue(summary.Growth_Edge_List) || compactValue(summary.growthEdge) },
+      { label: "Observers", value: compactValue(summary.Observer_Count) || compactValue(summary.observerCount) },
+    ].filter((detail) => detail.value);
+  }
+
+  return [];
+}
+
 function snapshotSummary(snapshot: AssessmentSnapshot) {
   if (snapshot.assessment_type === "spiritual_gifts") return spiritualGiftsSummary(snapshot);
   if (snapshot.assessment_type === "designid") return designIdSummary(snapshot);
@@ -192,6 +285,18 @@ function reportHref(snapshot: AssessmentSnapshot) {
 
   const pdfMonkey = scoreObject(snapshot, "pdfMonkey");
   return compactValue(pdfMonkey.providerUrl);
+}
+
+function artifactHref(snapshot: AssessmentSnapshot, params?: CommandCenterSearchParams | null) {
+  const query = new URLSearchParams();
+
+  if (isOwnerPreviewRequest(params)) {
+    query.set("review", "owner");
+    query.set("key", params?.key ?? "");
+  }
+
+  const queryString = query.toString();
+  return `/api/artifacts/${encodeURIComponent(snapshot.id)}/download${queryString ? `?${queryString}` : ""}`;
 }
 
 function isOwnerPreviewRequest(params?: CommandCenterSearchParams | null) {
@@ -263,23 +368,54 @@ function groupParticipants(snapshots: AssessmentSnapshot[], memberships: Assessm
     records.set(membership.participant_id, current);
   }
 
-  return Array.from(records.values()).sort((a, b) => a.name.localeCompare(b.name));
+  return Array.from(records.values()).map((record) => ({
+    ...record,
+    snapshots: [...record.snapshots].sort((a, b) => snapshotDateValue(b) - snapshotDateValue(a)),
+  }));
 }
 
 function filterParticipants(
   participants: ParticipantRecord[],
-  { assessment, group, q }: { assessment?: string; group?: string; q?: string },
+  {
+    assessment,
+    from,
+    group,
+    q,
+    sort,
+    to,
+  }: {
+    assessment?: string;
+    from?: string;
+    group?: string;
+    q?: string;
+    sort?: string;
+    to?: string;
+  },
 ) {
   const query = q?.trim().toLowerCase();
+  const fromDate = dateBoundary(from);
+  const toDate = dateBoundary(to, true);
 
-  return participants.filter((participant) => {
+  const filtered = participants
+    .map((participant) => {
+      const visibleSnapshots = participant.snapshots.filter((snapshot) => {
+        const snapshotDate = snapshotDateValue(snapshot);
+        const matchesAssessment = !assessment || snapshot.assessment_type === assessment;
+        const matchesFrom = !fromDate || snapshotDate >= fromDate;
+        const matchesTo = !toDate || snapshotDate <= toDate;
+
+        return matchesAssessment && matchesFrom && matchesTo;
+      });
+
+      return { ...participant, snapshots: visibleSnapshots };
+    })
+    .filter((participant) => {
     const matchesQuery =
       !query ||
       participant.name.toLowerCase().includes(query) ||
       participant.email.toLowerCase().includes(query);
-    const matchesAssessment =
-      !assessment ||
-      participant.snapshots.some((snapshot) => snapshot.assessment_type === assessment);
+    const matchesAssessmentAndDate =
+      participant.snapshots.length || (!assessment && !fromDate && !toDate);
     const matchesGroup =
       !group ||
       participant.groups.some(
@@ -287,7 +423,15 @@ function filterParticipants(
           membership.group_id === group && membership.membership_status === "active",
       );
 
-    return matchesQuery && matchesAssessment && matchesGroup;
+    return matchesQuery && matchesAssessmentAndDate && matchesGroup;
+  });
+
+  return filtered.sort((a, b) => {
+    if (sort === "name") return a.name.localeCompare(b.name);
+    const aLatest = Math.max(...a.snapshots.map(snapshotDateValue), 0);
+    const bLatest = Math.max(...b.snapshots.map(snapshotDateValue), 0);
+    if (sort === "oldest") return aLatest - bLatest;
+    return bLatest - aLatest;
   });
 }
 
@@ -364,8 +508,11 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
   const participants = groupParticipants(data.snapshots, data.memberships);
   const filteredParticipants = filterParticipants(participants, {
     assessment: params?.assessment,
+    from: params?.from,
     group: params?.group,
     q: params?.q,
+    sort: params?.sort,
+    to: params?.to,
   });
   const activeGroup = data.groups.find((group) => group.id === params?.group) ?? null;
   const snapshotCount = data.snapshots.length;
@@ -396,7 +543,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
       {params?.message ? <p className="command-center-message">{params.message}</p> : null}
       {isOwnerPreview ? (
         <p className="command-center-message">
-          Owner preview is open for review. Sign in later to create groups or make account-level changes.
+          Private owner access is open. Group creation and assignments are enabled for this protected owner link.
         </p>
       ) : null}
 
@@ -429,41 +576,39 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
             <p className="section-label">Groups and batches</p>
             <h2>Create a container</h2>
           </div>
-          {isOwnerPreview ? (
-            <div className="command-center-empty">
-              <p>
-                Preview mode shows the owner dashboard data without opening write actions.
-              </p>
-            </div>
-          ) : (
-            <form action={createAssessmentGroup} className="command-center-form">
-              <label>
-                Group name
-                <input name="name" placeholder="Grace Church Gifts Class" required />
-              </label>
-              <label>
-                Type
-                <select name="group_type" defaultValue="class_cohort">
-                  {Object.entries(groupTypeLabels).map(([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Note
-                <textarea
-                  name="description"
-                  placeholder="Optional context: class date, church, cohort, or workshop."
-                  rows={3}
-                />
-              </label>
-              <button className="button primary" type="submit">
-                Create Group
-              </button>
-            </form>
-          )}
+          <form action={createAssessmentGroup} className="command-center-form">
+            {isOwnerPreview ? (
+              <>
+                <input name="review" type="hidden" value="owner" />
+                <input name="key" type="hidden" value={params?.key ?? ""} />
+              </>
+            ) : null}
+            <label>
+              Group name
+              <input name="name" placeholder="Grace Church Gifts Class" required />
+            </label>
+            <label>
+              Type
+              <select name="group_type" defaultValue="class_cohort">
+                {Object.entries(groupTypeLabels).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Note
+              <textarea
+                name="description"
+                placeholder="Optional context: class date, church, cohort, or workshop."
+                rows={3}
+              />
+            </label>
+            <button className="button primary" type="submit">
+              Create Group
+            </button>
+          </form>
 
           <div className="command-center-group-list">
             <Link
@@ -524,6 +669,19 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                 </option>
               ))}
             </select>
+            <label className="command-center-date-filter">
+              From
+              <input defaultValue={inputDateValue(params?.from)} name="from" type="date" />
+            </label>
+            <label className="command-center-date-filter">
+              To
+              <input defaultValue={inputDateValue(params?.to)} name="to" type="date" />
+            </label>
+            <select defaultValue={params?.sort ?? "recent"} name="sort">
+              <option value="recent">Newest first</option>
+              <option value="name">Name A-Z</option>
+              <option value="oldest">Oldest first</option>
+            </select>
             <button className="button secondary" type="submit">
               Filter
             </button>
@@ -538,24 +696,28 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                       <h3>{participant.name}</h3>
                       <p>{participant.email}</p>
                     </div>
-                    {isOwnerPreview ? null : (
-                      <form action={assignParticipantToAssessmentGroup}>
-                        <input name="participant_id" type="hidden" value={participant.id} />
-                        <select name="group_id" required defaultValue="">
-                          <option value="" disabled>
-                            Assign to group
+                    <form action={assignParticipantToAssessmentGroup}>
+                      <input name="participant_id" type="hidden" value={participant.id} />
+                      {isOwnerPreview ? (
+                        <>
+                          <input name="review" type="hidden" value="owner" />
+                          <input name="key" type="hidden" value={params?.key ?? ""} />
+                        </>
+                      ) : null}
+                      <select name="group_id" required defaultValue="">
+                        <option value="" disabled>
+                          Assign to group
+                        </option>
+                        {data.groups.map((group) => (
+                          <option key={group.id} value={group.id}>
+                            {group.name}
                           </option>
-                          {data.groups.map((group) => (
-                            <option key={group.id} value={group.id}>
-                              {group.name}
-                            </option>
-                          ))}
-                        </select>
-                        <button className="button secondary" type="submit">
-                          Add
-                        </button>
-                      </form>
-                    )}
+                        ))}
+                      </select>
+                      <button className="button secondary" type="submit">
+                        Add
+                      </button>
+                    </form>
                   </div>
 
                   {participant.groups.length ? (
@@ -564,17 +726,19 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                         const group = data.groups.find((item) => item.id === membership.group_id);
 
                         return group ? (
-                          isOwnerPreview ? (
-                            <span key={membership.id}>{group.name}</span>
-                          ) : (
-                            <form action={archiveAssessmentGroupMember} key={membership.id}>
-                              <input name="group_id" type="hidden" value={group.id} />
-                              <input name="membership_id" type="hidden" value={membership.id} />
-                              <button type="submit" title="Remove from active group view">
-                                {group.name}
-                              </button>
-                            </form>
-                          )
+                          <form action={archiveAssessmentGroupMember} key={membership.id}>
+                            <input name="group_id" type="hidden" value={group.id} />
+                            <input name="membership_id" type="hidden" value={membership.id} />
+                            {isOwnerPreview ? (
+                              <>
+                                <input name="review" type="hidden" value="owner" />
+                                <input name="key" type="hidden" value={params?.key ?? ""} />
+                              </>
+                            ) : null}
+                            <button type="submit" title="Remove from active group view">
+                              {group.name}
+                            </button>
+                          </form>
                         ) : null;
                       })}
                     </div>
@@ -584,6 +748,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                     {participant.snapshots.length ? (
                       participant.snapshots.map((snapshot) => {
                         const href = reportHref(snapshot);
+                        const details = snapshotDetails(snapshot);
 
                         return (
                           <section className="command-center-assessment" key={snapshot.id}>
@@ -593,6 +758,16 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                               {displayDate(snapshot.source_submitted_at ?? snapshot.created_at)}
                               {snapshot.source ? ` | ${snapshot.source}` : ""}
                             </small>
+                            {details.length ? (
+                              <dl className="command-center-score-list">
+                                {details.map((detail) => (
+                                  <div key={`${snapshot.id}-${detail.label}`}>
+                                    <dt>{detail.label}</dt>
+                                    <dd>{detail.value}</dd>
+                                  </div>
+                                ))}
+                              </dl>
+                            ) : null}
                             {href ? (
                               <Link className="button text" href={href}>
                                 Open Report
@@ -600,6 +775,9 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                             ) : (
                               <em>No report link saved yet</em>
                             )}
+                            <Link className="button text" href={artifactHref(snapshot, params)}>
+                              Download Snapshot
+                            </Link>
                           </section>
                         );
                       })

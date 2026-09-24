@@ -49,6 +49,9 @@ const previewStats = [
   { label: "Mapped classes", value: allCourseSummaries.length },
 ];
 
+const dpgMvpSandboxHref =
+  "https://dpg-website-code-git-dpg-sandbox-rol-ff85c8-dydd-6069s-projects.vercel.app/admin/sandbox-entry";
+
 export default function Home() {
   return (
     <main className="portal-shell">
@@ -82,11 +85,19 @@ export default function Home() {
             >
               Owner Command Center
             </Link>
+            <a
+              className="button secondary"
+              href={dpgMvpSandboxHref}
+              rel="noreferrer"
+              target="_blank"
+            >
+              DPG MVP Sandbox
+            </a>
             <Link href="/fruitlife360/entry?preview=fruit-person" className="button secondary">
-              FruitLife buyer preview
+              FruitLife 360 test purchase
             </Link>
             <Link href="/login" className="button secondary">
-              Register or email sign-in
+              Learner sign-in
             </Link>
             <p className="helper-text">
               Review mode opens the current staged personal view. The public

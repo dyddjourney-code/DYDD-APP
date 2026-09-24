@@ -1,6 +1,10 @@
 import { canonicalizeParticipantEmail } from "@/lib/identity/email";
 
-const defaultAdminEmails = ["dyddjourney@gmail.com"];
+const defaultAdminEmails = [
+  "dyddjourney@gmail.com",
+  "john@discoverdivine.design",
+  "willoughbyhs@gmail.com",
+];
 
 export function getDyddAdminEmails() {
   return new Set(

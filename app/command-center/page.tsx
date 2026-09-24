@@ -329,6 +329,13 @@ function commandCenterHref(
   return queryString ? `/command-center?${queryString}` : "/command-center";
 }
 
+function isParticipantInGroup(participant: ParticipantRecord, groupId: string) {
+  return participant.groups.some(
+    (membership) =>
+      membership.group_id === groupId && membership.membership_status === "active",
+  );
+}
+
 function groupParticipants(snapshots: AssessmentSnapshot[], memberships: AssessmentGroupMember[]) {
   const records = new Map<string, ParticipantRecord>();
 
@@ -515,6 +522,17 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
     to: params?.to,
   });
   const activeGroup = data.groups.find((group) => group.id === params?.group) ?? null;
+  const activeGroupCandidates = activeGroup
+    ? filterParticipants(participants, {
+        assessment: params?.assessment,
+        from: params?.from,
+        q: params?.q,
+        sort: params?.sort,
+        to: params?.to,
+      })
+        .filter((participant) => !isParticipantInGroup(participant, activeGroup.id))
+        .slice(0, 40)
+    : [];
   const snapshotCount = data.snapshots.length;
   const completedSpiritualGifts = data.snapshots.filter(
     (snapshot) => snapshot.assessment_type === "spiritual_gifts",
@@ -611,6 +629,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
           </form>
 
           <div className="command-center-group-list">
+            <small className="command-center-group-list-label">Group views</small>
             <Link
               className={!params?.group ? "active" : ""}
               href={commandCenterHref({}, params)}
@@ -791,11 +810,54 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
               ))
             ) : (
               <div className="command-center-empty large">
-                <h3>No people match this view.</h3>
-                <p>Clear the filters or choose a different group.</p>
+                <h3>{activeGroup ? "This group is empty." : "No people match this view."}</h3>
+                <p>
+                  {activeGroup
+                    ? "Use the add-to-group list below to place recent assessment people into this group."
+                    : "Clear the filters or choose a different group."}
+                </p>
               </div>
             )}
           </div>
+
+          {activeGroup ? (
+            <section className="command-center-add-panel">
+              <div className="command-center-panel-heading">
+                <p className="section-label">Add people</p>
+                <h2>Add people to {activeGroup.name}</h2>
+              </div>
+              {activeGroupCandidates.length ? (
+                <div className="command-center-add-list">
+                  {activeGroupCandidates.map((participant) => (
+                    <form action={assignParticipantToAssessmentGroup} key={participant.id}>
+                      <input name="participant_id" type="hidden" value={participant.id} />
+                      <input name="group_id" type="hidden" value={activeGroup.id} />
+                      {isOwnerPreview ? (
+                        <>
+                          <input name="review" type="hidden" value="owner" />
+                          <input name="key" type="hidden" value={params?.key ?? ""} />
+                        </>
+                      ) : null}
+                      <div>
+                        <strong>{participant.name}</strong>
+                        <small>
+                          {participant.email} | {participant.snapshots.length} saved assessment
+                          {participant.snapshots.length === 1 ? "" : "s"}
+                        </small>
+                      </div>
+                      <button className="button secondary" type="submit">
+                        Add
+                      </button>
+                    </form>
+                  ))}
+                </div>
+              ) : (
+                <p className="command-center-empty">
+                  Everyone matching the current filters is already in this group.
+                </p>
+              )}
+            </section>
+          ) : null}
         </section>
       </section>
     </main>

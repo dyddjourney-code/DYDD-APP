@@ -6036,6 +6036,14 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   margin-top: 22px;
 }
 
+.command-center-group-list-label {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .command-center-group-list a {
   background: rgba(247, 247, 245, 0.9);
   border: 1px solid transparent;
@@ -6075,6 +6083,44 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .command-center-person-list {
   display: grid;
   gap: 14px;
+}
+
+.command-center-add-panel {
+  background: rgba(247, 247, 245, 0.78);
+  border: 1px solid rgba(36, 63, 39, 0.12);
+  margin-top: 18px;
+  padding: 18px;
+}
+
+.command-center-add-list {
+  display: grid;
+  gap: 10px;
+}
+
+.command-center-add-list form {
+  align-items: center;
+  background: rgba(255, 250, 240, 0.9);
+  border: 1px solid rgba(36, 63, 39, 0.1);
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 12px;
+}
+
+.command-center-add-list strong,
+.command-center-add-list small {
+  display: block;
+}
+
+.command-center-add-list strong {
+  color: var(--green-dark);
+  font-size: 1rem;
+}
+
+.command-center-add-list small {
+  color: var(--muted);
+  line-height: 1.4;
+  margin-top: 3px;
 }
 
 .command-center-person {
@@ -6220,6 +6266,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .command-center-metrics,
   .command-center-assessment-grid,
   .command-center-filters,
+  .command-center-add-list form,
   .command-center-person-header form {
     grid-template-columns: 1fr;
   }

@@ -1,8 +1,5 @@
 import Link from "next/link";
-import {
-  enterNewPreview,
-  enterOwnerCommandCenterPreview,
-} from "@/app/login/actions";
+import { enterNewPreview } from "@/app/login/actions";
 import { allCourseSummaries } from "@/lib/courses/course-catalog";
 import { designIdCourse } from "@/lib/courses/designid-foundations";
 
@@ -79,11 +76,9 @@ export default function Home() {
                 New person review
               </button>
             </form>
-            <form action={enterOwnerCommandCenterPreview}>
-              <button className="button secondary portal-login-button" type="submit">
-                Owner Command Center
-              </button>
-            </form>
+            <Link href="/owner" className="button secondary">
+              Owner Command Center
+            </Link>
             <Link href="/spiritual-gifts?channel=app&lane=fruitlife" className="button secondary">
               Spiritual Gifts mini app
             </Link>

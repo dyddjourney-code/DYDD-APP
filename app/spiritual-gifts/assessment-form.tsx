@@ -28,6 +28,13 @@ const questionGroups = Array.from(
   { length: Math.ceil(spiritualGiftQuestionBank.length / questionsPerStep) },
   (_, index) => spiritualGiftQuestionBank.slice(index * questionsPerStep, index * questionsPerStep + questionsPerStep),
 );
+const spiritualGiftsRatingScale = [
+  ["1", "Not true"],
+  ["2", "Rarely"],
+  ["3", "Sometimes"],
+  ["4", "Often"],
+  ["5", "Very true"],
+] as const;
 
 export function SpiritualGiftsAssessmentForm({
   action,
@@ -278,10 +285,10 @@ export function SpiritualGiftsAssessmentForm({
               <p className="section-label">Reflection Set {index + 1}</p>
               <h3 id={`spiritual-gifts-set-${index + 1}-title`}>Answer what is true most of the time.</h3>
               <div className="spiritual-gifts-rubric" aria-label="Rating scale">
-                {spiritualGiftRatingOptions.map((option) => (
-                  <span key={option.value}>
-                    <strong>{option.value}</strong>
-                    {option.label}
+                {spiritualGiftsRatingScale.map(([value, label]) => (
+                  <span key={value}>
+                    <strong>{value}</strong>
+                    {label}
                   </span>
                 ))}
               </div>

@@ -16407,27 +16407,29 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .spiritual-gifts-rubric {
-  margin-top: 4px;
+  gap: 6px;
+  margin-top: 2px;
 }
 
 .spiritual-gifts-rubric span {
   align-items: center;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.66);
   border: 1px solid rgba(63, 111, 120, 0.14);
-  border-radius: 8px;
+  border-radius: 6px;
   color: #52675f;
-  display: grid;
-  font-size: 0.78rem;
-  gap: 3px;
+  display: flex;
+  font-size: 0.72rem;
+  gap: 4px;
+  justify-content: center;
   line-height: 1.25;
-  min-height: 64px;
-  padding: 8px;
+  min-height: 28px;
+  padding: 5px 6px;
   text-align: center;
 }
 
 .spiritual-gifts-rubric strong {
   color: var(--gift-ink);
-  font-size: 1rem;
+  font-size: 0.82rem;
 }
 
 .spiritual-gifts-rating-buttons {
@@ -17029,7 +17031,18 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   }
 
   .spiritual-gifts-rubric {
-    display: none;
+    display: grid;
+    gap: 5px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .spiritual-gifts-rubric span {
+    align-items: center;
+    display: grid;
+    font-size: 0.68rem;
+    gap: 1px;
+    min-height: 38px;
+    padding: 5px 3px;
   }
 
   .spiritual-gifts-rating-buttons {

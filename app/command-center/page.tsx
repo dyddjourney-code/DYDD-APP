@@ -9,6 +9,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   archiveAssessmentGroupMember,
   assignParticipantToAssessmentGroup,
+  assignParticipantsToAssessmentGroup,
   createAssessmentGroup,
 } from "./actions";
 
@@ -824,13 +825,6 @@ function uniqueParticipantCount(snapshots: AssessmentSnapshot[]) {
   ).size;
 }
 
-function collapsedParticipantRowCount(participants: ParticipantRecord[]) {
-  return participants.reduce(
-    (count, participant) => count + Math.max(participant.participantIds.length - 1, 0),
-    0,
-  );
-}
-
 function tallyValues(values: string[]) {
   const counts = new Map<string, number>();
 
@@ -1037,14 +1031,10 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
     activeGroup && isExcludedDefaultGroup(activeGroup) ? participants : baseParticipants;
   const activeGroupCandidates = activeGroup
     ? filterParticipants(candidatePool, {
-        assessment: params?.assessment,
-        from: params?.from,
         q: params?.q,
-        sort: params?.sort,
-        to: params?.to,
+        sort: params?.sort ?? "name",
       })
         .filter((participant) => !isParticipantInGroup(participant, activeGroup.id))
-        .slice(0, 40)
     : [];
   const populationSnapshots = populationParticipants.flatMap((participant) => participant.snapshots);
   const snapshotCount = populationSnapshots.length;
@@ -1054,7 +1044,6 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
   const topGiftSignals = topSpiritualGiftSignals(filteredSnapshots);
   const topDesignId = topDesignIdSignals(filteredSnapshots);
   const topDesignPd = topDesignPdSignals(filteredSnapshots);
-  const collapsedRowsInCurrentView = collapsedParticipantRowCount(filteredMainParticipants);
   const insightScope = activeGroup ? activeGroup.name : params?.q ? "Current search" : "Current view";
 
   return (
@@ -1172,16 +1161,6 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
             ) : (
               <p className="command-center-empty">No DesignPD results in this view yet.</p>
             )}
-          </article>
-          <article className="command-center-insight-card">
-            <span>View cleanup</span>
-            <div className="command-center-rank-row">
-              <small>Extra participant rows collapsed</small>
-              <strong>{collapsedRowsInCurrentView}</strong>
-            </div>
-            <p className="command-center-empty">
-              Current lists and charts use collapsed people, so matching historical duplicate rows do not inflate this view.
-            </p>
           </article>
         </div>
       </section>
@@ -1303,6 +1282,58 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
               Filter
             </button>
           </form>
+
+          {!activeGroup && data.groups.length && filteredMainParticipants.length ? (
+            <section className="command-center-add-panel">
+              <div className="command-center-panel-heading">
+                <p className="section-label">Batch group add</p>
+                <h2>Add selected people to a group</h2>
+              </div>
+              <form action={assignParticipantsToAssessmentGroup} className="command-center-batch-form">
+                <input name="assessment" type="hidden" value={params?.assessment ?? ""} />
+                <input name="current_group" type="hidden" value={params?.group ?? ""} />
+                <input name="from" type="hidden" value={params?.from ?? ""} />
+                <input name="q" type="hidden" value={params?.q ?? ""} />
+                <input name="sort" type="hidden" value={params?.sort ?? ""} />
+                <input name="to" type="hidden" value={params?.to ?? ""} />
+                {isOwnerPreview ? (
+                  <>
+                    <input name="review" type="hidden" value="owner" />
+                    <input name="key" type="hidden" value={params?.key ?? ""} />
+                  </>
+                ) : null}
+                <div className="command-center-batch-controls">
+                  <select name="group_id" required defaultValue="">
+                    <option value="" disabled>
+                      Choose group
+                    </option>
+                    {data.groups.map((group) => (
+                      <option key={group.id} value={group.id}>
+                        {group.name}
+                      </option>
+                    ))}
+                  </select>
+                  <button className="button secondary" type="submit">
+                    Add selected
+                  </button>
+                </div>
+                <div className="command-center-check-list">
+                  {filteredMainParticipants.map((participant) => (
+                    <label key={participant.id}>
+                      <input name="participant_id" type="checkbox" value={participant.id} />
+                      <span>
+                        <strong>{participant.name}</strong>
+                        <small>
+                          {participant.email} | {participant.snapshots.length} saved assessment
+                          {participant.snapshots.length === 1 ? "" : "s"}
+                        </small>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </form>
+            </section>
+          ) : null}
 
           <div className="command-center-person-list">
             {filteredMainParticipants.length ? (
@@ -1436,34 +1467,36 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                 <h2>Add people to {activeGroup.name}</h2>
               </div>
               {activeGroupCandidates.length ? (
-                <div className="command-center-add-list">
-                  {activeGroupCandidates.map((participant) => (
-                    <form action={assignParticipantToAssessmentGroup} key={participant.id}>
-                      <input name="participant_id" type="hidden" value={participant.id} />
-                      <input name="group_id" type="hidden" value={activeGroup.id} />
-                      <input name="return_to_group" type="hidden" value="true" />
-                      {isOwnerPreview ? (
-                        <>
-                          <input name="review" type="hidden" value="owner" />
-                          <input name="key" type="hidden" value={params?.key ?? ""} />
-                        </>
-                      ) : null}
-                      <div>
+                <form action={assignParticipantsToAssessmentGroup} className="command-center-batch-form">
+                  <input name="group_id" type="hidden" value={activeGroup.id} />
+                  <input name="return_to_group" type="hidden" value="true" />
+                  {isOwnerPreview ? (
+                    <>
+                      <input name="review" type="hidden" value="owner" />
+                      <input name="key" type="hidden" value={params?.key ?? ""} />
+                    </>
+                  ) : null}
+                  <div className="command-center-check-list">
+                    {activeGroupCandidates.map((participant) => (
+                      <label key={participant.id}>
+                        <input name="participant_id" type="checkbox" value={participant.id} />
+                        <span>
                         <strong>{participant.name}</strong>
                         <small>
                           {participant.email} | {participant.snapshots.length} saved assessment
                           {participant.snapshots.length === 1 ? "" : "s"}
                         </small>
-                      </div>
-                      <button className="button secondary" type="submit">
-                        Add
-                      </button>
-                    </form>
-                  ))}
-                </div>
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                  <button className="button secondary" type="submit">
+                    Add selected to {activeGroup.name}
+                  </button>
+                </form>
               ) : (
                 <p className="command-center-empty">
-                  Everyone matching the current filters is already in this group.
+                  Everyone matching the current search is already in this group.
                 </p>
               )}
             </section>

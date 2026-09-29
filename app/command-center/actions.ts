@@ -199,6 +199,63 @@ export async function assignParticipantToAssessmentGroup(formData: FormData) {
   redirect(appendCommandCenterMessage(target, "Participant assigned to group."));
 }
 
+export async function assignParticipantsToAssessmentGroup(formData: FormData) {
+  const actor = await getCommandCenterActor(formData);
+  const groupId = getString(formData, "group_id");
+  const participantIds = [
+    ...new Set(
+      formData
+        .getAll("participant_id")
+        .map((value) => String(value ?? "").trim())
+        .filter(Boolean),
+    ),
+  ];
+
+  if (!groupId || !participantIds.length) {
+    redirect(commandCenterReturnTarget(formData, { message: "Choose a group and at least one person first." }));
+  }
+
+  try {
+    await assertGroupAccess(groupId, actor.id, actor.isAdmin);
+  } catch (error) {
+    redirect(
+      commandCenterReturnTarget(formData, {
+        message: error instanceof Error ? error.message : "Unable to assign participants.",
+      }),
+    );
+  }
+
+  const timestamp = new Date().toISOString();
+  const supabase = createSupabaseAdminClient();
+  const { error } = await supabase.from("assessment_group_members").upsert(
+    participantIds.map((participantId) => ({
+      added_by_user_id: actor.id,
+      group_id: groupId,
+      membership_status: "active",
+      participant_id: participantId,
+      updated_at: timestamp,
+    })),
+    { onConflict: "group_id,participant_id" },
+  );
+
+  revalidatePath("/command-center");
+  const shouldOpenAssignedGroup = getString(formData, "return_to_group") === "true";
+  const target = shouldOpenAssignedGroup
+    ? commandCenterTarget(formData, { group: groupId })
+    : commandCenterReturnTarget(formData);
+
+  if (error) {
+    redirect(appendCommandCenterMessage(target, error.message));
+  }
+
+  redirect(
+    appendCommandCenterMessage(
+      target,
+      `${participantIds.length} ${participantIds.length === 1 ? "person was" : "people were"} assigned to group.`,
+    ),
+  );
+}
+
 export async function archiveAssessmentGroupMember(formData: FormData) {
   const actor = await getCommandCenterActor(formData);
   const groupId = getString(formData, "group_id");

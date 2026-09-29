@@ -6131,6 +6131,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .command-center-form input,
 .command-center-form select,
 .command-center-form textarea,
+.command-center-batch-controls select,
 .command-center-filters input,
 .command-center-filters select,
 .command-center-person-header select {
@@ -6231,6 +6232,59 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .command-center-add-list small {
   color: var(--muted);
   line-height: 1.4;
+  margin-top: 3px;
+}
+
+.command-center-batch-form {
+  display: grid;
+  gap: 12px;
+}
+
+.command-center-batch-controls {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.command-center-check-list {
+  display: grid;
+  gap: 8px;
+  max-height: 360px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.command-center-check-list label {
+  align-items: center;
+  background: rgba(255, 250, 240, 0.9);
+  border: 1px solid rgba(36, 63, 39, 0.1);
+  color: var(--ink);
+  cursor: pointer;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: auto minmax(0, 1fr);
+  padding: 10px 12px;
+}
+
+.command-center-check-list input {
+  accent-color: var(--green-dark);
+  height: 18px;
+  width: 18px;
+}
+
+.command-center-check-list strong,
+.command-center-check-list small {
+  display: block;
+}
+
+.command-center-check-list strong {
+  color: var(--green-dark);
+  font-size: 0.96rem;
+}
+
+.command-center-check-list small {
+  color: var(--muted);
+  line-height: 1.35;
   margin-top: 3px;
 }
 
@@ -6377,6 +6431,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
   .command-center-metrics,
   .command-center-assessment-grid,
+  .command-center-batch-controls,
   .command-center-filters,
   .command-center-add-list form,
   .command-center-person-header form {

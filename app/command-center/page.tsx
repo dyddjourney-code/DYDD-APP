@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppNavIcon } from "@/components/app-sidebar";
 import { isDyddAdminEmail } from "@/lib/admin-access";
+import { canonicalizeParticipantEmail } from "@/lib/identity/email";
 import { isOwnerPreviewRequest } from "@/lib/owner-preview";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -38,6 +39,7 @@ type AssessmentSnapshot = {
   assessment_type: string;
   created_at: string;
   id: string;
+  participant_canonical_key?: string;
   participant_id: string | null;
   scores: Record<string, unknown> | null;
   source: string | null;
@@ -69,9 +71,11 @@ type AssessmentGroupMember = {
 
 type ParticipantRecord = {
   email: string;
+  emailAliases: string[];
   groups: AssessmentGroupMember[];
   id: string;
   name: string;
+  participantIds: string[];
   snapshots: AssessmentSnapshot[];
 };
 
@@ -121,6 +125,24 @@ function displayDate(value: string | null | undefined) {
 
 function snapshotDateValue(snapshot: AssessmentSnapshot) {
   return new Date(snapshot.source_submitted_at ?? snapshot.created_at).getTime();
+}
+
+function participantIdentityKey(
+  participantId: string | null | undefined,
+  email: string | null | undefined,
+) {
+  return canonicalizeParticipantEmail(email) || participantId || "unknown-participant";
+}
+
+function participantEmailScore(email: string) {
+  const [localPart = ""] = email.split("@");
+  return (localPart.includes(".") ? 2 : 0) + Math.min(localPart.length / 100, 1);
+}
+
+function preferredParticipantEmail(emails: string[]) {
+  return [...new Set(emails.filter(Boolean))].sort(
+    (a, b) => participantEmailScore(b) - participantEmailScore(a) || a.localeCompare(b),
+  )[0];
 }
 
 function inputDateValue(value: string | null | undefined) {
@@ -398,47 +420,144 @@ function isParticipantInExcludedDefaultGroup(
 
 function groupParticipants(snapshots: AssessmentSnapshot[], memberships: AssessmentGroupMember[]) {
   const records = new Map<string, ParticipantRecord>();
+  const snapshotIdsByParticipant = new Map<string, Set<string>>();
+
+  for (const snapshot of snapshots) {
+    if (!snapshot.participant_id) continue;
+    const current = snapshotIdsByParticipant.get(snapshot.participant_id) ?? new Set<string>();
+    current.add(snapshot.id);
+    snapshotIdsByParticipant.set(snapshot.participant_id, current);
+  }
+
+  function participantRecordSeed({
+    email,
+    id,
+    name,
+  }: {
+    email: string;
+    id: string;
+    name: string;
+  }): ParticipantRecord {
+    return {
+      email,
+      emailAliases: email && email !== "No email saved" ? [email] : [],
+      groups: [],
+      id,
+      name,
+      participantIds: [id],
+      snapshots: [],
+    };
+  }
+
+  function mergeParticipantRecord(record: ParticipantRecord, participant: AssessmentParticipant | null) {
+    if (!participant?.id) return record;
+
+    if (!record.participantIds.includes(participant.id)) {
+      record.participantIds.push(participant.id);
+    }
+
+    if (participant.normalized_email && !record.emailAliases.includes(participant.normalized_email)) {
+      record.emailAliases.push(participant.normalized_email);
+      record.email = preferredParticipantEmail(record.emailAliases) ?? record.email;
+    }
+
+    if (
+      (!record.name || record.name === "Unnamed participant" || record.name === record.email) &&
+      participant.display_name
+    ) {
+      record.name = participant.display_name;
+    }
+
+    const currentPrimaryCount = snapshotIdsByParticipant.get(record.id)?.size ?? 0;
+    const candidateCount = snapshotIdsByParticipant.get(participant.id)?.size ?? 0;
+
+    if (candidateCount > currentPrimaryCount) {
+      record.id = participant.id;
+    }
+
+    return record;
+  }
 
   for (const snapshot of snapshots) {
     const participant = singleParticipant(snapshot.assessment_participants);
     const participantId = snapshot.participant_id ?? participant?.id;
 
     if (!participantId) continue;
+    const recordKey = participantIdentityKey(participantId, participant?.normalized_email);
 
     const current =
-      records.get(participantId) ??
-      {
+      records.get(recordKey) ??
+      participantRecordSeed({
         email: participant?.normalized_email ?? "No email saved",
-        groups: [],
         id: participantId,
         name: participant?.display_name ?? participant?.normalized_email ?? "Unnamed participant",
-        snapshots: [],
-      };
+      });
 
-    current.snapshots.push(snapshot);
-    records.set(participantId, current);
+    mergeParticipantRecord(current, participant);
+    current.snapshots.push({ ...snapshot, participant_canonical_key: recordKey });
+    records.set(recordKey, current);
   }
 
   for (const membership of memberships) {
     const participant = singleParticipant(membership.assessment_participants);
+    const recordKey = participantIdentityKey(membership.participant_id, participant?.normalized_email);
     const current =
-      records.get(membership.participant_id) ??
-      {
+      records.get(recordKey) ??
+      participantRecordSeed({
         email: participant?.normalized_email ?? "No email saved",
-        groups: [],
         id: membership.participant_id,
         name: participant?.display_name ?? participant?.normalized_email ?? "Unnamed participant",
-        snapshots: [],
-      };
+      });
 
+    mergeParticipantRecord(current, participant);
     current.groups.push(membership);
-    records.set(membership.participant_id, current);
+    records.set(recordKey, current);
   }
 
   return Array.from(records.values()).map((record) => ({
     ...record,
-    snapshots: [...record.snapshots].sort((a, b) => snapshotDateValue(b) - snapshotDateValue(a)),
+    snapshots: dedupeParticipantSnapshots(record.snapshots).sort(
+      (a, b) => snapshotDateValue(b) - snapshotDateValue(a),
+    ),
   }));
+}
+
+function snapshotDedupeKey(snapshot: AssessmentSnapshot) {
+  const participantKey =
+    snapshot.participant_canonical_key ?? snapshot.participant_id ?? "unknown-participant";
+  return [
+    participantKey,
+    snapshot.assessment_type,
+    snapshot.source_submitted_at ?? snapshot.created_at,
+  ].join("|");
+}
+
+function snapshotCompletenessScore(snapshot: AssessmentSnapshot) {
+  const scores = snapshot.scores ?? {};
+  const scoreSection = scores.scores;
+  const summarySection = scores.summary;
+  const profileSection = scores.profileLanguage;
+
+  return (
+    Object.keys(typeof scoreSection === "object" && scoreSection !== null ? scoreSection : {}).length +
+    Object.keys(typeof summarySection === "object" && summarySection !== null ? summarySection : {}).length +
+    Object.keys(typeof profileSection === "object" && profileSection !== null ? profileSection : {}).length
+  );
+}
+
+function dedupeParticipantSnapshots(snapshots: AssessmentSnapshot[]) {
+  const records = new Map<string, AssessmentSnapshot>();
+
+  for (const snapshot of snapshots) {
+    const key = snapshotDedupeKey(snapshot);
+    const current = records.get(key);
+
+    if (!current || snapshotCompletenessScore(snapshot) > snapshotCompletenessScore(current)) {
+      records.set(key, snapshot);
+    }
+  }
+
+  return Array.from(records.values());
 }
 
 function filterParticipants(
@@ -510,7 +629,11 @@ function assessmentCounts(snapshots: AssessmentSnapshot[]) {
 }
 
 function uniqueParticipantCount(snapshots: AssessmentSnapshot[]) {
-  return new Set(snapshots.map((snapshot) => snapshot.participant_id).filter(Boolean)).size;
+  return new Set(
+    snapshots
+      .map((snapshot) => snapshot.participant_canonical_key ?? snapshot.participant_id)
+      .filter(Boolean),
+  ).size;
 }
 
 function tallyValues(values: string[]) {

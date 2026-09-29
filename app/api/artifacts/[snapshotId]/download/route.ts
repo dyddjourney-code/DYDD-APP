@@ -12,6 +12,8 @@ import {
   getHeatherReviewReport,
   isHeatherReviewRequest,
 } from "@/lib/review/heather";
+import { isOwnerPreviewRequest } from "@/lib/owner-preview";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
@@ -66,6 +68,17 @@ async function findAuthorizedSnapshot(
   if (isHeatherReviewRequest(reviewParams)) {
     const report = await getHeatherReviewReport(reviewParams);
     return report?.all.find((snapshot) => snapshot.id === snapshotId) ?? null;
+  }
+
+  if (isOwnerPreviewRequest(reviewParams)) {
+    const supabaseAdmin = createSupabaseAdminClient();
+    const { data } = await supabaseAdmin
+      .from("assessment_snapshots")
+      .select("id,assessment_type,created_at,scores,source,source_submitted_at")
+      .eq("id", snapshotId)
+      .maybeSingle();
+
+    return data as AssessmentSnapshotSummary | null;
   }
 
   const supabase = await createSupabaseServerClient();

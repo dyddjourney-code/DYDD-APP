@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppNavIcon } from "@/components/app-sidebar";
 import { isDyddAdminEmail } from "@/lib/admin-access";
+import { isOwnerPreviewRequest } from "@/lib/owner-preview";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
@@ -144,58 +145,82 @@ function scoreObject(snapshot: AssessmentSnapshot, key: string) {
     : {};
 }
 
-function spiritualGiftsSummary(snapshot: AssessmentSnapshot) {
+function snapshotSections(snapshot: AssessmentSnapshot) {
+  return [
+    scoreObject(snapshot, "summary"),
+    scoreObject(snapshot, "profileLanguage"),
+    scoreObject(snapshot, "scores"),
+    snapshot.scores ?? {},
+  ];
+}
+
+function firstSnapshotValue(snapshot: AssessmentSnapshot, keys: string[]) {
+  for (const key of keys) {
+    for (const section of snapshotSections(snapshot)) {
+      const value = compactValue(section[key]);
+      if (value) return value;
+    }
+  }
+
+  return "";
+}
+
+function spiritualGiftRank(snapshot: AssessmentSnapshot, rank: number) {
   const topGifts = snapshot.scores?.topGifts;
-  const giftNames = Array.isArray(topGifts)
-    ? topGifts
-        .slice(0, 5)
-        .map((gift) =>
-          typeof gift === "object" && gift !== null
-            ? compactValue((gift as Record<string, unknown>).label)
-            : "",
-        )
-        .filter(Boolean)
-    : [];
+  const gift = Array.isArray(topGifts) ? topGifts[rank - 1] : null;
+
+  if (typeof gift === "object" && gift !== null) {
+    const data = gift as Record<string, unknown>;
+    const label = compactValue(data.label) || compactValue(data.name);
+    const score =
+      compactValue(data.score) ||
+      compactValue(data.value) ||
+      compactPercent(data.percentile);
+
+    if (label) return { label, score };
+  }
+
+  const label = firstSnapshotValue(snapshot, [
+    `Top${rank}_Name`,
+    `Top_${rank}_Name`,
+    `Top${rank}`,
+  ]);
+  const score = firstSnapshotValue(snapshot, [
+    `Top${rank}_Score`,
+    `Top_${rank}_Score`,
+    `Top${rank}_Pct`,
+    `Top_${rank}_Pct`,
+  ]);
+
+  return label ? { label, score } : null;
+}
+
+function spiritualGiftsSummary(snapshot: AssessmentSnapshot) {
+  const giftNames = [1, 2, 3, 4, 5]
+    .map((rank) => spiritualGiftRank(snapshot, rank)?.label ?? "")
+    .filter(Boolean);
 
   return giftNames.length ? giftNames.join(", ") : "Top gifts saved";
 }
 
 function spiritualGiftDetails(snapshot: AssessmentSnapshot): SnapshotDetail[] {
-  const topGifts = snapshot.scores?.topGifts;
-
-  if (!Array.isArray(topGifts)) return [];
-
-  return topGifts
-    .slice(0, 5)
-    .map((gift, index) => {
-      if (typeof gift !== "object" || gift === null) return null;
-      const data = gift as Record<string, unknown>;
-      const label = compactValue(data.label) || compactValue(data.name);
-      const score =
-        compactValue(data.score) ||
-        compactValue(data.value) ||
-        compactPercent(data.percentile);
-
-      if (!label) return null;
-
+  return [1, 2, 3, 4, 5]
+    .map((rank) => {
+      const gift = spiritualGiftRank(snapshot, rank);
+      if (!gift) return null;
       return {
-        label: `#${index + 1} ${label}`,
-        value: score || "Saved",
+        label: `#${rank} ${gift.label}`,
+        value: gift.score || "Saved",
       };
     })
     .filter((detail): detail is SnapshotDetail => Boolean(detail));
 }
 
 function designIdSummary(snapshot: AssessmentSnapshot) {
-  const summary = scoreObject(snapshot, "summary");
   const primary =
-    compactValue(summary.primaryReflection) ||
-    compactValue(summary.primary) ||
-    compactValue(summary.Primary_Reflection);
+    firstSnapshotValue(snapshot, ["primaryReflection", "primary", "Primary_Reflection", "Primary"]);
   const secondary =
-    compactValue(summary.secondaryReflection) ||
-    compactValue(summary.secondary) ||
-    compactValue(summary.Secondary_Reflection);
+    firstSnapshotValue(snapshot, ["secondaryReflection", "secondary", "Secondary_Reflection", "Secondary"]);
 
   return [primary, secondary].filter(Boolean).join(" / ") || "DesignID saved";
 }
@@ -230,11 +255,11 @@ function snapshotDetails(snapshot: AssessmentSnapshot): SnapshotDetail[] {
   }
 
   if (snapshot.assessment_type === "designid") {
-    const summary = scoreObject(snapshot, "summary");
     return [
-      { label: "Primary", value: compactValue(summary.primaryReflection) || compactValue(summary.primary) },
-      { label: "Secondary", value: compactValue(summary.secondaryReflection) || compactValue(summary.secondary) },
-      { label: "Confidence", value: compactValue(summary.confidence) },
+      { label: "Primary", value: firstSnapshotValue(snapshot, ["primaryReflection", "primary", "Primary_Reflection", "Primary"]) },
+      { label: "Secondary", value: firstSnapshotValue(snapshot, ["secondaryReflection", "secondary", "Secondary_Reflection", "Secondary"]) },
+      { label: "Integrated", value: firstSnapshotValue(snapshot, ["Integrative_Reflection", "integrativeReflection"]) },
+      { label: "Confidence", value: firstSnapshotValue(snapshot, ["confidence"]) },
     ].filter((detail) => detail.value);
   }
 
@@ -269,18 +294,34 @@ function snapshotSummary(snapshot: AssessmentSnapshot) {
   return "Assessment saved";
 }
 
-function reportHref(snapshot: AssessmentSnapshot) {
+function reportHref(snapshot: AssessmentSnapshot, params?: CommandCenterSearchParams | null) {
   const scores = snapshot.scores ?? {};
   const reportAccessUrl = compactValue(scores.reportAccessUrl);
+  const ownerQuery = new URLSearchParams();
 
-  if (reportAccessUrl) return reportAccessUrl;
+  if (isOwnerPreviewRequest(params)) {
+    ownerQuery.set("review", "owner");
+    ownerQuery.set("key", params?.key ?? "");
+  }
+
+  const ownerQueryString = ownerQuery.toString();
+  const suffix = ownerQueryString ? `&${ownerQueryString}` : "";
+
+  if (reportAccessUrl) {
+    const needsOwnerQuery =
+      ownerQueryString &&
+      (reportAccessUrl.includes("/designid/report?") ||
+        reportAccessUrl.includes("/designpd/report?"));
+
+    return needsOwnerQuery ? `${reportAccessUrl}${suffix}` : reportAccessUrl;
+  }
 
   if (snapshot.assessment_type === "designid") {
-    return `/designid/report?snapshot=${encodeURIComponent(snapshot.id)}`;
+    return `/designid/report?snapshot=${encodeURIComponent(snapshot.id)}${suffix}`;
   }
 
   if (snapshot.assessment_type === "designpd") {
-    return `/designpd/report?snapshot=${encodeURIComponent(snapshot.id)}`;
+    return `/designpd/report?snapshot=${encodeURIComponent(snapshot.id)}${suffix}`;
   }
 
   const pdfMonkey = scoreObject(snapshot, "pdfMonkey");
@@ -297,15 +338,6 @@ function artifactHref(snapshot: AssessmentSnapshot, params?: CommandCenterSearch
 
   const queryString = query.toString();
   return `/api/artifacts/${encodeURIComponent(snapshot.id)}/download${queryString ? `?${queryString}` : ""}`;
-}
-
-function isOwnerPreviewRequest(params?: CommandCenterSearchParams | null) {
-  return (
-    params?.review === "owner" &&
-    Boolean(params.key) &&
-    Boolean(process.env.DYDD_REVIEW_TOKEN) &&
-    params.key === process.env.DYDD_REVIEW_TOKEN
-  );
 }
 
 function commandCenterHref(
@@ -766,7 +798,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                   <div className="command-center-assessment-grid">
                     {participant.snapshots.length ? (
                       participant.snapshots.map((snapshot) => {
-                        const href = reportHref(snapshot);
+                        const href = reportHref(snapshot, params);
                         const details = snapshotDetails(snapshot);
 
                         return (

@@ -91,6 +91,8 @@ const assessmentOrder = [
   "design_pathways",
 ];
 
+const excludedDefaultGroupNames = new Set(["john's tests"]);
+
 const groupTypeLabels: Record<string, string> = {
   camp_circle: "Camp Circle",
   church_team: "Church Team",
@@ -380,6 +382,20 @@ function isParticipantInGroup(participant: ParticipantRecord, groupId: string) {
   );
 }
 
+function isExcludedDefaultGroup(group: AssessmentGroup | undefined) {
+  return Boolean(group && excludedDefaultGroupNames.has(group.name.trim().toLowerCase()));
+}
+
+function isParticipantInExcludedDefaultGroup(
+  participant: ParticipantRecord,
+  groups: AssessmentGroup[],
+) {
+  return participant.groups.some((membership) => {
+    if (membership.membership_status !== "active") return false;
+    return isExcludedDefaultGroup(groups.find((group) => group.id === membership.group_id));
+  });
+}
+
 function groupParticipants(snapshots: AssessmentSnapshot[], memberships: AssessmentGroupMember[]) {
   const records = new Map<string, ParticipantRecord>();
 
@@ -555,6 +571,35 @@ function topDesignPdSignals(snapshots: AssessmentSnapshot[]) {
   ).slice(0, 6);
 }
 
+function normalizedDuplicateName(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "")
+    .trim();
+}
+
+function duplicateNameGroups(participants: ParticipantRecord[]) {
+  const groups = new Map<string, ParticipantRecord[]>();
+
+  for (const participant of participants) {
+    const key = normalizedDuplicateName(participant.name);
+    if (!key || key === "unnamedparticipant") continue;
+    const current = groups.get(key) ?? [];
+    current.push(participant);
+    groups.set(key, current);
+  }
+
+  return Array.from(groups.values())
+    .filter((items) => items.length > 1)
+    .map((items) => ({
+      count: items.length,
+      label: items[0]?.name ?? "Possible duplicate",
+      emails: items.map((item) => item.email).filter(Boolean),
+    }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
+    .slice(0, 8);
+}
+
 async function fetchAssessmentSnapshots({
   isAdmin,
   participantIds,
@@ -648,6 +693,12 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
   const isAdmin = isOwnerPreview || isDyddAdminEmail(user?.email);
   const data = await getCommandCenterData({ isAdmin, userId: user?.id ?? "owner-preview" });
   const participants = groupParticipants(data.snapshots, data.memberships);
+  const activeGroup = data.groups.find((group) => group.id === params?.group) ?? null;
+  const baseParticipants = activeGroup
+    ? participants
+    : participants.filter(
+        (participant) => !isParticipantInExcludedDefaultGroup(participant, data.groups),
+      );
   const filteredParticipants = filterParticipants(participants, {
     assessment: params?.assessment,
     from: params?.from,
@@ -656,9 +707,18 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
     sort: params?.sort,
     to: params?.to,
   });
-  const activeGroup = data.groups.find((group) => group.id === params?.group) ?? null;
+  const filteredMainParticipants = activeGroup
+    ? filteredParticipants
+    : filteredParticipants.filter(
+        (participant) => !isParticipantInExcludedDefaultGroup(participant, data.groups),
+      );
+  const populationParticipants = activeGroup
+    ? participants.filter((participant) => isParticipantInGroup(participant, activeGroup.id))
+    : baseParticipants;
+  const candidatePool =
+    activeGroup && isExcludedDefaultGroup(activeGroup) ? participants : baseParticipants;
   const activeGroupCandidates = activeGroup
-    ? filterParticipants(participants, {
+    ? filterParticipants(candidatePool, {
         assessment: params?.assessment,
         from: params?.from,
         q: params?.q,
@@ -668,13 +728,15 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
         .filter((participant) => !isParticipantInGroup(participant, activeGroup.id))
         .slice(0, 40)
     : [];
-  const snapshotCount = data.snapshots.length;
-  const overallAssessmentCounts = assessmentCounts(data.snapshots);
-  const filteredSnapshots = filteredParticipants.flatMap((participant) => participant.snapshots);
+  const populationSnapshots = populationParticipants.flatMap((participant) => participant.snapshots);
+  const snapshotCount = populationSnapshots.length;
+  const overallAssessmentCounts = assessmentCounts(populationSnapshots);
+  const filteredSnapshots = filteredMainParticipants.flatMap((participant) => participant.snapshots);
   const filteredAssessmentCounts = assessmentCounts(filteredSnapshots);
   const topGiftSignals = topSpiritualGiftSignals(filteredSnapshots);
   const topDesignId = topDesignIdSignals(filteredSnapshots);
   const topDesignPd = topDesignPdSignals(filteredSnapshots);
+  const possibleDuplicates = duplicateNameGroups(filteredMainParticipants);
   const insightScope = activeGroup ? activeGroup.name : params?.q ? "Current search" : "Current view";
 
   return (
@@ -708,7 +770,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
         <article>
           <span>All loaded records</span>
           <strong>{snapshotCount}</strong>
-          <small>{participants.length} people represented</small>
+          <small>{populationParticipants.length} people represented</small>
         </article>
         {assessmentOrder.slice(0, 4).map((assessmentType) => (
           <article key={assessmentType}>
@@ -724,7 +786,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
         </article>
         <article>
           <span>Current filter</span>
-          <strong>{filteredParticipants.length}</strong>
+          <strong>{filteredMainParticipants.length}</strong>
           <small>
             {filteredSnapshots.length} records across {uniqueParticipantCount(filteredSnapshots)} people
           </small>
@@ -793,6 +855,22 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
               <p className="command-center-empty">No DesignPD results in this view yet.</p>
             )}
           </article>
+          <article className="command-center-insight-card">
+            <span>Possible duplicate people</span>
+            {possibleDuplicates.length ? (
+              possibleDuplicates.map((item) => (
+                <div className="command-center-duplicate-row" key={item.label}>
+                  <div>
+                    <strong>{item.label}</strong>
+                    <small>{item.emails.join(" | ")}</small>
+                  </div>
+                  <b>{item.count}</b>
+                </div>
+              ))
+            ) : (
+              <p className="command-center-empty">No duplicate names in this view.</p>
+            )}
+          </article>
         </div>
       </section>
 
@@ -843,7 +921,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
               href={commandCenterHref({}, params)}
             >
               <span>All people</span>
-              <small>{participants.length} people</small>
+              <small>{baseParticipants.length} people, excluding John&apos;s Tests</small>
             </Link>
             {data.groups.map((group) => {
               const memberCount = data.memberships.filter(
@@ -915,8 +993,8 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
           </form>
 
           <div className="command-center-person-list">
-            {filteredParticipants.length ? (
-              filteredParticipants.map((participant) => (
+            {filteredMainParticipants.length ? (
+              filteredMainParticipants.map((participant) => (
                 <article className="command-center-person" key={participant.id}>
                   <div className="command-center-person-header">
                     <div>
@@ -996,13 +1074,18 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                               </dl>
                             ) : null}
                             {href ? (
-                              <Link className="button text" href={href}>
+                              <Link className="button text" href={href} target="_blank" rel="noreferrer">
                                 Open Report
                               </Link>
                             ) : (
                               <em>No report link saved yet</em>
                             )}
-                            <Link className="button text" href={artifactHref(snapshot, params)}>
+                            <Link
+                              className="button text"
+                              href={artifactHref(snapshot, params)}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
                               Download Snapshot
                             </Link>
                           </section>

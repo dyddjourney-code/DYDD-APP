@@ -5992,7 +5992,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .command-center-insight-grid {
   display: grid;
   gap: 14px;
-  grid-template-columns: 1.15fr repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 .command-center-insight-card {
@@ -6056,6 +6056,40 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   color: var(--green-dark);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.92rem;
+  text-align: right;
+}
+
+.command-center-duplicate-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px;
+  gap: 10px;
+  align-items: start;
+  padding-top: 8px;
+  border-top: 1px solid rgba(36, 63, 39, 0.09);
+}
+
+.command-center-duplicate-row strong,
+.command-center-duplicate-row small {
+  display: block;
+}
+
+.command-center-duplicate-row strong {
+  color: var(--green-dark);
+  line-height: 1.25;
+}
+
+.command-center-duplicate-row small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 780;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.command-center-duplicate-row b {
+  color: var(--green-dark);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   text-align: right;
 }
 

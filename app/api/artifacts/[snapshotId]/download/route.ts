@@ -110,6 +110,108 @@ function snapshotReportHref(snapshot: AssessmentSnapshotSummary) {
   return "";
 }
 
+const designIdReflections = [
+  {
+    application: "Building, leading, and initiating",
+    color: "#d4a451",
+    creator: "Creator",
+    key: "Architect",
+  },
+  {
+    application: "Refining and communicating truth through beauty",
+    color: "#647c9b",
+    creator: "Designer",
+    key: "Artisan",
+  },
+  {
+    application: "Nurturing, healing, and restoring through presence",
+    color: "#739d5e",
+    creator: "Comforter",
+    key: "Shepherd",
+  },
+  {
+    application: "Maintaining and securing what has been entrusted",
+    color: "#5a496b",
+    creator: "Sustainer",
+    key: "Steward",
+  },
+];
+
+function designIdReflectionRows(snapshot: AssessmentSnapshotSummary) {
+  if (snapshot.assessment_type !== "designid") return "";
+
+  return designIdReflections
+    .map((reflection) => {
+      const points = firstSnapshotValue(snapshot, [
+        `${reflection.key}_Pts`,
+        `${reflection.key}_Points`,
+        `${reflection.key.toLowerCase()}Pts`,
+      ]);
+      const percent = firstSnapshotValue(snapshot, [
+        `${reflection.key}_Pct`,
+        `${reflection.key}_Percent`,
+        `${reflection.key.toLowerCase()}Pct`,
+      ]);
+      const band = firstSnapshotValue(snapshot, [
+        `Band_${reflection.key}`,
+        `${reflection.key}_Band`,
+        `${reflection.key.toLowerCase()}Band`,
+      ]);
+      const percentNumber = Number(String(percent).replace("%", ""));
+      const width = Number.isFinite(percentNumber) ? Math.max(8, Math.min(100, percentNumber)) : 8;
+      const score = percent ? `${percent.replace(/%$/, "")}%` : points || "Saved";
+      const detail = points && percent ? `${points} pts` : points || "";
+
+      return `<tr>
+        <td><strong>${reflection.key}</strong><small>${reflection.creator}</small></td>
+        <td><strong>${escapeHtml(score)}</strong>${detail ? `<small>${escapeHtml(detail)}</small>` : ""}</td>
+        <td><strong>${escapeHtml(band || "Saved")}</strong></td>
+        <td>${escapeHtml(reflection.application)}<span class="mini-bar"><i style="width:${width}%;background:${reflection.color};"></i></span></td>
+      </tr>`;
+    })
+    .join("");
+}
+
+function designIdSummaryBlock(snapshot: AssessmentSnapshotSummary) {
+  if (snapshot.assessment_type !== "designid") return "";
+
+  const primary = firstSnapshotValue(snapshot, ["Primary", "Primary_Reflection", "primaryReflection", "primary"]);
+  const secondary = firstSnapshotValue(snapshot, [
+    "Secondary",
+    "Secondary_Reflection",
+    "secondaryReflection",
+    "secondary",
+  ]);
+  const integrative = firstSnapshotValue(snapshot, [
+    "Integrative_Reflection",
+    "integrativeReflection",
+    "PairName",
+  ]);
+  const shadow = firstSnapshotValue(snapshot, ["Reflection_Shadow", "Potential_Shadow", "shadow"]);
+  const rows = designIdReflectionRows(snapshot);
+
+  return `<section>
+      <h2>DesignID Reflection Summary</h2>
+      <div class="summary-strip">
+        <div><small>Primary</small><strong>${escapeHtml(primary || "Saved")}</strong></div>
+        <div><small>Secondary</small><strong>${escapeHtml(secondary || "Saved")}</strong></div>
+        <div><small>Integrative</small><strong>${escapeHtml(integrative || "Saved")}</strong></div>
+        <div><small>Shadow</small><strong>${escapeHtml(shadow || "Saved")}</strong></div>
+      </div>
+      <table class="reflection-table">
+        <thead>
+          <tr>
+            <th>Reflection</th>
+            <th>Score</th>
+            <th>Capacity</th>
+            <th>Application</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </section>`;
+}
+
 function visualArtifact(snapshot: AssessmentSnapshotSummary) {
   const label =
     assessmentLabels[snapshot.assessment_type] ?? snapshot.assessment_type;
@@ -138,7 +240,7 @@ function visualArtifact(snapshot: AssessmentSnapshotSummary) {
       : "";
   const highlightRows = highlights.length
     ? highlights
-        .map(
+    .map(
           (item) =>
             `<tr><th>${escapeHtml(item.label)}</th><td>${escapeHtml(item.value)}</td></tr>`,
         )
@@ -162,8 +264,12 @@ function visualArtifact(snapshot: AssessmentSnapshotSummary) {
     section { padding:26px 30px; border-top:1px solid var(--line); }
     .meta { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
     .meta div { background:#fbfaf4; border:1px solid var(--line); padding:14px; }
-    .meta small, .gift-row small { display:block; color:var(--muted); font-weight:800; margin-top:4px; }
+    .meta small, .gift-row small, .reflection-table small { display:block; color:var(--muted); font-weight:800; margin-top:4px; }
     h2 { color:var(--dark); margin:0 0 16px; font-size:22px; }
+    .summary-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:18px; }
+    .summary-strip div { background:#fbfaf4; border:1px solid var(--line); padding:14px; }
+    .summary-strip small { display:block; color:var(--muted); font-size:11px; font-weight:900; letter-spacing:.08em; margin-bottom:4px; text-transform:uppercase; }
+    .summary-strip strong { color:var(--dark); line-height:1.25; }
     .gift-list { display:grid; gap:10px; }
     .gift-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(160px,280px); gap:18px; align-items:center; padding:12px 0; border-top:1px solid rgba(36,63,39,.1); }
     .gift-row:first-child { border-top:0; }
@@ -172,7 +278,12 @@ function visualArtifact(snapshot: AssessmentSnapshotSummary) {
     table { width:100%; border-collapse:collapse; }
     th,td { border-top:1px solid rgba(36,63,39,.12); padding:12px; text-align:left; vertical-align:top; }
     th { color:var(--green); width:34%; }
+    .reflection-table th { width:auto; color:var(--dark); background:#fbfaf4; }
+    .reflection-table td:nth-child(2), .reflection-table td:nth-child(3) { width:110px; text-align:center; }
+    .mini-bar { display:block; height:10px; margin-top:8px; overflow:hidden; border-radius:999px; background:#edf1e8; }
+    .mini-bar i { display:block; height:100%; border-radius:inherit; }
     a { color:var(--dark); font-weight:900; }
+    @media (max-width: 720px) { body { padding:14px; } .meta, .summary-strip { grid-template-columns:1fr; } }
     @media print { body { background:white; padding:0; } main { box-shadow:none; } }
   </style>
 </head>
@@ -193,6 +304,7 @@ function visualArtifact(snapshot: AssessmentSnapshotSummary) {
         ? `<section><h2>Top Spiritual Gifts</h2><div class="gift-list">${giftRows}</div></section>`
         : ""
     }
+    ${designIdSummaryBlock(snapshot)}
     <section>
       <h2>Saved Highlights</h2>
       <table>${highlightRows}</table>

@@ -182,6 +182,10 @@ function compactPercent(value: unknown) {
   return stringValue ? `${stringValue.replace(/%$/, "")}%` : "";
 }
 
+function titleizeAssessmentValue(value: string) {
+  return value.replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
 function scoreObject(snapshot: AssessmentSnapshot, key: string) {
   const value = snapshot.scores?.[key];
   return typeof value === "object" && value !== null && !Array.isArray(value)
@@ -260,6 +264,23 @@ function spiritualGiftDetails(snapshot: AssessmentSnapshot): SnapshotDetail[] {
     .filter((detail): detail is SnapshotDetail => Boolean(detail));
 }
 
+const designIdScoreFields = [
+  { label: "Architect", keys: ["Architect_Pts", "architectPts", "architectScore"] },
+  { label: "Artisan", keys: ["Artisan_Pts", "artisanPts", "artisanScore"] },
+  { label: "Shepherd", keys: ["Shepherd_Pts", "shepherdPts", "shepherdScore"] },
+  { label: "Steward", keys: ["Steward_Pts", "stewardPts", "stewardScore"] },
+];
+
+function designIdScoreDetails(snapshot: AssessmentSnapshot) {
+  return designIdScoreFields
+    .map((field) => ({
+      label: field.label,
+      value: firstSnapshotValue(snapshot, field.keys),
+    }))
+    .filter((detail) => detail.value)
+    .sort((a, b) => Number(b.value) - Number(a.value));
+}
+
 function designIdSummary(snapshot: AssessmentSnapshot) {
   const primary =
     firstSnapshotValue(snapshot, ["primaryReflection", "primary", "Primary_Reflection", "Primary"]);
@@ -269,14 +290,61 @@ function designIdSummary(snapshot: AssessmentSnapshot) {
   return [primary, secondary].filter(Boolean).join(" / ") || "DesignID saved";
 }
 
-function designPdSummary(snapshot: AssessmentSnapshot) {
+const designPdAxes = [
+  {
+    label: "Plan",
+    scoreKeys: ["Plan_Score", "planScore"],
+    tendencyKeys: ["Plan_Tendency", "planTendency"],
+  },
+  {
+    label: "Decide",
+    scoreKeys: ["Decide_Score", "decideScore"],
+    tendencyKeys: ["Decide_Tendency", "decideTendency"],
+  },
+  {
+    label: "Do",
+    scoreKeys: ["Do_Score", "doScore"],
+    tendencyKeys: ["Do_Tendency", "doTendency"],
+  },
+];
+
+function designPdAxisDetails(snapshot: AssessmentSnapshot) {
   const axis = snapshot.scores?.axisTendencies;
 
   if (typeof axis === "object" && axis !== null && !Array.isArray(axis)) {
     return Object.entries(axis as Record<string, unknown>)
-      .map(([key, value]) => `${key}: ${compactValue(value)}`)
-      .filter((value) => !value.endsWith(":"))
+      .slice(0, 6)
+      .map(([label, value]) => ({
+        label: titleizeAssessmentValue(label),
+        value: titleizeAssessmentValue(compactValue(value)),
+      }))
+      .filter((detail) => detail.value);
+  }
+
+  return designPdAxes
+    .map((axisConfig) => {
+      const tendency = firstSnapshotValue(snapshot, axisConfig.tendencyKeys);
+      const score = firstSnapshotValue(snapshot, axisConfig.scoreKeys);
+
+      if (!tendency && !score) return null;
+
+      return {
+        label: axisConfig.label,
+        value: [titleizeAssessmentValue(tendency), score ? `(${score})` : ""]
+          .filter(Boolean)
+          .join(" "),
+      };
+    })
+    .filter((detail): detail is SnapshotDetail => Boolean(detail?.value));
+}
+
+function designPdSummary(snapshot: AssessmentSnapshot) {
+  const axisDetails = designPdAxisDetails(snapshot);
+
+  if (axisDetails.length) {
+    return axisDetails
       .slice(0, 3)
+      .map((detail) => `${detail.label}: ${detail.value.replace(/ \(\d+(?:\.\d+)?\)$/, "")}`)
       .join(" | ");
   }
 
@@ -300,6 +368,7 @@ function snapshotDetails(snapshot: AssessmentSnapshot): SnapshotDetail[] {
 
   if (snapshot.assessment_type === "designid") {
     return [
+      ...designIdScoreDetails(snapshot),
       { label: "Primary", value: firstSnapshotValue(snapshot, ["primaryReflection", "primary", "Primary_Reflection", "Primary"]) },
       { label: "Secondary", value: firstSnapshotValue(snapshot, ["secondaryReflection", "secondary", "Secondary_Reflection", "Secondary"]) },
       { label: "Integrated", value: firstSnapshotValue(snapshot, ["Integrative_Reflection", "integrativeReflection"]) },
@@ -308,13 +377,7 @@ function snapshotDetails(snapshot: AssessmentSnapshot): SnapshotDetail[] {
   }
 
   if (snapshot.assessment_type === "designpd") {
-    const axis = snapshot.scores?.axisTendencies;
-    if (typeof axis === "object" && axis !== null && !Array.isArray(axis)) {
-      return Object.entries(axis as Record<string, unknown>)
-        .slice(0, 6)
-        .map(([label, value]) => ({ label, value: compactValue(value) }))
-        .filter((detail) => detail.value);
-    }
+    return designPdAxisDetails(snapshot);
   }
 
   if (snapshot.assessment_type === "fruit_360") {

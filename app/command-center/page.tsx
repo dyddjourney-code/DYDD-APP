@@ -83,6 +83,14 @@ const assessmentLabels: Record<string, string> = {
   spiritual_gifts: "Spiritual Gifts",
 };
 
+const assessmentOrder = [
+  "spiritual_gifts",
+  "designid",
+  "designpd",
+  "fruit_360",
+  "design_pathways",
+];
+
 const groupTypeLabels: Record<string, string> = {
   camp_circle: "Camp Circle",
   church_team: "Church Team",
@@ -324,6 +332,10 @@ function reportHref(snapshot: AssessmentSnapshot, params?: CommandCenterSearchPa
     return `/designpd/report?snapshot=${encodeURIComponent(snapshot.id)}${suffix}`;
   }
 
+  if (snapshot.assessment_type === "spiritual_gifts") {
+    return `/spiritual-gifts/report?snapshot=${encodeURIComponent(snapshot.id)}${suffix}`;
+  }
+
   const pdfMonkey = scoreObject(snapshot, "pdfMonkey");
   return compactValue(pdfMonkey.providerUrl);
 }
@@ -474,6 +486,116 @@ function filterParticipants(
   });
 }
 
+function assessmentCounts(snapshots: AssessmentSnapshot[]) {
+  return snapshots.reduce<Record<string, number>>((counts, snapshot) => {
+    counts[snapshot.assessment_type] = (counts[snapshot.assessment_type] ?? 0) + 1;
+    return counts;
+  }, {});
+}
+
+function uniqueParticipantCount(snapshots: AssessmentSnapshot[]) {
+  return new Set(snapshots.map((snapshot) => snapshot.participant_id).filter(Boolean)).size;
+}
+
+function tallyValues(values: string[]) {
+  const counts = new Map<string, number>();
+
+  for (const value of values) {
+    if (!value) continue;
+    counts.set(value, (counts.get(value) ?? 0) + 1);
+  }
+
+  return Array.from(counts.entries())
+    .map(([label, count]) => ({ count, label }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+}
+
+function topSpiritualGiftSignals(snapshots: AssessmentSnapshot[]) {
+  return tallyValues(
+    snapshots
+      .filter((snapshot) => snapshot.assessment_type === "spiritual_gifts")
+      .flatMap((snapshot) =>
+        [1, 2, 3, 4, 5].map((rank) => spiritualGiftRank(snapshot, rank)?.label ?? ""),
+      ),
+  ).slice(0, 8);
+}
+
+function topDesignIdSignals(snapshots: AssessmentSnapshot[]) {
+  return tallyValues(
+    snapshots
+      .filter((snapshot) => snapshot.assessment_type === "designid")
+      .map((snapshot) =>
+        firstSnapshotValue(snapshot, [
+          "primaryReflection",
+          "primary",
+          "Primary_Reflection",
+          "Primary",
+        ]),
+      ),
+  ).slice(0, 6);
+}
+
+function topDesignPdSignals(snapshots: AssessmentSnapshot[]) {
+  return tallyValues(
+    snapshots
+      .filter((snapshot) => snapshot.assessment_type === "designpd")
+      .flatMap((snapshot) => {
+        const axis = snapshot.scores?.axisTendencies;
+
+        if (typeof axis === "object" && axis !== null && !Array.isArray(axis)) {
+          return Object.values(axis as Record<string, unknown>).map(compactValue);
+        }
+
+        return [
+          firstSnapshotValue(snapshot, ["Plan_Tendency", "planTendency"]),
+          firstSnapshotValue(snapshot, ["Decide_Tendency", "decideTendency"]),
+          firstSnapshotValue(snapshot, ["Do_Tendency", "doTendency"]),
+        ];
+      }),
+  ).slice(0, 6);
+}
+
+async function fetchAssessmentSnapshots({
+  isAdmin,
+  participantIds,
+}: {
+  isAdmin: boolean;
+  participantIds: string[];
+}) {
+  const supabase = createSupabaseAdminClient();
+  const pageSize = 1000;
+  const snapshots: AssessmentSnapshot[] = [];
+
+  if (!isAdmin && !participantIds.length) {
+    return snapshots;
+  }
+
+  for (let page = 0; page < 10; page += 1) {
+    let query = supabase
+      .from("assessment_snapshots")
+      .select(
+        "id,assessment_type,created_at,participant_id,scores,source,source_submitted_at,assessment_participants(id,display_name,normalized_email)",
+      )
+      .order("source_submitted_at", { ascending: false, nullsFirst: false })
+      .order("created_at", { ascending: false })
+      .range(page * pageSize, page * pageSize + pageSize - 1);
+
+    if (!isAdmin) {
+      query = query.in("participant_id", participantIds);
+    }
+
+    const { data } = await query;
+    const pageSnapshots = (data ?? []) as AssessmentSnapshot[];
+    snapshots.push(...pageSnapshots);
+
+    if (pageSnapshots.length < pageSize) {
+      break;
+    }
+  }
+
+  return snapshots;
+}
+
 async function getCommandCenterData({
   isAdmin,
   userId,
@@ -499,34 +621,15 @@ async function getCommandCenterData({
   const { data: memberships } = groupIds.length
     ? await membershipQuery.in("group_id", groupIds)
     : { data: [] };
-
-  let snapshotQuery = supabase
-    .from("assessment_snapshots")
-    .select(
-      "id,assessment_type,created_at,participant_id,scores,source,source_submitted_at,assessment_participants(id,display_name,normalized_email)",
-    )
-    .order("source_submitted_at", { ascending: false, nullsFirst: false })
-    .order("created_at", { ascending: false })
-    .limit(isAdmin ? 400 : 160);
-
-  if (!isAdmin) {
-    const participantIds = ((memberships ?? []) as AssessmentGroupMember[]).map(
-      (membership) => membership.participant_id,
-    );
-
-    if (!participantIds.length) {
-      return { groups: visibleGroups, memberships: [], snapshots: [] };
-    }
-
-    snapshotQuery = snapshotQuery.in("participant_id", participantIds);
-  }
-
-  const { data: snapshots } = await snapshotQuery;
+  const participantIds = ((memberships ?? []) as AssessmentGroupMember[]).map(
+    (membership) => membership.participant_id,
+  );
+  const snapshots = await fetchAssessmentSnapshots({ isAdmin, participantIds });
 
   return {
     groups: visibleGroups,
     memberships: (memberships ?? []) as AssessmentGroupMember[],
-    snapshots: (snapshots ?? []) as AssessmentSnapshot[],
+    snapshots,
   };
 }
 
@@ -566,9 +669,13 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
         .slice(0, 40)
     : [];
   const snapshotCount = data.snapshots.length;
-  const completedSpiritualGifts = data.snapshots.filter(
-    (snapshot) => snapshot.assessment_type === "spiritual_gifts",
-  ).length;
+  const overallAssessmentCounts = assessmentCounts(data.snapshots);
+  const filteredSnapshots = filteredParticipants.flatMap((participant) => participant.snapshots);
+  const filteredAssessmentCounts = assessmentCounts(filteredSnapshots);
+  const topGiftSignals = topSpiritualGiftSignals(filteredSnapshots);
+  const topDesignId = topDesignIdSignals(filteredSnapshots);
+  const topDesignPd = topDesignPdSignals(filteredSnapshots);
+  const insightScope = activeGroup ? activeGroup.name : params?.q ? "Current search" : "Current view";
 
   return (
     <main className="command-center-shell">
@@ -599,15 +706,17 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
 
       <section className="command-center-metrics" aria-label="Assessment command center summary">
         <article>
-          <span>Total records</span>
+          <span>All loaded records</span>
           <strong>{snapshotCount}</strong>
-          <small>Assessment snapshots in this view</small>
+          <small>{participants.length} people represented</small>
         </article>
-        <article>
-          <span>Spiritual Gifts</span>
-          <strong>{completedSpiritualGifts}</strong>
-          <small>Saved app or synced results</small>
-        </article>
+        {assessmentOrder.slice(0, 4).map((assessmentType) => (
+          <article key={assessmentType}>
+            <span>{assessmentLabels[assessmentType]}</span>
+            <strong>{overallAssessmentCounts[assessmentType] ?? 0}</strong>
+            <small>Saved results</small>
+          </article>
+        ))}
         <article>
           <span>Groups</span>
           <strong>{data.groups.length}</strong>
@@ -616,8 +725,75 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
         <article>
           <span>Current filter</span>
           <strong>{filteredParticipants.length}</strong>
-          <small>People matching search and filters</small>
+          <small>
+            {filteredSnapshots.length} records across {uniqueParticipantCount(filteredSnapshots)} people
+          </small>
         </article>
+      </section>
+
+      <section className="command-center-insights" aria-label="Assessment analytics">
+        <div className="command-center-panel-heading">
+          <p className="section-label">{insightScope}</p>
+          <h2>Assessment signals</h2>
+        </div>
+        <div className="command-center-insight-grid">
+          <article className="command-center-insight-card">
+            <span>Assessment mix</span>
+            {assessmentOrder.slice(0, 4).map((assessmentType) => {
+              const count = filteredAssessmentCounts[assessmentType] ?? 0;
+              const max = Math.max(...Object.values(filteredAssessmentCounts), 1);
+
+              return (
+                <div className="command-center-bar-row" key={assessmentType}>
+                  <small>{assessmentLabels[assessmentType]}</small>
+                  <div aria-hidden="true">
+                    <i style={{ width: `${Math.max((count / max) * 100, count ? 8 : 0)}%` }} />
+                  </div>
+                  <strong>{count}</strong>
+                </div>
+              );
+            })}
+          </article>
+          <article className="command-center-insight-card">
+            <span>Recurring Spiritual Gifts</span>
+            {topGiftSignals.length ? (
+              topGiftSignals.map((item) => (
+                <div className="command-center-rank-row" key={item.label}>
+                  <small>{item.label}</small>
+                  <strong>{item.count}</strong>
+                </div>
+              ))
+            ) : (
+              <p className="command-center-empty">No Spiritual Gifts results in this view yet.</p>
+            )}
+          </article>
+          <article className="command-center-insight-card">
+            <span>DesignID primary reflections</span>
+            {topDesignId.length ? (
+              topDesignId.map((item) => (
+                <div className="command-center-rank-row" key={item.label}>
+                  <small>{item.label}</small>
+                  <strong>{item.count}</strong>
+                </div>
+              ))
+            ) : (
+              <p className="command-center-empty">No DesignID results in this view yet.</p>
+            )}
+          </article>
+          <article className="command-center-insight-card">
+            <span>DesignPD tendencies</span>
+            {topDesignPd.length ? (
+              topDesignPd.map((item) => (
+                <div className="command-center-rank-row" key={item.label}>
+                  <small>{item.label}</small>
+                  <strong>{item.count}</strong>
+                </div>
+              ))
+            ) : (
+              <p className="command-center-empty">No DesignPD results in this view yet.</p>
+            )}
+          </article>
+        </div>
       </section>
 
       <section className="command-center-layout">

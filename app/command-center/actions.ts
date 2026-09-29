@@ -42,6 +42,26 @@ function commandCenterTarget(
   return queryString ? `/command-center?${queryString}` : "/command-center";
 }
 
+function appendCommandCenterMessage(target: string, message: string) {
+  const separator = target.includes("?") ? "&" : "?";
+  return `${target}${separator}message=${encodeURIComponent(message)}`;
+}
+
+function commandCenterReturnTarget(
+  formData: FormData,
+  values: Record<string, string | null | undefined> = {},
+) {
+  return commandCenterTarget(formData, {
+    assessment: getString(formData, "assessment") || null,
+    from: getString(formData, "from") || null,
+    group: getString(formData, "current_group") || null,
+    q: getString(formData, "q") || null,
+    sort: getString(formData, "sort") || null,
+    to: getString(formData, "to") || null,
+    ...values,
+  });
+}
+
 async function getCurrentUser() {
   const supabase = await createSupabaseServerClient();
   const {
@@ -167,13 +187,16 @@ export async function assignParticipantToAssessmentGroup(formData: FormData) {
   );
 
   revalidatePath("/command-center");
-  const target = commandCenterTarget(formData, { group: groupId });
+  const shouldOpenAssignedGroup = getString(formData, "return_to_group") === "true";
+  const target = shouldOpenAssignedGroup
+    ? commandCenterTarget(formData, { group: groupId })
+    : commandCenterReturnTarget(formData);
 
   if (error) {
-    redirect(`${target}&message=${encodeURIComponent(error.message)}`);
+    redirect(appendCommandCenterMessage(target, error.message));
   }
 
-  redirect(`${target}&message=${encodeURIComponent("Participant assigned to group.")}`);
+  redirect(appendCommandCenterMessage(target, "Participant assigned to group."));
 }
 
 export async function archiveAssessmentGroupMember(formData: FormData) {

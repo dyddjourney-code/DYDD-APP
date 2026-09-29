@@ -1252,6 +1252,12 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                     </div>
                     <form action={assignParticipantToAssessmentGroup}>
                       <input name="participant_id" type="hidden" value={participant.id} />
+                      <input name="assessment" type="hidden" value={params?.assessment ?? ""} />
+                      <input name="current_group" type="hidden" value={params?.group ?? ""} />
+                      <input name="from" type="hidden" value={params?.from ?? ""} />
+                      <input name="q" type="hidden" value={params?.q ?? ""} />
+                      <input name="sort" type="hidden" value={params?.sort ?? ""} />
+                      <input name="to" type="hidden" value={params?.to ?? ""} />
                       {isOwnerPreview ? (
                         <>
                           <input name="review" type="hidden" value="owner" />
@@ -1372,6 +1378,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                     <form action={assignParticipantToAssessmentGroup} key={participant.id}>
                       <input name="participant_id" type="hidden" value={participant.id} />
                       <input name="group_id" type="hidden" value={activeGroup.id} />
+                      <input name="return_to_group" type="hidden" value="true" />
                       {isOwnerPreview ? (
                         <>
                           <input name="review" type="hidden" value="owner" />

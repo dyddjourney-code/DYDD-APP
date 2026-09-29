@@ -1006,11 +1006,9 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
   const data = await getCommandCenterData({ isAdmin, userId: user?.id ?? "owner-preview" });
   const participants = groupParticipants(data.snapshots, data.memberships);
   const activeGroup = data.groups.find((group) => group.id === params?.group) ?? null;
-  const baseParticipants = activeGroup
-    ? participants
-    : participants.filter(
-        (participant) => !isParticipantInExcludedDefaultGroup(participant, data.groups),
-      );
+  const defaultParticipants = participants.filter(
+    (participant) => !isParticipantInExcludedDefaultGroup(participant, data.groups),
+  );
   const filteredParticipants = filterParticipants(participants, {
     assessment: params?.assessment,
     from: params?.from,
@@ -1019,16 +1017,20 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
     sort: params?.sort,
     to: params?.to,
   });
-  const filteredMainParticipants = activeGroup
+  const showExcludedGroupRecords = activeGroup ? isExcludedDefaultGroup(activeGroup) : false;
+  const filteredMainParticipants = showExcludedGroupRecords
     ? filteredParticipants
     : filteredParticipants.filter(
         (participant) => !isParticipantInExcludedDefaultGroup(participant, data.groups),
       );
   const populationParticipants = activeGroup
-    ? participants.filter((participant) => isParticipantInGroup(participant, activeGroup.id))
-    : baseParticipants;
-  const candidatePool =
-    activeGroup && isExcludedDefaultGroup(activeGroup) ? participants : baseParticipants;
+    ? participants.filter(
+        (participant) =>
+          isParticipantInGroup(participant, activeGroup.id) &&
+          (showExcludedGroupRecords || !isParticipantInExcludedDefaultGroup(participant, data.groups)),
+      )
+    : defaultParticipants;
+  const candidatePool = showExcludedGroupRecords ? participants : defaultParticipants;
   const activeGroupCandidates = activeGroup
     ? filterParticipants(candidatePool, {
         q: params?.q,
@@ -1212,11 +1214,15 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
               href={commandCenterHref({}, params)}
             >
               <span>All people</span>
-              <small>{baseParticipants.length} people, excluding John&apos;s Tests</small>
+              <small>{defaultParticipants.length} people, excluding John&apos;s Tests</small>
             </Link>
             {data.groups.map((group) => {
-              const memberCount = participants.filter((participant) =>
-                isParticipantInGroup(participant, group.id),
+              const countExcludedGroupRecords = isExcludedDefaultGroup(group);
+              const memberCount = participants.filter(
+                (participant) =>
+                  isParticipantInGroup(participant, group.id) &&
+                  (countExcludedGroupRecords ||
+                    !isParticipantInExcludedDefaultGroup(participant, data.groups)),
               ).length;
 
               return (

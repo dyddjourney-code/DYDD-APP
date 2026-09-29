@@ -494,7 +494,11 @@ function isParticipantInExcludedDefaultGroup(
   });
 }
 
-function groupParticipants(snapshots: AssessmentSnapshot[], memberships: AssessmentGroupMember[]) {
+function groupParticipants(
+  snapshots: AssessmentSnapshot[],
+  memberships: AssessmentGroupMember[],
+  groups: AssessmentGroup[],
+) {
   const records = new Map<string, ParticipantRecord>();
   const snapshotIdsByParticipant = new Map<string, Set<string>>();
 
@@ -595,7 +599,7 @@ function groupParticipants(snapshots: AssessmentSnapshot[], memberships: Assessm
     records.set(recordKey, current);
   }
 
-  return collapseOverlappingParticipantRecords(Array.from(records.values())).map((record) => ({
+  return collapseOverlappingParticipantRecords(Array.from(records.values()), groups).map((record) => ({
     ...record,
     snapshots: dedupeParticipantSnapshots(
       record.snapshots.map((snapshot) => ({
@@ -660,7 +664,7 @@ function recordsShareSavedSubmission(a: ParticipantRecord, b: ParticipantRecord)
   return b.snapshots.some((snapshot) => aKeys.has(snapshotOverlapKey(snapshot)));
 }
 
-function collapseOverlappingParticipantRecords(records: ParticipantRecord[]) {
+function collapseOverlappingParticipantRecords(records: ParticipantRecord[], groups: AssessmentGroup[]) {
   const byName = new Map<string, ParticipantRecord[]>();
 
   for (const record of records) {
@@ -690,6 +694,12 @@ function collapseOverlappingParticipantRecords(records: ParticipantRecord[]) {
 
     for (const candidate of nameMatches) {
       if (candidate === record || consumed.has(candidate)) continue;
+      if (
+        isParticipantInExcludedDefaultGroup(target, groups) !==
+        isParticipantInExcludedDefaultGroup(candidate, groups)
+      ) {
+        continue;
+      }
       if (!recordsShareSavedSubmission(target, candidate)) continue;
 
       target.identityKey = mergeKey;
@@ -1004,7 +1014,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
 
   const isAdmin = isOwnerPreview || isDyddAdminEmail(user?.email);
   const data = await getCommandCenterData({ isAdmin, userId: user?.id ?? "owner-preview" });
-  const participants = groupParticipants(data.snapshots, data.memberships);
+  const participants = groupParticipants(data.snapshots, data.memberships, data.groups);
   const activeGroup = data.groups.find((group) => group.id === params?.group) ?? null;
   const defaultParticipants = participants.filter(
     (participant) => !isParticipantInExcludedDefaultGroup(participant, data.groups),

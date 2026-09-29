@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppNavIcon } from "@/components/app-sidebar";
 import { isDyddAdminEmail } from "@/lib/admin-access";
-import { canonicalizeParticipantEmail } from "@/lib/identity/email";
+import { normalizeEmail } from "@/lib/identity/email";
 import { isOwnerPreviewRequest } from "@/lib/owner-preview";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -133,7 +133,7 @@ function participantIdentityKey(
   participantId: string | null | undefined,
   email: string | null | undefined,
 ) {
-  return canonicalizeParticipantEmail(email) || participantId || "unknown-participant";
+  return normalizeEmail(email) || participantId || "unknown-participant";
 }
 
 function participantEmailScore(email: string) {

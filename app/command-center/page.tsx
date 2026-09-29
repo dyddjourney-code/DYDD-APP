@@ -74,6 +74,7 @@ type ParticipantRecord = {
   emailAliases: string[];
   groups: AssessmentGroupMember[];
   id: string;
+  identityKey: string;
   name: string;
   participantIds: string[];
   snapshots: AssessmentSnapshot[];
@@ -143,6 +144,17 @@ function preferredParticipantEmail(emails: string[]) {
   return [...new Set(emails.filter(Boolean))].sort(
     (a, b) => participantEmailScore(b) - participantEmailScore(a) || a.localeCompare(b),
   )[0];
+}
+
+function preferredParticipantName(names: string[]) {
+  return [...new Set(names.map((name) => name.trim()).filter(Boolean))]
+    .sort((a, b) => {
+      const aIsFallback = a === "Unnamed participant" || a.includes("@");
+      const bIsFallback = b === "Unnamed participant" || b.includes("@");
+
+      if (aIsFallback !== bIsFallback) return aIsFallback ? 1 : -1;
+      return b.length - a.length || a.localeCompare(b);
+    })[0];
 }
 
 function inputDateValue(value: string | null | undefined) {
@@ -432,10 +444,12 @@ function groupParticipants(snapshots: AssessmentSnapshot[], memberships: Assessm
   function participantRecordSeed({
     email,
     id,
+    identityKey,
     name,
   }: {
     email: string;
     id: string;
+    identityKey: string;
     name: string;
   }): ParticipantRecord {
     return {
@@ -443,6 +457,7 @@ function groupParticipants(snapshots: AssessmentSnapshot[], memberships: Assessm
       emailAliases: email && email !== "No email saved" ? [email] : [],
       groups: [],
       id,
+      identityKey,
       name,
       participantIds: [id],
       snapshots: [],
@@ -490,11 +505,12 @@ function groupParticipants(snapshots: AssessmentSnapshot[], memberships: Assessm
       participantRecordSeed({
         email: participant?.normalized_email ?? "No email saved",
         id: participantId,
+        identityKey: recordKey,
         name: participant?.display_name ?? participant?.normalized_email ?? "Unnamed participant",
       });
 
     mergeParticipantRecord(current, participant);
-    current.snapshots.push({ ...snapshot, participant_canonical_key: recordKey });
+    current.snapshots.push({ ...snapshot, participant_canonical_key: current.identityKey });
     records.set(recordKey, current);
   }
 
@@ -506,6 +522,7 @@ function groupParticipants(snapshots: AssessmentSnapshot[], memberships: Assessm
       participantRecordSeed({
         email: participant?.normalized_email ?? "No email saved",
         id: membership.participant_id,
+        identityKey: recordKey,
         name: participant?.display_name ?? participant?.normalized_email ?? "Unnamed participant",
       });
 
@@ -514,12 +531,120 @@ function groupParticipants(snapshots: AssessmentSnapshot[], memberships: Assessm
     records.set(recordKey, current);
   }
 
-  return Array.from(records.values()).map((record) => ({
+  return collapseOverlappingParticipantRecords(Array.from(records.values())).map((record) => ({
     ...record,
-    snapshots: dedupeParticipantSnapshots(record.snapshots).sort(
+    snapshots: dedupeParticipantSnapshots(
+      record.snapshots.map((snapshot) => ({
+        ...snapshot,
+        participant_canonical_key: record.identityKey,
+      })),
+    ).sort(
       (a, b) => snapshotDateValue(b) - snapshotDateValue(a),
     ),
   }));
+}
+
+function groupMemberKey(membership: AssessmentGroupMember) {
+  return membership.id || `${membership.group_id}|${membership.participant_id}`;
+}
+
+function mergeParticipantRecords(target: ParticipantRecord, source: ParticipantRecord) {
+  const targetSnapshotCount = target.snapshots.length;
+
+  target.emailAliases = Array.from(new Set([...target.emailAliases, ...source.emailAliases]));
+  target.email = preferredParticipantEmail(target.emailAliases) ?? target.email;
+  target.name = preferredParticipantName([target.name, source.name]) ?? target.name;
+  target.participantIds = Array.from(new Set([...target.participantIds, ...source.participantIds]));
+
+  const groupKeys = new Set(target.groups.map(groupMemberKey));
+  for (const group of source.groups) {
+    const key = groupMemberKey(group);
+    if (!groupKeys.has(key)) {
+      target.groups.push(group);
+      groupKeys.add(key);
+    }
+  }
+
+  target.snapshots.push(...source.snapshots);
+
+  if (source.snapshots.length > targetSnapshotCount) {
+    target.id = source.id;
+  }
+
+  return target;
+}
+
+function snapshotOverlapKey(snapshot: AssessmentSnapshot) {
+  const scores = snapshot.scores ?? {};
+  const sourceResponseId =
+    compactValue(scores.sourceResponseId) ||
+    compactValue(scores.source_response_id) ||
+    compactValue(scores.Response_ID) ||
+    compactValue(scores.Submission_ID);
+  const submittedAt = snapshot.source_submitted_at ?? "";
+  const scoreSignature = JSON.stringify(scores);
+
+  return [
+    snapshot.assessment_type,
+    sourceResponseId || submittedAt || snapshot.created_at,
+    scoreSignature,
+  ].join("|");
+}
+
+function recordsShareSavedSubmission(a: ParticipantRecord, b: ParticipantRecord) {
+  const aKeys = new Set(a.snapshots.map(snapshotOverlapKey));
+  return b.snapshots.some((snapshot) => aKeys.has(snapshotOverlapKey(snapshot)));
+}
+
+function collapseOverlappingParticipantRecords(records: ParticipantRecord[]) {
+  const byName = new Map<string, ParticipantRecord[]>();
+
+  for (const record of records) {
+    const nameKey = normalizedDuplicateName(record.name);
+
+    if (!nameKey || nameKey === "unnamedparticipant") continue;
+    byName.set(nameKey, [...(byName.get(nameKey) ?? []), record]);
+  }
+
+  const consumed = new Set<ParticipantRecord>();
+  const collapsed: ParticipantRecord[] = [];
+
+  for (const record of records) {
+    if (consumed.has(record)) continue;
+
+    const nameKey = normalizedDuplicateName(record.name);
+    const nameMatches = nameKey ? byName.get(nameKey) ?? [] : [];
+    const mergeKey = `name:${nameKey}`;
+    const target = {
+      ...record,
+      emailAliases: [...record.emailAliases],
+      groups: [...record.groups],
+      identityKey: record.identityKey,
+      participantIds: [...record.participantIds],
+      snapshots: [...record.snapshots],
+    };
+
+    for (const candidate of nameMatches) {
+      if (candidate === record || consumed.has(candidate)) continue;
+      if (!recordsShareSavedSubmission(target, candidate)) continue;
+
+      target.identityKey = mergeKey;
+      mergeParticipantRecords(target, candidate);
+      consumed.add(candidate);
+    }
+
+    if (target.identityKey === mergeKey) {
+      target.snapshots = target.snapshots.map((snapshot) => ({
+        ...snapshot,
+        participant_canonical_key: target.identityKey,
+      }));
+    }
+
+    collapsed.push(target);
+    consumed.add(record);
+  }
+
+  return collapsed;
 }
 
 function snapshotDedupeKey(snapshot: AssessmentSnapshot) {
@@ -634,6 +759,13 @@ function uniqueParticipantCount(snapshots: AssessmentSnapshot[]) {
       .map((snapshot) => snapshot.participant_canonical_key ?? snapshot.participant_id)
       .filter(Boolean),
   ).size;
+}
+
+function collapsedParticipantRowCount(participants: ParticipantRecord[]) {
+  return participants.reduce(
+    (count, participant) => count + Math.max(participant.participantIds.length - 1, 0),
+    0,
+  );
 }
 
 function tallyValues(values: string[]) {
@@ -859,7 +991,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
   const topGiftSignals = topSpiritualGiftSignals(filteredSnapshots);
   const topDesignId = topDesignIdSignals(filteredSnapshots);
   const topDesignPd = topDesignPdSignals(filteredSnapshots);
-  const possibleDuplicates = duplicateNameGroups(filteredMainParticipants);
+  const collapsedRowsInCurrentView = collapsedParticipantRowCount(filteredMainParticipants);
   const insightScope = activeGroup ? activeGroup.name : params?.q ? "Current search" : "Current view";
 
   return (
@@ -877,8 +1009,8 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
         <div className="command-center-hero-card">
           <AppNavIcon name="group" />
           <span>{isAdmin ? "Full oversight" : "Owned groups"}</span>
-          <strong>{participants.length}</strong>
-          <small>people with assessment records or group membership</small>
+          <strong>{populationParticipants.length}</strong>
+          <small>{activeGroup ? "people in this group view" : "people in the default view"}</small>
         </div>
       </section>
 
@@ -891,7 +1023,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
 
       <section className="command-center-metrics" aria-label="Assessment command center summary">
         <article>
-          <span>All loaded records</span>
+          <span>{activeGroup ? "Group records" : "Default records"}</span>
           <strong>{snapshotCount}</strong>
           <small>{populationParticipants.length} people represented</small>
         </article>
@@ -979,20 +1111,14 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
             )}
           </article>
           <article className="command-center-insight-card">
-            <span>Possible duplicate people</span>
-            {possibleDuplicates.length ? (
-              possibleDuplicates.map((item) => (
-                <div className="command-center-duplicate-row" key={item.label}>
-                  <div>
-                    <strong>{item.label}</strong>
-                    <small>{item.emails.join(" | ")}</small>
-                  </div>
-                  <b>{item.count}</b>
-                </div>
-              ))
-            ) : (
-              <p className="command-center-empty">No duplicate names in this view.</p>
-            )}
+            <span>View cleanup</span>
+            <div className="command-center-rank-row">
+              <small>Extra participant rows collapsed</small>
+              <strong>{collapsedRowsInCurrentView}</strong>
+            </div>
+            <p className="command-center-empty">
+              Current lists and charts use collapsed people, so matching historical duplicate rows do not inflate this view.
+            </p>
           </article>
         </div>
       </section>
@@ -1047,8 +1173,8 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
               <small>{baseParticipants.length} people, excluding John&apos;s Tests</small>
             </Link>
             {data.groups.map((group) => {
-              const memberCount = data.memberships.filter(
-                (membership) => membership.group_id === group.id,
+              const memberCount = participants.filter((participant) =>
+                isParticipantInGroup(participant, group.id),
               ).length;
 
               return (

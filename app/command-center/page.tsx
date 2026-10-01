@@ -1129,7 +1129,9 @@ function designPdAxisScore(snapshot: AssessmentSnapshot, axisConfig: (typeof des
   const signedScoreSource = nativeAxisScore !== null
     ? -nativeAxisScore
     : rawScore !== null
-      ? direction * rawScore
+      ? direction === 0
+        ? rawScore
+        : direction * rawScore
       : null;
 
   if (signedScoreSource === null) return null;

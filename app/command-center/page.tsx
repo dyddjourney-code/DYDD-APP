@@ -1300,6 +1300,12 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
   const designPdComparison = showWilloughbyComparison
     ? designPdComparisonAxes(displayParticipants, circleMembers)
     : [];
+  const coupleReportHref = activeGroup
+    ? `/api/command-center/couple-report?${new URLSearchParams({
+        group: activeGroup.id,
+        ...(isOwnerPreview ? { key: params?.key ?? "", review: "owner" } : {}),
+      }).toString()}`
+    : "";
 
   return (
     <main className="command-center-shell">
@@ -1630,6 +1636,15 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                 )}
               </article>
             </div>
+            {coupleReportHref ? (
+              <div className="couple-report-download">
+                <div>
+                  <strong>Marriage Overlay first draft</strong>
+                  <small>Download a couple-facing overlap context artifact from the current snapshots.</small>
+                </div>
+                <a href={coupleReportHref}>Download your couples report</a>
+              </div>
+            ) : null}
           </section>
         ) : null}
       </section>

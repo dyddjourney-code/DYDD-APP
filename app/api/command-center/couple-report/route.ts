@@ -1,0 +1,506 @@
+import { NextResponse, type NextRequest } from "next/server";
+import { isDyddAdminEmail } from "@/lib/admin-access";
+import { isOwnerPreviewRequest } from "@/lib/owner-preview";
+import { spiritualGifts } from "@/lib/spiritual-gifts/intake";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+
+export const runtime = "nodejs";
+
+type AssessmentParticipant = {
+  display_name: string | null;
+  id: string;
+  normalized_email: string | null;
+};
+
+type AssessmentSnapshot = {
+  assessment_participants: AssessmentParticipant | AssessmentParticipant[] | null;
+  assessment_type: string;
+  created_at: string;
+  id: string;
+  participant_id: string | null;
+  scores: Record<string, unknown> | null;
+  source_submitted_at: string | null;
+};
+
+type CoupleMember = {
+  color: string;
+  id: string;
+  initials: string;
+  name: string;
+  snapshots: AssessmentSnapshot[];
+};
+
+const colors = ["#4a6239", "#8a5f2d"];
+const designIdMaxScore = 60;
+const designPdMaxAxisScore = 24;
+
+const designIdScoreFields = [
+  { label: "Architect", keys: ["Architect_Pts", "architectPts", "architectScore"] },
+  { label: "Artisan", keys: ["Artisan_Pts", "artisanPts", "artisanScore"] },
+  { label: "Shepherd", keys: ["Shepherd_Pts", "shepherdPts", "shepherdScore"] },
+  { label: "Steward", keys: ["Steward_Pts", "stewardPts", "stewardScore"] },
+];
+
+const designPdAxes = [
+  {
+    axisKey: "plan",
+    label: "Plan",
+    left: "Dreamer",
+    right: "Doer",
+    scoreKeys: ["Plan_Score", "planScore"],
+    tendencyKeys: ["Plan_Tendency", "planTendency"],
+  },
+  {
+    axisKey: "decide",
+    label: "Decide",
+    left: "Feel It",
+    right: "Think It",
+    scoreKeys: ["Decide_Score", "decideScore"],
+    tendencyKeys: ["Decide_Tendency", "decideTendency"],
+  },
+  {
+    axisKey: "do",
+    label: "Do",
+    left: "Solo",
+    right: "Together",
+    scoreKeys: ["Do_Score", "doScore"],
+    tendencyKeys: ["Do_Tendency", "doTendency"],
+  },
+];
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function slugify(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "couple-overlay";
+}
+
+function compactValue(value: unknown) {
+  if (typeof value === "string") return value.trim();
+  if (typeof value === "number" && Number.isFinite(value)) return String(value);
+  return "";
+}
+
+function titleize(value: string) {
+  return value.replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function participantInitials(name: string) {
+  const parts = name.replace(/[^a-zA-Z0-9\s]/g, " ").split(/\s+/).filter(Boolean);
+  return (parts.length > 1 ? `${parts[0][0]}${parts[parts.length - 1][0]}` : parts[0]?.slice(0, 2) || "?").toUpperCase();
+}
+
+function singleParticipant(value: AssessmentSnapshot["assessment_participants"]) {
+  return Array.isArray(value) ? value[0] ?? null : value;
+}
+
+function snapshotDateValue(snapshot: AssessmentSnapshot) {
+  return new Date(snapshot.source_submitted_at ?? snapshot.created_at).getTime();
+}
+
+function scoreObject(snapshot: AssessmentSnapshot, key: string) {
+  const value = snapshot.scores?.[key];
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+function snapshotSections(snapshot: AssessmentSnapshot) {
+  return [
+    scoreObject(snapshot, "summary"),
+    scoreObject(snapshot, "profileLanguage"),
+    scoreObject(snapshot, "scores"),
+    snapshot.scores ?? {},
+  ];
+}
+
+function firstSnapshotValue(snapshot: AssessmentSnapshot, keys: string[]) {
+  for (const key of keys) {
+    for (const section of snapshotSections(snapshot)) {
+      const value = compactValue(section[key]);
+      if (value) return value;
+    }
+  }
+
+  return "";
+}
+
+function numberSnapshotValue(snapshot: AssessmentSnapshot, keys: string[]) {
+  const value = Number(firstSnapshotValue(snapshot, keys));
+  return Number.isFinite(value) ? value : 0;
+}
+
+function spiritualGiftRank(snapshot: AssessmentSnapshot, rank: number) {
+  const topGifts = snapshot.scores?.topGifts;
+  const gift = Array.isArray(topGifts) ? topGifts[rank - 1] : null;
+
+  if (typeof gift === "object" && gift !== null) {
+    const data = gift as Record<string, unknown>;
+    const label = compactValue(data.label) || compactValue(data.name);
+    const score = compactValue(data.score) || compactValue(data.value);
+
+    if (label) return { label, rank, score };
+  }
+
+  const label = firstSnapshotValue(snapshot, [`Top${rank}_Name`, `Top_${rank}_Name`, `Top${rank}`]);
+  const score = firstSnapshotValue(snapshot, [`Top${rank}_Score`, `Top_${rank}_Score`]);
+
+  return label ? { label, rank, score } : null;
+}
+
+function isGroupCurrentSnapshot(snapshot: AssessmentSnapshot) {
+  if (snapshot.assessment_type !== "fruit_360") return true;
+
+  const summary = scoreObject(snapshot, "summary");
+  const scores = scoreObject(snapshot, "scores");
+  const reportMode = compactValue(summary.Report_Mode) || compactValue(summary.reportMode);
+  const observerCount = Number(
+    compactValue(summary.Observer_Count) ||
+      compactValue(summary.observerCount) ||
+      compactValue(scores.Observer_Count) ||
+      compactValue(scores.observerCount) ||
+      0,
+  );
+
+  return reportMode !== "SELF_ONLY" && observerCount > 0;
+}
+
+function latestAssessmentSnapshots(snapshots: AssessmentSnapshot[]) {
+  const latest = new Map<string, AssessmentSnapshot>();
+
+  for (const snapshot of snapshots.filter(isGroupCurrentSnapshot)) {
+    const current = latest.get(snapshot.assessment_type);
+    if (!current || snapshotDateValue(snapshot) > snapshotDateValue(current)) {
+      latest.set(snapshot.assessment_type, snapshot);
+    }
+  }
+
+  return Array.from(latest.values());
+}
+
+function currentSnapshot(member: CoupleMember, assessmentType: string) {
+  return latestAssessmentSnapshots(member.snapshots).find((snapshot) => snapshot.assessment_type === assessmentType);
+}
+
+function giftDefinition(label: string) {
+  return spiritualGifts.find((gift) => gift.label.toLowerCase() === label.toLowerCase())?.definition ?? "";
+}
+
+function designIdScores(member: CoupleMember) {
+  const snapshot = currentSnapshot(member, "designid");
+  return designIdScoreFields.map((field) => ({
+    band: capacityBand(snapshot ? numberSnapshotValue(snapshot, field.keys) : 0),
+    label: field.label,
+    value: snapshot ? numberSnapshotValue(snapshot, field.keys) : 0,
+  }));
+}
+
+function capacityBand(score: number) {
+  if (score >= 40) return "Abundant";
+  if (score >= 25) return "Steady";
+  if (score >= 10) return "Limited";
+  return "Drained";
+}
+
+function designPdAxisScore(member: CoupleMember, axis: (typeof designPdAxes)[number]) {
+  const snapshot = currentSnapshot(member, "designpd");
+  if (!snapshot) return { score: 0, signedScore: 0, tendency: "Not saved" };
+
+  const rawScore = numberSnapshotValue(snapshot, axis.scoreKeys);
+  const rawTendency = titleize(firstSnapshotValue(snapshot, axis.tendencyKeys));
+  const tendency = rawTendency.toLowerCase();
+  const direction =
+    tendency.includes(axis.left.toLowerCase().split(" ")[0])
+      ? -1
+      : tendency.includes(axis.right.toLowerCase().split(" ")[0])
+        ? 1
+        : 0;
+  const signedScore = direction * Math.min(Math.abs(rawScore), designPdMaxAxisScore);
+
+  return {
+    score: rawScore,
+    signedScore,
+    tendency: rawTendency || "Balanced",
+  };
+}
+
+function gapLanguage(gap: number, max: number) {
+  const ratio = max ? gap / max : 0;
+  if (ratio >= 0.62) return "wide gap";
+  if (ratio >= 0.32) return "meaningful gap";
+  return "close range";
+}
+
+function sharedPoleLanguage(axis: (typeof designPdAxes)[number], scores: { signedScore: number }[]) {
+  if (scores.length < 2) return "";
+  const bothLeft = scores.every((score) => score.signedScore < 0);
+  const bothRight = scores.every((score) => score.signedScore > 0);
+  if (bothLeft) return `Because both of you lean ${axis.left}, notice what may get missed from the ${axis.right} side.`;
+  if (bothRight) return `Because both of you lean ${axis.right}, notice what may get missed from the ${axis.left} side.`;
+  return "";
+}
+
+function htmlList(items: string[]) {
+  return `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+}
+
+function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
+  const today = new Intl.DateTimeFormat("en-US", { dateStyle: "long" }).format(new Date());
+  const [first, second] = members;
+  const memberNames = members.map((member) => member.name).join(" and ");
+
+  const giftRows = members.map((member) => {
+    const snapshot = currentSnapshot(member, "spiritual_gifts");
+    const gifts = snapshot ? [1, 2, 3, 4, 5].map((rank) => spiritualGiftRank(snapshot, rank)).filter(Boolean) : [];
+
+    return `<div class="person-panel">
+      <h3>${escapeHtml(member.name)}</h3>
+      ${gifts.length ? gifts.map((gift) => `<p><strong>${gift?.rank}. ${escapeHtml(gift?.label ?? "")}</strong><span>${escapeHtml(giftDefinition(gift?.label ?? "") || "A grace to notice, steward, and confirm in community.")}</span></p>`).join("") : "<p>No Spiritual Gifts snapshot is saved yet.</p>"}
+    </div>`;
+  }).join("");
+
+  const sharedGiftLabels = (() => {
+    if (!first || !second) return [];
+    const firstSnapshot = currentSnapshot(first, "spiritual_gifts");
+    const secondSnapshot = currentSnapshot(second, "spiritual_gifts");
+    const firstGifts = new Set(
+      firstSnapshot ? [1, 2, 3, 4, 5].map((rank) => spiritualGiftRank(firstSnapshot, rank)?.label.toLowerCase()).filter(Boolean) : [],
+    );
+    return secondSnapshot
+      ? [1, 2, 3, 4, 5]
+          .map((rank) => spiritualGiftRank(secondSnapshot, rank)?.label ?? "")
+          .filter((label) => firstGifts.has(label.toLowerCase()))
+      : [];
+  })();
+
+  const designIdRows = designIdScoreFields.map((field) => {
+    const scores = members.map((member) => designIdScores(member).find((score) => score.label === field.label) ?? { band: "Not saved", label: field.label, value: 0 });
+    const gap = scores.length >= 2 ? Math.abs(scores[0].value - scores[1].value) : 0;
+    return `<section class="interpretation-row">
+      <h3>${escapeHtml(field.label)} capacity <span>${gap} point gap</span></h3>
+      <p>${escapeHtml(members.map((member, index) => `${member.initials}: ${scores[index].value} (${scores[index].band})`).join(" | "))}</p>
+      <p>A ${escapeHtml(gapLanguage(gap, designIdMaxScore))} here is not a problem to solve first. It is a place to ask how one spouse may carry energy naturally while the other may need support, recovery, or a different role.</p>
+      ${htmlList([
+        `Where does ${field.label} energy help our marriage move forward?`,
+        "Where might one of us assume the other should have the same capacity?",
+        "What would partnership look like here instead of pressure or comparison?",
+      ])}
+    </section>`;
+  }).join("");
+
+  const designPdRows = designPdAxes.map((axis) => {
+    const axisScores = members.map((member) => designPdAxisScore(member, axis));
+    const gap = axisScores.length >= 2 ? Math.abs(axisScores[0].signedScore - axisScores[1].signedScore) : 0;
+    const sharedPole = sharedPoleLanguage(axis, axisScores);
+    return `<section class="interpretation-row">
+      <h3>${escapeHtml(axis.label)} tendency <span>${gap} point gap</span></h3>
+      <p>${escapeHtml(members.map((member, index) => `${member.initials}: ${axisScores[index].tendency} (${axisScores[index].score})`).join(" | "))}</p>
+      <p>This is a ${escapeHtml(gapLanguage(gap, designPdMaxAxisScore * 2))}. In marriage, the goal is not to erase the difference. The goal is to name the difference soon enough that it becomes shared wisdom instead of hidden frustration.</p>
+      ${sharedPole ? `<p>${escapeHtml(sharedPole)}</p>` : ""}
+      ${htmlList([
+        `When pressure rises, how does our ${axis.label.toLowerCase()} tendency help us?`,
+        "Where could this same tendency create friction or leave something unattended?",
+        `What agreement would help us honor both ${axis.left} and ${axis.right}?`,
+      ])}
+    </section>`;
+  }).join("");
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Marriage Overlay - ${escapeHtml(groupName)}</title>
+  <style>
+    :root { --ink:#172116; --muted:#667263; --paper:#fbfaf4; --line:#e4dccb; --green:#476b42; --dark:#243f27; --gold:#b88a43; --blue:#456073; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:linear-gradient(180deg,#fbfaf4,#f4f1e8); color:var(--ink); font-family:Aptos,Segoe UI,Arial,sans-serif; padding:34px; }
+    main { max-width:960px; margin:0 auto; background:white; border:1px solid var(--line); box-shadow:0 24px 70px rgba(70,58,35,.12); }
+    header { background:linear-gradient(135deg,var(--dark),var(--green)); color:#fffaf0; padding:34px; }
+    header img { display:block; height:46px; margin-bottom:30px; width:auto; }
+    .eyebrow { color:#e4d2a7; font-size:12px; font-weight:900; letter-spacing:.12em; margin:0 0 10px; text-transform:uppercase; }
+    h1 { font-size:38px; line-height:1.02; margin:0; max-width:720px; }
+    h2 { color:var(--dark); font-size:25px; margin:0 0 14px; }
+    h3 { color:var(--dark); font-size:17px; margin:0 0 8px; }
+    h3 span { color:var(--gold); float:right; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:14px; }
+    p { color:var(--muted); font-size:14px; line-height:1.58; margin:0 0 12px; }
+    section { border-top:1px solid var(--line); padding:28px 34px; }
+    .cover-meta { display:grid; gap:12px; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:30px; }
+    .cover-meta div { background:rgba(255,250,240,.1); border:1px solid rgba(255,250,240,.22); padding:14px; }
+    .cover-meta small { color:#e4d2a7; display:block; font-size:11px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
+    .cover-meta strong { display:block; font-size:16px; margin-top:5px; }
+    .two-col { display:grid; gap:16px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .person-panel { border:1px solid var(--line); padding:18px; }
+    .person-panel p { border-top:1px solid rgba(36,63,39,.1); margin:0; padding:12px 0; }
+    .person-panel p:first-of-type { border-top:0; }
+    .person-panel strong, .person-panel span { display:block; }
+    .person-panel span { color:var(--muted); font-size:13px; line-height:1.45; margin-top:4px; }
+    .callout { background:#fffaf0; border-left:6px solid var(--gold); margin-top:18px; padding:18px; }
+    .interpretation-row { border:1px solid var(--line); margin-top:12px; padding:18px; }
+    ul { color:var(--ink); margin:10px 0 0; padding-left:20px; }
+    li { font-size:14px; line-height:1.5; margin:6px 0; }
+    footer { background:#f7f3e8; border-top:1px solid var(--line); padding:26px 34px; }
+    @media print { body { background:white; padding:0; } main { border:0; box-shadow:none; } section { break-inside:avoid; } }
+    @media (max-width:760px) { body { padding:12px; } .two-col, .cover-meta { grid-template-columns:1fr; } h3 span { float:none; display:block; margin-top:4px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <img src="https://dydd-online-school.vercel.app/brand/dydd-logo.webp" alt="Discover Your Divine Design" />
+      <p class="eyebrow">Discover Your Divine Design Married Couples</p>
+      <h1>Marriage Overlay</h1>
+      <div class="cover-meta">
+        <div><small>Couple</small><strong>${escapeHtml(memberNames || groupName)}</strong></div>
+        <div><small>Group</small><strong>${escapeHtml(groupName)}</strong></div>
+        <div><small>Created</small><strong>${escapeHtml(today)}</strong></div>
+      </div>
+    </header>
+    <section>
+      <h2>How to Read This Overlay</h2>
+      <p>This first draft is not a label, verdict, or compatibility score. It is a conversation starter. The goal is to help you notice where God may have given you shared strength, complementary capacity, and different movement patterns that can become wisdom when they are named with humility.</p>
+    </section>
+    <section>
+      <h2>Spiritual Gifts Overlap</h2>
+      <div class="two-col">${giftRows}</div>
+      <div class="callout">
+        <h3>${sharedGiftLabels.length ? `Shared top-five gift: ${escapeHtml(sharedGiftLabels.join(", "))}` : "No shared top-five gift in this snapshot"}</h3>
+        <p>Shared gifts can become places of strong agreement and shared service. Different gifts can become places where one spouse sees, serves, or strengthens what the other may not notice first.</p>
+        ${htmlList([
+          "Which gift in your spouse do you want to honor more intentionally?",
+          "Where do your gifts help you serve together rather than compete for who is right?",
+          "Where might one spouse stand in the gap for the other without becoming superior or resentful?",
+        ])}
+      </div>
+    </section>
+    <section>
+      <h2>DesignID Capacity Overlay</h2>
+      <p>Capacity is about energy, rhythm, and grace under real life conditions. A gap may show where one spouse has more natural energy while the other may need support, recovery, or a different lane.</p>
+      ${designIdRows}
+    </section>
+    <section>
+      <h2>DesignPD Tendencies</h2>
+      <p>DesignPD helps you talk about how you plan, decide, and move. Gaps often explain recurring friction. Shared leanings often show what comes naturally as a couple and what may need outside attention.</p>
+      ${designPdRows}
+    </section>
+    <section>
+      <h2>Walk Forward From Here</h2>
+      <p>A healthy couple does not use design language to win arguments. Use it to become curious faster, repair sooner, and build agreements that honor both people.</p>
+      ${htmlList([
+        "Start with gratitude: name one strength you see in your spouse before naming a gap.",
+        "Turn every gap into a question before it becomes an accusation.",
+        "Ask what your marriage needs that neither of you naturally carries first.",
+        "Choose one small agreement for pressure, conflict, planning, or follow-through this week.",
+      ])}
+    </section>
+    <footer>
+      <p><strong>First draft note:</strong> This Marriage Overlay is an early prototype for Discover Your Divine Design couple conversations. Use it prayerfully, gently, and as a beginning point for dialogue.</p>
+    </footer>
+  </main>
+</body>
+</html>`;
+}
+
+async function getActor(request: NextRequest) {
+  const ownerParams = {
+    key: request.nextUrl.searchParams.get("key"),
+    review: request.nextUrl.searchParams.get("review"),
+  };
+
+  if (isOwnerPreviewRequest(ownerParams)) {
+    return { isAdmin: true, userId: "owner-preview" };
+  }
+
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return null;
+  return { isAdmin: isDyddAdminEmail(user.email), userId: user.id };
+}
+
+export async function GET(request: NextRequest) {
+  const groupId = request.nextUrl.searchParams.get("group");
+  if (!groupId) {
+    return NextResponse.json({ error: "Missing group id." }, { status: 400 });
+  }
+
+  const actor = await getActor(request);
+  if (!actor) {
+    return NextResponse.json({ error: "Sign in before downloading this couple artifact." }, { status: 401 });
+  }
+
+  const supabase = createSupabaseAdminClient();
+  const { data: group } = await supabase
+    .from("assessment_groups")
+    .select("id,name,owner_user_id")
+    .eq("id", groupId)
+    .maybeSingle();
+
+  if (!group || (!actor.isAdmin && group.owner_user_id !== actor.userId)) {
+    return NextResponse.json({ error: "You do not have access to this group." }, { status: 403 });
+  }
+
+  const { data: memberships } = await supabase
+    .from("assessment_group_members")
+    .select("id,participant_id,membership_status,assessment_participants(id,display_name,normalized_email)")
+    .eq("group_id", groupId)
+    .eq("membership_status", "active");
+
+  const participantIds = ((memberships ?? []) as { participant_id: string }[]).map((membership) => membership.participant_id);
+  if (participantIds.length < 2) {
+    return NextResponse.json({ error: "This couple artifact needs at least two active group members." }, { status: 400 });
+  }
+
+  const { data: snapshots } = await supabase
+    .from("assessment_snapshots")
+    .select("id,assessment_type,created_at,participant_id,scores,source_submitted_at,assessment_participants(id,display_name,normalized_email)")
+    .in("participant_id", participantIds)
+    .order("source_submitted_at", { ascending: false, nullsFirst: false })
+    .order("created_at", { ascending: false });
+
+  const snapshotsByParticipant = new Map<string, AssessmentSnapshot[]>();
+  for (const snapshot of (snapshots ?? []) as AssessmentSnapshot[]) {
+    if (!snapshot.participant_id) continue;
+    snapshotsByParticipant.set(snapshot.participant_id, [
+      ...(snapshotsByParticipant.get(snapshot.participant_id) ?? []),
+      snapshot,
+    ]);
+  }
+
+  const members = ((memberships ?? []) as {
+    assessment_participants: AssessmentParticipant | AssessmentParticipant[] | null;
+    participant_id: string;
+  }[])
+    .slice(0, 2)
+    .map<CoupleMember>((membership, index) => {
+      const participant = Array.isArray(membership.assessment_participants)
+        ? membership.assessment_participants[0] ?? null
+        : membership.assessment_participants;
+      const name = participant?.display_name ?? participant?.normalized_email ?? `Partner ${index + 1}`;
+      return {
+        color: colors[index % colors.length],
+        id: membership.participant_id,
+        initials: participantInitials(name),
+        name,
+        snapshots: snapshotsByParticipant.get(membership.participant_id) ?? [],
+      };
+    });
+
+  const html = buildMarriageOverlayHtml(String(group.name ?? "Couple"), members);
+  const filename = `${slugify(String(group.name ?? "couple"))}-marriage-overlay.html`;
+
+  return new NextResponse(html, {
+    headers: {
+      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Content-Type": "text/html; charset=utf-8",
+    },
+  });
+}

@@ -34,7 +34,7 @@ type CoupleMember = {
 const colors = ["#4a6239", "#8a5f2d"];
 const resourcesUrl = "https://www.discoverdivine.design/resources";
 const assetBaseUrl = "https://dydd-online-school.vercel.app";
-const brandLogoPath = "/brand/dydd-logo-transparent.webp";
+const brandLogoPath = "/brand/dydd-logo-white-correct.png";
 const sectionIconPaths = {
   designid: "/brand/tools/designid-icon-correct.png",
   designpd: "/brand/tools/designpd-icon-correct.png",

@@ -1108,14 +1108,16 @@ function designIdPolygonPoints(scores: { value: number }[]) {
 
 function designPdAxisScore(snapshot: AssessmentSnapshot, axisConfig: (typeof designPdAxes)[number]) {
   const nativeAxisScore = designPdNativeAxisScore(snapshot, axisConfig.axisKey);
-  const explicitSignedScore = optionalNumberSnapshotValue(snapshot, axisConfig.signedScoreKeys);
-  const rawScore = optionalNumberSnapshotValue(snapshot, axisConfig.scoreKeys);
+  const axisObject = designPdAxisObjectValue(
+    typeof snapshot.scores?.axisTendencies === "object" && snapshot.scores.axisTendencies !== null && !Array.isArray(snapshot.scores.axisTendencies)
+      ? (snapshot.scores.axisTendencies as Record<string, unknown>)[axisConfig.axisKey]
+      : "",
+  );
+  const axisObjectScore = axisObject.score ? Number(axisObject.score.replace(/%$/, "")) : null;
+  const rawScore = optionalNumberSnapshotValue(snapshot, axisConfig.scoreKeys) ??
+    (Number.isFinite(axisObjectScore) ? axisObjectScore : null);
   const rawTendency = titleizeAssessmentValue(
-    designPdAxisObjectValue(
-      typeof snapshot.scores?.axisTendencies === "object" && snapshot.scores.axisTendencies !== null && !Array.isArray(snapshot.scores.axisTendencies)
-        ? (snapshot.scores.axisTendencies as Record<string, unknown>)[axisConfig.axisKey]
-        : "",
-    ).tendency || firstSnapshotValue(snapshot, axisConfig.tendencyKeys),
+    axisObject.tendency || firstSnapshotValue(snapshot, axisConfig.tendencyKeys),
   );
   const tendency = rawTendency.toLowerCase();
   const direction =
@@ -1126,11 +1128,9 @@ function designPdAxisScore(snapshot: AssessmentSnapshot, axisConfig: (typeof des
         : 0;
   const signedScoreSource = nativeAxisScore !== null
     ? -nativeAxisScore
-    : explicitSignedScore !== null
-      ? -explicitSignedScore
-      : rawScore !== null
-        ? direction * rawScore
-        : null;
+    : rawScore !== null
+      ? direction * rawScore
+      : null;
 
   if (signedScoreSource === null) return null;
 
@@ -1142,7 +1142,7 @@ function designPdAxisScore(snapshot: AssessmentSnapshot, axisConfig: (typeof des
 
   return {
     position: Math.max(0, Math.min(100, position)),
-    score: Math.abs(nativeAxisScore ?? explicitSignedScore ?? rawScore ?? 0),
+    score: Math.abs(nativeAxisScore ?? rawScore ?? 0),
     signedScore,
     tendency: rawTendency || "Balanced",
   };

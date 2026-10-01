@@ -109,8 +109,8 @@ const assessmentOrder = [
 const excludedDefaultGroupNames = new Set(["john's tests"]);
 const circleComparisonColors = ["#4a6239", "#8a5f2d", "#456073", "#735066"];
 const designIdMaxScore = 60;
-const designIdRadarCenter = 130;
-const designIdRadarRadius = 88;
+const designIdRadarCenter = 160;
+const designIdRadarRadius = 112;
 const designPdMaxAxisScore = 24;
 
 const groupTypeLabels: Record<string, string> = {
@@ -1072,11 +1072,13 @@ function designPdAxisScore(snapshot: AssessmentSnapshot, axisConfig: (typeof des
       : tendency.includes("doer") || tendency.includes("think") || tendency.includes("together")
         ? 1
         : 0;
-  const position = 50 + direction * Math.min(Math.abs(rawScore), designPdMaxAxisScore) / designPdMaxAxisScore * 50;
+  const signedScore = direction * Math.min(Math.abs(rawScore), designPdMaxAxisScore);
+  const position = 50 + signedScore / designPdMaxAxisScore * 50;
 
   return {
     position: Math.max(0, Math.min(100, position)),
     score: rawScore,
+    signedScore,
     tendency: rawTendency || "Balanced",
   };
 }
@@ -1100,8 +1102,13 @@ function designPdComparisonAxes(participants: ParticipantRecord[], members: Circ
           ...designPdAxisScore(snapshot, axisConfig),
         };
       })
-      .filter((member): member is CircleComparisonMember & { position: number; score: number; tendency: string } => Boolean(member)),
+      .filter((member): member is CircleComparisonMember & { position: number; score: number; signedScore: number; tendency: string } => Boolean(member)),
   }));
+}
+
+function designPdAxisGap(members: { signedScore: number }[]) {
+  if (members.length < 2) return null;
+  return Math.abs(members[0].signedScore - members[1].signedScore);
 }
 
 function normalizedDuplicateName(value: string) {
@@ -1463,16 +1470,20 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                 <span>DesignID capacity overlay</span>
                 {designIdComparison.length ? (
                   <div className="designid-radar-wrap">
-                    <svg viewBox="0 0 260 260" role="img" aria-label="DesignID reflection capacity comparison">
+                    <svg viewBox="0 0 320 320" role="img" aria-label="DesignID reflection capacity comparison">
                       {[0.25, 0.5, 0.75, 1].map((scale) => (
-                        <polygon
-                          className="designid-grid-ring"
-                          key={scale}
-                          points={designIdPolygonPoints(designIdScoreFields.map(() => ({ value: designIdMaxScore * scale })))}
-                        />
+                        <g key={scale}>
+                          <polygon
+                            className="designid-grid-ring"
+                            points={designIdPolygonPoints(designIdScoreFields.map(() => ({ value: designIdMaxScore * scale })))}
+                          />
+                          <text className="designid-grid-label" x={designIdRadarCenter + designIdRadarRadius * scale + 6} y={designIdRadarCenter - 7}>
+                            {Math.round(designIdMaxScore * scale)}
+                          </text>
+                        </g>
                       ))}
-                      <line className="designid-axis-line" x1="130" x2="130" y1="34" y2="226" />
-                      <line className="designid-axis-line" x1="34" x2="226" y1="130" y2="130" />
+                      <line className="designid-axis-line" x1="160" x2="160" y1="48" y2="272" />
+                      <line className="designid-axis-line" x1="48" x2="272" y1="160" y2="160" />
                       {designIdComparison.map((member) => (
                         <g key={member.id}>
                           <polygon
@@ -1503,10 +1514,10 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                       ))}
                       {designIdScoreFields.map((field, index) => {
                         const labelPoints = [
-                          { x: 130, y: 18 },
-                          { x: 242, y: 134 },
-                          { x: 130, y: 244 },
-                          { x: 18, y: 134 },
+                          { x: 160, y: 24 },
+                          { x: 302, y: 164 },
+                          { x: 160, y: 298 },
+                          { x: 26, y: 164 },
                         ];
                         const point = labelPoints[index];
 
@@ -1526,6 +1537,25 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                         </div>
                       ))}
                     </div>
+                    <div className="designid-score-table" aria-label="DesignID reflection score table">
+                      <div className="designid-score-table-head">
+                        <span>Person</span>
+                        {designIdScoreFields.map((field) => (
+                          <span key={field.label}>{field.label}</span>
+                        ))}
+                      </div>
+                      {designIdComparison.map((member) => (
+                        <div className="designid-score-table-row" key={`${member.id}-scores`}>
+                          <strong>
+                            <i style={{ background: member.color }} />
+                            {member.initials}
+                          </strong>
+                          {member.scores.map((score) => (
+                            <span key={`${member.id}-${score.label}-score`}>{score.value}</span>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ) : (
                   <p className="command-center-empty">No DesignID data for this group yet.</p>
@@ -1533,7 +1563,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
               </article>
 
               <article className="circle-visual-card designpd-axis-card">
-                <span>DesignPD tendency lines</span>
+                <span>DesignPD tendencies</span>
                 {designPdComparison.some((axis) => axis.members.length) ? (
                   <div className="designpd-axis-stack">
                     {designPdComparison.map((axis) => (
@@ -1562,6 +1592,18 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                         </div>
                       </div>
                     ))}
+                    <div className="designpd-gap-row" aria-label="DesignPD tendency gaps">
+                      {designPdComparison.map((axis) => {
+                        const gap = designPdAxisGap(axis.members);
+
+                        return (
+                          <div key={`${axis.axisKey}-gap`}>
+                            <small>{axis.label} gap</small>
+                            <strong>{gap ?? "-"}</strong>
+                          </div>
+                        );
+                      })}
+                    </div>
                     <div className="designpd-score-key" aria-label="DesignPD tendency score key">
                       {circleMembers.slice(0, 2).map((member) => {
                         const memberAxes = designPdComparison

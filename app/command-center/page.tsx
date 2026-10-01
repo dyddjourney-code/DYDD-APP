@@ -111,6 +111,12 @@ const circleComparisonColors = ["#4a6239", "#8a5f2d", "#456073", "#735066"];
 const designIdMaxScore = 60;
 const designIdRadarCenter = 160;
 const designIdRadarRadius = 112;
+const designIdGridScales = [
+  { label: 15, scale: 0.25, x: 174, y: 144 },
+  { label: 30, scale: 0.5, x: 190, y: 128 },
+  { label: 45, scale: 0.75, x: 205, y: 113 },
+  { label: 60, scale: 1, x: 222, y: 96 },
+];
 const designPdMaxAxisScore = 24;
 
 const groupTypeLabels: Record<string, string> = {
@@ -969,7 +975,7 @@ function participantInitials(name: string) {
 }
 
 function comparisonMembers(participants: ParticipantRecord[]) {
-  return participants.slice(0, 4).map<CircleComparisonMember>((participant, index) => ({
+  return participants.slice(0, 2).map<CircleComparisonMember>((participant, index) => ({
     color: circleComparisonColors[index % circleComparisonColors.length],
     id: participant.id,
     initials: participantInitials(participant.name),
@@ -1109,6 +1115,14 @@ function designPdComparisonAxes(participants: ParticipantRecord[], members: Circ
 function designPdAxisGap(members: { signedScore: number }[]) {
   if (members.length < 2) return null;
   return Math.abs(members[0].signedScore - members[1].signedScore);
+}
+
+function hasCurrentAssessment(participant: ParticipantRecord, assessmentType: string) {
+  return Boolean(currentSnapshotForParticipant(participant, assessmentType));
+}
+
+function coupleAssessmentReady(participants: ParticipantRecord[], assessmentType: string) {
+  return participants.length === 2 && participants.every((participant) => hasCurrentAssessment(participant, assessmentType));
 }
 
 function normalizedDuplicateName(value: string) {
@@ -1286,21 +1300,27 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
         snapshots: latestAssessmentSnapshots(participant.snapshots, true),
       }))
     : filteredMainParticipants;
-  const showWilloughbyComparison = Boolean(activeGroup?.name.toLowerCase().includes("willoughby"));
-  const circleMembers = showWilloughbyComparison ? comparisonMembers(displayParticipants) : [];
-  const giftComparisonRows = showWilloughbyComparison
-    ? spiritualGiftRows(displayParticipants, circleMembers)
+  const showCoupleComparison = activeGroup?.group_type === "couple";
+  const circleParticipants = showCoupleComparison ? displayParticipants.slice(0, 2) : [];
+  const hasTwoCoupleMembers = circleParticipants.length === 2;
+  const coupleHasSpiritualGifts = coupleAssessmentReady(circleParticipants, "spiritual_gifts");
+  const coupleHasDesignId = coupleAssessmentReady(circleParticipants, "designid");
+  const coupleHasDesignPd = coupleAssessmentReady(circleParticipants, "designpd");
+  const coupleReportReady = hasTwoCoupleMembers && coupleHasSpiritualGifts && coupleHasDesignId && coupleHasDesignPd;
+  const circleMembers = showCoupleComparison ? comparisonMembers(circleParticipants) : [];
+  const giftComparisonRows = coupleHasSpiritualGifts
+    ? spiritualGiftRows(circleParticipants, circleMembers)
     : [];
-  const missingGiftLabels = showWilloughbyComparison
+  const missingGiftLabels = coupleHasSpiritualGifts
     ? missingSpiritualGiftLabels(giftComparisonRows)
     : [];
-  const designIdComparison = showWilloughbyComparison
-    ? designIdComparisonMembers(displayParticipants, circleMembers)
+  const designIdComparison = coupleHasDesignId
+    ? designIdComparisonMembers(circleParticipants, circleMembers)
     : [];
-  const designPdComparison = showWilloughbyComparison
-    ? designPdComparisonAxes(displayParticipants, circleMembers)
+  const designPdComparison = coupleHasDesignPd
+    ? designPdComparisonAxes(circleParticipants, circleMembers)
     : [];
-  const coupleReportHref = activeGroup
+  const coupleReportHref = activeGroup && coupleReportReady
     ? `/api/command-center/couple-report?${new URLSearchParams({
         group: activeGroup.id,
         ...(isOwnerPreview ? { key: params?.key ?? "", review: "owner" } : {}),
@@ -1425,16 +1445,18 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
           </article>
         </div>
 
-        {showWilloughbyComparison ? (
-          <section className="command-center-circle-visuals" aria-label="Willoughby group comparison visuals">
+        {showCoupleComparison ? (
+          <section className="command-center-circle-visuals" aria-label="Couple group comparison visuals">
             <div className="command-center-panel-heading">
-              <p className="section-label">Couple comparison prototype</p>
-              <h2>Willoughby overlap view</h2>
+              <p className="section-label">Couple comparison</p>
+              <h2>Marriage Design overlap view</h2>
             </div>
             <div className="circle-visual-grid">
               <article className="circle-visual-card spiritual-gift-overlap">
                 <span>Spiritual Gifts overlap</span>
-                {giftComparisonRows.length ? (
+                {!hasTwoCoupleMembers ? (
+                  <p className="command-center-empty">Add two active people to this couple group to begin the overlap view.</p>
+                ) : giftComparisonRows.length ? (
                   <>
                     <div className="gift-overlap-table">
                       {giftComparisonRows.slice(0, 10).map((row) => (
@@ -1468,23 +1490,25 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                     </div>
                   </>
                 ) : (
-                  <p className="command-center-empty">No Spiritual Gifts overlap data for this group yet.</p>
+                  <p className="command-center-empty">Spiritual Gifts overlap will appear after both partners have a current Spiritual Gifts result.</p>
                 )}
               </article>
 
               <article className="circle-visual-card designid-capacity-card">
                 <span>DesignID capacity overlay</span>
-                {designIdComparison.length ? (
+                {!hasTwoCoupleMembers ? (
+                  <p className="command-center-empty">Add two active people to this couple group to begin the capacity overlay.</p>
+                ) : designIdComparison.length ? (
                   <div className="designid-radar-wrap">
                     <svg viewBox="0 0 320 320" role="img" aria-label="DesignID reflection capacity comparison">
-                      {[0.25, 0.5, 0.75, 1].map((scale) => (
-                        <g key={scale}>
+                      {designIdGridScales.map((grid) => (
+                        <g key={grid.label}>
                           <polygon
                             className="designid-grid-ring"
-                            points={designIdPolygonPoints(designIdScoreFields.map(() => ({ value: designIdMaxScore * scale })))}
+                            points={designIdPolygonPoints(designIdScoreFields.map(() => ({ value: designIdMaxScore * grid.scale })))}
                           />
-                          <text className="designid-grid-label" x={designIdRadarCenter + designIdRadarRadius * scale + 6} y={designIdRadarCenter - 7}>
-                            {Math.round(designIdMaxScore * scale)}
+                          <text className="designid-grid-label" x={grid.x} y={grid.y}>
+                            {grid.label}
                           </text>
                         </g>
                       ))}
@@ -1564,13 +1588,15 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                     </div>
                   </div>
                 ) : (
-                  <p className="command-center-empty">No DesignID data for this group yet.</p>
+                  <p className="command-center-empty">DesignID capacity overlay will appear after both partners have a current DesignID result.</p>
                 )}
               </article>
 
               <article className="circle-visual-card designpd-axis-card">
                 <span>DesignPD tendencies</span>
-                {designPdComparison.some((axis) => axis.members.length) ? (
+                {!hasTwoCoupleMembers ? (
+                  <p className="command-center-empty">Add two active people to this couple group to begin the tendency view.</p>
+                ) : designPdComparison.some((axis) => axis.members.length) ? (
                   <div className="designpd-axis-stack">
                     {designPdComparison.map((axis) => (
                       <div className="designpd-axis-row" key={axis.axisKey}>
@@ -1632,17 +1658,25 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                     </div>
                   </div>
                 ) : (
-                  <p className="command-center-empty">No DesignPD data for this group yet.</p>
+                  <p className="command-center-empty">DesignPD tendencies will appear after both partners have a current DesignPD result.</p>
                 )}
               </article>
             </div>
             {coupleReportHref ? (
               <div className="couple-report-download">
                 <div>
-                  <strong>Marriage Overlay first draft</strong>
+                  <strong>Marriage Design PDF</strong>
                   <small>Download a couple-facing overlap context artifact from the current snapshots.</small>
                 </div>
                 <a href={coupleReportHref}>Download your couples report</a>
+              </div>
+            ) : showCoupleComparison ? (
+              <div className="couple-report-download couple-report-download-disabled">
+                <div>
+                  <strong>Marriage Design PDF</strong>
+                  <small>The download appears after both partners have Spiritual Gifts, DesignID, and DesignPD results.</small>
+                </div>
+                <span>Waiting for complete couple data</span>
               </div>
             ) : null}
           </section>

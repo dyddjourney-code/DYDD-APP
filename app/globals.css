@@ -6230,10 +6230,10 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .designid-radar-wrap .designid-grid-label {
-  fill: rgba(36, 63, 39, 0.52);
+  fill: #111;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.5rem;
-  font-weight: 900;
+  font-size: 0.56rem;
+  font-weight: 950;
 }
 
 .circle-visual-legend {
@@ -6525,6 +6525,20 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .couple-report-download a:hover {
   background: var(--green);
+}
+
+.couple-report-download-disabled {
+  background: rgba(74, 98, 57, 0.06);
+}
+
+.couple-report-download-disabled span {
+  background: rgba(36, 63, 39, 0.1);
+  color: rgba(36, 63, 39, 0.72);
+  flex: 0 0 auto;
+  font-size: 0.74rem;
+  font-weight: 950;
+  letter-spacing: 0.02em;
+  padding: 11px 14px;
 }
 
 .command-center-duplicate-row {

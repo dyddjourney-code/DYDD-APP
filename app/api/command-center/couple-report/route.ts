@@ -44,6 +44,12 @@ const designPdMaxAxisScore = 24;
 const designIdMaxScore = 60;
 const designIdRadarCenter = 160;
 const designIdRadarRadius = 112;
+const designIdGridScales = [
+  { label: 15, scale: 0.25, x: 174, y: 144 },
+  { label: 30, scale: 0.5, x: 190, y: 128 },
+  { label: 45, scale: 0.75, x: 205, y: 113 },
+  { label: 60, scale: 1, x: 222, y: 96 },
+];
 
 const designIdScoreFields = [
   { color: "#d4a451", label: "Architect", keys: ["Architect_Pts", "architectPts", "architectScore"], wash: "#fbf1dc" },
@@ -370,6 +376,19 @@ function sectionHeading(title: string, iconPath: string, alt: string) {
   </div>`;
 }
 
+function hasCurrentAssessment(member: CoupleMember, assessmentType: string) {
+  return Boolean(currentSnapshot(member, assessmentType));
+}
+
+function membersHaveCompleteMarriageDesignData(members: CoupleMember[]) {
+  return (
+    members.length === 2 &&
+    ["spiritual_gifts", "designid", "designpd"].every((assessmentType) =>
+      members.every((member) => hasCurrentAssessment(member, assessmentType)),
+    )
+  );
+}
+
 function designIdPolygonPoints(scores: { value: number }[]) {
   return scores
     .map((score, index) => {
@@ -387,10 +406,10 @@ function designIdCapacitySvg(members: CoupleMember[]) {
     ...member,
     scores: designIdScores(member),
   }));
-  const rings = [0.25, 0.5, 0.75, 1]
-    .map((scale) => `<g>
-      <polygon class="designid-grid-ring" points="${designIdPolygonPoints(designIdScoreFields.map(() => ({ value: designIdMaxScore * scale })))}" />
-      <text class="designid-grid-label" x="${designIdRadarCenter + designIdRadarRadius * scale + 6}" y="${designIdRadarCenter - 7}">${Math.round(designIdMaxScore * scale)}</text>
+  const rings = designIdGridScales
+    .map((grid) => `<g>
+      <polygon class="designid-grid-ring" points="${designIdPolygonPoints(designIdScoreFields.map(() => ({ value: designIdMaxScore * grid.scale })))}" />
+      <text class="designid-grid-label" x="${grid.x}" y="${grid.y}">${grid.label}</text>
     </g>`)
     .join("");
   const memberShapes = memberScores
@@ -626,7 +645,7 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
     .visual-frame { display:grid; justify-items:center; gap:14px; }
     .visual-frame svg { height:auto; max-width:640px; width:100%; }
     .designid-grid-ring { fill:none; stroke:rgba(36,63,39,.16); stroke-width:1; }
-    .designid-grid-label { fill:rgba(36,63,39,.46); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:9px; font-weight:850; }
+    .designid-grid-label { fill:#111; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10px; font-weight:950; }
     .designid-axis-line { stroke:rgba(36,63,39,.18); stroke-width:1.5; }
     .designid-axis-label { dominant-baseline:middle; fill:var(--dark); font-size:13px; font-weight:950; text-anchor:middle; }
     .designid-member-shape { fill:color-mix(in srgb, var(--member-color) 20%, transparent); stroke:var(--member-color); stroke-linejoin:round; stroke-width:3; }
@@ -665,7 +684,16 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
     ul { color:var(--ink); margin:10px 0 0; padding-left:20px; }
     li { font-size:14px; line-height:1.5; margin:6px 0; }
     footer { background:#f7f3e8; border-top:1px solid var(--line); padding:26px 34px; }
-    @media print { body { background:white; padding:0; } main { border:0; box-shadow:none; } section { break-inside:avoid; } .visual-section, .resource-section { break-before:page; } }
+    @page { size: Letter; margin: 0.42in; }
+    @media print {
+      body { background:white; padding:0; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+      main { border:0; box-shadow:none; max-width:none; }
+      header { break-after:page; }
+      section { break-inside:avoid; padding:24px 30px; }
+      .visual-section, .resource-section { break-before:page; }
+      .interpretation-row { break-inside:avoid; }
+      .resource-cta { break-inside:avoid; }
+    }
     @media (max-width:760px) { body { padding:12px; } header, .two-col, .cover-meta, .resource-grid, .resource-cta { grid-template-columns:1fr; } .brand-mark { justify-self:start; } h3 span { float:none; display:block; margin-top:4px; } }
   </style>
 </head>
@@ -758,6 +786,38 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
 </html>`;
 }
 
+async function renderMarriageDesignPdf(html: string) {
+  const chromium = await import("@sparticuz/chromium");
+  const puppeteer = await import("puppeteer-core");
+  const executablePath = await chromium.default.executablePath();
+  const browser = await puppeteer.default.launch({
+    args: chromium.default.args,
+    defaultViewport: { height: 1100, width: 850 },
+    executablePath,
+    headless: true,
+  });
+
+  try {
+    const page = await browser.newPage();
+    await page.setContent(html, { waitUntil: "load" });
+    await page.emulateMediaType("print");
+    const pdf = await page.pdf({
+      format: "letter",
+      printBackground: true,
+      preferCSSPageSize: true,
+      margin: {
+        bottom: "0.35in",
+        left: "0.35in",
+        right: "0.35in",
+        top: "0.35in",
+      },
+    });
+    return Buffer.from(pdf);
+  } finally {
+    await browser.close();
+  }
+}
+
 async function getActor(request: NextRequest) {
   const ownerParams = {
     key: request.nextUrl.searchParams.get("key"),
@@ -791,12 +851,16 @@ export async function GET(request: NextRequest) {
   const supabase = createSupabaseAdminClient();
   const { data: group } = await supabase
     .from("assessment_groups")
-    .select("id,name,owner_user_id")
+    .select("id,name,group_type,owner_user_id")
     .eq("id", groupId)
     .maybeSingle();
 
   if (!group || (!actor.isAdmin && group.owner_user_id !== actor.userId)) {
     return NextResponse.json({ error: "You do not have access to this group." }, { status: 403 });
+  }
+
+  if (group.group_type !== "couple") {
+    return NextResponse.json({ error: "Marriage Design downloads are available for couple groups only." }, { status: 400 });
   }
 
   const { data: memberships } = await supabase
@@ -806,8 +870,8 @@ export async function GET(request: NextRequest) {
     .eq("membership_status", "active");
 
   const participantIds = ((memberships ?? []) as { participant_id: string }[]).map((membership) => membership.participant_id);
-  if (participantIds.length < 2) {
-    return NextResponse.json({ error: "This couple artifact needs at least two active group members." }, { status: 400 });
+  if (participantIds.length !== 2) {
+    return NextResponse.json({ error: "This couple artifact needs exactly two active group members." }, { status: 400 });
   }
 
   const { data: snapshots } = await supabase
@@ -845,13 +909,32 @@ export async function GET(request: NextRequest) {
       };
     });
 
-  const html = buildMarriageOverlayHtml(String(group.name ?? "Couple"), members);
-  const filename = `${slugify(String(group.name ?? "couple"))}-marriage-overlay.html`;
+  if (!membersHaveCompleteMarriageDesignData(members)) {
+    return NextResponse.json(
+      { error: "Both couple members need current Spiritual Gifts, DesignID, and DesignPD results before downloading the Marriage Design PDF." },
+      { status: 400 },
+    );
+  }
 
-  return new NextResponse(html, {
-    headers: {
-      "Content-Disposition": `attachment; filename="${filename}"`,
-      "Content-Type": "text/html; charset=utf-8",
-    },
-  });
+  const html = buildMarriageOverlayHtml(String(group.name ?? "Couple"), members);
+  const filenameBase = `${slugify(String(group.name ?? "couple"))}-marriage-design`;
+
+  try {
+    const pdf = await renderMarriageDesignPdf(html);
+    return new NextResponse(pdf, {
+      headers: {
+        "Content-Disposition": `attachment; filename="${filenameBase}.pdf"`,
+        "Content-Type": "application/pdf",
+      },
+    });
+  } catch (error) {
+    console.error("Marriage Design PDF render failed", error);
+    return new NextResponse(html, {
+      headers: {
+        "Content-Disposition": `attachment; filename="${filenameBase}.html"`,
+        "Content-Type": "text/html; charset=utf-8",
+        "X-DYDD-PDF-Fallback": "true",
+      },
+    });
+  }
 }

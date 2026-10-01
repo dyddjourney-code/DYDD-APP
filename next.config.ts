@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  outputFileTracingIncludes: {
+    "/api/command-center/couple-report": ["./node_modules/@sparticuz/chromium/bin/**/*"],
+  },
   serverExternalPackages: ["@sparticuz/chromium", "puppeteer-core"],
 };
 

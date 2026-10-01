@@ -1013,6 +1013,14 @@ function numberSnapshotValue(snapshot: AssessmentSnapshot, keys: string[]) {
   return Number.isFinite(value) ? value : 0;
 }
 
+function optionalNumberSnapshotValue(snapshot: AssessmentSnapshot, keys: string[]) {
+  const rawValue = firstSnapshotValue(snapshot, keys);
+  if (!rawValue) return null;
+
+  const value = Number(rawValue.replace(/%$/, ""));
+  return Number.isFinite(value) ? value : null;
+}
+
 function numberLikeSnapshotValue(snapshot: AssessmentSnapshot, keys: string[]) {
   const rawValue = firstSnapshotValue(snapshot, keys);
   const value = Number(rawValue.replace(/%$/, ""));
@@ -1100,7 +1108,8 @@ function designIdPolygonPoints(scores: { value: number }[]) {
 
 function designPdAxisScore(snapshot: AssessmentSnapshot, axisConfig: (typeof designPdAxes)[number]) {
   const nativeAxisScore = designPdNativeAxisScore(snapshot, axisConfig.axisKey);
-  const rawScore = numberSnapshotValue(snapshot, axisConfig.scoreKeys);
+  const explicitSignedScore = optionalNumberSnapshotValue(snapshot, axisConfig.signedScoreKeys);
+  const rawScore = optionalNumberSnapshotValue(snapshot, axisConfig.scoreKeys);
   const rawTendency = titleizeAssessmentValue(
     designPdAxisObjectValue(
       typeof snapshot.scores?.axisTendencies === "object" && snapshot.scores.axisTendencies !== null && !Array.isArray(snapshot.scores.axisTendencies)
@@ -1117,7 +1126,14 @@ function designPdAxisScore(snapshot: AssessmentSnapshot, axisConfig: (typeof des
         : 0;
   const signedScoreSource = nativeAxisScore !== null
     ? -nativeAxisScore
-    : direction * rawScore;
+    : explicitSignedScore !== null
+      ? -explicitSignedScore
+      : rawScore !== null
+        ? direction * rawScore
+        : null;
+
+  if (signedScoreSource === null) return null;
+
   const signedScore = Math.round(Math.max(
     -designPdMaxAxisScore,
     Math.min(signedScoreSource, designPdMaxAxisScore),
@@ -1126,7 +1142,7 @@ function designPdAxisScore(snapshot: AssessmentSnapshot, axisConfig: (typeof des
 
   return {
     position: Math.max(0, Math.min(100, position)),
-    score: Math.abs(nativeAxisScore ?? rawScore),
+    score: Math.abs(nativeAxisScore ?? explicitSignedScore ?? rawScore ?? 0),
     signedScore,
     tendency: rawTendency || "Balanced",
   };
@@ -1145,10 +1161,12 @@ function designPdComparisonAxes(participants: ParticipantRecord[], members: Circ
       .map((participant, index) => {
         const snapshot = currentSnapshotForParticipant(participant, "designpd");
         if (!snapshot) return null;
+        const score = designPdAxisScore(snapshot, axisConfig);
+        if (!score) return null;
 
         return {
           ...members[index],
-          ...designPdAxisScore(snapshot, axisConfig),
+          ...score,
         };
       })
       .filter((member): member is CircleComparisonMember & { position: number; score: number; signedScore: number; tendency: string } => Boolean(member)),
@@ -1234,6 +1252,7 @@ function groupDesignPdAxes(participants: ParticipantRecord[]) {
   return designPdAxes.map((axisConfig) => {
     const allMembers = records.map(({ participant, snapshot }) => {
       const score = designPdAxisScore(snapshot, axisConfig);
+      if (!score) return null;
 
       return {
         color: "#4a6239",
@@ -1243,7 +1262,7 @@ function groupDesignPdAxes(participants: ParticipantRecord[]) {
         stackIndex: 0,
         ...score,
       };
-    });
+    }).filter((member): member is GroupDesignPdMember => Boolean(member));
     const membersByBucket = new Map<number, GroupDesignPdMember[]>();
 
     for (const member of allMembers) {
@@ -1280,6 +1299,7 @@ function groupDesignPdAxes(participants: ParticipantRecord[]) {
       ...axisConfig,
       maxStack,
       members: visibleMembers.sort((a, b) => a.position - b.position || a.stackIndex - b.stackIndex),
+      missingNumericCount: records.length - allMembers.length,
       overflowBuckets: overflowBuckets.sort((a, b) => a.position - b.position),
       poles:
         axisConfig.axisKey === "plan"
@@ -1991,7 +2011,10 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                     <div className="group-designpd-axis" key={axis.axisKey}>
                       <div className="group-designpd-axis-title">
                         <strong>{axis.label}</strong>
-                        <small>{axis.spread} point spread</small>
+                        <small>
+                          {axis.spread} point spread
+                          {axis.missingNumericCount ? ` | ${axis.missingNumericCount} missing numeric score${axis.missingNumericCount === 1 ? "" : "s"}` : ""}
+                        </small>
                       </div>
                       <div className="group-designpd-axis-track">
                         <small>{axis.poles[0]}</small>

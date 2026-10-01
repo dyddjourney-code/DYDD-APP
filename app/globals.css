@@ -6764,14 +6764,22 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .group-designpd-axis-title strong {
   color: var(--green-dark);
-  font-size: 0.96rem;
+  font-size: 1.4rem;
+  font-weight: 950;
 }
 
 .group-designpd-axis-track {
   align-items: start;
   display: grid;
   gap: 12px;
-  grid-template-columns: 78px minmax(280px, 1fr) 86px;
+  grid-template-columns: 112px minmax(280px, 1fr) 116px;
+}
+
+.group-designpd-axis-track > small {
+  color: var(--green-dark);
+  font-size: 1.12rem;
+  font-weight: 950;
+  letter-spacing: 0;
 }
 
 .group-designpd-axis-track small:last-child {
@@ -6780,6 +6788,35 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .group-designpd-axis-track > div {
   position: relative;
+}
+
+.group-designpd-tick-row {
+  bottom: auto;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 8px;
+}
+
+.group-designpd-tick-row span {
+  color: rgba(36, 63, 39, 0.66);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.66rem;
+  font-weight: 950;
+  position: absolute;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.group-designpd-tick-row span::after {
+  background: rgba(36, 63, 39, 0.2);
+  content: "";
+  height: 55px;
+  left: 50%;
+  position: absolute;
+  top: 15px;
+  width: 1px;
 }
 
 .group-designpd-axis-track i {
@@ -6791,7 +6828,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   left: 0;
   position: absolute;
   right: 0;
-  top: 44px;
+  top: 58px;
 }
 
 .group-designpd-axis-track i::after {
@@ -6822,6 +6859,54 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   padding: 0 5px;
   position: absolute;
   transform: translateX(-50%);
+}
+
+.group-designpd-overflow {
+  background: rgba(255, 250, 240, 0.96);
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  box-shadow: 0 10px 24px rgba(36, 63, 39, 0.1);
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  max-width: 150px;
+  min-width: 86px;
+  padding: 8px;
+  position: absolute;
+  top: 196px;
+  transform: translateX(-50%);
+}
+
+.group-designpd-overflow > span {
+  background: rgba(36, 63, 39, 0.28);
+  bottom: 100%;
+  content: "";
+  display: block;
+  height: 128px;
+  left: 50%;
+  position: absolute;
+  width: 1px;
+}
+
+.group-designpd-overflow strong {
+  color: var(--green-dark);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.76rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.group-designpd-overflow small {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+}
+
+.group-designpd-overflow b {
+  height: 23px;
+  min-width: 23px;
+  position: static;
+  transform: none;
 }
 
 .command-center-duplicate-row {

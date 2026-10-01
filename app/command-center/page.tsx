@@ -98,6 +98,13 @@ type GroupDesignPdMember = CircleComparisonMember & {
   tendency: string;
 };
 
+type GroupDesignPdOverflowBucket = {
+  bucket: number;
+  count: number;
+  members: GroupDesignPdMember[];
+  position: number;
+};
+
 const assessmentLabels: Record<string, string> = {
   design_pathways: "Design Pathways",
   designid: "DesignID",
@@ -126,6 +133,7 @@ const designIdGridScales = [
   { label: 60, scale: 1, x: 222, y: 96 },
 ];
 const designPdMaxAxisScore = 24;
+const designPdTickMarks = [-20, -15, -10, -5, 0, 5, 10, 15, 20];
 
 const groupTypeLabels: Record<string, string> = {
   camp_circle: "Camp Circle",
@@ -324,18 +332,21 @@ const designPdAxes = [
     axisKey: "plan",
     label: "Plan",
     scoreKeys: ["Plan_Score", "planScore"],
+    signedScoreKeys: ["Move_DreamerMinusDoer", "moveDreamerMinusDoer"],
     tendencyKeys: ["Plan_Tendency", "planTendency"],
   },
   {
     axisKey: "decide",
     label: "Decide",
     scoreKeys: ["Decide_Score", "decideScore"],
+    signedScoreKeys: ["Move_Feel_ItMinusThink_It", "moveFeelItMinusThinkIt"],
     tendencyKeys: ["Decide_Tendency", "decideTendency"],
   },
   {
     axisKey: "do",
     label: "Do",
     scoreKeys: ["Do_Score", "doScore"],
+    signedScoreKeys: ["Move_SoloMinusTogether", "moveSoloMinusTogether"],
     tendencyKeys: ["Do_Tendency", "doTendency"],
   },
 ];
@@ -1002,6 +1013,12 @@ function numberSnapshotValue(snapshot: AssessmentSnapshot, keys: string[]) {
   return Number.isFinite(value) ? value : 0;
 }
 
+function numberLikeSnapshotValue(snapshot: AssessmentSnapshot, keys: string[]) {
+  const rawValue = firstSnapshotValue(snapshot, keys);
+  const value = Number(rawValue.replace(/%$/, ""));
+  return Number.isFinite(value) ? value : 0;
+}
+
 function spiritualGiftRows(participants: ParticipantRecord[], members: CircleComparisonMember[]) {
   const rows = new Map<
     string,
@@ -1072,6 +1089,7 @@ function designIdPolygonPoints(scores: { value: number }[]) {
 
 function designPdAxisScore(snapshot: AssessmentSnapshot, axisConfig: (typeof designPdAxes)[number]) {
   const rawScore = numberSnapshotValue(snapshot, axisConfig.scoreKeys);
+  const signedMovement = numberLikeSnapshotValue(snapshot, axisConfig.signedScoreKeys);
   const rawTendency = titleizeAssessmentValue(
     designPdAxisObjectValue(
       typeof snapshot.scores?.axisTendencies === "object" && snapshot.scores.axisTendencies !== null && !Array.isArray(snapshot.scores.axisTendencies)
@@ -1086,12 +1104,16 @@ function designPdAxisScore(snapshot: AssessmentSnapshot, axisConfig: (typeof des
       : tendency.includes("doer") || tendency.includes("think") || tendency.includes("together")
         ? 1
         : 0;
-  const signedScore = direction * Math.min(Math.abs(rawScore), designPdMaxAxisScore);
+  const signedScoreSource = signedMovement ? -signedMovement : direction * rawScore;
+  const signedScore = Math.max(
+    -designPdMaxAxisScore,
+    Math.min(signedScoreSource, designPdMaxAxisScore),
+  );
   const position = 50 + signedScore / designPdMaxAxisScore * 50;
 
   return {
     position: Math.max(0, Math.min(100, position)),
-    score: rawScore,
+    score: Math.abs(rawScore || signedMovement),
     signedScore,
     tendency: rawTendency || "Balanced",
   };
@@ -1197,24 +1219,46 @@ function groupDesignPdAxes(participants: ParticipantRecord[]) {
   const records = currentAssessmentParticipants(participants, "designpd");
 
   return designPdAxes.map((axisConfig) => {
-    const stackCounts = new Map<number, number>();
-    const members = records.map(({ participant, snapshot }) => {
+    const allMembers = records.map(({ participant, snapshot }) => {
       const score = designPdAxisScore(snapshot, axisConfig);
-      const bucket = Math.round(score.position / 3) * 3;
-      const stackIndex = stackCounts.get(bucket) ?? 0;
-      stackCounts.set(bucket, stackIndex + 1);
 
       return {
         color: "#4a6239",
         id: participant.id,
         initials: participantInitials(participant.name),
         name: participant.name,
-        stackIndex,
+        stackIndex: 0,
         ...score,
       };
     });
-    const signedScores = members.map((member) => member.signedScore);
-    const maxStack = Math.max(1, ...Array.from(stackCounts.values()));
+    const membersByBucket = new Map<number, GroupDesignPdMember[]>();
+
+    for (const member of allMembers) {
+      const bucket = Math.round(member.position / 3) * 3;
+      membersByBucket.set(bucket, [...(membersByBucket.get(bucket) ?? []), member]);
+    }
+
+    const visibleMembers: GroupDesignPdMember[] = [];
+    const overflowBuckets: GroupDesignPdOverflowBucket[] = [];
+
+    for (const [bucket, bucketMembers] of membersByBucket.entries()) {
+      const sortedMembers = bucketMembers.sort((a, b) => a.initials.localeCompare(b.initials));
+      sortedMembers.slice(0, 4).forEach((member, stackIndex) => {
+        visibleMembers.push({ ...member, stackIndex });
+      });
+
+      if (sortedMembers.length > 4) {
+        overflowBuckets.push({
+          bucket,
+          count: sortedMembers.length - 4,
+          members: sortedMembers.slice(4),
+          position: sortedMembers[0]?.position ?? 50,
+        });
+      }
+    }
+
+    const signedScores = allMembers.map((member) => member.signedScore);
+    const maxStack = Math.min(4, Math.max(1, ...Array.from(membersByBucket.values()).map((items) => items.length)));
     const spread = signedScores.length
       ? Math.max(...signedScores) - Math.min(...signedScores)
       : 0;
@@ -1222,7 +1266,8 @@ function groupDesignPdAxes(participants: ParticipantRecord[]) {
     return {
       ...axisConfig,
       maxStack,
-      members,
+      members: visibleMembers.sort((a, b) => a.position - b.position || a.stackIndex - b.stackIndex),
+      overflowBuckets: overflowBuckets.sort((a, b) => a.position - b.position),
       poles:
         axisConfig.axisKey === "plan"
           ? ["Dreamer", "Doer"]
@@ -1938,20 +1983,50 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                       <div className="group-designpd-axis-track">
                         <small>{axis.poles[0]}</small>
                         <div
-                          style={{ minHeight: `${74 + axis.maxStack * 27}px` }}
+                          style={{ minHeight: `${160 + axis.maxStack * 27}px` }}
                         >
+                          <div className="group-designpd-tick-row" aria-hidden="true">
+                            {designPdTickMarks.map((tick) => (
+                              <span
+                                key={`${axis.axisKey}-${tick}`}
+                                style={{ left: `${50 + tick / designPdMaxAxisScore * 50}%` }}
+                              >
+                                {Math.abs(tick)}
+                              </span>
+                            ))}
+                          </div>
                           <i />
                           {axis.members.map((member) => (
                             <b
                               key={`${axis.axisKey}-${member.id}`}
                               style={{
                                 left: `${member.position}%`,
-                                top: `${34 + member.stackIndex * 27}px`,
+                                top: `${76 + member.stackIndex * 27}px`,
                               }}
-                              title={`${member.name}: ${member.tendency} (${member.score})`}
+                              title={`${member.name}: ${member.tendency} (${member.signedScore > 0 ? "+" : ""}${member.signedScore})`}
                             >
                               {member.initials}
                             </b>
+                          ))}
+                          {axis.overflowBuckets.map((bucket) => (
+                            <div
+                              className="group-designpd-overflow"
+                              key={`${axis.axisKey}-overflow-${bucket.bucket}`}
+                              style={{ left: `${bucket.position}%` }}
+                            >
+                              <span />
+                              <strong>+{bucket.count}</strong>
+                              <small>
+                                {bucket.members.map((member) => (
+                                  <b
+                                    key={`${axis.axisKey}-overflow-${member.id}`}
+                                    title={`${member.name}: ${member.tendency} (${member.signedScore > 0 ? "+" : ""}${member.signedScore})`}
+                                  >
+                                    {member.initials}
+                                  </b>
+                                ))}
+                              </small>
+                            </div>
                           ))}
                         </div>
                         <small>{axis.poles[1]}</small>

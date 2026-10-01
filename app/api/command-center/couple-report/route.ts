@@ -32,14 +32,13 @@ type CoupleMember = {
 };
 
 const colors = ["#4a6239", "#8a5f2d"];
-const designIdMaxScore = 60;
 const designPdMaxAxisScore = 24;
 
 const designIdScoreFields = [
-  { label: "Architect", keys: ["Architect_Pts", "architectPts", "architectScore"] },
-  { label: "Artisan", keys: ["Artisan_Pts", "artisanPts", "artisanScore"] },
-  { label: "Shepherd", keys: ["Shepherd_Pts", "shepherdPts", "shepherdScore"] },
-  { label: "Steward", keys: ["Steward_Pts", "stewardPts", "stewardScore"] },
+  { color: "#d4a451", label: "Architect", keys: ["Architect_Pts", "architectPts", "architectScore"], wash: "#fbf1dc" },
+  { color: "#647c9b", label: "Artisan", keys: ["Artisan_Pts", "artisanPts", "artisanScore"], wash: "#e9eef5" },
+  { color: "#739d5e", label: "Shepherd", keys: ["Shepherd_Pts", "shepherdPts", "shepherdScore"], wash: "#edf5e8" },
+  { color: "#5a496b", label: "Steward", keys: ["Steward_Pts", "stewardPts", "stewardScore"], wash: "#eee9f3" },
 ];
 
 const designPdAxes = [
@@ -192,6 +191,10 @@ function giftDefinition(label: string) {
   return spiritualGifts.find((gift) => gift.label.toLowerCase() === label.toLowerCase())?.definition ?? "";
 }
 
+function giftScriptures(label: string) {
+  return spiritualGifts.find((gift) => gift.label.toLowerCase() === label.toLowerCase())?.scriptures ?? "";
+}
+
 function designIdScores(member: CoupleMember) {
   const snapshot = currentSnapshot(member, "designid");
   return designIdScoreFields.map((field) => ({
@@ -230,11 +233,100 @@ function designPdAxisScore(member: CoupleMember, axis: (typeof designPdAxes)[num
   };
 }
 
-function gapLanguage(gap: number, max: number) {
-  const ratio = max ? gap / max : 0;
-  if (ratio >= 0.62) return "wide gap";
-  if (ratio >= 0.32) return "meaningful gap";
-  return "close range";
+function gapLevel(gap: number) {
+  if (gap <= 5) {
+    return {
+      label: "close range",
+      summary: "You are close enough here that the conversation is less about difference and more about shared stewardship.",
+      tone: "Start by noticing what feels familiar to both of you.",
+    };
+  }
+
+  if (gap <= 15) {
+    return {
+      label: "noticeable gap",
+      summary: "This is enough difference to shape daily expectations, especially when pressure, pace, or decision-making speed increases.",
+      tone: "Name the difference before it becomes an assumption.",
+    };
+  }
+
+  if (gap <= 27) {
+    return {
+      label: "meaningful gap",
+      summary: "This gap can become a real place of partnership or a recurring place of friction if it stays unnamed.",
+      tone: "Build a clear agreement so the stronger capacity or tendency does not become pressure on the other spouse.",
+    };
+  }
+
+  return {
+    label: "wide gap",
+    summary: "This is a strong contrast. It may be one of the clearest places where your marriage needs language, honor, boundaries, and shared practice.",
+    tone: "Treat the gap as a design conversation, not a verdict on either person.",
+  };
+}
+
+function designIdQuestions(label: string, gap: number) {
+  if (gap <= 5) {
+    return [
+      `Where does shared ${label} capacity help us feel naturally aligned?`,
+      "How can we keep this shared strength from becoming invisible or taken for granted?",
+      "What would it look like to steward this similarity for service, family, and calling?",
+    ];
+  }
+
+  if (gap <= 15) {
+    return [
+      `Where might one of us expect the other to carry ${label} energy the same way?`,
+      "What is one situation where this difference shows up quietly before anyone names it?",
+      "How can we turn this noticeable difference into a simple agreement instead of a repeated frustration?",
+    ];
+  }
+
+  if (gap <= 27) {
+    return [
+      `Where does the higher ${label} capacity naturally carry more weight in our marriage?`,
+      "What support, recovery, or role clarity does the lower-capacity spouse need here?",
+      "How can we honor the stronger capacity without making it the only acceptable way to move?",
+    ];
+  }
+
+  return [
+    `What part of ${label} feels energizing for one of us and costly for the other?`,
+    "What boundary or partnership agreement would keep this contrast from becoming pressure or resentment?",
+    "Where might God be inviting us to stop comparing and start covering one another with grace?",
+  ];
+}
+
+function designPdQuestions(axis: (typeof designPdAxes)[number], gap: number) {
+  if (gap <= 5) {
+    return [
+      `Where does our shared ${axis.label.toLowerCase()} rhythm help us move together easily?`,
+      `What might we both miss because neither of us naturally supplies much contrast on ${axis.label.toLowerCase()}?`,
+      `How can we intentionally include both ${axis.left} and ${axis.right} when the moment calls for it?`,
+    ];
+  }
+
+  if (gap <= 15) {
+    return [
+      `When does this ${axis.label.toLowerCase()} difference first show up in ordinary life?`,
+      "What signal tells us we are turning a difference into a judgment?",
+      `What simple agreement would help us respect both the ${axis.left} side and the ${axis.right} side?`,
+    ];
+  }
+
+  if (gap <= 27) {
+    return [
+      `Where does one spouse tend to pull the ${axis.label.toLowerCase()} conversation in a different direction?`,
+      "What does each person need to feel honored before the couple moves forward?",
+      "How can we decide who leads this kind of moment without making the other person feel dismissed?",
+    ];
+  }
+
+  return [
+    `Where is this wide ${axis.label.toLowerCase()} contrast most obvious under pressure?`,
+    "What recurring argument might actually be a tendency gap asking for a better process?",
+    `How can we deliberately borrow the gift of both ${axis.left} and ${axis.right} before acting?`,
+  ];
 }
 
 function sharedPoleLanguage(axis: (typeof designPdAxes)[number], scores: { signedScore: number }[]) {
@@ -250,6 +342,34 @@ function htmlList(items: string[]) {
   return `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
 }
 
+function sharedGiftsCopy(labels: string[]) {
+  if (labels.length === 0) {
+    return {
+      heading: "No shared top-five gift in this snapshot",
+      text: "That does not mean you lack spiritual agreement. It means your current top-five gifts may cover different parts of the Body, giving you more places to learn from one another and stand in the gap.",
+    };
+  }
+
+  if (labels.length === 1) {
+    return {
+      heading: `Shared top-five gift: ${labels[0]}`,
+      text: "One shared gift can become a common language for service, prayer, and encouragement. It is worth asking how this gift expresses differently in each of you.",
+    };
+  }
+
+  if (labels.length <= 3) {
+    return {
+      heading: `Shared top-five gifts: ${labels.join(", ")}`,
+      text: "Multiple shared gifts may point to a meaningful overlap in how you notice needs, serve others, and move toward ministry together. The invitation is to steward the overlap without assuming you express each gift the same way.",
+    };
+  }
+
+  return {
+    heading: `Strong shared gift pattern: ${labels.join(", ")}`,
+    text: "A high number of shared gifts can create strong agreement and momentum. It can also create blind spots if you both overlook the same kinds of needs, so use the overlap with gratitude and humility.",
+  };
+}
+
 function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
   const today = new Intl.DateTimeFormat("en-US", { dateStyle: "long" }).format(new Date());
   const [first, second] = members;
@@ -261,7 +381,7 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
 
     return `<div class="person-panel">
       <h3>${escapeHtml(member.name)}</h3>
-      ${gifts.length ? gifts.map((gift) => `<p><strong>${gift?.rank}. ${escapeHtml(gift?.label ?? "")}</strong><span>${escapeHtml(giftDefinition(gift?.label ?? "") || "A grace to notice, steward, and confirm in community.")}</span></p>`).join("") : "<p>No Spiritual Gifts snapshot is saved yet.</p>"}
+      ${gifts.length ? gifts.map((gift) => `<p><strong>${gift?.rank}. ${escapeHtml(gift?.label ?? "")}</strong><span>${escapeHtml(giftDefinition(gift?.label ?? "") || "A grace to notice, steward, and confirm in community.")}</span><em>${escapeHtml(giftScriptures(gift?.label ?? "") || "Scripture reference pending")}</em></p>`).join("") : "<p>No Spiritual Gifts snapshot is saved yet.</p>"}
     </div>`;
   }).join("");
 
@@ -278,19 +398,17 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
           .filter((label) => firstGifts.has(label.toLowerCase()))
       : [];
   })();
+  const sharedGiftCopy = sharedGiftsCopy(sharedGiftLabels);
 
   const designIdRows = designIdScoreFields.map((field) => {
     const scores = members.map((member) => designIdScores(member).find((score) => score.label === field.label) ?? { band: "Not saved", label: field.label, value: 0 });
     const gap = scores.length >= 2 ? Math.abs(scores[0].value - scores[1].value) : 0;
-    return `<section class="interpretation-row">
+    const level = gapLevel(gap);
+    return `<section class="interpretation-row reflection-row" style="--reflection-color:${field.color};--reflection-wash:${field.wash};">
       <h3>${escapeHtml(field.label)} capacity <span>${gap} point gap</span></h3>
       <p>${escapeHtml(members.map((member, index) => `${member.initials}: ${scores[index].value} (${scores[index].band})`).join(" | "))}</p>
-      <p>A ${escapeHtml(gapLanguage(gap, designIdMaxScore))} here is not a problem to solve first. It is a place to ask how one spouse may carry energy naturally while the other may need support, recovery, or a different role.</p>
-      ${htmlList([
-        `Where does ${field.label} energy help our marriage move forward?`,
-        "Where might one of us assume the other should have the same capacity?",
-        "What would partnership look like here instead of pressure or comparison?",
-      ])}
+      <p><strong>${escapeHtml(titleize(level.label))}.</strong> ${escapeHtml(level.summary)} ${escapeHtml(level.tone)}</p>
+      ${htmlList(designIdQuestions(field.label, gap))}
     </section>`;
   }).join("");
 
@@ -298,16 +416,13 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
     const axisScores = members.map((member) => designPdAxisScore(member, axis));
     const gap = axisScores.length >= 2 ? Math.abs(axisScores[0].signedScore - axisScores[1].signedScore) : 0;
     const sharedPole = sharedPoleLanguage(axis, axisScores);
+    const level = gapLevel(gap);
     return `<section class="interpretation-row">
       <h3>${escapeHtml(axis.label)} tendency <span>${gap} point gap</span></h3>
       <p>${escapeHtml(members.map((member, index) => `${member.initials}: ${axisScores[index].tendency} (${axisScores[index].score})`).join(" | "))}</p>
-      <p>This is a ${escapeHtml(gapLanguage(gap, designPdMaxAxisScore * 2))}. In marriage, the goal is not to erase the difference. The goal is to name the difference soon enough that it becomes shared wisdom instead of hidden frustration.</p>
+      <p><strong>${escapeHtml(titleize(level.label))}.</strong> ${escapeHtml(level.summary)} ${escapeHtml(level.tone)}</p>
       ${sharedPole ? `<p>${escapeHtml(sharedPole)}</p>` : ""}
-      ${htmlList([
-        `When pressure rises, how does our ${axis.label.toLowerCase()} tendency help us?`,
-        "Where could this same tendency create friction or leave something unattended?",
-        `What agreement would help us honor both ${axis.left} and ${axis.right}?`,
-      ])}
+      ${htmlList(designPdQuestions(axis, gap))}
     </section>`;
   }).join("");
 
@@ -316,14 +431,16 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Marriage Overlay - ${escapeHtml(groupName)}</title>
+  <title>Marriage Design - ${escapeHtml(groupName)}</title>
   <style>
     :root { --ink:#172116; --muted:#667263; --paper:#fbfaf4; --line:#e4dccb; --green:#476b42; --dark:#243f27; --gold:#b88a43; --blue:#456073; }
     * { box-sizing:border-box; }
     body { margin:0; background:linear-gradient(180deg,#fbfaf4,#f4f1e8); color:var(--ink); font-family:Aptos,Segoe UI,Arial,sans-serif; padding:34px; }
     main { max-width:960px; margin:0 auto; background:white; border:1px solid var(--line); box-shadow:0 24px 70px rgba(70,58,35,.12); }
-    header { background:linear-gradient(135deg,var(--dark),var(--green)); color:#fffaf0; padding:34px; }
-    header img { display:block; height:46px; margin-bottom:30px; width:auto; }
+    header { background:linear-gradient(135deg,var(--dark),var(--green)); color:#fffaf0; display:grid; gap:24px; grid-template-columns:minmax(0,1fr) auto; padding:34px; }
+    header img { display:block; filter:brightness(0) invert(1); height:54px; max-width:230px; object-fit:contain; width:auto; }
+    .header-copy { min-width:0; }
+    .brand-mark { align-self:start; justify-self:end; }
     .eyebrow { color:#e4d2a7; font-size:12px; font-weight:900; letter-spacing:.12em; margin:0 0 10px; text-transform:uppercase; }
     h1 { font-size:38px; line-height:1.02; margin:0; max-width:720px; }
     h2 { color:var(--dark); font-size:25px; margin:0 0 14px; }
@@ -339,28 +456,35 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
     .person-panel { border:1px solid var(--line); padding:18px; }
     .person-panel p { border-top:1px solid rgba(36,63,39,.1); margin:0; padding:12px 0; }
     .person-panel p:first-of-type { border-top:0; }
-    .person-panel strong, .person-panel span { display:block; }
+    .person-panel strong, .person-panel span, .person-panel em { display:block; }
     .person-panel span { color:var(--muted); font-size:13px; line-height:1.45; margin-top:4px; }
+    .person-panel em { color:var(--green); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; font-style:normal; font-weight:800; letter-spacing:.02em; margin-top:7px; }
+    .scripture-note { background:#f7f3e8; border:1px solid var(--line); margin-top:18px; padding:14px 16px; }
+    .scripture-note p { color:var(--ink); margin:0; }
     .callout { background:#fffaf0; border-left:6px solid var(--gold); margin-top:18px; padding:18px; }
     .interpretation-row { border:1px solid var(--line); margin-top:12px; padding:18px; }
+    .reflection-row { background:var(--reflection-wash); border:2px solid var(--reflection-color); box-shadow:0 10px 26px rgba(36,63,39,.08); }
+    .reflection-row h3, .reflection-row h3 span { color:var(--reflection-color); }
     ul { color:var(--ink); margin:10px 0 0; padding-left:20px; }
     li { font-size:14px; line-height:1.5; margin:6px 0; }
     footer { background:#f7f3e8; border-top:1px solid var(--line); padding:26px 34px; }
     @media print { body { background:white; padding:0; } main { border:0; box-shadow:none; } section { break-inside:avoid; } }
-    @media (max-width:760px) { body { padding:12px; } .two-col, .cover-meta { grid-template-columns:1fr; } h3 span { float:none; display:block; margin-top:4px; } }
+    @media (max-width:760px) { body { padding:12px; } header, .two-col, .cover-meta { grid-template-columns:1fr; } .brand-mark { justify-self:start; } h3 span { float:none; display:block; margin-top:4px; } }
   </style>
 </head>
 <body>
   <main>
     <header>
-      <img src="https://dydd-online-school.vercel.app/brand/dydd-logo.webp" alt="Discover Your Divine Design" />
-      <p class="eyebrow">Discover Your Divine Design Married Couples</p>
-      <h1>Marriage Overlay</h1>
-      <div class="cover-meta">
-        <div><small>Couple</small><strong>${escapeHtml(memberNames || groupName)}</strong></div>
-        <div><small>Group</small><strong>${escapeHtml(groupName)}</strong></div>
-        <div><small>Created</small><strong>${escapeHtml(today)}</strong></div>
+      <div class="header-copy">
+        <p class="eyebrow">Discover Your Divine Design Married Couples</p>
+        <h1>Marriage Design</h1>
+        <div class="cover-meta">
+          <div><small>Couple</small><strong>${escapeHtml(memberNames || groupName)}</strong></div>
+          <div><small>Group</small><strong>${escapeHtml(groupName)}</strong></div>
+          <div><small>Created</small><strong>${escapeHtml(today)}</strong></div>
+        </div>
       </div>
+      <img class="brand-mark" src="https://dydd-online-school.vercel.app/brand/dydd-logo-transparent.webp" alt="Discover Your Divine Design" />
     </header>
     <section>
       <h2>How to Read This Overlay</h2>
@@ -369,9 +493,12 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
     <section>
       <h2>Spiritual Gifts Overlap</h2>
       <div class="two-col">${giftRows}</div>
+      <div class="scripture-note">
+        <p><strong>*</strong> Be sure to explore these Bible verse references in context together. Let the passages shape the conversation, not just the gift names.</p>
+      </div>
       <div class="callout">
-        <h3>${sharedGiftLabels.length ? `Shared top-five gift: ${escapeHtml(sharedGiftLabels.join(", "))}` : "No shared top-five gift in this snapshot"}</h3>
-        <p>Shared gifts can become places of strong agreement and shared service. Different gifts can become places where one spouse sees, serves, or strengthens what the other may not notice first.</p>
+        <h3>${escapeHtml(sharedGiftCopy.heading)}</h3>
+        <p>${escapeHtml(sharedGiftCopy.text)}</p>
         ${htmlList([
           "Which gift in your spouse do you want to honor more intentionally?",
           "Where do your gifts help you serve together rather than compete for who is right?",

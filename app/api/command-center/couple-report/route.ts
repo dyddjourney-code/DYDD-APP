@@ -32,7 +32,18 @@ type CoupleMember = {
 };
 
 const colors = ["#4a6239", "#8a5f2d"];
+const resourcesUrl = "https://www.discoverdivine.design/resources";
+const assetBaseUrl = "https://dydd-online-school.vercel.app";
+const brandLogoPath = "/brand/dydd-logo-transparent.webp";
+const sectionIconPaths = {
+  designid: "/brand/badges/designid-badge.svg",
+  designpd: "/brand/badges/designpd-badge.svg",
+  spiritualGifts: "/brand/tools/spiritual-gifts-icon-correct.png",
+};
 const designPdMaxAxisScore = 24;
+const designIdMaxScore = 60;
+const designIdRadarCenter = 160;
+const designIdRadarRadius = 112;
 
 const designIdScoreFields = [
   { color: "#d4a451", label: "Architect", keys: ["Architect_Pts", "architectPts", "architectScore"], wash: "#fbf1dc" },
@@ -44,7 +55,9 @@ const designIdScoreFields = [
 const designPdAxes = [
   {
     axisKey: "plan",
+    color: "#476b42",
     label: "Plan",
+    wash: "#eef5e9",
     left: "Dreamer",
     right: "Doer",
     scoreKeys: ["Plan_Score", "planScore"],
@@ -52,7 +65,9 @@ const designPdAxes = [
   },
   {
     axisKey: "decide",
+    color: "#739d5e",
     label: "Decide",
+    wash: "#f2f8ee",
     left: "Feel It",
     right: "Think It",
     scoreKeys: ["Decide_Score", "decideScore"],
@@ -60,7 +75,9 @@ const designPdAxes = [
   },
   {
     axisKey: "do",
+    color: "#a3a158",
     label: "Do",
+    wash: "#f8f7e9",
     left: "Solo",
     right: "Together",
     scoreKeys: ["Do_Score", "doScore"],
@@ -342,6 +359,138 @@ function htmlList(items: string[]) {
   return `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
 }
 
+function assetUrl(path: string) {
+  return `${assetBaseUrl}${path}`;
+}
+
+function sectionHeading(title: string, iconPath: string, alt: string) {
+  return `<div class="section-title">
+    <h2>${escapeHtml(title)}</h2>
+    <img src="${assetUrl(iconPath)}" alt="${escapeHtml(alt)}" />
+  </div>`;
+}
+
+function designIdPolygonPoints(scores: { value: number }[]) {
+  return scores
+    .map((score, index) => {
+      const angle = (-90 + index * 90) * (Math.PI / 180);
+      const distance = Math.max(0, Math.min(score.value / designIdMaxScore, 1)) * designIdRadarRadius;
+      const x = designIdRadarCenter + Math.cos(angle) * distance;
+      const y = designIdRadarCenter + Math.sin(angle) * distance;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(" ");
+}
+
+function designIdCapacitySvg(members: CoupleMember[]) {
+  const memberScores = members.map((member) => ({
+    ...member,
+    scores: designIdScores(member),
+  }));
+  const rings = [0.25, 0.5, 0.75, 1]
+    .map((scale) => `<g>
+      <polygon class="designid-grid-ring" points="${designIdPolygonPoints(designIdScoreFields.map(() => ({ value: designIdMaxScore * scale })))}" />
+      <text class="designid-grid-label" x="${designIdRadarCenter + designIdRadarRadius * scale + 6}" y="${designIdRadarCenter - 7}">${Math.round(designIdMaxScore * scale)}</text>
+    </g>`)
+    .join("");
+  const memberShapes = memberScores
+    .map((member) => {
+      const points = member.scores
+        .map((score, scoreIndex) => {
+          const angle = (-90 + scoreIndex * 90) * (Math.PI / 180);
+          const distance = Math.max(0, Math.min(score.value / designIdMaxScore, 1)) * designIdRadarRadius;
+          return {
+            label: score.label,
+            x: designIdRadarCenter + Math.cos(angle) * distance,
+            y: designIdRadarCenter + Math.sin(angle) * distance,
+          };
+        });
+
+      return `<g>
+        <polygon class="designid-member-shape" points="${designIdPolygonPoints(member.scores)}" style="--member-color:${member.color};" />
+        ${points.map((point) => `<g>
+          <circle class="designid-member-dot" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="9" style="--member-color:${member.color};" />
+          <text class="designid-member-initials" x="${point.x.toFixed(1)}" y="${point.y.toFixed(1)}">${escapeHtml(member.initials)}</text>
+        </g>`).join("")}
+      </g>`;
+    })
+    .join("");
+  const axisLabels = [
+    { label: "Architect", x: 160, y: 25 },
+    { label: "Artisan", x: 287, y: 164 },
+    { label: "Shepherd", x: 160, y: 297 },
+    { label: "Steward", x: 34, y: 164 },
+  ]
+    .map((item) => `<text class="designid-axis-label" x="${item.x}" y="${item.y}">${item.label}</text>`)
+    .join("");
+  const legend = memberScores
+    .map((member) => `<div><i style="background:${member.color};"></i><strong>${escapeHtml(member.initials)}</strong><small>${escapeHtml(member.name)}</small></div>`)
+    .join("");
+  const scoreTable = `<div class="visual-score-table">
+    <div class="visual-score-table-head"><span>Person</span>${designIdScoreFields.map((field) => `<span>${escapeHtml(field.label)}</span>`).join("")}</div>
+    ${memberScores.map((member) => `<div class="visual-score-table-row"><strong><i style="background:${member.color};"></i>${escapeHtml(member.initials)}</strong>${member.scores.map((score) => `<span>${score.value}</span>`).join("")}</div>`).join("")}
+  </div>`;
+
+  return `<div class="visual-page designid-visual-page">
+    <div class="visual-frame">
+      <svg viewBox="0 0 320 320" role="img" aria-label="DesignID reflection capacity comparison">
+        ${rings}
+        <line class="designid-axis-line" x1="160" x2="160" y1="48" y2="272" />
+        <line class="designid-axis-line" x1="48" x2="272" y1="160" y2="160" />
+        ${memberShapes}
+        ${axisLabels}
+      </svg>
+      <div class="visual-legend">${legend}</div>
+      ${scoreTable}
+    </div>
+  </div>`;
+}
+
+function designPdVisual(members: CoupleMember[]) {
+  const axisRows = designPdAxes
+    .map((axis) => {
+      const axisScores = members.map((member) => {
+        const score = designPdAxisScore(member, axis);
+        return {
+          ...member,
+          ...score,
+          position: ((score.signedScore + designPdMaxAxisScore) / (designPdMaxAxisScore * 2)) * 100,
+        };
+      });
+      const gap = axisScores.length >= 2 ? Math.abs(axisScores[0].signedScore - axisScores[1].signedScore) : 0;
+
+      return `<div class="designpd-visual-axis" style="--axis-color:${axis.color};--axis-wash:${axis.wash};">
+        <div class="designpd-visual-heading"><strong>${escapeHtml(axis.label)}</strong><span>${gap} point gap</span></div>
+        <div class="designpd-visual-track">
+          <small>${escapeHtml(axis.left)}</small>
+          <div>
+            <i></i>
+            ${axisScores.map((member) => `<b style="--member-color:${member.color};left:${member.position}%;" title="${escapeHtml(`${member.name}: ${member.tendency} (${member.score})`)}">${escapeHtml(member.initials)}</b>`).join("")}
+          </div>
+          <small>${escapeHtml(axis.right)}</small>
+        </div>
+      </div>`;
+    })
+    .join("");
+  const scoreKey = members
+    .map((member) => {
+      const entries = designPdAxes.map((axis) => {
+        const score = designPdAxisScore(member, axis);
+        return `${axis.label}: ${score.tendency} (${score.score})`;
+      });
+
+      return `<div><i style="background:${member.color};"></i><strong>${escapeHtml(member.initials)}</strong><small>${escapeHtml(entries.join(" | "))}</small></div>`;
+    })
+    .join("");
+
+  return `<div class="visual-page designpd-visual-page">
+    <div class="designpd-visual-stack">
+      ${axisRows}
+      <div class="designpd-visual-key">${scoreKey}</div>
+    </div>
+  </div>`;
+}
+
 function sharedGiftsCopy(labels: string[]) {
   if (labels.length === 0) {
     return {
@@ -417,7 +566,7 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
     const gap = axisScores.length >= 2 ? Math.abs(axisScores[0].signedScore - axisScores[1].signedScore) : 0;
     const sharedPole = sharedPoleLanguage(axis, axisScores);
     const level = gapLevel(gap);
-    return `<section class="interpretation-row">
+    return `<section class="interpretation-row designpd-row" style="--axis-color:${axis.color};--axis-wash:${axis.wash};">
       <h3>${escapeHtml(axis.label)} tendency <span>${gap} point gap</span></h3>
       <p>${escapeHtml(members.map((member, index) => `${member.initials}: ${axisScores[index].tendency} (${axisScores[index].score})`).join(" | "))}</p>
       <p><strong>${escapeHtml(titleize(level.label))}.</strong> ${escapeHtml(level.summary)} ${escapeHtml(level.tone)}</p>
@@ -433,7 +582,7 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Marriage Design - ${escapeHtml(groupName)}</title>
   <style>
-    :root { --ink:#172116; --muted:#667263; --paper:#fbfaf4; --line:#e4dccb; --green:#476b42; --dark:#243f27; --gold:#b88a43; --blue:#456073; }
+    :root { --ink:#172116; --muted:#667263; --paper:#fbfaf4; --line:#dfe7d9; --green:#476b42; --dark:#243f27; --gold:#b88a43; --blue:#456073; }
     * { box-sizing:border-box; }
     body { margin:0; background:linear-gradient(180deg,#fbfaf4,#f4f1e8); color:var(--ink); font-family:Aptos,Segoe UI,Arial,sans-serif; padding:34px; }
     main { max-width:960px; margin:0 auto; background:white; border:1px solid var(--line); box-shadow:0 24px 70px rgba(70,58,35,.12); }
@@ -445,7 +594,7 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
     h1 { font-size:38px; line-height:1.02; margin:0; max-width:720px; }
     h2 { color:var(--dark); font-size:25px; margin:0 0 14px; }
     h3 { color:var(--dark); font-size:17px; margin:0 0 8px; }
-    h3 span { color:var(--gold); float:right; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:14px; }
+    h3 span { color:#111; float:right; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:14px; font-weight:950; }
     p { color:var(--muted); font-size:14px; line-height:1.58; margin:0 0 12px; }
     section { border-top:1px solid var(--line); padding:28px 34px; }
     .cover-meta { display:grid; gap:12px; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:30px; }
@@ -453,23 +602,71 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
     .cover-meta small { color:#e4d2a7; display:block; font-size:11px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
     .cover-meta strong { display:block; font-size:16px; margin-top:5px; }
     .two-col { display:grid; gap:16px; grid-template-columns:repeat(2,minmax(0,1fr)); }
-    .person-panel { border:1px solid var(--line); padding:18px; }
+    .section-title { align-items:center; border-bottom:3px solid var(--green); display:flex; gap:18px; justify-content:space-between; margin-bottom:18px; padding-bottom:10px; }
+    .section-title h2 { margin:0; }
+    .section-title img { display:block; height:48px; object-fit:contain; width:48px; }
+    .person-panel { border:2px solid rgba(71,107,66,.34); padding:18px; }
+    .person-panel h3 { color:var(--green); }
     .person-panel p { border-top:1px solid rgba(36,63,39,.1); margin:0; padding:12px 0; }
     .person-panel p:first-of-type { border-top:0; }
     .person-panel strong, .person-panel span, .person-panel em { display:block; }
     .person-panel span { color:var(--muted); font-size:13px; line-height:1.45; margin-top:4px; }
     .person-panel em { color:var(--green); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; font-style:normal; font-weight:800; letter-spacing:.02em; margin-top:7px; }
-    .scripture-note { background:#f7f3e8; border:1px solid var(--line); margin-top:18px; padding:14px 16px; }
+    .scripture-note { background:#f3f8ef; border:1px solid rgba(71,107,66,.28); border-left:6px solid var(--green); margin-top:18px; padding:14px 16px; }
     .scripture-note p { color:var(--ink); margin:0; }
-    .callout { background:#fffaf0; border-left:6px solid var(--gold); margin-top:18px; padding:18px; }
+    .callout { background:#f3f8ef; border:1px solid rgba(71,107,66,.24); border-left:6px solid var(--dark); margin-top:18px; padding:18px; }
     .interpretation-row { border:1px solid var(--line); margin-top:12px; padding:18px; }
     .reflection-row { background:var(--reflection-wash); border:2px solid var(--reflection-color); box-shadow:0 10px 26px rgba(36,63,39,.08); }
-    .reflection-row h3, .reflection-row h3 span { color:var(--reflection-color); }
+    .reflection-row h3 { color:var(--reflection-color); }
+    .reflection-row h3 span { color:#111; }
+    .designpd-row { background:var(--axis-wash); border:2px solid var(--axis-color); box-shadow:0 10px 26px rgba(36,63,39,.08); }
+    .designpd-row h3 { color:var(--axis-color); }
+    .designpd-row h3 span { color:#111; }
+    .visual-page { border:0; padding:4px 0 12px; }
+    .visual-frame { display:grid; justify-items:center; gap:14px; }
+    .visual-frame svg { height:auto; max-width:640px; width:100%; }
+    .designid-grid-ring { fill:none; stroke:rgba(36,63,39,.16); stroke-width:1; }
+    .designid-grid-label { fill:rgba(36,63,39,.46); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:9px; font-weight:850; }
+    .designid-axis-line { stroke:rgba(36,63,39,.18); stroke-width:1.5; }
+    .designid-axis-label { dominant-baseline:middle; fill:var(--dark); font-size:13px; font-weight:950; text-anchor:middle; }
+    .designid-member-shape { fill:color-mix(in srgb, var(--member-color) 20%, transparent); stroke:var(--member-color); stroke-linejoin:round; stroke-width:3; }
+    .designid-member-dot { fill:var(--member-color); stroke:#fffaf0; stroke-width:2; }
+    .designid-member-initials { dominant-baseline:middle; fill:#fffaf0; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:8px; font-weight:950; text-anchor:middle; }
+    .visual-legend { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+    .visual-legend div, .designpd-visual-key div { align-items:center; background:#f7f9f5; border:1px solid rgba(36,63,39,.1); display:grid; gap:8px; grid-template-columns:10px auto minmax(0,1fr); padding:9px 11px; }
+    .visual-legend i, .designpd-visual-key i, .visual-score-table i { border-radius:999px; display:block; height:10px; width:10px; }
+    .visual-legend strong, .designpd-visual-key strong, .visual-score-table strong { color:var(--dark); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; font-weight:950; }
+    .visual-legend small, .designpd-visual-key small { color:var(--muted); font-size:12px; font-weight:800; }
+    .visual-score-table { border:1px solid rgba(36,63,39,.12); width:100%; }
+    .visual-score-table-head, .visual-score-table-row { display:grid; grid-template-columns:1.2fr repeat(4,1fr); }
+    .visual-score-table-head span { background:#f3f8ef; color:var(--dark); font-size:11px; font-weight:950; letter-spacing:.04em; padding:8px; text-transform:uppercase; }
+    .visual-score-table-row > * { align-items:center; border-top:1px solid rgba(36,63,39,.1); display:flex; gap:7px; padding:9px 8px; }
+    .visual-score-table-row span { color:var(--ink); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; font-weight:900; }
+    .designpd-visual-stack { display:grid; gap:22px; }
+    .designpd-visual-axis { background:var(--axis-wash); border:2px solid var(--axis-color); padding:16px; }
+    .designpd-visual-heading { align-items:baseline; display:flex; justify-content:space-between; }
+    .designpd-visual-heading strong { color:var(--axis-color); font-size:16px; }
+    .designpd-visual-heading span { color:#111; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; font-weight:950; }
+    .designpd-visual-track { align-items:center; display:grid; gap:12px; grid-template-columns:78px minmax(0,1fr) 78px; margin-top:14px; }
+    .designpd-visual-track small { color:var(--muted); font-size:12px; font-weight:900; }
+    .designpd-visual-track small:last-child { text-align:right; }
+    .designpd-visual-track > div { height:48px; position:relative; }
+    .designpd-visual-track i { background:linear-gradient(90deg, color-mix(in srgb, var(--axis-color) 46%, #fff), rgba(36,63,39,.12), var(--axis-color)); border-radius:999px; display:block; height:8px; left:0; position:absolute; right:0; top:20px; }
+    .designpd-visual-track i::after { background:rgba(36,63,39,.28); content:""; display:block; height:18px; left:50%; position:absolute; top:-5px; width:1px; }
+    .designpd-visual-track b { align-items:center; background:var(--member-color); border:2px solid #fffaf0; border-radius:999px; box-shadow:0 5px 12px rgba(36,63,39,.14); color:#fffaf0; display:flex; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; font-weight:950; height:28px; justify-content:center; min-width:28px; padding:0 5px; position:absolute; top:10px; transform:translateX(-50%); }
+    .designpd-visual-key { border-top:1px solid rgba(36,63,39,.1); display:grid; gap:8px; padding-top:12px; }
+    .resource-grid { display:grid; gap:14px; grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .resource-card { background:#f7f9f5; border:1px solid rgba(36,63,39,.12); padding:16px; }
+    .resource-card h3 { color:var(--green); }
+    .resource-cta { align-items:center; background:linear-gradient(135deg,var(--dark),var(--green)); color:#fffaf0; display:grid; gap:20px; grid-template-columns:minmax(0,1fr) 132px; margin-top:18px; padding:22px; }
+    .resource-cta p, .resource-cta h3 { color:#fffaf0; }
+    .resource-cta a { color:#fffaf0; font-weight:950; }
+    .resource-cta img { background:#fff; display:block; height:132px; padding:8px; width:132px; }
     ul { color:var(--ink); margin:10px 0 0; padding-left:20px; }
     li { font-size:14px; line-height:1.5; margin:6px 0; }
     footer { background:#f7f3e8; border-top:1px solid var(--line); padding:26px 34px; }
-    @media print { body { background:white; padding:0; } main { border:0; box-shadow:none; } section { break-inside:avoid; } }
-    @media (max-width:760px) { body { padding:12px; } header, .two-col, .cover-meta { grid-template-columns:1fr; } .brand-mark { justify-self:start; } h3 span { float:none; display:block; margin-top:4px; } }
+    @media print { body { background:white; padding:0; } main { border:0; box-shadow:none; } section { break-inside:avoid; } .visual-section, .resource-section { break-before:page; } }
+    @media (max-width:760px) { body { padding:12px; } header, .two-col, .cover-meta, .resource-grid, .resource-cta { grid-template-columns:1fr; } .brand-mark { justify-self:start; } h3 span { float:none; display:block; margin-top:4px; } }
   </style>
 </head>
 <body>
@@ -484,14 +681,14 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
           <div><small>Created</small><strong>${escapeHtml(today)}</strong></div>
         </div>
       </div>
-      <img class="brand-mark" src="https://dydd-online-school.vercel.app/brand/dydd-logo-transparent.webp" alt="Discover Your Divine Design" />
+      <img class="brand-mark" src="${assetUrl(brandLogoPath)}" alt="Discover Your Divine Design" />
     </header>
     <section>
       <h2>How to Read This Overlay</h2>
       <p>This first draft is not a label, verdict, or compatibility score. It is a conversation starter. The goal is to help you notice where God may have given you shared strength, complementary capacity, and different movement patterns that can become wisdom when they are named with humility.</p>
     </section>
     <section>
-      <h2>Spiritual Gifts Overlap</h2>
+      ${sectionHeading("Spiritual Gifts Overlap", sectionIconPaths.spiritualGifts, "Spiritual Gifts")}
       <div class="two-col">${giftRows}</div>
       <div class="scripture-note">
         <p><strong>*</strong> Be sure to explore these Bible verse references in context together. Let the passages shape the conversation, not just the gift names.</p>
@@ -506,13 +703,15 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
         ])}
       </div>
     </section>
-    <section>
-      <h2>DesignID Capacity Overlay</h2>
+    <section class="visual-section">
+      ${sectionHeading("DesignID Capacity Overlay", sectionIconPaths.designid, "DesignID")}
+      ${designIdCapacitySvg(members)}
       <p>Capacity is about energy, rhythm, and grace under real life conditions. A gap may show where one spouse has more natural energy while the other may need support, recovery, or a different lane.</p>
       ${designIdRows}
     </section>
-    <section>
-      <h2>DesignPD Tendencies</h2>
+    <section class="visual-section">
+      ${sectionHeading("DesignPD Tendencies", sectionIconPaths.designpd, "DesignPD")}
+      ${designPdVisual(members)}
       <p>DesignPD helps you talk about how you plan, decide, and move. Gaps often explain recurring friction. Shared leanings often show what comes naturally as a couple and what may need outside attention.</p>
       ${designPdRows}
     </section>
@@ -525,6 +724,31 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
         "Ask what your marriage needs that neither of you naturally carries first.",
         "Choose one small agreement for pressure, conflict, planning, or follow-through this week.",
       ])}
+    </section>
+    <section class="resource-section">
+      <h2>Continue With Discover Your Divine Design</h2>
+      <p>This Marriage Design snapshot is one conversation inside a larger journey of identity, gifts, formation, and faithful action. Use the resources below when you are ready to keep moving.</p>
+      <div class="resource-grid">
+        <div class="resource-card">
+          <h3>Explore Assessments</h3>
+          <p>Spiritual Gifts, DesignID, DesignPD, and future tools help you see different parts of the same design story.</p>
+        </div>
+        <div class="resource-card">
+          <h3>Take the Journey</h3>
+          <p>Books, workbooks, courses, and guided reflection help turn assessment language into growth and discipleship.</p>
+        </div>
+        <div class="resource-card">
+          <h3>Bring It to a Circle</h3>
+          <p>Camp Circles, marriage workshops, classes, and teams can use shared data to build healthier conversations.</p>
+        </div>
+      </div>
+      <div class="resource-cta">
+        <div>
+          <h3>Resources, Courses, and Next Steps</h3>
+          <p>Scan the code or visit <a href="${resourcesUrl}">${resourcesUrl}</a>.</p>
+        </div>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(resourcesUrl)}" alt="QR code for DYDD resources" />
+      </div>
     </section>
     <footer>
       <p><strong>First draft note:</strong> This Marriage Overlay is an early prototype for Discover Your Divine Design couple conversations. Use it prayerfully, gently, and as a beginning point for dialogue.</p>

@@ -6,6 +6,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
+export const maxDuration = 60;
 
 type AssessmentParticipant = {
   display_name: string | null;
@@ -837,7 +838,8 @@ async function renderMarriageDesignPdf(html: string) {
 
   try {
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "load" });
+    page.setDefaultTimeout(45000);
+    await page.setContent(html, { waitUntil: "load", timeout: 45000 });
     await page.emulateMediaType("print");
     const pdf = await page.pdf({
       format: "letter",

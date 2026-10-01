@@ -36,8 +36,8 @@ const resourcesUrl = "https://www.discoverdivine.design/resources";
 const assetBaseUrl = "https://dydd-online-school.vercel.app";
 const brandLogoPath = "/brand/dydd-logo-transparent.webp";
 const sectionIconPaths = {
-  designid: "/brand/badges/designid-badge.svg",
-  designpd: "/brand/badges/designpd-badge.svg",
+  designid: "/brand/tools/designid-icon-correct.png",
+  designpd: "/brand/tools/designpd-icon-correct.png",
   spiritualGifts: "/brand/tools/spiritual-gifts-icon-correct.png",
 };
 const designPdMaxAxisScore = 24;

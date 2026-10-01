@@ -140,10 +140,20 @@ const groupTypeLabels: Record<string, string> = {
   church_team: "Church Team",
   class_cohort: "Class Cohort",
   couple: "Couple",
+  discover_your_divine_design_workshop: "Discover Your Divine Design Workshop",
   leadership_team: "Leadership Team",
   marriage_workshop: "Marriage Workshop",
   other: "Other",
 };
+
+const groupDashboardTypes = new Set([
+  "camp_circle",
+  "church_team",
+  "class_cohort",
+  "discover_your_divine_design_workshop",
+  "leadership_team",
+  "marriage_workshop",
+]);
 
 export const dynamic = "force-dynamic";
 
@@ -1498,7 +1508,9 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
       }))
     : filteredMainParticipants;
   const showCoupleComparison = activeGroup?.group_type === "couple";
-  const showGroupInterpretation = Boolean(activeGroup && !showCoupleComparison && displayParticipants.length > 1);
+  const showGroupInterpretation = Boolean(
+    activeGroup && groupDashboardTypes.has(activeGroup.group_type) && displayParticipants.length > 1,
+  );
   const groupGiftTopSignals = showGroupInterpretation
     ? groupSpiritualGiftTopSignals(displayParticipants)
     : [];

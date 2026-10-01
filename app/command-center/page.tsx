@@ -1019,6 +1019,17 @@ function numberLikeSnapshotValue(snapshot: AssessmentSnapshot, keys: string[]) {
   return Number.isFinite(value) ? value : 0;
 }
 
+function designPdNativeAxisScore(snapshot: AssessmentSnapshot, axisKey: string) {
+  const axisScores = snapshot.scores?.axisScores;
+
+  if (typeof axisScores !== "object" || axisScores === null || Array.isArray(axisScores)) {
+    return null;
+  }
+
+  const value = Number((axisScores as Record<string, unknown>)[axisKey]);
+  return Number.isFinite(value) ? value : null;
+}
+
 function spiritualGiftRows(participants: ParticipantRecord[], members: CircleComparisonMember[]) {
   const rows = new Map<
     string,
@@ -1088,8 +1099,8 @@ function designIdPolygonPoints(scores: { value: number }[]) {
 }
 
 function designPdAxisScore(snapshot: AssessmentSnapshot, axisConfig: (typeof designPdAxes)[number]) {
+  const nativeAxisScore = designPdNativeAxisScore(snapshot, axisConfig.axisKey);
   const rawScore = numberSnapshotValue(snapshot, axisConfig.scoreKeys);
-  const signedMovement = numberLikeSnapshotValue(snapshot, axisConfig.signedScoreKeys);
   const rawTendency = titleizeAssessmentValue(
     designPdAxisObjectValue(
       typeof snapshot.scores?.axisTendencies === "object" && snapshot.scores.axisTendencies !== null && !Array.isArray(snapshot.scores.axisTendencies)
@@ -1104,16 +1115,18 @@ function designPdAxisScore(snapshot: AssessmentSnapshot, axisConfig: (typeof des
       : tendency.includes("doer") || tendency.includes("think") || tendency.includes("together")
         ? 1
         : 0;
-  const signedScoreSource = signedMovement ? -signedMovement : direction * rawScore;
-  const signedScore = Math.max(
+  const signedScoreSource = nativeAxisScore !== null
+    ? -nativeAxisScore
+    : direction * rawScore;
+  const signedScore = Math.round(Math.max(
     -designPdMaxAxisScore,
     Math.min(signedScoreSource, designPdMaxAxisScore),
-  );
+  ));
   const position = 50 + signedScore / designPdMaxAxisScore * 50;
 
   return {
     position: Math.max(0, Math.min(100, position)),
-    score: Math.abs(rawScore || signedMovement),
+    score: Math.abs(nativeAxisScore ?? rawScore),
     signedScore,
     tendency: rawTendency || "Balanced",
   };
@@ -1234,7 +1247,7 @@ function groupDesignPdAxes(participants: ParticipantRecord[]) {
     const membersByBucket = new Map<number, GroupDesignPdMember[]>();
 
     for (const member of allMembers) {
-      const bucket = Math.round(member.position / 3) * 3;
+      const bucket = member.signedScore;
       membersByBucket.set(bucket, [...(membersByBucket.get(bucket) ?? []), member]);
     }
 
@@ -1252,7 +1265,7 @@ function groupDesignPdAxes(participants: ParticipantRecord[]) {
           bucket,
           count: sortedMembers.length - 4,
           members: sortedMembers.slice(4),
-          position: sortedMembers[0]?.position ?? 50,
+          position: 50 + bucket / designPdMaxAxisScore * 50,
         });
       }
     }
@@ -1970,7 +1983,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
             <article className="group-visual-card group-designpd-card">
               <span>DesignPD group tendency map</span>
               <p>
-                Each bubble is one person&apos;s initials. Matching or near-matching scores stack vertically so the group cluster stays visible.
+                Each bubble is one person&apos;s initials placed at their actual score. Only exact matching scores stack or move into an overflow box.
               </p>
               {groupDesignPd.some((axis) => axis.members.length) ? (
                 <div className="group-designpd-heatmap">

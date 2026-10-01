@@ -1306,7 +1306,8 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
   const coupleHasSpiritualGifts = coupleAssessmentReady(circleParticipants, "spiritual_gifts");
   const coupleHasDesignId = coupleAssessmentReady(circleParticipants, "designid");
   const coupleHasDesignPd = coupleAssessmentReady(circleParticipants, "designpd");
-  const coupleReportReady = hasTwoCoupleMembers && coupleHasSpiritualGifts && coupleHasDesignId && coupleHasDesignPd;
+  const canShowCoupleDesignPd = isAdmin;
+  const coupleReportReady = hasTwoCoupleMembers && (coupleHasSpiritualGifts || coupleHasDesignId || (canShowCoupleDesignPd && coupleHasDesignPd));
   const circleMembers = showCoupleComparison ? comparisonMembers(circleParticipants) : [];
   const giftComparisonRows = coupleHasSpiritualGifts
     ? spiritualGiftRows(circleParticipants, circleMembers)
@@ -1317,7 +1318,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
   const designIdComparison = coupleHasDesignId
     ? designIdComparisonMembers(circleParticipants, circleMembers)
     : [];
-  const designPdComparison = coupleHasDesignPd
+  const designPdComparison = canShowCoupleDesignPd && coupleHasDesignPd
     ? designPdComparisonAxes(circleParticipants, circleMembers)
     : [];
   const coupleReportHref = activeGroup && coupleReportReady
@@ -1596,6 +1597,14 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                 <span>DesignPD tendencies</span>
                 {!hasTwoCoupleMembers ? (
                   <p className="command-center-empty">Add two active people to this couple group to begin the tendency view.</p>
+                ) : !canShowCoupleDesignPd ? (
+                  <div className="couple-designpd-note">
+                    <strong>DesignPD is a deeper paid layer.</strong>
+                    <p>
+                      Couple-facing reports can include Spiritual Gifts and DesignID first. DesignPD tendencies will appear here after that layer is unlocked.
+                    </p>
+                    <Link href="/field-kit">Explore DesignPD</Link>
+                  </div>
                 ) : designPdComparison.some((axis) => axis.members.length) ? (
                   <div className="designpd-axis-stack">
                     {designPdComparison.map((axis) => (
@@ -1666,7 +1675,10 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
               <div className="couple-report-download">
                 <div>
                   <strong>Marriage Design PDF</strong>
-                  <small>Download a couple-facing overlap context artifact from the current snapshots.</small>
+                  <small>
+                    Download a Marriage Design artifact from the current completed sections
+                    {canShowCoupleDesignPd ? ", including DesignPD when available" : ". DesignPD can be unlocked as a deeper layer"}.
+                  </small>
                 </div>
                 <a href={coupleReportHref}>Download your couples report</a>
               </div>
@@ -1674,9 +1686,9 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
               <div className="couple-report-download couple-report-download-disabled">
                 <div>
                   <strong>Marriage Design PDF</strong>
-                  <small>The download appears after both partners have Spiritual Gifts, DesignID, and DesignPD results.</small>
+                  <small>The download appears after both partners have Spiritual Gifts or DesignID results. DesignPD is added when unlocked.</small>
                 </div>
-                <span>Waiting for complete couple data</span>
+                <span>Waiting for matching couple data</span>
               </div>
             ) : null}
           </section>

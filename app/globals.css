@@ -6541,6 +6541,33 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   padding: 11px 14px;
 }
 
+.couple-designpd-note {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  border: 1px solid rgba(74, 98, 57, 0.18);
+  background: rgba(74, 98, 57, 0.06);
+}
+
+.couple-designpd-note strong {
+  color: var(--green-dark);
+  font-size: 0.96rem;
+}
+
+.couple-designpd-note p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 760;
+  line-height: 1.5;
+}
+
+.couple-designpd-note a {
+  color: var(--green-dark);
+  font-size: 0.78rem;
+  font-weight: 940;
+}
+
 .command-center-duplicate-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 34px;

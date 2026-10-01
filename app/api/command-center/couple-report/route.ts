@@ -31,6 +31,12 @@ type CoupleMember = {
   snapshots: AssessmentSnapshot[];
 };
 
+type ReportSections = {
+  designid: boolean;
+  designpd: boolean;
+  spiritualGifts: boolean;
+};
+
 const colors = ["#4a6239", "#8a5f2d"];
 const resourcesUrl = "https://www.discoverdivine.design/resources";
 const assetBaseUrl = "https://dydd-online-school.vercel.app";
@@ -390,6 +396,20 @@ function membersHaveCompleteMarriageDesignData(members: CoupleMember[]) {
   );
 }
 
+function availableReportSections(members: CoupleMember[], isAdmin: boolean): ReportSections {
+  const hasTwoMembers = members.length === 2;
+
+  return {
+    designid: hasTwoMembers && members.every((member) => hasCurrentAssessment(member, "designid")),
+    designpd: isAdmin && hasTwoMembers && members.every((member) => hasCurrentAssessment(member, "designpd")),
+    spiritualGifts: hasTwoMembers && members.every((member) => hasCurrentAssessment(member, "spiritual_gifts")),
+  };
+}
+
+function hasAnyReportSection(sections: ReportSections) {
+  return sections.spiritualGifts || sections.designid || sections.designpd;
+}
+
 function designIdPolygonPoints(scores: { value: number }[]) {
   return scores
     .map((score, index) => {
@@ -539,12 +559,12 @@ function sharedGiftsCopy(labels: string[]) {
   };
 }
 
-function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
+function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], sections: ReportSections) {
   const today = new Intl.DateTimeFormat("en-US", { dateStyle: "long" }).format(new Date());
   const [first, second] = members;
   const memberNames = members.map((member) => member.name).join(" and ");
 
-  const giftRows = members.map((member) => {
+  const giftRows = sections.spiritualGifts ? members.map((member) => {
     const snapshot = currentSnapshot(member, "spiritual_gifts");
     const gifts = snapshot ? [1, 2, 3, 4, 5].map((rank) => spiritualGiftRank(snapshot, rank)).filter(Boolean) : [];
 
@@ -552,7 +572,7 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
       <h3>${escapeHtml(member.name)}</h3>
       ${gifts.length ? gifts.map((gift) => `<p><strong>${gift?.rank}. ${escapeHtml(gift?.label ?? "")}</strong><span>${escapeHtml(giftDefinition(gift?.label ?? "") || "A grace to notice, steward, and confirm in community.")}</span><em>${escapeHtml(giftScriptures(gift?.label ?? "") || "Scripture reference pending")}</em></p>`).join("") : "<p>No Spiritual Gifts snapshot is saved yet.</p>"}
     </div>`;
-  }).join("");
+  }).join("") : "";
 
   const sharedGiftLabels = (() => {
     if (!first || !second) return [];
@@ -569,7 +589,7 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
   })();
   const sharedGiftCopy = sharedGiftsCopy(sharedGiftLabels);
 
-  const designIdRows = designIdScoreFields.map((field) => {
+  const designIdRows = sections.designid ? designIdScoreFields.map((field) => {
     const scores = members.map((member) => designIdScores(member).find((score) => score.label === field.label) ?? { band: "Not saved", label: field.label, value: 0 });
     const gap = scores.length >= 2 ? Math.abs(scores[0].value - scores[1].value) : 0;
     const level = gapLevel(gap);
@@ -579,9 +599,9 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
       <p><strong>${escapeHtml(titleize(level.label))}.</strong> ${escapeHtml(level.summary)} ${escapeHtml(level.tone)}</p>
       ${htmlList(designIdQuestions(field.label, gap))}
     </section>`;
-  }).join("");
+  }).join("") : "";
 
-  const designPdRows = designPdAxes.map((axis) => {
+  const designPdRows = sections.designpd ? designPdAxes.map((axis) => {
     const axisScores = members.map((member) => designPdAxisScore(member, axis));
     const gap = axisScores.length >= 2 ? Math.abs(axisScores[0].signedScore - axisScores[1].signedScore) : 0;
     const sharedPole = sharedPoleLanguage(axis, axisScores);
@@ -593,7 +613,18 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
       ${sharedPole ? `<p>${escapeHtml(sharedPole)}</p>` : ""}
       ${htmlList(designPdQuestions(axis, gap))}
     </section>`;
-  }).join("");
+  }).join("") : "";
+
+  const designPdUpsell = sections.designpd
+    ? ""
+    : `<section>
+      <h2>Explore DesignPD Tendencies</h2>
+      <p>DesignPD is the next layer for understanding how each person tends to plan, decide, and move into action. When both people have unlocked DesignPD, this Marriage Design artifact can include a tendency overlay and guided questions for those gaps.</p>
+      <div class="callout">
+        <h3>Want to go deeper?</h3>
+        <p>Visit <a href="${resourcesUrl}">${resourcesUrl}</a> to explore the DesignPD pathway and the larger Discover Your Divine Design journey.</p>
+      </div>
+    </section>`;
 
   return `<!doctype html>
 <html lang="en">
@@ -719,7 +750,7 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
       <h2>How to Read This Overlay</h2>
       <p>This first draft is not a label, verdict, or compatibility score. It is a conversation starter. The goal is to help you notice where God may have given you shared strength, complementary capacity, and different movement patterns that can become wisdom when they are named with humility.</p>
     </section>
-    <section>
+    ${sections.spiritualGifts ? `<section>
       ${sectionHeading("Spiritual Gifts Overlap", sectionIconPaths.spiritualGifts, "Spiritual Gifts")}
       <div class="two-col">${giftRows}</div>
       <div class="scripture-note">
@@ -734,19 +765,19 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
           "Where might one spouse stand in the gap for the other without becoming superior or resentful?",
         ])}
       </div>
-    </section>
-    <section class="visual-section">
+    </section>` : ""}
+    ${sections.designid ? `<section class="visual-section">
       ${sectionHeading("DesignID Capacity Overlay", sectionIconPaths.designid, "DesignID")}
       ${designIdCapacitySvg(members)}
       <p>Capacity is about energy, rhythm, and grace under real life conditions. A gap may show where one spouse has more natural energy while the other may need support, recovery, or a different lane.</p>
       ${designIdRows}
-    </section>
-    <section class="visual-section">
+    </section>` : ""}
+    ${sections.designpd ? `<section class="visual-section">
       ${sectionHeading("DesignPD Tendencies", sectionIconPaths.designpd, "DesignPD")}
       ${designPdVisual(members)}
       <p>DesignPD helps you talk about how you plan, decide, and move. Gaps often explain recurring friction. Shared leanings often show what comes naturally as a couple and what may need outside attention.</p>
       ${designPdRows}
-    </section>
+    </section>` : designPdUpsell}
     <section>
       <h2>Walk Forward From Here</h2>
       <p>A healthy couple does not use design language to win arguments. Use it to become curious faster, repair sooner, and build agreements that honor both people.</p>
@@ -916,15 +947,27 @@ export async function GET(request: NextRequest) {
       };
     });
 
-  if (!membersHaveCompleteMarriageDesignData(members)) {
+  const sections = availableReportSections(members, actor.isAdmin);
+
+  if (!hasAnyReportSection(sections)) {
     return NextResponse.json(
-      { error: "Both couple members need current Spiritual Gifts, DesignID, and DesignPD results before downloading the Marriage Design PDF." },
+      { error: "Both couple members need at least one matching current result set before downloading the Marriage Design PDF." },
       { status: 400 },
     );
   }
 
-  const html = buildMarriageOverlayHtml(String(group.name ?? "Couple"), members);
+  const html = buildMarriageOverlayHtml(String(group.name ?? "Couple"), members, sections);
   const filenameBase = `${slugify(String(group.name ?? "couple"))}-marriage-design`;
+  const format = request.nextUrl.searchParams.get("format");
+
+  if (format === "html") {
+    return new NextResponse(html, {
+      headers: {
+        "Content-Disposition": `attachment; filename="${filenameBase}.html"`,
+        "Content-Type": "text/html; charset=utf-8",
+      },
+    });
+  }
 
   try {
     const pdf = await renderMarriageDesignPdf(html);
@@ -936,12 +979,9 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Marriage Design PDF render failed", error);
-    return new NextResponse(html, {
-      headers: {
-        "Content-Disposition": `attachment; filename="${filenameBase}.html"`,
-        "Content-Type": "text/html; charset=utf-8",
-        "X-DYDD-PDF-Fallback": "true",
-      },
-    });
+    return NextResponse.json(
+      { error: "Unable to generate the Marriage Design PDF. Use format=html for a temporary debug copy." },
+      { status: 500 },
+    );
   }
 }

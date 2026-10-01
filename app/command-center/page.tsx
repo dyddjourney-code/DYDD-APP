@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import type { CSSProperties } from "react";
 import { AppNavIcon } from "@/components/app-sidebar";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import { normalizeEmail } from "@/lib/identity/email";
 import { isOwnerPreviewRequest } from "@/lib/owner-preview";
+import { spiritualGifts } from "@/lib/spiritual-gifts/intake";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
@@ -81,6 +83,13 @@ type ParticipantRecord = {
   snapshots: AssessmentSnapshot[];
 };
 
+type CircleComparisonMember = {
+  color: string;
+  id: string;
+  initials: string;
+  name: string;
+};
+
 const assessmentLabels: Record<string, string> = {
   design_pathways: "Design Pathways",
   designid: "DesignID",
@@ -98,6 +107,9 @@ const assessmentOrder = [
 ];
 
 const excludedDefaultGroupNames = new Set(["john's tests"]);
+const circleComparisonColors = ["#4a6239", "#8a5f2d", "#456073", "#735066"];
+const designIdMaxScore = 60;
+const designPdMaxAxisScore = 24;
 
 const groupTypeLabels: Record<string, string> = {
   camp_circle: "Camp Circle",
@@ -945,6 +957,154 @@ function topDesignPdSignals(snapshots: AssessmentSnapshot[]) {
   ).slice(0, 6);
 }
 
+function participantInitials(name: string) {
+  const parts = name
+    .replace(/[^a-zA-Z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+
+  return (parts.length > 1 ? `${parts[0][0]}${parts[parts.length - 1][0]}` : parts[0]?.slice(0, 2) || "?").toUpperCase();
+}
+
+function comparisonMembers(participants: ParticipantRecord[]) {
+  return participants.slice(0, 4).map<CircleComparisonMember>((participant, index) => ({
+    color: circleComparisonColors[index % circleComparisonColors.length],
+    id: participant.id,
+    initials: participantInitials(participant.name),
+    name: participant.name,
+  }));
+}
+
+function currentSnapshotForParticipant(participant: ParticipantRecord, assessmentType: string) {
+  return latestAssessmentSnapshots(participant.snapshots, true).find(
+    (snapshot) => snapshot.assessment_type === assessmentType,
+  );
+}
+
+function numberSnapshotValue(snapshot: AssessmentSnapshot, keys: string[]) {
+  const value = Number(firstSnapshotValue(snapshot, keys));
+  return Number.isFinite(value) ? value : 0;
+}
+
+function spiritualGiftRows(participants: ParticipantRecord[], members: CircleComparisonMember[]) {
+  const rows = new Map<
+    string,
+    {
+      gift: string;
+      owners: { initials: string; name: string; rank: number }[];
+    }
+  >();
+
+  participants.slice(0, members.length).forEach((participant, participantIndex) => {
+    const snapshot = currentSnapshotForParticipant(participant, "spiritual_gifts");
+    if (!snapshot) return;
+
+    [1, 2, 3, 4, 5].forEach((rank) => {
+      const gift = spiritualGiftRank(snapshot, rank)?.label;
+      if (!gift) return;
+
+      const row = rows.get(gift) ?? { gift, owners: [] };
+      row.owners.push({
+        initials: members[participantIndex]?.initials ?? participantInitials(participant.name),
+        name: participant.name,
+        rank,
+      });
+      rows.set(gift, row);
+    });
+  });
+
+  return Array.from(rows.values()).sort(
+    (a, b) => b.owners.length - a.owners.length || Math.min(...a.owners.map((owner) => owner.rank)) - Math.min(...b.owners.map((owner) => owner.rank)) || a.gift.localeCompare(b.gift),
+  );
+}
+
+function missingSpiritualGiftLabels(giftRows: ReturnType<typeof spiritualGiftRows>) {
+  const represented = new Set(giftRows.map((row) => row.gift.toLowerCase()));
+
+  return spiritualGifts
+    .map((gift) => gift.label)
+    .filter((label) => !represented.has(label.toLowerCase()))
+    .slice(0, 8);
+}
+
+function designIdComparisonMembers(participants: ParticipantRecord[], members: CircleComparisonMember[]) {
+  return participants.slice(0, members.length)
+    .map((participant, index) => {
+      const snapshot = currentSnapshotForParticipant(participant, "designid");
+      if (!snapshot) return null;
+
+      return {
+        ...members[index],
+        scores: designIdScoreFields.map((field) => ({
+          label: field.label,
+          value: numberSnapshotValue(snapshot, field.keys),
+        })),
+      };
+    })
+    .filter((member): member is CircleComparisonMember & { scores: { label: string; value: number }[] } => Boolean(member));
+}
+
+function designIdPolygonPoints(scores: { value: number }[]) {
+  const center = 110;
+  const radius = 78;
+
+  return scores
+    .map((score, index) => {
+      const angle = (-90 + index * 90) * (Math.PI / 180);
+      const distance = Math.max(0, Math.min(score.value / designIdMaxScore, 1)) * radius;
+      return `${center + Math.cos(angle) * distance},${center + Math.sin(angle) * distance}`;
+    })
+    .join(" ");
+}
+
+function designPdAxisScore(snapshot: AssessmentSnapshot, axisConfig: (typeof designPdAxes)[number]) {
+  const rawScore = numberSnapshotValue(snapshot, axisConfig.scoreKeys);
+  const rawTendency = titleizeAssessmentValue(
+    designPdAxisObjectValue(
+      typeof snapshot.scores?.axisTendencies === "object" && snapshot.scores.axisTendencies !== null && !Array.isArray(snapshot.scores.axisTendencies)
+        ? (snapshot.scores.axisTendencies as Record<string, unknown>)[axisConfig.axisKey]
+        : "",
+    ).tendency || firstSnapshotValue(snapshot, axisConfig.tendencyKeys),
+  );
+  const tendency = rawTendency.toLowerCase();
+  const direction =
+    tendency.includes("dreamer") || tendency.includes("feel") || tendency.includes("solo")
+      ? -1
+      : tendency.includes("doer") || tendency.includes("think") || tendency.includes("together")
+        ? 1
+        : 0;
+  const position = 50 + direction * Math.min(Math.abs(rawScore), designPdMaxAxisScore) / designPdMaxAxisScore * 50;
+
+  return {
+    position: Math.max(0, Math.min(100, position)),
+    score: rawScore,
+    tendency: rawTendency || "Balanced",
+  };
+}
+
+function designPdComparisonAxes(participants: ParticipantRecord[], members: CircleComparisonMember[]) {
+  return designPdAxes.map((axisConfig) => ({
+    ...axisConfig,
+    poles:
+      axisConfig.axisKey === "plan"
+        ? ["Dreamer", "Doer"]
+        : axisConfig.axisKey === "decide"
+          ? ["Feel It", "Think It"]
+          : ["Solo", "Together"],
+    members: participants.slice(0, members.length)
+      .map((participant, index) => {
+        const snapshot = currentSnapshotForParticipant(participant, "designpd");
+        if (!snapshot) return null;
+
+        return {
+          ...members[index],
+          ...designPdAxisScore(snapshot, axisConfig),
+        };
+      })
+      .filter((member): member is CircleComparisonMember & { position: number; score: number; tendency: string } => Boolean(member)),
+  }));
+}
+
 function normalizedDuplicateName(value: string) {
   return value
     .toLowerCase()
@@ -1120,6 +1280,20 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
         snapshots: latestAssessmentSnapshots(participant.snapshots, true),
       }))
     : filteredMainParticipants;
+  const showWilloughbyComparison = Boolean(activeGroup?.name.toLowerCase().includes("willoughby"));
+  const circleMembers = showWilloughbyComparison ? comparisonMembers(displayParticipants) : [];
+  const giftComparisonRows = showWilloughbyComparison
+    ? spiritualGiftRows(displayParticipants, circleMembers)
+    : [];
+  const missingGiftLabels = showWilloughbyComparison
+    ? missingSpiritualGiftLabels(giftComparisonRows)
+    : [];
+  const designIdComparison = showWilloughbyComparison
+    ? designIdComparisonMembers(displayParticipants, circleMembers)
+    : [];
+  const designPdComparison = showWilloughbyComparison
+    ? designPdComparisonAxes(displayParticipants, circleMembers)
+    : [];
 
   return (
     <main className="command-center-shell">
@@ -1238,6 +1412,152 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
             )}
           </article>
         </div>
+
+        {showWilloughbyComparison ? (
+          <section className="command-center-circle-visuals" aria-label="Willoughby group comparison visuals">
+            <div className="command-center-panel-heading">
+              <p className="section-label">Couple comparison prototype</p>
+              <h2>Willoughby overlap view</h2>
+            </div>
+            <div className="circle-visual-grid">
+              <article className="circle-visual-card spiritual-gift-overlap">
+                <span>Spiritual Gifts overlap</span>
+                {giftComparisonRows.length ? (
+                  <>
+                    <div className="gift-overlap-table">
+                      {giftComparisonRows.slice(0, 10).map((row) => (
+                        <div className={row.owners.length > 1 ? "shared" : ""} key={row.gift}>
+                          <strong>{row.gift}</strong>
+                          <small>
+                            {row.owners
+                              .map((owner) => `${owner.initials} #${owner.rank}`)
+                              .join(" / ")}
+                          </small>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="gift-gap-strip">
+                      <strong>Not in either current top five</strong>
+                      <small>{missingGiftLabels.join(", ") || "No gaps found from the saved gift list."}</small>
+                    </div>
+                  </>
+                ) : (
+                  <p className="command-center-empty">No Spiritual Gifts overlap data for this group yet.</p>
+                )}
+              </article>
+
+              <article className="circle-visual-card designid-capacity-card">
+                <span>DesignID capacity overlay</span>
+                {designIdComparison.length ? (
+                  <div className="designid-radar-wrap">
+                    <svg viewBox="0 0 220 220" role="img" aria-label="DesignID reflection capacity comparison">
+                      {[0.25, 0.5, 0.75, 1].map((scale) => (
+                        <polygon
+                          className="designid-grid-ring"
+                          key={scale}
+                          points={designIdPolygonPoints(designIdScoreFields.map(() => ({ value: designIdMaxScore * scale })))}
+                        />
+                      ))}
+                      <line className="designid-axis-line" x1="110" x2="110" y1="24" y2="196" />
+                      <line className="designid-axis-line" x1="24" x2="196" y1="110" y2="110" />
+                      {designIdComparison.map((member) => (
+                        <g key={member.id}>
+                          <polygon
+                            className="designid-member-shape"
+                            points={designIdPolygonPoints(member.scores)}
+                            style={{ "--member-color": member.color } as CSSProperties}
+                          />
+                          {member.scores.map((score, scoreIndex) => {
+                            const angle = (-90 + scoreIndex * 90) * (Math.PI / 180);
+                            const distance = Math.max(0, Math.min(score.value / designIdMaxScore, 1)) * 78;
+                            const x = 110 + Math.cos(angle) * distance;
+                            const y = 110 + Math.sin(angle) * distance;
+
+                            return (
+                              <g key={`${member.id}-${score.label}`}>
+                                <circle
+                                  className="designid-member-dot"
+                                  cx={x}
+                                  cy={y}
+                                  r="6"
+                                  style={{ "--member-color": member.color } as CSSProperties}
+                                />
+                                <text x={x} y={y + 3}>{member.initials}</text>
+                              </g>
+                            );
+                          })}
+                        </g>
+                      ))}
+                      {designIdScoreFields.map((field, index) => {
+                        const labelPoints = [
+                          { x: 110, y: 14 },
+                          { x: 210, y: 114 },
+                          { x: 110, y: 212 },
+                          { x: 10, y: 114 },
+                        ];
+                        const point = labelPoints[index];
+
+                        return (
+                          <text className="designid-axis-label" key={field.label} x={point.x} y={point.y}>
+                            {field.label}
+                          </text>
+                        );
+                      })}
+                    </svg>
+                    <div className="circle-visual-legend">
+                      {designIdComparison.map((member) => (
+                        <div key={member.id}>
+                          <i style={{ background: member.color }} />
+                          <strong>{member.initials}</strong>
+                          <small>{member.name}</small>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="command-center-empty">No DesignID data for this group yet.</p>
+                )}
+              </article>
+
+              <article className="circle-visual-card designpd-axis-card">
+                <span>DesignPD tendency lines</span>
+                {designPdComparison.some((axis) => axis.members.length) ? (
+                  <div className="designpd-axis-stack">
+                    {designPdComparison.map((axis) => (
+                      <div className="designpd-axis-row" key={axis.axisKey}>
+                        <div className="designpd-axis-heading">
+                          <strong>{axis.label}</strong>
+                          <small>{axis.poles[0]} to {axis.poles[1]}</small>
+                        </div>
+                        <div className="designpd-axis-track">
+                          <small>{axis.poles[0]}</small>
+                          <div>
+                            <i />
+                            {axis.members.map((member) => (
+                              <b
+                                key={member.id}
+                                style={{
+                                  "--member-color": member.color,
+                                  left: `${member.position}%`,
+                                } as CSSProperties}
+                                title={`${member.name}: ${member.tendency} (${member.score})`}
+                              >
+                                {member.initials}
+                              </b>
+                            ))}
+                          </div>
+                          <small>{axis.poles[1]}</small>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="command-center-empty">No DesignPD data for this group yet.</p>
+                )}
+              </article>
+            </div>
+          </section>
+        ) : null}
       </section>
 
       <section className="command-center-layout">

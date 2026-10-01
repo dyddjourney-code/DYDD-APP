@@ -6059,6 +6059,257 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   text-align: right;
 }
 
+.command-center-circle-visuals {
+  border-top: 1px solid rgba(36, 63, 39, 0.12);
+  margin-top: 22px;
+  padding-top: 22px;
+}
+
+.circle-visual-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(230px, 0.9fr) minmax(300px, 1.2fr) minmax(280px, 1fr);
+}
+
+.circle-visual-card {
+  align-content: start;
+  background: #fffaf0;
+  border: 1px solid rgba(36, 63, 39, 0.12);
+  display: grid;
+  gap: 14px;
+  min-height: 300px;
+  padding: 16px;
+}
+
+.circle-visual-card > span {
+  color: var(--green-dark);
+  font-size: 0.78rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.gift-overlap-table {
+  display: grid;
+  gap: 8px;
+}
+
+.gift-overlap-table div {
+  align-items: center;
+  background: rgba(247, 247, 245, 0.92);
+  border: 1px solid rgba(36, 63, 39, 0.08);
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-height: 44px;
+  padding: 10px 12px;
+}
+
+.gift-overlap-table div.shared {
+  background: rgba(117, 154, 91, 0.14);
+  border-color: rgba(74, 98, 57, 0.24);
+}
+
+.gift-overlap-table strong,
+.gift-gap-strip strong {
+  color: var(--green-dark);
+  line-height: 1.25;
+}
+
+.gift-overlap-table small,
+.gift-gap-strip small {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.gift-gap-strip {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px dashed rgba(36, 63, 39, 0.2);
+  display: grid;
+  gap: 5px;
+  margin-top: 2px;
+  padding: 12px;
+}
+
+.designid-radar-wrap {
+  align-items: center;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(220px, 1fr) minmax(120px, 0.45fr);
+}
+
+.designid-radar-wrap svg {
+  aspect-ratio: 1;
+  display: block;
+  max-width: 330px;
+  width: 100%;
+}
+
+.designid-grid-ring {
+  fill: none;
+  stroke: rgba(36, 63, 39, 0.13);
+  stroke-width: 1;
+}
+
+.designid-axis-line {
+  stroke: rgba(36, 63, 39, 0.14);
+  stroke-width: 1;
+}
+
+.designid-member-shape {
+  fill: color-mix(in srgb, var(--member-color) 18%, transparent);
+  stroke: var(--member-color);
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.designid-member-dot {
+  fill: #fffaf0;
+  stroke: var(--member-color);
+  stroke-width: 3;
+}
+
+.designid-radar-wrap text {
+  dominant-baseline: middle;
+  fill: var(--green-dark);
+  font-size: 0.48rem;
+  font-weight: 950;
+  text-anchor: middle;
+}
+
+.designid-radar-wrap .designid-axis-label {
+  fill: var(--muted);
+  font-size: 0.54rem;
+  letter-spacing: 0.02em;
+}
+
+.circle-visual-legend {
+  display: grid;
+  gap: 9px;
+}
+
+.circle-visual-legend div {
+  align-items: center;
+  display: grid;
+  gap: 6px;
+  grid-template-columns: 10px auto;
+}
+
+.circle-visual-legend i {
+  border-radius: 999px;
+  height: 10px;
+  width: 10px;
+}
+
+.circle-visual-legend strong {
+  color: var(--green-dark);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.88rem;
+}
+
+.circle-visual-legend small {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 780;
+  grid-column: 2;
+  line-height: 1.25;
+}
+
+.designpd-axis-stack {
+  display: grid;
+  gap: 18px;
+}
+
+.designpd-axis-row {
+  display: grid;
+  gap: 9px;
+}
+
+.designpd-axis-heading {
+  align-items: baseline;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.designpd-axis-heading strong {
+  color: var(--green-dark);
+}
+
+.designpd-axis-heading small {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.designpd-axis-track {
+  align-items: center;
+  display: grid;
+  gap: 9px;
+  grid-template-columns: 62px minmax(150px, 1fr) 72px;
+}
+
+.designpd-axis-track small {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.designpd-axis-track small:last-child {
+  text-align: right;
+}
+
+.designpd-axis-track > div {
+  height: 44px;
+  position: relative;
+}
+
+.designpd-axis-track i {
+  background: linear-gradient(90deg, rgba(138, 95, 45, 0.42), rgba(36, 63, 39, 0.12), rgba(74, 98, 57, 0.48));
+  border-radius: 999px;
+  display: block;
+  height: 8px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 18px;
+}
+
+.designpd-axis-track i::after {
+  background: rgba(36, 63, 39, 0.28);
+  content: "";
+  display: block;
+  height: 18px;
+  left: 50%;
+  position: absolute;
+  top: -5px;
+  width: 1px;
+}
+
+.designpd-axis-track b {
+  align-items: center;
+  background: var(--member-color);
+  border: 2px solid #fffaf0;
+  border-radius: 999px;
+  box-shadow: 0 5px 12px rgba(36, 63, 39, 0.14);
+  color: #fffaf0;
+  display: flex;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.7rem;
+  font-style: normal;
+  font-weight: 950;
+  height: 28px;
+  justify-content: center;
+  min-width: 28px;
+  padding: 0 5px;
+  position: absolute;
+  top: 8px;
+  transform: translateX(-50%);
+}
+
 .command-center-duplicate-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 34px;
@@ -6414,7 +6665,9 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .command-center-hero,
   .command-center-layout,
   .command-center-person-header,
-  .command-center-insight-grid {
+  .command-center-insight-grid,
+  .circle-visual-grid,
+  .designid-radar-wrap {
     grid-template-columns: 1fr;
   }
 
@@ -6434,8 +6687,18 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .command-center-batch-controls,
   .command-center-filters,
   .command-center-add-list form,
-  .command-center-person-header form {
+  .command-center-person-header form,
+  .gift-overlap-table div,
+  .designpd-axis-track {
     grid-template-columns: 1fr;
+  }
+
+  .designpd-axis-track small:last-child {
+    text-align: left;
+  }
+
+  .designpd-axis-track > div {
+    min-width: 0;
   }
 }
 

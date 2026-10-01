@@ -293,44 +293,71 @@ function designIdSummary(snapshot: AssessmentSnapshot) {
 
 const designPdAxes = [
   {
+    axisKey: "plan",
     label: "Plan",
     scoreKeys: ["Plan_Score", "planScore"],
     tendencyKeys: ["Plan_Tendency", "planTendency"],
   },
   {
+    axisKey: "decide",
     label: "Decide",
     scoreKeys: ["Decide_Score", "decideScore"],
     tendencyKeys: ["Decide_Tendency", "decideTendency"],
   },
   {
+    axisKey: "do",
     label: "Do",
     scoreKeys: ["Do_Score", "doScore"],
     tendencyKeys: ["Do_Tendency", "doTendency"],
   },
 ];
 
+function designPdAxisObjectValue(value: unknown) {
+  if (typeof value === "string" || typeof value === "number") {
+    return { tendency: compactValue(value), score: "" };
+  }
+
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    return { tendency: "", score: "" };
+  }
+
+  const data = value as Record<string, unknown>;
+
+  return {
+    tendency:
+      compactValue(data.tendency) ||
+      compactValue(data.label) ||
+      compactValue(data.name) ||
+      compactValue(data.value),
+    score:
+      compactValue(data.score) ||
+      compactValue(data.allocation) ||
+      compactValue(data.points),
+  };
+}
+
 function designPdAxisDetails(snapshot: AssessmentSnapshot) {
   const axis = snapshot.scores?.axisTendencies;
 
-  if (typeof axis === "object" && axis !== null && !Array.isArray(axis)) {
-    return Object.entries(axis as Record<string, unknown>)
-      .slice(0, 6)
-      .map(([label, value]) => ({
-        label: titleizeAssessmentValue(label),
-        value: titleizeAssessmentValue(compactValue(value)),
-      }))
-      .filter((detail) => detail.value);
-  }
+  const axisTendencies =
+    typeof axis === "object" && axis !== null && !Array.isArray(axis)
+      ? (axis as Record<string, unknown>)
+      : {};
 
   return designPdAxes
     .map((axisConfig) => {
-      const tendency = firstSnapshotValue(snapshot, axisConfig.tendencyKeys);
-      const score = firstSnapshotValue(snapshot, axisConfig.scoreKeys);
+      const axisObjectValue = designPdAxisObjectValue(axisTendencies[axisConfig.axisKey]);
+      const tendency =
+        axisObjectValue.tendency ||
+        firstSnapshotValue(snapshot, axisConfig.tendencyKeys);
+      const score =
+        axisObjectValue.score ||
+        firstSnapshotValue(snapshot, axisConfig.scoreKeys);
 
       if (!tendency && !score) return null;
 
       return {
-        label: axisConfig.label,
+        label: `${axisConfig.label} allocation`,
         value: [titleizeAssessmentValue(tendency), score ? `(${score})` : ""]
           .filter(Boolean)
           .join(" "),
@@ -759,6 +786,39 @@ function dedupeParticipantSnapshots(snapshots: AssessmentSnapshot[]) {
   return Array.from(records.values());
 }
 
+function isGroupCurrentSnapshot(snapshot: AssessmentSnapshot) {
+  if (snapshot.assessment_type !== "fruit_360") return true;
+
+  const summary = scoreObject(snapshot, "summary");
+  const scores = scoreObject(snapshot, "scores");
+  const reportMode = compactValue(summary.Report_Mode) || compactValue(summary.reportMode);
+  const observerCount = Number(
+    compactValue(summary.Observer_Count) ||
+      compactValue(summary.observerCount) ||
+      compactValue(scores.Observer_Count) ||
+      compactValue(scores.observerCount) ||
+      0,
+  );
+
+  return reportMode !== "SELF_ONLY" && observerCount > 0;
+}
+
+function latestAssessmentSnapshots(snapshots: AssessmentSnapshot[], groupView = false) {
+  const latest = new Map<string, AssessmentSnapshot>();
+
+  for (const snapshot of groupView ? snapshots.filter(isGroupCurrentSnapshot) : snapshots) {
+    const current = latest.get(snapshot.assessment_type);
+
+    if (!current || snapshotDateValue(snapshot) > snapshotDateValue(current)) {
+      latest.set(snapshot.assessment_type, snapshot);
+    }
+  }
+
+  return assessmentOrder
+    .map((assessmentType) => latest.get(assessmentType))
+    .filter((snapshot): snapshot is AssessmentSnapshot => Boolean(snapshot));
+}
+
 function filterParticipants(
   participants: ParticipantRecord[],
   {
@@ -877,19 +937,11 @@ function topDesignPdSignals(snapshots: AssessmentSnapshot[]) {
   return tallyValues(
     snapshots
       .filter((snapshot) => snapshot.assessment_type === "designpd")
-      .flatMap((snapshot) => {
-        const axis = snapshot.scores?.axisTendencies;
-
-        if (typeof axis === "object" && axis !== null && !Array.isArray(axis)) {
-          return Object.values(axis as Record<string, unknown>).map(compactValue);
-        }
-
-        return [
-          firstSnapshotValue(snapshot, ["Plan_Tendency", "planTendency"]),
-          firstSnapshotValue(snapshot, ["Decide_Tendency", "decideTendency"]),
-          firstSnapshotValue(snapshot, ["Do_Tendency", "doTendency"]),
-        ];
-      }),
+      .flatMap((snapshot) =>
+        designPdAxisDetails(snapshot).map((detail) =>
+          detail.value.replace(/ \(\d+(?:\.\d+)?\)$/, ""),
+        ),
+      ),
   ).slice(0, 6);
 }
 
@@ -1048,15 +1100,26 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
       })
         .filter((participant) => !isParticipantInGroup(participant, activeGroup.id))
     : [];
-  const populationSnapshots = populationParticipants.flatMap((participant) => participant.snapshots);
+  const populationSnapshots = populationParticipants.flatMap((participant) =>
+    activeGroup ? latestAssessmentSnapshots(participant.snapshots, true) : participant.snapshots,
+  );
   const snapshotCount = populationSnapshots.length;
   const overallAssessmentCounts = assessmentCounts(populationSnapshots);
-  const filteredSnapshots = filteredMainParticipants.flatMap((participant) => participant.snapshots);
+  const filteredSnapshots = filteredMainParticipants.flatMap((participant) =>
+    activeGroup ? latestAssessmentSnapshots(participant.snapshots, true) : participant.snapshots,
+  );
   const filteredAssessmentCounts = assessmentCounts(filteredSnapshots);
   const topGiftSignals = topSpiritualGiftSignals(filteredSnapshots);
   const topDesignId = topDesignIdSignals(filteredSnapshots);
   const topDesignPd = topDesignPdSignals(filteredSnapshots);
   const insightScope = activeGroup ? activeGroup.name : params?.q ? "Current search" : "Current view";
+  const shouldShowLatestOnly = Boolean(activeGroup);
+  const displayParticipants = shouldShowLatestOnly
+    ? filteredMainParticipants.map((participant) => ({
+        ...participant,
+        snapshots: latestAssessmentSnapshots(participant.snapshots, true),
+      }))
+    : filteredMainParticipants;
 
   return (
     <main className="command-center-shell">
@@ -1352,8 +1415,8 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
           ) : null}
 
           <div className="command-center-person-list">
-            {filteredMainParticipants.length ? (
-              filteredMainParticipants.map((participant) => (
+            {displayParticipants.length ? (
+              displayParticipants.map((participant) => (
                 <article className="command-center-person" key={participant.id}>
                   <div className="command-center-person-header">
                     <div>

@@ -1503,10 +1503,10 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                                   className="designid-member-dot"
                                   cx={x}
                                   cy={y}
-                                  r="6"
+                                  r="9"
                                   style={{ "--member-color": member.color } as CSSProperties}
                                 />
-                                <text x={x} y={y + 3}>{member.initials}</text>
+                                <text className="designid-member-initials" x={x} y={y}>{member.initials}</text>
                               </g>
                             );
                           })}
@@ -1515,9 +1515,9 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                       {designIdScoreFields.map((field, index) => {
                         const labelPoints = [
                           { x: 160, y: 24 },
-                          { x: 302, y: 164 },
+                          { x: 288, y: 164 },
                           { x: 160, y: 298 },
-                          { x: 26, y: 164 },
+                          { x: 34, y: 164 },
                         ];
                         const point = labelPoints[index];
 

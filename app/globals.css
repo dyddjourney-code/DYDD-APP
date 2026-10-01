@@ -6200,9 +6200,9 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .designid-member-dot {
-  fill: #fffaf0;
-  stroke: var(--member-color);
-  stroke-width: 3.4;
+  fill: var(--member-color);
+  stroke: #fffaf0;
+  stroke-width: 2.4;
 }
 
 .designid-radar-wrap text {
@@ -6218,6 +6218,15 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   font-size: 0.72rem;
   font-weight: 950;
   letter-spacing: 0;
+}
+
+.designid-radar-wrap .designid-member-initials {
+  dominant-baseline: middle;
+  fill: #fffaf0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.42rem;
+  font-weight: 950;
+  text-anchor: middle;
 }
 
 .designid-radar-wrap .designid-grid-label {

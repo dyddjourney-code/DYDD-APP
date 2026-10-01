@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useState } from "react";
 import { PageHelp } from "@/components/page-help";
 import {
@@ -18,6 +19,23 @@ type CircleMember = {
   shared: string;
 };
 
+type DemoAssessmentMember = {
+  color: string;
+  designId: {
+    architect: number;
+    artisan: number;
+    shepherd: number;
+    steward: number;
+  };
+  designPd: {
+    decide: number;
+    do: number;
+    plan: number;
+  };
+  gifts: string[];
+  name: string;
+};
+
 type SampleCircle = {
   slug: string;
   name: string;
@@ -29,6 +47,7 @@ type SampleCircle = {
   accessWindow: string;
   seatUse: string;
   members: CircleMember[];
+  demoAssessments?: DemoAssessmentMember[];
 };
 
 const circleTypes = [
@@ -109,6 +128,29 @@ const accessFlow = [
   "Leaders see seat status, readiness, progress, reminders, and Field Guide notes for the circle they are leading.",
 ];
 
+const demoColors = ["#4a6239", "#8a5f2d", "#456073", "#735066", "#739d5e", "#b88a43", "#647c9b", "#5a496b", "#6f4d20", "#2f5c49"];
+const designIdMaxScore = 60;
+const designPdMaxAxisScore = 24;
+const designPdTickMarks = [-20, -15, -10, -5, 0, 5, 10, 15, 20];
+
+const thursdayGroupDemoAssessments: DemoAssessmentMember[] = [
+  { name: "Jordan Reyes", color: demoColors[0], gifts: ["Teaching", "Leadership", "Wisdom", "Discernment", "Shepherding"], designId: { architect: 42, artisan: 19, shepherd: 48, steward: 27 }, designPd: { plan: -14, decide: 9, do: -6 } },
+  { name: "Maya Bennett", color: demoColors[1], gifts: ["Mercy", "Encouragement", "Faith", "Hospitality", "Discernment"], designId: { architect: 24, artisan: 31, shepherd: 46, steward: 29 }, designPd: { plan: -5, decide: -13, do: 7 } },
+  { name: "Caleb Ortiz", color: demoColors[2], gifts: ["Service", "Giving", "Helps", "Administration", "Faith"], designId: { architect: 30, artisan: 36, shepherd: 28, steward: 41 }, designPd: { plan: 8, decide: 15, do: -2 } },
+  { name: "Nora Whitaker", color: demoColors[3], gifts: ["Discernment", "Wisdom", "Prophecy", "Teaching", "Knowledge"], designId: { architect: 47, artisan: 22, shepherd: 33, steward: 35 }, designPd: { plan: -18, decide: -6, do: 12 } },
+  { name: "Eli Monroe", color: demoColors[4], gifts: ["Evangelism", "Faith", "Leadership", "Exhortation", "Teaching"], designId: { architect: 39, artisan: 44, shepherd: 21, steward: 18 }, designPd: { plan: -2, decide: 4, do: 19 } },
+  { name: "Priya Collins", color: demoColors[5], gifts: ["Administration", "Leadership", "Service", "Wisdom", "Giving"], designId: { architect: 34, artisan: 27, shepherd: 37, steward: 46 }, designPd: { plan: 16, decide: 11, do: 3 } },
+  { name: "Owen Mercer", color: demoColors[6], gifts: ["Hospitality", "Mercy", "Helps", "Service", "Encouragement"], designId: { architect: 18, artisan: 38, shepherd: 43, steward: 24 }, designPd: { plan: -9, decide: -16, do: -14 } },
+  { name: "Tessa Grant", color: demoColors[7], gifts: ["Creative Communication", "Teaching", "Encouragement", "Knowledge", "Wisdom"], designId: { architect: 29, artisan: 49, shepherd: 26, steward: 20 }, designPd: { plan: -20, decide: -3, do: 8 } },
+  { name: "Marcus Hale", color: demoColors[8], gifts: ["Leadership", "Administration", "Teaching", "Faith", "Discernment"], designId: { architect: 45, artisan: 30, shepherd: 31, steward: 39 }, designPd: { plan: 12, decide: 20, do: 15 } },
+  { name: "Anika Rhodes", color: demoColors[9], gifts: ["Prayer", "Mercy", "Discernment", "Hospitality", "Faith"], designId: { architect: 21, artisan: 25, shepherd: 51, steward: 33 }, designPd: { plan: -7, decide: -19, do: -4 } },
+];
+
+const jordanAveryDemoAssessments: DemoAssessmentMember[] = [
+  { name: "Jordan Reyes", color: demoColors[0], gifts: ["Teaching", "Leadership", "Wisdom", "Discernment", "Shepherding"], designId: { architect: 42, artisan: 19, shepherd: 48, steward: 27 }, designPd: { plan: -14, decide: 9, do: -6 } },
+  { name: "Avery Reyes", color: demoColors[1], gifts: ["Mercy", "Hospitality", "Discernment", "Service", "Faith"], designId: { architect: 26, artisan: 41, shepherd: 38, steward: 44 }, designPd: { plan: 4, decide: -12, do: 17 } },
+];
+
 const sampleCircles: SampleCircle[] = [
   {
     slug: "thursday-group",
@@ -132,6 +174,7 @@ const sampleCircles: SampleCircle[] = [
       { name: "Marcus Hale", role: "Participant", progress: 35, current: "Who Vs. Whose", assessment: "Connected", shared: "Marked present." },
       { name: "Anika Rhodes", role: "Participant", progress: 27, current: "Purpose", assessment: "Reminder needed", shared: "Needs first check-in." },
     ],
+    demoAssessments: thursdayGroupDemoAssessments,
   },
   {
     slug: "couple-walk",
@@ -147,6 +190,7 @@ const sampleCircles: SampleCircle[] = [
       { name: "Jordan Reyes", role: "Spouse", progress: 46, current: "Design Reflections and Love", assessment: "Shepherd - Architect", shared: "Shared love-language observation." },
       { name: "Avery Reyes", role: "Spouse", progress: 44, current: "Design Reflections and Love", assessment: "Artisan - Steward", shared: "Opted into couple comparison." },
     ],
+    demoAssessments: jordanAveryDemoAssessments,
   },
   {
     slug: "wednesday-class",
@@ -194,11 +238,9 @@ const archivedCircles = [
 ];
 
 const workspaceTabs = [
-  ["Overview", "Pace, meeting, and leader next steps", "circle-overview"],
-  ["People", "Progress, assessment status, and reminders", "circle-people"],
-  ["Journey Track", "Racetrack view for the circle", "circle-journey-track"],
-  ["Field Guide", "Leader notes matched to the course map", "field-guide"],
-  ["Next Meeting", "Meeting focus and quick actions", "circle-next-meeting"],
+  ["Progress", "Pace, people, and current meeting movement", "circle-progress"],
+  ["Data", "Assessment interpretation for this circle", "circle-data"],
+  ["Field Guide", "Leader prompts, actions, and session notes", "field-guide"],
 ];
 
 const sharedLeaderNotes = [
@@ -234,6 +276,393 @@ function remindersNeeded(members: CircleMember[]) {
     const shared = member.shared.toLowerCase();
     return assessment.includes("pending") || assessment.includes("reminder") || shared.includes("needs");
   }).length;
+}
+
+function participantInitials(name: string) {
+  const parts = name
+    .replace(/[^a-zA-Z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+
+  return (parts.length > 1 ? `${parts[0][0]}${parts[parts.length - 1][0]}` : parts[0]?.slice(0, 2) || "?").toUpperCase();
+}
+
+function signedDesignPdPosition(score: number) {
+  return Math.max(0, Math.min(100, 50 + score / designPdMaxAxisScore * 50));
+}
+
+function designPdPoles(axis: keyof DemoAssessmentMember["designPd"]) {
+  if (axis === "plan") return ["Dreamer", "Doer"];
+  if (axis === "decide") return ["Feel It", "Think It"];
+  return ["Solo", "Together"];
+}
+
+function designPdLabel(axis: keyof DemoAssessmentMember["designPd"]) {
+  if (axis === "plan") return "Plan";
+  if (axis === "decide") return "Decide";
+  return "Do";
+}
+
+function designPdTendency(axis: keyof DemoAssessmentMember["designPd"], score: number) {
+  const [left, right] = designPdPoles(axis);
+  if (score < 0) return left;
+  if (score > 0) return right;
+  return "Balanced";
+}
+
+function designIdReflectionRows(members: DemoAssessmentMember[]) {
+  const fields = [
+    ["architect", "Architect"],
+    ["artisan", "Artisan"],
+    ["shepherd", "Shepherd"],
+    ["steward", "Steward"],
+  ] as const;
+
+  return fields.map(([key, label]) => {
+    const values = members.map((member) => member.designId[key]);
+    const average = Math.round((values.reduce((sum, value) => sum + value, 0) / values.length) * 10) / 10;
+
+    return {
+      average,
+      highCount: values.filter((value) => value >= 45).length,
+      key,
+      label,
+    };
+  });
+}
+
+function giftDistribution(members: DemoAssessmentMember[]) {
+  const rows = new Map<string, { count: number; topFiveCount: number }>();
+
+  for (const member of members) {
+    member.gifts.forEach((gift, index) => {
+      const row = rows.get(gift) ?? { count: 0, topFiveCount: 0 };
+      row.topFiveCount += 1;
+      if (index === 0) row.count += 1;
+      rows.set(gift, row);
+    });
+  }
+
+  return Array.from(rows.entries())
+    .map(([label, values]) => ({ label, ...values }))
+    .filter((item) => item.count > 0)
+    .sort((a, b) => b.count - a.count || b.topFiveCount - a.topFiveCount || a.label.localeCompare(b.label));
+}
+
+function primaryReflectionCounts(members: DemoAssessmentMember[]) {
+  const rows = new Map<string, number>();
+
+  for (const member of members) {
+    const entries = Object.entries(member.designId).sort((a, b) => b[1] - a[1]);
+    const primary = entries[0]?.[0];
+    if (!primary) continue;
+    const label = primary[0].toUpperCase() + primary.slice(1);
+    rows.set(label, (rows.get(label) ?? 0) + 1);
+  }
+
+  return Array.from(rows.entries())
+    .map(([label, count]) => ({ count, label }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+}
+
+function groupDesignPdAxes(members: DemoAssessmentMember[]) {
+  return (["plan", "decide", "do"] as const).map((axisKey) => {
+    const allMembers = members.map((member) => ({
+      color: member.color,
+      id: member.name,
+      initials: participantInitials(member.name),
+      name: member.name,
+      position: signedDesignPdPosition(member.designPd[axisKey]),
+      signedScore: member.designPd[axisKey],
+      stackIndex: 0,
+      tendency: designPdTendency(axisKey, member.designPd[axisKey]),
+    }));
+    const membersByScore = new Map<number, typeof allMembers>();
+
+    for (const member of allMembers) {
+      membersByScore.set(member.signedScore, [...(membersByScore.get(member.signedScore) ?? []), member]);
+    }
+
+    const visibleMembers: typeof allMembers = [];
+    const overflowBuckets: {
+      bucket: number;
+      count: number;
+      members: typeof allMembers;
+      position: number;
+    }[] = [];
+
+    for (const [bucket, bucketMembers] of membersByScore.entries()) {
+      const sortedMembers = bucketMembers.sort((a, b) => a.initials.localeCompare(b.initials));
+      sortedMembers.slice(0, 4).forEach((member, stackIndex) => {
+        visibleMembers.push({ ...member, stackIndex });
+      });
+
+      if (sortedMembers.length > 4) {
+        overflowBuckets.push({
+          bucket,
+          count: sortedMembers.length - 4,
+          members: sortedMembers.slice(4),
+          position: signedDesignPdPosition(bucket),
+        });
+      }
+    }
+
+    const signedScores = allMembers.map((member) => member.signedScore);
+    const maxStack = Math.min(4, Math.max(1, ...Array.from(membersByScore.values()).map((items) => items.length)));
+    const spread = signedScores.length ? Math.max(...signedScores) - Math.min(...signedScores) : 0;
+
+    return {
+      axisKey,
+      label: designPdLabel(axisKey),
+      maxStack,
+      members: visibleMembers.sort((a, b) => a.position - b.position || a.stackIndex - b.stackIndex),
+      overflowBuckets: overflowBuckets.sort((a, b) => a.position - b.position),
+      poles: designPdPoles(axisKey),
+      spread,
+    };
+  });
+}
+
+function CircleDataDashboard({ circle }: { circle: SampleCircle }) {
+  const demoAssessments = circle.demoAssessments ?? [];
+
+  if (!demoAssessments.length) {
+    return (
+      <div className="circle-data-empty">
+        <strong>No assessment dashboard yet</strong>
+        <p>This circle shows progress only. Data opens here after the group has Spiritual Gifts, DesignID, or DesignPD records.</p>
+      </div>
+    );
+  }
+
+  return demoAssessments.length === 2
+    ? <CoupleDataDashboard members={demoAssessments} />
+    : <GroupDataDashboard members={demoAssessments} />;
+}
+
+function GroupDataDashboard({ members }: { members: DemoAssessmentMember[] }) {
+  const gifts = giftDistribution(members);
+  const maxGiftCount = Math.max(...gifts.map((gift) => gift.count), 1);
+  const designIdRows = designIdReflectionRows(members);
+  const primaryRows = primaryReflectionCounts(members);
+  const designPdAxes = groupDesignPdAxes(members);
+  const strongestDesignId = [...designIdRows].sort((a, b) => b.average - a.average)[0];
+  const widestDesignPdAxis = [...designPdAxes].sort((a, b) => b.spread - a.spread)[0];
+
+  return (
+    <section className="circle-data-dashboard" aria-label="Circle assessment data preview">
+      <div className="group-interpretation-summary circle-data-summary">
+        <article>
+          <span>Spiritual Gifts read</span>
+          <strong>{gifts[0]?.label ?? "Waiting for gifts"}</strong>
+          <small>{gifts[0]?.count ?? 0} people list this as their current #1 gift.</small>
+        </article>
+        <article>
+          <span>DesignID center of gravity</span>
+          <strong>{strongestDesignId?.label ?? "Waiting for DesignID"}</strong>
+          <small>Highest average reflection score: {strongestDesignId?.average ?? 0}.</small>
+        </article>
+        <article>
+          <span>DesignPD widest spread</span>
+          <strong>{widestDesignPdAxis?.label ?? "Waiting for DesignPD"}</strong>
+          <small>{widestDesignPdAxis?.spread ?? 0} points from one side of the tendency line to the other.</small>
+        </article>
+      </div>
+
+      <div className="group-visual-grid circle-data-visual-grid">
+        <article className="group-visual-card group-gifts-card">
+          <span>Spiritual Gifts current #1 distribution</span>
+          <p>Demo view: each bar counts the person&apos;s current top gift and notes how often that gift appears anywhere in the top five.</p>
+          <div className="group-horizontal-bars">
+            {gifts.slice(0, 12).map((item) => (
+              <div className="group-horizontal-bar-row" key={item.label}>
+                <small>{item.label}</small>
+                <div aria-hidden="true">
+                  <i style={{ width: `${Math.max((item.count / maxGiftCount) * 100, 8)}%` }} />
+                </div>
+                <strong>{item.count}</strong>
+                <em>{item.topFiveCount} top 5</em>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article className="group-visual-card group-designid-card">
+          <span>DesignID group capacity bars</span>
+          <p>Demo view: average capacity across the four reflections, with high-capacity counts for quick teaching context.</p>
+          <div className="group-designid-bars">
+            {designIdRows.map((item) => (
+              <div className={`group-designid-bar-row ${item.key}`} key={item.label}>
+                <div>
+                  <strong>{item.label}</strong>
+                  <small>{item.highCount} people at 45+</small>
+                </div>
+                <div aria-hidden="true">
+                  <i style={{ width: `${Math.max((item.average / designIdMaxScore) * 100, item.average ? 8 : 0)}%` }} />
+                </div>
+                <b>{item.average}</b>
+              </div>
+            ))}
+          </div>
+          <div className="group-primary-strip">
+            <strong>Primary reflection count</strong>
+            <div>
+              {primaryRows.map((item) => (
+                <span key={item.label}>{item.label}: {item.count}</span>
+              ))}
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <DesignPdGroupHeatmap axes={designPdAxes} />
+    </section>
+  );
+}
+
+function DesignPdGroupHeatmap({ axes }: { axes: ReturnType<typeof groupDesignPdAxes> }) {
+  return (
+    <article className="group-visual-card group-designpd-card">
+      <span>DesignPD group tendency map</span>
+      <p>Demo view: each bubble is placed at its actual score. Only exact matching scores stack or move into an overflow box.</p>
+      <div className="group-designpd-heatmap">
+        {axes.map((axis) => (
+          <div className="group-designpd-axis" key={axis.axisKey}>
+            <div className="group-designpd-axis-title">
+              <strong>{axis.label}</strong>
+              <small>{axis.spread} point spread</small>
+            </div>
+            <div className="group-designpd-axis-track">
+              <small>{axis.poles[0]}</small>
+              <div style={{ minHeight: `${160 + axis.maxStack * 27}px` }}>
+                <div className="group-designpd-tick-row" aria-hidden="true">
+                  {designPdTickMarks.map((tick) => (
+                    <span key={`${axis.axisKey}-${tick}`} style={{ left: `${signedDesignPdPosition(tick)}%` }}>
+                      {Math.abs(tick)}
+                    </span>
+                  ))}
+                </div>
+                <i />
+                {axis.members.map((member) => (
+                  <b
+                    key={`${axis.axisKey}-${member.id}`}
+                    style={{
+                      left: `${member.position}%`,
+                      top: `${76 + member.stackIndex * 27}px`,
+                      "--member-color": member.color,
+                    } as CSSProperties}
+                    title={`${member.name}: ${member.tendency} (${member.signedScore > 0 ? "+" : ""}${member.signedScore})`}
+                  >
+                    {member.initials}
+                  </b>
+                ))}
+                {axis.overflowBuckets.map((bucket) => (
+                  <div className="group-designpd-overflow" key={`${axis.axisKey}-overflow-${bucket.bucket}`} style={{ left: `${bucket.position}%` }}>
+                    <span />
+                    <strong>+{bucket.count}</strong>
+                    <small>
+                      {bucket.members.map((member) => (
+                        <b
+                          key={`${axis.axisKey}-overflow-${member.id}`}
+                          style={{ "--member-color": member.color } as CSSProperties}
+                          title={`${member.name}: ${member.tendency} (${member.signedScore > 0 ? "+" : ""}${member.signedScore})`}
+                        >
+                          {member.initials}
+                        </b>
+                      ))}
+                    </small>
+                  </div>
+                ))}
+              </div>
+              <small>{axis.poles[1]}</small>
+            </div>
+          </div>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+function CoupleDataDashboard({ members }: { members: DemoAssessmentMember[] }) {
+  const [first, second] = members;
+  const giftRows = Array.from(new Set(members.flatMap((member) => member.gifts)))
+    .map((gift) => ({
+      gift,
+      owners: members
+        .map((member, memberIndex) => {
+          const rank = member.gifts.indexOf(gift);
+          return rank === -1 ? null : {
+            color: member.color,
+            initials: participantInitials(member.name),
+            name: member.name,
+            rank: rank + 1,
+            memberIndex,
+          };
+        })
+        .filter((owner): owner is { color: string; initials: string; memberIndex: number; name: string; rank: number } => Boolean(owner)),
+    }))
+    .sort((a, b) => b.owners.length - a.owners.length || Math.min(...a.owners.map((owner) => owner.rank)) - Math.min(...b.owners.map((owner) => owner.rank)) || a.gift.localeCompare(b.gift));
+  const designIdRows = [
+    ["architect", "Architect"],
+    ["artisan", "Artisan"],
+    ["shepherd", "Shepherd"],
+    ["steward", "Steward"],
+  ] as const;
+  const designPdAxes = groupDesignPdAxes(members);
+
+  return (
+    <section className="circle-data-dashboard couple-circle-data" aria-label="Couple assessment data preview">
+      <div className="couple-data-grid">
+        <article className="circle-visual-card spiritual-gift-overlap">
+          <span>Spiritual Gifts overlap</span>
+          <div className="gift-overlap-table">
+            {giftRows.map((row) => (
+              <div className={row.owners.length > 1 ? "shared" : ""} key={row.gift}>
+                <strong>{row.gift}</strong>
+                <span className="gift-owner-pills">
+                  {row.owners.map((owner) => (
+                    <span key={`${row.gift}-${owner.name}`} style={{ "--member-color": owner.color } as CSSProperties}>
+                      {owner.initials} #{owner.rank}
+                    </span>
+                  ))}
+                </span>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article className="circle-visual-card couple-designid-card">
+          <span>DesignID capacity comparison</span>
+          <div className="couple-capacity-bars">
+            {designIdRows.map(([key, label]) => (
+              <div className={`couple-capacity-row ${key}`} key={key}>
+                <strong>{label}</strong>
+                <div>
+                  {members.map((member) => (
+                    <span key={`${member.name}-${key}`}>
+                      <i style={{ width: `${Math.max((member.designId[key] / designIdMaxScore) * 100, 6)}%`, "--member-color": member.color } as CSSProperties} />
+                      <b>{participantInitials(member.name)} {member.designId[key]}</b>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="circle-visual-legend">
+            {[first, second].map((member) => (
+              <div key={member.name}>
+                <i style={{ background: member.color }} />
+                <strong>{participantInitials(member.name)}</strong>
+                <small>{member.name}</small>
+              </div>
+            ))}
+          </div>
+        </article>
+      </div>
+
+      <DesignPdGroupHeatmap axes={designPdAxes} />
+    </section>
+  );
 }
 
 export default function CampCirclePage() {
@@ -416,14 +845,19 @@ export default function CampCirclePage() {
         </aside>
 
         <div className="camp-circle-main">
-          <details className="camp-circle-panel circle-dashboard-band circle-console-panel" id="circle-overview" aria-label="Circle dashboard" open>
+          <details className="camp-circle-panel circle-dashboard-band circle-console-panel" id="circle-progress" aria-label="Circle progress" open>
             <summary>
-              <span>Overview</span>
-              <strong>{activeCircle.name}</strong>
+              <span>Progress</span>
+              <strong>{activeCircle.name} control view</strong>
             </summary>
             <div className="card-heading wide-heading">
-              <p className="section-label">Leader dashboard</p>
+              <p className="section-label">Progress</p>
               <h2>{activeCircle.currentStage}</h2>
+              <p>
+                Jordan can see pace, attendance readiness, and where each person
+                sits in the circle without opening private workbook or assessment
+                answers.
+              </p>
             </div>
             <div className="circle-dashboard-metrics">
               <article>
@@ -447,71 +881,81 @@ export default function CampCirclePage() {
               <strong>Access window</strong>
               <p>{activeCircle.accessWindow}</p>
             </div>
-          </details>
 
-          <details className="camp-circle-panel people-progress-panel circle-console-panel" id="circle-people" aria-label="Participant progress" open>
-            <summary>
-              <span>People</span>
-              <strong>{activeCircle.members.length} people in this circle</strong>
-            </summary>
-            <div className="card-heading wide-heading">
-              <p className="section-label">People</p>
-              <h2>Jordan sees readiness and progress without reading private workbook entries.</h2>
-            </div>
-            <div className="people-progress-list">
-              {activeCircle.members.map((member) => (
-                <article key={member.name}>
-                  <div className="person-line-heading">
-                    <div>
-                      <strong>{member.name}</strong>
-                      <span>{member.role}</span>
+            <div className="circle-progress-split">
+              <section className="people-progress-panel" aria-label="Participant progress list">
+                <div className="card-heading wide-heading">
+                  <p className="section-label">People</p>
+                  <h2>{activeCircle.members.length} people in this circle</h2>
+                </div>
+                <div className="people-progress-list">
+                  {activeCircle.members.map((member) => (
+                    <article key={member.name}>
+                      <div className="person-line-heading">
+                        <div>
+                          <strong>{member.name}</strong>
+                          <span>{member.role}</span>
+                        </div>
+                        <small>{member.progress}%</small>
+                      </div>
+                      <div className="person-progress-track">
+                        <span style={{ width: `${member.progress}%` }} />
+                      </div>
+                      <div className="person-status-row">
+                        <p>{member.current}</p>
+                        <p>{member.assessment}</p>
+                        <p>{member.shared}</p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+
+              <section className="circle-racetrack-panel" aria-label="Circle racetrack">
+                <div className="card-heading wide-heading">
+                  <p className="section-label">Track</p>
+                  <h2>Racetrack view</h2>
+                  <p>
+                    This stays here as the alternate progress view while we decide
+                    whether the bar graph or racetrack works better for circle leaders.
+                  </p>
+                </div>
+                <div className="circle-racetrack">
+                  {activeCircle.members.map((member) => (
+                    <div className="circle-racer" key={member.name}>
+                      <span>{member.name.split(" ")[0]}</span>
+                      <div>
+                        <i style={{ left: `${member.progress}%` }} />
+                      </div>
+                      <small>{member.current}</small>
                     </div>
-                    <small>{member.progress}%</small>
-                  </div>
-                  <div className="person-progress-track">
-                    <span style={{ width: `${member.progress}%` }} />
-                  </div>
-                  <div className="person-status-row">
-                    <p>{member.current}</p>
-                    <p>{member.assessment}</p>
-                    <p>{member.shared}</p>
-                  </div>
-                </article>
-              ))}
+                  ))}
+                </div>
+              </section>
             </div>
           </details>
 
-          <details className="camp-circle-panel circle-racetrack-panel circle-console-panel" id="circle-journey-track" aria-label="Circle racetrack" open>
+          <details className="camp-circle-panel circle-data-panel circle-console-panel" id="circle-data" aria-label="Circle data interpretation" open>
             <summary>
-              <span>Journey Track</span>
-              <strong>{activeCircle.name} racetrack</strong>
+              <span>Data</span>
+              <strong>{activeCircle.demoAssessments?.length ? "Assessment dashboard preview" : "Assessment dashboard locked"}</strong>
             </summary>
             <div className="card-heading wide-heading">
-              <p className="section-label">Journey Track</p>
-              <h2>A racetrack view for group pacing.</h2>
+              <p className="section-label">Data</p>
+              <h2>{activeCircle.name} assessment interpretation</h2>
               <p>
-                This is the leader-level picture John described: Jordan can see
-                where each person is on the class path while the private CARE
-                and Pathfinder answers stay in each learner account.
+                This is the Camp Circle version of the command-center group data:
+                Spiritual Gifts distribution, DesignID capacity, and DesignPD
+                tendencies when those layers are available.
               </p>
             </div>
-            <div className="circle-racetrack">
-              {activeCircle.members.map((member) => (
-                <div className="circle-racer" key={member.name}>
-                  <span>{member.name.split(" ")[0]}</span>
-                  <div>
-                    <i style={{ left: `${member.progress}%` }} />
-                  </div>
-                  <small>{member.current}</small>
-                </div>
-              ))}
-            </div>
+            <CircleDataDashboard circle={activeCircle} />
           </details>
 
           <details className="camp-circle-panel field-guide-workspace circle-console-panel" id="field-guide" aria-label="Field Guide workspace" open>
             <summary>
               <span>Field Guide</span>
-              <strong>{activeCircle.name} leader guide</strong>
+              <strong>{activeCircle.nextMeeting}</strong>
             </summary>
             <div className="field-guide-head">
               <div className="host-playbook-icon" aria-hidden="true">
@@ -529,6 +973,19 @@ export default function CampCirclePage() {
                 <small>{facilitatorPlaybookMeta.source}</small>
               </div>
             </div>
+
+            <section className="next-meeting-panel circle-next-meeting-inline" aria-label="Next meeting">
+              <div className="card-heading wide-heading">
+                <p className="section-label">Next meeting</p>
+                <h2>{activeCircle.nextMeeting}</h2>
+                <p>{activeCircle.leaderNeed}</p>
+              </div>
+              <div className="next-meeting-actions">
+                <button className="button" type="button">Send reminder</button>
+                <button className="button secondary" type="button">Copy invite link</button>
+                <button className="button text-button" type="button">Mark meeting complete</button>
+              </div>
+            </section>
 
             <div className="host-playbook-highlights">
               {facilitatorPlaybookHighlights.slice(0, 4).map((item) => (
@@ -576,43 +1033,23 @@ export default function CampCirclePage() {
                 </details>
               ))}
             </div>
-          </details>
 
-          <details className="camp-circle-panel next-meeting-panel circle-console-panel" id="circle-next-meeting" aria-label="Next meeting" open>
-            <summary>
-              <span>Next Meeting</span>
-              <strong>{activeCircle.nextMeeting}</strong>
-            </summary>
-            <div className="card-heading wide-heading">
-              <p className="section-label">Next meeting</p>
-              <h2>{activeCircle.nextMeeting}</h2>
-              <p>{activeCircle.leaderNeed}</p>
-            </div>
-            <div className="next-meeting-actions">
-              <button className="button" type="button">Send reminder</button>
-              <button className="button secondary" type="button">Copy invite link</button>
-              <button className="button text-button" type="button">Mark meeting complete</button>
-            </div>
-          </details>
-        </div>
-      </section>
-
-      <section className="camp-circle-panel playbook-resource-hub" aria-label="Field Guide resource hub">
-        <div className="card-heading">
-          <p className="section-label">Field Guide library</p>
-          <h2>Appendices become usable host tools.</h2>
-        </div>
-        <div className="playbook-resource-grid">
-          {facilitatorPlaybookAppendices.map((resource) => (
-            <article key={resource.title}>
-              <strong>{resource.title}</strong>
-              <p>{resource.detail}</p>
-              <div>
-                <button className="button secondary" type="button">Open</button>
-                <button className="button text-button" type="button">Email to myself</button>
+            <details className="field-guide-resource-drawer">
+              <summary>Appendices and resource tools</summary>
+              <div className="playbook-resource-grid">
+                {facilitatorPlaybookAppendices.map((resource) => (
+                  <article key={resource.title}>
+                    <strong>{resource.title}</strong>
+                    <p>{resource.detail}</p>
+                    <div>
+                      <button className="button secondary" type="button">Open</button>
+                      <button className="button text-button" type="button">Email to myself</button>
+                    </div>
+                  </article>
+                ))}
               </div>
-            </article>
-          ))}
+            </details>
+          </details>
         </div>
       </section>
     </main>

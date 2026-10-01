@@ -6843,7 +6843,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .group-designpd-axis-track b {
   align-items: center;
-  background: var(--green-dark);
+  background: var(--member-color, var(--green-dark));
   border: 2px solid #fffaf0;
   border-radius: 999px;
   box-shadow: 0 6px 15px rgba(36, 63, 39, 0.14);
@@ -8454,6 +8454,128 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.circle-progress-split {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(320px, 1.1fr) minmax(320px, 0.9fr);
+  align-items: start;
+}
+
+.circle-progress-split > section,
+.circle-next-meeting-inline,
+.field-guide-resource-drawer {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.circle-data-panel {
+  border-color: rgba(100, 124, 155, 0.24);
+}
+
+.circle-data-dashboard {
+  display: grid;
+  gap: 16px;
+}
+
+.circle-data-empty {
+  display: grid;
+  gap: 8px;
+  padding: 22px;
+  border: 1px dashed rgba(36, 63, 39, 0.22);
+  border-radius: 8px;
+  background: rgba(247, 247, 245, 0.9);
+}
+
+.circle-data-empty strong {
+  color: var(--green-dark);
+  font-size: 1.05rem;
+}
+
+.circle-data-empty p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.circle-data-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.circle-data-visual-grid {
+  grid-template-columns: minmax(280px, 0.92fr) minmax(390px, 1.1fr);
+}
+
+.couple-data-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(420px, 1.1fr);
+}
+
+.couple-capacity-bars {
+  display: grid;
+  gap: 12px;
+}
+
+.couple-capacity-row {
+  display: grid;
+  gap: 8px;
+}
+
+.couple-capacity-row > strong {
+  color: var(--green-dark);
+  font-size: 0.94rem;
+}
+
+.couple-capacity-row > div {
+  display: grid;
+  gap: 7px;
+}
+
+.couple-capacity-row span {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) 62px;
+  align-items: center;
+}
+
+.couple-capacity-row span > i {
+  display: block;
+  height: 11px;
+  border-radius: 999px;
+  background: var(--member-color);
+}
+
+.couple-capacity-row span > b {
+  color: var(--green-dark);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-align: right;
+}
+
+.field-guide-resource-drawer {
+  background: rgba(251, 250, 244, 0.74);
+}
+
+.field-guide-resource-drawer > summary {
+  cursor: pointer;
+  color: var(--green-dark);
+  font-weight: 950;
+  list-style: none;
+}
+
+.field-guide-resource-drawer > summary::-webkit-details-marker {
+  display: none;
+}
+
+.field-guide-resource-drawer .playbook-resource-grid {
+  padding-top: 2px;
 }
 
 .camp-circle-sample-stack {
@@ -15373,6 +15495,10 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .camp-circle-two-column,
   .circle-pricing-feature,
   .camp-circle-workspace,
+  .circle-progress-split,
+  .circle-data-summary,
+  .circle-data-visual-grid,
+  .couple-data-grid,
   .circle-preview-grid,
   .field-guide-head,
   .field-guide-session-body,
@@ -15658,6 +15784,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .circle-access-flow,
   .circle-type-grid,
   .circle-dashboard-metrics,
+  .couple-capacity-row span,
   .leader-moment-grid,
   .privacy-lane-grid,
   .playbook-resource-grid,

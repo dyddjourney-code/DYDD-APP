@@ -35,6 +35,7 @@ const colors = ["#4a6239", "#8a5f2d"];
 const resourcesUrl = "https://www.discoverdivine.design/resources";
 const assetBaseUrl = "https://dydd-online-school.vercel.app";
 const brandLogoPath = "/brand/dydd-logo-white-correct.png";
+const resourceLogoPath = "/brand/dydd-logo-full-color-white-bg.jpg";
 const sectionIconPaths = {
   designid: "/brand/tools/designid-icon-correct.png",
   designpd: "/brand/tools/designpd-icon-correct.png",
@@ -674,6 +675,9 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
     .designpd-visual-track i::after { background:rgba(36,63,39,.28); content:""; display:block; height:18px; left:50%; position:absolute; top:-5px; width:1px; }
     .designpd-visual-track b { align-items:center; background:var(--member-color); border:2px solid #fffaf0; border-radius:999px; box-shadow:0 5px 12px rgba(36,63,39,.14); color:#fffaf0; display:flex; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; font-weight:950; height:28px; justify-content:center; min-width:28px; padding:0 5px; position:absolute; top:10px; transform:translateX(-50%); }
     .designpd-visual-key { border-top:1px solid rgba(36,63,39,.1); display:grid; gap:8px; padding-top:12px; }
+    .resource-section-heading { align-items:flex-start; display:grid; gap:20px; grid-template-columns:minmax(0,1fr) minmax(180px,280px); margin-bottom:14px; }
+    .resource-section-heading h2 { margin:0; }
+    .resource-logo { background:#fff; border:1px solid rgba(36,63,39,.12); display:block; justify-self:end; max-width:280px; padding:10px; width:100%; }
     .resource-grid { display:grid; gap:14px; grid-template-columns:repeat(3,minmax(0,1fr)); }
     .resource-card { background:#f7f9f5; border:1px solid rgba(36,63,39,.12); padding:16px; }
     .resource-card h3 { color:var(--green); }
@@ -694,7 +698,7 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
       .interpretation-row { break-inside:avoid; }
       .resource-cta { break-inside:avoid; }
     }
-    @media (max-width:760px) { body { padding:12px; } header, .two-col, .cover-meta, .resource-grid, .resource-cta { grid-template-columns:1fr; } .brand-mark { justify-self:start; } h3 span { float:none; display:block; margin-top:4px; } }
+    @media (max-width:760px) { body { padding:12px; } header, .two-col, .cover-meta, .resource-section-heading, .resource-grid, .resource-cta { grid-template-columns:1fr; } .brand-mark, .resource-logo { justify-self:start; } h3 span { float:none; display:block; margin-top:4px; } }
   </style>
 </head>
 <body>
@@ -754,7 +758,10 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[]) {
       ])}
     </section>
     <section class="resource-section">
-      <h2>Continue With Discover Your Divine Design</h2>
+      <div class="resource-section-heading">
+        <h2>Continue With Discover Your Divine Design</h2>
+        <img class="resource-logo" src="${assetUrl(resourceLogoPath)}" alt="Discover Your Divine Design" />
+      </div>
       <p>This Marriage Design snapshot is one conversation inside a larger journey of identity, gifts, formation, and faithful action. Use the resources below when you are ready to keep moving.</p>
       <div class="resource-grid">
         <div class="resource-card">

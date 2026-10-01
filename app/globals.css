@@ -6068,7 +6068,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .circle-visual-grid {
   display: grid;
   gap: 14px;
-  grid-template-columns: minmax(230px, 0.9fr) minmax(300px, 1.2fr) minmax(280px, 1fr);
+  grid-template-columns: minmax(240px, 0.95fr) minmax(360px, 1.25fr) minmax(300px, 1fr);
 }
 
 .circle-visual-card {
@@ -6124,6 +6124,26 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   line-height: 1.35;
 }
 
+.gift-owner-pills,
+.gift-gap-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.gift-owner-pills span {
+  background: color-mix(in srgb, var(--member-color) 13%, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--member-color) 36%, transparent);
+  border-radius: 999px;
+  color: color-mix(in srgb, var(--member-color) 82%, var(--green-dark));
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 950;
+  line-height: 1;
+  padding: 6px 8px;
+}
+
 .gift-gap-strip {
   background: rgba(255, 255, 255, 0.72);
   border: 1px dashed rgba(36, 63, 39, 0.2);
@@ -6133,74 +6153,92 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   padding: 12px;
 }
 
+.gift-gap-list {
+  justify-content: flex-start;
+  margin-top: 2px;
+}
+
+.gift-gap-list span {
+  background: rgba(74, 98, 57, 0.07);
+  border: 1px solid rgba(36, 63, 39, 0.08);
+  border-radius: 999px;
+  color: rgba(36, 63, 39, 0.72);
+  line-height: 1;
+  padding: 6px 8px;
+}
+
 .designid-radar-wrap {
   align-items: center;
   display: grid;
-  gap: 14px;
-  grid-template-columns: minmax(220px, 1fr) minmax(120px, 0.45fr);
+  gap: 16px;
+  justify-items: center;
 }
 
 .designid-radar-wrap svg {
   aspect-ratio: 1;
   display: block;
-  max-width: 330px;
+  max-width: 430px;
   width: 100%;
 }
 
 .designid-grid-ring {
   fill: none;
-  stroke: rgba(36, 63, 39, 0.13);
-  stroke-width: 1;
+  stroke: rgba(36, 63, 39, 0.16);
+  stroke-width: 1.15;
 }
 
 .designid-axis-line {
-  stroke: rgba(36, 63, 39, 0.14);
-  stroke-width: 1;
+  stroke: rgba(36, 63, 39, 0.18);
+  stroke-width: 1.2;
 }
 
 .designid-member-shape {
   fill: color-mix(in srgb, var(--member-color) 18%, transparent);
   stroke: var(--member-color);
   stroke-linejoin: round;
-  stroke-width: 2;
+  stroke-width: 2.4;
 }
 
 .designid-member-dot {
   fill: #fffaf0;
   stroke: var(--member-color);
-  stroke-width: 3;
+  stroke-width: 3.4;
 }
 
 .designid-radar-wrap text {
   dominant-baseline: middle;
   fill: var(--green-dark);
-  font-size: 0.48rem;
+  font-size: 0.52rem;
   font-weight: 950;
   text-anchor: middle;
 }
 
 .designid-radar-wrap .designid-axis-label {
-  fill: var(--muted);
-  font-size: 0.54rem;
-  letter-spacing: 0.02em;
+  fill: var(--green-dark);
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0;
 }
 
 .circle-visual-legend {
-  display: grid;
-  gap: 9px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  justify-content: center;
+  padding-bottom: 4px;
 }
 
 .circle-visual-legend div {
   align-items: center;
   display: grid;
   gap: 6px;
-  grid-template-columns: 10px auto;
+  grid-template-columns: 12px auto auto;
 }
 
 .circle-visual-legend i {
   border-radius: 999px;
-  height: 10px;
-  width: 10px;
+  height: 12px;
+  width: 12px;
 }
 
 .circle-visual-legend strong {
@@ -6213,7 +6251,6 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   color: var(--muted);
   font-size: 0.78rem;
   font-weight: 780;
-  grid-column: 2;
   line-height: 1.25;
 }
 
@@ -6236,12 +6273,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .designpd-axis-heading strong {
   color: var(--green-dark);
-}
-
-.designpd-axis-heading small {
-  color: var(--muted);
-  font-size: 0.78rem;
-  font-weight: 850;
+  font-size: 0.98rem;
 }
 
 .designpd-axis-track {
@@ -6308,6 +6340,44 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   position: absolute;
   top: 8px;
   transform: translateX(-50%);
+}
+
+.designpd-score-key {
+  border-top: 1px solid rgba(36, 63, 39, 0.1);
+  display: grid;
+  gap: 8px;
+  margin-top: 2px;
+  padding-top: 12px;
+}
+
+.designpd-score-key div {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(36, 63, 39, 0.08);
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 10px 34px minmax(0, 1fr);
+  padding: 9px 10px;
+}
+
+.designpd-score-key i {
+  border-radius: 999px;
+  height: 10px;
+  width: 10px;
+}
+
+.designpd-score-key strong {
+  color: var(--green-dark);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.82rem;
+  font-weight: 950;
+}
+
+.designpd-score-key small {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 820;
+  line-height: 1.35;
 }
 
 .command-center-duplicate-row {

@@ -1,4 +1,10 @@
 {
+  "functions": {
+    "app/api/command-center/couple-report/route.ts": {
+      "includeFiles": "node_modules/@sparticuz/chromium/bin/**",
+      "maxDuration": 60
+    }
+  },
   "crons": [
     {
       "path": "/api/cron/assessment-sync",

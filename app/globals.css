@@ -6568,6 +6568,262 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   font-weight: 940;
 }
 
+.command-center-group-interpretation {
+  border-top: 1px solid rgba(36, 63, 39, 0.12);
+  display: grid;
+  gap: 16px;
+  margin-top: 22px;
+  padding-top: 22px;
+}
+
+.group-interpretation-summary {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.group-interpretation-summary article {
+  background: linear-gradient(135deg, rgba(36, 63, 39, 0.08), rgba(255, 255, 255, 0.72));
+  border: 1px solid rgba(36, 63, 39, 0.12);
+  display: grid;
+  gap: 5px;
+  padding: 14px;
+}
+
+.group-interpretation-summary span,
+.group-visual-card > span {
+  color: var(--green-dark);
+  font-size: 0.76rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.group-interpretation-summary strong {
+  color: var(--green-dark);
+  font-size: 1.15rem;
+  line-height: 1.15;
+}
+
+.group-interpretation-summary small,
+.group-visual-card p {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 760;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.group-visual-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(280px, 0.95fr) minmax(380px, 1.35fr);
+}
+
+.group-visual-card {
+  background: #fffaf0;
+  border: 1px solid rgba(36, 63, 39, 0.12);
+  display: grid;
+  gap: 13px;
+  padding: 16px;
+}
+
+.group-horizontal-bars,
+.group-designid-bars {
+  display: grid;
+  gap: 9px;
+}
+
+.group-horizontal-bar-row {
+  align-items: center;
+  display: grid;
+  gap: 9px;
+  grid-template-columns: minmax(92px, 0.72fr) minmax(150px, 1fr) 34px 72px;
+}
+
+.group-horizontal-bar-row small,
+.group-horizontal-bar-row em,
+.group-designid-bar-row small,
+.group-primary-strip span,
+.group-designpd-axis-title small,
+.group-designpd-axis-track small {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.group-horizontal-bar-row > div,
+.group-designid-bar-row > div:nth-child(2) {
+  background: rgba(74, 98, 57, 0.1);
+  border-radius: 999px;
+  height: 12px;
+  overflow: hidden;
+}
+
+.group-horizontal-bar-row i,
+.group-designid-bar-row i {
+  background: linear-gradient(90deg, var(--green), var(--brass));
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+}
+
+.group-horizontal-bar-row strong,
+.group-designid-bar-row b {
+  color: var(--green-dark);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.88rem;
+  font-weight: 950;
+  text-align: right;
+}
+
+.group-horizontal-bar-row em {
+  font-style: normal;
+  text-align: right;
+}
+
+.group-designid-bar-row {
+  align-items: center;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 120px minmax(180px, 1fr) 48px;
+}
+
+.group-designid-bar-row > div:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+.group-designid-bar-row strong {
+  color: var(--green-dark);
+  font-size: 0.9rem;
+  line-height: 1.15;
+}
+
+.group-designid-bar-row.architect i {
+  background: linear-gradient(90deg, rgba(212, 164, 81, 0.96), rgba(212, 164, 81, 0.56));
+}
+
+.group-designid-bar-row.artisan i {
+  background: linear-gradient(90deg, rgba(100, 124, 155, 0.96), rgba(100, 124, 155, 0.56));
+}
+
+.group-designid-bar-row.shepherd i {
+  background: linear-gradient(90deg, rgba(115, 157, 94, 0.96), rgba(115, 157, 94, 0.56));
+}
+
+.group-designid-bar-row.steward i {
+  background: linear-gradient(90deg, rgba(90, 73, 107, 0.96), rgba(90, 73, 107, 0.56));
+}
+
+.group-primary-strip {
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid rgba(36, 63, 39, 0.09);
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+}
+
+.group-primary-strip strong {
+  color: var(--green-dark);
+  font-size: 0.82rem;
+}
+
+.group-primary-strip div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.group-primary-strip span {
+  background: rgba(74, 98, 57, 0.08);
+  border: 1px solid rgba(36, 63, 39, 0.08);
+  padding: 6px 8px;
+}
+
+.group-designpd-card {
+  overflow: hidden;
+}
+
+.group-designpd-heatmap {
+  display: grid;
+  gap: 18px;
+}
+
+.group-designpd-axis {
+  display: grid;
+  gap: 9px;
+}
+
+.group-designpd-axis-title {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+}
+
+.group-designpd-axis-title strong {
+  color: var(--green-dark);
+  font-size: 0.96rem;
+}
+
+.group-designpd-axis-track {
+  align-items: start;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 78px minmax(280px, 1fr) 86px;
+}
+
+.group-designpd-axis-track small:last-child {
+  text-align: right;
+}
+
+.group-designpd-axis-track > div {
+  position: relative;
+}
+
+.group-designpd-axis-track i {
+  background:
+    linear-gradient(90deg, rgba(138, 95, 45, 0.42), rgba(36, 63, 39, 0.12), rgba(74, 98, 57, 0.48));
+  border-radius: 999px;
+  display: block;
+  height: 10px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 44px;
+}
+
+.group-designpd-axis-track i::after {
+  background: rgba(36, 63, 39, 0.32);
+  content: "";
+  height: 28px;
+  left: 50%;
+  position: absolute;
+  top: -9px;
+  width: 1px;
+}
+
+.group-designpd-axis-track b {
+  align-items: center;
+  background: var(--green-dark);
+  border: 2px solid #fffaf0;
+  border-radius: 999px;
+  box-shadow: 0 6px 15px rgba(36, 63, 39, 0.14);
+  color: #fffaf0;
+  display: flex;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 950;
+  height: 25px;
+  justify-content: center;
+  min-width: 25px;
+  padding: 0 5px;
+  position: absolute;
+  transform: translateX(-50%);
+}
+
 .command-center-duplicate-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 34px;
@@ -6925,6 +7181,8 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .command-center-person-header,
   .command-center-insight-grid,
   .circle-visual-grid,
+  .group-interpretation-summary,
+  .group-visual-grid,
   .designid-radar-wrap {
     grid-template-columns: 1fr;
   }
@@ -6947,14 +7205,22 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .command-center-add-list form,
   .command-center-person-header form,
   .gift-overlap-table div,
+  .group-horizontal-bar-row,
+  .group-designid-bar-row,
+  .group-designpd-axis-track,
   .designpd-axis-track {
     grid-template-columns: 1fr;
   }
 
+  .group-horizontal-bar-row strong,
+  .group-horizontal-bar-row em,
+  .group-designid-bar-row b,
+  .group-designpd-axis-track small:last-child,
   .designpd-axis-track small:last-child {
     text-align: left;
   }
 
+  .group-designpd-axis-track > div,
   .designpd-axis-track > div {
     min-width: 0;
   }

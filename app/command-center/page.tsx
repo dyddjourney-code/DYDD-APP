@@ -90,6 +90,14 @@ type CircleComparisonMember = {
   name: string;
 };
 
+type GroupDesignPdMember = CircleComparisonMember & {
+  position: number;
+  score: number;
+  signedScore: number;
+  stackIndex: number;
+  tendency: string;
+};
+
 const assessmentLabels: Record<string, string> = {
   design_pathways: "Design Pathways",
   designid: "DesignID",
@@ -1117,6 +1125,115 @@ function designPdAxisGap(members: { signedScore: number }[]) {
   return Math.abs(members[0].signedScore - members[1].signedScore);
 }
 
+function currentAssessmentParticipants(participants: ParticipantRecord[], assessmentType: string) {
+  return participants
+    .map((participant) => {
+      const snapshot = currentSnapshotForParticipant(participant, assessmentType);
+      return snapshot ? { participant, snapshot } : null;
+    })
+    .filter((item): item is { participant: ParticipantRecord; snapshot: AssessmentSnapshot } => Boolean(item));
+}
+
+function groupSpiritualGiftTopSignals(participants: ParticipantRecord[]) {
+  const topOneCounts = new Map<string, { count: number; topFiveCount: number }>();
+
+  for (const { snapshot } of currentAssessmentParticipants(participants, "spiritual_gifts")) {
+    const topOne = spiritualGiftRank(snapshot, 1)?.label;
+    const topFive = [1, 2, 3, 4, 5]
+      .map((rank) => spiritualGiftRank(snapshot, rank)?.label ?? "")
+      .filter(Boolean);
+
+    for (const gift of topFive) {
+      const current = topOneCounts.get(gift) ?? { count: 0, topFiveCount: 0 };
+      current.topFiveCount += 1;
+      topOneCounts.set(gift, current);
+    }
+
+    if (topOne) {
+      const current = topOneCounts.get(topOne) ?? { count: 0, topFiveCount: 0 };
+      current.count += 1;
+      topOneCounts.set(topOne, current);
+    }
+  }
+
+  return Array.from(topOneCounts.entries())
+    .map(([label, values]) => ({ label, ...values }))
+    .filter((item) => item.count > 0)
+    .sort((a, b) => b.count - a.count || b.topFiveCount - a.topFiveCount || a.label.localeCompare(b.label));
+}
+
+function groupDesignIdStats(participants: ParticipantRecord[]) {
+  const records = currentAssessmentParticipants(participants, "designid");
+  const primaryCounts = tallyValues(
+    records.map(({ snapshot }) =>
+      firstSnapshotValue(snapshot, ["primaryReflection", "primary", "Primary_Reflection", "Primary"]),
+    ),
+  );
+  const reflectionScores = designIdScoreFields.map((field) => {
+    const values = records
+      .map(({ snapshot }) => numberSnapshotValue(snapshot, field.keys))
+      .filter((value) => value > 0);
+    const average = values.length
+      ? Math.round((values.reduce((sum, value) => sum + value, 0) / values.length) * 10) / 10
+      : 0;
+    const highCount = values.filter((value) => value >= 45).length;
+
+    return {
+      average,
+      highCount,
+      label: field.label,
+      recordCount: values.length,
+    };
+  });
+
+  return {
+    primaryCounts,
+    reflectionScores,
+    strongestAverage: [...reflectionScores].sort((a, b) => b.average - a.average)[0] ?? null,
+  };
+}
+
+function groupDesignPdAxes(participants: ParticipantRecord[]) {
+  const records = currentAssessmentParticipants(participants, "designpd");
+
+  return designPdAxes.map((axisConfig) => {
+    const stackCounts = new Map<number, number>();
+    const members = records.map(({ participant, snapshot }) => {
+      const score = designPdAxisScore(snapshot, axisConfig);
+      const bucket = Math.round(score.position / 3) * 3;
+      const stackIndex = stackCounts.get(bucket) ?? 0;
+      stackCounts.set(bucket, stackIndex + 1);
+
+      return {
+        color: "#4a6239",
+        id: participant.id,
+        initials: participantInitials(participant.name),
+        name: participant.name,
+        stackIndex,
+        ...score,
+      };
+    });
+    const signedScores = members.map((member) => member.signedScore);
+    const maxStack = Math.max(1, ...Array.from(stackCounts.values()));
+    const spread = signedScores.length
+      ? Math.max(...signedScores) - Math.min(...signedScores)
+      : 0;
+
+    return {
+      ...axisConfig,
+      maxStack,
+      members,
+      poles:
+        axisConfig.axisKey === "plan"
+          ? ["Dreamer", "Doer"]
+          : axisConfig.axisKey === "decide"
+            ? ["Feel It", "Think It"]
+            : ["Solo", "Together"],
+      spread,
+    };
+  });
+}
+
 function hasCurrentAssessment(participant: ParticipantRecord, assessmentType: string) {
   return Boolean(currentSnapshotForParticipant(participant, assessmentType));
 }
@@ -1301,6 +1418,17 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
       }))
     : filteredMainParticipants;
   const showCoupleComparison = activeGroup?.group_type === "couple";
+  const showGroupInterpretation = Boolean(activeGroup && !showCoupleComparison && displayParticipants.length > 1);
+  const groupGiftTopSignals = showGroupInterpretation
+    ? groupSpiritualGiftTopSignals(displayParticipants)
+    : [];
+  const groupDesignId = showGroupInterpretation
+    ? groupDesignIdStats(displayParticipants)
+    : { primaryCounts: [], reflectionScores: [], strongestAverage: null };
+  const groupDesignPd = showGroupInterpretation
+    ? groupDesignPdAxes(displayParticipants)
+    : [];
+  const widestDesignPdAxis = [...groupDesignPd].sort((a, b) => b.spread - a.spread)[0] ?? null;
   const circleParticipants = showCoupleComparison ? displayParticipants.slice(0, 2) : [];
   const hasTwoCoupleMembers = circleParticipants.length === 2;
   const coupleHasSpiritualGifts = coupleAssessmentReady(circleParticipants, "spiritual_gifts");
@@ -1691,6 +1819,150 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                 <span>Waiting for matching couple data</span>
               </div>
             ) : null}
+          </section>
+        ) : null}
+
+        {showGroupInterpretation ? (
+          <section className="command-center-group-interpretation" aria-label="Group data interpretation visuals">
+            <div className="command-center-panel-heading">
+              <p className="section-label">Group interpretation</p>
+              <h2>{activeGroup?.name} group dashboard</h2>
+            </div>
+            <div className="group-interpretation-summary">
+              <article>
+                <span>Spiritual Gifts read</span>
+                <strong>{groupGiftTopSignals[0]?.label ?? "Waiting for gifts"}</strong>
+                <small>
+                  {groupGiftTopSignals[0]
+                    ? `${groupGiftTopSignals[0].count} people list this as their current #1 gift.`
+                    : "Top-gift concentration appears after Spiritual Gifts results are saved."}
+                </small>
+              </article>
+              <article>
+                <span>DesignID center of gravity</span>
+                <strong>{groupDesignId.strongestAverage?.label ?? "Waiting for DesignID"}</strong>
+                <small>
+                  {groupDesignId.strongestAverage
+                    ? `Highest average reflection score: ${groupDesignId.strongestAverage.average}.`
+                    : "Reflection averages appear after DesignID results are saved."}
+                </small>
+              </article>
+              <article>
+                <span>DesignPD widest spread</span>
+                <strong>{widestDesignPdAxis?.label ?? "Waiting for DesignPD"}</strong>
+                <small>
+                  {widestDesignPdAxis?.members.length
+                    ? `${widestDesignPdAxis.spread} points from one side of the tendency line to the other.`
+                    : "Group tendency spread appears after DesignPD results are saved."}
+                </small>
+              </article>
+            </div>
+
+            <div className="group-visual-grid">
+              <article className="group-visual-card group-gifts-card">
+                <span>Spiritual Gifts current #1 distribution</span>
+                <p>
+                  This counts only each person&apos;s current top gift, then notes how often that same gift appears anywhere in the top five.
+                </p>
+                {groupGiftTopSignals.length ? (
+                  <div className="group-horizontal-bars">
+                    {groupGiftTopSignals.slice(0, 12).map((item) => {
+                      const max = Math.max(...groupGiftTopSignals.map((signal) => signal.count), 1);
+
+                      return (
+                        <div className="group-horizontal-bar-row" key={item.label}>
+                          <small>{item.label}</small>
+                          <div aria-hidden="true">
+                            <i style={{ width: `${Math.max((item.count / max) * 100, 8)}%` }} />
+                          </div>
+                          <strong>{item.count}</strong>
+                          <em>{item.topFiveCount} top 5</em>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="command-center-empty">No current Spiritual Gifts top-one data in this group yet.</p>
+                )}
+              </article>
+
+              <article className="group-visual-card group-designid-card">
+                <span>DesignID group capacity bars</span>
+                <p>
+                  This uses the current DesignID scores to show the group&apos;s average capacity across the four reflections.
+                </p>
+                {groupDesignId.reflectionScores.some((item) => item.recordCount) ? (
+                  <div className="group-designid-bars">
+                    {groupDesignId.reflectionScores.map((item) => (
+                      <div className={`group-designid-bar-row ${item.label.toLowerCase()}`} key={item.label}>
+                        <div>
+                          <strong>{item.label}</strong>
+                          <small>{item.highCount} people at 45+</small>
+                        </div>
+                        <div aria-hidden="true">
+                          <i style={{ width: `${Math.max((item.average / designIdMaxScore) * 100, item.average ? 8 : 0)}%` }} />
+                        </div>
+                        <b>{item.average}</b>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="command-center-empty">No current DesignID score data in this group yet.</p>
+                )}
+                {groupDesignId.primaryCounts.length ? (
+                  <div className="group-primary-strip">
+                    <strong>Primary reflection count</strong>
+                    <div>
+                      {groupDesignId.primaryCounts.map((item) => (
+                        <span key={item.label}>{item.label}: {item.count}</span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </article>
+            </div>
+
+            <article className="group-visual-card group-designpd-card">
+              <span>DesignPD group tendency map</span>
+              <p>
+                Each bubble is one person&apos;s initials. Matching or near-matching scores stack vertically so the group cluster stays visible.
+              </p>
+              {groupDesignPd.some((axis) => axis.members.length) ? (
+                <div className="group-designpd-heatmap">
+                  {groupDesignPd.map((axis) => (
+                    <div className="group-designpd-axis" key={axis.axisKey}>
+                      <div className="group-designpd-axis-title">
+                        <strong>{axis.label}</strong>
+                        <small>{axis.spread} point spread</small>
+                      </div>
+                      <div className="group-designpd-axis-track">
+                        <small>{axis.poles[0]}</small>
+                        <div
+                          style={{ minHeight: `${74 + axis.maxStack * 27}px` }}
+                        >
+                          <i />
+                          {axis.members.map((member) => (
+                            <b
+                              key={`${axis.axisKey}-${member.id}`}
+                              style={{
+                                left: `${member.position}%`,
+                                top: `${34 + member.stackIndex * 27}px`,
+                              }}
+                              title={`${member.name}: ${member.tendency} (${member.score})`}
+                            >
+                              {member.initials}
+                            </b>
+                          ))}
+                        </div>
+                        <small>{axis.poles[1]}</small>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="command-center-empty">No current DesignPD tendency data in this group yet.</p>
+              )}
+            </article>
           </section>
         ) : null}
       </section>

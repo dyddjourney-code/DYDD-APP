@@ -6073,12 +6073,14 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .circle-visual-card {
   align-content: start;
-  background: #fffaf0;
-  border: 1px solid rgba(36, 63, 39, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(247, 249, 245, 0.94));
+  border: 1px solid rgba(36, 63, 39, 0.11);
+  box-shadow: 0 18px 34px rgba(36, 63, 39, 0.07);
   display: grid;
-  gap: 14px;
+  gap: 12px;
   min-height: 300px;
-  padding: 16px;
+  padding: 15px;
 }
 
 .circle-visual-card > span {
@@ -6091,22 +6093,22 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .gift-overlap-table {
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
 .gift-overlap-table div {
   align-items: center;
-  background: rgba(247, 247, 245, 0.92);
+  background: rgba(255, 255, 255, 0.72);
   border: 1px solid rgba(36, 63, 39, 0.08);
   display: grid;
-  gap: 10px;
+  gap: 9px;
   grid-template-columns: minmax(0, 1fr) auto;
-  min-height: 44px;
-  padding: 10px 12px;
+  min-height: 39px;
+  padding: 8px 10px;
 }
 
 .gift-overlap-table div.shared {
-  background: rgba(117, 154, 91, 0.14);
+  background: linear-gradient(135deg, rgba(117, 154, 91, 0.16), rgba(255, 250, 240, 0.74));
   border-color: rgba(74, 98, 57, 0.24);
 }
 
@@ -6135,13 +6137,13 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .gift-owner-pills span {
   background: color-mix(in srgb, var(--member-color) 13%, #ffffff);
   border: 1px solid color-mix(in srgb, var(--member-color) 36%, transparent);
-  border-radius: 999px;
+  border-radius: 6px;
   color: color-mix(in srgb, var(--member-color) 82%, var(--green-dark));
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.72rem;
   font-weight: 950;
   line-height: 1;
-  padding: 6px 8px;
+  padding: 5px 7px;
 }
 
 .gift-gap-strip {
@@ -6170,39 +6172,44 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .designid-radar-wrap {
   align-items: center;
   display: grid;
-  gap: 18px;
+  gap: 12px;
   justify-items: center;
 }
 
 .designid-radar-wrap svg {
   aspect-ratio: 1;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.92), rgba(247, 249, 245, 0.84) 62%, rgba(234, 240, 226, 0.64));
+  border: 1px solid rgba(36, 63, 39, 0.1);
   display: block;
-  max-width: 540px;
+  max-width: 420px;
+  padding: 10px;
   width: 100%;
 }
 
 .designid-grid-ring {
   fill: none;
-  stroke: rgba(36, 63, 39, 0.16);
-  stroke-width: 1.15;
+  stroke: rgba(36, 63, 39, 0.13);
+  stroke-width: 0.9;
 }
 
 .designid-axis-line {
   stroke: rgba(36, 63, 39, 0.18);
-  stroke-width: 1.2;
+  stroke-width: 1;
 }
 
 .designid-member-shape {
-  fill: color-mix(in srgb, var(--member-color) 18%, transparent);
+  fill: color-mix(in srgb, var(--member-color) 13%, transparent);
   stroke: var(--member-color);
   stroke-linejoin: round;
-  stroke-width: 2.4;
+  stroke-width: 2.15;
 }
 
 .designid-member-dot {
   fill: var(--member-color);
   stroke: #fffaf0;
-  stroke-width: 2.4;
+  stroke-width: 2.2;
+  filter: drop-shadow(0 2px 3px rgba(36, 63, 39, 0.16));
 }
 
 .designid-radar-wrap text {
@@ -6239,16 +6246,19 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .circle-visual-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 16px;
+  gap: 8px 12px;
   justify-content: center;
   padding-bottom: 4px;
 }
 
 .circle-visual-legend div {
   align-items: center;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(36, 63, 39, 0.08);
   display: grid;
   gap: 6px;
   grid-template-columns: 12px auto auto;
+  padding: 6px 8px;
 }
 
 .circle-visual-legend i {
@@ -6275,7 +6285,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   display: grid;
   max-width: 100%;
   overflow: hidden;
-  width: min(100%, 520px);
+  width: min(100%, 460px);
 }
 
 .designid-score-table-head,
@@ -6301,8 +6311,8 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   font-size: 0.72rem;
   font-weight: 900;
   justify-content: center;
-  min-height: 34px;
-  padding: 7px 6px;
+  min-height: 30px;
+  padding: 6px;
 }
 
 .designid-score-table-head span {
@@ -6330,12 +6340,15 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .designpd-axis-stack {
   display: grid;
-  gap: 20px;
+  gap: 13px;
 }
 
 .designpd-axis-row {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(36, 63, 39, 0.08);
   display: grid;
-  gap: 11px;
+  gap: 8px;
+  padding: 10px 11px;
 }
 
 .designpd-axis-heading {
@@ -6347,13 +6360,13 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .designpd-axis-heading strong {
   color: var(--green-dark);
-  font-size: 0.98rem;
+  font-size: 0.9rem;
 }
 
 .designpd-axis-track {
   align-items: center;
   display: grid;
-  gap: 11px;
+  gap: 10px;
   grid-template-columns: 62px minmax(150px, 1fr) 72px;
 }
 
@@ -6369,19 +6382,22 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .designpd-axis-track > div {
-  height: 48px;
+  height: 38px;
   position: relative;
 }
 
 .designpd-axis-track i {
-  background: linear-gradient(90deg, rgba(138, 95, 45, 0.42), rgba(36, 63, 39, 0.12), rgba(74, 98, 57, 0.48));
+  background:
+    linear-gradient(90deg, rgba(138, 95, 45, 0.36), rgba(36, 63, 39, 0.1), rgba(74, 98, 57, 0.44)),
+    repeating-linear-gradient(90deg, transparent 0, transparent calc(25% - 1px), rgba(36, 63, 39, 0.18) calc(25% - 1px), rgba(36, 63, 39, 0.18) 25%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
   border-radius: 999px;
   display: block;
-  height: 8px;
+  height: 7px;
   left: 0;
   position: absolute;
   right: 0;
-  top: 20px;
+  top: 16px;
 }
 
 .designpd-axis-track i::after {
@@ -6407,29 +6423,29 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   font-size: 0.7rem;
   font-style: normal;
   font-weight: 950;
-  height: 28px;
+  height: 24px;
   justify-content: center;
-  min-width: 28px;
+  min-width: 24px;
   padding: 0 5px;
   position: absolute;
-  top: 10px;
+  top: 8px;
   transform: translateX(-50%);
 }
 
 .designpd-gap-row {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-top: -2px;
+  margin-top: 0;
 }
 
 .designpd-gap-row div {
-  background: rgba(74, 98, 57, 0.07);
+  background: rgba(74, 98, 57, 0.055);
   border: 1px solid rgba(36, 63, 39, 0.08);
   display: grid;
   gap: 3px;
   justify-items: center;
-  padding: 10px 8px;
+  padding: 8px 7px;
 }
 
 .designpd-gap-row small {
@@ -6451,19 +6467,19 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .designpd-score-key {
   border-top: 1px solid rgba(36, 63, 39, 0.1);
   display: grid;
-  gap: 8px;
+  gap: 6px;
   margin-top: 2px;
-  padding-top: 12px;
+  padding-top: 10px;
 }
 
 .designpd-score-key div {
   align-items: center;
-  background: rgba(255, 255, 255, 0.62);
+  background: rgba(255, 255, 255, 0.72);
   border: 1px solid rgba(36, 63, 39, 0.08);
   display: grid;
   gap: 8px;
   grid-template-columns: 10px 34px minmax(0, 1fr);
-  padding: 9px 10px;
+  padding: 7px 9px;
 }
 
 .designpd-score-key i {

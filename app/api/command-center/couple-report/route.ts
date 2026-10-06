@@ -666,22 +666,26 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
     .person-panel strong, .person-panel span, .person-panel em { display:block; }
     .person-panel span { color:var(--muted); font-size:13px; line-height:1.45; margin-top:4px; }
     .person-panel em { color:var(--green); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; font-style:normal; font-weight:800; letter-spacing:.02em; margin-top:7px; }
-    .gift-section .section-title { margin-bottom:12px; }
-    .gift-section .person-panel { padding:12px 14px; }
-    .gift-section .person-panel h3 { font-size:15px; margin-bottom:4px; }
-    .gift-section .person-panel p { padding:7px 0; }
-    .gift-section .person-panel strong { font-size:12px; line-height:1.25; }
-    .gift-section .person-panel span { font-size:10.5px; line-height:1.32; margin-top:2px; }
-    .gift-section .person-panel em { font-size:9.5px; line-height:1.25; margin-top:3px; }
+    .gift-section .section-title { margin-bottom:10px; padding-bottom:8px; }
+    .gift-section .section-title h2 { font-size:23px; }
+    .gift-section .section-title img { height:40px; width:40px; }
+    .gift-section .two-col { gap:12px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .gift-section .person-panel { padding:10px 12px; }
+    .gift-section .person-panel h3 { font-size:14px; margin-bottom:3px; }
+    .gift-section .person-panel p { padding:5px 0; }
+    .gift-section .person-panel strong { font-size:11.2px; line-height:1.18; }
+    .gift-section .person-panel span { font-size:9.7px; line-height:1.23; margin-top:1px; }
+    .gift-section .person-panel em { font-size:8.9px; line-height:1.15; margin-top:2px; }
     .scripture-note { background:#f3f8ef; border:1px solid rgba(71,107,66,.28); border-left:6px solid var(--green); margin-top:18px; padding:14px 16px; }
     .scripture-note p { color:var(--ink); margin:0; }
     .callout { background:#f3f8ef; border:1px solid rgba(71,107,66,.24); border-left:6px solid var(--dark); margin-top:18px; padding:18px; }
-    .gift-section .scripture-note { margin-top:12px; padding:10px 12px; }
-    .gift-section .callout { margin-top:10px; padding:12px 14px; }
-    .gift-section .callout h3 { font-size:15px; margin-bottom:4px; }
-    .gift-section .callout p, .gift-section .scripture-note p { font-size:11.5px; line-height:1.38; }
+    .gift-bottom-grid { display:grid; gap:10px; grid-template-columns:.8fr 1.2fr; margin-top:10px; }
+    .gift-section .scripture-note { margin-top:0; padding:9px 10px; }
+    .gift-section .callout { margin-top:0; padding:10px 12px; }
+    .gift-section .callout h3 { font-size:13.5px; margin-bottom:3px; }
+    .gift-section .callout p, .gift-section .scripture-note p { font-size:10.3px; line-height:1.28; }
     .gift-section .callout ul { margin-top:5px; }
-    .gift-section .callout li { font-size:10.8px; line-height:1.32; margin:3px 0; }
+    .gift-section .callout li { font-size:9.8px; line-height:1.22; margin:2px 0; }
     .interpretation-row { border:1px solid var(--line); margin-top:12px; padding:18px; }
     .reflection-row { background:var(--reflection-wash); border:2px solid var(--reflection-color); box-shadow:0 10px 26px rgba(36,63,39,.08); }
     .reflection-row h3 { color:var(--reflection-color); }
@@ -698,37 +702,40 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
     .designid-detail-grid ul { margin-top:6px; padding-left:16px; }
     .designid-detail-grid li { font-size:10.5px; line-height:1.3; margin:3px 0; }
     .visual-page { border:0; padding:4px 0 12px; }
-    .visual-frame { display:grid; justify-items:center; gap:14px; }
-    .visual-frame svg { height:auto; max-width:640px; width:100%; }
-    .designid-grid-ring { fill:none; stroke:rgba(36,63,39,.16); stroke-width:1; }
+    .visual-frame { display:grid; justify-items:center; gap:10px; }
+    .visual-frame svg { background:linear-gradient(180deg,#fffdf8,#f7f9f5); border:1px solid rgba(36,63,39,.1); height:auto; max-width:560px; padding:10px; width:100%; }
+    .designid-overview-section .visual-frame svg { max-width:430px; }
+    .designid-overview-section .visual-frame { gap:8px; }
+    .designid-overview-section > p { font-size:12.5px; line-height:1.42; margin-top:8px; }
+    .designid-grid-ring { fill:none; stroke:rgba(36,63,39,.14); stroke-width:.85; }
     .designid-grid-label { fill:#111; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10px; font-weight:950; }
-    .designid-axis-line { stroke:rgba(36,63,39,.18); stroke-width:1.5; }
+    .designid-axis-line { stroke:rgba(36,63,39,.18); stroke-width:1; }
     .designid-axis-label { dominant-baseline:middle; fill:var(--dark); font-size:13px; font-weight:950; text-anchor:middle; }
-    .designid-member-shape { fill:color-mix(in srgb, var(--member-color) 20%, transparent); stroke:var(--member-color); stroke-linejoin:round; stroke-width:3; }
-    .designid-member-dot { fill:var(--member-color); stroke:#fffaf0; stroke-width:2; }
+    .designid-member-shape { fill:color-mix(in srgb, var(--member-color) 14%, transparent); stroke:var(--member-color); stroke-linejoin:round; stroke-width:2.2; }
+    .designid-member-dot { fill:var(--member-color); stroke:#fffaf0; stroke-width:2; filter:drop-shadow(0 2px 3px rgba(36,63,39,.16)); }
     .designid-member-initials { dominant-baseline:middle; fill:#fffaf0; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:8px; font-weight:950; text-anchor:middle; }
-    .visual-legend { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
-    .visual-legend div, .designpd-visual-key div { align-items:center; background:#f7f9f5; border:1px solid rgba(36,63,39,.1); display:grid; gap:8px; grid-template-columns:10px auto minmax(0,1fr); padding:9px 11px; }
+    .visual-legend { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+    .visual-legend div, .designpd-visual-key div { align-items:center; background:#f7f9f5; border:1px solid rgba(36,63,39,.1); display:grid; gap:7px; grid-template-columns:10px auto minmax(0,1fr); padding:7px 9px; }
     .visual-legend i, .designpd-visual-key i, .visual-score-table i { border-radius:999px; display:block; height:10px; width:10px; }
     .visual-legend strong, .designpd-visual-key strong, .visual-score-table strong { color:var(--dark); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; font-weight:950; }
-    .visual-legend small, .designpd-visual-key small { color:var(--muted); font-size:12px; font-weight:800; }
+    .visual-legend small, .designpd-visual-key small { color:var(--muted); font-size:11px; font-weight:800; }
     .visual-score-table { border:1px solid rgba(36,63,39,.12); width:100%; }
     .visual-score-table-head, .visual-score-table-row { display:grid; grid-template-columns:1.2fr repeat(4,1fr); }
-    .visual-score-table-head span { background:#f3f8ef; color:var(--dark); font-size:11px; font-weight:950; letter-spacing:.04em; padding:8px; text-transform:uppercase; }
-    .visual-score-table-row > * { align-items:center; border-top:1px solid rgba(36,63,39,.1); display:flex; gap:7px; padding:9px 8px; }
-    .visual-score-table-row span { color:var(--ink); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; font-weight:900; }
-    .designpd-visual-stack { display:grid; gap:22px; }
-    .designpd-visual-axis { background:var(--axis-wash); border:2px solid var(--axis-color); padding:16px; }
+    .visual-score-table-head span { background:#f3f8ef; color:var(--dark); font-size:10px; font-weight:950; letter-spacing:.04em; padding:6px; text-transform:uppercase; }
+    .visual-score-table-row > * { align-items:center; border-top:1px solid rgba(36,63,39,.1); display:flex; gap:6px; padding:6px; }
+    .visual-score-table-row span { color:var(--ink); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; font-weight:900; }
+    .designpd-visual-stack { display:grid; gap:14px; }
+    .designpd-visual-axis { background:linear-gradient(180deg,#fff,var(--axis-wash)); border:1px solid color-mix(in srgb, var(--axis-color) 48%, #fff); padding:12px 14px; }
     .designpd-visual-heading { align-items:baseline; display:flex; justify-content:space-between; }
     .designpd-visual-heading strong { color:var(--axis-color); font-size:16px; }
     .designpd-visual-heading span { color:#111; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; font-weight:950; }
     .designpd-visual-track { align-items:center; display:grid; gap:12px; grid-template-columns:78px minmax(0,1fr) 78px; margin-top:14px; }
     .designpd-visual-track small { color:var(--muted); font-size:12px; font-weight:900; }
     .designpd-visual-track small:last-child { text-align:right; }
-    .designpd-visual-track > div { height:48px; position:relative; }
-    .designpd-visual-track i { background:linear-gradient(90deg, color-mix(in srgb, var(--axis-color) 46%, #fff), rgba(36,63,39,.12), var(--axis-color)); border-radius:999px; display:block; height:8px; left:0; position:absolute; right:0; top:20px; }
+    .designpd-visual-track > div { height:40px; position:relative; }
+    .designpd-visual-track i { background:linear-gradient(90deg, color-mix(in srgb, var(--axis-color) 38%, #fff), rgba(36,63,39,.12), var(--axis-color)); border:1px solid rgba(255,255,255,.75); border-radius:999px; display:block; height:7px; left:0; position:absolute; right:0; top:17px; }
     .designpd-visual-track i::after { background:rgba(36,63,39,.28); content:""; display:block; height:18px; left:50%; position:absolute; top:-5px; width:1px; }
-    .designpd-visual-track b { align-items:center; background:var(--member-color); border:2px solid #fffaf0; border-radius:999px; box-shadow:0 5px 12px rgba(36,63,39,.14); color:#fffaf0; display:flex; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; font-weight:950; height:28px; justify-content:center; min-width:28px; padding:0 5px; position:absolute; top:10px; transform:translateX(-50%); }
+    .designpd-visual-track b { align-items:center; background:var(--member-color); border:2px solid #fffaf0; border-radius:999px; box-shadow:0 5px 12px rgba(36,63,39,.14); color:#fffaf0; display:flex; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10px; font-weight:950; height:24px; justify-content:center; min-width:24px; padding:0 5px; position:absolute; top:9px; transform:translateX(-50%); }
     .designpd-visual-key { border-top:1px solid rgba(36,63,39,.1); display:grid; gap:8px; padding-top:12px; }
     .resource-section-heading { align-items:flex-start; display:grid; gap:20px; grid-template-columns:minmax(0,1fr) minmax(180px,250px); margin-bottom:12px; }
     .resource-section-heading h2 { margin:0; }
@@ -754,7 +761,7 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
       section { break-inside:avoid; padding:24px 30px; }
       .intro-section { break-after:page; padding:20px 30px 22px; }
       .gift-section, .visual-section, .designid-detail-section, .resource-section { break-before:page; }
-      .gift-section { padding-top:20px; }
+      .gift-section { padding-top:18px; }
       .interpretation-row { break-inside:avoid; }
       .resource-cta { break-inside:avoid; }
     }
@@ -782,17 +789,19 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
     ${sections.spiritualGifts ? `<section class="gift-section">
       ${sectionHeading("Spiritual Gifts Overlap", sectionIconPaths.spiritualGifts, "Spiritual Gifts")}
       <div class="two-col">${giftRows}</div>
-      <div class="scripture-note">
-        <p><strong>*</strong> Be sure to explore these Bible verse references in context together. Let the passages shape the conversation, not just the gift names.</p>
-      </div>
-      <div class="callout">
-        <h3>${escapeHtml(sharedGiftCopy.heading)}</h3>
-        <p>${escapeHtml(sharedGiftCopy.text)}</p>
-        ${htmlList([
-          "Which gift in your spouse do you want to honor more intentionally?",
-          "Where do your gifts help you serve together rather than compete for who is right?",
-          "Where might one spouse stand in the gap for the other without becoming superior or resentful?",
-        ])}
+      <div class="gift-bottom-grid">
+        <div class="scripture-note">
+          <p><strong>*</strong> Be sure to explore these Bible verse references in context together. Let the passages shape the conversation, not just the gift names.</p>
+        </div>
+        <div class="callout">
+          <h3>${escapeHtml(sharedGiftCopy.heading)}</h3>
+          <p>${escapeHtml(sharedGiftCopy.text)}</p>
+          ${htmlList([
+            "Which gift in your spouse do you want to honor more intentionally?",
+            "Where do your gifts help you serve together rather than compete for who is right?",
+            "Where might one spouse stand in the gap for the other without becoming superior or resentful?",
+          ])}
+        </div>
       </div>
     </section>` : ""}
     ${sections.designid ? `<section class="visual-section designid-overview-section">

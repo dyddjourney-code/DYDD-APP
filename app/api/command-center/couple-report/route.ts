@@ -679,13 +679,14 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
     .scripture-note { background:#f3f8ef; border:1px solid rgba(71,107,66,.28); border-left:6px solid var(--green); margin-top:18px; padding:14px 16px; }
     .scripture-note p { color:var(--ink); margin:0; }
     .callout { background:#f3f8ef; border:1px solid rgba(71,107,66,.24); border-left:6px solid var(--dark); margin-top:18px; padding:18px; }
-    .gift-bottom-grid { display:grid; gap:10px; grid-template-columns:.8fr 1.2fr; margin-top:10px; }
-    .gift-section .scripture-note { margin-top:0; padding:9px 10px; }
-    .gift-section .callout { margin-top:0; padding:10px 12px; }
-    .gift-section .callout h3 { font-size:13.5px; margin-bottom:3px; }
-    .gift-section .callout p, .gift-section .scripture-note p { font-size:10.3px; line-height:1.28; }
-    .gift-section .callout ul { margin-top:5px; }
-    .gift-section .callout li { font-size:9.8px; line-height:1.22; margin:2px 0; }
+    .gift-bottom-grid { display:grid; gap:6px; grid-template-columns:1fr; margin-top:10px; }
+    .gift-section .scripture-note { border-left-width:4px; margin-top:0; padding:5px 9px; }
+    .gift-section .callout { margin-top:0; padding:12px 14px; }
+    .gift-section .callout h3 { font-size:15px; margin-bottom:4px; }
+    .gift-section .callout p { font-size:11.8px; line-height:1.35; }
+    .gift-section .scripture-note p { font-size:9.5px; line-height:1.2; }
+    .gift-section .callout ul { margin-top:6px; padding-left:17px; }
+    .gift-section .callout li { font-size:11px; line-height:1.28; margin:2px 0; }
     .interpretation-row { border:1px solid var(--line); margin-top:12px; padding:18px; }
     .reflection-row { background:var(--reflection-wash); border:2px solid var(--reflection-color); box-shadow:0 10px 26px rgba(36,63,39,.08); }
     .reflection-row h3 { color:var(--reflection-color); }
@@ -693,6 +694,13 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
     .designpd-row { background:var(--axis-wash); border:2px solid var(--axis-color); box-shadow:0 10px 26px rgba(36,63,39,.08); }
     .designpd-row h3 { color:var(--axis-color); }
     .designpd-row h3 span { color:#111; }
+    .designpd-detail-section { padding-top:24px; }
+    .designpd-detail-section .designpd-row { margin-top:10px; padding:14px; }
+    .designpd-detail-section .designpd-row h3 { font-size:15px; line-height:1.2; }
+    .designpd-detail-section .designpd-row h3 span { font-size:11px; }
+    .designpd-detail-section .designpd-row p { font-size:11.2px; line-height:1.35; margin-bottom:7px; }
+    .designpd-detail-section .designpd-row ul { margin-top:6px; padding-left:16px; }
+    .designpd-detail-section .designpd-row li { font-size:10.7px; line-height:1.3; margin:3px 0; }
     .designid-detail-section { padding-top:24px; }
     .designid-detail-grid { display:grid; gap:12px; grid-template-columns:repeat(2,minmax(0,1fr)); }
     .designid-detail-grid .interpretation-row { margin-top:0; padding:13px; }
@@ -760,7 +768,7 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
       main { border:0; box-shadow:none; max-width:none; }
       section { break-inside:avoid; padding:24px 30px; }
       .intro-section { break-after:page; padding:20px 30px 22px; }
-      .gift-section, .visual-section, .designid-detail-section, .resource-section { break-before:page; }
+      .gift-section, .visual-section, .designid-detail-section, .designpd-detail-section, .resource-section { break-before:page; }
       .gift-section { padding-top:18px; }
       .interpretation-row { break-inside:avoid; }
       .resource-cta { break-inside:avoid; }
@@ -790,9 +798,6 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
       ${sectionHeading("Spiritual Gifts Overlap", sectionIconPaths.spiritualGifts, "Spiritual Gifts")}
       <div class="two-col">${giftRows}</div>
       <div class="gift-bottom-grid">
-        <div class="scripture-note">
-          <p><strong>*</strong> Be sure to explore these Bible verse references in context together. Let the passages shape the conversation, not just the gift names.</p>
-        </div>
         <div class="callout">
           <h3>${escapeHtml(sharedGiftCopy.heading)}</h3>
           <p>${escapeHtml(sharedGiftCopy.text)}</p>
@@ -801,6 +806,9 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
             "Where do your gifts help you serve together rather than compete for who is right?",
             "Where might one spouse stand in the gap for the other without becoming superior or resentful?",
           ])}
+        </div>
+        <div class="scripture-note">
+          <p><strong>*</strong> Be sure to explore these Bible verse references in context together. Let the passages shape the conversation, not just the gift names.</p>
         </div>
       </div>
     </section>` : ""}
@@ -817,6 +825,9 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
       ${sectionHeading("DesignPD Tendencies", sectionIconPaths.designpd, "DesignPD")}
       ${designPdVisual(members)}
       <p>DesignPD helps you talk about how you plan, decide, and move. Gaps often explain recurring friction. Shared leanings often show what comes naturally as a couple and what may need outside attention.</p>
+    </section>
+    <section class="designpd-detail-section">
+      ${sectionHeading("DesignPD Tendency Detail", sectionIconPaths.designpd, "DesignPD")}
       ${designPdRows}
     </section>` : designPdUpsell}
     <section class="walk-section">

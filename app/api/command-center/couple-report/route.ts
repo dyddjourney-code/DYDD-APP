@@ -296,67 +296,145 @@ function gapLevel(gap: number) {
   };
 }
 
-function designIdQuestions(label: string, gap: number) {
-  if (gap <= 5) {
+function designIdGapInsight(label: string, gap: number) {
+  const level = gapLevel(gap);
+  const copy: Record<string, Record<string, string>> = {
+    Architect: {
+      "close range":
+        "You likely carry a similar instinct for structure, sequence, and what needs to be built. Shared Architect capacity can make planning feel natural, but it can also make the marriage overly engineered if grace and flexibility are not protected.",
+      "noticeable gap":
+        "One spouse may see structure, sequence, or long-range implications sooner than the other. This can become a strength when clarity is offered as support rather than pressure.",
+      "meaningful gap":
+        "One spouse may carry more of the building, ordering, and future-shaping energy here. This needs honor and shared agreement so structure does not become control and flexibility does not feel careless.",
+      "wide gap":
+        "One spouse may naturally see structure, sequence, or long-range implications before the other. This can become a strength when the more structured spouse helps build clarity without overpowering the pace of the relationship.",
+    },
+    Artisan: {
+      "close range":
+        "You may share a similar instinct for creativity, adaptability, beauty, and hands-on problem solving. Shared Artisan capacity can bring life and flexibility, but it may need enough structure to keep ideas from scattering.",
+      "noticeable gap":
+        "One spouse may bring more improvisation, creativity, or in-the-moment responsiveness. This can become a gift when adaptability is welcomed without making the other spouse feel rushed or ungrounded.",
+      "meaningful gap":
+        "One spouse may carry more creative energy, experimentation, or practical improvisation. This needs room to breathe, while also honoring the spouse who needs more predictability before joining the movement.",
+      "wide gap":
+        "One spouse may move more naturally through creativity, flexibility, and hands-on response while the other may need clearer form. This can become a strength when spontaneity brings life without dismissing the need for stability.",
+    },
+    Shepherd: {
+      "close range":
+        "You may share a similar awareness of people, emotion, care, and connection. Shared Shepherd capacity can create warmth, but it also needs boundaries so care does not become emotional overload.",
+      "noticeable gap":
+        "One spouse may notice relational tone, emotion, or disconnection sooner. This can become a strength when care is named without blame and connection is protected without one spouse carrying it alone.",
+      "meaningful gap":
+        "One spouse may carry more of the emotional and relational awareness in the marriage. This needs shared language so care does not become exhaustion and the less aware spouse is invited rather than accused.",
+      "wide gap":
+        "One spouse may carry more natural awareness of people, emotion, and relational care. This can become a strength when that spouse helps the couple slow down, notice needs, and protect connection without carrying all the emotional weight alone.",
+    },
+    Steward: {
+      "close range":
+        "You may share a similar instinct for responsibility, details, follow-through, and faithful management. Shared Steward capacity can create reliability, but it may need joy and margin so life does not become only maintenance.",
+      "noticeable gap":
+        "One spouse may notice responsibilities, details, or unfinished commitments sooner. This can become a strength when follow-through is honored without turning difference into criticism.",
+      "meaningful gap":
+        "One spouse may carry more of the practical ownership, order, or detail management. This needs clear partnership so responsibility does not silently pile up on one person.",
+      "wide gap":
+        "One spouse may naturally see details, responsibilities, and follow-through before the other. This can become a strength when stewardship creates trust without making the marriage feel like a checklist.",
+    },
+  };
+
+  return copy[label]?.[level.label] ?? `${level.summary} ${level.tone}`;
+}
+
+function designIdQuestions(label: string) {
+  if (label === "Architect") {
     return [
-      `Where does shared ${label} capacity help us feel naturally aligned?`,
-      "How can we keep this shared strength from becoming invisible or taken for granted?",
-      "What would it look like to steward this similarity for service, family, and calling?",
+      "Where does structure help our marriage feel more peaceful instead of more pressured?",
+      "Who tends to see the next step first, and how can we honor that without rushing the other?",
+      "What is one area of life that needs clearer design, rhythm, or agreement?",
     ];
   }
 
-  if (gap <= 15) {
+  if (label === "Artisan") {
     return [
-      `Where might one of us expect the other to carry ${label} energy the same way?`,
-      "What is one situation where this difference shows up quietly before anyone names it?",
-      "How can we turn this noticeable difference into a simple agreement instead of a repeated frustration?",
+      "Where does creativity, adaptability, or hands-on energy bring life to our marriage?",
+      "Who tends to improvise or respond in the moment, and how can that be valued rather than dismissed?",
+      "What would become lighter if we made more room for play, beauty, or flexible problem-solving?",
     ];
   }
 
-  if (gap <= 27) {
+  if (label === "Shepherd") {
     return [
-      `Where does the higher ${label} capacity naturally carry more weight in our marriage?`,
-      "What support, recovery, or role clarity does the lower-capacity spouse need here?",
-      "How can we honor the stronger capacity without making it the only acceptable way to move?",
+      "Who tends to notice emotional tone, relational needs, or disconnection first?",
+      "Where do we need more tenderness, listening, or care in this season?",
+      "How can we protect connection without making one spouse carry all the relational weight?",
     ];
   }
 
   return [
-    `What part of ${label} feels energizing for one of us and costly for the other?`,
-    "What boundary or partnership agreement would keep this contrast from becoming pressure or resentment?",
-    "Where might God be inviting us to stop comparing and start covering one another with grace?",
+    "Who tends to notice details, responsibilities, or unfinished commitments first?",
+    "Where do we need more follow-through, order, or shared ownership?",
+    "How can we manage life faithfully without turning the marriage into a checklist?",
   ];
 }
 
-function designPdQuestions(axis: (typeof designPdAxes)[number], gap: number) {
-  if (gap <= 5) {
+function designPdGapInsight(axis: (typeof designPdAxes)[number], gap: number) {
+  const level = gapLevel(gap);
+  const copy: Record<string, Record<string, string>> = {
+    plan: {
+      "close range":
+        "You likely share a similar need for preparation, sequence, and clarity before moving. This can create peace when you plan together, but it may need enough flexibility to keep planning from becoming delay.",
+      "noticeable gap":
+        "One spouse may want more preparation, sequence, or clarity before moving forward. This can become a strength when the need for structure is named early and the pace of planning is agreed together.",
+      "meaningful gap":
+        "One spouse may naturally prepare, order, or think ahead more than the other. This needs a clear agreement so planning brings peace without becoming pressure, and flexibility keeps movement possible.",
+      "wide gap":
+        "One spouse may naturally want more preparation, sequence, or clarity before moving forward, while the other may feel ready with less structure. This can become a strength when planning creates peace without becoming delay, and flexibility keeps the couple moving without creating unnecessary stress.",
+    },
+    decide: {
+      "close range":
+        "You likely share a similar decision rhythm, which can help you feel united when choices need to be made. The watch-out is that both of you may also avoid the opposite side of the decision process when wisdom requires it.",
+      "noticeable gap":
+        "One spouse may reach clarity more quickly while the other needs more time, input, or confidence before choosing. This can become a strength when speed and discernment are both treated as gifts.",
+      "meaningful gap":
+        "One spouse may tend to press toward resolution while the other needs more space to discern. This needs a shared decision process so clarity does not become pressure and caution does not become delay.",
+      "wide gap":
+        "One spouse may reach conclusions or make judgment calls more quickly, while the other may need more time, input, or confidence before choosing. This can become a strength when decisiveness provides direction without pressure, and discernment slows the couple down without creating paralysis.",
+    },
+    do: {
+      "close range":
+        "You likely share a similar action rhythm, which can make movement feel natural. The watch-out is that both of you may either move too quickly together or wait too long together without a balancing voice.",
+      "noticeable gap":
+        "One spouse may move into action sooner while the other needs more readiness, energy, or agreement before engaging. This can become a strength when momentum and pacing are both respected.",
+      "meaningful gap":
+        "One spouse may carry more initiation, movement, or follow-through energy. This needs shared pacing so action does not become pressure and caution does not become resistance.",
+      "wide gap":
+        "One spouse may move quickly into action, while the other may need more time, energy, or readiness before engaging. This can become a strength when momentum helps the couple make progress, and pacing helps them avoid burnout or unfinished follow-through.",
+    },
+  };
+
+  return copy[axis.axisKey]?.[level.label] ?? `${level.summary} ${level.tone}`;
+}
+
+function designPdQuestions(axis: (typeof designPdAxes)[number]) {
+  if (axis.axisKey === "plan") {
     return [
-      `Where does our shared ${axis.label.toLowerCase()} rhythm help us move together easily?`,
-      `What might we both miss because neither of us naturally supplies much contrast on ${axis.label.toLowerCase()}?`,
-      `How can we intentionally include both ${axis.left} and ${axis.right} when the moment calls for it?`,
+      "Where do we need more clarity before moving forward?",
+      "Who tends to want more preparation, and how can that be honored without getting stuck?",
+      "What rhythm would help us plan enough to create peace, but not so much that we lose momentum?",
     ];
   }
 
-  if (gap <= 15) {
+  if (axis.axisKey === "decide") {
     return [
-      `When does this ${axis.label.toLowerCase()} difference first show up in ordinary life?`,
-      "What signal tells us we are turning a difference into a judgment?",
-      `What simple agreement would help us respect both the ${axis.left} side and the ${axis.right} side?`,
-    ];
-  }
-
-  if (gap <= 27) {
-    return [
-      `Where does one spouse tend to pull the ${axis.label.toLowerCase()} conversation in a different direction?`,
-      "What does each person need to feel honored before the couple moves forward?",
-      "How can we decide who leads this kind of moment without making the other person feel dismissed?",
+      "Where are we avoiding a decision that needs loving clarity?",
+      "Who tends to decide quickly, and who needs more time or input before feeling settled?",
+      "How can we make decisions in a way that protects both wisdom and unity?",
     ];
   }
 
   return [
-    `Where is this wide ${axis.label.toLowerCase()} contrast most obvious under pressure?`,
-    "What recurring argument might actually be a tendency gap asking for a better process?",
-    `How can we deliberately borrow the gift of both ${axis.left} and ${axis.right} before acting?`,
+    "Where do we need to move from intention into action?",
+    "Who tends to initiate or push for movement, and who helps pace the process?",
+    "What is one next step we can take together without overwhelming either spouse?",
   ];
 }
 
@@ -597,8 +675,8 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
     return `<article class="interpretation-row reflection-row" style="--reflection-color:${field.color};--reflection-wash:${field.wash};">
       <h3>${escapeHtml(field.label)} capacity <span>${gap} point gap</span></h3>
       <p>${escapeHtml(members.map((member, index) => `${member.initials}: ${scores[index].value} (${scores[index].band})`).join(" | "))}</p>
-      <p><strong>${escapeHtml(titleize(level.label))}.</strong> ${escapeHtml(level.summary)} ${escapeHtml(level.tone)}</p>
-      ${htmlList(designIdQuestions(field.label, gap))}
+      <p><strong>${escapeHtml(titleize(level.label))}.</strong> ${escapeHtml(designIdGapInsight(field.label, gap))}</p>
+      ${htmlList(designIdQuestions(field.label))}
     </article>`;
   }).join("") : "";
 
@@ -610,9 +688,9 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
     return `<section class="interpretation-row designpd-row" style="--axis-color:${axis.color};--axis-wash:${axis.wash};">
       <h3>${escapeHtml(axis.label)} tendency <span>${gap} point gap</span></h3>
       <p>${escapeHtml(members.map((member, index) => `${member.initials}: ${axisScores[index].tendency} (${axisScores[index].score})`).join(" | "))}</p>
-      <p><strong>${escapeHtml(titleize(level.label))}.</strong> ${escapeHtml(level.summary)} ${escapeHtml(level.tone)}</p>
+      <p><strong>${escapeHtml(titleize(level.label))}.</strong> ${escapeHtml(designPdGapInsight(axis, gap))}</p>
       ${sharedPole ? `<p>${escapeHtml(sharedPole)}</p>` : ""}
-      ${htmlList(designPdQuestions(axis, gap))}
+      ${htmlList(designPdQuestions(axis))}
     </section>`;
   }).join("") : "";
 
@@ -649,8 +727,12 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
     h3 span { color:#111; float:right; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:14px; font-weight:950; }
     p { color:var(--muted); font-size:14px; line-height:1.58; margin:0 0 12px; }
     section { border-top:1px solid var(--line); padding:28px 34px; }
-    .intro-section { padding:22px 34px 24px; }
-    .intro-section p { font-size:15px; line-height:1.5; max-width:820px; }
+    .intro-section { padding:18px 34px 22px; }
+    .intro-section p { font-size:14px; line-height:1.43; max-width:820px; }
+    .purpose-card { background:#f3f8ef; border:1px solid rgba(71,107,66,.22); border-left:6px solid var(--gold); margin-bottom:14px; padding:14px 16px; }
+    .purpose-card h2 { color:var(--dark); font-size:22px; letter-spacing:.02em; margin:0 0 7px; text-transform:uppercase; }
+    .purpose-card p { font-size:13px; line-height:1.38; margin-bottom:8px; }
+    .purpose-card blockquote { border-top:1px solid rgba(71,107,66,.18); color:var(--dark); font-size:11.4px; font-weight:800; line-height:1.32; margin:9px 0 0; padding-top:8px; }
     .cover-meta { display:grid; gap:12px; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:30px; }
     .cover-meta div { background:rgba(255,250,240,.1); border:1px solid rgba(255,250,240,.22); padding:14px; }
     .cover-meta small { color:#e4d2a7; display:block; font-size:11px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
@@ -684,6 +766,13 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
     .gift-section .callout { margin-top:0; padding:12px 14px; }
     .gift-section .callout h3 { font-size:15px; margin-bottom:4px; }
     .gift-section .callout p { font-size:11.8px; line-height:1.35; }
+    .gift-practice { border-top:1px solid rgba(71,107,66,.16); margin-top:7px; padding-top:7px; }
+    .gift-practice > strong { color:var(--dark); display:block; font-size:12px; margin-bottom:1px; }
+    .gift-practice > em { color:var(--green); display:block; font-size:10.8px; font-style:normal; font-weight:900; margin-bottom:6px; }
+    .gift-practice-grid { display:grid; gap:8px; grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .gift-practice-grid div { background:rgba(255,255,255,.58); border:1px solid rgba(71,107,66,.14); padding:7px; }
+    .gift-practice-grid h4 { color:var(--dark); font-size:10.8px; margin:0 0 4px; }
+    .gift-practice-grid p { font-size:9.6px; line-height:1.26; margin:0; }
     .gift-section .scripture-note p { font-size:9.5px; line-height:1.2; }
     .gift-section .callout ul { margin-top:6px; padding-left:17px; }
     .gift-section .callout li { font-size:11px; line-height:1.28; margin:2px 0; }
@@ -695,12 +784,12 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
     .designpd-row h3 { color:var(--axis-color); }
     .designpd-row h3 span { color:#111; }
     .designpd-detail-section { padding-top:24px; }
-    .designpd-detail-section .designpd-row { margin-top:10px; padding:14px; }
+    .designpd-detail-section .designpd-row { margin-top:8px; padding:11px 12px; }
     .designpd-detail-section .designpd-row h3 { font-size:15px; line-height:1.2; }
     .designpd-detail-section .designpd-row h3 span { font-size:11px; }
-    .designpd-detail-section .designpd-row p { font-size:11.2px; line-height:1.35; margin-bottom:7px; }
-    .designpd-detail-section .designpd-row ul { margin-top:6px; padding-left:16px; }
-    .designpd-detail-section .designpd-row li { font-size:10.7px; line-height:1.3; margin:3px 0; }
+    .designpd-detail-section .designpd-row p { font-size:10.3px; line-height:1.26; margin-bottom:5px; }
+    .designpd-detail-section .designpd-row ul { margin-top:5px; padding-left:15px; }
+    .designpd-detail-section .designpd-row li { font-size:9.75px; line-height:1.22; margin:2px 0; }
     .designid-detail-section { padding-top:24px; }
     .designid-detail-grid { display:grid; gap:12px; grid-template-columns:repeat(2,minmax(0,1fr)); }
     .designid-detail-grid .interpretation-row { margin-top:0; padding:13px; }
@@ -709,6 +798,16 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
     .designid-detail-grid p { font-size:11px; line-height:1.35; margin-bottom:7px; }
     .designid-detail-grid ul { margin-top:6px; padding-left:16px; }
     .designid-detail-grid li { font-size:10.5px; line-height:1.3; margin:3px 0; }
+    .capacity-conversation, .tendency-impact { background:#f3f8ef; border:1px solid rgba(71,107,66,.22); border-left:5px solid var(--green); margin-top:12px; padding:12px 14px; }
+    .capacity-conversation h3, .tendency-impact h3 { color:var(--dark); font-size:15px; margin-bottom:5px; }
+    .capacity-conversation > p, .tendency-impact > p { font-size:10.8px; line-height:1.32; margin-bottom:8px; }
+    .mini-reflection-grid { display:grid; gap:8px; grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .impact-grid { display:grid; gap:6px; grid-template-columns:repeat(5,minmax(0,1fr)); }
+    .mini-reflection-grid div, .impact-grid div { background:rgba(255,255,255,.62); border:1px solid rgba(71,107,66,.14); padding:7px; }
+    .mini-reflection-grid strong, .impact-grid strong { color:var(--dark); display:block; font-size:10.2px; margin-bottom:3px; }
+    .mini-reflection-grid span, .impact-grid span { color:var(--muted); display:block; font-size:8.8px; line-height:1.2; }
+    .scripture-line, .tagline-line { border-top:1px solid rgba(71,107,66,.16); color:var(--dark); font-size:10.3px; font-weight:900; line-height:1.28; margin:9px 0 0; padding-top:7px; }
+    .tagline-line { font-size:11.2px; text-align:center; }
     .visual-page { border:0; padding:4px 0 12px; }
     .visual-frame { display:grid; justify-items:center; gap:10px; }
     .visual-frame svg { background:linear-gradient(180deg,#fffdf8,#f7f9f5); border:1px solid rgba(36,63,39,.1); height:auto; max-width:560px; padding:10px; width:100%; }
@@ -791,6 +890,11 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
       <img class="brand-mark" src="${assetUrl(brandLogoPath)}" alt="Discover Your Divine Design" />
     </header>
     <section class="intro-section">
+      <div class="purpose-card">
+        <h2>On Purpose - For Purpose - Together</h2>
+        <p>Ephesians 2:10 reminds us that we are God's workmanship, created in Christ Jesus for good works He prepared in advance. In marriage, purpose is not only personal. God often uses the design of each spouse to strengthen the other, shape the home, and reveal a shared way of serving, loving, and walking faithfully together.</p>
+        <blockquote>For we are his workmanship, created in Christ Jesus for good works, which God prepared before that we would walk in them. - Ephesians 2:10</blockquote>
+      </div>
       <h2>How to Read This Overlay</h2>
       <p>This overlay brings together three layers of your Discover Your Divine Design results: Spiritual Gifts, DesignID, and DesignPD. It is not a label, verdict, or compatibility score. It is a simple conversation starter for noticing shared strength, complementary capacity, and movement patterns you can steward with humility.</p>
     </section>
@@ -801,11 +905,24 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
         <div class="callout">
           <h3>${escapeHtml(sharedGiftCopy.heading)}</h3>
           <p>${escapeHtml(sharedGiftCopy.text)}</p>
-          ${htmlList([
-            "Which gift in your spouse do you want to honor more intentionally?",
-            "Where do your gifts help you serve together rather than compete for who is right?",
-            "Where might one spouse stand in the gap for the other without becoming superior or resentful?",
-          ])}
+          <div class="gift-practice">
+            <strong>Gifts Are Learned by Doing</strong>
+            <em>Assessment gives language. Service gives evidence.</em>
+            <div class="gift-practice-grid">
+              <div>
+                <h4>Observe First</h4>
+                <p>Where have you seen these gifts in practice in your spouse? Which gifts have brought life, care, wisdom, strength, or service to others?</p>
+              </div>
+              <div>
+                <h4>Apply Together</h4>
+                <p>Which gifts in your spouse do you want to honor more? Where do your gifts help you serve together? Where might one spouse stand in the gap?</p>
+              </div>
+              <div>
+                <h4>Pray and Notice Fruit</h4>
+                <p>Ask God to help you serve open-handedly, then notice what grows: deeper love, clearer wisdom, stronger faith, healthier service, and lasting fruit.</p>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="scripture-note">
           <p><strong>*</strong> Be sure to explore these Bible verse references in context together. Let the passages shape the conversation, not just the gift names.</p>
@@ -820,6 +937,16 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
     <section class="designid-detail-section">
       ${sectionHeading("DesignID Capacity Detail", sectionIconPaths.designid, "DesignID")}
       <div class="designid-detail-grid">${designIdRows}</div>
+      <div class="capacity-conversation">
+        <h3>Capacity Conversation</h3>
+        <p>After reviewing all four capacities, use these prompts to notice where your design feels shared, where it needs support, and where one spouse often strengthens the other.</p>
+        <div class="mini-reflection-grid">
+          <div><strong>Shared Strength</strong><span>Where do we have similar capacity, and what feels easy or energizing together?</span></div>
+          <div><strong>Needed Coverage</strong><span>Where are we naturally strong, and where may we need intentional growth, support, or outside help?</span></div>
+          <div><strong>Borrowed Strength</strong><span>Which capacity do I most often borrow from my spouse, and how can I appreciate that more?</span></div>
+        </div>
+        <p class="scripture-line">Two are better than one, because they have a good reward for their labor. For if they fall, the one will lift up his fellow. - Ecclesiastes 4:9-10</p>
+      </div>
     </section>` : ""}
     ${sections.designpd ? `<section class="visual-section">
       ${sectionHeading("DesignPD Tendencies", sectionIconPaths.designpd, "DesignPD")}
@@ -829,6 +956,18 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
     <section class="designpd-detail-section">
       ${sectionHeading("DesignPD Tendency Detail", sectionIconPaths.designpd, "DesignPD")}
       ${designPdRows}
+      <div class="tendency-impact">
+        <h3>Where Tendencies Become Visible</h3>
+        <p>Your Plan, Decide, and Do tendencies often become most visible in everyday marriage moments: how you handle conflict, work together, lead your home, respond under pressure, and build a sustainable rhythm.</p>
+        <div class="impact-grid">
+          <div><strong>Conflict</strong><span>How do we respond when tension rises?</span></div>
+          <div><strong>Collaboration</strong><span>How do we work together without one spouse carrying the whole load?</span></div>
+          <div><strong>Leadership</strong><span>How do we guide our home, family, and decisions together?</span></div>
+          <div><strong>Pressure</strong><span>What happens to our pace, patience, and communication when stress increases?</span></div>
+          <div><strong>Sustainability</strong><span>What rhythms help us keep going without burning out?</span></div>
+        </div>
+        <p class="tagline-line">What happens within us eventually shows up between us.</p>
+      </div>
     </section>` : designPdUpsell}
     <section class="walk-section">
       <h2>Walk Forward From Here</h2>

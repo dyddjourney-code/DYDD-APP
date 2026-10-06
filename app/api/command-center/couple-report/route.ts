@@ -855,10 +855,17 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
     .resource-cta p, .resource-cta h3 { color:#fffaf0; }
     .resource-cta a { color:#fffaf0; font-weight:950; }
     .resource-cta img { background:#fff; display:block; height:118px; padding:7px; width:118px; }
-    .walk-section .walk-grid { display:grid; gap:12px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:14px; }
-    .walk-card { background:#f7f9f5; border:1px solid rgba(36,63,39,.12); border-left:5px solid var(--green); padding:14px; }
-    .walk-card h3 { color:var(--green); font-size:15px; }
-    .walk-card p { font-size:12.5px; line-height:1.45; margin:0; }
+    .walk-section > p { font-size:12.7px; line-height:1.42; margin-bottom:12px; max-width:800px; }
+    .walk-grid { display:grid; gap:10px; grid-template-columns:1fr; margin-top:12px; }
+    .walk-card { background:#f7f9f5; border:1px solid rgba(36,63,39,.12); border-left:5px solid var(--green); display:grid; gap:10px; grid-template-columns:1.05fr 1.45fr; padding:12px 14px; }
+    .walk-card h3 { color:var(--green); font-size:14.5px; margin-bottom:5px; }
+    .walk-card p { font-size:11.2px; line-height:1.32; margin:0; }
+    .walk-practice { align-content:start; display:grid; gap:5px; }
+    .walk-practice div { background:rgba(255,255,255,.62); border:1px solid rgba(71,107,66,.12); padding:7px 8px; }
+    .walk-practice strong { color:var(--dark); display:block; font-size:9.8px; letter-spacing:.04em; margin-bottom:2px; text-transform:uppercase; }
+    .walk-practice span { color:var(--muted); display:block; font-size:10.4px; line-height:1.25; }
+    .walk-scripture { border-top:1px solid rgba(71,107,66,.16); color:var(--dark); font-size:10.2px; font-weight:850; line-height:1.28; margin-top:7px; padding-top:6px; }
+    .walk-closing { background:linear-gradient(135deg,#f3f8ef,#fffdf8); border:1px solid rgba(71,107,66,.18); border-left:5px solid var(--gold); color:var(--dark); font-size:12px; font-weight:950; line-height:1.25; margin:11px 0 0; padding:10px 12px; text-align:center; }
     ul { color:var(--ink); margin:10px 0 0; padding-left:20px; }
     li { font-size:14px; line-height:1.5; margin:6px 0; }
     @page { size: Letter; margin: 0.42in; }
@@ -867,9 +874,11 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
       main { border:0; box-shadow:none; max-width:none; }
       section { break-inside:avoid; padding:24px 30px; }
       .intro-section { break-after:page; padding:20px 30px 22px; }
-      .gift-section, .visual-section, .designid-detail-section, .designpd-detail-section, .resource-section { break-before:page; }
+      .gift-section, .visual-section, .designid-detail-section, .designpd-detail-section, .walk-section, .resource-section { break-before:page; }
       .gift-section { padding-top:18px; }
+      .walk-section { padding-top:20px; }
       .interpretation-row { break-inside:avoid; }
+      .walk-card { break-inside:avoid; }
       .resource-cta { break-inside:avoid; }
     }
     @media (max-width:760px) { body { padding:12px; } header, .two-col, .cover-meta, .resource-section-heading, .resource-grid, .resource-cta { grid-template-columns:1fr; } .brand-mark, .resource-logo { justify-self:start; } h3 span { float:none; display:block; margin-top:4px; } }
@@ -971,25 +980,54 @@ function buildMarriageOverlayHtml(groupName: string, members: CoupleMember[], se
     </section>` : designPdUpsell}
     <section class="walk-section">
       <h2>Walk Forward From Here</h2>
-      <p>A healthy couple does not use design language to win arguments. Use it to become curious faster, repair sooner, and build agreements that honor both people.</p>
+      <p>Your overlay is not meant to label your marriage. It is meant to help you honor one another, talk with more clarity, and take wise next steps together.</p>
       <div class="walk-grid">
         <div class="walk-card">
-          <h3>1. Begin With Honor</h3>
-          <p>Name one strength you see in your spouse before naming a gap. Gratitude keeps the conversation from becoming a diagnosis.</p>
+          <div>
+            <h3>1. Begin With Honor</h3>
+            <p>Before you try to fix a difference, name what is good in your spouse's design. Honor helps the conversation stay safe enough for honesty.</p>
+            <p class="walk-scripture">"Be devoted to one another in love. Honor one another above yourselves." - Romans 12:10</p>
+          </div>
+          <div class="walk-practice">
+            <div><strong>Practice</strong><span>Each spouse names one strength they see in the other.</span></div>
+            <div><strong>Question</strong><span>What part of your design do I need to appreciate more openly?</span></div>
+          </div>
         </div>
         <div class="walk-card">
-          <h3>2. Turn Gaps Into Questions</h3>
-          <p>Ask, "What is this difference asking us to understand?" before it becomes an accusation or a repeated argument.</p>
+          <div>
+            <h3>2. Turn Gaps Into Questions</h3>
+            <p>A gap is not automatically a problem. It becomes helpful when you use it to ask better questions instead of making assumptions.</p>
+            <p class="walk-scripture">"My dear brothers and sisters, take note of this: Everyone should be quick to listen, slow to speak and slow to become angry." - James 1:19</p>
+          </div>
+          <div class="walk-practice">
+            <div><strong>Practice</strong><span>Choose one gap from this report and talk about what each spouse needs in that area.</span></div>
+            <div><strong>Question</strong><span>What does this difference help us understand about one another?</span></div>
+          </div>
         </div>
         <div class="walk-card">
-          <h3>3. Build One Agreement</h3>
-          <p>Choose one small agreement for pressure, conflict, planning, decision-making, or follow-through this week.</p>
+          <div>
+            <h3>3. Build One Agreement</h3>
+            <p>Clarity grows when insight becomes a shared agreement. Choose one small next step you can actually practice this week.</p>
+            <p class="walk-scripture">"Do two walk together unless they have agreed to do so?" - Amos 3:3</p>
+          </div>
+          <div class="walk-practice">
+            <div><strong>Practice</strong><span>Name one agreement for pressure, conflict, planning, decision-making, or follow-through.</span></div>
+            <div><strong>Question</strong><span>What is one simple agreement that would make this easier next time?</span></div>
+          </div>
         </div>
         <div class="walk-card">
-          <h3>4. Cover What Is Missing</h3>
-          <p>Ask what your marriage needs that neither of you naturally carries first, then decide where you need prayer, support, counsel, or a clearer process.</p>
+          <div>
+            <h3>4. Cover What Is Missing</h3>
+            <p>Every couple has places where neither spouse naturally carries the whole load. Wisdom names where you need grace, support, and intentional growth.</p>
+            <p class="walk-scripture">"Carry each other's burdens, and in this way you will fulfill the law of Christ." - Galatians 6:2</p>
+          </div>
+          <div class="walk-practice">
+            <div><strong>Practice</strong><span>Identify one area where you need help, prayer, counsel, or a better rhythm.</span></div>
+            <div><strong>Question</strong><span>Where do we need to stop expecting one spouse to carry what we should carry together?</span></div>
+          </div>
         </div>
       </div>
+      <p class="walk-closing">Start with honor. Move with grace. Build one faithful next step together.</p>
     </section>
     <section class="resource-section">
       <div class="resource-section-heading">

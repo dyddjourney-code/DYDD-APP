@@ -29,9 +29,9 @@ const mapPoints: MapPoint[] = [
     image: "/brand/dydd-park-map-concept.png",
     imageAlt: "Illustrated Discover Your Divine Design ecosystem map",
     label: "Start Here",
-    left: "51.6%",
+    left: "13.5%",
     title: "How to approach the map",
-    top: "74.2%",
+    top: "61.2%",
     type: "place",
   },
   {

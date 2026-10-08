@@ -5076,6 +5076,10 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   object-position: center;
 }
 
+.relief-panel-visual.visual-start-here img {
+  object-position: center bottom;
+}
+
 .relief-panel-visual.visual-spiritual-gifts,
 .relief-panel-visual.visual-fruitlife-360,
 .relief-panel-visual.visual-design-pathways,

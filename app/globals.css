@@ -5024,6 +5024,13 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   border-color: rgba(79, 179, 107, 0.72);
 }
 
+.relief-map-marker.marker-start-here {
+  border-color: rgba(255, 255, 255, 0.82);
+  background: rgba(212, 164, 81, 0.78);
+  color: #2f3d1f;
+  text-shadow: 0 1px 0 rgba(255, 245, 211, 0.42);
+}
+
 .relief-map-marker.marker-spiritual-gifts {
   border-color: rgba(61, 157, 232, 0.72);
 }

@@ -164,13 +164,7 @@ export default async function RangerStationPage({ searchParams }: RangerStationP
 
       <section className="ranger-map-section relief-map-section" aria-label="Interactive DYDD relief map">
         <div className="ranger-map-copy">
-          <p className="section-label">Relief map</p>
-          <h2>The whole park at a glance.</h2>
-          <p>
-            Use the map like the large trail map in a real ranger station. Hover
-            or click a place, then use the legend to understand what it is, why
-            it is here, and where it leads.
-          </p>
+          <p className="section-label">DYDD Ecosystem Map</p>
         </div>
         <RangerReliefMap />
       </section>

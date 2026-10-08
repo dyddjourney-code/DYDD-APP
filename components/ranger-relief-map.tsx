@@ -21,6 +21,21 @@ type MapPoint = {
 const mapPoints: MapPoint[] = [
   {
     body:
+      "Start here by treating the map as an ecosystem, not a checklist. Notice what each place is for, choose the next faithful step, and come back whenever you need fresh orientation.",
+    bullets: ["Begin at Base Camp when you need your bearings", "Use Trailheads for courses, assessments, and guided paths", "Return to Ranger Station when you want help choosing what comes next"],
+    cta: "Go to Base Camp",
+    href: "/base-camp",
+    id: "start-here",
+    image: "/brand/dydd-park-map-concept.png",
+    imageAlt: "Illustrated Discover Your Divine Design ecosystem map",
+    label: "Start Here",
+    left: "51.6%",
+    title: "How to approach the map",
+    top: "74.2%",
+    type: "place",
+  },
+  {
+    body:
       "Base Camp is the quiet landing place where a person can arrive, get their bearings, and see the next faithful step without feeling buried in the whole system at once.",
     bullets: ["Personal passport and earned badges", "Account basics and current progress", "A simple handoff into Ranger Station"],
     cta: "Return to Base Camp",
@@ -280,7 +295,7 @@ const trailDots = [
 ];
 
 export function RangerReliefMap() {
-  const [activeId, setActiveId] = useState("ranger-station");
+  const [activeId, setActiveId] = useState("start-here");
   const activePoint = useMemo(
     () => mapPoints.find((point) => point.id === activeId) ?? mapPoints[0],
     [activeId],

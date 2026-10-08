@@ -16,7 +16,7 @@ const pathGroups = [
       {
         image: "/brand/dydd-logo-transparent.webp",
         label: "Discover Your Divine Design Journey",
-        status: "Most complete",
+        status: "Recommended first path",
         text:
           "The holistic route through identity, design, gifting, calling, and next faithful steps. This path can include DesignID and Spiritual Gifts as part of the larger journey.",
       },
@@ -171,7 +171,6 @@ export default function RangerStationPage() {
       <section className="visual-journey-map ranger-journey-map ranger-path-finder" aria-label="What path is right for me">
         <div className="card-heading">
           <p className="section-label">What path is right for me?</p>
-          <h2>Choose the starting point that fits your season.</h2>
           <p>
             The full journey is the best first path for most people. A focused path can
             also stand alone when someone wants a smaller beginning, while extended

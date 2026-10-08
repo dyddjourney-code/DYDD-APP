@@ -4141,8 +4141,19 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
     radial-gradient(circle at 78% 72%, rgba(243, 228, 196, 0.68), transparent 32%);
 }
 
+.ranger-path-finder .card-heading {
+  display: block;
+}
+
+.ranger-path-finder .section-label {
+  white-space: nowrap;
+}
+
 .ranger-path-finder .card-heading p:not(.section-label) {
-  max-width: 78ch;
+  max-width: none;
+  margin-top: 10px;
+  font-size: 1rem;
+  line-height: 1.56;
 }
 
 .ranger-path-groups {
@@ -4186,14 +4197,14 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .ranger-path-group header p {
   margin: 0;
   color: var(--green-dark);
-  font-size: clamp(1.04rem, 1.8vw, 1.32rem);
+  font-size: clamp(1.12rem, 1.8vw, 1.38rem);
   font-weight: 950;
   line-height: 1.12;
 }
 
 .ranger-path-group header span {
   color: var(--muted);
-  font-size: 0.86rem;
+  font-size: 0.94rem;
   font-weight: 780;
   line-height: 1.42;
 }
@@ -4232,14 +4243,15 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .ranger-path-card > strong {
   align-self: end;
   color: var(--green-dark);
-  font-size: 1rem;
+  font-size: 1.08rem;
   font-weight: 950;
   line-height: 1.15;
 }
 
 .visual-journey-map .ranger-path-card > small {
   max-width: none;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
+  line-height: 1.38;
   text-align: left;
 }
 
@@ -4254,7 +4266,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   border-radius: 999px;
   background: rgba(234, 240, 226, 0.82);
   color: var(--green-dark);
-  font-size: 0.7rem;
+  font-size: 0.76rem;
   font-style: normal;
   font-weight: 950;
   line-height: 1.15;
@@ -4271,15 +4283,17 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .ranger-path-note {
-  max-width: 88ch;
+  max-width: none;
   margin: 18px 0 0;
   padding: 14px 16px;
   border-left: 5px solid var(--green);
+  border-right: 5px solid var(--green);
   border-radius: 8px;
   background: rgba(234, 240, 226, 0.72);
   color: var(--green-dark);
   font-weight: 820;
   line-height: 1.5;
+  text-align: center;
 }
 
 @media (max-width: 900px) {
@@ -4293,6 +4307,10 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 @media (max-width: 560px) {
+  .ranger-path-finder .section-label {
+    white-space: normal;
+  }
+
   .ranger-path-card {
     grid-template-columns: 72px minmax(0, 1fr);
   }

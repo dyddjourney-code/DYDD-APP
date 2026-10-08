@@ -5080,7 +5080,15 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .relief-panel-visual.visual-fruitlife-360 img,
 .relief-panel-visual.visual-design-pathways img,
 .relief-panel-visual.visual-designid img {
-  object-position: center 24%;
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 128%;
+  max-width: none;
+  height: auto;
+  object-fit: contain;
+  object-position: center top;
+  transform: translateX(-50%);
 }
 
 .relief-panel-subtitle {

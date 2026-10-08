@@ -601,7 +601,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       (badge.title === "DesignID" && hasDesignId) ||
       (badge.title === "DesignPD" && hasDesignPd) ||
       (badge.title === "Design Pathways" && hasDesignPathways) ||
-      (badge.title === "Spiritual Gifts" && hasSpiritualGifts) ||
+      (badge.title === "Spiritual Gifts Assessment" && hasSpiritualGifts) ||
       (badge.title === "FruitLife 360" && hasFruitLife);
 
     return {

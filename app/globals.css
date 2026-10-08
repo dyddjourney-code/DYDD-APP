@@ -4321,10 +4321,22 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   line-height: 1;
 }
 
+.passport-badge-stack {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
 .passport-badge-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
   gap: 8px;
+}
+
+.passport-badge-grid.extension {
+  padding-top: 10px;
+  border-top: 1px dashed rgba(116, 76, 46, 0.24);
+  grid-template-columns: repeat(3, minmax(104px, 1fr));
 }
 
 .passport-badge-button {
@@ -16143,6 +16155,10 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .named-check,
   .page-help {
     grid-template-columns: 1fr;
+  }
+
+  .passport-badge-grid.extension {
+    grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
   }
 
   .hq-sidebar {

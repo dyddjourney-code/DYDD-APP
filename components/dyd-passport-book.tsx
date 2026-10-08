@@ -25,6 +25,21 @@ export function DydPassportBook({
   );
   const earnedCount = badges.filter((badge) => badge.state === "earned").length;
   const nextBadge = badges.find((badge) => badge.state === "next") ?? badges.find((badge) => badge.state !== "earned");
+  const journeyBadges = badges.filter((badge) => badge.group !== "extension");
+  const extensionBadges = badges.filter((badge) => badge.group === "extension");
+  const renderBadgeButton = (badge: PassportBadge) => (
+    <button
+      className={`passport-badge-button ${badge.state} ${selectedBadge?.title === badge.title ? "selected" : ""}`}
+      key={badge.title}
+      onClick={() => setSelectedTitle(badge.title)}
+      onMouseEnter={() => setSelectedTitle(badge.title)}
+      type="button"
+    >
+      <img src={badge.image} alt={`${badge.title} badge`} />
+      <span>{badgeStatusLabel[badge.state]}</span>
+      <strong>{badge.title}</strong>
+    </button>
+  );
 
   return (
     <section className="passport-book" id="passport" aria-label="DYDD Passport Book">
@@ -56,20 +71,11 @@ export function DydPassportBook({
           </p>
         </div>
 
-        <div className="passport-badge-grid" aria-label="Possible and earned badges">
-          {badges.map((badge) => (
-            <button
-              className={`passport-badge-button ${badge.state} ${selectedBadge?.title === badge.title ? "selected" : ""}`}
-              key={badge.title}
-              onClick={() => setSelectedTitle(badge.title)}
-              onMouseEnter={() => setSelectedTitle(badge.title)}
-              type="button"
-            >
-              <img src={badge.image} alt={`${badge.title} badge`} />
-              <span>{badgeStatusLabel[badge.state]}</span>
-              <strong>{badge.title}</strong>
-            </button>
-          ))}
+        <div className="passport-badge-stack" aria-label="Possible and earned badges">
+          <div className="passport-badge-grid journey">{journeyBadges.map(renderBadgeButton)}</div>
+          {extensionBadges.length ? (
+            <div className="passport-badge-grid extension">{extensionBadges.map(renderBadgeButton)}</div>
+          ) : null}
         </div>
 
         {selectedBadge ? (

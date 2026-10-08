@@ -56,8 +56,8 @@ const mapPoints: MapPoint[] = [
     cta: "Open Trailheads",
     href: "/trailheads",
     id: "trailheads",
-    image: "/brand/dydd-trailheads-signpost-dydi.png",
-    imageAlt: "Dydi standing beside the DYDD Trailheads signpost",
+    image: "/brand/dydd-courses-forest-banner.webp",
+    imageAlt: "Forest trailhead banner from the DYDD Trailheads page",
     label: "Trailheads",
     left: "48%",
     title: "Choose the route",
@@ -365,7 +365,7 @@ export function RangerReliefMap() {
       </div>
 
       <aside className="relief-map-panel">
-        <div className="relief-panel-visual">
+        <div className={`relief-panel-visual visual-${activePoint.id}`}>
           <img src={activePoint.image} alt={activePoint.imageAlt} />
           {activePoint.imageLabel ? <span>{activePoint.imageLabel}</span> : null}
         </div>

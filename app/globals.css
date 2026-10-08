@@ -4776,22 +4776,22 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   width: 1.8%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: rgba(233, 230, 213, 0.55);
-  filter: blur(2px);
+  background: rgba(238, 235, 220, 0.68);
+  filter: blur(1.7px);
   transform: translate3d(0, 0, 0);
   animation: ranger-smoke-drift 3.8s ease-in-out infinite;
 }
 
 .smoke-one {
-  left: 61.4%;
+  left: 62.3%;
   top: 68.8%;
 }
 
 .smoke-two {
-  left: 62.2%;
+  left: 63.1%;
   top: 66.8%;
   width: 1.45%;
-  opacity: 0.64;
+  opacity: 0.78;
   animation-delay: 1.35s;
 }
 
@@ -4918,7 +4918,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   }
 
   34% {
-    opacity: 0.42;
+    opacity: 0.56;
   }
 
   100% {
@@ -5064,7 +5064,9 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   display: block;
   width: 100%;
   height: 142px;
-  object-fit: contain;
+  border-radius: inherit;
+  object-fit: cover;
+  object-position: center;
 }
 
 .relief-panel-subtitle {

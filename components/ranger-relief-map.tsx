@@ -82,7 +82,7 @@ const mapPoints: MapPoint[] = [
     href: "/fireside#waypoints",
     id: "waypoints",
     label: "Waypoints",
-    left: "45.5%",
+    left: "43.6%",
     title: "Places to pause",
     top: "7.2%",
     type: "place",
@@ -287,6 +287,15 @@ export function RangerReliefMap() {
             className={`map-feature-fire ${activePoint.id === "camp-circles" ? "active" : ""}`}
             aria-hidden="true"
           />
+          <div
+            className={`map-feature-ranger-life ${activePoint.id === "ranger-station" ? "active" : ""}`}
+            aria-hidden="true"
+          >
+            <span className="ranger-smoke smoke-one" />
+            <span className="ranger-smoke smoke-two" />
+            <span className="ranger-window-glow window-one" />
+            <span className="ranger-window-glow window-two" />
+          </div>
           <div
             className={`map-feature-fireside ${activePoint.id === "fireside" ? "active" : ""}`}
             aria-hidden="true"

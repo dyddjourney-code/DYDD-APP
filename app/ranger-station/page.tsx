@@ -7,60 +7,69 @@ const rangerDeskPrompts = [
   "Where should I go if I feel stuck?",
 ];
 
-const pathStarts = [
+const pathGroups = [
   {
     accent: "main",
-    eyebrow: "Recommended main path",
-    image: "/brand/dydd-logo-transparent.webp",
-    label: "Discover Your Divine Design Journey",
-    status: "Most complete",
-    text:
-      "The holistic route through identity, design, gifting, calling, and next faithful steps. This path can include DesignID and Spiritual Gifts as part of the larger journey.",
+    title: "Recommended main trail",
+    description: "The best first path when someone wants the whole picture.",
+    items: [
+      {
+        image: "/brand/dydd-logo-transparent.webp",
+        label: "Discover Your Divine Design Journey",
+        status: "Most complete",
+        text:
+          "The holistic route through identity, design, gifting, calling, and next faithful steps. This path can include DesignID and Spiritual Gifts as part of the larger journey.",
+      },
+    ],
   },
   {
     accent: "short",
-    eyebrow: "Focused short path",
-    image: "/brand/badges/designid-badge.png",
-    label: "DesignID",
-    status: "Can stand alone",
-    text:
-      "A focused way to understand your design language and walk through the DesignID course without starting the full journey first.",
-  },
-  {
-    accent: "short",
-    eyebrow: "Focused short path",
-    image: "/brand/badges/spiritual-gifts-badge.png",
-    label: "Spiritual Gifts",
-    status: "Can stand alone",
-    text:
-      "A grace-for-service route that helps someone name gifts, grow in maturity, and connect gifting to love and faithful action.",
-  },
-  {
-    accent: "short",
-    eyebrow: "Focused short path",
-    image: "/brand/badges/fruitlife-360-badge.png",
-    label: "FruitLife 360",
-    status: "Can stand alone",
-    text:
-      "A formation path using fruit, feedback, and honest reflection to help someone see where growth is visible and where grace can deepen.",
+    title: "Focused short paths",
+    description: "Smaller stand-alone starts for one clear growth step.",
+    items: [
+      {
+        image: "/brand/badges/designid-badge.png",
+        label: "DesignID",
+        status: "Can stand alone",
+        text:
+          "Understand your design language and walk through the DesignID course without starting the full journey first.",
+      },
+      {
+        image: "/brand/badges/spiritual-gifts-badge.png",
+        label: "Spiritual Gifts",
+        status: "Can stand alone",
+        text:
+          "Name gifts, grow in maturity, and connect gifting to humble service and faithful action.",
+      },
+      {
+        image: "/brand/badges/fruitlife-360-badge.png",
+        label: "FruitLife 360",
+        status: "Can stand alone",
+        text:
+          "Use fruit, feedback, and honest reflection to see visible growth and where grace can deepen.",
+      },
+    ],
   },
   {
     accent: "extended",
-    eyebrow: "Extended pathway",
-    image: "/brand/badges/designpd-badge.png",
-    label: "DesignPD",
-    status: "After DesignID + DYDD Journey",
-    text:
-      "A deeper application route for planning, deciding, and doing from your design after the core discovery work has been walked.",
-  },
-  {
-    accent: "extended",
-    eyebrow: "Extended pathway",
-    image: "/brand/badges/design-pathways-badge.png",
-    label: "Design Pathways",
-    status: "Requires DesignID",
-    text:
-      "A discernment route for naming possible paths, considering where to go next, and testing faithful steps with courage and clarity.",
+    title: "Extended pathways",
+    description: "Deeper routes to walk after the foundation has been laid.",
+    items: [
+      {
+        image: "/brand/badges/designpd-badge.png",
+        label: "DesignPD",
+        status: "After DesignID + DYDD Journey",
+        text:
+          "Apply your design to planning, deciding, and doing after the core discovery work has been walked.",
+      },
+      {
+        image: "/brand/badges/design-pathways-badge.png",
+        label: "Design Pathways",
+        status: "Requires DesignID",
+        text:
+          "Name possible paths, consider where to go next, and test faithful steps with courage and clarity.",
+      },
+    ],
   },
 ];
 
@@ -169,19 +178,28 @@ export default function RangerStationPage() {
             pathways work best after key discovery pieces are already in place.
           </p>
         </div>
-        <ol className="ranger-path-grid">
-          {pathStarts.map((trail, index) => (
-            <li className={`ranger-path-card ${trail.accent}`} key={`${trail.label}-${index}`}>
-              <div className="journey-map-marker">
-                <img src={trail.image} alt={`${trail.label} marker`} />
+        <div className="ranger-path-groups">
+          {pathGroups.map((group) => (
+            <section className={`ranger-path-group ${group.accent}`} key={group.title}>
+              <header>
+                <p>{group.title}</p>
+                <span>{group.description}</span>
+              </header>
+              <div className="ranger-path-grid">
+                {group.items.map((trail) => (
+                  <article className="ranger-path-card" key={trail.label}>
+                    <div className="journey-map-marker">
+                      <img src={trail.image} alt={`${trail.label} marker`} />
+                    </div>
+                    <strong>{trail.label}</strong>
+                    <small>{trail.text}</small>
+                    <em>{trail.status}</em>
+                  </article>
+                ))}
               </div>
-              <span>{trail.eyebrow}</span>
-              <strong>{trail.label}</strong>
-              <small>{trail.text}</small>
-              <em>{trail.status}</em>
-            </li>
+            </section>
           ))}
-        </ol>
+        </div>
         <p className="ranger-path-note">
           Simple rule: begin with the full journey when you want the whole picture, choose
           a focused path when you want one clear growth step, and save extended pathways

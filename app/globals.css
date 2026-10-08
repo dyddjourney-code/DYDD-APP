@@ -4439,9 +4439,42 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   line-height: 1.36;
 }
 
-.ranger-station-fast-links {
+.ranger-station-fast-links,
+.ranger-station-welcome-notes {
   display: grid;
   gap: 10px;
+}
+
+.ranger-station-welcome-notes article {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.ranger-station-welcome-notes span {
+  color: var(--brass);
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ranger-station-welcome-notes strong {
+  color: var(--green-dark);
+  font-size: 1.02rem;
+  line-height: 1.18;
+}
+
+.ranger-station-welcome-notes p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 760;
+  line-height: 1.48;
 }
 
 .ranger-desk-section {

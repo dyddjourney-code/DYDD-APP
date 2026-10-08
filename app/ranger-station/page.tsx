@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { AppNavIcon } from "@/components/app-sidebar";
 import { RangerReliefMap } from "@/components/ranger-relief-map";
 import { type ReviewSearchParams, withReviewQuery } from "@/lib/review/heather";
 
@@ -12,33 +11,6 @@ const rangerDeskPrompts = [
   "Which trail can I start today?",
   "How do my assessment results connect?",
   "Where should I go if I feel stuck?",
-];
-
-const stationStops = [
-  {
-    detail:
-      "Choose the course or guided route that fits the learner's current step.",
-    href: "/trailheads",
-    icon: "signpost",
-    label: "Trailheads",
-    title: "Pick a route",
-  },
-  {
-    detail:
-      "Find assessments, reports, and earned markers gathered along the way.",
-    href: "/field-kit",
-    icon: "map",
-    label: "Field Kit",
-    title: "Check the tools",
-  },
-  {
-    detail:
-      "Gather books, workbooks, workshops, and live experiences for the trail ahead.",
-    href: "/gear",
-    icon: "backpack",
-    label: "Gear",
-    title: "Pack resources",
-  },
 ];
 
 const trailheadStarts = [
@@ -76,10 +48,6 @@ const trailheadStarts = [
 
 export default async function RangerStationPage({ searchParams }: RangerStationPageProps) {
   const reviewParams = await searchParams;
-  const stops = stationStops.map((stop) => ({
-    ...stop,
-    href: withReviewQuery(stop.href, reviewParams),
-  }));
 
   return (
     <main className="journey-shell hq-standalone-page ranger-station-page">
@@ -93,25 +61,38 @@ export default async function RangerStationPage({ searchParams }: RangerStationP
       <header className="standalone-hero ranger-station-hero">
         <div>
           <p className="eyebrow">DYDD Ranger Station</p>
-          <h1>What should I do next?</h1>
+          <h1>Welcome to Ranger Station.</h1>
           <p className="lede">
-            Ranger Station is the place to get oriented, ask Dydi for guidance,
-            study the map, and choose the trail that fits your season.
+            This is the orientation point for the Discover Your Divine Design ecosystem.
+            Start with the map, notice what each place is for, and choose the next faithful
+            step that fits your season.
           </p>
         </div>
-        <div className="ranger-station-fast-links" aria-label="Ranger Station quick links">
-          {stops.map((stop) => (
-            <Link className="ranger-map-guide-item" href={stop.href} key={stop.label}>
-              <AppNavIcon name={stop.icon} />
-              <div>
-                <strong>{stop.title}</strong>
-                <small>{stop.label}</small>
-                <p>{stop.detail}</p>
-              </div>
-            </Link>
-          ))}
+        <div className="ranger-station-welcome-notes" aria-label="Ranger Station overview">
+          <article>
+            <span>First</span>
+            <strong>Explore the map</strong>
+            <p>Use the DYDD Ecosystem Map to see the whole journey at a glance.</p>
+          </article>
+          <article>
+            <span>Then</span>
+            <strong>Ask for help</strong>
+            <p>Use Dydi when you want guidance about where to go next.</p>
+          </article>
+          <article>
+            <span>Always</span>
+            <strong>Choose the next step</strong>
+            <p>This is not a checklist. It is a guided path toward clarity and faithful action.</p>
+          </article>
         </div>
       </header>
+
+      <section className="ranger-map-section relief-map-section" aria-label="Interactive DYDD relief map">
+        <div className="ranger-map-copy">
+          <p className="section-label">DYDD Ecosystem Map</p>
+        </div>
+        <RangerReliefMap />
+      </section>
 
       <section className="ranger-desk-section" id="ranger-desk" aria-label="Ranger desk">
         <article className="ranger-desk-card">
@@ -160,13 +141,6 @@ export default async function RangerStationPage({ searchParams }: RangerStationP
             the map, Dydi, Trailheads, Waypoints, Fireside, and Camp Circles.
           </p>
         </aside>
-      </section>
-
-      <section className="ranger-map-section relief-map-section" aria-label="Interactive DYDD relief map">
-        <div className="ranger-map-copy">
-          <p className="section-label">DYDD Ecosystem Map</p>
-        </div>
-        <RangerReliefMap />
       </section>
 
       <section className="visual-journey-map ranger-journey-map" aria-label="Where to start">

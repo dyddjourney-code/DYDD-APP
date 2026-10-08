@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { RangerReliefMap } from "@/components/ranger-relief-map";
 
 const rangerDeskPrompts = [
@@ -198,6 +199,10 @@ export default function RangerStationPage() {
               </div>
             </section>
           ))}
+        </div>
+        <div className="ranger-path-cta" aria-label="Ready to start">
+          <strong>Ready to start?</strong>
+          <Link href="/trailheads">All paths start at Trailheads</Link>
         </div>
         <p className="ranger-path-note">
           Simple rule: begin with the full journey when you want the whole picture, choose

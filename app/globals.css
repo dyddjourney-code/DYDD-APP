@@ -5053,7 +5053,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .relief-panel-visual {
   position: relative;
-  min-height: 84px;
+  min-height: 142px;
   overflow: hidden;
   border: 1px solid rgba(71, 107, 66, 0.14);
   border-radius: 8px;
@@ -5063,8 +5063,14 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .relief-panel-visual img {
   display: block;
   width: 100%;
-  height: 92px;
-  object-fit: cover;
+  height: 142px;
+  object-fit: contain;
+}
+
+.relief-panel-subtitle {
+  margin-top: -8px;
+  color: rgba(36, 63, 39, 0.72);
+  font-size: 0.88rem;
 }
 
 .relief-panel-visual span {

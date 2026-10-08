@@ -26,8 +26,8 @@ const mapPoints: MapPoint[] = [
     cta: "Return to Base Camp",
     href: "/base-camp",
     id: "base-camp",
-    image: "/brand/dydd-ranger-welcome-dydi.png",
-    imageAlt: "Dydi welcoming a learner into the DYDD journey",
+    image: "/brand/dydd-cabin-hut-only.png",
+    imageAlt: "DYDD Base Camp cabin with welcome sign",
     label: "Base Camp",
     left: "67.2%",
     title: "Your personal starting place",
@@ -369,8 +369,8 @@ export function RangerReliefMap() {
           <img src={activePoint.image} alt={activePoint.imageAlt} />
           {activePoint.imageLabel ? <span>{activePoint.imageLabel}</span> : null}
         </div>
-        <p className="section-label">{activePoint.type === "trail" ? "Trail" : "Map stop"}</p>
-        <h3>{activePoint.title}</h3>
+        <h3>{activePoint.label}</h3>
+        <p className="relief-panel-subtitle">{activePoint.title}</p>
         <div className="relief-panel-copy">
           <p>{activePoint.body}</p>
           <ul>

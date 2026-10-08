@@ -82,9 +82,9 @@ const mapPoints: MapPoint[] = [
     href: "/fireside#waypoints",
     id: "waypoints",
     label: "Waypoints",
-    left: "84%",
+    left: "45.5%",
     title: "Places to pause",
-    top: "35%",
+    top: "7.2%",
     type: "place",
   },
   {
@@ -120,7 +120,7 @@ const mapPoints: MapPoint[] = [
     label: "FruitLife 360",
     left: "59.6%",
     title: "Formation and visible fruit",
-    top: "38.6%",
+    top: "34.7%",
     type: "trail",
   },
   {
@@ -212,7 +212,7 @@ const trailDots = [
     id: "fruitlife-360",
     points: [
       [48.27, 37.51],
-      [50.8, 42.8],
+      [57.3, 34.2],
       [53.47, 49.1],
       [57.06, 60.68],
       [68.12, 21.79],

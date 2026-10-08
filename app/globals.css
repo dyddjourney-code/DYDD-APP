@@ -5069,6 +5069,20 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   object-position: center;
 }
 
+.relief-panel-visual.visual-spiritual-gifts,
+.relief-panel-visual.visual-fruitlife-360,
+.relief-panel-visual.visual-design-pathways,
+.relief-panel-visual.visual-designid {
+  background: #fbfaf4;
+}
+
+.relief-panel-visual.visual-spiritual-gifts img,
+.relief-panel-visual.visual-fruitlife-360 img,
+.relief-panel-visual.visual-design-pathways img,
+.relief-panel-visual.visual-designid img {
+  object-position: center 24%;
+}
+
 .relief-panel-subtitle {
   margin-top: -8px;
   color: rgba(36, 63, 39, 0.72);

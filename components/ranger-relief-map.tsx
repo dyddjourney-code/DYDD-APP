@@ -4,9 +4,13 @@ import { useMemo, useState } from "react";
 
 type MapPoint = {
   body: string;
+  bullets: string[];
   cta: string;
   href: string;
   id: string;
+  image: string;
+  imageAlt: string;
+  imageLabel?: string;
   label: string;
   left: string;
   title: string;
@@ -17,10 +21,13 @@ type MapPoint = {
 const mapPoints: MapPoint[] = [
   {
     body:
-      "Base Camp is the personal landing place. It holds the passport book, earned badges, account basics, and a clear push toward Ranger Station.",
+      "Base Camp is the quiet landing place where a person can arrive, get their bearings, and see the next faithful step without feeling buried in the whole system at once.",
+    bullets: ["Personal passport and earned badges", "Account basics and current progress", "A simple handoff into Ranger Station"],
     cta: "Return to Base Camp",
     href: "/base-camp",
     id: "base-camp",
+    image: "/brand/dydd-ranger-welcome-dydi.png",
+    imageAlt: "Dydi welcoming a learner into the DYDD journey",
     label: "Base Camp",
     left: "67.2%",
     title: "Your personal starting place",
@@ -29,10 +36,13 @@ const mapPoints: MapPoint[] = [
   },
   {
     body:
-      "Ranger Station is the orientation room. Ask Dydi what to do next, watch the welcome video, and use the map before choosing a trail.",
+      "Ranger Station is the orientation room for the whole DYDD park. It helps someone understand what is available, what is already unlocked, and where to begin.",
+    bullets: ["Ask Dydi for guidance", "See the whole journey map", "Choose the next trail with context"],
     cta: "Ask at the desk",
     href: "#ranger-desk",
     id: "ranger-station",
+    image: "/brand/dydd-ranger-station-header.png",
+    imageAlt: "Discover Your Divine Design Ranger Station sign",
     label: "Ranger Station",
     left: "66.9%",
     title: "The guided orientation room",
@@ -41,10 +51,13 @@ const mapPoints: MapPoint[] = [
   },
   {
     body:
-      "Trailheads are where each course begins. Every trail shows time, effort, difficulty, and any required permission before you start.",
+      "Trailheads are the launch points for the courses, assessments, and guided pathways. They should make the next step feel clear before someone commits to a trail.",
+    bullets: ["Starting points gathered in one place", "Time, effort, and access expectations", "Clear routes for open or locked paths"],
     cta: "Open Trailheads",
     href: "/trailheads",
     id: "trailheads",
+    image: "/brand/dydd-trailheads-signpost-dydi.png",
+    imageAlt: "Dydi standing beside the DYDD Trailheads signpost",
     label: "Trailheads",
     left: "48%",
     title: "Choose the route",
@@ -53,10 +66,13 @@ const mapPoints: MapPoint[] = [
   },
   {
     body:
-      "Fireside is a place to stop for teaching, encouragement, Scripture, live gatherings, and Waypoints that help people keep walking after the lesson is over.",
+      "Fireside is the teaching and encouragement stop. It gives people a place to slow down, receive a word for the road, and keep the journey connected to Scripture and real life.",
+    bullets: ["Teaching moments and live gatherings", "Scripture-rooted encouragement", "A warmer entry point for people not ready to start a course"],
     cta: "Visit Fireside",
     href: "/fireside",
     id: "fireside",
+    image: "/brand/dydd-fireside-campfire-banner.png",
+    imageAlt: "DYDD Fireside campfire teaching banner",
     label: "Fireside",
     left: "15%",
     title: "A teaching stop along the way",
@@ -65,10 +81,13 @@ const mapPoints: MapPoint[] = [
   },
   {
     body:
-      "Camp Circles are future group spaces for leaders, cohorts, facilitators, and shared progress through the DYDD journey.",
+      "Camp Circles are the shared journey spaces for people walking together. They can support cohorts, classes, marriages, leadership groups, and facilitated conversations.",
+    bullets: ["Group progress and shared rhythm", "Leader or facilitator support", "Space for couples, classes, cohorts, and teams"],
     cta: "Preview Camp Circles",
     href: "/camp-circle",
     id: "camp-circles",
+    image: "/brand/dydd-camp-circle-campfire-banner.png",
+    imageAlt: "DYDD Camp Circles campfire banner",
     label: "Camp Circles",
     left: "88.8%",
     title: "Walk together",
@@ -77,10 +96,13 @@ const mapPoints: MapPoint[] = [
   },
   {
     body:
-      "Waypoints are shorter pauses along the road: timely teachings, reflection prompts, podcasts, videos, and places to revisit.",
+      "Waypoints are shorter pauses along the road. They give people timely teaching, reflection, and encouragement they can revisit between bigger course or assessment steps.",
+    bullets: ["Short teachings and reflections", "Podcast, video, and written prompts", "A growing library of places to revisit"],
     cta: "Find Waypoints",
     href: "/fireside#waypoints",
     id: "waypoints",
+    image: "/brand/dydd-waypoints-banner.png",
+    imageAlt: "Illustrated DYDD Waypoints trail banner",
     label: "Waypoints",
     left: "43.6%",
     title: "Places to pause",
@@ -89,10 +111,13 @@ const mapPoints: MapPoint[] = [
   },
   {
     body:
-      "The main DYDD Journey is the hub. It ties together Identity, Expertise, Story, Desire, Gifts, and Niche while pulling in assessment insights as they become available.",
+      "The main DYDD Journey is the guided road through discovery. It connects the deeper questions of identity, expertise, story, desire, gifts, and niche into one discipleship-shaped process.",
+    bullets: ["The core Discover Your Divine Design path", "DESIGN language organized into a journey", "Assessment insights pulled in as they become available"],
     cta: "Open the Journey",
     href: "/journey",
     id: "dydd-journey",
+    image: "/brand/dydd-journey-road-waymarkers.png",
+    imageAlt: "DYDD journey road with waymarkers",
     label: "DYDD Journey",
     left: "53%",
     title: "The main route",
@@ -101,10 +126,14 @@ const mapPoints: MapPoint[] = [
   },
   {
     body:
-      "Spiritual Gifts is an open starting trail for naming how grace is showing up in service, maturity, and the body of Christ.",
+      "Spiritual Gifts is an open starting trail for noticing how grace is showing up in service, maturity, and the body of Christ. It is a confirmation tool, not a label.",
+    bullets: ["Free first assessment trail", "Names grace for service and maturity", "Connects into course support and future journey personalization"],
     cta: "Start Spiritual Gifts",
     href: "/trailheads#spiritual-gifts",
     id: "spiritual-gifts",
+    image: "/brand/trailheads/assessment-signpost-blank.png",
+    imageAlt: "Trailhead signpost for Spiritual Gifts",
+    imageLabel: "Spiritual Gifts",
     label: "Spiritual Gifts",
     left: "65.8%",
     title: "Grace expressed in service",
@@ -113,10 +142,14 @@ const mapPoints: MapPoint[] = [
   },
   {
     body:
-      "FruitLife 360 is an open starting trail for seeing formation, visible fruit, and growth conversations with honest encouragement.",
+      "FruitLife 360 helps a person see visible spiritual fruit through self-reflection and trusted observer feedback. It is designed for formation, encouragement, and honest growth conversations.",
+    bullets: ["Self and observer reflection", "A formation mirror, not a grade", "Helpful for growth, leadership, marriage, and discipleship conversations"],
     cta: "Start FruitLife 360",
     href: "/trailheads#fruitlife-360",
     id: "fruitlife-360",
+    image: "/brand/trailheads/assessment-signpost-blank.png",
+    imageAlt: "Trailhead signpost for FruitLife 360",
+    imageLabel: "FruitLife 360",
     label: "FruitLife 360",
     left: "59.6%",
     title: "Formation and visible fruit",
@@ -125,10 +158,14 @@ const mapPoints: MapPoint[] = [
   },
   {
     body:
-      "Design Pathways helps a person test possible next steps, notice direction, and move from insight into discernment.",
+      "Design Pathways helps someone move from insight into discernment. It is where possible next steps can be tested, named, compared, and brought into prayerful action.",
+    bullets: ["Discernment after discovery", "Possible paths, patterns, and next steps", "A bridge from assessment insight to faithful action"],
     cta: "Open Design Pathways",
     href: "/trailheads#design-pathways",
     id: "design-pathways",
+    image: "/brand/trailheads/assessment-signpost-blank.png",
+    imageAlt: "Trailhead signpost for Design Pathways",
+    imageLabel: "Design Pathways",
     label: "Design Pathways",
     left: "90%",
     title: "Discernment and next steps",
@@ -137,10 +174,14 @@ const mapPoints: MapPoint[] = [
   },
   {
     body:
-      "DesignID can be started early. It gives the reflection language that later informs DesignPD and helps personalize the larger journey.",
+      "DesignID gives a person language for the way they naturally reflect, engage, and contribute. It creates the design vocabulary that later supports DesignPD and the larger DYDD Journey.",
+    bullets: ["Core design reflection language", "A foundation for DesignPD", "Personalizes future lessons, reports, and companion guidance"],
     cta: "Start DesignID",
     href: "/trailheads#designid",
     id: "designid",
+    image: "/brand/trailheads/assessment-signpost-blank.png",
+    imageAlt: "Trailhead signpost for DesignID",
+    imageLabel: "DesignID",
     label: "DesignID Trail",
     left: "41%",
     title: "Reflection and design language",
@@ -324,9 +365,20 @@ export function RangerReliefMap() {
       </div>
 
       <aside className="relief-map-panel">
+        <div className="relief-panel-visual">
+          <img src={activePoint.image} alt={activePoint.imageAlt} />
+          {activePoint.imageLabel ? <span>{activePoint.imageLabel}</span> : null}
+        </div>
         <p className="section-label">{activePoint.type === "trail" ? "Trail" : "Map stop"}</p>
         <h3>{activePoint.title}</h3>
-        <p>{activePoint.body}</p>
+        <div className="relief-panel-copy">
+          <p>{activePoint.body}</p>
+          <ul>
+            {activePoint.bullets.map((bullet) => (
+              <li key={bullet}>{bullet}</li>
+            ))}
+          </ul>
+        </div>
         <a className="button primary" href={activePoint.href}>
           {activePoint.cta}
         </a>

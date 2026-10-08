@@ -5041,10 +5041,8 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .relief-map-panel {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-content: start;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
   gap: 14px;
   min-height: 100%;
   padding: clamp(16px, 2vw, 22px);
@@ -5053,8 +5051,75 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   background: rgba(255, 255, 255, 0.78);
 }
 
+.relief-panel-visual {
+  position: relative;
+  min-height: 84px;
+  overflow: hidden;
+  border: 1px solid rgba(71, 107, 66, 0.14);
+  border-radius: 8px;
+  background: rgba(234, 240, 226, 0.72);
+}
+
+.relief-panel-visual img {
+  display: block;
+  width: 100%;
+  height: 92px;
+  object-fit: cover;
+}
+
+.relief-panel-visual span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(78%, 190px);
+  transform: translate(-50%, -50%) rotate(-2deg);
+  color: #3d2a18;
+  font-size: clamp(0.95rem, 1.6vw, 1.3rem);
+  font-weight: 950;
+  line-height: 0.98;
+  text-align: center;
+  text-shadow:
+    0 1px 0 rgba(255, 238, 180, 0.9),
+    0 2px 4px rgba(58, 35, 16, 0.18);
+}
+
+.relief-panel-copy {
+  display: grid;
+  gap: 12px;
+}
+
+.relief-panel-copy ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.relief-panel-copy li {
+  position: relative;
+  padding-left: 18px;
+  color: var(--green-dark);
+  font-size: 0.88rem;
+  font-weight: 850;
+  line-height: 1.36;
+}
+
+.relief-panel-copy li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.48em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 3px rgba(232, 190, 104, 0.18);
+}
+
 .relief-map-panel .button {
   justify-self: start;
+  margin-top: auto;
   white-space: nowrap;
 }
 

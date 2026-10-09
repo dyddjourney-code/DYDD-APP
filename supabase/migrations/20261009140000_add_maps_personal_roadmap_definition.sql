@@ -16,7 +16,7 @@ values (
       {
         "name": "Mission",
         "subcategories": [
-          {"name": "Purpose", "terms": ["Calling", "Direction", "Impact"]},
+          {"name": "Purpose", "terms": ["Calling", "Direction", "Kingdom Impact"]},
           {"name": "Culture", "terms": ["Belonging", "Trust", "Unity"]},
           {"name": "Motivation", "terms": ["Care", "Growth", "Life-giving"]}
         ]
@@ -26,23 +26,23 @@ values (
         "subcategories": [
           {"name": "Assessment", "terms": ["Discern", "Understand", "Clarify"]},
           {"name": "Insight", "terms": ["Shape", "Refine", "Adjust"]},
-          {"name": "Direction", "terms": ["Improve", "Strengthen", "Elevate"]}
+          {"name": "Valley", "terms": ["Improve", "Strengthen", "Elevate"]}
         ]
       },
       {
         "name": "Process",
         "subcategories": [
-          {"name": "Proof", "terms": ["Trackable", "Measurable", "Verified"]},
-          {"name": "Organization", "terms": ["Defined Roles", "Ownership", "Responsibility"]},
+          {"name": "Proof", "terms": ["Observable", "Measurable", "Verified"]},
+          {"name": "Organization", "terms": ["Clear Roles", "Ownership", "Responsibility"]},
           {"name": "Reliability", "terms": ["Consistent", "Dependable", "Sustainable"]}
         ]
       },
       {
         "name": "Send",
         "subcategories": [
-          {"name": "Energy", "terms": ["Initiative", "Activate", "Move"]},
-          {"name": "Momentum", "terms": ["Build", "Advance", "Expand"]},
-          {"name": "Outcomes", "terms": ["Complete", "Deliver", "Done"]}
+          {"name": "Energy", "terms": ["Initiative", "Activate", "Move Forward"]},
+          {"name": "Momentum", "terms": ["Build", "Advance", "Multiply"]},
+          {"name": "Outcomes", "terms": ["Complete", "Deliver", "Closure"]}
         ]
       }
     ],

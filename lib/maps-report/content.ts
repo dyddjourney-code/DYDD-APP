@@ -72,7 +72,7 @@ export const mapsPhases: MapsPhase[] = [
             capacity: "Connects activity to Kingdom value, people served, and measurable fruit.",
             definition:
               "The meaningful difference the work is intended to make beyond activity or effort.",
-            name: "Impact",
+            name: "Kingdom Impact",
             scripture: "Matthew 6:33",
             scriptureSummary: "Seek first the Kingdom and God's righteousness.",
           },
@@ -240,12 +240,12 @@ export const mapsPhases: MapsPhase[] = [
         ],
       },
       {
-        applicationUse: "Strategy, offer design, next-step path, development priorities.",
-        capacityNeed: "A clearer and stronger path forward.",
-        demandQuestion: "What should be improved, strengthened, and elevated next?",
+        applicationUse: "Strategy, offer design, next-step path, development priorities, constraint crossing.",
+        capacityNeed: "A clear path through constraint, risk, and reality.",
+        demandQuestion: "What must be improved, strengthened, and elevated to cross the valley?",
         definition:
-          "Direction turns insight into a better path, stronger priorities, and a higher-quality expression.",
-        name: "Direction",
+          "Valley turns insight into a tested path, stronger priorities, and a higher-quality expression.",
+        name: "Valley",
         primaryReflection: "Architect",
         terms: [
           {
@@ -286,7 +286,7 @@ export const mapsPhases: MapsPhase[] = [
       {
         applicationUse: "Validation, evidence, report logic, testing, success criteria.",
         capacityNeed: "Visible evidence that the work is real.",
-        demandQuestion: "Can progress be tracked, measured, and verified?",
+        demandQuestion: "Can progress be observed, measured, and verified?",
         definition: "Proof makes progress visible enough to trust, test, and improve.",
         name: "Proof",
         primaryReflection: "Steward",
@@ -294,8 +294,8 @@ export const mapsPhases: MapsPhase[] = [
           {
             biblical: "Faithfulness that can be observed over time.",
             capacity: "Makes progress visible instead of vague.",
-            definition: "Able to be followed, reviewed, and seen over time.",
-            name: "Trackable",
+            definition: "Able to be seen, reviewed, and recognized as real progress over time.",
+            name: "Observable",
             scripture: "Luke 16:10",
             scriptureSummary: "Faithfulness in little things reveals trustworthiness.",
           },
@@ -328,8 +328,8 @@ export const mapsPhases: MapsPhase[] = [
           {
             biblical: "Members knowing their place and contribution in the body.",
             capacity: "Names who does what so contribution is not assumed or confused.",
-            definition: "Clear assignments, lanes, functions, and contribution areas.",
-            name: "Defined Roles",
+            definition: "Clear roles, lanes, functions, and contribution areas.",
+            name: "Clear Roles",
             scripture: "1 Corinthians 12:18",
             scriptureSummary: "God arranges the members of the body.",
           },
@@ -421,8 +421,8 @@ export const mapsPhases: MapsPhase[] = [
           {
             biblical: "Obedient movement that follows faith with action.",
             capacity: "Turns intent into an actual next step.",
-            definition: "To shift from intention, planning, or discussion into motion.",
-            name: "Move",
+            definition: "To move forward from intention, planning, or discussion into motion.",
+            name: "Move Forward",
             scripture: "James 2:17",
             scriptureSummary: "Faith without action is dead.",
           },
@@ -455,8 +455,8 @@ export const mapsPhases: MapsPhase[] = [
           {
             biblical: "Fruitfulness that grows beyond the first seed.",
             capacity: "Increases reach, usefulness, and impact without losing the mission.",
-            definition: "To broaden reach, capacity, usefulness, or influence.",
-            name: "Expand",
+            definition: "To multiply reach, capacity, usefulness, or influence without losing the mission.",
+            name: "Multiply",
             scripture: "Isaiah 54:2",
             scriptureSummary: "Enlarge the tent and strengthen the stakes.",
           },
@@ -489,8 +489,8 @@ export const mapsPhases: MapsPhase[] = [
           {
             biblical: "Faithful completion with integrity, not endless carrying.",
             capacity: "Names the finish line and releases the work appropriately.",
-            definition: "Finished, closed, handed off, or brought to a clear stopping point.",
-            name: "Done",
+            definition: "Closed, completed, handed off, or brought to a faithful stopping point.",
+            name: "Closure",
             scripture: "2 Timothy 4:7",
             scriptureSummary: "Finish the race and keep the faith.",
           },

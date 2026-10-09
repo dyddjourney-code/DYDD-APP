@@ -204,7 +204,7 @@ const phases: JourneyPhase[] = [
 ];
 
 const designPdWords = {
-  decide: ["Insight", "Direction", "Proof", "Organization"],
+  decide: ["Insight", "Valley", "Proof", "Organization"],
   do: ["Reliability", "Energy", "Momentum", "Outcomes"],
   plan: ["Purpose", "Culture", "Motivation", "Assessment"],
 };

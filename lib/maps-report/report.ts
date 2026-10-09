@@ -277,7 +277,7 @@ function designPdProfile(designPdSnapshot: MapsAssessmentSnapshot) {
 
 function subcategoryLane(subcategory: string) {
   if (["Purpose", "Culture", "Motivation", "Assessment"].includes(subcategory)) return "Plan";
-  if (["Insight", "Direction", "Proof", "Organization"].includes(subcategory)) return "Decide";
+  if (["Insight", "Valley", "Proof", "Organization"].includes(subcategory)) return "Decide";
   return "Do";
 }
 
@@ -405,11 +405,17 @@ function renderMapsWheel({
         const mid = start + 15;
         const isFocused = !focusSlug || item.phase.slug === focusSlug;
         const point = polarPoint(cx, cy, 135, mid);
-        const terms = item.subcategory.terms.map((term) => term.name).join(" / ");
+        const rotation = mid;
+        const termRows = item.subcategory.terms
+          .map(
+            (term, termIndex) =>
+              `<tspan x="${point.x.toFixed(1)}" dy="${termIndex === 0 ? 15 : 10}">${escapeHtml(term.name)}</tspan>`,
+          )
+          .join("");
         return `<g class="maps-wheel-slice ${isFocused ? "is-focused" : "is-muted"}">
           <path d="${ringSegmentPath(cx, cy, 191, 75, start, end)}" fill="${item.phase.color}" />
-          <text class="maps-wheel-subcategory" x="${point.x.toFixed(1)}" y="${(point.y - 6).toFixed(1)}">${escapeHtml(item.subcategory.name)}</text>
-          <text class="maps-wheel-terms" x="${point.x.toFixed(1)}" y="${(point.y + 11).toFixed(1)}">${escapeHtml(terms)}</text>
+          <text class="maps-wheel-subcategory" x="${point.x.toFixed(1)}" y="${(point.y - 17).toFixed(1)}" transform="rotate(${rotation.toFixed(1)} ${point.x.toFixed(1)} ${point.y.toFixed(1)})">${escapeHtml(item.subcategory.name)}</text>
+          <text class="maps-wheel-terms" x="${point.x.toFixed(1)}" y="${(point.y - 7).toFixed(1)}" transform="rotate(${rotation.toFixed(1)} ${point.x.toFixed(1)} ${point.y.toFixed(1)})">${termRows}</text>
         </g>`;
       })
       .join("")}
@@ -627,8 +633,8 @@ export function buildMapsRoadmapHtml({
     .maps-wheel-phase.is-muted text, .maps-wheel-slice.is-muted text, .maps-wheel-dot.is-muted { opacity:.34; }
     .maps-wheel-slice path { opacity:.78; stroke:#fbfaf4; stroke-width:2; }
     .maps-wheel-phase-label { fill:#fffaf0; font-size:18px; font-weight:950; letter-spacing:.08em; text-anchor:middle; }
-    .maps-wheel-subcategory { dominant-baseline:middle; fill:#fffaf0; font-size:8.8px; font-weight:950; text-anchor:middle; }
-    .maps-wheel-terms { dominant-baseline:middle; fill:#fffaf0; font-size:4.2px; font-weight:800; text-anchor:middle; }
+    .maps-wheel-subcategory { dominant-baseline:middle; fill:#fffaf0; font-size:11px; font-weight:950; text-anchor:middle; }
+    .maps-wheel-terms { dominant-baseline:middle; fill:#fffaf0; font-size:6.4px; font-weight:850; text-anchor:middle; }
     .maps-wheel-overlay { fill:rgba(201,245,215,.18); stroke:#2f7f4f; stroke-linejoin:round; stroke-width:3; }
     .maps-wheel-overlay-line { fill:none; stroke:rgba(255,255,255,.76); stroke-linejoin:round; stroke-width:1.25; }
     .maps-wheel-dot { fill:#f8fff7; stroke:#2f7f4f; stroke-width:2.2; }

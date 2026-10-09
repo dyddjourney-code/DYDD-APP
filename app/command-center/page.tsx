@@ -8,6 +8,7 @@ import { isOwnerPreviewRequest } from "@/lib/owner-preview";
 import { spiritualGifts } from "@/lib/spiritual-gifts/intake";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { hasMapsReportInputs } from "@/lib/maps-report/report";
 import {
   archiveAssessmentGroupMember,
   assignParticipantToAssessmentGroup,
@@ -526,6 +527,26 @@ function artifactHref(snapshot: AssessmentSnapshot, params?: CommandCenterSearch
 
   const queryString = query.toString();
   return `/api/artifacts/${encodeURIComponent(snapshot.id)}/download${queryString ? `?${queryString}` : ""}`;
+}
+
+function mapsReportHref(
+  values: Record<string, string | null | undefined>,
+  params?: CommandCenterSearchParams | null,
+) {
+  const query = new URLSearchParams();
+
+  if (isOwnerPreviewRequest(params)) {
+    query.set("review", "owner");
+    query.set("key", params?.key ?? "");
+  }
+
+  for (const [key, value] of Object.entries(values)) {
+    if (value) {
+      query.set(key, value);
+    }
+  }
+
+  return `/api/command-center/maps-report?${query.toString()}`;
 }
 
 function commandCenterHref(
@@ -1511,6 +1532,9 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
   const showGroupInterpretation = Boolean(
     activeGroup && groupDashboardTypes.has(activeGroup.group_type) && displayParticipants.length > 1,
   );
+  const groupMapsReadyCount = activeGroup
+    ? displayParticipants.filter((participant) => hasMapsReportInputs(participant.snapshots)).length
+    : 0;
   const groupGiftTopSignals = showGroupInterpretation
     ? groupSpiritualGiftTopSignals(displayParticipants)
     : [];
@@ -1546,6 +1570,9 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
         group: activeGroup.id,
         ...(isOwnerPreview ? { key: params?.key ?? "", review: "owner" } : {}),
       }).toString()}`
+    : "";
+  const groupMapsEmailAction = activeGroup
+    ? mapsReportHref({ group: activeGroup.id }, params)
     : "";
 
   return (
@@ -1948,6 +1975,25 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                     : "Group tendency spread appears after DesignPD results are saved."}
                 </small>
               </article>
+            </div>
+
+            <div className="maps-group-report-panel">
+              <div>
+                <strong>MAPS Personal Roadmaps</strong>
+                <small>
+                  {groupMapsReadyCount} {groupMapsReadyCount === 1 ? "person has" : "people have"} both DesignID and DesignPD ready for a personalized MAPS report.
+                </small>
+              </div>
+              {groupMapsReadyCount ? (
+                <form action={groupMapsEmailAction} method="post">
+                  <input name="group" type="hidden" value={activeGroup?.id ?? ""} />
+                  <button className="button secondary" type="submit">
+                    Email MAPS reports to group
+                  </button>
+                </form>
+              ) : (
+                <span>Waiting for DesignID + DesignPD</span>
+              )}
             </div>
 
             <div className="group-visual-grid">
@@ -2377,6 +2423,38 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                       </p>
                     )}
                   </div>
+                  {hasMapsReportInputs(participant.snapshots) ? (
+                    <div className="maps-person-report-panel">
+                      <div>
+                        <strong>MAPS Personal Roadmap</strong>
+                        <small>Available from this person&apos;s current DesignID and DesignPD snapshots.</small>
+                      </div>
+                      <div>
+                        <Link
+                          className="button text"
+                          href={mapsReportHref({ participant: participant.id }, params)}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Download MAPS PDF
+                        </Link>
+                        <form action={mapsReportHref({}, params)} method="post">
+                          <input name="participant" type="hidden" value={participant.id} />
+                          <button className="button text" type="submit">
+                            Email MAPS Report
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="maps-person-report-panel disabled">
+                      <div>
+                        <strong>MAPS Personal Roadmap</strong>
+                        <small>Needs both DesignID and DesignPD snapshots before this report can be generated.</small>
+                      </div>
+                      <span>Not ready</span>
+                    </div>
+                  )}
                 </article>
               ))
             ) : (

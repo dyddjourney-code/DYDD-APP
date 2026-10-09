@@ -210,11 +210,13 @@ export async function GET(request: NextRequest) {
 async function sendMapsEmail({
   participant,
   pdf,
+  to,
 }: {
   participant: MapsAssessmentParticipant;
   pdf: Buffer;
+  to?: string;
 }) {
-  const email = participant.normalized_email ?? "";
+  const email = to ?? participant.normalized_email ?? "";
   const name = participant.display_name ?? email;
   const filename = `${cleanMapsFilename(name)} - MAPS Roadmap.pdf`;
 
@@ -252,6 +254,7 @@ export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const participantId = String(formData.get("participant") ?? "").trim();
   const groupId = String(formData.get("group") ?? "").trim();
+  const to = String(formData.get("to") ?? "").trim();
 
   try {
     if (groupId) {
@@ -311,12 +314,13 @@ export async function POST(request: NextRequest) {
     const result = await sendMapsEmail({
       participant: input.participant,
       pdf: Buffer.from(pdf),
+      to: to || undefined,
     });
 
     return commandCenterRedirect(
       request,
       result.sent
-        ? `MAPS report emailed to ${input.participant.normalized_email}.`
+        ? `MAPS report emailed to ${to || input.participant.normalized_email}.`
         : result.message ?? "Unable to send MAPS report email.",
     );
   } catch (error) {

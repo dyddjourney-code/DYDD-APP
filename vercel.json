@@ -3,6 +3,10 @@
     "app/api/command-center/couple-report/route.ts": {
       "includeFiles": "node_modules/@sparticuz/chromium/bin/**",
       "maxDuration": 60
+    },
+    "app/api/command-center/maps-report/route.ts": {
+      "includeFiles": "node_modules/@sparticuz/chromium/bin/**",
+      "maxDuration": 120
     }
   },
   "crons": [

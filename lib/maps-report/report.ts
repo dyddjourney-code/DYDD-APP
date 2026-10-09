@@ -67,6 +67,34 @@ function assetUrl(path: string) {
   return `${assetBaseUrl}${path}`;
 }
 
+function polarPoint(cx: number, cy: number, radius: number, angle: number) {
+  const radians = ((angle - 90) * Math.PI) / 180;
+  return {
+    x: cx + radius * Math.cos(radians),
+    y: cy + radius * Math.sin(radians),
+  };
+}
+
+function ringSegmentPath(cx: number, cy: number, outer: number, inner: number, start: number, end: number) {
+  const outerStart = polarPoint(cx, cy, outer, start);
+  const outerEnd = polarPoint(cx, cy, outer, end);
+  const innerEnd = polarPoint(cx, cy, inner, end);
+  const innerStart = polarPoint(cx, cy, inner, start);
+  const largeArcFlag = end - start > 180 ? 1 : 0;
+
+  return [
+    `M ${outerStart.x.toFixed(2)} ${outerStart.y.toFixed(2)}`,
+    `A ${outer} ${outer} 0 ${largeArcFlag} 1 ${outerEnd.x.toFixed(2)} ${outerEnd.y.toFixed(2)}`,
+    `L ${innerEnd.x.toFixed(2)} ${innerEnd.y.toFixed(2)}`,
+    `A ${inner} ${inner} 0 ${largeArcFlag} 0 ${innerStart.x.toFixed(2)} ${innerStart.y.toFixed(2)}`,
+    "Z",
+  ].join(" ");
+}
+
+function scoreRadius(score: number) {
+  return 82 + (score / 60) * 78;
+}
+
 function escapeHtml(value: string) {
   return value
     .replaceAll("&", "&amp;")
@@ -297,6 +325,79 @@ function renderTermCards(subcategory: MapsSubcategory, lane: string) {
     .join("");
 }
 
+function renderMapsWheel({
+  designIdSnapshot,
+  designPdSnapshot,
+  focusSlug,
+  name,
+}: {
+  designIdSnapshot: MapsAssessmentSnapshot;
+  designPdSnapshot: MapsAssessmentSnapshot;
+  focusSlug?: string;
+  name: string;
+}) {
+  const cx = 250;
+  const cy = 250;
+  const profile = reflectionProfile(designIdSnapshot);
+  const profileByLabel = Object.fromEntries(profile.map((item) => [item.label, item]));
+  const pdProfile = designPdProfile(designPdSnapshot);
+  const allSubcategories = mapsPhases.flatMap((phase) =>
+    phase.subcategories.map((subcategory) => ({
+      phase,
+      subcategory,
+    })),
+  );
+  const overlayPoints = allSubcategories.map((item, index) => {
+    const score = profileByLabel[item.subcategory.primaryReflection]?.score ?? 0;
+    return polarPoint(cx, cy, scoreRadius(score), index * 30 + 15);
+  });
+  const overlayPolygon = overlayPoints.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
+  const centerName = name.split(/\s+/).filter(Boolean)[0] ?? "Profile";
+
+  return `<svg class="maps-wheel" viewBox="0 0 500 500" role="img" aria-label="MAPS process wheel">
+    <circle class="maps-wheel-paper" cx="${cx}" cy="${cy}" r="238" />
+    ${mapsPhases
+      .map((phase, phaseIndex) => {
+        const phaseIsFocused = !focusSlug || phase.slug === focusSlug;
+        const phaseClass = phaseIsFocused ? "is-focused" : "is-muted";
+        return `<g class="maps-wheel-phase ${phaseClass}">
+          <path d="${ringSegmentPath(cx, cy, 238, 196, phaseIndex * 90, phaseIndex * 90 + 90)}" fill="${phase.color}" />
+          <text class="maps-wheel-phase-label" x="${polarPoint(cx, cy, 217, phaseIndex * 90 + 45).x.toFixed(1)}" y="${polarPoint(cx, cy, 217, phaseIndex * 90 + 45).y.toFixed(1)}">${escapeHtml(phase.name.toUpperCase())}</text>
+        </g>`;
+      })
+      .join("")}
+    ${allSubcategories
+      .map((item, index) => {
+        const start = index * 30;
+        const end = start + 30;
+        const mid = start + 15;
+        const isFocused = !focusSlug || item.phase.slug === focusSlug;
+        const point = polarPoint(cx, cy, 135, mid);
+        const terms = item.subcategory.terms.map((term) => term.name).join(" / ");
+        return `<g class="maps-wheel-slice ${isFocused ? "is-focused" : "is-muted"}">
+          <path d="${ringSegmentPath(cx, cy, 191, 75, start, end)}" fill="${item.phase.color}" />
+          <text class="maps-wheel-subcategory" x="${point.x.toFixed(1)}" y="${(point.y - 6).toFixed(1)}">${escapeHtml(item.subcategory.name)}</text>
+          <text class="maps-wheel-terms" x="${point.x.toFixed(1)}" y="${(point.y + 11).toFixed(1)}">${escapeHtml(terms)}</text>
+        </g>`;
+      })
+      .join("")}
+    <polygon class="maps-wheel-overlay" points="${overlayPolygon}" />
+    <polyline class="maps-wheel-overlay-line" points="${overlayPolygon} ${overlayPoints[0]?.x.toFixed(1)},${overlayPoints[0]?.y.toFixed(1)}" />
+    ${overlayPoints
+      .map((point, index) => {
+        const item = allSubcategories[index];
+        const isFocused = !focusSlug || item.phase.slug === focusSlug;
+        return `<circle class="maps-wheel-dot ${isFocused ? "is-focused" : "is-muted"}" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="5.6" />`;
+      })
+      .join("")}
+    <circle class="maps-wheel-center" cx="${cx}" cy="${cy}" r="69" />
+    <text class="maps-wheel-name" x="${cx}" y="222">${escapeHtml(centerName)}</text>
+    <text class="maps-wheel-center-line" x="${cx}" y="244">${escapeHtml(profile.slice(0, 2).map((item) => `${item.label} ${item.score}`).join(" / "))}</text>
+    <text class="maps-wheel-center-line" x="${cx}" y="263">${escapeHtml(profile.slice(2).map((item) => `${item.label} ${item.score}`).join(" / "))}</text>
+    <text class="maps-wheel-center-line is-small" x="${cx}" y="285">${escapeHtml(pdProfile.map((axis) => `${axis.label} ${axis.score || axis.tendency}`).join("  |  "))}</text>
+  </svg>`;
+}
+
 function renderSubcategoryPage(
   subcategory: MapsSubcategory,
   designIdSnapshot: MapsAssessmentSnapshot,
@@ -396,7 +497,6 @@ export function buildMapsRoadmapHtml({
 }: MapsParticipantReportInput) {
   const name = participant.display_name || participant.normalized_email || "Participant";
   const profile = reflectionProfile(designIdSnapshot);
-  const pdProfile = designPdProfile(designPdSnapshot);
   const primary =
     firstSnapshotValue(designIdSnapshot, ["primaryReflection", "primary", "Primary_Reflection", "Primary"]) ||
     profile[0]?.label ||
@@ -409,13 +509,22 @@ export function buildMapsRoadmapHtml({
     firstSnapshotValue(designIdSnapshot, ["Integrative_Reflection", "integrativeReflection"]) ||
     "Integrated design";
   const today = new Intl.DateTimeFormat("en-US", { dateStyle: "long" }).format(new Date());
+  const coverWheel = renderMapsWheel({ designIdSnapshot, designPdSnapshot, name });
   const phasePages = mapsPhases
     .map(
       (phase) => `<section class="maps-phase-divider" style="--phase-color:${phase.color}">
         <div class="maps-phase-divider-content">
-          <p>MAPS Section</p>
-          <h2>${escapeHtml(phase.name)}</h2>
-          <span>${escapeHtml(phase.intro)}</span>
+          <div>
+            <p>MAPS Section</p>
+            <h2>${escapeHtml(phase.name)}</h2>
+            <span>${escapeHtml(phase.intro)}</span>
+            <div class="maps-phase-subcategory-strip">
+              ${phase.subcategories.map((subcategory) => `<strong>${escapeHtml(subcategory.name)}</strong>`).join("")}
+            </div>
+          </div>
+          <div class="maps-phase-wheel">
+            ${renderMapsWheel({ designIdSnapshot, designPdSnapshot, focusSlug: phase.slug, name })}
+          </div>
         </div>
       </section>
       ${phase.subcategories
@@ -443,16 +552,36 @@ export function buildMapsRoadmapHtml({
     h4 { color:var(--phase-color); font-size:10.8px; letter-spacing:.06em; margin:0 0 4px; text-transform:uppercase; }
     p, li, dd { color:var(--muted); font-size:10.6px; line-height:1.3; margin:0; }
     dl { margin:0; }
-    .maps-cover { background:linear-gradient(135deg,var(--dark),var(--green)); color:#fffaf0; display:grid; gap:26px; grid-template-columns:minmax(0,1fr) auto; padding:32px 34px; }
+    .maps-cover { background:linear-gradient(135deg,var(--dark),var(--green)); color:#fffaf0; display:grid; gap:24px; grid-template-columns:minmax(0,.92fr) minmax(260px,.72fr); min-height:690px; page-break-after:always; padding:30px 34px; }
     .maps-cover-copy { min-width:0; }
-    .maps-cover-logo { align-self:start; display:block; filter:brightness(0) invert(1); height:54px; justify-self:end; max-width:230px; object-fit:contain; width:auto; }
+    .maps-cover-logo { display:block; filter:brightness(0) invert(1); height:50px; margin-bottom:58px; max-width:230px; object-fit:contain; width:auto; }
     .maps-cover .eyebrow, .maps-phase-divider p, .maps-page-heading p { color:#e4d2a7; font-size:12px; font-weight:900; letter-spacing:.12em; margin:0 0 10px; text-transform:uppercase; }
     .maps-cover h1 { color:#fffaf0; }
     .maps-cover h2 { color:#f9edc9; font-size:24px; margin-top:8px; }
-    .maps-cover-meta { display:grid; gap:12px; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:30px; }
+    .maps-cover-meta { display:grid; gap:12px; grid-template-columns:1fr; margin-top:30px; max-width:360px; }
     .maps-cover-meta div { background:rgba(255,250,240,.1); border:1px solid rgba(255,250,240,.22); padding:14px; }
     .maps-cover-meta small { color:#e4d2a7; display:block; font-size:10px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
     .maps-cover-meta strong { color:#fffaf0; display:block; font-size:15px; margin-top:5px; }
+    .maps-cover-note { background:rgba(255,250,240,.92); border-left:6px solid var(--gold); margin-top:18px; max-width:440px; padding:13px 15px; }
+    .maps-cover-note h3 { color:var(--dark); font-size:15px; letter-spacing:.06em; margin:0 0 6px; text-transform:uppercase; }
+    .maps-cover-note p { color:var(--ink); font-size:10.8px; font-weight:650; line-height:1.32; }
+    .maps-cover-visual { align-self:center; background:rgba(255,250,240,.94); border:1px solid rgba(255,250,240,.36); box-shadow:0 22px 46px rgba(18,35,18,.26); padding:12px; }
+    .maps-cover-visual .maps-wheel { display:block; height:auto; width:100%; }
+    .maps-wheel-paper { fill:#fbfaf4; stroke:#e4dccb; stroke-width:3; }
+    .maps-wheel-phase path { stroke:#fbfaf4; stroke-width:3; }
+    .maps-wheel-phase.is-muted path, .maps-wheel-slice.is-muted path { fill:#d7ded2; }
+    .maps-wheel-phase.is-muted text, .maps-wheel-slice.is-muted text, .maps-wheel-dot.is-muted { opacity:.34; }
+    .maps-wheel-slice path { opacity:.78; stroke:#fbfaf4; stroke-width:2; }
+    .maps-wheel-phase-label { dominant-baseline:middle; fill:#fffaf0; font-size:13px; font-weight:950; letter-spacing:.08em; text-anchor:middle; }
+    .maps-wheel-subcategory { dominant-baseline:middle; fill:#fffaf0; font-size:8.8px; font-weight:950; text-anchor:middle; }
+    .maps-wheel-terms { dominant-baseline:middle; fill:#fffaf0; font-size:4.2px; font-weight:800; text-anchor:middle; }
+    .maps-wheel-overlay { fill:rgba(201,245,215,.18); stroke:#2f7f4f; stroke-linejoin:round; stroke-width:3; }
+    .maps-wheel-overlay-line { fill:none; stroke:rgba(255,255,255,.76); stroke-linejoin:round; stroke-width:1.25; }
+    .maps-wheel-dot { fill:#f8fff7; stroke:#2f7f4f; stroke-width:2.2; }
+    .maps-wheel-center { fill:rgba(255,255,255,.95); stroke:#dfe7d9; stroke-width:2; }
+    .maps-wheel-name { fill:#243f27; font-size:15px; font-weight:950; text-anchor:middle; }
+    .maps-wheel-center-line { fill:#40503e; font-size:8.6px; font-weight:900; text-anchor:middle; }
+    .maps-wheel-center-line.is-small { font-size:5.8px; }
     .maps-intro-section { border-top:1px solid var(--line); padding:20px 34px 22px; }
     .maps-purpose-card { background:#f3f8ef; border:1px solid rgba(71,107,66,.22); border-left:6px solid var(--gold); margin-bottom:14px; padding:16px 18px; }
     .maps-purpose-card h2 { color:var(--dark); font-size:22px; letter-spacing:.02em; margin:0 0 7px; text-transform:uppercase; }
@@ -466,45 +595,49 @@ export function buildMapsRoadmapHtml({
     .maps-profile-list i { border-radius:999px; display:block; height:10px; width:10px; }
     .maps-profile-list strong { color:var(--dark); font-size:11px; }
     .maps-profile-list span { color:var(--muted); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; font-weight:900; }
-    .maps-phase-divider { background:linear-gradient(135deg,var(--phase-color),color-mix(in srgb,var(--phase-color) 78%,#111)); color:white; min-height:590px; padding:44px; page-break-after:always; }
-    .maps-phase-divider-content { align-content:end; border:1px solid rgba(255,250,240,.28); display:grid; min-height:500px; padding:32px; }
-    .maps-phase-divider h2 { color:white; font-size:62px; line-height:1; margin:0 0 18px; }
-    .maps-phase-divider span { color:#fffaf0; display:block; font-size:17px; line-height:1.45; max-width:680px; }
-    .maps-subcategory-page { min-height:740px; padding:22px 26px 72px; page-break-after:always; position:relative; }
+    .maps-phase-divider { background:#f8faf4; color:var(--ink); min-height:690px; padding:30px 34px; page-break-after:always; }
+    .maps-phase-divider-content { align-items:center; border-top:12px solid var(--phase-color); display:grid; gap:24px; grid-template-columns:minmax(0,.88fr) minmax(270px,.7fr); min-height:630px; padding:22px 0 10px; }
+    .maps-phase-divider p { color:var(--phase-color); }
+    .maps-phase-divider h2 { color:var(--phase-color); font-size:48px; line-height:1; margin:0 0 12px; }
+    .maps-phase-divider span { color:var(--ink); display:block; font-size:15px; font-weight:650; line-height:1.45; max-width:520px; }
+    .maps-phase-subcategory-strip { display:grid; gap:8px; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:24px; max-width:520px; }
+    .maps-phase-subcategory-strip strong { background:rgba(255,255,255,.74); border:1px solid var(--line); border-left:6px solid var(--phase-color); color:var(--dark); display:block; font-size:13px; padding:10px 9px; }
+    .maps-phase-wheel { background:white; border:1px solid var(--line); box-shadow:0 18px 46px rgba(70,58,35,.11); padding:12px; }
+    .maps-subcategory-page { min-height:690px; padding:18px 22px 56px; page-break-after:always; position:relative; }
     .maps-page-heading { align-items:end; border-bottom:4px solid var(--phase-color); display:grid; gap:18px; grid-template-columns:minmax(0,1fr) auto; margin-bottom:11px; padding-bottom:9px; }
     .maps-page-heading p { color:var(--phase-color); margin-bottom:5px; }
-    .maps-page-heading h2 { font-size:30px; }
+    .maps-page-heading h2 { font-size:26px; }
     .maps-page-heading small { color:var(--muted); display:block; font-size:11px; font-weight:800; margin-top:6px; }
     .maps-page-heading span { background:var(--phase-color); color:white; font-size:11px; font-weight:950; letter-spacing:.08em; padding:8px 12px; text-transform:uppercase; }
-    .maps-definition-block { background:var(--paper); border:1px solid var(--line); border-left:5px solid var(--phase-color); display:grid; gap:12px; grid-template-columns:minmax(0,.9fr) minmax(0,1.35fr); padding:11px 14px; }
-    .maps-definition-block p { color:var(--ink); font-size:11.4px; line-height:1.3; }
-    .maps-definition-block dl { display:grid; gap:8px; grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .maps-definition-block { background:var(--paper); border:1px solid var(--line); border-left:5px solid var(--phase-color); display:grid; gap:10px; grid-template-columns:minmax(0,.9fr) minmax(0,1.35fr); padding:9px 12px; }
+    .maps-definition-block p { color:var(--ink); font-size:10.6px; line-height:1.24; }
+    .maps-definition-block dl { display:grid; gap:7px; grid-template-columns:repeat(3,minmax(0,1fr)); }
     .maps-definition-block dt, .maps-term-card dt { color:var(--dark); font-size:9px; font-weight:900; letter-spacing:.06em; text-transform:uppercase; }
     .maps-definition-block dd { margin:3px 0 0; }
-    .maps-lens-grid { display:grid; gap:9px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:9px; }
-    .maps-lens-card, .maps-data-card { border:1px solid var(--line); padding:10px 11px; }
-    .maps-lens-card > p { margin-bottom:7px; }
+    .maps-lens-grid { display:grid; gap:7px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:7px; }
+    .maps-lens-card, .maps-data-card { border:1px solid var(--line); padding:8px 9px; }
+    .maps-lens-card > p { margin-bottom:6px; }
     .maps-mini-grid { display:grid; gap:6px; grid-template-columns:repeat(3,minmax(0,1fr)); }
-    .maps-mini-grid div { background:#f7f9f5; border:1px solid rgba(36,63,39,.1); padding:6px; }
-    .maps-mini-grid p { font-size:8.6px; line-height:1.18; }
-    .maps-data-grid { display:grid; gap:9px; grid-template-columns:1fr 1fr; margin-top:9px; }
-    .maps-capacity-row, .maps-pd-row { border-top:1px solid var(--line); display:grid; gap:4px; grid-template-columns:1fr auto auto; padding:5px 0; }
+    .maps-mini-grid div { background:#f7f9f5; border:1px solid rgba(36,63,39,.1); padding:5px; }
+    .maps-mini-grid p { font-size:7.8px; line-height:1.12; }
+    .maps-data-grid { display:grid; gap:7px; grid-template-columns:1fr 1fr; margin-top:7px; }
+    .maps-capacity-row, .maps-pd-row { border-top:1px solid var(--line); display:grid; gap:3px; grid-template-columns:1fr auto auto; padding:3px 0; }
     .maps-capacity-row:first-of-type, .maps-pd-row:first-of-type { border-top:0; }
     .maps-capacity-row span, .maps-pd-row span { align-items:center; color:var(--dark); display:flex; font-size:11px; font-weight:900; gap:8px; }
     .maps-capacity-row i { border-radius:999px; display:inline-block; height:9px; width:9px; }
     .maps-capacity-row strong, .maps-pd-row strong { color:var(--dark); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10.8px; }
     .maps-capacity-row em { color:var(--phase-color); font-size:10px; font-style:normal; font-weight:900; }
-    .maps-capacity-row small, .maps-pd-row small { color:var(--muted); font-size:8.6px; grid-column:1 / -1; line-height:1.18; }
-    .maps-term-grid { display:grid; gap:8px; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:9px; }
-    .maps-term-card { border:1px solid var(--line); border-top:4px solid var(--phase-color); display:grid; gap:7px; grid-template-columns:auto 1fr; padding:8px; }
-    .maps-term-index { align-items:center; background:var(--phase-color); color:white; display:flex; font-weight:950; height:24px; justify-content:center; width:24px; }
-    .maps-term-card h4 { color:var(--dark); font-size:14px; letter-spacing:0; margin:0 0 6px; text-transform:none; }
-    .maps-term-card dl { display:grid; gap:4px; }
-    .maps-term-card dd { font-size:7.2px; line-height:1.08; margin:1px 0 0; }
-    .maps-reflection-box { background:linear-gradient(135deg,#f7f9f5,#fffdf8); border:1px dashed var(--phase-color); bottom:18px; left:26px; min-height:42px; padding:6px 9px; position:absolute; right:26px; }
+    .maps-capacity-row small, .maps-pd-row small { color:var(--muted); font-size:7.8px; grid-column:1 / -1; line-height:1.12; }
+    .maps-term-grid { display:grid; gap:7px; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:7px; }
+    .maps-term-card { border:1px solid var(--line); border-top:4px solid var(--phase-color); display:grid; gap:5px; grid-template-columns:auto 1fr; padding:6px; }
+    .maps-term-index { align-items:center; background:var(--phase-color); color:white; display:flex; font-size:12px; font-weight:950; height:21px; justify-content:center; width:21px; }
+    .maps-term-card h4 { color:var(--dark); font-size:12px; letter-spacing:0; margin:0 0 4px; text-transform:none; }
+    .maps-term-card dl { display:grid; gap:3px; }
+    .maps-term-card dd { font-size:6.55px; line-height:1.02; margin:1px 0 0; }
+    .maps-reflection-box { background:linear-gradient(135deg,#f7f9f5,#fffdf8); border:1px dashed var(--phase-color); bottom:14px; left:22px; min-height:34px; padding:5px 8px; position:absolute; right:22px; }
     .maps-reflection-box h3 { font-size:12px; margin-bottom:3px; }
     .maps-reflection-box ul { display:grid; gap:5px; grid-template-columns:repeat(3,minmax(0,1fr)); margin:0; padding-left:14px; }
-    .maps-reflection-box li { font-size:8.2px; line-height:1.1; }
+    .maps-reflection-box li { font-size:7.8px; line-height:1.05; }
     .maps-resource-section { border-top:1px solid var(--line); padding:28px 34px; }
     .maps-resource-section h2 { margin-bottom:10px; }
     .maps-resource-cta { align-items:center; background:linear-gradient(135deg,var(--dark),var(--green)); color:#fffaf0; display:grid; gap:18px; grid-template-columns:minmax(0,1fr) 118px; margin-top:14px; padding:18px; }
@@ -515,7 +648,7 @@ export function buildMapsRoadmapHtml({
     @media print {
       body { background:white; padding:0; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
       main { border:0; box-shadow:none; max-width:none; }
-      .maps-intro-section { break-after:page; }
+      .maps-cover { break-after:page; }
       .maps-subcategory-page, .maps-phase-divider { break-after:page; }
       .maps-lens-card, .maps-data-card, .maps-term-card, .maps-reflection-box { break-inside:avoid; }
     }
@@ -526,6 +659,7 @@ export function buildMapsRoadmapHtml({
   <main>
     <section class="maps-cover">
       <div class="maps-cover-copy">
+        <img class="maps-cover-logo" src="${assetUrl(brandLogoPath)}" alt="Discover Your Divine Design" />
         <p class="eyebrow">Discover Your Divine Design</p>
         <h1>MAPS Personal Roadmap</h1>
         <h2>${escapeHtml(name)}</h2>
@@ -534,39 +668,12 @@ export function buildMapsRoadmapHtml({
           <div><small>Integrated Reflection</small><strong>${escapeHtml(integrative)}</strong></div>
           <div><small>Generated</small><strong>${escapeHtml(today)}</strong></div>
         </div>
+        <div class="maps-cover-note">
+          <h3>From Purpose to Movement</h3>
+          <p>MAPS anchors the why, clarifies what is true, makes the work sustainable, and moves it into completion. Use this as a coaching and class roadmap: personal enough to reflect, structured enough to act.</p>
+        </div>
       </div>
-      <img class="maps-cover-logo" src="${assetUrl(brandLogoPath)}" alt="Discover Your Divine Design" />
-    </section>
-    <section class="maps-intro-section">
-      <div class="maps-purpose-card">
-        <h2>From Purpose to Movement</h2>
-        <p>This report uses MAPS as a project-walk framework: Mission anchors the why, Approach clarifies what is true, Process makes the work sustainable, and Send moves it into completion. It is designed as an internal coaching and class companion, not a personality label.</p>
-        <blockquote>The goal is a faithful roadmap: clear enough to move, personal enough to coach, and structured enough to use with a class, cohort, client, or ministry project.</blockquote>
-      </div>
-      <div class="maps-profile-grid">
-        <article class="maps-profile-panel">
-          <h3>DesignID Capacity Snapshot</h3>
-          <div class="maps-profile-list">
-        ${profile
-          .map(
-            (item) =>
-              `<div><i style="background:${item.color}"></i><strong>${escapeHtml(item.label)}</strong><span>${item.score} ${escapeHtml(item.band)}</span></div>`,
-          )
-          .join("")}
-          </div>
-        </article>
-        <article class="maps-profile-panel">
-          <h3>DesignPD Movement Snapshot</h3>
-          <div class="maps-profile-list">
-        ${pdProfile
-          .map(
-            (axis) =>
-              `<div><i style="background:var(--green)"></i><strong>${escapeHtml(axis.label)}</strong><span>${escapeHtml(axis.tendency)}${axis.score ? ` ${escapeHtml(axis.score)}` : ""}</span></div>`,
-          )
-          .join("")}
-          </div>
-        </article>
-      </div>
+      <div class="maps-cover-visual">${coverWheel}</div>
     </section>
     ${phasePages}
     <section class="maps-resource-section">

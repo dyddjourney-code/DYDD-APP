@@ -374,8 +374,8 @@ function renderMapsWheel({
   const phaseLabelArcs = [
     { arc: arcPath(cx, cy, 218, 12, 78, 1), name: "MISSION", slug: "mission" },
     { arc: arcPath(cx, cy, 218, 102, 168, 1), name: "APPROACH", slug: "approach" },
-    { arc: arcPath(cx, cy, 218, 258, 192, 0), name: "PROCESS", slug: "process" },
-    { arc: arcPath(cx, cy, 218, 348, 282, 0), name: "SEND", slug: "send" },
+    { arc: arcPath(cx, cy, 218, 192, 258, 1), name: "PROCESS", slug: "process" },
+    { arc: arcPath(cx, cy, 218, 282, 348, 1), name: "SEND", slug: "send" },
   ];
 
   return `<svg class="maps-wheel" viewBox="0 0 500 500" role="img" aria-label="MAPS process wheel">

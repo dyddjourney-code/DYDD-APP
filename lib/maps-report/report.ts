@@ -91,6 +91,18 @@ function ringSegmentPath(cx: number, cy: number, outer: number, inner: number, s
   ].join(" ");
 }
 
+function arcPath(cx: number, cy: number, radius: number, start: number, end: number, sweep = 1) {
+  const startPoint = polarPoint(cx, cy, radius, start);
+  const endPoint = polarPoint(cx, cy, radius, end);
+  const difference = Math.abs(end - start);
+  const largeArcFlag = difference > 180 ? 1 : 0;
+
+  return [
+    `M ${startPoint.x.toFixed(2)} ${startPoint.y.toFixed(2)}`,
+    `A ${radius} ${radius} 0 ${largeArcFlag} ${sweep} ${endPoint.x.toFixed(2)} ${endPoint.y.toFixed(2)}`,
+  ].join(" ");
+}
+
 function scoreRadius(score: number) {
   return 82 + (score / 60) * 78;
 }
@@ -329,12 +341,18 @@ function renderMapsWheel({
   designIdSnapshot,
   designPdSnapshot,
   focusSlug,
+  includeCenterProfile = true,
+  includeOverlay = true,
   name,
+  wheelId = "maps-wheel",
 }: {
   designIdSnapshot: MapsAssessmentSnapshot;
   designPdSnapshot: MapsAssessmentSnapshot;
   focusSlug?: string;
+  includeCenterProfile?: boolean;
+  includeOverlay?: boolean;
   name: string;
+  wheelId?: string;
 }) {
   const cx = 250;
   const cy = 250;
@@ -353,8 +371,22 @@ function renderMapsWheel({
   });
   const overlayPolygon = overlayPoints.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
   const centerName = name.split(/\s+/).filter(Boolean)[0] ?? "Profile";
+  const phaseLabelArcs = [
+    { arc: arcPath(cx, cy, 218, 12, 78, 1), name: "MISSION", slug: "mission" },
+    { arc: arcPath(cx, cy, 218, 102, 168, 1), name: "APPROACH", slug: "approach" },
+    { arc: arcPath(cx, cy, 218, 258, 192, 0), name: "PROCESS", slug: "process" },
+    { arc: arcPath(cx, cy, 218, 348, 282, 0), name: "SEND", slug: "send" },
+  ];
 
   return `<svg class="maps-wheel" viewBox="0 0 500 500" role="img" aria-label="MAPS process wheel">
+    <defs>
+      ${phaseLabelArcs
+        .map(
+          (arc) =>
+            `<path id="${wheelId}-${arc.slug}-arc" d="${arc.arc}" fill="none" />`,
+        )
+        .join("")}
+    </defs>
     <circle class="maps-wheel-paper" cx="${cx}" cy="${cy}" r="238" />
     ${mapsPhases
       .map((phase, phaseIndex) => {
@@ -362,7 +394,7 @@ function renderMapsWheel({
         const phaseClass = phaseIsFocused ? "is-focused" : "is-muted";
         return `<g class="maps-wheel-phase ${phaseClass}">
           <path d="${ringSegmentPath(cx, cy, 238, 196, phaseIndex * 90, phaseIndex * 90 + 90)}" fill="${phase.color}" />
-          <text class="maps-wheel-phase-label" x="${polarPoint(cx, cy, 217, phaseIndex * 90 + 45).x.toFixed(1)}" y="${polarPoint(cx, cy, 217, phaseIndex * 90 + 45).y.toFixed(1)}">${escapeHtml(phase.name.toUpperCase())}</text>
+          <text class="maps-wheel-phase-label"><textPath href="#${wheelId}-${phase.slug}-arc" startOffset="50%">${escapeHtml(phase.name.toUpperCase())}</textPath></text>
         </g>`;
       })
       .join("")}
@@ -381,7 +413,9 @@ function renderMapsWheel({
         </g>`;
       })
       .join("")}
-    <polygon class="maps-wheel-overlay" points="${overlayPolygon}" />
+    ${
+      includeOverlay
+        ? `<polygon class="maps-wheel-overlay" points="${overlayPolygon}" />
     <polyline class="maps-wheel-overlay-line" points="${overlayPolygon} ${overlayPoints[0]?.x.toFixed(1)},${overlayPoints[0]?.y.toFixed(1)}" />
     ${overlayPoints
       .map((point, index) => {
@@ -389,12 +423,18 @@ function renderMapsWheel({
         const isFocused = !focusSlug || item.phase.slug === focusSlug;
         return `<circle class="maps-wheel-dot ${isFocused ? "is-focused" : "is-muted"}" cx="${point.x.toFixed(1)}" cy="${point.y.toFixed(1)}" r="5.6" />`;
       })
-      .join("")}
+      .join("")}`
+        : ""
+    }
     <circle class="maps-wheel-center" cx="${cx}" cy="${cy}" r="69" />
-    <text class="maps-wheel-name" x="${cx}" y="222">${escapeHtml(centerName)}</text>
+    ${
+      includeCenterProfile
+        ? `<text class="maps-wheel-name" x="${cx}" y="222">${escapeHtml(centerName)}</text>
     <text class="maps-wheel-center-line" x="${cx}" y="244">${escapeHtml(profile.slice(0, 2).map((item) => `${item.label} ${item.score}`).join(" / "))}</text>
     <text class="maps-wheel-center-line" x="${cx}" y="263">${escapeHtml(profile.slice(2).map((item) => `${item.label} ${item.score}`).join(" / "))}</text>
-    <text class="maps-wheel-center-line is-small" x="${cx}" y="285">${escapeHtml(pdProfile.map((axis) => `${axis.label} ${axis.score || axis.tendency}`).join("  |  "))}</text>
+    <text class="maps-wheel-center-line is-small" x="${cx}" y="285">${escapeHtml(pdProfile.map((axis) => `${axis.label} ${axis.score || axis.tendency}`).join("  |  "))}</text>`
+        : `<circle class="maps-wheel-center-dot" cx="${cx}" cy="${cy}" r="9" />`
+    }
   </svg>`;
 }
 
@@ -509,12 +549,19 @@ export function buildMapsRoadmapHtml({
     firstSnapshotValue(designIdSnapshot, ["Integrative_Reflection", "integrativeReflection"]) ||
     "Integrated design";
   const today = new Intl.DateTimeFormat("en-US", { dateStyle: "long" }).format(new Date());
-  const coverWheel = renderMapsWheel({ designIdSnapshot, designPdSnapshot, name });
+  const coverWheel = renderMapsWheel({
+    designIdSnapshot,
+    designPdSnapshot,
+    includeCenterProfile: false,
+    includeOverlay: false,
+    name,
+    wheelId: "maps-cover-wheel",
+  });
   const phasePages = mapsPhases
     .map(
       (phase) => `<section class="maps-phase-divider" style="--phase-color:${phase.color}">
         <div class="maps-phase-divider-content">
-          <div>
+          <div class="maps-phase-copy">
             <p>MAPS Section</p>
             <h2>${escapeHtml(phase.name)}</h2>
             <span>${escapeHtml(phase.intro)}</span>
@@ -523,7 +570,13 @@ export function buildMapsRoadmapHtml({
             </div>
           </div>
           <div class="maps-phase-wheel">
-            ${renderMapsWheel({ designIdSnapshot, designPdSnapshot, focusSlug: phase.slug, name })}
+            ${renderMapsWheel({
+              designIdSnapshot,
+              designPdSnapshot,
+              focusSlug: phase.slug,
+              name,
+              wheelId: `maps-${phase.slug}-wheel`,
+            })}
           </div>
         </div>
       </section>
@@ -552,33 +605,35 @@ export function buildMapsRoadmapHtml({
     h4 { color:var(--phase-color); font-size:10.8px; letter-spacing:.06em; margin:0 0 4px; text-transform:uppercase; }
     p, li, dd { color:var(--muted); font-size:10.6px; line-height:1.3; margin:0; }
     dl { margin:0; }
-    .maps-cover { background:linear-gradient(135deg,var(--dark),var(--green)); color:#fffaf0; display:grid; gap:24px; grid-template-columns:minmax(0,.92fr) minmax(260px,.72fr); min-height:690px; page-break-after:always; padding:30px 34px; }
+    .maps-cover { background:#f8faf4; color:var(--ink); display:grid; gap:16px; grid-template-columns:1fr; min-height:690px; page-break-after:always; padding:24px 34px 18px; }
     .maps-cover-copy { min-width:0; }
-    .maps-cover-logo { display:block; filter:brightness(0) invert(1); height:50px; margin-bottom:58px; max-width:230px; object-fit:contain; width:auto; }
+    .maps-cover-logo { display:block; filter:brightness(0) invert(1); height:42px; margin-bottom:22px; max-width:220px; object-fit:contain; width:auto; }
     .maps-cover .eyebrow, .maps-phase-divider p, .maps-page-heading p { color:#e4d2a7; font-size:12px; font-weight:900; letter-spacing:.12em; margin:0 0 10px; text-transform:uppercase; }
+    .maps-cover-panel { background:linear-gradient(135deg,var(--dark),var(--green)); color:#fffaf0; display:grid; gap:22px; grid-template-columns:minmax(0,1fr) minmax(235px,.52fr); padding:25px 28px; }
     .maps-cover h1 { color:#fffaf0; }
     .maps-cover h2 { color:#f9edc9; font-size:24px; margin-top:8px; }
-    .maps-cover-meta { display:grid; gap:12px; grid-template-columns:1fr; margin-top:30px; max-width:360px; }
+    .maps-cover-meta { display:grid; gap:10px; grid-template-columns:1fr; margin-top:0; }
     .maps-cover-meta div { background:rgba(255,250,240,.1); border:1px solid rgba(255,250,240,.22); padding:14px; }
     .maps-cover-meta small { color:#e4d2a7; display:block; font-size:10px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
     .maps-cover-meta strong { color:#fffaf0; display:block; font-size:15px; margin-top:5px; }
-    .maps-cover-note { background:rgba(255,250,240,.92); border-left:6px solid var(--gold); margin-top:18px; max-width:440px; padding:13px 15px; }
+    .maps-cover-note { background:rgba(255,250,240,.94); border-left:6px solid var(--gold); margin-top:16px; max-width:610px; padding:13px 15px; }
     .maps-cover-note h3 { color:var(--dark); font-size:15px; letter-spacing:.06em; margin:0 0 6px; text-transform:uppercase; }
     .maps-cover-note p { color:var(--ink); font-size:10.8px; font-weight:650; line-height:1.32; }
-    .maps-cover-visual { align-self:center; background:rgba(255,250,240,.94); border:1px solid rgba(255,250,240,.36); box-shadow:0 22px 46px rgba(18,35,18,.26); padding:12px; }
-    .maps-cover-visual .maps-wheel { display:block; height:auto; width:100%; }
+    .maps-cover-visual { align-self:start; background:#fffdf8; border:1px solid var(--line); box-shadow:0 18px 42px rgba(70,58,35,.13); justify-self:center; max-width:560px; padding:8px; width:100%; }
+    .maps-cover-visual .maps-wheel { display:block; height:auto; margin:0 auto; width:100%; }
     .maps-wheel-paper { fill:#fbfaf4; stroke:#e4dccb; stroke-width:3; }
     .maps-wheel-phase path { stroke:#fbfaf4; stroke-width:3; }
     .maps-wheel-phase.is-muted path, .maps-wheel-slice.is-muted path { fill:#d7ded2; }
     .maps-wheel-phase.is-muted text, .maps-wheel-slice.is-muted text, .maps-wheel-dot.is-muted { opacity:.34; }
     .maps-wheel-slice path { opacity:.78; stroke:#fbfaf4; stroke-width:2; }
-    .maps-wheel-phase-label { dominant-baseline:middle; fill:#fffaf0; font-size:13px; font-weight:950; letter-spacing:.08em; text-anchor:middle; }
+    .maps-wheel-phase-label { fill:#fffaf0; font-size:18px; font-weight:950; letter-spacing:.08em; text-anchor:middle; }
     .maps-wheel-subcategory { dominant-baseline:middle; fill:#fffaf0; font-size:8.8px; font-weight:950; text-anchor:middle; }
     .maps-wheel-terms { dominant-baseline:middle; fill:#fffaf0; font-size:4.2px; font-weight:800; text-anchor:middle; }
     .maps-wheel-overlay { fill:rgba(201,245,215,.18); stroke:#2f7f4f; stroke-linejoin:round; stroke-width:3; }
     .maps-wheel-overlay-line { fill:none; stroke:rgba(255,255,255,.76); stroke-linejoin:round; stroke-width:1.25; }
     .maps-wheel-dot { fill:#f8fff7; stroke:#2f7f4f; stroke-width:2.2; }
     .maps-wheel-center { fill:rgba(255,255,255,.95); stroke:#dfe7d9; stroke-width:2; }
+    .maps-wheel-center-dot { fill:#243f27; stroke:#fffaf0; stroke-width:3; }
     .maps-wheel-name { fill:#243f27; font-size:15px; font-weight:950; text-anchor:middle; }
     .maps-wheel-center-line { fill:#40503e; font-size:8.6px; font-weight:900; text-anchor:middle; }
     .maps-wheel-center-line.is-small { font-size:5.8px; }
@@ -595,14 +650,16 @@ export function buildMapsRoadmapHtml({
     .maps-profile-list i { border-radius:999px; display:block; height:10px; width:10px; }
     .maps-profile-list strong { color:var(--dark); font-size:11px; }
     .maps-profile-list span { color:var(--muted); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; font-weight:900; }
-    .maps-phase-divider { background:#f8faf4; color:var(--ink); min-height:690px; padding:30px 34px; page-break-after:always; }
-    .maps-phase-divider-content { align-items:center; border-top:12px solid var(--phase-color); display:grid; gap:24px; grid-template-columns:minmax(0,.88fr) minmax(270px,.7fr); min-height:630px; padding:22px 0 10px; }
+    .maps-phase-divider { background:#f8faf4; color:var(--ink); min-height:690px; padding:26px 34px; page-break-after:always; }
+    .maps-phase-divider-content { border-top:12px solid var(--phase-color); display:grid; gap:16px; grid-template-columns:1fr; min-height:640px; padding:18px 0 6px; }
+    .maps-phase-copy { display:grid; gap:8px; grid-template-columns:minmax(0,1fr) minmax(235px,.72fr); }
     .maps-phase-divider p { color:var(--phase-color); }
-    .maps-phase-divider h2 { color:var(--phase-color); font-size:48px; line-height:1; margin:0 0 12px; }
-    .maps-phase-divider span { color:var(--ink); display:block; font-size:15px; font-weight:650; line-height:1.45; max-width:520px; }
-    .maps-phase-subcategory-strip { display:grid; gap:8px; grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:24px; max-width:520px; }
+    .maps-phase-divider h2 { color:var(--phase-color); font-size:42px; line-height:1; margin:0 0 8px; }
+    .maps-phase-divider span { color:var(--ink); display:block; font-size:13px; font-weight:650; line-height:1.36; max-width:520px; }
+    .maps-phase-subcategory-strip { align-self:end; display:grid; gap:7px; grid-template-columns:1fr; margin-top:0; }
     .maps-phase-subcategory-strip strong { background:rgba(255,255,255,.74); border:1px solid var(--line); border-left:6px solid var(--phase-color); color:var(--dark); display:block; font-size:13px; padding:10px 9px; }
-    .maps-phase-wheel { background:white; border:1px solid var(--line); box-shadow:0 18px 46px rgba(70,58,35,.11); padding:12px; }
+    .maps-phase-wheel { align-self:center; background:white; border:1px solid var(--line); box-shadow:0 18px 46px rgba(70,58,35,.11); justify-self:center; max-width:560px; padding:10px; width:100%; }
+    .maps-phase-wheel .maps-wheel { display:block; width:100%; }
     .maps-subcategory-page { min-height:690px; padding:18px 22px 56px; page-break-after:always; position:relative; }
     .maps-page-heading { align-items:end; border-bottom:4px solid var(--phase-color); display:grid; gap:18px; grid-template-columns:minmax(0,1fr) auto; margin-bottom:11px; padding-bottom:9px; }
     .maps-page-heading p { color:var(--phase-color); margin-bottom:5px; }
@@ -658,19 +715,21 @@ export function buildMapsRoadmapHtml({
 <body>
   <main>
     <section class="maps-cover">
-      <div class="maps-cover-copy">
-        <img class="maps-cover-logo" src="${assetUrl(brandLogoPath)}" alt="Discover Your Divine Design" />
-        <p class="eyebrow">Discover Your Divine Design</p>
-        <h1>MAPS Personal Roadmap</h1>
-        <h2>${escapeHtml(name)}</h2>
+      <div class="maps-cover-panel">
+        <div class="maps-cover-copy">
+          <img class="maps-cover-logo" src="${assetUrl(brandLogoPath)}" alt="Discover Your Divine Design" />
+          <p class="eyebrow">Discover Your Divine Design</p>
+          <h1>MAPS Personal Roadmap</h1>
+          <h2>${escapeHtml(name)}</h2>
+          <div class="maps-cover-note">
+            <h3>From Purpose to Movement</h3>
+            <p>MAPS anchors the why, clarifies what is true, makes the work sustainable, and moves it into completion. Use this as a coaching and class roadmap: personal enough to reflect, structured enough to act.</p>
+          </div>
+        </div>
         <div class="maps-cover-meta">
           <div><small>DesignID</small><strong>${escapeHtml([primary, secondary].filter(Boolean).join(" / "))}</strong></div>
           <div><small>Integrated Reflection</small><strong>${escapeHtml(integrative)}</strong></div>
           <div><small>Generated</small><strong>${escapeHtml(today)}</strong></div>
-        </div>
-        <div class="maps-cover-note">
-          <h3>From Purpose to Movement</h3>
-          <p>MAPS anchors the why, clarifies what is true, makes the work sustainable, and moves it into completion. Use this as a coaching and class roadmap: personal enough to reflect, structured enough to act.</p>
         </div>
       </div>
       <div class="maps-cover-visual">${coverWheel}</div>

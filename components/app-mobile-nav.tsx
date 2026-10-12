@@ -12,6 +12,7 @@ const mobileNavItems = [
   { href: "/camp-circle", label: "Camp Circles" },
   { href: "/command-center", label: "Command Center" },
   { href: "/command-center/design-map", label: "Design Map" },
+  { href: "/command-center/expedition", label: "Expedition" },
 ];
 
 export function AppMobileNav() {

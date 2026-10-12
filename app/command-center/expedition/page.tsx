@@ -90,12 +90,16 @@ export default async function ExpeditionPage({ searchParams }: ExpeditionPagePro
             alignment, formation, and Kingdom-impact follow-through.
           </p>
         </div>
-        <div className="command-center-hero-card">
-          <AppNavIcon name="hiker" />
-          <span>Group access</span>
-          <strong>Teams</strong>
-          <small>Separate from the individual journey path for now</small>
-        </div>
+        <figure className="expedition-header-art">
+          <img
+            src="/brand/expedition-team-climb-cartoon-header.png"
+            alt="Illustrated leadership expedition team preparing for a mountain ascent"
+          />
+          <figcaption>
+            <AppNavIcon name="hiker" />
+            <span>Group access for teams, ministries, churches, and mission-focused organizations.</span>
+          </figcaption>
+        </figure>
       </section>
 
       <section className="expedition-command" aria-label="Expedition leadership avenue preview">

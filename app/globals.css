@@ -6420,6 +6420,65 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   margin: 8px 0;
 }
 
+.expedition-page-hero {
+  align-items: stretch;
+  background:
+    linear-gradient(110deg, rgba(23, 39, 25, 0.95) 0%, rgba(36, 63, 39, 0.86) 43%, rgba(36, 63, 39, 0.28) 100%),
+    url("/brand/expedition-team-climb-cartoon-header.png") center / cover;
+  grid-template-columns: minmax(0, 0.76fr) minmax(360px, 1.24fr);
+  min-height: 430px;
+  overflow: hidden;
+  position: relative;
+}
+
+.expedition-page-hero > div:first-child {
+  align-self: center;
+  position: relative;
+  z-index: 1;
+}
+
+.expedition-header-art {
+  align-self: stretch;
+  background: rgba(255, 250, 240, 0.12);
+  border: 1px solid rgba(255, 250, 240, 0.22);
+  display: grid;
+  margin: 0;
+  min-height: 330px;
+  overflow: hidden;
+  position: relative;
+}
+
+.expedition-header-art img {
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+}
+
+.expedition-header-art figcaption {
+  align-items: center;
+  align-self: end;
+  background: linear-gradient(90deg, rgba(23, 39, 25, 0.9), rgba(23, 39, 25, 0.56));
+  color: #fffaf0;
+  display: flex;
+  gap: 12px;
+  grid-area: 1 / 1;
+  padding: 14px 16px;
+  position: relative;
+}
+
+.expedition-header-art .hq-menu-icon {
+  background: rgba(255, 250, 240, 0.18);
+  flex: 0 0 auto;
+}
+
+.expedition-header-art span {
+  color: rgba(255, 250, 240, 0.9);
+  font-size: 0.88rem;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
 .command-center-message {
   background: #fffaf0;
   border-left: 5px solid var(--gold);
@@ -8658,6 +8717,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   }
 
   .command-center-hero,
+  .expedition-page-hero,
   .expedition-command-hero,
   .expedition-dashboard-grid,
   .expedition-access-row,
@@ -8693,6 +8753,14 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 @media (max-width: 640px) {
   .command-center-hero {
     padding: 24px;
+  }
+
+  .expedition-page-hero {
+    min-height: auto;
+  }
+
+  .expedition-header-art {
+    min-height: 240px;
   }
 
   .design-map-shell {

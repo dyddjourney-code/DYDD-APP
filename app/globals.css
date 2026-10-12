@@ -6464,6 +6464,466 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   margin: 8px 0;
 }
 
+.expedition-command {
+  background:
+    linear-gradient(180deg, rgba(255, 253, 247, 0.94), rgba(246, 241, 230, 0.96)),
+    repeating-linear-gradient(
+      135deg,
+      rgba(36, 63, 39, 0.035) 0,
+      rgba(36, 63, 39, 0.035) 1px,
+      transparent 1px,
+      transparent 24px
+    );
+  border: 1px solid rgba(36, 63, 39, 0.14);
+  box-shadow: 0 26px 60px rgba(36, 63, 39, 0.09);
+  margin-bottom: 18px;
+  overflow: hidden;
+}
+
+.expedition-command-hero {
+  align-items: stretch;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  padding: clamp(22px, 4vw, 38px);
+}
+
+.expedition-command-copy {
+  align-content: center;
+  display: grid;
+}
+
+.expedition-command-copy h2 {
+  color: var(--green-dark);
+  font-size: clamp(2.4rem, 6vw, 5.8rem);
+  line-height: 0.9;
+  margin: 0 0 16px;
+}
+
+.expedition-command-copy p:not(.section-label) {
+  color: #40513c;
+  font-size: clamp(1rem, 1.45vw, 1.22rem);
+  line-height: 1.7;
+  margin: 0;
+  max-width: 820px;
+}
+
+.expedition-command-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.expedition-command-actions a {
+  align-items: center;
+  background: var(--green-dark);
+  border: 1px solid var(--green-dark);
+  color: #fffaf0;
+  display: inline-flex;
+  font-weight: 900;
+  min-height: 43px;
+  padding: 0 15px;
+}
+
+.expedition-command-actions a + a {
+  background: rgba(255, 250, 240, 0.82);
+  color: var(--green-dark);
+}
+
+.expedition-ascent-card {
+  background:
+    linear-gradient(180deg, rgba(248, 250, 247, 0.96), rgba(234, 240, 226, 0.96));
+  border: 1px solid rgba(36, 63, 39, 0.16);
+  display: grid;
+  min-height: 380px;
+  overflow: hidden;
+  position: relative;
+}
+
+.expedition-sky,
+.expedition-mountain {
+  grid-area: 1 / 1;
+  position: relative;
+}
+
+.expedition-sky {
+  background:
+    linear-gradient(180deg, rgba(152, 185, 198, 0.48), rgba(255, 250, 240, 0.16) 62%, transparent);
+}
+
+.expedition-sun {
+  background: #d4a451;
+  border: 2px solid rgba(111, 77, 32, 0.32);
+  border-radius: 999px;
+  height: 58px;
+  position: absolute;
+  right: 36px;
+  top: 32px;
+  width: 58px;
+}
+
+.expedition-cloud {
+  background: rgba(255, 250, 240, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  height: 20px;
+  position: absolute;
+  width: 92px;
+}
+
+.cloud-one {
+  left: 42px;
+  top: 56px;
+}
+
+.cloud-two {
+  right: 106px;
+  top: 118px;
+  transform: scale(0.72);
+}
+
+.expedition-mountain {
+  overflow: hidden;
+}
+
+.expedition-peak {
+  background: linear-gradient(140deg, #476b42, #243f27);
+  border: 1px solid rgba(36, 63, 39, 0.22);
+  bottom: -86px;
+  height: 330px;
+  position: absolute;
+  transform: rotate(45deg);
+  width: 330px;
+}
+
+.peak-one {
+  left: 52px;
+}
+
+.peak-two {
+  background: linear-gradient(140deg, #6f7c55, #30452d);
+  height: 270px;
+  right: 34px;
+  width: 270px;
+}
+
+.expedition-route-line {
+  border-color: rgba(255, 250, 240, 0.82);
+  border-style: dashed;
+  border-width: 0 0 3px 3px;
+  bottom: 94px;
+  height: 162px;
+  left: 86px;
+  position: absolute;
+  transform: rotate(-9deg);
+  width: 256px;
+}
+
+.expedition-flag {
+  background: #fffaf0;
+  border-left: 3px solid #6f4d20;
+  height: 74px;
+  position: absolute;
+  right: 84px;
+  top: 106px;
+  width: 3px;
+}
+
+.expedition-flag::after {
+  background: #b88a43;
+  border: 1px solid rgba(111, 77, 32, 0.3);
+  content: "";
+  height: 26px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 48px;
+}
+
+.expedition-camp-dot {
+  align-items: center;
+  background: #fffaf0;
+  border: 3px solid #243f27;
+  border-radius: 999px;
+  color: var(--green-dark);
+  display: flex;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.82rem;
+  font-weight: 950;
+  height: 34px;
+  justify-content: center;
+  position: absolute;
+  width: 34px;
+}
+
+.dot-base {
+  bottom: 70px;
+  left: 70px;
+}
+
+.dot-map {
+  bottom: 150px;
+  left: 204px;
+}
+
+.dot-summit {
+  right: 70px;
+  top: 150px;
+}
+
+.expedition-card-caption {
+  align-self: end;
+  background: rgba(255, 250, 240, 0.9);
+  border-top: 1px solid rgba(36, 63, 39, 0.12);
+  display: grid;
+  gap: 3px;
+  grid-area: 1 / 1;
+  padding: 16px 18px;
+  position: relative;
+}
+
+.expedition-card-caption strong {
+  color: var(--green-dark);
+  font-size: 1.05rem;
+}
+
+.expedition-card-caption small {
+  color: var(--muted);
+  font-weight: 850;
+}
+
+.expedition-stage-strip {
+  border-top: 1px solid rgba(36, 63, 39, 0.12);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.expedition-stage-strip article {
+  background: rgba(255, 255, 255, 0.54);
+  border-right: 1px solid rgba(36, 63, 39, 0.1);
+  display: grid;
+  gap: 7px;
+  min-height: 230px;
+  padding: 18px;
+}
+
+.expedition-stage-strip article:last-child {
+  border-right: 0;
+}
+
+.expedition-stage-strip span,
+.expedition-stage-strip em {
+  color: var(--brass);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.76rem;
+  font-style: normal;
+  font-weight: 950;
+}
+
+.expedition-stage-strip strong {
+  color: var(--green-dark);
+  font-size: 1.15rem;
+}
+
+.expedition-stage-strip small {
+  color: #6f4d20;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.expedition-stage-strip p {
+  color: #53604f;
+  font-size: 0.88rem;
+  line-height: 1.48;
+  margin: 0;
+}
+
+.expedition-stage-strip em {
+  align-self: end;
+}
+
+.expedition-dashboard-grid {
+  border-top: 1px solid rgba(36, 63, 39, 0.12);
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(280px, 1.05fr) minmax(280px, 0.95fr);
+  padding: 18px;
+}
+
+.expedition-panel {
+  background: rgba(255, 250, 240, 0.78);
+  border: 1px solid rgba(36, 63, 39, 0.1);
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+}
+
+.expedition-panel h3 {
+  color: var(--green-dark);
+  font-size: clamp(1.35rem, 2.5vw, 2.2rem);
+  line-height: 1.02;
+  margin: 0;
+}
+
+.expedition-panel p {
+  color: #53604f;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.expedition-access-row {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 8px;
+}
+
+.expedition-access-row div,
+.expedition-tool-list section {
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(36, 63, 39, 0.09);
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+}
+
+.expedition-access-row span {
+  color: var(--brass);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.expedition-access-row strong,
+.expedition-tool-list strong,
+.expedition-scripture strong {
+  color: var(--green-dark);
+}
+
+.expedition-access-row small,
+.expedition-tool-list small,
+.expedition-scripture span {
+  color: var(--muted);
+  font-weight: 780;
+  line-height: 1.4;
+}
+
+.expedition-team-radar {
+  aspect-ratio: 1;
+  background:
+    linear-gradient(90deg, rgba(212, 164, 81, 0.16) 0 50%, rgba(117, 154, 91, 0.16) 50%),
+    linear-gradient(180deg, rgba(100, 124, 155, 0.15) 0 50%, rgba(74, 98, 57, 0.15) 50%);
+  border: 2px solid rgba(36, 63, 39, 0.32);
+  justify-self: center;
+  max-width: 310px;
+  position: relative;
+  width: min(100%, 310px);
+}
+
+.radar-axis {
+  background: rgba(36, 63, 39, 0.26);
+  position: absolute;
+}
+
+.axis-x {
+  height: 2px;
+  left: 0;
+  right: 0;
+  top: 50%;
+}
+
+.axis-y {
+  bottom: 0;
+  left: 50%;
+  top: 0;
+  width: 2px;
+}
+
+.radar-member {
+  align-items: center;
+  border-radius: 999px;
+  color: #fffaf0;
+  display: flex;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 950;
+  height: 34px;
+  justify-content: center;
+  position: absolute;
+  width: 34px;
+  z-index: 2;
+}
+
+.member-one {
+  background: #456073;
+  right: 25%;
+  top: 22%;
+}
+
+.member-two {
+  background: #9e5a4f;
+  bottom: 28%;
+  right: 15%;
+}
+
+.member-three {
+  background: #c19636;
+  bottom: 21%;
+  left: 24%;
+}
+
+.member-four {
+  background: #739d5e;
+  left: 19%;
+  top: 32%;
+}
+
+.radar-ring {
+  border: 2px solid rgba(36, 63, 39, 0.2);
+  border-radius: 999px;
+  position: absolute;
+}
+
+.ring-one {
+  height: 46%;
+  left: 27%;
+  top: 18%;
+  width: 46%;
+}
+
+.ring-two {
+  bottom: 12%;
+  height: 58%;
+  right: 5%;
+  width: 58%;
+}
+
+.expedition-tool-list > div {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.expedition-scripture ul {
+  display: grid;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.expedition-scripture li {
+  align-items: baseline;
+  background: rgba(255, 255, 255, 0.58);
+  border-top: 1px solid rgba(36, 63, 39, 0.09);
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 140px minmax(0, 1fr);
+  padding: 9px 0 0;
+}
+
 .command-center-insights {
   background: rgba(255, 255, 255, 0.88);
   border: 1px solid rgba(36, 63, 39, 0.12);
@@ -8198,6 +8658,9 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   }
 
   .command-center-hero,
+  .expedition-command-hero,
+  .expedition-dashboard-grid,
+  .expedition-access-row,
   .design-map-hero,
   .design-map-workbench,
   .design-map-toolbar,
@@ -8214,6 +8677,8 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   }
 
   .command-center-metrics,
+  .expedition-stage-strip,
+  .expedition-tool-list > div,
   .command-center-assessment-grid,
   .design-map-row-tabs,
   .design-map-phase-grid {
@@ -8239,6 +8704,8 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   }
 
   .command-center-metrics,
+  .expedition-stage-strip,
+  .expedition-tool-list > div,
   .command-center-assessment-grid,
   .design-map-row-tabs,
   .design-map-phase-grid,
@@ -8251,6 +8718,23 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .group-designid-bar-row,
   .group-designpd-axis-track,
   .designpd-axis-track {
+    grid-template-columns: 1fr;
+  }
+
+  .expedition-command-hero {
+    padding: 20px;
+  }
+
+  .expedition-ascent-card {
+    min-height: 310px;
+  }
+
+  .expedition-stage-strip article {
+    border-right: 0;
+    min-height: auto;
+  }
+
+  .expedition-scripture li {
     grid-template-columns: 1fr;
   }
 

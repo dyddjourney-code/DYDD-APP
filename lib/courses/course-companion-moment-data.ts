@@ -234,6 +234,87 @@ export const designIdCompanionMoments = {
   },
 } satisfies Record<string, CompanionMoment>;
 
+export const designPdCompanionMoments = {
+  welcome: {
+    audioSrc: "/audio/companions/course-moments/designpd-welcome-dydi.mp3",
+    duration: "About 25 seconds",
+    kicker: "Companion welcome",
+    speakers: [dydi],
+    title: "Notice How Your Design Moves",
+    transcript: [
+      {
+        speaker: "Dydi",
+        text: "Welcome to DesignPD. This course is not here to box you in. It is here to help you notice how your design moves: how you plan, decide, and do. Hold the report with curiosity, ask God for wisdom, and look for one faithful next step.",
+      },
+    ],
+  },
+  planning: {
+    audioSrc: "/audio/companions/course-moments/designpd-planning-marcus.mp3",
+    duration: "About 25 seconds",
+    kicker: "Planning posture",
+    speakers: [marcus],
+    title: "Let Vision and Structure Work Together",
+    transcript: [
+      {
+        speaker: "Marcus",
+        text: "Planning is where movement begins to take shape. Some people open possibilities first. Others look for the next workable step. Neither is wrong. The question is, what does this moment require, and what support would help vision and structure work together faithfully?",
+      },
+    ],
+  },
+  deciding: {
+    audioSrc: "/audio/companions/course-moments/designpd-deciding-mara.mp3",
+    duration: "About 25 seconds",
+    kicker: "Decision posture",
+    speakers: [mara],
+    title: "Honor Truth and Care",
+    transcript: [
+      {
+        speaker: "Mara",
+        text: "Deciding can feel tender because decisions carry people, timing, and consequence. If you feel it first, let wisdom help you name the criteria. If you think it first, let love help you notice the people. A mature decision usually honors both truth and care.",
+      },
+    ],
+  },
+  doing: {
+    audioSrc: "/audio/companions/course-moments/designpd-doing-clara.mp3",
+    duration: "About 25 seconds",
+    kicker: "Action posture",
+    speakers: [clara],
+    title: "Name the Agreement Before You Move",
+    transcript: [
+      {
+        speaker: "Clara",
+        text: "Doing is where intention becomes carried responsibility. Some people move best with clear ownership. Others gain strength through shared movement. Before you act, name the agreement: what is mine, who needs to be involved, and what small faithful step can actually happen next?",
+      },
+    ],
+  },
+  applications: {
+    audioSrc: "/audio/companions/course-moments/designpd-applications-daniel.mp3",
+    duration: "About 25 seconds",
+    kicker: "Application posture",
+    speakers: [daniel],
+    title: "Bring the Report into Real Life",
+    transcript: [
+      {
+        speaker: "Daniel",
+        text: "Applications bring DesignPD into real life: conflict, collaboration, leadership, pressure, and sustainability. Do not use the report to defend yourself. Use it to tell the truth gently, ask better questions, and find the next wise response in the situation in front of you.",
+      },
+    ],
+  },
+  alignment: {
+    audioSrc: "/audio/companions/course-moments/designpd-alignment-miles.mp3",
+    duration: "About 25 seconds",
+    kicker: "Alignment posture",
+    speakers: [miles],
+    title: "Let Movement Serve the Calling",
+    transcript: [
+      {
+        speaker: "Miles",
+        text: "Alignment keeps movement connected to purpose. MAPS helps you ask where the work is headed, how you are approaching it, what process it needs, and how it should be sent outward. DesignPD becomes stronger when planning, deciding, and doing serve the larger calling.",
+      },
+    ],
+  },
+} satisfies Record<string, CompanionMoment>;
+
 export const dyddJourneyCompanionMoments = {
   welcome: {
     audioSrc: "/audio/companions/course-moments/dydd-journey-welcome-dydi.mp3",

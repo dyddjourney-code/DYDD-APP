@@ -202,12 +202,21 @@ export function DesignIdCourseNavigator({
               </ul>
             </section>
 
-            <section className="lesson-source designid-lesson-source" aria-label="Complete lesson body">
-              <p className="section-label">Complete lesson</p>
+            <section className="lesson-source designid-lesson-source" aria-label="Lesson body">
+              <p className="section-label">{active.lesson.title}</p>
               <div
                 className="source-lesson-body designid-source-lesson-body"
                 dangerouslySetInnerHTML={{ __html: active.lesson.bodyHtml }}
               />
+            </section>
+
+            <section className="lesson-callout designid-reflection-direction" aria-label="Reflection direction">
+              <p className="section-label">Reflection</p>
+              <h3>Where do you see this in real life?</h3>
+              <p>
+                Notice one place this design language gives you clarity about
+                your relationships, work, ministry, or next faithful step.
+              </p>
             </section>
           </section>
         </div>

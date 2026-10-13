@@ -156,7 +156,7 @@ export default async function DesignIdLessonPage({
           <section className="lesson-source" aria-label="Complete lesson body">
             <p className="section-label">Complete course lesson</p>
             <div
-              className="source-lesson-body"
+              className="source-lesson-body designid-source-lesson-body"
               dangerouslySetInnerHTML={{ __html: personalizedBody }}
             />
           </section>

@@ -16021,23 +16021,34 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .designid-lesson-source {
+  display: grid;
+  gap: 16px;
   margin-top: 0;
   padding-top: 0;
   border-top: 0;
 }
 
 .designid-source-lesson-body {
-  padding: clamp(14px, 2vw, 22px);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(251, 250, 244, 0.94)),
-    var(--panel);
+  display: grid;
+  gap: 16px;
+  overflow: visible;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 .designid-source-lesson-body > div {
+  display: grid;
+  gap: 16px;
   width: 100% !important;
   max-width: 100% !important;
+  margin: 0 !important;
   padding-right: 0 !important;
   padding-left: 0 !important;
+}
+
+.designid-source-lesson-body div {
+  box-shadow: none !important;
 }
 
 .designid-source-lesson-body div[style*="border-radius: 24px"],
@@ -16047,10 +16058,22 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   border-radius: 8px !important;
 }
 
+.designid-source-lesson-body div[style*="border-left"] {
+  padding: 18px 20px !important;
+  border-left-color: var(--course-accent, #5a496b) !important;
+  background: var(--course-accent-soft, rgba(90, 73, 107, 0.13)) !important;
+}
+
+.designid-source-lesson-body div[style*="border-top"] {
+  padding: 18px 20px !important;
+  border-top-color: var(--course-accent, #5a496b) !important;
+  background: rgba(255, 255, 255, 0.76) !important;
+}
+
 .designid-source-lesson-body img {
   display: block;
   width: auto !important;
-  max-width: min(100%, 760px) !important;
+  max-width: min(100%, 720px) !important;
   max-height: 420px !important;
   margin-right: auto !important;
   margin-left: auto !important;
@@ -16064,14 +16087,67 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .designid-source-lesson-body p,
 .designid-source-lesson-body li {
-  font-size: clamp(0.98rem, 1.2vw, 1.05rem) !important;
-  line-height: 1.72 !important;
+  max-width: 74ch;
+  color: #3e4d3b !important;
+  font-size: 1.04rem !important;
+  line-height: 1.82 !important;
+}
+
+.designid-source-lesson-body p {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.designid-source-lesson-body li + li {
+  margin-top: 8px;
 }
 
 .designid-source-lesson-body h1,
 .designid-source-lesson-body h2,
 .designid-source-lesson-body h3 {
+  max-width: 74ch;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  color: var(--green-dark) !important;
   overflow-wrap: anywhere;
+}
+
+.designid-source-lesson-body h1 {
+  font-size: clamp(1.7rem, 3vw, 2.55rem) !important;
+  line-height: 1.12 !important;
+}
+
+.designid-source-lesson-body h2 {
+  font-size: clamp(1.45rem, 2.5vw, 2.1rem) !important;
+  line-height: 1.18 !important;
+}
+
+.designid-source-lesson-body h3 {
+  font-size: 1.12rem !important;
+  line-height: 1.25 !important;
+}
+
+.designid-source-lesson-body [style*="linear-gradient"] {
+  background:
+    linear-gradient(135deg, rgba(90, 73, 107, 0.95), rgba(61, 46, 78, 0.94)) !important;
+}
+
+.designid-source-lesson-body [style*="linear-gradient"] p,
+.designid-source-lesson-body [style*="linear-gradient"] h1,
+.designid-source-lesson-body [style*="linear-gradient"] h2,
+.designid-source-lesson-body [style*="linear-gradient"] h3 {
+  color: #fff !important;
+}
+
+.designid-reflection-direction {
+  margin-top: 0;
+}
+
+.designid-reflection-direction h3 {
+  margin: 0 0 10px;
+  color: var(--green-dark);
+  font-size: clamp(1.25rem, 2.2vw, 1.8rem);
+  line-height: 1.18;
 }
 
 .designid-source-accordion {

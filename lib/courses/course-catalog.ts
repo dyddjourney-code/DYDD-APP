@@ -1,4 +1,5 @@
 import { designIdCourse } from "./designid-foundations";
+import { designPdCourse } from "./designpd-alignment";
 import { fruitLife360Course } from "./fruitlife-360-formation";
 import { spiritualGiftsCourse } from "./spiritual-gifts-service";
 import type { CompanionMoment } from "./companion-moments";
@@ -677,6 +678,7 @@ const baseLearningCourses = [
 ] as const satisfies CourseDefinition[];
 
 const courseReplacements: Record<string, CourseDefinition> = {
+  [designPdCourse.slug]: designPdCourse,
   [fruitLife360Course.slug]: fruitLife360Course,
   [spiritualGiftsCourse.slug]: spiritualGiftsCourse,
 };

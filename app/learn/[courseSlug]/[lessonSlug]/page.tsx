@@ -209,6 +209,13 @@ export default async function LearningLessonPage({
                   alt={lesson.image.alt}
                   loading="lazy"
                 />
+                {lesson.image.caption?.length ? (
+                  <figcaption>
+                    {lesson.image.caption.map((line) => (
+                      <span key={line}>{line}</span>
+                    ))}
+                  </figcaption>
+                ) : null}
               </figure>
             ) : null}
           </div>

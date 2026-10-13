@@ -15288,13 +15288,11 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .assessment-lesson-image figcaption {
-  position: absolute;
-  right: 12px;
-  bottom: 12px;
-  left: 12px;
+  position: relative;
   z-index: 1;
   display: grid;
   gap: 4px;
+  margin: 12px;
   padding: 12px 14px;
   border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: 8px;

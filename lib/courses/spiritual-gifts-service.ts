@@ -16,8 +16,11 @@ export const spiritualGiftsCourse = {
       lessons: [
         {
           body: [
-            "Spiritual gifts are given by the Holy Spirit to build up others and serve the Body of Christ in love. This course is designed to help you receive your results with humility, clarity, and courage.",
-            "The goal is not to chase labels or prove usefulness. The goal is to grow in faithful service, love, and participation in the Body of Christ.",
+            "Spiritual gifts are given by the Holy Spirit to build up others and serve the Body of Christ in love. This course is designed to help you receive your results with humility, clarity, and courage. The goal is not to chase labels or prove usefulness. The goal is to grow in faithful service, love, and participation in the Body of Christ.",
+            {
+              kind: "scripture",
+              text: "“So, Christ himself gave the apostles, the prophets, the evangelists, the pastors and teachers, to equip his people for works of service, so that the body of Christ may be built up until we all reach unity in the faith and in the knowledge of the Son of God and become mature, attaining to the whole measure of the fullness of Christ.” Ephesians 4:11-13",
+            },
             "Your assessment highlights gifts that may be active or emerging right now. The report gives you language, Scripture, practical expressions, and deeper guidance, but it is meant for discernment rather than diagnosis.",
             "Hold your report prayerfully. Stay curious. Look for confirmation through service and community. Let love govern every gift.",
           ],
@@ -71,6 +74,10 @@ export const spiritualGiftsCourse = {
           body: [
             "The report is most useful when it leads to prayer, service, community feedback, and growth in love. Ask God for wisdom and invite the Spirit to confirm, correct, mature, and direct.",
             "Use the report in community because gifts are given for the Body. Trusted leaders, mentors, friends, and ministry teammates can help confirm what is fruitful and notice what needs maturity.",
+            {
+              kind: "scripture",
+              text: "“Each of you should use whatever gift you have received to serve others, as faithful stewards of God’s grace in its various forms.” 1 Peter 4:10",
+            },
             "Use the report through service. Gifts become clearer when they are practiced in small, faithful ways. Notice what strengthens others, bears fruit, and aligns with Scripture.",
             "Use the report over time. Some gifts remain consistent, while others emerge through need, calling, training, and obedience in a new season.",
           ],
@@ -99,10 +106,28 @@ export const spiritualGiftsCourse = {
       lessons: [
         {
           body: [
-            "Spiritual gifts are Spirit-given empowerments for serving others, strengthening the Church, and participating in God's work. They are received, not achieved.",
-            "Gifts are not primarily about personal fulfillment. They are given for the common good. The question is not only, \"What is my gift?\" but, \"How is God inviting me to serve?\"",
+            "In John chapters 14-16, Jesus promises the Holy Spirit to the disciples. He explains that the Holy Spirit is an advocate to help us, teach us, remind us, and testify about what Jesus lived and died for. He was preparing the disciples to be without Him, but he was actually telling them it was best that He goes, because it would be better for the Holy Spirit to be with us, then Jesus to be standing beside us.",
+            "Jesus promised us the Holy Spirit to:",
+            {
+              kind: "list",
+              items: [
+                "Be with us as our Helper",
+                "Teach us and remind us of His words",
+                "Empower us as His witnesses",
+                "Continue His work",
+              ],
+            },
+            "Spiritual gifts are supernatural empowerments given by the Holy Spirit equipping us to serve others, strengthen the Church, and participate in God's work. They are received, not achieved. Gifts are not primarily about personal fulfillment. They are given for the common good. The question is not only, \"What is my gift?\" but, \"How is God inviting me to serve?\"",
+            {
+              kind: "scripture",
+              text: [
+                "“Now about the gifts of the Spirit, brothers and sisters, I do not want you to be uninformed. You know that when you were pagans, somehow or other you were influenced and led astray to mute idols. Therefore I want you to know that no one who is speaking by the Spirit of God says, “Jesus be cursed,” and no one can say, “Jesus is Lord,” except by the Holy Spirit.",
+                "There are different kinds of gifts, but the same Spirit distributes them. There are different kinds of service, but the same Lord. There are different kinds of working, but in all of them and in everyone it is the same God at work.",
+                "Now to each one the manifestation of the Spirit is given for the common good. To one there is given through the Spirit a message of wisdom, to another a message of knowledge by means of the same Spirit, to another faith by the same Spirit, to another gifts of healing by that one Spirit, to another miraculous powers, to another prophecy, to another distinguishing between spirits, to another speaking in different kinds of tongues, and to still another the interpretation of tongues. All these are the work of one and the same Spirit, and he distributes them to each one, just as he determines.” 1 Corinthians 12:1-11",
+              ],
+            },
             "Paul describes believers as one Body with many members. No one carries every gift, every member matters, and difference is part of God's design.",
-            "Gifts require love. First Corinthians 12 flows directly into First Corinthians 13 because gifts without love become distorted. Love gives gifts their Christlike shape.",
+            "Additionally, Gifts require love. First Corinthians 12 flows directly into First Corinthians 13 because gifts without love become distorted. Love gives gifts their Christlike shape.",
           ],
           image: {
             alt: "Hands reaching toward a heart on a wooden table",
@@ -122,10 +147,16 @@ export const spiritualGiftsCourse = {
         },
         {
           body: [
-            "Spiritual gifts are not personality labels. They may overlap with personality, skills, or interests, but they are Spirit-given for service.",
-            "They are not a measure of spiritual maturity. A person may have a strong gift and still need deep formation. Maturity is seen in love, humility, obedience, wisdom, and fruit.",
-            "They are not a spiritual status system. Hidden service is not less valuable than visible service, and no gift should become a ranking of importance.",
-            "They are not a limitation on God. Your report does not tell God what He can or cannot do through you. Gifts clarify patterns; they do not create boundaries around obedience.",
+            "Spiritual gifts are not:",
+            {
+              kind: "list",
+              items: [
+                "Personality labels: They may overlap with personality, skills, or interests, but they are Spirit-given for service.",
+                "A measure of spiritual maturity: A person may have a strong gift and still need deep formation. Maturity is seen in love, humility, obedience, wisdom, and fruit.",
+                "A spiritual status system: Hidden service is not less valuable than visible service, and no gift should become a ranking of importance.",
+              ],
+            },
+            "Your Report is not a limitation on God: Your report does not tell God what He can or cannot do through you. Gifts clarify patterns; they do not create boundaries around obedience.",
           ],
           image: {
             alt: "Man holding a trophy to illustrate spiritual gifts are not status",
@@ -151,10 +182,18 @@ export const spiritualGiftsCourse = {
       lessons: [
         {
           body: [
-            "Spiritual gifts are discerned and developed through faithful action, not only through reflection. Assessment gives language, service gives evidence, and fruit over time gives confirmation.",
-            "Start small. You do not need a title to practice a gift. Begin with a small act of service and notice whether others are strengthened, encouraged, equipped, comforted, clarified, or helped.",
-            "Pay attention to fruit. Ask whether people experience love, whether the Body is strengthened, whether the practice aligns with Scripture, and whether humility is growing.",
-            "Learn through feedback. Ask trusted people what they saw, what was helpful, and what could mature. Correction is part of stewardship.",
+            "Serve, and watch what God blesses. How do you know if your gift of exhortation is active if you never encourage anyone? Spiritual gifts are discerned and developed through faithful action, not only through reflection. Assessment gives language, service gives evidence, and fruit over time gives confirmation.",
+            {
+              kind: "list",
+              items: [
+                "Surrender and start small. You do not need a title to practice a gift. Begin with a small act of service and notice whether others are strengthened, encouraged, equipped, comforted, clarified, or helped.",
+                "Read scripture. Learn about the gifts and explore how God used them in people’s lives. Pay attention to the ways Jesus interacted with people.",
+                "Pray for wisdom and insight. Ask God to help you see clearly how He is gifting you. Seek to understand by sitting still and listening.",
+                "Pay attention to fruit. Ask whether people experience love, whether the Body is strengthened, whether the practice aligns with Scripture, and whether humility is growing.",
+                "Learn through feedback. Ask trusted people what they saw, what was helpful, and what could mature. Correction is part of stewardship.",
+              ],
+            },
+            "Assessment gives language. Service gives guidance. Fruitfulness affirms where the Spirit is at work in your life.",
           ],
           image: {
             alt: "Women working together at a modern workplace",
@@ -175,8 +214,11 @@ export const spiritualGiftsCourse = {
         {
           body: [
             "Spiritual gifts belong in the Body. They are not private possessions; they are entrusted for service, and community gives them a place to bless others.",
-            "Community confirms what we often cannot see alone. Repeated encouragement from trusted people may confirm an active or emerging gift.",
-            "Community also corrects. Gifts can be used immaturely, and loving feedback helps us notice when a gift has become harsh, hidden, controlling, unclear, prideful, or disconnected from love.",
+            {
+              kind: "scripture",
+              text: "“For by the grace given me I say to every one of you: Do not think of yourself more highly than you ought, but rather think of yourself with sober judgment, in accordance with the faith God has distributed to each of you. For just as each of us has one body with many members, and these members do not all have the same function, so in Christ we, though many, form one body, and each member belongs to all the others. We have different gifts, according to the grace given to each of us. If your gift is prophesying, then prophesy in accordance with your faith; if it is serving, then serve; if it is teaching, then teach; if it is to encourage, then give encouragement; if it is giving, then give generously; if it is to lead, do it diligently; if it is to show mercy, do it cheerfully.” Romans 12: 3-8",
+            },
+            "Community confirms what we often cannot see alone. Repeated encouragement from trusted people may confirm an active or emerging gift. Community also corrects. Gifts can be used immaturely, and loving feedback helps us notice when a gift has become harsh, hidden, controlling, unclear, prideful, or disconnected from love.",
             "Different gifts work together. The Body grows as each part does its work in love, and humility grows when we honor gifts different from our own.",
           ],
           image: {
@@ -205,9 +247,40 @@ export const spiritualGiftsCourse = {
         {
           body: [
             "Common questions about spiritual gifts can be answered with Scripture, humility, and a commitment to faithful practice. To know your gifts, look at Scripture, notice service patterns, ask trusted community, pay attention to fruit, and practice over time.",
-            "Some gifts may remain consistent over time, while others may emerge more clearly in different seasons. God may also empower people for specific needs and moments.",
-            "If a top gift surprises you, treat the surprise as an invitation to explore. Ask where the gift may have already appeared, ask others what they see, and practice before dismissing it.",
-            "If you do not like your results, bring that reaction honestly to God. Avoid comparison. Remember that the report is a tool, not a verdict, and focus on service rather than status.",
+            {
+              kind: "subheading",
+              text: "FAQ’s",
+            },
+            {
+              kind: "subheading",
+              text: "Does Everyone have Spiritual gifts?",
+            },
+            "Yes, everyone who has repented of their sins and accepted Jesus as their Lord and Savior receives the Holy Spirit and at least one gift.",
+            {
+              kind: "scripture",
+              text: "“Each of you should use whatever gift you have received to serve others, as faithful stewards of God’s grace in its various forms.” 1 Peter 4:10",
+            },
+            {
+              kind: "subheading",
+              text: "Can Spiritual Gifts change over time?",
+            },
+            "Yes, some gifts may remain consistent over time, while others may emerge more clearly in different seasons. God may also empower people for specific needs and moments.",
+            {
+              kind: "scripture",
+              text: "“All these are the work of one and the same Spirit, and he distributes them to each one, just as he determines.” 1 Corinthians 12:11",
+            },
+            {
+              kind: "subheading",
+              text: "How do you know what your Spiritual gifts are?",
+            },
+            "Simply stated, through service. As we mentioned in the previous module, Gifts are learned by doing. The easiest way to discover or grow in your gifts is through action.",
+            {
+              kind: "subheading",
+              text: "What is the difference between Spiritual Gifts and talent?",
+            },
+            "Talent comes from DESIGN. You were formed in your mother’s womb. God formed you with intention and care. You are His workmanship, a treasure beyond measure. Talent is natural, broad in purpose, and either from birth or from practice and repetition.",
+            "Gifts are empowerment. They are supernatural equipping for Kingdom work. They come from your new birth in Christ.",
+            "If a top gift surprises you, treat the surprise as an invitation to explore. Ask where the gift may have already appeared, ask others what they see, and practice before dismissing it. If you do not like your results, bring that reaction honestly to God. Avoid comparison. Remember that the report is a tool, not a verdict, and focus on service rather than status.",
           ],
           image: {
             alt: "Student reading carefully at a wooden table",
@@ -228,13 +301,46 @@ export const spiritualGiftsCourse = {
         {
           body: [
             "Christians and churches may categorize or emphasize spiritual gifts differently. The New Testament discusses gifts in several passages, including Romans 12, First Corinthians 12, Ephesians 4, and First Peter 4.",
+            {
+              kind: "subheading",
+              text: "Ministry Expressions",
+            },
+            "A few of the items in the Discover Your Design list are best understood as ministry expressions rather than traditional spiritual gifts. They may not appear in the major New Testament gift lists in the same way as teaching, mercy, leadership, prophecy, or exhortation, but they are clearly seen in Scripture as Spirit-empowered ways people serve God and strengthen others.",
+            "These expressions help us recognize that God’s design in a person can show up through mission, prayer, worship, beauty, skill, and creative work. They are not “less spiritual” because they are not always named in the gift lists. They are simply broader expressions of calling, ability, and ministry fruit.",
+            {
+              kind: "subheading",
+              text: "Craftsmanship",
+            },
+            "Craftsmanship is one of the clearest Old Testament examples of God empowering a person for creative and skillful work. In Exodus 31, Bezalel is described as being filled with the Spirit of God with wisdom, understanding, knowledge, and skill for artistic design and hands-on craftsmanship. This reminds us that design, building, beauty, artistry, and excellence can all become ways of serving God.",
+            "This also connects beautifully with Ephesians 2:10, the central verse for Discover Your Divine Design: we are God’s workmanship, created in Christ Jesus for good works. Craftsmanship reflects both the God who makes and the people He forms to make things well.",
+            {
+              kind: "subheading",
+              text: "Intercession",
+            },
+            "Intercession is a focused expression of prayer on behalf of others. While every believer is called to pray, some people carry a stronger burden to stand in prayer for people, families, leaders, churches, communities, or specific situations.",
+            "Scripture repeatedly shows the importance of praying for others. Jesus intercedes for us, Paul often prayed for the churches, and James reminds believers that prayer is powerful and effective. Intercession is not just private concern; it is spiritual service offered through prayer.",
+            "References: Hebrews 7:25; Colossians 1; Colossians 4; James 5.",
+            {
+              kind: "subheading",
+              text: "Missionary",
+            },
+            "Missionary ministry is rooted in the idea of being sent. The word “apostle” carries the meaning of one who is sent forth, and the Great Commission gives every believer a mission-shaped calling: to go, make disciples, baptize, and teach.",
+            "Not everyone will serve cross-culturally or vocationally as a missionary, but some people are especially drawn to go beyond familiar spaces with the gospel. They feel a burden for people who have not yet heard, understood, or experienced the good news of Jesus in a life-giving way.",
+            "Reference: Matthew 28:18-20.",
+            {
+              kind: "subheading",
+              text: "Music / Worship",
+            },
+            "Music and worship are closely connected, but they are not exactly the same. Music is one of the ways worship can be expressed; worship is the deeper posture of honoring, loving, and responding to God.",
+            "Some people are especially designed to help others turn their attention toward God through song, melody, beauty, and gathered praise. Ephesians 5 and Colossians 3 both connect Spirit-filled life with psalms, hymns, spiritual songs, singing, gratitude, and worship from the heart.",
+            "References: Ephesians 5:18-19; Colossians 3:16.",
             "Gift names help create shared language, and different assessments may use different gift lists or definitions. The question is whether the language helps people serve faithfully according to Scripture.",
-            "Where churches differ on how certain gifts operate today, the posture should be Scripture, pastoral wisdom, humility, and love. Participants should honor their church leadership and remain teachable.",
-            "Shared foundations remain steady: gifts come from God, gifts serve others, gifts build up the Body, gifts require love, and gifts need maturity.",
+            "Where churches differ on how certain gifts operate today, the posture should be Scripture, pastoral wisdom, humility, and love. Participants should honor their church leadership and remain teachable. Shared foundations remain steady: gifts come from God, gifts serve others, gifts build up the Body, gifts require love, and gifts need maturity.",
           ],
           image: {
-            alt: "Hand holding a cross against golden sky",
-            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/a347531f-a916-4ee2-8f8a-da3deefe6682/hand-holding-cross-against-the-golden-sky-2026-01-09-06-14-29-utc.jpg?format=300w",
+            alt: "Discover Your Divine Design Spiritual Gifts list chart with Scripture passage correlations and ministry expression markers",
+            fit: "contain",
+            src: "/brand/tools/spiritual-gifts-scripture-chart.png",
           },
           focus: [
             "Different traditions may group gifts differently.",
@@ -251,9 +357,11 @@ export const spiritualGiftsCourse = {
         {
           body: [
             "The DYDD approach connects gifts with identity, design, formation, service, and purpose without reducing a person to assessment results.",
-            "DYDD begins with the belief that each person is created intentionally by God. Spiritual gifts are part of faithful participation in the good works God prepared, but they are not the whole story.",
-            "The larger journey includes identity, design, story, desire, gifts, and niche. Spiritual gifts help name how the Spirit equips you to strengthen others within that broader journey.",
-            "FruitLife keeps the gifts conversation grounded in Christlike formation. Gifts ask, \"How might I be empowered to serve?\" Fruit asks, \"Is the life of Christ becoming visible in how I serve?\"",
+            "DYDD begins with the belief that each person is created intentionally by God. Spiritual gifts are part of faithful participation in the good works God prepared, but they are not the whole story. The larger journey includes identity, design, story, desire, gifts, and niche. Spiritual gifts help name how the Spirit equips you to strengthen others within that broader journey.",
+            "Spiritual Gifts + Identity: Your gifts do not define your worth; they flow from who you already are in Christ.",
+            "Spiritual Gifts + Expertise: God can work through the skills you have developed, but spiritual gifts add Spirit-empowered fruit beyond natural ability.",
+            "Spiritual Gifts + Story: Your story often shapes where and how your gifts are most likely to serve others with compassion and impact.",
+            "Spiritual Gifts + Desire: Your desires can point toward the people, needs, and purposes where God may want your gifts to be used.",
           ],
           image: {
             alt: "DYDD pathway illustration connecting gifts and formation",
@@ -304,7 +412,7 @@ export const spiritualGiftsCourse = {
         {
           body: [
             "Spiritual gifts connect with the broader DYDD pathway by helping participants serve from grace, design, fruit, and purpose.",
-            "DesignID helps you understand identity reflections. Spiritual Gifts helps you notice Spirit-empowered contribution. FruitLife 360 helps you remain grounded in Christlike formation. DesignPD helps you apply design through planning, deciding, and doing.",
+            "DesignID helps you understand identity reflections. Spiritual Gifts helps you notice Spirit-empowered contribution. FruitLife360 helps you remain grounded in Christlike formation. DesignPD helps you apply design through planning, deciding, and doing.",
             "A gift is not only for formal ministry. Gifts may appear in homes, workplaces, churches, friendships, creative work, leadership, and ordinary service.",
             "Humility keeps gifts from becoming pride. Courage keeps gifts from being buried. Love teaches when and how to offer what God has given.",
           ],

@@ -46,6 +46,41 @@ function withReview(path: string, reviewQuery: string) {
   return `${path}${reviewQuery}`;
 }
 
+function renderLessonBodyBlock(
+  block: CourseModule["lessons"][number]["body"][number],
+) {
+  if (typeof block === "string") {
+    return <p key={block}>{block}</p>;
+  }
+
+  if (block.kind === "scripture") {
+    const lines = Array.isArray(block.text) ? block.text : [block.text];
+    return (
+      <blockquote className="lesson-scripture-callout" key={lines.join("|")}>
+        {lines.map((line) => (
+          <p key={line}>{line}</p>
+        ))}
+      </blockquote>
+    );
+  }
+
+  if (block.kind === "list") {
+    return (
+      <ul className="lesson-body-list" key={block.items.join("|")}>
+        {block.items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    );
+  }
+
+  return (
+    <h3 className="lesson-body-subheading" key={block.text}>
+      {block.text}
+    </h3>
+  );
+}
+
 export function AssessmentCourseNavigator({
   accent,
   assessmentLabel,
@@ -255,12 +290,12 @@ export function AssessmentCourseNavigator({
             <div className={active.lesson.image ? "assessment-lesson-content with-image" : "assessment-lesson-content"}>
               <section className="lesson-source readable-lesson-body" aria-label="Lesson body">
                 <p className="section-label">{active.lesson.title}</p>
-                {active.lesson.body.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
+                {active.lesson.body.map((block) => renderLessonBodyBlock(block))}
               </section>
               {active.lesson.image ? (
-                <figure className="assessment-lesson-image">
+                <figure
+                  className={`assessment-lesson-image${active.lesson.image.fit === "contain" ? " contain" : ""}`}
+                >
                   <img
                     src={active.lesson.image.src}
                     alt={active.lesson.image.alt}

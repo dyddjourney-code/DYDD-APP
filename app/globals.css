@@ -14346,6 +14346,45 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   line-height: 1.82;
 }
 
+.lesson-body-subheading {
+  margin: 10px 0 -4px;
+  color: var(--green-dark);
+  font-size: 1.12rem;
+  line-height: 1.25;
+}
+
+.lesson-body-list {
+  display: grid;
+  gap: 10px;
+  max-width: 74ch;
+  margin: 0;
+  padding-left: 1.2rem;
+  color: #3e4d3b;
+  font-size: 1.04rem;
+  line-height: 1.72;
+}
+
+.lesson-scripture-callout {
+  max-width: 74ch;
+  margin: 2px 0;
+  padding: 18px 20px;
+  border-left: 7px solid var(--green);
+  border-radius: 8px;
+  background: rgba(234, 240, 226, 0.72);
+  color: #33442f;
+}
+
+.lesson-scripture-callout p {
+  margin: 0;
+  color: inherit;
+  font-size: 1.02rem;
+  line-height: 1.72;
+}
+
+.lesson-scripture-callout p + p {
+  margin-top: 12px;
+}
+
 .course-shell-gold,
 .lesson-shell-gold {
   background:
@@ -15163,6 +15202,12 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   min-height: 320px;
   object-fit: cover;
   object-position: center;
+}
+
+.assessment-lesson-image.contain img {
+  padding: 12px;
+  background: #f8f8f2;
+  object-fit: contain;
 }
 
 .assessment-lesson-image figcaption {

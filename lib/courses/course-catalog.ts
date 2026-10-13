@@ -3,13 +3,29 @@ import { fruitLife360Course } from "./fruitlife-360-formation";
 import { spiritualGiftsCourse } from "./spiritual-gifts-service";
 import type { CompanionMoment } from "./companion-moments";
 
+export type CourseBodyBlock =
+  | string
+  | {
+      kind: "list";
+      items: readonly string[];
+    }
+  | {
+      kind: "scripture";
+      text: string | readonly string[];
+    }
+  | {
+      kind: "subheading";
+      text: string;
+    };
+
 export type CourseLesson = {
-  body: readonly string[];
+  body: readonly CourseBodyBlock[];
   companionMoment?: CompanionMoment;
   focus: readonly string[];
   image?: {
     alt: string;
     caption?: readonly string[];
+    fit?: "contain" | "cover";
     src: string;
   };
   reflectionPrompt: string;

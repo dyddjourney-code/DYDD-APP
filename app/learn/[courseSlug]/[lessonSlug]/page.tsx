@@ -8,6 +8,7 @@ import {
   getLearningLesson,
   learningCourses,
 } from "@/lib/courses/course-catalog";
+import type { CourseModule } from "@/lib/courses/course-catalog";
 import { normalizeEmail } from "@/lib/identity/email";
 import {
   getHeatherReviewReport,
@@ -30,6 +31,41 @@ type LearningLessonPageProps = {
 };
 
 export const dynamic = "force-dynamic";
+
+function renderLessonBodyBlock(
+  block: CourseModule["lessons"][number]["body"][number],
+) {
+  if (typeof block === "string") {
+    return <p key={block}>{block}</p>;
+  }
+
+  if (block.kind === "scripture") {
+    const lines = Array.isArray(block.text) ? block.text : [block.text];
+    return (
+      <blockquote className="lesson-scripture-callout" key={lines.join("|")}>
+        {lines.map((line) => (
+          <p key={line}>{line}</p>
+        ))}
+      </blockquote>
+    );
+  }
+
+  if (block.kind === "list") {
+    return (
+      <ul className="lesson-body-list" key={block.items.join("|")}>
+        {block.items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    );
+  }
+
+  return (
+    <h3 className="lesson-body-subheading" key={block.text}>
+      {block.text}
+    </h3>
+  );
+}
 
 export function generateStaticParams() {
   return learningCourses.flatMap((course) =>
@@ -151,12 +187,12 @@ export default async function LearningLessonPage({
           <div className={lesson.image ? "assessment-lesson-content with-image" : "assessment-lesson-content"}>
             <section className="lesson-source readable-lesson-body" aria-label="Lesson body">
               <p className="section-label">{lesson.title}</p>
-              {lesson.body.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
+              {lesson.body.map((block) => renderLessonBodyBlock(block))}
             </section>
             {lesson.image ? (
-              <figure className="assessment-lesson-image">
+              <figure
+                className={`assessment-lesson-image${lesson.image.fit === "contain" ? " contain" : ""}`}
+              >
                 <img
                   src={lesson.image.src}
                   alt={lesson.image.alt}

@@ -19,6 +19,16 @@ export const designPdCourse = {
             "Welcome to DesignPD. DesignID helps you understand how God's design is reflected through you. DesignPD takes the next step by helping you notice how that design tends to move in ordinary life. It looks at three simple but powerful movements: how you Plan, how you Decide, and how you Do. Those movements show up in the way you prepare, process choices, carry responsibility, work with others, lead under pressure, and sustain faithful contribution over time.",
             "This course is not meant to reduce you to a label or make you feel trapped by a pattern. It is meant to give you language for stewardship. When you can see your natural movement pattern, you can communicate it more clearly, receive support more wisely, and notice where your strengths may need guardrails. The goal is not simply to understand your report. The goal is to become more intentional with the way your design becomes action.",
             "As you move through the course, read slowly and personally. Ask where the language feels accurate, where it feels stretching, and where it gives you a better sentence for something you have experienced for a long time. DesignPD becomes useful when it helps you live and lead with clarity, humility, and healthier movement.",
+            {
+              kind: "scripture",
+              text: "\"Commit to the Lord whatever you do, and he will establish your plans.\" Proverbs 16:3",
+            },
+            {
+              alt: "DesignPD icon",
+              fit: "contain",
+              kind: "image",
+              src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/9c103421-19d5-411f-abe7-614bd22088e8/designpd-icon.jpg?format=2500w",
+            },
           ],
           companionMoment: designPdCompanionMoments.welcome,
           focus: [
@@ -36,6 +46,12 @@ export const designPdCourse = {
         {
           body: [
             "DesignPD is built from your DesignID because movement does not happen in a vacuum. The way you plan, decide, and do is shaped by the deeper design language already named in DesignID. An Architect pattern may bring strategy, initiation, and direction into movement. An Artisan pattern may bring creativity, refinement, and meaningful expression. A Shepherd pattern may bring care, restoration, and relational awareness. A Steward pattern may bring responsibility, order, and faithful follow-through.",
+            {
+              alt: "DesignPD icon",
+              fit: "contain",
+              kind: "image",
+              src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/9c103421-19d5-411f-abe7-614bd22088e8/designpd-icon.jpg?format=2500w",
+            },
             "That connection matters because two people can share the same DesignPD tendency and still express it differently. One person may be a Dreamer because they see future strategy quickly. Another may be a Dreamer because they imagine what people could become. One person may be Solo because they carry ownership with clarity. Another may be Solo because shared process feels heavy or distracting. DesignID gives the deeper reflection language; DesignPD shows how that reflection often moves when life requires preparation, judgment, and action.",
             "Read your DesignPD report as an application layer. It does not replace your identity language, your gifts, your story, or your walk with God. It helps you notice how those things become practical in the real environments where you make plans, carry decisions, work with others, and move toward purpose.",
           ],
@@ -46,6 +62,11 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "How do you already see your DesignID language showing up in the way you plan, decide, or act?",
+          image: {
+            alt: "DesignID icon",
+            fit: "contain",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/c6506120-e23e-4a7d-800d-b1a654693c5b/ID-icon-color.jpg?format=2500w",
+          },
           slug: "built-from-your-designid",
           summary:
             "Connects DesignPD to DesignID so learners understand the report as an application layer.",
@@ -70,6 +91,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "What part of your report stands out first: a tendency score, an overview sentence, an application area, or a pressure warning?",
+          image: {
+            alt: "DesignPD report overview",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/23a7b64f-1452-4c97-b69a-9d34a28745ac/2026-10-13_16-32-25.jpg?format=2500w",
+          },
           slug: "what-you-see",
           summary:
             "Helps learners understand the report structure and read their DesignPD pattern as a whole.",
@@ -88,6 +113,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "What one current situation would be the best place to apply your DesignPD report this week?",
+          image: {
+            alt: "Person reflecting on how to use a report",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/cc5ca5fa-c867-4dcd-acda-aba7873fd315/image-gen+%2823%292.png?format=2500w",
+          },
           slug: "how-to-use-this-report",
           summary:
             "Shows how to turn the report into a practical tool for conversations, decisions, and next steps.",
@@ -113,6 +142,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "When a new opportunity appears, do you usually start by expanding possibilities or narrowing toward practical action?",
+          image: {
+            alt: "Group of people planning together around a table",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/6799e381-1255-4ac9-9b23-20567c2a2673/diverse-group-of-young-business-people-working-in-2026-03-18-05-03-41-utc+800.jpg?format=2500w",
+          },
           slug: "your-planning-tendency",
           summary:
             "Explains the Dreamer and Doer planning tendencies and how both bring value.",
@@ -131,6 +164,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "What does your planning score suggest you need most: clearer direction, more imagination, more structure, or better guardrails?",
+          image: {
+            alt: "Woman crossing a rope bridge in the forest",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/0d9bcf4b-04d3-4705-93f9-b1b78e3e7e1a/woman-crossing-rope-bridge-in-forest-ban-nongluan-2025-04-04-11-12-27-utc.jpg?format=2500w",
+          },
           slug: "balanced-moderate-strong-planning",
           summary:
             "Explains how to read balanced, moderate, and strong planning scores.",
@@ -149,6 +186,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "Where does planning currently feel energizing, and where does it feel heavier than it should?",
+          image: {
+            alt: "Man working at a desk with a computer and lamp",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/f1f0321f-7825-4a38-bf65-0c0815aef528/man-works-at-desk-with-computer-and-lamp-2026-09-24-04-12-30-utc.jpg?format=2500w",
+          },
           slug: "capacity-to-plan",
           summary:
             "Connects planning tendency to capacity, DesignID amplification, and sustainable responsibility.",
@@ -174,6 +215,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "When you face an important decision, do you first notice people and conviction or criteria and structure?",
+          image: {
+            alt: "Colleagues navigating stress in a meeting",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/97fe8519-65fb-4457-9131-5c81bb390433/stressed-business-colleagues-having-a-meeting-in-a-2026-03-24-23-47-32-utc.jpg?format=2500w",
+          },
           slug: "your-deciding-tendency",
           summary:
             "Explains Feel It and Think It as two healthy starting points for decision-making.",
@@ -192,6 +237,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "What would help your next important decision become wiser: more criteria, more counsel, more prayer, more time, or more courage?",
+          image: {
+            alt: "Person choosing direction at a crossroads",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/db0906b9-9a36-44fd-9ef5-b6663f75192e/business-choice-man-choosing-direction-at-crossro-2026-09-25-02-34-12-utc.jpg?format=2500w",
+          },
           slug: "balanced-moderate-strong-deciding",
           summary:
             "Explains balanced, moderate, and strong decision tendencies and their growth needs.",
@@ -210,6 +259,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "What decision have you been carrying with more weight than it may actually require?",
+          image: {
+            alt: "Light bulb idea among paper balls",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/73f83869-aaf3-4e65-b7a1-22a6e1232ab5/lightbulb-idea-concept-with-one-different-paper-ba-2026-09-25-02-30-27-utc.jpg?format=2500w",
+          },
           slug: "capacity-to-decide",
           summary:
             "Connects decision-making to capacity, fatigue, DesignID influence, and wise limits.",
@@ -235,6 +288,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "When you need to get something done, do you usually gain energy through independence or shared movement?",
+          image: {
+            alt: "Person working at a laptop while searching for business ideas",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/ffef27d4-8cee-4072-a5af-19b6db593177/surfing-the-web-for-something-to-add-to-his-busine-2026-01-09-11-04-42-utc.jpg?format=2500w",
+          },
           slug: "your-doing-tendency",
           summary:
             "Explains Solo and Together as two action patterns for carrying responsibility.",
@@ -253,6 +310,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "What agreement would make your current action rhythm clearer: ownership, communication, partnership, timing, or accountability?",
+          image: {
+            alt: "Team collaborating around a computer in a modern office",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b48463db-84b4-495b-96a4-d471670f8009/team-collaboration-on-a-computer-in-modern-office-2026-09-25-08-12-29-utc.jpg?format=2500w",
+          },
           slug: "balanced-moderate-strong-doing",
           summary:
             "Explains balanced, moderate, and strong action tendencies and the agreements they need.",
@@ -271,6 +332,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "Where have you confused willingness with capacity, and what support would make action healthier?",
+          image: {
+            alt: "Group collaborating while planning on a glass whiteboard",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b0bf2bba-0f4c-41a5-b8fe-9a0c969ab18b/group-collaboration-planning-on-a-glass-whiteboard-2026-09-22-06-29-57-utc.jpg?format=2500w",
+          },
           slug: "capacity-to-do",
           summary:
             "Connects action to capacity, responsibility, DesignID amplification, and sustainable follow-through.",

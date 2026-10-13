@@ -63,13 +63,6 @@ const pathGroups = [
         text:
           "Apply your design to planning, deciding, and doing after the core discovery work has been walked.",
       },
-      {
-        image: "/brand/badges/design-pathways-badge.png",
-        label: "Design Pathways",
-        status: "Requires DesignID",
-        text:
-          "Name possible paths, consider where to go next, and test faithful steps with courage and clarity.",
-      },
     ],
   },
 ];

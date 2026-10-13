@@ -156,14 +156,14 @@ const mapPoints: MapPoint[] = [
   },
   {
     body:
-      "FruitLife 360 helps a person see visible spiritual fruit through self-reflection and trusted observer feedback. It is designed for formation, encouragement, and honest growth conversations.",
+      "FruitLife360 helps a person see visible spiritual fruit through self-reflection and trusted observer feedback. It is designed for formation, encouragement, and honest growth conversations.",
     bullets: ["Self and observer reflection", "A formation mirror, not a grade", "Helpful for growth, leadership, marriage, and discipleship conversations"],
-    cta: "Start FruitLife 360",
+    cta: "Start FruitLife360",
     href: "/trailheads#fruitlife-360",
     id: "fruitlife-360",
     image: "/brand/trailheads/fruitlife-360-signpost.png",
-    imageAlt: "FruitLife 360 trailhead signpost",
-    label: "FruitLife 360",
+    imageAlt: "FruitLife360 trailhead signpost",
+    label: "FruitLife360",
     left: "59.6%",
     title: "Formation and visible fruit",
     top: "34.7%",
@@ -204,7 +204,7 @@ const mapPoints: MapPoint[] = [
 const legendTrails = [
   { id: "dydd-journey", label: "Main DYDD Journey" },
   { id: "spiritual-gifts", label: "Spiritual Gifts" },
-  { id: "fruitlife-360", label: "FruitLife 360" },
+  { id: "fruitlife-360", label: "FruitLife360" },
   { id: "design-pathways", label: "Design Pathways" },
   { id: "designid", label: "DesignID" },
 ];

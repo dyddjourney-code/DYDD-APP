@@ -143,7 +143,7 @@ const freeAssessments: AssessmentProduct[] = [
     points: ["Self reflection", "Observer feedback", "Trailhead course included"],
     price: "Free",
     status: null,
-    title: "Fruit Life 360",
+    title: "FruitLife360",
   },
 ];
 
@@ -215,7 +215,7 @@ const journeyBadgePath = [
   { image: "/brand/badges/gifts-badge.svg", label: "Gifts", state: "ahead" },
   { image: "/brand/badges/niche-badge.svg", label: "Niche", state: "ahead" },
   { image: "/brand/badges/designpd-badge.png", label: "DesignPD", state: "ahead" },
-  { image: "/brand/badges/fruitlife-360-badge.png", label: "Fruit Life 360", state: "ahead" },
+  { image: "/brand/badges/fruitlife-360-badge.png", label: "FruitLife360", state: "ahead" },
 ];
 
 const assessmentFlow = [
@@ -258,7 +258,7 @@ const badgeGroups = [
       ["Spiritual Gifts", "/brand/badges/spiritual-gifts-badge.png"],
       ["Design Pathways", "/brand/badges/design-pathways-badge.png"],
       ["DesignPD", "/brand/badges/designpd-badge.png"],
-      ["Fruit Life 360", "/brand/badges/fruitlife-360-badge.png"],
+      ["FruitLife360", "/brand/badges/fruitlife-360-badge.png"],
     ],
     note: "Badges earned when each assessment or report is completed.",
     title: "Assessment Badges",
@@ -487,7 +487,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     const status =
       assessment.title === "Spiritual Gifts"
         ? hasSpiritualGifts ? "Completed" : null
-        : assessment.title === "Fruit Life 360"
+        : assessment.title === "FruitLife360"
           ? activeFruitLifeSession ? "In progress" : hasFruitLife ? "Completed" : null
           : assessment.status;
 
@@ -548,14 +548,14 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         action: "Open report",
         courseAction: null,
         courseHref: null,
-        detail: `Your ${fruitLifeReportModeLabel(session).toLowerCase()} FruitLife 360 report is ready to review.`,
+        detail: `Your ${fruitLifeReportModeLabel(session).toLowerCase()} FruitLife360 report is ready to review.`,
         href: fruitLifeReportHref(session),
         logo: "/brand/tools/fruitful-life-360-logo.jpg",
         meta: [
           ["Status", "Completed"],
           ["Report type", fruitLifeReportModeLabel(session)],
           ["Completed", displayDateTime(reportTimestamp)],
-          ["Source", "FruitLife 360"],
+          ["Source", "FruitLife360"],
         ] as Array<[string, string]>,
         title: fruitLifeArtifactTitle(session),
       };
@@ -568,7 +568,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         }#current-assessment-process`
       : "/field-kit?lane=fruitlife#current-assessment-process";
     const fruitLifeArtifacts = artifacts.filter((artifact) =>
-      artifact.meta.some(([label, value]) => label === "Source" && value === "FruitLife 360")
+      artifact.meta.some(([label, value]) => label === "Source" && value === "FruitLife360")
     );
     const fruitLifeStartHref = activeFruitLifeSession
       ? fruitLifeReturnPath
@@ -577,15 +577,15 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         : `/api/stripe/fruitlife-checkout?return_to=${encodeURIComponent("/field-kit?lane=fruitlife#current-assessment-process")}`;
     const checkoutMessage =
       reviewParams?.checkout === "success"
-        ? "FruitLife 360 is unlocked. You can start your assessment now."
+        ? "FruitLife360 is unlocked. You can start your assessment now."
         : reviewParams?.checkout === "required"
-          ? "Purchase FruitLife 360 to start a new assessment."
+          ? "Purchase FruitLife360 to start a new assessment."
           : reviewParams?.checkout === "cancelled"
             ? "Checkout was cancelled. You can return whenever you are ready."
             : reviewParams?.checkout === "unverified"
               ? "Stripe did not verify that checkout yet. If payment completed, refresh in a moment."
               : reviewParams?.checkout === "config-error"
-                ? "FruitLife 360 checkout is not fully configured yet."
+                ? "FruitLife360 checkout is not fully configured yet."
                 : null;
 
     return (
@@ -593,16 +593,16 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} />
         <header className="standalone-hero fieldkit-hero fruitlife-fieldkit-hero">
           <div>
-            <p className="eyebrow">FruitLife 360</p>
+            <p className="eyebrow">FruitLife360</p>
             <h1>Your report process.</h1>
             <p className="lede">
-              Start your FruitLife 360, track self and observer responses, send
+              Start your FruitLife360, track self and observer responses, send
               reminders, and return for your completed report.
             </p>
           </div>
         </header>
 
-        <section className="fieldkit-assessments-section" aria-label="FruitLife 360 access">
+        <section className="fieldkit-assessments-section" aria-label="FruitLife360 access">
           {checkoutMessage ? <p className="form-message">{checkoutMessage}</p> : null}
           <div className="fieldkit-assessment-list single">
             <AssessmentCard
@@ -610,8 +610,8 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
                 action: activeFruitLifeSession
                   ? "Open progress"
                   : hasFruitLifePurchaseAccess
-                    ? "Start FruitLife 360"
-                    : "Purchase FruitLife 360",
+                    ? "Start FruitLife360"
+                    : "Purchase FruitLife360",
                 courseAction: hasFruitLife ? "Explore course" : "Course opens with your report",
                 courseAvailable: hasFruitLife,
                 courseHref: "/courses/fruitlife-360-formation?lane=fruitlife",
@@ -626,7 +626,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
                   : hasFruitLifePurchaseAccess
                     ? "Ready to start"
                     : null,
-                title: "FruitLife 360",
+                title: "FruitLife360",
               }}
               kind="Purchase"
             />
@@ -643,7 +643,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         <section className="artifact-panel artifact-workbench" id="artifacts">
           <div className="card-heading">
             <p className="section-label">Reports</p>
-            <h2>FruitLife 360 artifacts</h2>
+            <h2>FruitLife360 artifacts</h2>
           </div>
           <div className="artifact-download-list">
             {fruitLifeArtifacts.length ? fruitLifeArtifacts.map((artifact) => (
@@ -677,9 +677,9 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
             )) : (
               <article className="artifact-download fieldkit-artifact-card">
                 <div className="fieldkit-artifact-title">
-                  <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
+                  <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife360 logo" />
                   <div>
-                    <span>No FruitLife 360 report yet</span>
+                    <span>No FruitLife360 report yet</span>
                     <p>Your completed report will appear here when it is ready.</p>
                   </div>
                 </div>
@@ -717,8 +717,8 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     hasFruitLife
       ? {
           image: "/brand/badges/fruitlife-360-badge.png",
-          note: "Earned badge: FruitLife 360",
-          title: "FruitLife 360",
+          note: "Earned badge: FruitLife360",
+          title: "FruitLife360",
         }
       : null,
   ].filter(Boolean) as Array<{
@@ -729,7 +729,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
   const journeyBadgePath = [
     { image: "/brand/badges/designid-badge.png", label: "DesignID", state: hasDesignId ? "earned" : "ahead" },
     { image: "/brand/badges/spiritual-gifts-badge.png", label: "Spiritual Gifts", state: hasSpiritualGifts ? "earned" : "ahead" },
-    { image: "/brand/badges/fruitlife-360-badge.png", label: "Fruit Life 360", state: hasFruitLife ? "earned" : "ahead" },
+    { image: "/brand/badges/fruitlife-360-badge.png", label: "FruitLife360", state: hasFruitLife ? "earned" : "ahead" },
     { image: "/brand/badges/identity-badge.svg", label: "Identity", state: "next" },
     { image: "/brand/badges/expertise-badge.svg", label: "Expertise", state: "ahead" },
     { image: "/brand/badges/story-badge.svg", label: "Story", state: "ahead" },

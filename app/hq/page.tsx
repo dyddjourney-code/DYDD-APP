@@ -602,7 +602,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       (badge.title === "DesignPD" && hasDesignPd) ||
       (badge.title === "Design Pathways" && hasDesignPathways) ||
       (badge.title === "Spiritual Gifts Assessment" && hasSpiritualGifts) ||
-      (badge.title === "FruitLife 360" && hasFruitLife);
+      (badge.title === "FruitLife360" && hasFruitLife);
 
     return {
       ...badge,
@@ -642,7 +642,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                   <h2>Welcome, {welcomeName}.</h2>
                   <p>
                     This is your early DYDD app space for free Spiritual Gifts,
-                    FruitLife 360, course support, weekly Waypoints, and your account record.
+                    FruitLife360, course support, weekly Waypoints, and your account record.
                   </p>
                 </div>
               </div>
@@ -670,13 +670,13 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             </article>
             <article>
               <p className="section-label">Formation mirror</p>
-              <h2>FruitLife 360</h2>
+              <h2>FruitLife360</h2>
               <p>
-                Start FruitLife 360, invite observers, track report progress,
+                Start FruitLife360, invite observers, track report progress,
                 and return for your completed formation artifact.
               </p>
               <Link className="button secondary" href={withReviewQuery("/field-kit?lane=fruitlife", reviewParams)}>
-                Open FruitLife 360
+                Open FruitLife360
               </Link>
             </article>
             <article>
@@ -817,7 +817,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         </div>
         <p className="empty-account-note">
           Ranger Station will help you decide whether to start with the free Spiritual Gifts
-          assessment, FruitLife 360, DesignID, or the full Discover Your Divine Design journey.
+          assessment, FruitLife360, DesignID, or the full Discover Your Divine Design journey.
         </p>
       </section>
 

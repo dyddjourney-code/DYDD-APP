@@ -110,7 +110,7 @@ const assessmentLabels: Record<string, string> = {
   design_pathways: "Design Pathways",
   designid: "DesignID",
   designpd: "DesignPD",
-  fruit_360: "FruitLife 360",
+  fruit_360: "FruitLife360",
   spiritual_gifts: "Spiritual Gifts",
 };
 

@@ -53,9 +53,9 @@ export default async function FruitLifeSignupPage({
         {params?.message ? <p className="form-message">{params.message}</p> : null}
         <section className="fruitlife-flow-header">
           <div>
-            <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
+            <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife360 logo" />
             <div>
-              <p className="section-label">FruitLife 360</p>
+              <p className="section-label">FruitLife360</p>
               <h1>Set up your assessment</h1>
               <p>
                 Start with your own reflection. Add observers only if you want trusted feedback

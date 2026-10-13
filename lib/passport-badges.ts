@@ -84,13 +84,13 @@ export const defaultPassportBadges: PassportBadge[] = [
     title: "Niche",
   },
   {
-    connectedTo: "FruitLife 360 assessment",
-    earnBy: "Complete the FruitLife 360 process or receive a completed report.",
+    connectedTo: "FruitLife360 assessment",
+    earnBy: "Complete the FruitLife360 process or receive a completed report.",
     group: "extension",
     image: "/brand/badges/fruitlife-360-badge.png",
     state: "ahead",
     summary: "Shows visible fruit and growth themes through self and observer feedback.",
-    title: "FruitLife 360",
+    title: "FruitLife360",
   },
   {
     connectedTo: "DesignPD assessment and report",

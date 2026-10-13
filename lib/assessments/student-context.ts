@@ -530,7 +530,7 @@ export function buildAssessmentCourseInsights(
     connected: true,
     note:
       assessmentType === "fruit_360"
-        ? "This data represents the most recent FruitLife 360 submission."
+        ? "This data represents the most recent FruitLife360 submission."
         : "",
     rows: snapshotInsightRows(
       snapshot,

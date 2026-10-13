@@ -24,7 +24,7 @@ export default async function FruitLifeSelfPage({
     return (
       <main className="fruitlife-shell fruitlife-public">
         <section className="fruitlife-panel fruitlife-message-card">
-          <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
+          <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife360 logo" />
           <h1>Self link not found.</h1>
           <p>This self-reflection link is missing, expired, or no longer valid.</p>
         </section>

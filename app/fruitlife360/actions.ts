@@ -314,17 +314,17 @@ function fruitLifeInviteEmail({
 }) {
   const safeParticipantName = escapeHtml(participantName);
 
-  const text = `Hi ${participantName},\n\nYour FruitLife 360 reflection is ready to begin.\n\nComplete your self reflection:\n${selfLink}\n\nFruitLife 360 is designed as a formation mirror, not a grade or label.\n\nSincerely,\nDiscover Your Divine Design Team`;
+  const text = `Hi ${participantName},\n\nYour FruitLife360 reflection is ready to begin.\n\nComplete your self reflection:\n${selfLink}\n\nFruitLife360 is designed as a formation mirror, not a grade or label.\n\nSincerely,\nDiscover Your Divine Design Team`;
 
   return {
     html: `
       <p>Hi ${safeParticipantName},</p>
-      <p>Your FruitLife 360 reflection is ready to begin.</p>
-      <p><a href="${selfLink}">Complete your FruitLife 360 self reflection</a></p>
-      <p>FruitLife 360 is designed as a formation mirror, not a grade or label.</p>
+      <p>Your FruitLife360 reflection is ready to begin.</p>
+      <p><a href="${selfLink}">Complete your FruitLife360 self reflection</a></p>
+      <p>FruitLife360 is designed as a formation mirror, not a grade or label.</p>
       <p>Sincerely,<br>Discover Your Divine Design Team</p>
     `,
-    subject: "Your FruitLife 360 self reflection",
+    subject: "Your FruitLife360 self reflection",
     text,
   };
 }
@@ -341,17 +341,17 @@ function fruitLifeObserverEmail({
   const greeting = observerName ? `Hi ${observerName},` : "Hi,";
   const safeGreeting = escapeHtml(greeting);
   const safeParticipantName = escapeHtml(participantName);
-  const text = `${greeting}\n\n${participantName} invited you to complete a FruitLife 360 observer reflection.\n\nComplete the FruitLife 360 assessment:\n${observerLink}\n\nThis is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.\n\nSincerely,\nDiscover Your Divine Design Team`;
+  const text = `${greeting}\n\n${participantName} invited you to complete a FruitLife360 observer reflection.\n\nComplete the FruitLife360 assessment:\n${observerLink}\n\nThis is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.\n\nSincerely,\nDiscover Your Divine Design Team`;
 
   return {
     html: `
       <p>${safeGreeting}</p>
-      <p>${safeParticipantName} invited you to complete a FruitLife 360 observer reflection.</p>
-      <p><a href="${observerLink}">Complete the FruitLife 360 assessment</a></p>
+      <p>${safeParticipantName} invited you to complete a FruitLife360 observer reflection.</p>
+      <p><a href="${observerLink}">Complete the FruitLife360 assessment</a></p>
       <p>This is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.</p>
       <p>Sincerely,<br>Discover Your Divine Design Team</p>
     `,
-    subject: `FruitLife 360 reflection for ${participantName}`,
+    subject: `FruitLife360 reflection for ${participantName}`,
     text,
   };
 }
@@ -561,8 +561,8 @@ async function saveResponse({
   const thanksParams = new URLSearchParams({
     message:
       responseType === "self"
-        ? "Your self reflection has been submitted. Your FruitLife 360 report has been emailed to you."
-        : "Observer reflection submitted. Thank you for helping with this FruitLife 360 report.",
+        ? "Your self reflection has been submitted. Your FruitLife360 report has been emailed to you."
+        : "Observer reflection submitted. Thank you for helping with this FruitLife360 report.",
     return_to: "/field-kit?lane=fruitlife",
     session: session.id,
     token,

@@ -16,7 +16,7 @@ export type JourneyCarePerspective = {
 };
 
 export type JourneyAssessmentCallout = {
-  assessment: "DesignID" | "Spiritual Gifts" | "DesignPD" | "FruitLife 360";
+  assessment: "DesignID" | "Spiritual Gifts" | "DesignPD" | "FruitLife360";
   body: string;
   title: string;
 };
@@ -204,7 +204,7 @@ export const dyddJourney: DyddJourney = {
               label: "Personalization",
               title: "Assessments become mirrors, not boxes.",
               body: [
-                "DesignID, Spiritual Gifts, DesignPD, and FruitLife 360 can eventually sit beside the lesson and speak directly into the learner's path. A Shepherd should not experience Identity the same way an Architect does, and a person leading a group should not see the same controls as someone walking alone.",
+                "DesignID, Spiritual Gifts, DesignPD, and FruitLife360 can eventually sit beside the lesson and speak directly into the learner's path. A Shepherd should not experience Identity the same way an Architect does, and a person leading a group should not see the same controls as someone walking alone.",
                 "The course still needs one clear path for everyone, but the app can place personal insight beside that path when the learner is signed in and their records are connected.",
               ],
             },
@@ -268,7 +268,7 @@ export const dyddJourney: DyddJourney = {
           title: "Assessment Readiness",
           sourceRef: "Workbook intro: Introducing DesignID",
           purpose:
-            "Give the learner a place to record whether DesignID, Spiritual Gifts, DesignPD, Design Pathways, or FruitLife 360 are complete or still ahead.",
+            "Give the learner a place to record whether DesignID, Spiritual Gifts, DesignPD, Design Pathways, or FruitLife360 are complete or still ahead.",
           care: {
             connect:
               "Connect the tools to the larger journey so assessments become mirrors, not labels.",

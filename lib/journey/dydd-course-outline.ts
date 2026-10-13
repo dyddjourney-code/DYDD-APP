@@ -109,7 +109,7 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         teachingBlocks: [
           "Every chapter should feel familiar without becoming flat. The learner begins with a short teaching section, moves into reflection, practices the CARE rhythm, and carries Pathfinder language forward when a chapter is building toward niche.",
           "The goal is not to finish a checklist. The goal is to slow down enough to recognize what God is revealing and then take the next faithful step with it.",
-          "DesignID, Spiritual Gifts, DesignPD, and FruitLife 360 can eventually sit beside the lesson and speak directly into the learner's path. The course still needs one clear path for everyone, but the app can place personal insight beside that path when the learner is signed in and records are connected.",
+          "DesignID, Spiritual Gifts, DesignPD, and FruitLife360 can eventually sit beside the lesson and speak directly into the learner's path. The course still needs one clear path for everyone, but the app can place personal insight beside that path when the learner is signed in and records are connected.",
           "Journal entries, CARE reflections, and assessment records belong first to the learner. Camp Circle tools can invite shared progress, reminders, and discussion, while private workbook answers stay protected.",
         ],
       },

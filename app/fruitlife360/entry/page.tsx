@@ -15,16 +15,16 @@ export default async function FruitLifeEntryPage() {
 
   return (
     <main className="fruitlife-shell fruitlife-public fruitlife-entry-shell">
-      <section className="fruitlife-entry-gate" aria-label="FruitLife 360 entry">
+      <section className="fruitlife-entry-gate" aria-label="FruitLife360 entry">
         <div className="fruitlife-entry-copy">
           <img
             className="fruitlife-entry-logo"
             src="/brand/tools/fruitful-life-360-logo.jpg"
-            alt="FruitLife 360"
+            alt="FruitLife360"
           />
-          <h1>FruitLife 360</h1>
+          <h1>FruitLife360</h1>
           <p className="lede">
-            Set up an account to access your FruitLife 360 report process,
+            Set up an account to access your FruitLife360 report process,
             including observer invitations, live completion tracking, reminder
             links, and report development.
           </p>
@@ -36,7 +36,7 @@ export default async function FruitLifeEntryPage() {
             className="button primary fruitlife-entry-primary"
             href={accessHref}
           >
-            {user ? "Continue to FruitLife 360" : "Create account or sign in"}
+            {user ? "Continue to FruitLife360" : "Create account or sign in"}
           </Link>
         </div>
         <img

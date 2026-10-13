@@ -142,7 +142,7 @@ export function fruitLifeArtifactTitle(session: FruitLifeDashboardSession) {
   const artifact = fruitLifeReportArtifact(session);
   const timestamp = artifact?.created_at ?? session.updated_at ?? session.created_at;
 
-  return `FruitLife 360 Report - ${fruitLifeReportModeLabel(session)} - ${displayDateTime(timestamp)}`;
+  return `FruitLife360 Report - ${fruitLifeReportModeLabel(session)} - ${displayDateTime(timestamp)}`;
 }
 
 export async function getFruitLifeDashboardSessions({

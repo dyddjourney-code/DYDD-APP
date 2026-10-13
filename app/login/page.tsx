@@ -28,21 +28,21 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const accessTitle = isSpiritualGiftsAccess
     ? "Spiritual Gifts access"
     : isFruitLifeAccess
-      ? "FruitLife 360 access"
+      ? "FruitLife360 access"
       : isCommandCenterAccess
         ? "Owner Command Center access"
         : "DYDD Journey access";
   const accessHeading = isMiniAppAccess
     ? isSpiritualGiftsAccess
       ? "Create your Spiritual Gifts account."
-      : "Create your FruitLife 360 account."
+      : "Create your FruitLife360 account."
     : isCommandCenterAccess
       ? "Open the Command Center."
       : "Enter your DYDD account.";
   const accessCopy = isMiniAppAccess
     ? isSpiritualGiftsAccess
       ? "Use an email and password so your free Spiritual Gifts report, course access, and future DYDD app history stay connected."
-      : "Use an email and password so you can return to your FruitLife 360 process, track observer progress, send reminders, and access your report."
+      : "Use an email and password so you can return to your FruitLife360 process, track observer progress, send reminders, and access your report."
     : isCommandCenterAccess
       ? "Use the owner account to review assessment activity, create groups, and manage the people connected to classes, circles, and future dashboards."
       : "Sign in to continue the DYDD Journey, collect your artifacts, and prepare for guided reflection around your design.";
@@ -58,7 +58,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <img
               className="fruitlife-login-logo"
               src={isSpiritualGiftsAccess ? "/brand/tools/spiritual-gifts-logo.jpg" : "/brand/tools/fruitful-life-360-logo.jpg"}
-              alt={isSpiritualGiftsAccess ? "Spiritual Gifts" : "FruitLife 360"}
+              alt={isSpiritualGiftsAccess ? "Spiritual Gifts" : "FruitLife360"}
             />
             <p className="eyebrow">{accessTitle}</p>
             <h1>{accessHeading}</h1>

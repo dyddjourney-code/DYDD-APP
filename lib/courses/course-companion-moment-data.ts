@@ -121,7 +121,7 @@ export const fruitLifeCompanionMoments = {
     transcript: [
       {
         speaker: "Dydi",
-        text: "FruitLife 360 is not here to grade your spiritual life. It is a mirror for noticing what the Spirit may be forming in you. Begin with grace. Receive encouragement first. Then let the report help you notice one fruit, one ordinary setting, and one practice where you can walk with Jesus more intentionally this week.",
+        text: "FruitLife360 is not here to grade your spiritual life. It is a mirror for noticing what the Spirit may be forming in you. Begin with grace. Receive encouragement first. Then let the report help you notice one fruit, one ordinary setting, and one practice where you can walk with Jesus more intentionally this week.",
       },
     ],
   },

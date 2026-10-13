@@ -53,7 +53,7 @@ type SampleCircle = {
 const circleTypes = [
   {
     capacity: "Solo",
-    detail: "One learner buys one seat, keeps a private workbook record, and moves through DYDD, DesignID, Spiritual Gifts, and Fruit Life at their own pace.",
+    detail: "One learner buys one seat, keeps a private workbook record, and moves through DYDD, DesignID, Spiritual Gifts, and FruitLife at their own pace.",
     label: "Walk solo",
   },
   {
@@ -81,7 +81,7 @@ const accessPackages = [
     discount: "Baseline",
     perSeat: "$97 per learner",
     detail: "Best for a solo learner who wants the full DYDD Journey with the digitized workbook and assessment connections.",
-    includes: ["DYDD Journey", "Digital CARE workbook", "DesignID access", "Spiritual Gifts + Fruit Life"],
+    includes: ["DYDD Journey", "Digital CARE workbook", "DesignID access", "Spiritual Gifts + FruitLife"],
   },
   {
     name: "Couple Journey",
@@ -712,7 +712,7 @@ export default function CampCirclePage() {
               These prices are working placeholders so the page can show the
               business model visually. The package includes the DYDD course,
               the digitized workbook experience, DesignID access, Spiritual
-              Gifts, and Fruit Life. Paper books are separate.
+              Gifts, and FruitLife. Paper books are separate.
             </p>
           </div>
           <div className="circle-book-disclaimer" role="note">

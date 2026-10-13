@@ -82,7 +82,7 @@ export default async function FruitLifeStatusPage({
     return (
       <main className="fruitlife-shell fruitlife-public">
         <section className="fruitlife-hero compact">
-          <p className="section-label">FruitLife 360</p>
+          <p className="section-label">FruitLife360</p>
           <h1>Status link not found.</h1>
           <p className="lede">This session link is missing, expired, or no longer valid.</p>
           <Link className="button secondary" href="/fruitlife360">
@@ -111,7 +111,7 @@ export default async function FruitLifeStatusPage({
     <main className="fruitlife-shell fruitlife-public">
       <FruitLifeSessionAutoRefresh enabled={shouldRefresh} />
       <section className="fruitlife-hero compact">
-        <p className="section-label">FruitLife 360 Status</p>
+        <p className="section-label">FruitLife360 Status</p>
         <h1>{session.participant_name ?? "FruitLife participant"}</h1>
         <p className="lede">
           Track self reflection, observer invitations, reminders, and report readiness.

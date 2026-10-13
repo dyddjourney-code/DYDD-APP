@@ -36,7 +36,7 @@ function cleanFilename(value: string) {
 
 function reportFilename(session: FruitLifeSession, jobId: string) {
   const participant = cleanFilename(session.participant_name ?? "FruitLife Participant");
-  return `FruitLife 360 - ${participant} - ${jobId.slice(0, 8)}.pdf`;
+  return `FruitLife360 - ${participant} - ${jobId.slice(0, 8)}.pdf`;
 }
 
 function reportLink(document: PdfMonkeyDocument) {
@@ -196,17 +196,17 @@ function finalReportEmail({
   participantName: string;
   reportUrl: string;
 }) {
-  const text = `Hi ${participantName},\n\nYour FruitLife 360 report is ready.\n\nOpen your report here: ${reportUrl}\n\nReceive it as a formation mirror, not a grade or label.\n\nSincerely,\nDiscover Your Divine Design Team`;
+  const text = `Hi ${participantName},\n\nYour FruitLife360 report is ready.\n\nOpen your report here: ${reportUrl}\n\nReceive it as a formation mirror, not a grade or label.\n\nSincerely,\nDiscover Your Divine Design Team`;
 
   return {
     html: [
       `<p>Hi ${participantName},</p>`,
-      "<p>Your FruitLife 360 report is ready.</p>",
-      `<p><a href="${reportUrl}">Open Your FruitLife 360 Report</a></p>`,
+      "<p>Your FruitLife360 report is ready.</p>",
+      `<p><a href="${reportUrl}">Open Your FruitLife360 Report</a></p>`,
       "<p>Receive it as a formation mirror, not a grade or label.</p>",
       "<p>Sincerely,<br>Discover Your Divine Design Team</p>",
     ].join(""),
-    subject: "Your FruitLife 360 report is ready",
+    subject: "Your FruitLife360 report is ready",
     text,
   };
 }

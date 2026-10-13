@@ -56,7 +56,7 @@ const expeditionTools = [
   ["Team Design", "Team dynamics, balance, role clarity, conflict patterns, and strengths/gaps across the group."],
   ["Hiring and Assimilation", "Candidate fit, onboarding guidance, integration reports, and 30/60/90 checkpoints."],
   ["MAPS Roadmaps", "Purpose drift detection, journey mapping, project movement, and practical alignment conversations."],
-  ["360 Formation", "Leader, team, FruitLife 360, and annual review rhythms connected to measurable growth."],
+  ["360 Formation", "Leader, team, FruitLife360, and annual review rhythms connected to measurable growth."],
   ["Grace Deployment", "DesignID, DesignPD, Spiritual Gifts, and Design Pathways for volunteer or staff placement."],
   ["Retreats and Workshops", "Alignment intensives, leadership formation, MAPS days, and guided expedition experiences."],
 ];

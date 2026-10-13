@@ -111,10 +111,10 @@ const courses = [
       "Choose simple growth practices for the next season",
     ],
     price: "Free assessment required",
-    prerequisite: "Requires a completed Fruit Life 360 assessment.",
+    prerequisite: "Requires a completed FruitLife360 assessment.",
     status: "unlocked",
     slug: "fruitlife-360",
-    title: "Fruit Life 360 Growth Course",
+    title: "FruitLife360 Growth Course",
   },
   {
     action: "Launch course",
@@ -192,12 +192,12 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
       {
         course: fruitLifeCourse,
         isUnlocked: hasFruitLifeReport,
-        lockedAction: "Take FruitLife 360 first",
+        lockedAction: "Take FruitLife360 first",
         lockedHref: "/field-kit?lane=fruitlife",
-        permit: "FruitLife 360 report",
+        permit: "FruitLife360 report",
         statusText: hasFruitLifeReport
-          ? "Included with FruitLife 360"
-          : "Complete FruitLife 360 first",
+          ? "Included with FruitLife360"
+          : "Complete FruitLife360 first",
       },
     ];
 
@@ -209,7 +209,7 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
             <p className="eyebrow">Trailheads</p>
             <h1>Courses for your completed assessments.</h1>
             <p className="lede">
-              Spiritual Gifts and FruitLife 360 each open the course support
+              Spiritual Gifts and FruitLife360 each open the course support
               connected to that report. Finish the assessment, then launch the
               matching course from here.
             </p>
@@ -345,7 +345,7 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
         <div className="trailhead-start-note">
           <p className="section-label">Start logic</p>
           <p>
-            The main DYDD Journey is the hub. Spiritual Gifts, FruitLife 360, DesignID,
+            The main DYDD Journey is the hub. Spiritual Gifts, FruitLife360, DesignID,
             and Design Pathways can begin as entry trails. DesignPD should come after
             DesignID because it depends on that design language.
           </p>

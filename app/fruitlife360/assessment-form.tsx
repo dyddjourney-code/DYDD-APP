@@ -95,10 +95,10 @@ export function FruitLifeAssessmentForm({
       {message ? <p className="form-message">{message}</p> : null}
 
       <section className="fruitlife-assessment-card">
-        <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife 360 logo" />
+        <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife360 logo" />
         <div>
           <p className="section-label">{isSelf ? "Self path" : "Observer path"}</p>
-          <h2>{isSelf ? "FruitLife 360 Self Reflection" : "FruitLife 360 Observer Reflection"}</h2>
+          <h2>{isSelf ? "FruitLife360 Self Reflection" : "FruitLife360 Observer Reflection"}</h2>
           <p>
             {isSelf
               ? "Rank the fruit, move through one fruit card at a time, and name one growth desire."
@@ -116,7 +116,7 @@ export function FruitLifeAssessmentForm({
         <h2>{isSelf ? "Your reflection details" : "Your observer details"}</h2>
         <p>
           {isSelf
-            ? "These details connect this reflection to your FruitLife 360 report."
+            ? "These details connect this reflection to your FruitLife360 report."
             : `These details connect your feedback to ${participantName ?? "the participant"}'s report.`}
         </p>
         <div className="fruitlife-grid two">

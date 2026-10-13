@@ -3,7 +3,7 @@ import Link from "next/link";
 const fruitLifeNavItems = [
   { href: "/hq?lane=fruitlife", label: "Base Camp" },
   { href: "/spiritual-gifts?lane=fruitlife", label: "Spiritual Gifts" },
-  { href: "/field-kit?lane=fruitlife", label: "FruitLife 360" },
+  { href: "/field-kit?lane=fruitlife", label: "FruitLife360" },
   { href: "/trailheads?lane=fruitlife", label: "Trailheads" },
   { href: "/fireside?lane=fruitlife#waypoints", label: "Waypoints" },
   { href: "/gear?lane=fruitlife", label: "Gear" },
@@ -33,7 +33,7 @@ function appendReviewQuery(href: string, reviewQuery?: string) {
 
 export function FruitLifeMiniNav({ reviewQuery }: FruitLifeMiniNavProps) {
   return (
-    <nav className="fruitlife-mini-nav" aria-label="FruitLife 360 navigation">
+    <nav className="fruitlife-mini-nav" aria-label="FruitLife360 navigation">
       {fruitLifeNavItems.map((item) => (
         <Link href={appendReviewQuery(item.href, reviewQuery)} key={item.href}>
           {item.label}

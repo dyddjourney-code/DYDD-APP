@@ -205,7 +205,7 @@ const baseLearningCourses = [
     title: "DesignPD Alignment",
   },
   {
-    accent: "gold",
+    accent: "blue",
     assessmentType: "spiritual_gifts",
     companionNote:
       "Dydi should connect gift language to humble service, maturity, Scripture, community confirmation, and the broader Gifts chapter of the DYDD journey.",
@@ -348,7 +348,7 @@ const baseLearningCourses = [
     title: "Spiritual Gifts in Service",
   },
   {
-    accent: "sage",
+    accent: "orange",
     assessmentType: "design_pathways",
     companionNote:
       "Dydi should help the learner turn assessment insight into a simple pathway: direction, experiment, support, review, and adjustment.",
@@ -473,7 +473,7 @@ const baseLearningCourses = [
     title: "Design Pathways Discernment",
   },
   {
-    accent: "blue",
+    accent: "red",
     assessmentType: "fruit_360",
     companionNote:
       "Dydi should treat FruitLife as formation feedback: encouragement, pressure awareness, and next practices, never shame or fixed identity.",
@@ -616,7 +616,7 @@ const baseLearningCourses = [
     title: "FruitLife 360 Formation",
   },
   {
-    accent: "clay",
+    accent: "green",
     assessmentType: null,
     companionNote:
       "Dydi should synthesize assessment records with workbook responses across Identity, Expertise, Story, Desire, Gifts, and Niche.",

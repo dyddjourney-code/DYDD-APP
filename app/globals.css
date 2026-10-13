@@ -14412,6 +14412,8 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .course-shell-gold,
 .lesson-shell-gold {
+  --course-accent: #d4a451;
+  --course-accent-soft: rgba(212, 164, 81, 0.16);
   background:
     linear-gradient(rgba(251, 250, 244, 0.92), rgba(251, 250, 244, 0.96)),
     radial-gradient(circle at 84% 12%, rgba(184, 138, 67, 0.22), transparent 26rem);
@@ -14419,13 +14421,43 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .course-shell-blue,
 .lesson-shell-blue {
+  --course-accent: #647c9b;
+  --course-accent-soft: rgba(100, 124, 155, 0.14);
   background:
     linear-gradient(rgba(251, 250, 244, 0.9), rgba(251, 250, 244, 0.96)),
     radial-gradient(circle at 80% 12%, rgba(71, 100, 127, 0.18), transparent 26rem);
 }
 
+.course-shell-red,
+.lesson-shell-red {
+  --course-accent: #9e5a4f;
+  --course-accent-soft: rgba(158, 90, 79, 0.13);
+  background:
+    linear-gradient(rgba(251, 250, 244, 0.9), rgba(251, 250, 244, 0.96)),
+    radial-gradient(circle at 80% 12%, rgba(158, 90, 79, 0.16), transparent 26rem);
+}
+
+.course-shell-purple,
+.lesson-shell-purple,
+.designid-course-shell,
+.designid-lesson-shell {
+  --course-accent: #5a496b;
+  --course-accent-soft: rgba(90, 73, 107, 0.13);
+}
+
+.course-shell-orange,
+.lesson-shell-orange {
+  --course-accent: #d4a451;
+  --course-accent-soft: rgba(212, 164, 81, 0.16);
+  background:
+    linear-gradient(rgba(251, 250, 244, 0.9), rgba(251, 250, 244, 0.96)),
+    radial-gradient(circle at 82% 8%, rgba(212, 164, 81, 0.16), transparent 26rem);
+}
+
 .course-shell-clay,
 .lesson-shell-clay {
+  --course-accent: #8a6046;
+  --course-accent-soft: rgba(138, 96, 70, 0.14);
   background:
     linear-gradient(rgba(251, 250, 244, 0.9), rgba(251, 250, 244, 0.96)),
     radial-gradient(circle at 82% 8%, rgba(138, 96, 70, 0.18), transparent 26rem);
@@ -14435,9 +14467,19 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .lesson-shell-green,
 .course-shell-sage,
 .lesson-shell-sage {
+  --course-accent: #739d5e;
+  --course-accent-soft: rgba(115, 157, 94, 0.15);
   background:
     linear-gradient(rgba(251, 250, 244, 0.9), rgba(251, 250, 244, 0.96)),
     radial-gradient(circle at 82% 10%, rgba(71, 107, 66, 0.16), transparent 26rem);
+}
+
+.course-shell .lesson-callout,
+.lesson-shell .lesson-callout,
+.designid-course-shell .lesson-callout,
+.designid-lesson-shell .lesson-callout {
+  border-left-color: var(--course-accent, var(--brass));
+  background: var(--course-accent-soft, var(--brass-soft));
 }
 
 .lesson-pagination {
@@ -14989,8 +15031,8 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .journey-section-accordion ol button span.designid,
 .journey-active-lesson.designid .journey-active-meta span:first-child {
-  background: rgba(234, 240, 226, 0.95);
-  color: #315d3c;
+  background: rgba(90, 73, 107, 0.12);
+  color: #4a3a5b;
 }
 
 .journey-section-accordion ol button span.pathfinder,
@@ -15013,7 +15055,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .journey-active-lesson.designid {
-  border-left-color: #3f8f58;
+  border-left-color: #5a496b;
 }
 
 .journey-active-lesson.pathfinder {
@@ -15021,15 +15063,27 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .journey-active-lesson.assessment {
-  border-left-color: #386f91;
+  border-left-color: var(--course-accent, #386f91);
 }
 
 .journey-active-lesson.assessment-active-gold {
-  border-left-color: #b88a43;
+  border-left-color: #d4a451;
 }
 
 .journey-active-lesson.assessment-active-blue {
-  border-left-color: #47647f;
+  border-left-color: #647c9b;
+}
+
+.journey-active-lesson.assessment-active-red {
+  border-left-color: #9e5a4f;
+}
+
+.journey-active-lesson.assessment-active-purple {
+  border-left-color: #5a496b;
+}
+
+.journey-active-lesson.assessment-active-orange {
+  border-left-color: #d4a451;
 }
 
 .journey-active-lesson.assessment-active-clay {
@@ -15038,7 +15092,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .journey-active-lesson.assessment-active-green,
 .journey-active-lesson.assessment-active-sage {
-  border-left-color: #476b42;
+  border-left-color: #739d5e;
 }
 
 .journey-active-lesson.completion {
@@ -15918,14 +15972,14 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .designid-course-walkthrough .journey-course-progress span {
-  background: linear-gradient(90deg, #3f8f58, #d4a451);
+  background: linear-gradient(90deg, #5a496b, #d4a451);
 }
 
 .designid-course-index .journey-module-toggle > span,
 .designid-lesson-accordion ol button span.designid,
 .designid-active-lesson .journey-active-meta span:first-child {
-  background: rgba(234, 240, 226, 0.95);
-  color: #315d3c;
+  background: rgba(90, 73, 107, 0.12);
+  color: #4a3a5b;
 }
 
 .designid-lesson-accordion {
@@ -15933,7 +15987,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .designid-active-lesson {
-  border-left-color: #3f8f58;
+  border-left-color: #5a496b;
 }
 
 .designid-active-lesson > header {
@@ -15942,7 +15996,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .designid-active-lesson .journey-active-section-marker {
   background:
-    linear-gradient(90deg, rgba(234, 240, 226, 0.7), rgba(255, 255, 255, 0.9)),
+    linear-gradient(90deg, rgba(90, 73, 107, 0.1), rgba(255, 255, 255, 0.9)),
     var(--panel);
 }
 

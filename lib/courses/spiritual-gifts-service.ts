@@ -2,7 +2,7 @@ import type { CourseDefinition } from "./course-catalog";
 import { spiritualGiftsCompanionMoments } from "./course-companion-moment-data";
 
 export const spiritualGiftsCourse = {
-  accent: "gold",
+  accent: "blue",
   assessmentType: "spiritual_gifts",
   companionNote:
     "Dydi should help learners read their top gifts as a prayerful starting point for service, maturity, community confirmation, and love-shaped practice.",

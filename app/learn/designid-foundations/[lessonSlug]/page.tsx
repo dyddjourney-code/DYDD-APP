@@ -84,7 +84,7 @@ export default async function DesignIdLessonPage({
   );
 
   return (
-    <main className="lesson-shell">
+    <main className="lesson-shell lesson-shell-purple designid-lesson-shell">
       <nav className="course-nav" aria-label="Lesson navigation">
         <Link href={withReviewQuery("/courses/designid-foundations", reviewParams)}>
           Course map

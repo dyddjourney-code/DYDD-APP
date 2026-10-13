@@ -2,7 +2,7 @@ import type { CourseDefinition } from "./course-catalog";
 import { fruitLifeCompanionMoments } from "./course-companion-moment-data";
 
 export const fruitLife360Course = {
-  accent: "blue",
+  accent: "red",
   assessmentType: "fruit_360",
   companionNote:
     "Dydi should read FruitLife as a gentle formation mirror: encouragement first, pressure awareness without shame, and one Spirit-led next practice.",

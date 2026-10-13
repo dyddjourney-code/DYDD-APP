@@ -96,6 +96,7 @@ export default async function LearningCoursePage({
     course.assessmentType,
   );
   const savedReflectionsEnabled = [
+    "designpd-alignment",
     "fruitlife-360-formation",
     "spiritual-gifts-service",
   ].includes(course.slug);

@@ -14385,6 +14385,31 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   margin-top: 12px;
 }
 
+.lesson-body-image {
+  max-width: 74ch;
+  margin: 6px 0;
+  overflow: hidden;
+  border: 1px solid rgba(36, 63, 39, 0.15);
+  border-radius: 8px;
+  background: #f8f8f2;
+  box-shadow: 0 16px 34px -28px rgba(36, 63, 39, 0.48);
+}
+
+.lesson-body-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.lesson-body-image.contain img {
+  padding: 12px;
+  object-fit: contain;
+}
+
+.lesson-body-image.contain {
+  background: #f8f8f2;
+}
+
 .course-shell-gold,
 .lesson-shell-gold {
   background:
@@ -15161,7 +15186,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .assessment-lesson-content {
   display: grid;
   gap: 14px;
-  align-items: stretch;
+  align-items: start;
 }
 
 .assessment-lesson-content.with-image {
@@ -15176,7 +15201,6 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   position: relative;
   overflow: hidden;
   min-width: 0;
-  min-height: 100%;
   margin: 0;
   border: 1px solid rgba(36, 63, 39, 0.15);
   border-radius: 8px;
@@ -15198,8 +15222,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .assessment-lesson-image img {
   display: block;
   width: 100%;
-  height: 100%;
-  min-height: 320px;
+  height: auto;
   object-fit: cover;
   object-position: center;
 }

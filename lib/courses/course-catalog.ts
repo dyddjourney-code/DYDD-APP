@@ -6,6 +6,12 @@ import type { CompanionMoment } from "./companion-moments";
 export type CourseBodyBlock =
   | string
   | {
+      alt: string;
+      fit?: "contain" | "cover";
+      kind: "image";
+      src: string;
+    }
+  | {
       kind: "list";
       items: readonly string[];
     }

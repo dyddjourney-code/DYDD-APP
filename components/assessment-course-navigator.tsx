@@ -64,6 +64,17 @@ function renderLessonBodyBlock(
     );
   }
 
+  if (block.kind === "image") {
+    return (
+      <figure
+        className={`lesson-body-image${block.fit === "contain" ? " contain" : ""}`}
+        key={block.src}
+      >
+        <img src={block.src} alt={block.alt} loading="lazy" />
+      </figure>
+    );
+  }
+
   if (block.kind === "list") {
     return (
       <ul className="lesson-body-list" key={block.items.join("|")}>

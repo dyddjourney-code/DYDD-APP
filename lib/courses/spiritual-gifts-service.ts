@@ -302,6 +302,12 @@ export const spiritualGiftsCourse = {
           body: [
             "Christians and churches may categorize or emphasize spiritual gifts differently. The New Testament discusses gifts in several passages, including Romans 12, First Corinthians 12, Ephesians 4, and First Peter 4.",
             {
+              alt: "Discover Your Divine Design Spiritual Gifts list chart with Scripture passage correlations and ministry expression markers",
+              fit: "contain",
+              kind: "image",
+              src: "/brand/tools/spiritual-gifts-scripture-chart.png",
+            },
+            {
               kind: "subheading",
               text: "Ministry Expressions",
             },
@@ -338,9 +344,8 @@ export const spiritualGiftsCourse = {
             "Where churches differ on how certain gifts operate today, the posture should be Scripture, pastoral wisdom, humility, and love. Participants should honor their church leadership and remain teachable. Shared foundations remain steady: gifts come from God, gifts serve others, gifts build up the Body, gifts require love, and gifts need maturity.",
           ],
           image: {
-            alt: "Discover Your Divine Design Spiritual Gifts list chart with Scripture passage correlations and ministry expression markers",
-            fit: "contain",
-            src: "/brand/tools/spiritual-gifts-scripture-chart.png",
+            alt: "Hand holding a cross against golden sky",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/a347531f-a916-4ee2-8f8a-da3deefe6682/hand-holding-cross-against-the-golden-sky-2026-01-09-06-14-29-utc.jpg?format=300w",
           },
           focus: [
             "Different traditions may group gifts differently.",

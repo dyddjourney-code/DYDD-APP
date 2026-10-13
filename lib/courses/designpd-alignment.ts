@@ -1,7 +1,7 @@
 import type { CourseDefinition } from "./course-catalog";
 
 export const designPdCourse = {
-  accent: "green",
+  accent: "orange",
   assessmentType: "designpd",
   companionNote:
     "Dydi should help the learner turn Plan, Decide, and Do language into real-life rhythms, clearer conversations, wise decisions, and sustainable next steps.",

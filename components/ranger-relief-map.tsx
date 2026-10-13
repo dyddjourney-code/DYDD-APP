@@ -171,16 +171,16 @@ const mapPoints: MapPoint[] = [
   },
   {
     body:
-      "Design Pathways helps someone move from insight into discernment. It is where possible next steps can be tested, named, compared, and brought into prayerful action.",
-    bullets: ["Discernment after discovery", "Possible paths, patterns, and next steps", "A bridge from assessment insight to faithful action"],
-    cta: "Open Design Pathways",
-    href: "/trailheads#design-pathways",
-    id: "design-pathways",
-    image: "/brand/trailheads/design-pathways-signpost.png",
-    imageAlt: "Design Pathways trailhead signpost",
-    label: "Design Pathways",
+      "DesignPD helps someone understand how their design tends to move through planning, deciding, and doing. It is the practical trail where DesignID language becomes clearer movement in relationships, leadership, pressure, collaboration, and everyday follow-through.",
+    bullets: ["Built from DesignID", "Names Plan, Decide, and Do tendencies", "Turns design insight into practical movement"],
+    cta: "Open DesignPD",
+    href: "/trailheads#designpd",
+    id: "designpd",
+    image: "/brand/trailheads/designpd-signpost.png",
+    imageAlt: "DesignPD trailhead signpost",
+    label: "DesignPD",
     left: "90%",
-    title: "Discernment and next steps",
+    title: "Plan. Decide. Do.",
     top: "18%",
     type: "trail",
   },
@@ -205,7 +205,7 @@ const legendTrails = [
   { id: "dydd-journey", label: "Main DYDD Journey" },
   { id: "spiritual-gifts", label: "Spiritual Gifts" },
   { id: "fruitlife-360", label: "FruitLife360" },
-  { id: "design-pathways", label: "Design Pathways" },
+  { id: "designpd", label: "DesignPD Trail" },
   { id: "designid", label: "DesignID" },
 ];
 
@@ -224,7 +224,7 @@ const trailLines = [
   },
   {
     d: "M80.4 23.2 C83.6 18.3 87.5 15.6 89.1 14.6 C93.6 13 97.4 13.4 100 13.9 M80.4 23.2 C78.5 28.1 75.2 35.6 74 40.7 C72.2 47.5 70.6 55.2 68.8 66.2",
-    id: "design-pathways",
+    id: "designpd",
   },
   {
     d: "M37.7 6.6 C40.2 12.4 41.4 18.9 43.1 25.2 C44.9 31.6 48.3 37.5 48.3 37.5 C47.4 43.5 43.8 52.6 42.4 59.1 C40.5 68.4 38.8 79.7 36.8 87 C35.6 91.8 34 96 33.6 100 M79.9 68.1 C84.8 74.2 86.4 85.2 86.1 100",
@@ -272,7 +272,7 @@ const trailDots = [
     ],
   },
   {
-    id: "design-pathways",
+    id: "designpd",
     points: [
       [89, 17.96],
       [80.44, 23.27],

@@ -4953,7 +4953,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   stroke: currentColor;
 }
 
-.relief-route-design-pathways {
+.relief-route-designpd {
   color: #e88924;
   --route-hot: #ffe0a4;
   stroke: currentColor;
@@ -5327,7 +5327,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   border-color: rgba(217, 79, 52, 0.76);
 }
 
-.relief-map-marker.marker-design-pathways {
+.relief-map-marker.marker-designpd {
   border-color: rgba(232, 137, 36, 0.76);
 }
 
@@ -5370,14 +5370,14 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .relief-panel-visual.visual-spiritual-gifts,
 .relief-panel-visual.visual-fruitlife-360,
-.relief-panel-visual.visual-design-pathways,
+.relief-panel-visual.visual-designpd,
 .relief-panel-visual.visual-designid {
   background: #fbfaf4;
 }
 
 .relief-panel-visual.visual-spiritual-gifts img,
 .relief-panel-visual.visual-fruitlife-360 img,
-.relief-panel-visual.visual-design-pathways img,
+.relief-panel-visual.visual-designpd img,
 .relief-panel-visual.visual-designid img {
   position: absolute;
   top: 50%;

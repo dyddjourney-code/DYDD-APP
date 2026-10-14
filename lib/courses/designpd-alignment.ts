@@ -23,12 +23,6 @@ export const designPdCourse = {
               kind: "scripture",
               text: "\"Commit to the Lord whatever you do, and he will establish your plans.\" Proverbs 16:3",
             },
-            {
-              alt: "DesignPD icon",
-              fit: "contain",
-              kind: "image",
-              src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/9c103421-19d5-411f-abe7-614bd22088e8/designpd-icon.jpg?format=2500w",
-            },
           ],
           companionMoment: designPdCompanionMoments.welcome,
           focus: [
@@ -38,6 +32,11 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "Where do you most want clearer language right now: planning, deciding, doing, leadership, collaboration, pressure, or sustainability?",
+          image: {
+            alt: "DesignPD icon",
+            fit: "contain",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/9c103421-19d5-411f-abe7-614bd22088e8/designpd-icon.jpg?format=2500w",
+          },
           slug: "welcome-to-designpd",
           summary:
             "Introduces DesignPD as the practical movement layer that helps design become clearer action.",
@@ -46,12 +45,6 @@ export const designPdCourse = {
         {
           body: [
             "DesignPD is built from your DesignID because movement does not happen in a vacuum. The way you plan, decide, and do is shaped by the deeper design language already named in DesignID. An Architect pattern may bring strategy, initiation, and direction into movement. An Artisan pattern may bring creativity, refinement, and meaningful expression. A Shepherd pattern may bring care, restoration, and relational awareness. A Steward pattern may bring responsibility, order, and faithful follow-through.",
-            {
-              alt: "DesignPD icon",
-              fit: "contain",
-              kind: "image",
-              src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/9c103421-19d5-411f-abe7-614bd22088e8/designpd-icon.jpg?format=2500w",
-            },
             "That connection matters because two people can share the same DesignPD tendency and still express it differently. One person may be a Dreamer because they see future strategy quickly. Another may be a Dreamer because they imagine what people could become. One person may be Solo because they carry ownership with clarity. Another may be Solo because shared process feels heavy or distracting. DesignID gives the deeper reflection language; DesignPD shows how that reflection often moves when life requires preparation, judgment, and action.",
             "Read your DesignPD report as an application layer. It does not replace your identity language, your gifts, your story, or your walk with God. It helps you notice how those things become practical in the real environments where you make plans, carry decisions, work with others, and move toward purpose.",
           ],

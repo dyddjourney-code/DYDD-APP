@@ -277,7 +277,7 @@ function designPdProfile(designPdSnapshot: MapsAssessmentSnapshot) {
 
 function subcategoryLane(subcategory: string) {
   if (["Purpose", "Culture", "Motivation", "Assessment"].includes(subcategory)) return "Plan";
-  if (["Insight", "Valley", "Proof", "Organization"].includes(subcategory)) return "Decide";
+  if (["Insight", "Development", "Proof", "Organization"].includes(subcategory)) return "Decide";
   return "Do";
 }
 

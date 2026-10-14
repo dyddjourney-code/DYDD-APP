@@ -242,10 +242,10 @@ export const mapsPhases: MapsPhase[] = [
       {
         applicationUse: "Strategy, offer design, next-step path, development priorities, constraint crossing.",
         capacityNeed: "A clear path through constraint, risk, and reality.",
-        demandQuestion: "What must be improved, strengthened, and elevated to cross the valley?",
+        demandQuestion: "What must be improved, strengthened, and elevated to develop this work?",
         definition:
-          "Valley turns insight into a tested path, stronger priorities, and a higher-quality expression.",
-        name: "Valley",
+          "Development turns insight into a tested path, stronger priorities, and a higher-quality expression.",
+        name: "Development",
         primaryReflection: "Architect",
         terms: [
           {

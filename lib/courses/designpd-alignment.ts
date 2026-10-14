@@ -377,6 +377,10 @@ export const designPdCourse = {
             "Conflict, collaboration, leadership, pressure, and sustainability reveal how Plan, Decide, and Do patterns become visible.",
             "The goal is to use the report as a wisdom tool, not a label or defense.",
           ],
+          image: {
+            alt: "Hands joined around a table in unity",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/7237389b-5e92-4aea-9bd1-6bddbf024a80/hands-clasped-together-in-unity-at-wooden-table-2026-09-15-20-10-17-utc.jpg?format=2500w",
+          },
           slug: "applications",
           summary:
             "Introduces the five DesignPD application areas and shows how the report moves into real-life situations.",
@@ -395,6 +399,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "When conflict rises, which part of your pattern usually gets louder: planning, deciding, or doing?",
+          image: {
+            alt: "A couple navigating conflict on a sofa",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/64522577-8d47-4dec-8916-7540b5e1cd10/upset-woman-with-man-gesturing-on-sofa-2026-03-19-03-09-11-utc.jpg?format=2500w",
+          },
           slug: "conflict",
           summary:
             "Applies DesignPD to tension, assumptions, and healthier conflict conversations.",
@@ -413,6 +421,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "In collaboration, what do you most often need from others: room to imagine, clearer structure, relational alignment, criteria, ownership, or shared effort?",
+          image: {
+            alt: "Adults collaborating on documents and calculations",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/ea00be72-8bfb-4140-b14d-5de6fd6c0915/adults-reviewing-documents-and-using-calculator-in-2026-03-17-02-44-57-utc.jpg?format=2500w",
+          },
           slug: "collaboration",
           summary:
             "Applies DesignPD to teamwork, communication, ownership, and shared movement.",
@@ -431,6 +443,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "What part of your leadership process do others most need you to make clearer?",
+          image: {
+            alt: "A couple holding hands while hiking",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/56e91aae-f5c2-4533-b778-778531957f8a/couple-holding-hands-hiking-on-historic-landmark-2026-03-09-22-30-47-utc.jpg?format=2500w",
+          },
           slug: "leadership",
           summary:
             "Applies DesignPD to leadership influence, communication, process, and servant-hearted movement.",
@@ -449,6 +465,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "What is one warning sign that tells you your DesignPD pattern is under pressure?",
+          image: {
+            alt: "A surprised couple reacting under pressure",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/53c57328-def1-4c8d-98d0-2a6691091b5e/surprised-man-and-woman-with-open-mouths-2026-03-19-02-11-10-utc.jpg?format=2500w",
+          },
           slug: "pressure",
           summary:
             "Applies DesignPD to stress, exaggerated tendencies, support needs, and wise response plans.",
@@ -467,6 +487,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "What guardrail would most help your pattern stay healthy for the next month?",
+          image: {
+            alt: "A couple resting on a sofa",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/285b48eb-16d3-4cc0-b91c-cf187374a2a8/bored-couple-sitting-on-sofa-at-home-2026-03-20-01-01-38-utc.jpg?format=2500w",
+          },
           slug: "sustainability",
           summary:
             "Applies DesignPD to long-term rhythm, guardrails, rest, and faithful contribution.",
@@ -492,6 +516,11 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "Which MAPS area feels most connected to your DesignPD pattern right now: Mission, Approach, Process, or Send?",
+          image: {
+            alt: "MAPS model showing Mission, Approach, Process, and Send",
+            fit: "contain",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/6a0a5281-29eb-4ddd-aae0-7ffb6c986947/MAPS+Dial+3.jpg?format=2500w",
+          },
           slug: "the-maps-model",
           summary:
             "Introduces MAPS as the larger alignment model that holds DesignPD movement in context.",
@@ -510,6 +539,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "Choose one current assignment and name what it needs in Mission, Approach, Process, and Send.",
+          image: {
+            alt: "A traveler consulting a map in the forest",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/62e375ae-3e4a-48a5-b1bf-16933b5510c8/back-side-of-young-traveler-see-the-map-in-the-dee-2024-10-18-09-26-30-utc.jpg?format=2500w",
+          },
           slug: "maps-applications",
           summary:
             "Shows how to use MAPS with DesignPD to evaluate a real project, role, or assignment.",
@@ -534,6 +567,10 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "Write your first DesignPD operating sentence: When I am healthy, I tend to plan by..., decide by..., and do by...",
+          image: {
+            alt: "A backpacker exploring the jungle",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/784c69e9-8e8a-4a70-b87e-6ab24031bb39/man-with-backpack-discovering-jungle-2025-02-16-11-53-18-utc.jpg?format=2500w",
+          },
           slug: "carry-this-forward",
           summary:
             "Helps learners turn the course into one practical operating sentence and short practice rhythm.",
@@ -552,6 +589,11 @@ export const designPdCourse = {
           ],
           reflectionPrompt:
             "Which part of the larger DYDD environment feels like your next step after DesignPD?",
+          image: {
+            alt: "The connected Discover Your Divine Design environment",
+            fit: "contain",
+            src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/270fc026-1440-48bc-9554-21e6d52029dc/image-gen+%2824%29.png?format=2500w",
+          },
           slug: "connected-to-the-bigger-environment",
           summary:
             "Connects DesignPD to the wider DYDD ecosystem and the larger purpose journey.",

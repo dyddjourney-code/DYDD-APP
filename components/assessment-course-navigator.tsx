@@ -323,55 +323,57 @@ export function AssessmentCourseNavigator({
               ) : null}
             </div>
 
-            <section className="lesson-callout assessment-reflection-direction" aria-label="Reflection direction">
-              <div className="assessment-reflection-heading">
-                <p className="section-label">Reflection</p>
-                {savedReflectionsEnabled ? (
-                  <details>
-                    <summary>Why save this?</summary>
-                    <p>
-                      Class reflections are stored privately in your account so
-                      they can support future summaries, ministry declarations,
-                      and the larger Discover Your Divine Design journey if you
-                      choose to use them. Only you can access these reflections
-                      while signed in.
-                    </p>
-                  </details>
-                ) : null}
-              </div>
-              <h3>{active.lesson.reflectionPrompt}</h3>
-              {savedReflectionsEnabled ? (
-                <div className="assessment-reflection-entry">
-                  <label htmlFor={`reflection-${active.lesson.slug}`}>
-                    <span>Your private reflection</span>
-                    <textarea
-                      id={`reflection-${active.lesson.slug}`}
-                      onChange={(event) =>
-                        setReflectionDrafts((current) => ({
-                          ...current,
-                          [active.lesson.slug]: event.target.value,
-                        }))
-                      }
-                      placeholder="Write what you want to remember from this lesson."
-                      value={reflectionDrafts[active.lesson.slug] ?? ""}
-                    />
-                  </label>
-                  <div className="assessment-reflection-actions">
-                    <button
-                      disabled={activeReflectionStatus === "saving"}
-                      onClick={saveReflection}
-                      type="button"
-                    >
-                      {activeReflectionStatus === "saving" ? "Saving..." : "Save reflection"}
-                    </button>
-                    {activeReflectionStatus === "saved" ? <span>Saved</span> : null}
-                    {activeReflectionStatus === "error" ? (
-                      <span className="error">Could not save. Try again.</span>
-                    ) : null}
-                  </div>
+            {active.lesson.reflectionPrompt ? (
+              <section className="lesson-callout assessment-reflection-direction" aria-label="Reflection direction">
+                <div className="assessment-reflection-heading">
+                  <p className="section-label">Reflection</p>
+                  {savedReflectionsEnabled ? (
+                    <details>
+                      <summary>Why save this?</summary>
+                      <p>
+                        Class reflections are stored privately in your account so
+                        they can support future summaries, ministry declarations,
+                        and the larger Discover Your Divine Design journey if you
+                        choose to use them. Only you can access these reflections
+                        while signed in.
+                      </p>
+                    </details>
+                  ) : null}
                 </div>
-              ) : null}
-            </section>
+                <h3>{active.lesson.reflectionPrompt}</h3>
+                {savedReflectionsEnabled ? (
+                  <div className="assessment-reflection-entry">
+                    <label htmlFor={`reflection-${active.lesson.slug}`}>
+                      <span>Your private reflection</span>
+                      <textarea
+                        id={`reflection-${active.lesson.slug}`}
+                        onChange={(event) =>
+                          setReflectionDrafts((current) => ({
+                            ...current,
+                            [active.lesson.slug]: event.target.value,
+                          }))
+                        }
+                        placeholder="Write what you want to remember from this lesson."
+                        value={reflectionDrafts[active.lesson.slug] ?? ""}
+                      />
+                    </label>
+                    <div className="assessment-reflection-actions">
+                      <button
+                        disabled={activeReflectionStatus === "saving"}
+                        onClick={saveReflection}
+                        type="button"
+                      >
+                        {activeReflectionStatus === "saving" ? "Saving..." : "Save reflection"}
+                      </button>
+                      {activeReflectionStatus === "saved" ? <span>Saved</span> : null}
+                      {activeReflectionStatus === "error" ? (
+                        <span className="error">Could not save. Try again.</span>
+                      ) : null}
+                    </div>
+                  </div>
+                ) : null}
+              </section>
+            ) : null}
           </section>
         </div>
 

@@ -35,7 +35,7 @@ export type CourseLesson = {
     fit?: "contain" | "cover";
     src: string;
   };
-  reflectionPrompt: string;
+  reflectionPrompt?: string;
   slug: string;
   summary: string;
   title: string;

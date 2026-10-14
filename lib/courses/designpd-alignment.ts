@@ -342,11 +342,52 @@ export const designPdCourse = {
       lessons: [
         {
           body: [
+            "Your DesignID results help reveal who you are by showing how your life most naturally reflects the image of God through the four core reflections: Architect, Artisan, Shepherd, and Steward. These reflections shape the way you see, serve, relate, and contribute.",
+            "DesignPD builds on that foundation by exploring how your design operates in real life. Through the lenses of Plan, Decide, and Do, the report highlights how your reflection patterns move into preparation, discernment, and action.",
+            "Application is where your tendencies become especially useful. The report is designed to help you see how your Plan, Decide, and Do tendencies influence real-life situations. These are the environments where your patterns often become most visible and most valuable to understand.",
+            {
+              kind: "subheading",
+              text: "Conflict",
+            },
+            "Conflict shows how your design tends to respond when tension rises. This section helps you understand how your tendencies shape the way you frame conflict, interpret what is happening, and respond when communication becomes strained.",
+            {
+              kind: "subheading",
+              text: "Collaboration",
+            },
+            "Collaboration shows how your design tends to work with others. This section helps you see how you naturally contribute in group settings and where shared effort may feel energizing, difficult, or misunderstood.",
+            {
+              kind: "subheading",
+              text: "Leadership",
+            },
+            "Leadership shows how your design tends to influence direction and people. This section gives clarity on how your leadership style is shaped by the way you plan, discern, and move priorities or people forward.",
+            {
+              kind: "subheading",
+              text: "Pressure",
+            },
+            "Pressure shows how your design tends to respond under strain. This section helps you recognize what happens when your natural tendencies are stressed and how to respond with greater steadiness and awareness.",
+            {
+              kind: "subheading",
+              text: "Sustainability",
+            },
+            "Sustainability shows how your design tends to maintain strength over time. This section helps you learn how to work in ways that fit your God-given tendencies rather than fighting them in ways that create unnecessary fatigue.",
+          ],
+          companionMoment: designPdCompanionMoments.applications,
+          focus: [
+            "Applications bring DesignPD into real-life environments.",
+            "Conflict, collaboration, leadership, pressure, and sustainability reveal how Plan, Decide, and Do patterns become visible.",
+            "The goal is to use the report as a wisdom tool, not a label or defense.",
+          ],
+          slug: "applications",
+          summary:
+            "Introduces the five DesignPD application areas and shows how the report moves into real-life situations.",
+          title: "Applications",
+        },
+        {
+          body: [
             "Conflict often makes movement patterns visible because tension exposes what people reach for first. A Dreamer may want to reframe the future. A Doer may want to solve the practical issue. A Feel It pattern may sense relational strain quickly. A Think It pattern may want the facts arranged clearly. A Solo pattern may withdraw to process or act independently. A Together pattern may need conversation before peace feels possible.",
             "DesignPD helps you slow conflict down enough to ask better questions. What is actually happening? What is being assumed? What does each person need in order to plan, decide, and act wisely? Conflict becomes more destructive when people treat their own movement pattern as the only reasonable one. It becomes more redeemable when each person can name what they need without demanding that everyone process the same way.",
             "In conflict, your strongest tendency may become louder than wisdom. Planning can become control or avoidance. Deciding can become emotional assumption or rigid logic. Doing can become isolation or pressure for group agreement. The goal is to return to humility, truth, love, and one faithful next step.",
           ],
-          companionMoment: designPdCompanionMoments.applications,
           focus: [
             "Conflict exposes how people plan, decide, and act under tension.",
             "Different patterns need different kinds of clarity and support.",

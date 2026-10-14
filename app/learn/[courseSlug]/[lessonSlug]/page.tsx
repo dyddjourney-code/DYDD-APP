@@ -220,10 +220,12 @@ export default async function LearningLessonPage({
             ) : null}
           </div>
 
-          <section className="lesson-callout assessment-reflection-direction" aria-label="Reflection prompt">
-            <p className="section-label">Reflection</p>
-            <h2>{lesson.reflectionPrompt}</h2>
-          </section>
+          {lesson.reflectionPrompt ? (
+            <section className="lesson-callout assessment-reflection-direction" aria-label="Reflection prompt">
+              <p className="section-label">Reflection</p>
+              <h2>{lesson.reflectionPrompt}</h2>
+            </section>
+          ) : null}
 
           <footer className="lesson-pagination" aria-label="Lesson pagination">
             {previousLesson ? (

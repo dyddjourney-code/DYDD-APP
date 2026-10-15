@@ -131,17 +131,7 @@ export function DesignIdAssessmentForm({
           <img src="/brand/tools/designid-logo.webp" alt="DesignID logo" />
         </div>
         <div className="spiritual-gifts-start-copy">
-          <p className="section-label">Discover Your Divine Design</p>
           <h1>Begin your DesignID assessment.</h1>
-          <p>
-            You will move through 20 short sets. In each set, rank all four statements from
-            most like you to least like you. Then sort 12 MAPS words into groups for a short confirmation reflection.
-          </p>
-          <div className="spiritual-gifts-start-cues" aria-label="Assessment details">
-            <span>20 sets</span>
-            <span>12-word MAPS sort</span>
-            <span>PDF report</span>
-          </div>
         </div>
         <div className="spiritual-gifts-locked-identity" aria-label="Assessment account identity">
           <div>
@@ -202,12 +192,14 @@ export function DesignIdAssessmentForm({
       </section>
 
       <div className="fruitlife-step-controls">
-        <button className="button secondary" disabled={stepIndex === 0 || isSubmitting} onClick={goBack} type="button">
-          Back
-        </button>
+        {stepIndex > 0 ? (
+          <button className="button secondary" disabled={isSubmitting} onClick={goBack} type="button">
+            Back
+          </button>
+        ) : null}
         {stepIndex < totalSteps ? (
           <button className="button primary" disabled={isSubmitting} type="submit">
-            {stepIndex === 0 ? "Start Assessment" : "Next"}
+            {stepIndex === 0 ? "Start assessment" : "Next"}
           </button>
         ) : (
           <button className="button primary" disabled={isSubmitting} type="submit">

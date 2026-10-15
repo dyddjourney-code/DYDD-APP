@@ -226,6 +226,8 @@ export function buildDesignIdReportPayload({
 
   return {
     ...scorePayload,
+    MAPS_Confirmation: result.mapsConfirmation ?? null,
+    MAPS_Confirmation_Note: result.mapsConfirmation?.note ?? "",
     Approach_to_Learning:
       "Your DesignID pattern can help you notice how you tend to receive, organize, and apply learning. Use the report as a starting point for reflection, not a fixed label.",
     Contribution_Scripture: "1 Corinthians 12:4-7",
@@ -236,7 +238,7 @@ export function buildDesignIdReportPayload({
     Integrative_Growth: pair.growth,
     Integrative_Reflection: pair.name,
     Integrative_Scripture: "Ephesians 2:10",
-    Integrative_Summary: `${pair.summary} ${result.tieSummary.note}`,
+    Integrative_Summary: `${pair.summary} ${result.tieSummary.note}${result.mapsConfirmation ? ` MAPS confirmation: ${result.mapsConfirmation.note}` : ""}`,
     Learning_Scripture: "Proverbs 4:7",
     Name: participantName,
     PairKey: result.pairKey,
@@ -309,6 +311,7 @@ export function designIdSnapshotSections(result: DesignIdResult) {
       Secondary: result.secondary,
       Spiritual_Strength: payload.Spiritual_Strength,
       Tie_Note: result.tieSummary.note,
+      MAPS_Confirmation_Note: result.mapsConfirmation?.note ?? "",
     },
   };
 }

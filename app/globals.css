@@ -19947,3 +19947,45 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
     text-align: left;
   }
 }
+
+/* DesignID MAPS confirmation: scoped to the native assessment. */
+.maps-confirmation-sort { display: grid; gap: 22px; min-width: 0; }
+.maps-sort-intro { max-width: 72ch; }
+.maps-sort-intro h2 { margin: 8px 0 14px; }
+.maps-sort-intro p, .maps-sort-word p { line-height: 1.6; }
+.maps-sort-announcement { min-height: 28px; margin: 0; color: var(--green-dark); }
+.maps-sort-bank { border-bottom: 1px solid rgba(71,107,66,.24); padding-bottom: 24px; min-height: 100px; }
+.maps-sort-bank h3, .maps-sort-bucket header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.maps-sort-word-grid, .maps-sort-buckets { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+.maps-sort-bucket { background: rgba(71,107,66,.045); border: 1px solid rgba(71,107,66,.24); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.maps-sort-bucket header h3 { margin: 0; font-size: 1.1rem; }
+.maps-sort-bucket header span { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.maps-sort-word { background: #fff; border: 1px solid rgba(71,107,66,.28); border-radius: 8px; padding: 14px; min-width: 0; }
+.maps-sort-word.is-selected { outline: 3px solid var(--green-dark); outline-offset: 2px; }
+.maps-sort-word-heading { display: flex; align-items: center; gap: 8px; }
+.maps-sort-select-word { background: transparent; border: 0; color: var(--green-dark); font: inherit; font-weight: 800; text-align: left; cursor: pointer; min-height: 44px; flex: 1; }
+.maps-sort-grip { touch-action: none; cursor: grab; width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid rgba(71,107,66,.2); border-radius: 6px; background: #f6f8f4; color: var(--green-dark); flex-shrink: 0; }
+.maps-sort-grip:active { cursor: grabbing; }
+.maps-sort-word p { margin: 8px 0; font-size: .95rem; }
+.maps-sort-word small { color: var(--muted); display: block; line-height: 1.5; }
+.maps-sort-move-label { margin-top: 12px; font-size: .8rem; color: var(--muted); display: grid; gap: 6px; }
+.maps-sort-move-label select { width: 100%; min-height: 44px; border: 1px solid rgba(71,107,66,.3); border-radius: 6px; padding: 8px; background: #fff; font: inherit; color: var(--ink); }
+.maps-sort-place { min-height: 44px; border: 1px dashed rgba(71,107,66,.45); background: #fff; color: var(--green-dark); border-radius: 6px; font: inherit; cursor: pointer; padding: 8px; }
+.maps-sort-place:disabled { opacity: .5; cursor: default; }
+.maps-sort-empty { color: var(--muted); padding: 16px 0; text-align: center; }
+.maps-confirmation-sort button:focus-visible, .maps-confirmation-sort select:focus-visible { outline: 3px solid var(--green-dark); outline-offset: 3px; }
+@media (max-width: 700px) { .maps-sort-word-grid, .maps-sort-buckets { grid-template-columns: minmax(0,1fr); } }
+.maps-confirmation-result { text-align: left; border-top: 1px solid rgba(71,107,66,.24); padding-top: 20px; margin: 24px 0; }
+.maps-confirmation-result p { line-height: 1.65; }
+.maps-confirmation-result dl { display: grid; gap: 12px; }
+.maps-confirmation-result dd { margin: 4px 0 0; line-height: 1.5; }
+.maps-sort-drag-dock { position: fixed; inset: auto 12px 12px; z-index: 20; border: 2px solid var(--green-dark); border-radius: 12px; background: #fff; padding: 12px; box-shadow: 0 8px 32px rgba(30,60,30,.18); max-width: 720px; margin: 0 auto; color: var(--green-dark); pointer-events: auto; }
+.maps-sort-drag-dock > div { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; margin-top: 8px; }
+.maps-sort-drag-dock [data-maps-bucket] { border: 1px dashed var(--green-dark); border-radius: 6px; min-height: 66px; display: grid; align-content: center; gap: 6px; padding: 8px; font-size: .85rem; text-align: center; }
+@media (max-width: 700px) { .maps-sort-drag-dock > div { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+/* Keep the step header in normal flow so it cannot cover draggable words. */
+.designid-form .spiritual-gifts-start-card:not(.active) { display: none; }
+.designid-form .designid-progress-card { position: static; justify-self: stretch; width: 100%; max-width: none; display: grid; grid-template-columns: 42px minmax(0,1fr) 120px; }
+.designid-form .designid-progress-card h2 { font-size: clamp(1rem,2.4vw,1.35rem); line-height: 1.25; margin: 0; }
+.designid-form .designid-progress-card .section-label { margin: 0 0 4px; }
+@media (max-width: 480px) { .designid-form .designid-progress-card { grid-template-columns: 32px minmax(0,1fr); } .designid-form .designid-progress-card img { width: 32px; height: 32px; } .designid-form .designid-progress-card .spiritual-gifts-step-meter { grid-column: 1 / -1; width: 100%; } }

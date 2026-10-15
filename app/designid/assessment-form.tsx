@@ -1,6 +1,8 @@
 "use client";
 
 import { type FormEvent, useMemo, useState } from "react";
+import { MapsConfirmationSort } from "./maps-confirmation-sort";
+import { mapsConfirmationField, mapsConfirmationBuckets, type MapsAssignments } from "@/lib/designid/maps-confirmation";
 import { designIdQuestionBlocks, designIdRankField } from "@/lib/designid/intake";
 
 type DesignIdAssessmentFormProps = {
@@ -24,17 +26,20 @@ export function DesignIdAssessmentForm({
   initialReviewer,
   message,
 }: DesignIdAssessmentFormProps) {
-  const totalSteps = designIdQuestionBlocks.length + 1;
+  const totalSteps = designIdQuestionBlocks.length + 2;
   const [stepIndex, setStepIndex] = useState(0);
   const [rankValues, setRankValues] = useState<Record<string, string>>({});
+  const [mapsAssignments, setMapsAssignments] = useState<MapsAssignments>({});
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const currentBlock = stepIndex > 0 ? designIdQuestionBlocks[stepIndex - 1] : null;
   const progress = stepIndex === 0 ? 0 : Math.round((stepIndex / totalSteps) * 100);
   const progressLabel = useMemo(() => {
+    if (stepIndex === totalSteps - 1) return "MAPS confirmation";
+    if (stepIndex === totalSteps) return "Review and submit";
     if (!currentBlock) return "Start";
     return `Question set ${currentBlock.block} of ${designIdQuestionBlocks.length}`;
-  }, [currentBlock]);
+  }, [currentBlock, stepIndex, totalSteps]);
 
   function setRank(code: string, value: string) {
     setError("");
@@ -42,6 +47,12 @@ export function DesignIdAssessmentForm({
   }
 
   function validateCurrentBlock() {
+    if (stepIndex >= totalSteps - 1) {
+      if (Object.keys(mapsAssignments).length !== 12 || mapsConfirmationBuckets.some((bucket) => Object.values(mapsAssignments).filter((value) => value === bucket.id).length !== 3)) {
+        setError("Place all 12 MAPS words, with three in each group, before continuing.");
+        return false;
+      }
+    }
     if (!currentBlock) return true;
 
     const values = currentBlock.statements.map((statement) => rankValues[statement.code]);
@@ -61,13 +72,13 @@ export function DesignIdAssessmentForm({
   function goNext() {
     if (!validateCurrentBlock()) return;
     setStepIndex((index) => Math.min(totalSteps, index + 1));
-    window.scrollTo({ behavior: "smooth", top: 0 });
+    window.scrollTo({ behavior: "auto", top: 0 });
   }
 
   function goBack() {
     setError("");
     setStepIndex((index) => Math.max(0, index - 1));
-    window.scrollTo({ behavior: "smooth", top: 0 });
+    window.scrollTo({ behavior: "auto", top: 0 });
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -86,9 +97,13 @@ export function DesignIdAssessmentForm({
   }
 
   return (
-    <form action={action} className="designid-form" onSubmit={handleSubmit}>
+    <form noValidate action={action} className="designid-form" onSubmit={handleSubmit}>
       {Object.entries(rankValues).map(([code, value]) => (
         <input key={code} name={designIdRankField(code)} type="hidden" value={value} />
+      ))}
+
+      {Object.entries(mapsAssignments).map(([id, value]) => (
+        <input key={id} name={mapsConfirmationField(id)} type="hidden" value={value} />
       ))}
 
       {message ? <p className="form-message">{message}</p> : null}
@@ -120,12 +135,11 @@ export function DesignIdAssessmentForm({
           <h1>Begin your DesignID assessment.</h1>
           <p>
             You will move through 20 short sets. In each set, rank all four statements from
-            most like you to least like you. This version uses the approved revised wording
-            from the DesignID question audit.
+            most like you to least like you. Then sort 12 MAPS words into groups for a short confirmation reflection.
           </p>
           <div className="spiritual-gifts-start-cues" aria-label="Assessment details">
             <span>20 sets</span>
-            <span>4 statements each</span>
+            <span>12-word MAPS sort</span>
             <span>PDF report</span>
           </div>
         </div>
@@ -174,12 +188,16 @@ export function DesignIdAssessmentForm({
         </fieldset>
       ))}
 
+      <section className={`fruitlife-panel designid-question-panel ${stepIndex === totalSteps - 1 ? "active" : ""}`}>
+        <MapsConfirmationSort assignments={mapsAssignments} onChange={(next) => { setMapsAssignments(next); setError(""); }} />
+      </section>
+
       <section className={`fruitlife-panel designid-question-panel ${stepIndex === totalSteps ? "active" : ""}`}>
         <p className="section-label">Ready to Submit</p>
         <h2>Submit your DesignID assessment.</h2>
         <p>
           The app will score your reflection pattern, create a report artifact, and send the
-          report link to your account email.
+          report link to your account email. Your MAPS confirmation is saved alongside your main scores.
         </p>
       </section>
 

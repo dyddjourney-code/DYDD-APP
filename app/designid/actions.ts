@@ -9,6 +9,7 @@ import {
   sendAssessmentReportEmail,
 } from "@/lib/assessment-reporting";
 import { designIdScorePayload, parseDesignIdRankAnswers, scoreDesignId } from "@/lib/designid/engine";
+import { parseMapsConfirmation, scoreMapsConfirmation } from "@/lib/designid/maps-confirmation";
 import { buildDesignIdReportPayload, designIdSnapshotSections } from "@/lib/designid/report";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -80,6 +81,7 @@ export async function saveDesignIdResponse(formData: FormData) {
   let result;
   try {
     result = scoreDesignId(parseDesignIdRankAnswers(formData));
+    result.mapsConfirmation = scoreMapsConfirmation(parseMapsConfirmation(formData), result);
   } catch (error) {
     fail(error instanceof Error ? error.message : "Unable to score this DesignID assessment.");
   }
@@ -113,6 +115,7 @@ export async function saveDesignIdResponse(formData: FormData) {
       scores: {
         answers: result.answers,
         channel: "native_app",
+        mapsConfirmation: result.mapsConfirmation,
         profileLanguage: sections.profileLanguage,
         questionVersion: "designid-approved-audit-2026-09-04",
         rankOrder: result.rankOrder,
@@ -192,6 +195,7 @@ export async function saveDesignIdResponse(formData: FormData) {
       scores: {
         answers: result.answers,
         channel: "native_app",
+        mapsConfirmation: result.mapsConfirmation,
         pdfMonkey: pdfMetadata,
         profileLanguage: sections.profileLanguage,
         questionVersion: "designid-approved-audit-2026-09-04",

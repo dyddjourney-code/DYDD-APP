@@ -5,10 +5,13 @@ import {
   type DesignIdReflection,
 } from "./intake";
 
+import type { MapsConfirmationResult } from "./maps-confirmation";
+
 export type DesignIdRankAnswers = Record<string, number>;
 
 export type DesignIdResult = {
   answers: DesignIdRankAnswers;
+  mapsConfirmation?: MapsConfirmationResult;
   bandByReflection: Record<DesignIdReflection, string>;
   movement: {
     Doer: number;
@@ -55,7 +58,8 @@ export function parseDesignIdRankAnswers(formData: FormData) {
   const answers: DesignIdRankAnswers = {};
 
   for (const statement of designIdQuestionBank) {
-    const value = Number(formData.get(`designid_rank_${statement.code}`));
+    const raw = formData.getAll(`designid_rank_${statement.code}`);
+    const value = raw.length === 1 && typeof raw[0] === "string" && /^[0-3]$/.test(raw[0]) ? Number(raw[0]) : NaN;
     if (!Number.isInteger(value) || value < 0 || value > 3) {
       throw new Error("Please rank every DesignID statement before submitting.");
     }

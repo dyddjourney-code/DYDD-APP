@@ -73,54 +73,6 @@ const circleTypes = [
   },
 ];
 
-const accessPackages = [
-  {
-    name: "Individual Journey",
-    seats: "1 seat",
-    price: "$97",
-    discount: "Baseline",
-    perSeat: "$97 per learner",
-    detail: "Best for a solo learner who wants the full DYDD Journey with the digitized workbook and assessment connections.",
-    includes: ["DYDD Journey", "Digital CARE workbook", "DesignID access", "Spiritual Gifts + FruitLife"],
-  },
-  {
-    name: "Couple Journey",
-    seats: "2 seats included",
-    price: "$174",
-    discount: "10% pair savings",
-    perSeat: "$87 per learner",
-    detail: "One person can purchase two seats and invite the other person into a paired dashboard.",
-    includes: ["Two private accounts", "Pair progress dashboard", "Shared conversation prompts", "Optional shared notes"],
-  },
-  {
-    name: "Circle Starter",
-    seats: "Up to 5 seats",
-    price: "$397",
-    discount: "18% group savings",
-    perSeat: "About $79 per learner",
-    detail: "A simple small-group package for a leader who wants to host a few people without a larger church setup.",
-    includes: ["Prepaid invite seats", "One leader Field Guide", "Group progress view", "Reminder tools"],
-  },
-  {
-    name: "Circle Standard",
-    seats: "Up to 10 seats",
-    price: "$697",
-    discount: "28% group savings",
-    perSeat: "About $70 per learner",
-    detail: "The clean fit for Jordan's Thursday Group: enough seats for a normal circle with strong value per person.",
-    includes: ["Prepaid invite seats", "One leader Field Guide", "People dashboard", "Journey racetrack"],
-  },
-  {
-    name: "Church Class Pack",
-    seats: "Up to 25 seats",
-    price: "$1,597",
-    discount: "34% class savings",
-    perSeat: "About $64 per learner",
-    detail: "A church-friendly class package with bulk access and room to organize a full cohort.",
-    includes: ["Church admin view", "Class invite seats", "Leader Field Guide", "Multiple circles later"],
-  },
-];
-
 const accessFlow = [
   "Every person has their own account, seat, assessment record, workbook responses, and progress history.",
   "Pairs, circles, and classes connect separate accounts together by invite instead of sharing a login.",
@@ -703,49 +655,6 @@ export default function CampCirclePage() {
             the learner experience stays personal and the leader experience
             stays organized.
           </p>
-        </div>
-        <div className="circle-pricing-feature">
-          <div className="circle-pricing-feature-copy">
-            <p className="section-label">Provisional package model</p>
-            <h2>Sell access by seats, then let leaders invite people into the right circle.</h2>
-            <p>
-              These prices are working placeholders so the page can show the
-              business model visually. The package includes the DYDD course,
-              the digitized workbook experience, DesignID access, Spiritual
-              Gifts, and FruitLife. Paper books are separate.
-            </p>
-          </div>
-          <div className="circle-book-disclaimer" role="note">
-            <strong>Books are not included in seat pricing.</strong>
-            <p>
-              Learners can order the paper book or workbook separately. Current
-              planning assumes a $19.99 retail book/workbook reference price.
-              Larger classes can request a bulk book quote, but bulk fulfillment
-              needs about three weeks of lead time and includes book cost plus
-              shipping.
-            </p>
-          </div>
-        </div>
-        <div className="circle-package-grid">
-          {accessPackages.map((pkg) => (
-            <article className="circle-package-card" key={pkg.name}>
-              <div className="circle-package-topline">
-                <span>{pkg.seats}</span>
-                <small>{pkg.discount}</small>
-              </div>
-              <h3>{pkg.name}</h3>
-              <div className="circle-package-price">
-                <strong>{pkg.price}</strong>
-                <span>{pkg.perSeat}</span>
-              </div>
-              <p>{pkg.detail}</p>
-              <ul>
-                {pkg.includes.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
         </div>
         <div className="circle-access-flow" aria-label="How invite seats work">
           {accessFlow.map((step, index) => (

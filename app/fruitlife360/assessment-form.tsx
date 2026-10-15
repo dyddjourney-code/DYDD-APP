@@ -116,17 +116,15 @@ export function FruitLifeAssessmentForm({
       {message ? <p className="form-message">{message}</p> : null}
       <p className="fruitlife-latest-note">{draftNotice || "Your progress saves on this browser so you can return using the same link."}</p>
 
-      <section className="fruitlife-assessment-card">
+      <section aria-label={isSelf ? "FruitLife360 Self Reflection" : "FruitLife360 Observer Reflection"} className={`fruitlife-assessment-card ${isSelf ? "fruitlife-self-header" : ""}`}>
         <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife360 logo" />
-        <div>
-          <p className="section-label">{isSelf ? "Self path" : "Observer path"}</p>
-          <h2>{isSelf ? "FruitLife360 Self Reflection" : "FruitLife360 Observer Reflection"}</h2>
-          <p>
-            {isSelf
-              ? "Rank the fruit, move through one fruit card at a time, and name one growth desire."
-              : `Reflect on ${participantName ?? "this participant"} with clear, gracious feedback.`}
-          </p>
-        </div>
+        {!isSelf ? (
+          <div>
+            <p className="section-label">Observer path</p>
+            <h2>FruitLife360 Observer Reflection</h2>
+            <p>Reflect on {participantName ?? "this participant"} with clear, gracious feedback.</p>
+          </div>
+        ) : null}
         <div className="fruitlife-assessment-steps" aria-label="Assessment progress">
           <span>{stepIndex + 1} of {totalSteps}</span>
           <span>{progressLabel}</span>
@@ -202,6 +200,11 @@ export function FruitLifeAssessmentForm({
               {fruit.label}
             </h3>
             <p>{fruit.definition}</p>
+            <p className="fruitlife-rating-instructions">
+              {isSelf
+                ? "For each statement below, choose the dropdown rating that best describes how visible this fruit is in your everyday life. For the pressure statement, consider how you respond when life is difficult or stressful."
+                : "For each statement below, choose the dropdown rating that best describes how visible this fruit is in the participant’s everyday life. For the pressure statement, consider what you observe when life is difficult or stressful."}
+            </p>
             {questions.map((question) => (
               <label className="fruitlife-scale" key={question.code}>
                 <span>{isSelf ? question.selfText : question.observerText}</span>

@@ -8,7 +8,7 @@ assert(new URL(base).hostname==='localhost'||new URL(base).hostname==='127.0.0.1
 const browser=await puppeteer.launch({args:chromium.args,executablePath:await chromium.executablePath(),headless:true});
 try{
  for(const mobile of (process.env.DESIGNID_QA_MOBILE_ONLY ? [true] : [false,true])){
-  const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  const page=await browser.newPage();await page.evaluateOnNewDocument(()=>{try{localStorage.removeItem("designid-draft-approved-2026-10-15:qa@example.invalid")}catch{}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.setViewport({width:mobile?390:1280,height:900,isMobile:mobile,hasTouch:mobile});
   await page.goto(base+'/qa-designid-allocation',{waitUntil:'networkidle0'});
   const next=async()=>{await page.click('.fruitlife-step-controls button[type="submit"]');};

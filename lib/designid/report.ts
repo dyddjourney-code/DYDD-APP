@@ -229,7 +229,7 @@ export function buildDesignIdReportPayload({
     Integrative_Growth: pair.growth,
     Integrative_Reflection: pair.name,
     Integrative_Scripture: "Ephesians 2:10",
-    Integrative_Summary: `${pair.summary} ${result.tieSummary.note}${result.mapsConfirmation ? ` MAPS confirmation: ${result.mapsConfirmation.note}` : ""}`,
+    Integrative_Summary: `${pair.summary} ${result.tieSummary.note}`,
     Learning_Scripture: "Proverbs 4:7",
     Name: participantName,
     PairKey: result.pairKey,

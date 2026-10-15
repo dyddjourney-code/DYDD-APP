@@ -17,14 +17,16 @@ type SendEmailResult = {
   skipped: boolean;
 };
 
+export function assessmentEmailSender(value?: string) {
+  const configured = value ?? process.env.FRUITLIFE_EMAIL_FROM ?? process.env.DYDD_EMAIL_FROM ?? 'reports@mail.discoverdivine.design';
+  const address = configured.match(/<([^>]+)>/)?.[1] ?? configured.trim();
+  return `Discover Your Divine Design <${address}>`;
+}
+
 function getResendConfig(fromOverride?: string) {
   return {
     apiKey: process.env.RESEND_API_KEY ?? process.env.DYDD_RESEND_API_KEY ?? "",
-    from:
-      fromOverride ??
-      process.env.FRUITLIFE_EMAIL_FROM ??
-      process.env.DYDD_EMAIL_FROM ??
-      "FruitLife360 <support@discoverdivine.design>",
+    from: assessmentEmailSender(fromOverride),
   };
 }
 

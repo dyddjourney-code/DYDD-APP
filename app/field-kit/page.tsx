@@ -1,3 +1,4 @@
+import { getDesignIdEligibility } from "@/lib/designid/retake";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isDyddAdminEmail } from "@/lib/admin-access";
@@ -461,6 +462,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     ? fruitLifeReportSessions.length > 0
     : ownsAssessment(snapshotLatest, "fruit_360") || fruitLifeReportSessions.length > 0;
   const hasOwnerAssessmentAccess = Boolean(user && isDyddAdminEmail(user.email));
+  const designIdEligibility = user ? await getDesignIdEligibility(user.id, participantEmail, hasOwnerAssessmentAccess) : null;
   const purchaseCards = purchaseAssessments.map((assessment) => {
     const status =
       assessment.title === "DesignID"
@@ -478,6 +480,12 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         price: "Owner access",
         status: hasDesignId ? "Completed · retakes available" : "Ready to start",
       };
+    }
+
+    if (assessment.title === "DesignID" && designIdEligibility && !designIdEligibility.allowed) {
+      const savedDesignId = snapshotLatest.find(s => s.assessment_type === 'designid');
+      return { ...assessment, action: 'View DesignID report', href: savedDesignId ? artifactDownloadHref(savedDesignId, reviewParams) : '/courses/designid-foundations',
+        status: `Next assessment: ${designIdEligibility.nextEligibleLabel}` };
     }
 
     if (assessment.title === "DesignPD") {

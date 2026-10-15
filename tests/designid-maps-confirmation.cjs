@@ -39,7 +39,7 @@ try {
   const flat = Object.fromEntries(items.map(item => [item.id, 'often']));
   assert.equal(scoreMapsConfirmation(flat, tied).suggestedTieReflection, null);
   const report = buildDesignIdReportPayload({ participantEmail:'qa@example.invalid', participantName:'Local QA', result:{ ...main, mapsConfirmation:confirmation } });
-  assert(report.Integrative_Summary.includes(confirmation.note));
+  assert(!report.Integrative_Summary.includes('MAPS'), 'Private research language must not leak into customer summary');
   assert.equal(report.MAPS_Confirmation.version, confirmation.version);
   console.log('PASS: MAPS validation, balanced buckets, mean normalization, primary-score invariance, tie clues/no forced tie-break, report integration.');
 } finally { fs.rmSync(output, { recursive:true, force:true }); }

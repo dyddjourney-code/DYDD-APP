@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { MapsConfirmationSort } from "./maps-confirmation-sort";
 import { mapsConfirmationField, mapsConfirmationBuckets, type MapsAssignments } from "@/lib/designid/maps-confirmation";
 import { designIdQuestionBlocks, designIdAllocationField } from "@/lib/designid/intake";
@@ -12,19 +12,42 @@ type DesignIdAssessmentFormProps = {
     name: string;
   };
   message?: string;
+  preview?: boolean;
+  startAtSort?: boolean;
 };
 
 export function DesignIdAssessmentForm({
   action,
   initialReviewer,
   message,
+  preview = false,
+  startAtSort = false,
 }: DesignIdAssessmentFormProps) {
   const totalSteps = designIdQuestionBlocks.length + 2;
-  const [stepIndex, setStepIndex] = useState(0);
+  const [stepIndex, setStepIndex] = useState(startAtSort ? totalSteps - 1 : 0);
   const [pointValues, setPointValues] = useState<Record<string, string>>({});
   const [mapsAssignments, setMapsAssignments] = useState<MapsAssignments>({});
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [draftLoaded, setDraftLoaded] = useState(false);
+  const draftKey = `designid-draft-approved-2026-10-15:${initialReviewer.email}`;
+  useEffect(() => {
+    if (!preview) {
+      try {
+        const saved = JSON.parse(localStorage.getItem(draftKey) ?? 'null');
+        if (saved?.pointValues && saved?.mapsAssignments && Number.isInteger(saved.stepIndex)) {
+          setPointValues(saved.pointValues); setMapsAssignments(saved.mapsAssignments);
+          setStepIndex(Math.max(0, Math.min(totalSteps, saved.stepIndex)));
+        }
+      } catch { /* An unavailable/corrupt local draft must not block the assessment. */ }
+    }
+    setDraftLoaded(true);
+  }, [draftKey, preview, totalSteps]);
+  useEffect(() => {
+    if (!preview && draftLoaded) {
+      try { localStorage.setItem(draftKey, JSON.stringify({pointValues,mapsAssignments,stepIndex})); } catch { /* Storage may be disabled. */ }
+    }
+  }, [draftKey, draftLoaded, mapsAssignments, pointValues, preview, stepIndex]);
   const currentBlock = stepIndex > 0 ? designIdQuestionBlocks[stepIndex - 1] : null;
   const progress = stepIndex === 0 ? 0 : Math.round((stepIndex / totalSteps) * 100);
   const progressLabel = useMemo(() => {
@@ -75,6 +98,11 @@ export function DesignIdAssessmentForm({
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    if (preview && stepIndex === totalSteps) {
+      event.preventDefault();
+      setError("Preview complete. Nothing was submitted, saved, or emailed.");
+      return;
+    }
     if (stepIndex < totalSteps) {
       event.preventDefault();
       goNext();
@@ -199,7 +227,7 @@ export function DesignIdAssessmentForm({
           </button>
         ) : (
           <button className="button primary" disabled={isSubmitting} type="submit">
-            {isSubmitting ? "Submitting..." : "Submit DesignID"}
+            {preview ? "Finish preview" : isSubmitting ? "Submitting..." : "Submit DesignID"}
           </button>
         )}
       </div>

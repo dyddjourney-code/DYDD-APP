@@ -1,3 +1,4 @@
+import { DesignIdResearchPanel } from "@/components/designid-research";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { CSSProperties } from "react";
@@ -2399,6 +2400,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                                 ))}
                               </dl>
                             ) : null}
+                            {isAdmin && snapshot.assessment_type === 'designid' ? <DesignIdResearchPanel scores={snapshot.scores} participantId={snapshot.participant_id} /> : null}
                             {href ? (
                               <Link className="button text" href={href} target="_blank" rel="noreferrer">
                                 Open Report

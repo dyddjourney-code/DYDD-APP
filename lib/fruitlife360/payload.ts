@@ -1,4 +1,6 @@
-import { fruitLifeFruits } from "./intake";
+import { fruitLifeFruits, fruitLifeInstrumentVersion } from "./intake";
+import { buildFruitLifePayload as buildLegacyFruitLifePayload } from "./legacy-payload";
+import source from "./source-libraries.json";
 
 type FruitLifeSession = {
   id: string;
@@ -7,6 +9,8 @@ type FruitLifeSession = {
   participant_email: string | null;
   participant_name: string | null;
   source_participant_id: string | null;
+  designIdPrimary?: string;
+  designIdSecondary?: string;
 };
 
 type FruitLifeResponse = {
@@ -32,180 +36,26 @@ type SupabaseLike = {
   from: (table: string) => any;
 };
 
-const fruitContent: Record<
-  string,
-  {
-    action: string;
-    definition: string;
-    encouragement: string;
-    growthInvitation: string;
-    maturity: string;
-    prayer: string;
-    practice: string;
-    pressurePattern: string;
-    reflectionQuestion: string;
-    scripture: string;
-  }
-> = {
-  faithfulness: {
-    action: "Complete one small promise before adding a new one.",
-    definition:
-      "Faithfulness is reliable devotion to God, people, and entrusted responsibilities over time.",
-    encouragement:
-      "Faithfulness can become a quiet witness through consistency, repair, and steady follow-through.",
-    growthInvitation:
-      "Notice where commitments are real but may need clearer rhythms, repair, or boundaries.",
-    maturity:
-      "Maturity looks like faithfulness becoming dependable when responsibilities are demanding or no one is applauding.",
-    prayer: "Lord, make me faithful in the small places where character is formed.",
-    practice: "Review one responsibility and name the next faithful step.",
-    pressurePattern:
-      "Under pressure, faithfulness may slip into overcommitment, rigidity, neglect, or quiet quitting.",
-    reflectionQuestion:
-      "Where is God inviting a steadier yes, a repaired promise, or a more honest boundary?",
-    scripture: "Lamentations 3:22-23; Luke 16:10",
-  },
-  gentleness: {
-    action: "Enter one hard conversation with both clarity and tenderness.",
-    definition:
-      "Gentleness is humble strength that protects dignity while still telling the truth.",
-    encouragement:
-      "Gentleness can make strength easier for others to receive without weakening truth.",
-    growthInvitation:
-      "Notice where strength is forming but may still come out too forcefully or too cautiously.",
-    maturity:
-      "Maturity looks like gentleness becoming steadier when correction, tension, leadership, or disappointment is present.",
-    prayer: "Lord, teach me strength with less force and softness with more courage.",
-    practice: "Before a hard conversation, write the truth and the tenderness you want to carry.",
-    pressurePattern:
-      "Under pressure, gentleness may become harshness, passivity, avoidance, or fear of necessary confrontation.",
-    reflectionQuestion:
-      "Where do truth and tenderness need to travel together in your next conversation?",
-    scripture: "Philippians 4:5; 2 Timothy 2:24-25",
-  },
-  goodness: {
-    action: "Ask where compromise, fatigue, or fear has quieted the good.",
-    definition:
-      "Goodness is moral clarity and active commitment to what reflects God's character.",
-    encouragement:
-      "Goodness can strengthen others when courage and humility stay together.",
-    growthInvitation:
-      "Ask where God is inviting a cleaner yes, a wiser no, or a repaired decision.",
-    maturity:
-      "Maturity looks like choosing what reflects God's character when compromise, fatigue, or self-interest would be easier.",
-    prayer: "Lord, align my motives, choices, and courage with what is good in Your sight.",
-    practice: "Name one integrity gap and take one honest repair step.",
-    pressurePattern:
-      "Under pressure, goodness may become moral superiority, compromise, fatigue, or disengagement from doing good.",
-    reflectionQuestion: "Where is goodness asking for courage, not just intention?",
-    scripture: "Romans 12:9; Galatians 6:9-10",
-  },
-  joy: {
-    action: "Name three signs of grace each day and share one with someone.",
-    definition:
-      "Joy is resilient gladness rooted in God's presence, goodness, and promises.",
-    encouragement:
-      "Joy can become a gift of hope when it stays honest, rooted, and resilient.",
-    growthInvitation:
-      "Let visible joy become encouragement to others, then ask how to keep it rooted in Christ rather than circumstances.",
-    maturity:
-      "Maturity looks like stewarding visible joy as a witness to God's goodness without forcing cheerfulness or ignoring sorrow.",
-    prayer: "Lord, keep my joy honest, resilient, and anchored in Your presence.",
-    practice: "Share one specific sign of grace with someone who needs hope.",
-    pressurePattern:
-      "Under pressure, joy may flatten into discouragement, distraction, forced positivity, or emotional shutdown.",
-    reflectionQuestion: "Where can you practice gratitude without denying grief or pressure?",
-    scripture: "John 15:11; Philippians 4:4",
-  },
-  kindness: {
-    action: "Ask who near you needs gentler attention this week.",
-    definition:
-      "Kindness is tender strength that treats people with dignity, mercy, and practical care.",
-    encouragement:
-      "Kindness can make the love of God practical, visible, and easier to trust.",
-    growthInvitation:
-      "Ask who experiences your kindness least easily and what small change love requires.",
-    maturity:
-      "Maturity looks like noticing people with mercy when efficiency, irritation, or self-protection would move past them.",
-    prayer: "Lord, train my eyes to see people as You see them and my hands to serve with warmth.",
-    practice: "Offer one intentional word or act of mercy to someone who may not expect it.",
-    pressurePattern:
-      "Under pressure, kindness may become sharpness, indifference, people-pleasing, or helpfulness with strings attached.",
-    reflectionQuestion: "Who needs kindness from you in a more concrete form?",
-    scripture: "Ephesians 4:32; Colossians 3:12",
-  },
-  love: {
-    action: "Practice one concrete act of care without needing recognition.",
-    definition:
-      "Love is Christlike regard that seeks another person's good with patience, truth, and sacrifice.",
-    encouragement:
-      "Love can become more visible when care is concrete, patient, and free from control.",
-    growthInvitation:
-      "Notice where love is present but not always easy for others to feel, especially when time or patience is strained.",
-    maturity:
-      "Maturity looks like love becoming consistent when relationships are inconvenient, complex, or emotionally demanding.",
-    prayer: "Lord, form a steadier love in me when I am hurried, disappointed, or misunderstood.",
-    practice: "Pause before one relational response and choose care over convenience.",
-    pressurePattern:
-      "Under pressure, love may withdraw, become transactional, or try to control outcomes instead of serving freely.",
-    reflectionQuestion: "Where is love asking to become more concrete this week?",
-    scripture: "John 13:34-35; 1 Corinthians 13:4-7",
-  },
-  patience: {
-    action: "Ask God where hurry is replacing trust.",
-    definition:
-      "Patience is long obedience and gracious endurance when people, process, or timing are slow.",
-    encouragement:
-      "Patience can create room for trust, mercy, and better timing.",
-    growthInvitation:
-      "Ask where hurry is replacing trust and where frustration is revealing a formation invitation.",
-    maturity:
-      "Maturity looks like learning to wait with God instead of rushing, judging, withdrawing, or forcing outcomes.",
-    prayer: "Lord, grow endurance in me where impatience has been shaping my responses.",
-    practice: "When irritation rises, pause long enough to pray before speaking or deciding.",
-    pressurePattern:
-      "Under pressure, patience may turn into irritability, rushing, passive resistance, or silent judgment.",
-    reflectionQuestion: "Where might waiting with God be more faithful than forcing movement?",
-    scripture: "James 1:2-4; Colossians 3:12-13",
-  },
-  peace: {
-    action: "Bring calm to one tense conversation by slowing your response.",
-    definition:
-      "Peace is Spirit-formed steadiness that rests in God and makes room for wholeness with others.",
-    encouragement:
-      "Peace can become a gift that helps others breathe without avoiding what is true.",
-    growthInvitation:
-      "Let visible peace become a gift you steward, especially in tense conversations and uncertain outcomes.",
-    maturity:
-      "Maturity looks like carrying peace that settles rooms without avoiding truth or absorbing everyone else's anxiety.",
-    prayer: "Lord, make my peace courageous, truthful, and grounded in Your nearness.",
-    practice: "Bring calm to one tense moment by slowing your words and asking a better question.",
-    pressurePattern:
-      "Under pressure, peace may give way to anxiety, avoidance, overexplaining, or conflict-smoothing that avoids truth.",
-    reflectionQuestion: "Where is God inviting peace that is both calm and truthful?",
-    scripture: "John 14:27; Philippians 4:6-7",
-  },
-  self_control: {
-    action: "Choose one boundary that protects love and faithfulness.",
-    definition:
-      "Self-control is Spirit-led stewardship of desires, habits, attention, and responses.",
-    encouragement:
-      "Self-control can become ordered freedom when restraint stays surrendered to love.",
-    growthInvitation:
-      "Let visible self-control become gratitude for grace that trains desires rather than pride in willpower.",
-    maturity:
-      "Maturity looks like ordered freedom that stays disciplined without becoming rigid, hidden, or controlling.",
-    prayer: "Lord, keep my restraint surrendered to love and guided by Your Spirit.",
-    practice: "Use one healthy boundary this week to protect love, attention, or follow-through.",
-    pressurePattern:
-      "Under pressure, self-control may break into impulsiveness, numbing, control of others, or private escape patterns.",
-    reflectionQuestion: "Where would one wise boundary protect what matters most?",
-    scripture: "Titus 2:11-12; 1 Corinthians 9:25-27",
-  },
-};
+// Source libraries are copied verbatim; the workbook remains the scoring/language oracle.
+const fruitKeyForLabel = (label: string) => label.toLowerCase().replace(/[- ]/g, "_");
+const fruitContent = Object.fromEntries(source.libraries.Fruit_Content_Library.slice(1).map(row => [fruitKeyForLabel(row[0]), {
+  scripture: row[1], definition: row[2], maturity: row[3], pressurePattern: row[4], growthInvitation: row[5],
+  practice: row[6], reflectionQuestion: row[7], prayer: row[8], encouragement: row[9],
+}]));
+function tierContent(fruitKey: string, rankIndex: number) {
+  const label = tierLabel(rankIndex);
+  const formation = source.libraries.Fruit_Tier_Formation_360.slice(1).find(row => fruitKeyForLabel(row[0]) === fruitKey && row[1] === label)!;
+  const detail = source.libraries.Fruit_Report_Content_360.slice(1).find(row => fruitKeyForLabel(String(row[0])) === fruitKey && row[3] === label)!;
+  return { ...fruitContent[fruitKey], maturity: formation[2], growthInvitation: formation[3], practice: formation[4], prayer: formation[5],
+    // Both legacy reflection/prayer fields intentionally map to the approved tier prayer.
+    reflectionQuestion: formation[5], description: String(detail[5]), action: String(detail[7]) };
+}
+function escapeHtml(value: string) {
+  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+}
 
 function titleCaseFruit(fruitKey: string) {
-  return fruitLifeFruits.find((fruit) => fruit.key === fruitKey)?.label ?? fruitKey;
+  return fruitKey === "self_control" ? "Self-control" : fruitLifeFruits.find((fruit) => fruit.key === fruitKey)?.label ?? fruitKey;
 }
 
 function average(values: number[]) {
@@ -224,11 +74,16 @@ function scoreFromResponse(response: FruitLifeResponse, fruitKey: string, key: s
 }
 
 function averageFruitScore(responses: FruitLifeResponse[], fruitKey: string, key = "visible") {
-  return round(average(responses.map((response) => scoreFromResponse(response, fruitKey, key))));
+  return average(responses.map((response) => scoreFromResponse(response, fruitKey, key)));
 }
 
 function listLabels(keys: string[]) {
   return keys.map(titleCaseFruit).join(", ");
+}
+
+function naturalList(keys: string[]) {
+  const names = keys.map(titleCaseFruit);
+  return names.length < 2 ? names.join("") : names.length === 2 ? names.join(" and ") : `${names.slice(0, -1).join(", ")}, and ${names.at(-1)}`;
 }
 
 function tierLabel(rankIndex: number) {
@@ -237,37 +92,39 @@ function tierLabel(rankIndex: number) {
   return "Growth Invitation Fruit";
 }
 
-function categoryLabel(rankIndex: number, hasObservers: boolean) {
-  if (!hasObservers && rankIndex < 3) return "Self-Visible Strength";
-  if (!hasObservers && rankIndex > 5) return "Self-Reflection Growth Invitation";
-  if (!hasObservers) return "Self-Reflection Forming";
-  return tierLabel(rankIndex);
+function categoryLabel(self: number, observer: number, hasObservers: boolean) {
+  if (!hasObservers) return self >= 4 ? "Self-Visible Strength" : self < 3 ? "Self-Reflection Growth Invitation" : "Self-Reflection Forming";
+  const gap = observer - self;
+  return self >= 4 && observer >= 4 ? "Shared Strength" : gap >= 1 ? "Encouragement Others See" : gap <= -1 ? "Growth Invitation" : self < 3 && observer < 3 ? "Aligned Developing" : "Steady Developing";
 }
-
-function summaryForFruit(fruitName: string, rankIndex: number, hasObservers: boolean) {
-  if (rankIndex < 3) {
-    return `${fruitName} is one of the most visible fruits in this report, with room for continued formation and greater steadiness.`;
-  }
-  if (rankIndex < 6) {
-    return `${fruitName} appears present and steadily forming, with room for continued growth.`;
-  }
-  return `${fruitName} is a current formation invitation, with room for greater visibility and steadiness.`;
+function summaryForFruit(name: string, rankIndex: number, category: string) {
+  if (rankIndex < 3) return category === "Shared Strength" ? `${name} is one of the most visible fruits in this report and is consistently affirmed by both self and observers.`
+    : category === "Encouragement Others See" ? `${name} is one of the most visible fruits in this report and may be even more visible to observers than the participant realizes.`
+    : category === "Growth Invitation" ? `${name} is one of the most visible fruits in this report, while the score pattern still points to a meaningful formation invitation.`
+    : `${name} is one of the most visible fruits in this report, with room for continued formation and greater steadiness.`;
+  if (rankIndex < 6) return category === "Shared Strength" ? `${name} appears steady and consistently visible to both self and observers.`
+    : category === "Encouragement Others See" ? `${name} appears steadily forming and may be more visible to observers than the participant realizes.`
+    : category === "Growth Invitation" ? `${name} appears present, but the score pattern points to a helpful formation conversation.`
+    : `${name} appears present and steadily forming, with room for continued growth.`;
+  return category === "Shared Strength" ? `${name} is affirmed in the score pattern, even though it sits lower in the current fruit ranking and may need intentional cultivation.`
+    : category === "Encouragement Others See" ? `${name} may be more visible to observers than expected, even though it sits lower in the current fruit ranking.`
+    : category === "Growth Invitation" ? `${name} is a current growth invitation for reflection, prayer, and practice.`
+    : `${name} is a current formation invitation, with room for greater visibility and steadiness.`;
 }
-
-function pressureNote(fruitName: string, selfPressure: number, observerPressure: number, hasObservers: boolean) {
-  if (!selfPressure && !observerPressure) return "";
-  const pressureScore = hasObservers ? observerPressure || selfPressure : selfPressure;
-  if (pressureScore >= 4) {
-    return `${fruitName} appears generally steady under pressure in this ${hasObservers ? "360" : "self-reflection"} report.`;
-  }
-  if (pressureScore >= 3) {
-    return `${fruitName} shows mild pressure sensitivity. Notice where strain may change how this fruit is expressed.`;
-  }
-  return `${fruitName} may need extra support under pressure. Treat this as an invitation to prayer, practice, and trusted conversation.`;
+function consistencyNote(key: string, name: string, self: number, observer: number, hasObservers: boolean) {
+  if (!hasObservers) return `${name} is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.`;
+  const gap = Math.abs(observer - self);
+  const band = gap < .5 ? "ALIGNED" : gap < 1 ? "LIGHT_DIFFERENCE" : gap < 1.5 ? "MEANINGFUL_GAP" : "SIGNIFICANT_CONVERSATION";
+  return source.libraries.Fruit_Gap_Language_360.find(row => row[1] === key && row[2] === "Consistency" && row[3] === band)?.[8] ?? "";
 }
-
-function consistencyNote(fruitName: string, hasObservers: boolean) {
-  return `${fruitName} is ranked from ${hasObservers ? "self and observer feedback" : "your own reflection"} in this ${hasObservers ? "360" : "self-only"} report. Use it as a prayerful formation signal.`;
+function pressureNote(key: string, name: string, self: number, observer: number, selfPressure: number, observerPressure: number, hasObservers: boolean) {
+  const drop = Math.max(0, self - selfPressure, observer - observerPressure);
+  const band = drop < .5 ? "STEADY" : drop < 1 ? "MILD_SENSITIVITY" : drop < 1.5 ? "NOTICEABLE_DROP" : "MAJOR_VULNERABILITY";
+  if (hasObservers) return source.libraries.Fruit_Gap_Language_360.find(row => row[1] === key && row[2] === "Pressure" && row[3] === band)?.[8] ?? "";
+  return band === "STEADY" ? `${name} appears generally steady under pressure in your self-reflection.`
+    : band === "MILD_SENSITIVITY" ? `${name} shows mild pressure sensitivity in your self-reflection. Notice where strain may change how this fruit is expressed.`
+    : band === "NOTICEABLE_DROP" ? `${name} shows a noticeable pressure drop in your self-reflection. This may point to a practical growth edge when stress rises.`
+    : `${name} shows a major pressure vulnerability in your self-reflection. This is an important formation area for prayer, support, and practice before pressure rises.`;
 }
 
 function fruitCssClass(fruitKey: string) {
@@ -276,7 +133,7 @@ function fruitCssClass(fruitKey: string) {
 
 function formationCardHtml(fruitKey: string, rankIndex: number) {
   const fruitName = titleCaseFruit(fruitKey);
-  const content = fruitContent[fruitKey];
+  const content = tierContent(fruitKey, rankIndex);
 
   if (!content) {
     return "";
@@ -308,38 +165,21 @@ function formationCardsHtml(rank: string[], start: number, end: number) {
     .join("");
 }
 
-function rankByAverage(responses: FruitLifeResponse[]) {
-  return fruitLifeFruits
-    .map((fruit, index) => ({
-      index,
-      key: fruit.key,
-      score: averageFruitScore(responses, fruit.key),
-    }))
-    .sort((a, b) => b.score - a.score || a.index - b.index)
-    .map((fruit) => fruit.key);
-}
-
 function buildRank(selfResponses: FruitLifeResponse[], observerResponses: FruitLifeResponse[]) {
-  if (observerResponses.length > 0) {
-    return rankByAverage([...selfResponses, ...observerResponses]);
-  }
-
-  const selfRank = selfResponses[0]?.fruit_rank ?? [];
-  const cleaned = selfRank.filter((key) => fruitLifeFruits.some((fruit) => fruit.key === key));
-
-  if (cleaned.length === fruitLifeFruits.length) return cleaned;
-
-  const used = new Set(cleaned);
-  return [
-    ...cleaned,
-    ...fruitLifeFruits.map((fruit) => fruit.key).filter((key) => !used.has(key)),
-  ];
+  // Original Display_Rank: observer consistency first, then self consistency, then canonical fruit order.
+  // Self-only reports use self consistency in both columns; the separate forced rank is retained, not substituted.
+  const ranked = fruitLifeFruits.map((fruit, index) => ({ key: fruit.key, index,
+    self: averageFruitScore(selfResponses, fruit.key),
+    observer: averageFruitScore(observerResponses.length ? observerResponses : selfResponses, fruit.key),
+  }));
+  return ranked.sort((a, b) => b.observer - a.observer || b.self - a.self || a.index - b.index).map(fruit => fruit.key);
 }
 
 function commentList(responses: FruitLifeResponse[], key: "encouragement" | "growth" | "strength") {
   return responses
     .map((response) => response.answers?.reflections?.[key]?.trim())
-    .filter(Boolean)
+    .filter((value): value is string => Boolean(value))
+    .map(value => escapeHtml(value))
     .join("<br><br>");
 }
 
@@ -351,27 +191,24 @@ export function buildFruitLifePayload(session: FruitLifeSession, responses: Frui
   const mostVisible = rank.slice(0, 3);
   const steadyForming = rank.slice(3, 6);
   const growthInvitation = rank.slice(6);
-  const selfOverall = round(
-    average(fruitLifeFruits.map((fruit) => averageFruitScore(selfResponses, fruit.key))),
-  );
-  const observerOverall = round(
-    average(fruitLifeFruits.map((fruit) => averageFruitScore(observerResponses, fruit.key))),
-  );
-  const reportMode = hasObservers ? "FULL_360" : "SELF_ONLY";
+  const selfOverall = average(fruitLifeFruits.map(fruit => averageFruitScore(selfResponses, fruit.key)));
+  const observerOverall = average(fruitLifeFruits.map(fruit => averageFruitScore(hasObservers ? observerResponses : selfResponses, fruit.key)));
+  const reportMode = hasObservers ? "360" : "SELF_ONLY";
   const payload: Record<string, string | number> = {
     design_id_cta:
       "If this lens interests you, take the free DesignID assessment next. It can help you understand how God may have designed you to carry purpose, responsibility, creativity, and care.",
     design_id_page_intro:
       "Some people carry fruit through ideas, some through creative action, some through relational care, and some through faithful structure. The fruit is the Spirit's work; the expression often carries the shape of your design.",
     design_id_page_title: "How Fruit May Express Through Your Design",
-    design_id_primary: "",
-    design_id_secondary: "",
+    design_id_primary: session.designIdPrimary ?? "",
+    design_id_secondary: session.designIdSecondary ?? "",
     growth_invitation_fruit_list: listLabels(growthInvitation),
     growth_invitation_formation_cards: formationCardsHtml(rank, 6, 9),
     growth_invitation_tier_description:
       "These are the fruit least visible in this current report. Treat them as invitations, not accusations. Low visibility may reflect season, stress, role, or missed opportunities.",
-    growth_invitations: `${listLabels(growthInvitation)} may be current formation invitations. Treat these as places for prayer, practice, and trusted conversation rather than as accusations or fixed labels.`,
-    most_visible_fruit: `${hasObservers ? "This 360 report especially highlights" : "Your self-reflection especially highlights"} ${listLabels(mostVisible)} as visible fruit in this season.`,
+    growth_invitations: `${listLabels(growthInvitation)} ${hasObservers ? "appear to be current growth invitations" : "may be current self-reflection growth invitations"}. Treat these as places for prayer, practice, and trusted conversation rather than as accusations or fixed labels.`,
+    most_visible_fruit: `${hasObservers ? "Observers are especially affirming" : "Your self-reflection especially highlights"} ${naturalList(mostVisible)} as visible fruit in this season.`,
+    encouragement_others_see: `${hasObservers ? "Observers are especially affirming" : "Your self-reflection especially highlights"} ${naturalList(mostVisible)} as visible fruit in this season.`,
     most_visible_formation_cards: formationCardsHtml(rank, 0, 3),
     most_visible_fruit_list: listLabels(mostVisible),
     most_visible_tier_description:
@@ -381,9 +218,9 @@ export function buildFruitLifePayload(session: FruitLifeSession, responses: Frui
     observer_growth_comments: commentList(observerResponses, "growth"),
     observer_overall: observerOverall,
     observer_strength_comments: commentList(observerResponses, "strength"),
-    overall_gap: round(observerOverall - selfOverall),
+    overall_gap: observerOverall - selfOverall,
     overview_note: hasObservers
-      ? "This report uses self-reflection and observer feedback to identify visible fruit, pressure patterns, and current formation invitations."
+      ? "This report compares the participant self-reflection with observer reflections to identify visible fruit, encouragement others see, growth invitations, and pressure patterns."
       : "This self-only report uses the participant's own responses to identify visible fruit, pressure patterns, and current formation invitations.",
     participant_email: session.participant_email ?? "",
     participant_id: session.source_participant_id ?? session.id,
@@ -398,9 +235,9 @@ export function buildFruitLifePayload(session: FruitLifeSession, responses: Frui
     report_mode: reportMode,
     response_count: responses.length,
     reviewer_mix: hasObservers
-      ? `${selfResponses.length} self response and ${observerResponses.length} observer response${observerResponses.length === 1 ? "" : "s"} are included.`
+      ? `${session.participant_name ?? "The participant"} has ${responses.length} total responses: 1 self and ${observerResponses.length} observer responses.`
       : `${session.participant_name ?? "The participant"} completed this as a self-reflection report with no observer responses.`,
-    self_final_reflection: commentList(selfResponses, "growth") || "no",
+    self_final_reflection: commentList(selfResponses, "growth"),
     self_overall: selfOverall,
     spiritual_gifts_cta:
       "The Spiritual Gifts assessment can add another layer by helping you notice how the Spirit may work through you to strengthen others and serve the body of Christ.",
@@ -424,16 +261,16 @@ export function buildFruitLifePayload(session: FruitLifeSession, responses: Frui
 
   for (const fruit of fruitLifeFruits) {
     const rankIndex = rank.indexOf(fruit.key);
-    const fruitName = fruit.label;
-    const content = fruitContent[fruit.key];
+    const fruitName = fruit.key === "self_control" ? "Self-control" : fruit.label;
+    const content = tierContent(fruit.key, rankIndex);
     const selfVisible = averageFruitScore(selfResponses, fruit.key, "visible");
-    const observerVisible = averageFruitScore(observerResponses, fruit.key, "visible");
+    const observerVisible = averageFruitScore(hasObservers ? observerResponses : selfResponses, fruit.key, "visible");
     const selfPressure = averageFruitScore(selfResponses, fruit.key, "pressure");
-    const observerPressure = averageFruitScore(observerResponses, fruit.key, "pressure");
+    const observerPressure = averageFruitScore(hasObservers ? observerResponses : selfResponses, fruit.key, "pressure");
 
     Object.assign(payload, {
-      [`${fruit.key}_category`]: categoryLabel(rankIndex, hasObservers),
-      [`${fruit.key}_consistency_note`]: consistencyNote(fruitName, hasObservers),
+      [`${fruit.key}_category`]: categoryLabel(selfVisible, observerVisible, hasObservers),
+      [`${fruit.key}_consistency_note`]: consistencyNote(fruit.key, fruitName, selfVisible, observerVisible, hasObservers),
       [`${fruit.key}_definition`]: content.definition,
       [`${fruit.key}_encouragement`]: content.encouragement,
       [`${fruit.key}_growth_invitation`]: content.growthInvitation,
@@ -442,20 +279,26 @@ export function buildFruitLifePayload(session: FruitLifeSession, responses: Frui
       [`${fruit.key}_observer_pressure`]: observerPressure || selfPressure,
       [`${fruit.key}_practice`]: content.practice,
       [`${fruit.key}_prayer_prompt`]: content.prayer,
-      [`${fruit.key}_pressure_note`]: pressureNote(fruitName, selfPressure, observerPressure, hasObservers),
+      [`${fruit.key}_pressure_note`]: pressureNote(fruit.key, fruitName, selfVisible, observerVisible, selfPressure, observerPressure, hasObservers),
       [`${fruit.key}_pressure_pattern`]: content.pressurePattern,
       [`${fruit.key}_rank`]: rankIndex + 1,
       [`${fruit.key}_reflection_question`]: content.reflectionQuestion,
       [`${fruit.key}_scripture`]: content.scripture,
       [`${fruit.key}_self`]: selfVisible,
       [`${fruit.key}_self_pressure`]: selfPressure,
-      [`${fruit.key}_summary`]: summaryForFruit(fruitName, rankIndex, hasObservers),
+      [`${fruit.key}_summary`]: summaryForFruit(fruitName, rankIndex, categoryLabel(selfVisible, observerVisible, hasObservers)),
       [`${fruit.key}_tier_action`]: content.action,
-      [`${fruit.key}_tier_description`]: `${fruitName} is currently showing as ${tierLabel(rankIndex).toLowerCase()}.`,
+      [`${fruit.key}_tier_description`]: content.description,
       [`${fruit.key}_tier_label`]: tierLabel(rankIndex),
     });
   }
 
+  const pressureFruits = rank.filter(key => averageFruitScore(selfResponses, key) - averageFruitScore(selfResponses, key, "pressure") >= .5);
+  payload.pressure_vulnerabilities = pressureFruits.length ? hasObservers
+    ? `${listLabels(pressureFruits)} may need extra attention under pressure. These are helpful places to slow down, invite accountability, and practice Spirit-led responses before stress rises.`
+    : `Pressure change noted for ${listLabels(pressureFruits)}: these fruit remain visible, but show a pressure drop under strain based on your self-reflection. Notice where stress may slightly change how these fruit are expressed.`
+    : hasObservers ? "No major pressure vulnerability stands out sharply in this feedback set; continue watching how each fruit shows up when life feels strained or hurried."
+    : "No major pressure vulnerability stands out in your self-reflection; continue noticing how each fruit shows up when life feels strained or hurried.";
   return payload;
 }
 
@@ -463,7 +306,7 @@ export async function buildFruitLifePayloadForSession(supabase: SupabaseLike, se
   const { data: session, error: sessionError } = await supabase
     .from("fruitlife_360_sessions")
     .select(
-      "id,source_participant_id,participant_name,participant_email,observer_goal,observer_completed_count",
+      "id,participant_id,metadata,source_participant_id,participant_name,participant_email,observer_goal,observer_completed_count",
     )
     .eq("id", sessionId)
     .single();
@@ -484,8 +327,14 @@ export async function buildFruitLifePayloadForSession(supabase: SupabaseLike, se
     throw new Error(responsesError.message);
   }
 
+  if (session.metadata?.instrumentVersion !== fruitLifeInstrumentVersion) return buildLegacyFruitLifePayload(session, responses ?? []);
+
+  const { data: designId } = await supabase.from("assessment_snapshots").select("scores")
+    .eq("participant_id", session.participant_id).eq("assessment_type", "designid")
+    .order("source_submitted_at", { ascending: false }).limit(1).maybeSingle();
+  const summary = designId?.scores?.summary ?? {};
   return buildFruitLifePayload(
-    session as FruitLifeSession,
+    { ...session, designIdPrimary: String(summary.Primary ?? ""), designIdSecondary: String(summary.Secondary ?? "") } as FruitLifeSession,
     ((responses ?? []) as FruitLifeResponse[]),
   );
 }

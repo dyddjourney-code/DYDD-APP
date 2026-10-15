@@ -1,0 +1,1805 @@
+{
+  "source": "Fruit_Aggregates_360 read-only 2026-10-15; anonymized",
+  "cases": [
+    {
+      "responses": [
+        {
+          "response_type": "self",
+          "answers": {
+            "fruitRatings": {
+              "love": {
+                "visible": 4.333333333333333,
+                "pressure": 4.0
+              },
+              "joy": {
+                "visible": 3.6666666666666665,
+                "pressure": 3.0
+              },
+              "peace": {
+                "visible": 4.333333333333333,
+                "pressure": 4.0
+              },
+              "patience": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "kindness": {
+                "visible": 4.666666666666667,
+                "pressure": 4.0
+              },
+              "goodness": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "faithfulness": {
+                "visible": 4.333333333333333,
+                "pressure": 4.0
+              },
+              "gentleness": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "self_control": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              }
+            }
+          },
+          "fruit_rank": []
+        },
+        {
+          "response_type": "observer",
+          "answers": {
+            "fruitRatings": {
+              "love": {
+                "visible": 4.666666666666667,
+                "pressure": 5.0
+              },
+              "joy": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "peace": {
+                "visible": 4.666666666666667,
+                "pressure": 4.0
+              },
+              "patience": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "kindness": {
+                "visible": 5.0,
+                "pressure": 5.0
+              },
+              "goodness": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "faithfulness": {
+                "visible": 4.666666666666667,
+                "pressure": 4.0
+              },
+              "gentleness": {
+                "visible": 4.0,
+                "pressure": 3.0
+              },
+              "self_control": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              }
+            }
+          },
+          "fruit_rank": []
+        },
+        {
+          "response_type": "observer",
+          "answers": {
+            "fruitRatings": {
+              "love": {
+                "visible": 4.333333333333333,
+                "pressure": 4.0
+              },
+              "joy": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "peace": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "patience": {
+                "visible": 3.0,
+                "pressure": 3.0
+              },
+              "kindness": {
+                "visible": 4.333333333333333,
+                "pressure": 4.0
+              },
+              "goodness": {
+                "visible": 4.333333333333333,
+                "pressure": 5.0
+              },
+              "faithfulness": {
+                "visible": 4.666666666666667,
+                "pressure": 5.0
+              },
+              "gentleness": {
+                "visible": 4.0,
+                "pressure": 3.0
+              },
+              "self_control": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              }
+            }
+          },
+          "fruit_rank": []
+        },
+        {
+          "response_type": "observer",
+          "answers": {
+            "fruitRatings": {
+              "love": {
+                "visible": 4.666666666666667,
+                "pressure": 4.0
+              },
+              "joy": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "peace": {
+                "visible": 4.666666666666667,
+                "pressure": 5.0
+              },
+              "patience": {
+                "visible": 3.6666666666666665,
+                "pressure": 3.0
+              },
+              "kindness": {
+                "visible": 4.666666666666667,
+                "pressure": 4.0
+              },
+              "goodness": {
+                "visible": 4.333333333333333,
+                "pressure": 4.0
+              },
+              "faithfulness": {
+                "visible": 5.0,
+                "pressure": 5.0
+              },
+              "gentleness": {
+                "visible": 4.333333333333333,
+                "pressure": 4.0
+              },
+              "self_control": {
+                "visible": 4.0,
+                "pressure": 3.0
+              }
+            }
+          },
+          "fruit_rank": []
+        }
+      ],
+      "expected": {
+        "love_self": 4.333333333333333,
+        "love_observer": 4.555555555555555,
+        "love_self_pressure": 4,
+        "love_observer_pressure": 4.333333333333333,
+        "love_category": "Shared Strength",
+        "love_rank": 3,
+        "love_tier_label": "Most Visible Fruit",
+        "love_tier_description": "Love appears as one of the clearest expressions of Christlike care in this report.",
+        "love_tier_action": "Choose one person to love with both warmth and truth this week.",
+        "love_summary": "Love is one of the most visible fruits in this report and is consistently affirmed by both self and observers.",
+        "love_consistency_note": "Love is generally aligned between self-reflection and observer feedback. This suggests Christlike care is being seen about as clearly by others as by the participant.",
+        "love_pressure_note": "Love appears generally steady under pressure in this feedback set. The fruit seems to remain visible when life is strained.",
+        "joy_self": 3.6666666666666665,
+        "joy_observer": 3.7777777777777777,
+        "joy_self_pressure": 3,
+        "joy_observer_pressure": 3.6666666666666665,
+        "joy_category": "Steady Developing",
+        "joy_rank": 7,
+        "joy_tier_label": "Growth Invitation Fruit",
+        "joy_tier_description": "Joy may be an invitation to recover gladness that is rooted in God, not ease.",
+        "joy_tier_action": "Ask where discouragement has been louder than grace.",
+        "joy_summary": "Joy is a current formation invitation, with room for greater visibility and steadiness.",
+        "joy_consistency_note": "Joy is generally aligned between self-reflection and observer feedback. This suggests resilient gladness is being seen about as clearly by others as by the participant.",
+        "joy_pressure_note": "Joy shows mild pressure sensitivity. Notice the situations where strain may change how this fruit is expressed.",
+        "peace_self": 4.333333333333333,
+        "peace_observer": 4.444444444444445,
+        "peace_self_pressure": 4,
+        "peace_observer_pressure": 4.333333333333333,
+        "peace_category": "Shared Strength",
+        "peace_rank": 4,
+        "peace_tier_label": "Steady Forming Fruit",
+        "peace_tier_description": "Peace is forming, though stress or uncertainty may still disrupt its visibility.",
+        "peace_tier_action": "Choose one situation where you will pause before solving.",
+        "peace_summary": "Peace appears steady and consistently visible to both self and observers.",
+        "peace_consistency_note": "Peace is generally aligned between self-reflection and observer feedback. This suggests settled trust is being seen about as clearly by others as by the participant.",
+        "peace_pressure_note": "Peace appears generally steady under pressure in this feedback set. The fruit seems to remain visible when life is strained.",
+        "patience_self": 3.3333333333333335,
+        "patience_observer": 3.3333333333333335,
+        "patience_self_pressure": 3,
+        "patience_observer_pressure": 3,
+        "patience_category": "Steady Developing",
+        "patience_rank": 9,
+        "patience_tier_label": "Growth Invitation Fruit",
+        "patience_tier_description": "Patience may be a formation invitation where waiting feels costly or inefficient.",
+        "patience_tier_action": "Ask God where hurry is replacing trust.",
+        "patience_summary": "Patience is a current formation invitation, with room for greater visibility and steadiness.",
+        "patience_consistency_note": "Patience is generally aligned between self-reflection and observer feedback. This suggests gracious endurance is being seen about as clearly by others as by the participant.",
+        "patience_pressure_note": "Patience appears generally steady under pressure in this feedback set. The fruit seems to remain visible when life is strained.",
+        "kindness_self": 4.666666666666667,
+        "kindness_observer": 4.666666666666667,
+        "kindness_self_pressure": 4,
+        "kindness_observer_pressure": 4.333333333333333,
+        "kindness_category": "Shared Strength",
+        "kindness_rank": 2,
+        "kindness_tier_label": "Most Visible Fruit",
+        "kindness_tier_description": "Kindness appears visible through practical care, tenderness, or thoughtful response.",
+        "kindness_tier_action": "Notice one small need and respond before it becomes a task list.",
+        "kindness_summary": "Kindness is one of the most visible fruits in this report and is consistently affirmed by both self and observers.",
+        "kindness_consistency_note": "Kindness is generally aligned between self-reflection and observer feedback. This suggests practical tenderness is being seen about as clearly by others as by the participant.",
+        "kindness_pressure_note": "Kindness shows mild pressure sensitivity. Notice the situations where strain may change how this fruit is expressed.",
+        "goodness_self": 4,
+        "goodness_observer": 4.222222222222222,
+        "goodness_self_pressure": 4,
+        "goodness_observer_pressure": 4.333333333333333,
+        "goodness_category": "Shared Strength",
+        "goodness_rank": 5,
+        "goodness_tier_label": "Steady Forming Fruit",
+        "goodness_tier_description": "Goodness is forming as conviction becomes more consistent in action.",
+        "goodness_tier_action": "Take one practical step that aligns action with conviction.",
+        "goodness_summary": "Goodness appears steady and consistently visible to both self and observers.",
+        "goodness_consistency_note": "Goodness is generally aligned between self-reflection and observer feedback. This suggests humble integrity is being seen about as clearly by others as by the participant.",
+        "goodness_pressure_note": "Goodness appears generally steady under pressure in this feedback set. The fruit seems to remain visible when life is strained.",
+        "faithfulness_self": 4.333333333333333,
+        "faithfulness_observer": 4.777777777777778,
+        "faithfulness_self_pressure": 4,
+        "faithfulness_observer_pressure": 4.666666666666667,
+        "faithfulness_category": "Shared Strength",
+        "faithfulness_rank": 1,
+        "faithfulness_tier_label": "Most Visible Fruit",
+        "faithfulness_tier_description": "Faithfulness appears visible through reliability, devotion, and trustworthy follow-through.",
+        "faithfulness_tier_action": "Steward one commitment with renewed honesty and gratitude.",
+        "faithfulness_summary": "Faithfulness is one of the most visible fruits in this report and is consistently affirmed by both self and observers.",
+        "faithfulness_consistency_note": "Faithfulness is generally aligned between self-reflection and observer feedback. This suggests steady devotion is being seen about as clearly by others as by the participant.",
+        "faithfulness_pressure_note": "Faithfulness appears generally steady under pressure in this feedback set. The fruit seems to remain visible when life is strained.",
+        "gentleness_self": 3.3333333333333335,
+        "gentleness_observer": 4.111111111111111,
+        "gentleness_self_pressure": 3,
+        "gentleness_observer_pressure": 3.3333333333333335,
+        "gentleness_category": "Steady Developing",
+        "gentleness_rank": 6,
+        "gentleness_tier_label": "Steady Forming Fruit",
+        "gentleness_tier_description": "Gentleness is forming as strength becomes more submitted to love.",
+        "gentleness_tier_action": "Enter one hard conversation with both clarity and tenderness.",
+        "gentleness_summary": "Gentleness appears present and steadily forming, with room for continued growth.",
+        "gentleness_consistency_note": "Gentleness shows a light difference between self-reflection and observer feedback. This is worth noticing, but it does not need to be overinterpreted.",
+        "gentleness_pressure_note": "Gentleness shows mild pressure sensitivity. Notice the situations where strain may change how this fruit is expressed.",
+        "self_control_self": 3.3333333333333335,
+        "self_control_observer": 3.5555555555555554,
+        "self_control_self_pressure": 3,
+        "self_control_observer_pressure": 3,
+        "self_control_category": "Steady Developing",
+        "self_control_rank": 8,
+        "self_control_tier_label": "Growth Invitation Fruit",
+        "self_control_tier_description": "Self-control may be an invitation to bring desire, attention, and reaction under Christ.",
+        "self_control_tier_action": "Invite accountability around one habit for the next seven days.",
+        "self_control_summary": "Self-control is a current formation invitation, with room for greater visibility and steadiness.",
+        "self_control_consistency_note": "Self-control is generally aligned between self-reflection and observer feedback. This suggests ordered freedom is being seen about as clearly by others as by the participant.",
+        "self_control_pressure_note": "Self-control shows mild pressure sensitivity. Notice the situations where strain may change how this fruit is expressed."
+      }
+    },
+    {
+      "responses": [
+        {
+          "response_type": "self",
+          "answers": {
+            "fruitRatings": {
+              "love": {
+                "visible": 2.3333333333333335,
+                "pressure": 3.0
+              },
+              "joy": {
+                "visible": 2.3333333333333335,
+                "pressure": 3.0
+              },
+              "peace": {
+                "visible": 3.3333333333333335,
+                "pressure": 4.0
+              },
+              "patience": {
+                "visible": 3.6666666666666665,
+                "pressure": 4.0
+              },
+              "kindness": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "goodness": {
+                "visible": 3.3333333333333335,
+                "pressure": 4.0
+              },
+              "faithfulness": {
+                "visible": 4.0,
+                "pressure": 5.0
+              },
+              "gentleness": {
+                "visible": 2.3333333333333335,
+                "pressure": 3.0
+              },
+              "self_control": {
+                "visible": 3.0,
+                "pressure": 3.0
+              }
+            }
+          },
+          "fruit_rank": []
+        },
+        {
+          "response_type": "observer",
+          "answers": {
+            "fruitRatings": {
+              "love": {
+                "visible": 4.333333333333333,
+                "pressure": 4.0
+              },
+              "joy": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "peace": {
+                "visible": 4.0,
+                "pressure": 3.0
+              },
+              "patience": {
+                "visible": 3.6666666666666665,
+                "pressure": 4.0
+              },
+              "kindness": {
+                "visible": 2.6666666666666665,
+                "pressure": 2.0
+              },
+              "goodness": {
+                "visible": 3.0,
+                "pressure": 1.0
+              },
+              "faithfulness": {
+                "visible": 3.0,
+                "pressure": 2.0
+              },
+              "gentleness": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "self_control": {
+                "visible": 3.3333333333333335,
+                "pressure": 2.0
+              }
+            }
+          },
+          "fruit_rank": []
+        }
+      ],
+      "expected": {
+        "love_self": 2.3333333333333335,
+        "love_observer": 4.333333333333333,
+        "love_self_pressure": 3,
+        "love_observer_pressure": 4,
+        "love_category": "Encouragement Others See",
+        "love_rank": 1,
+        "love_tier_label": "Most Visible Fruit",
+        "love_tier_description": "Love appears as one of the clearest expressions of Christlike care in this report.",
+        "love_tier_action": "Choose one person to love with both warmth and truth this week.",
+        "love_summary": "Love is one of the most visible fruits in this report and may be even more visible to observers than the participant realizes.",
+        "love_consistency_note": "Love shows a significant conversation gap. This is a place to slow down, listen carefully, and invite wise feedback before drawing conclusions.",
+        "love_pressure_note": "Love appears generally steady under pressure in this feedback set. The fruit seems to remain visible when life is strained.",
+        "joy_self": 2.3333333333333335,
+        "joy_observer": 3.3333333333333335,
+        "joy_self_pressure": 3,
+        "joy_observer_pressure": 3,
+        "joy_category": "Encouragement Others See",
+        "joy_rank": 5,
+        "joy_tier_label": "Steady Forming Fruit",
+        "joy_tier_description": "Joy is forming steadily, even if it is still situational or quiet at times.",
+        "joy_tier_action": "Build one repeatable gratitude rhythm into the week.",
+        "joy_summary": "Joy appears steadily forming and may be more visible to observers than the participant realizes.",
+        "joy_consistency_note": "Joy shows a meaningful perception gap. This may be a helpful place for conversation, humility, and clearer awareness.",
+        "joy_pressure_note": "Joy appears generally steady under pressure in this feedback set. The fruit seems to remain visible when life is strained.",
+        "peace_self": 3.3333333333333335,
+        "peace_observer": 4,
+        "peace_self_pressure": 4,
+        "peace_observer_pressure": 3,
+        "peace_category": "Steady Developing",
+        "peace_rank": 2,
+        "peace_tier_label": "Most Visible Fruit",
+        "peace_tier_description": "Peace appears visible as steadiness, calm, or trust that helps others breathe.",
+        "peace_tier_action": "Bring calm to one tense conversation by slowing your response.",
+        "peace_summary": "Peace is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "peace_consistency_note": "Peace shows a light difference between self-reflection and observer feedback. This is worth noticing, but it does not need to be overinterpreted.",
+        "peace_pressure_note": "Peace shows a noticeable pressure drop. This may point to a practical growth edge when stress, conflict, delay, or fatigue rises.",
+        "patience_self": 3.6666666666666665,
+        "patience_observer": 3.6666666666666665,
+        "patience_self_pressure": 4,
+        "patience_observer_pressure": 4,
+        "patience_category": "Steady Developing",
+        "patience_rank": 3,
+        "patience_tier_label": "Most Visible Fruit",
+        "patience_tier_description": "Patience appears visible in the way you give people or processes room to mature.",
+        "patience_tier_action": "Let one slow process mature without forcing control.",
+        "patience_summary": "Patience is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "patience_consistency_note": "Patience is generally aligned between self-reflection and observer feedback. This suggests gracious endurance is being seen about as clearly by others as by the participant.",
+        "patience_pressure_note": "Patience appears generally steady under pressure in this feedback set. The fruit seems to remain visible when life is strained.",
+        "kindness_self": 4,
+        "kindness_observer": 2.6666666666666665,
+        "kindness_self_pressure": 4,
+        "kindness_observer_pressure": 2,
+        "kindness_category": "Growth Invitation",
+        "kindness_rank": 9,
+        "kindness_tier_label": "Growth Invitation Fruit",
+        "kindness_tier_description": "Kindness may be an invitation to let care become more visible and concrete.",
+        "kindness_tier_action": "Ask who near you needs gentler attention this week.",
+        "kindness_summary": "Kindness is a current growth invitation for reflection, prayer, and practice.",
+        "kindness_consistency_note": "Kindness shows a meaningful perception gap. This may be a helpful place for conversation, humility, and clearer awareness.",
+        "kindness_pressure_note": "Kindness shows mild pressure sensitivity. Notice the situations where strain may change how this fruit is expressed.",
+        "goodness_self": 3.3333333333333335,
+        "goodness_observer": 3,
+        "goodness_self_pressure": 4,
+        "goodness_observer_pressure": 1,
+        "goodness_category": "Steady Developing",
+        "goodness_rank": 8,
+        "goodness_tier_label": "Growth Invitation Fruit",
+        "goodness_tier_description": "Goodness may be an invitation to choose what is right with humility and courage.",
+        "goodness_tier_action": "Ask where compromise, fatigue, or fear has quieted the good.",
+        "goodness_summary": "Goodness is a current formation invitation, with room for greater visibility and steadiness.",
+        "goodness_consistency_note": "Goodness is generally aligned between self-reflection and observer feedback. This suggests humble integrity is being seen about as clearly by others as by the participant.",
+        "goodness_pressure_note": "Goodness shows a major pressure vulnerability. This is an important formation area for prayer, support, and intentional practice before pressure rises.",
+        "faithfulness_self": 4,
+        "faithfulness_observer": 3,
+        "faithfulness_self_pressure": 5,
+        "faithfulness_observer_pressure": 2,
+        "faithfulness_category": "Growth Invitation",
+        "faithfulness_rank": 7,
+        "faithfulness_tier_label": "Growth Invitation Fruit",
+        "faithfulness_tier_description": "Faithfulness may be an invitation to renew, repair, or wisely release commitments.",
+        "faithfulness_tier_action": "Name one entrusted responsibility that needs your next faithful step.",
+        "faithfulness_summary": "Faithfulness is a current growth invitation for reflection, prayer, and practice.",
+        "faithfulness_consistency_note": "Faithfulness shows a meaningful perception gap. This may be a helpful place for conversation, humility, and clearer awareness.",
+        "faithfulness_pressure_note": "Faithfulness shows a noticeable pressure drop. This may point to a practical growth edge when stress, conflict, delay, or fatigue rises.",
+        "gentleness_self": 2.3333333333333335,
+        "gentleness_observer": 3.3333333333333335,
+        "gentleness_self_pressure": 3,
+        "gentleness_observer_pressure": 3,
+        "gentleness_category": "Encouragement Others See",
+        "gentleness_rank": 6,
+        "gentleness_tier_label": "Steady Forming Fruit",
+        "gentleness_tier_description": "Gentleness is forming as strength becomes more submitted to love.",
+        "gentleness_tier_action": "Enter one hard conversation with both clarity and tenderness.",
+        "gentleness_summary": "Gentleness appears steadily forming and may be more visible to observers than the participant realizes.",
+        "gentleness_consistency_note": "Gentleness shows a meaningful perception gap. This may be a helpful place for conversation, humility, and clearer awareness.",
+        "gentleness_pressure_note": "Gentleness appears generally steady under pressure in this feedback set. The fruit seems to remain visible when life is strained.",
+        "self_control_self": 3,
+        "self_control_observer": 3.3333333333333335,
+        "self_control_self_pressure": 3,
+        "self_control_observer_pressure": 2,
+        "self_control_category": "Steady Developing",
+        "self_control_rank": 4,
+        "self_control_tier_label": "Steady Forming Fruit",
+        "self_control_tier_description": "Self-control is forming as desires and responses become more ordered by grace.",
+        "self_control_tier_action": "Practice one small act of restraint before the pressure rises.",
+        "self_control_summary": "Self-control appears present and steadily forming, with room for continued growth.",
+        "self_control_consistency_note": "Self-control is generally aligned between self-reflection and observer feedback. This suggests ordered freedom is being seen about as clearly by others as by the participant.",
+        "self_control_pressure_note": "Self-control shows a noticeable pressure drop. This may point to a practical growth edge when stress, conflict, delay, or fatigue rises."
+      }
+    },
+    {
+      "responses": [
+        {
+          "response_type": "self",
+          "answers": {
+            "fruitRatings": {
+              "love": {
+                "visible": 3.3333333333333335,
+                "pressure": 4.0
+              },
+              "joy": {
+                "visible": 3.0,
+                "pressure": 4.0
+              },
+              "peace": {
+                "visible": 2.0,
+                "pressure": 1.0
+              },
+              "patience": {
+                "visible": 3.3333333333333335,
+                "pressure": 2.0
+              },
+              "kindness": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "goodness": {
+                "visible": 2.6666666666666665,
+                "pressure": 2.0
+              },
+              "faithfulness": {
+                "visible": 5.0,
+                "pressure": 4.0
+              },
+              "gentleness": {
+                "visible": 3.6666666666666665,
+                "pressure": 4.0
+              },
+              "self_control": {
+                "visible": 3.0,
+                "pressure": 3.0
+              }
+            }
+          },
+          "fruit_rank": []
+        }
+      ],
+      "expected": {
+        "love_self": 3.3333333333333335,
+        "love_observer": 3.3333333333333335,
+        "love_self_pressure": 4,
+        "love_observer_pressure": 4,
+        "love_category": "Self-Reflection Forming",
+        "love_rank": 3,
+        "love_tier_label": "Most Visible Fruit",
+        "love_tier_description": "Love appears as one of the clearest expressions of Christlike care in this report.",
+        "love_tier_action": "Choose one person to love with both warmth and truth this week.",
+        "love_summary": "Love is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "love_consistency_note": "Love is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "love_pressure_note": "Love appears generally steady under pressure in your self-reflection.",
+        "joy_self": 3,
+        "joy_observer": 3,
+        "joy_self_pressure": 4,
+        "joy_observer_pressure": 4,
+        "joy_category": "Self-Reflection Forming",
+        "joy_rank": 6,
+        "joy_tier_label": "Steady Forming Fruit",
+        "joy_tier_description": "Joy is forming steadily, even if it is still situational or quiet at times.",
+        "joy_tier_action": "Build one repeatable gratitude rhythm into the week.",
+        "joy_summary": "Joy appears present and steadily forming, with room for continued growth.",
+        "joy_consistency_note": "Joy is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "joy_pressure_note": "Joy appears generally steady under pressure in your self-reflection.",
+        "peace_self": 2,
+        "peace_observer": 2,
+        "peace_self_pressure": 1,
+        "peace_observer_pressure": 1,
+        "peace_category": "Self-Reflection Growth Invitation",
+        "peace_rank": 9,
+        "peace_tier_label": "Growth Invitation Fruit",
+        "peace_tier_description": "Peace may be a current invitation to trust God before outcomes are settled.",
+        "peace_tier_action": "Pray through one unsettled outcome before taking the next step.",
+        "peace_summary": "Peace is a current formation invitation, with room for greater visibility and steadiness.",
+        "peace_consistency_note": "Peace is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "peace_pressure_note": "Peace shows a noticeable pressure drop in your self-reflection. This may point to a practical growth edge when stress rises.",
+        "patience_self": 3.3333333333333335,
+        "patience_observer": 3.3333333333333335,
+        "patience_self_pressure": 2,
+        "patience_observer_pressure": 2,
+        "patience_category": "Self-Reflection Forming",
+        "patience_rank": 4,
+        "patience_tier_label": "Steady Forming Fruit",
+        "patience_tier_description": "Patience is forming, though hurry or frustration may still narrow its expression.",
+        "patience_tier_action": "Choose one delay as a place to practice trust.",
+        "patience_summary": "Patience appears present and steadily forming, with room for continued growth.",
+        "patience_consistency_note": "Patience is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "patience_pressure_note": "Patience shows a noticeable pressure drop in your self-reflection. This may point to a practical growth edge when stress rises.",
+        "kindness_self": 3.3333333333333335,
+        "kindness_observer": 3.3333333333333335,
+        "kindness_self_pressure": 3,
+        "kindness_observer_pressure": 3,
+        "kindness_category": "Self-Reflection Forming",
+        "kindness_rank": 5,
+        "kindness_tier_label": "Steady Forming Fruit",
+        "kindness_tier_description": "Kindness is forming as care becomes more visible in ordinary moments.",
+        "kindness_tier_action": "Make one ordinary interaction warmer and more personal.",
+        "kindness_summary": "Kindness appears present and steadily forming, with room for continued growth.",
+        "kindness_consistency_note": "Kindness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "kindness_pressure_note": "Kindness appears generally steady under pressure in your self-reflection.",
+        "goodness_self": 2.6666666666666665,
+        "goodness_observer": 2.6666666666666665,
+        "goodness_self_pressure": 2,
+        "goodness_observer_pressure": 2,
+        "goodness_category": "Self-Reflection Growth Invitation",
+        "goodness_rank": 8,
+        "goodness_tier_label": "Growth Invitation Fruit",
+        "goodness_tier_description": "Goodness may be an invitation to choose what is right with humility and courage.",
+        "goodness_tier_action": "Ask where compromise, fatigue, or fear has quieted the good.",
+        "goodness_summary": "Goodness is a current formation invitation, with room for greater visibility and steadiness.",
+        "goodness_consistency_note": "Goodness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "goodness_pressure_note": "Goodness shows mild pressure sensitivity in your self-reflection. Notice where strain may change how this fruit is expressed.",
+        "faithfulness_self": 5,
+        "faithfulness_observer": 5,
+        "faithfulness_self_pressure": 4,
+        "faithfulness_observer_pressure": 4,
+        "faithfulness_category": "Self-Visible Strength",
+        "faithfulness_rank": 1,
+        "faithfulness_tier_label": "Most Visible Fruit",
+        "faithfulness_tier_description": "Faithfulness appears visible through reliability, devotion, and trustworthy follow-through.",
+        "faithfulness_tier_action": "Steward one commitment with renewed honesty and gratitude.",
+        "faithfulness_summary": "Faithfulness is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "faithfulness_consistency_note": "Faithfulness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "faithfulness_pressure_note": "Faithfulness shows a noticeable pressure drop in your self-reflection. This may point to a practical growth edge when stress rises.",
+        "gentleness_self": 3.6666666666666665,
+        "gentleness_observer": 3.6666666666666665,
+        "gentleness_self_pressure": 4,
+        "gentleness_observer_pressure": 4,
+        "gentleness_category": "Self-Reflection Forming",
+        "gentleness_rank": 2,
+        "gentleness_tier_label": "Most Visible Fruit",
+        "gentleness_tier_description": "Gentleness appears visible as humble strength that protects dignity.",
+        "gentleness_tier_action": "Use a softer tone without weakening the truth.",
+        "gentleness_summary": "Gentleness is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "gentleness_consistency_note": "Gentleness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "gentleness_pressure_note": "Gentleness appears generally steady under pressure in your self-reflection.",
+        "self_control_self": 3,
+        "self_control_observer": 3,
+        "self_control_self_pressure": 3,
+        "self_control_observer_pressure": 3,
+        "self_control_category": "Self-Reflection Forming",
+        "self_control_rank": 7,
+        "self_control_tier_label": "Growth Invitation Fruit",
+        "self_control_tier_description": "Self-control may be an invitation to bring desire, attention, and reaction under Christ.",
+        "self_control_tier_action": "Invite accountability around one habit for the next seven days.",
+        "self_control_summary": "Self-control is a current formation invitation, with room for greater visibility and steadiness.",
+        "self_control_consistency_note": "Self-control is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "self_control_pressure_note": "Self-control appears generally steady under pressure in your self-reflection."
+      }
+    },
+    {
+      "responses": [
+        {
+          "response_type": "self",
+          "answers": {
+            "fruitRatings": {
+              "love": {
+                "visible": 4.333333333333333,
+                "pressure": 4.0
+              },
+              "joy": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "peace": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "patience": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "kindness": {
+                "visible": 4.666666666666667,
+                "pressure": 4.0
+              },
+              "goodness": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "faithfulness": {
+                "visible": 4.666666666666667,
+                "pressure": 4.0
+              },
+              "gentleness": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "self_control": {
+                "visible": 3.0,
+                "pressure": 3.0
+              }
+            }
+          },
+          "fruit_rank": []
+        }
+      ],
+      "expected": {
+        "love_self": 4.333333333333333,
+        "love_observer": 4.333333333333333,
+        "love_self_pressure": 4,
+        "love_observer_pressure": 4,
+        "love_category": "Self-Visible Strength",
+        "love_rank": 3,
+        "love_tier_label": "Most Visible Fruit",
+        "love_tier_description": "Love appears as one of the clearest expressions of Christlike care in this report.",
+        "love_tier_action": "Choose one person to love with both warmth and truth this week.",
+        "love_summary": "Love is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "love_consistency_note": "Love is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "love_pressure_note": "Love appears generally steady under pressure in your self-reflection.",
+        "joy_self": 3.3333333333333335,
+        "joy_observer": 3.3333333333333335,
+        "joy_self_pressure": 3,
+        "joy_observer_pressure": 3,
+        "joy_category": "Self-Reflection Forming",
+        "joy_rank": 6,
+        "joy_tier_label": "Steady Forming Fruit",
+        "joy_tier_description": "Joy is forming steadily, even if it is still situational or quiet at times.",
+        "joy_tier_action": "Build one repeatable gratitude rhythm into the week.",
+        "joy_summary": "Joy appears present and steadily forming, with room for continued growth.",
+        "joy_consistency_note": "Joy is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "joy_pressure_note": "Joy appears generally steady under pressure in your self-reflection.",
+        "peace_self": 4,
+        "peace_observer": 4,
+        "peace_self_pressure": 4,
+        "peace_observer_pressure": 4,
+        "peace_category": "Self-Visible Strength",
+        "peace_rank": 4,
+        "peace_tier_label": "Steady Forming Fruit",
+        "peace_tier_description": "Peace is forming, though stress or uncertainty may still disrupt its visibility.",
+        "peace_tier_action": "Choose one situation where you will pause before solving.",
+        "peace_summary": "Peace appears present and steadily forming, with room for continued growth.",
+        "peace_consistency_note": "Peace is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "peace_pressure_note": "Peace appears generally steady under pressure in your self-reflection.",
+        "patience_self": 3.3333333333333335,
+        "patience_observer": 3.3333333333333335,
+        "patience_self_pressure": 3,
+        "patience_observer_pressure": 3,
+        "patience_category": "Self-Reflection Forming",
+        "patience_rank": 7,
+        "patience_tier_label": "Growth Invitation Fruit",
+        "patience_tier_description": "Patience may be a formation invitation where waiting feels costly or inefficient.",
+        "patience_tier_action": "Ask God where hurry is replacing trust.",
+        "patience_summary": "Patience is a current formation invitation, with room for greater visibility and steadiness.",
+        "patience_consistency_note": "Patience is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "patience_pressure_note": "Patience appears generally steady under pressure in your self-reflection.",
+        "kindness_self": 4.666666666666667,
+        "kindness_observer": 4.666666666666667,
+        "kindness_self_pressure": 4,
+        "kindness_observer_pressure": 4,
+        "kindness_category": "Self-Visible Strength",
+        "kindness_rank": 1,
+        "kindness_tier_label": "Most Visible Fruit",
+        "kindness_tier_description": "Kindness appears visible through practical care, tenderness, or thoughtful response.",
+        "kindness_tier_action": "Notice one small need and respond before it becomes a task list.",
+        "kindness_summary": "Kindness is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "kindness_consistency_note": "Kindness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "kindness_pressure_note": "Kindness shows mild pressure sensitivity in your self-reflection. Notice where strain may change how this fruit is expressed.",
+        "goodness_self": 4,
+        "goodness_observer": 4,
+        "goodness_self_pressure": 4,
+        "goodness_observer_pressure": 4,
+        "goodness_category": "Self-Visible Strength",
+        "goodness_rank": 5,
+        "goodness_tier_label": "Steady Forming Fruit",
+        "goodness_tier_description": "Goodness is forming as conviction becomes more consistent in action.",
+        "goodness_tier_action": "Take one practical step that aligns action with conviction.",
+        "goodness_summary": "Goodness appears present and steadily forming, with room for continued growth.",
+        "goodness_consistency_note": "Goodness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "goodness_pressure_note": "Goodness appears generally steady under pressure in your self-reflection.",
+        "faithfulness_self": 4.666666666666667,
+        "faithfulness_observer": 4.666666666666667,
+        "faithfulness_self_pressure": 4,
+        "faithfulness_observer_pressure": 4,
+        "faithfulness_category": "Self-Visible Strength",
+        "faithfulness_rank": 2,
+        "faithfulness_tier_label": "Most Visible Fruit",
+        "faithfulness_tier_description": "Faithfulness appears visible through reliability, devotion, and trustworthy follow-through.",
+        "faithfulness_tier_action": "Steward one commitment with renewed honesty and gratitude.",
+        "faithfulness_summary": "Faithfulness is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "faithfulness_consistency_note": "Faithfulness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "faithfulness_pressure_note": "Faithfulness shows mild pressure sensitivity in your self-reflection. Notice where strain may change how this fruit is expressed.",
+        "gentleness_self": 3.3333333333333335,
+        "gentleness_observer": 3.3333333333333335,
+        "gentleness_self_pressure": 3,
+        "gentleness_observer_pressure": 3,
+        "gentleness_category": "Self-Reflection Forming",
+        "gentleness_rank": 8,
+        "gentleness_tier_label": "Growth Invitation Fruit",
+        "gentleness_tier_description": "Gentleness may be an invitation to bring strength without harshness or avoidance.",
+        "gentleness_tier_action": "Ask where force, fear, or avoidance needs to become humble strength.",
+        "gentleness_summary": "Gentleness is a current formation invitation, with room for greater visibility and steadiness.",
+        "gentleness_consistency_note": "Gentleness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "gentleness_pressure_note": "Gentleness appears generally steady under pressure in your self-reflection.",
+        "self_control_self": 3,
+        "self_control_observer": 3,
+        "self_control_self_pressure": 3,
+        "self_control_observer_pressure": 3,
+        "self_control_category": "Self-Reflection Forming",
+        "self_control_rank": 9,
+        "self_control_tier_label": "Growth Invitation Fruit",
+        "self_control_tier_description": "Self-control may be an invitation to bring desire, attention, and reaction under Christ.",
+        "self_control_tier_action": "Invite accountability around one habit for the next seven days.",
+        "self_control_summary": "Self-control is a current formation invitation, with room for greater visibility and steadiness.",
+        "self_control_consistency_note": "Self-control is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "self_control_pressure_note": "Self-control appears generally steady under pressure in your self-reflection."
+      }
+    },
+    {
+      "responses": [
+        {
+          "response_type": "self",
+          "answers": {
+            "fruitRatings": {
+              "love": {
+                "visible": 4.333333333333333,
+                "pressure": 4.0
+              },
+              "joy": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "peace": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "patience": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "kindness": {
+                "visible": 4.666666666666667,
+                "pressure": 4.0
+              },
+              "goodness": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "faithfulness": {
+                "visible": 4.666666666666667,
+                "pressure": 4.0
+              },
+              "gentleness": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "self_control": {
+                "visible": 3.0,
+                "pressure": 3.0
+              }
+            }
+          },
+          "fruit_rank": []
+        }
+      ],
+      "expected": {
+        "love_self": 4.333333333333333,
+        "love_observer": 4.333333333333333,
+        "love_self_pressure": 4,
+        "love_observer_pressure": 4,
+        "love_category": "Self-Visible Strength",
+        "love_rank": 3,
+        "love_tier_label": "Most Visible Fruit",
+        "love_tier_description": "Love appears as one of the clearest expressions of Christlike care in this report.",
+        "love_tier_action": "Choose one person to love with both warmth and truth this week.",
+        "love_summary": "Love is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "love_consistency_note": "Love is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "love_pressure_note": "Love appears generally steady under pressure in your self-reflection.",
+        "joy_self": 3.3333333333333335,
+        "joy_observer": 3.3333333333333335,
+        "joy_self_pressure": 3,
+        "joy_observer_pressure": 3,
+        "joy_category": "Self-Reflection Forming",
+        "joy_rank": 6,
+        "joy_tier_label": "Steady Forming Fruit",
+        "joy_tier_description": "Joy is forming steadily, even if it is still situational or quiet at times.",
+        "joy_tier_action": "Build one repeatable gratitude rhythm into the week.",
+        "joy_summary": "Joy appears present and steadily forming, with room for continued growth.",
+        "joy_consistency_note": "Joy is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "joy_pressure_note": "Joy appears generally steady under pressure in your self-reflection.",
+        "peace_self": 4,
+        "peace_observer": 4,
+        "peace_self_pressure": 4,
+        "peace_observer_pressure": 4,
+        "peace_category": "Self-Visible Strength",
+        "peace_rank": 4,
+        "peace_tier_label": "Steady Forming Fruit",
+        "peace_tier_description": "Peace is forming, though stress or uncertainty may still disrupt its visibility.",
+        "peace_tier_action": "Choose one situation where you will pause before solving.",
+        "peace_summary": "Peace appears present and steadily forming, with room for continued growth.",
+        "peace_consistency_note": "Peace is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "peace_pressure_note": "Peace appears generally steady under pressure in your self-reflection.",
+        "patience_self": 3.3333333333333335,
+        "patience_observer": 3.3333333333333335,
+        "patience_self_pressure": 3,
+        "patience_observer_pressure": 3,
+        "patience_category": "Self-Reflection Forming",
+        "patience_rank": 7,
+        "patience_tier_label": "Growth Invitation Fruit",
+        "patience_tier_description": "Patience may be a formation invitation where waiting feels costly or inefficient.",
+        "patience_tier_action": "Ask God where hurry is replacing trust.",
+        "patience_summary": "Patience is a current formation invitation, with room for greater visibility and steadiness.",
+        "patience_consistency_note": "Patience is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "patience_pressure_note": "Patience appears generally steady under pressure in your self-reflection.",
+        "kindness_self": 4.666666666666667,
+        "kindness_observer": 4.666666666666667,
+        "kindness_self_pressure": 4,
+        "kindness_observer_pressure": 4,
+        "kindness_category": "Self-Visible Strength",
+        "kindness_rank": 1,
+        "kindness_tier_label": "Most Visible Fruit",
+        "kindness_tier_description": "Kindness appears visible through practical care, tenderness, or thoughtful response.",
+        "kindness_tier_action": "Notice one small need and respond before it becomes a task list.",
+        "kindness_summary": "Kindness is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "kindness_consistency_note": "Kindness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "kindness_pressure_note": "Kindness shows mild pressure sensitivity in your self-reflection. Notice where strain may change how this fruit is expressed.",
+        "goodness_self": 4,
+        "goodness_observer": 4,
+        "goodness_self_pressure": 4,
+        "goodness_observer_pressure": 4,
+        "goodness_category": "Self-Visible Strength",
+        "goodness_rank": 5,
+        "goodness_tier_label": "Steady Forming Fruit",
+        "goodness_tier_description": "Goodness is forming as conviction becomes more consistent in action.",
+        "goodness_tier_action": "Take one practical step that aligns action with conviction.",
+        "goodness_summary": "Goodness appears present and steadily forming, with room for continued growth.",
+        "goodness_consistency_note": "Goodness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "goodness_pressure_note": "Goodness appears generally steady under pressure in your self-reflection.",
+        "faithfulness_self": 4.666666666666667,
+        "faithfulness_observer": 4.666666666666667,
+        "faithfulness_self_pressure": 4,
+        "faithfulness_observer_pressure": 4,
+        "faithfulness_category": "Self-Visible Strength",
+        "faithfulness_rank": 2,
+        "faithfulness_tier_label": "Most Visible Fruit",
+        "faithfulness_tier_description": "Faithfulness appears visible through reliability, devotion, and trustworthy follow-through.",
+        "faithfulness_tier_action": "Steward one commitment with renewed honesty and gratitude.",
+        "faithfulness_summary": "Faithfulness is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "faithfulness_consistency_note": "Faithfulness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "faithfulness_pressure_note": "Faithfulness shows mild pressure sensitivity in your self-reflection. Notice where strain may change how this fruit is expressed.",
+        "gentleness_self": 3.3333333333333335,
+        "gentleness_observer": 3.3333333333333335,
+        "gentleness_self_pressure": 3,
+        "gentleness_observer_pressure": 3,
+        "gentleness_category": "Self-Reflection Forming",
+        "gentleness_rank": 8,
+        "gentleness_tier_label": "Growth Invitation Fruit",
+        "gentleness_tier_description": "Gentleness may be an invitation to bring strength without harshness or avoidance.",
+        "gentleness_tier_action": "Ask where force, fear, or avoidance needs to become humble strength.",
+        "gentleness_summary": "Gentleness is a current formation invitation, with room for greater visibility and steadiness.",
+        "gentleness_consistency_note": "Gentleness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "gentleness_pressure_note": "Gentleness appears generally steady under pressure in your self-reflection.",
+        "self_control_self": 3,
+        "self_control_observer": 3,
+        "self_control_self_pressure": 3,
+        "self_control_observer_pressure": 3,
+        "self_control_category": "Self-Reflection Forming",
+        "self_control_rank": 9,
+        "self_control_tier_label": "Growth Invitation Fruit",
+        "self_control_tier_description": "Self-control may be an invitation to bring desire, attention, and reaction under Christ.",
+        "self_control_tier_action": "Invite accountability around one habit for the next seven days.",
+        "self_control_summary": "Self-control is a current formation invitation, with room for greater visibility and steadiness.",
+        "self_control_consistency_note": "Self-control is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "self_control_pressure_note": "Self-control appears generally steady under pressure in your self-reflection."
+      }
+    },
+    {
+      "responses": [
+        {
+          "response_type": "self",
+          "answers": {
+            "fruitRatings": {
+              "love": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "joy": {
+                "visible": 3.6666666666666665,
+                "pressure": 3.0
+              },
+              "peace": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "patience": {
+                "visible": 3.0,
+                "pressure": 2.0
+              },
+              "kindness": {
+                "visible": 4.666666666666667,
+                "pressure": 4.0
+              },
+              "goodness": {
+                "visible": 3.6666666666666665,
+                "pressure": 3.0
+              },
+              "faithfulness": {
+                "visible": 4.666666666666667,
+                "pressure": 4.0
+              },
+              "gentleness": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "self_control": {
+                "visible": 2.6666666666666665,
+                "pressure": 2.0
+              }
+            }
+          },
+          "fruit_rank": []
+        },
+        {
+          "response_type": "observer",
+          "answers": {
+            "fruitRatings": {
+              "love": {
+                "visible": 4.666666666666667,
+                "pressure": 4.0
+              },
+              "joy": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "peace": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "patience": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "kindness": {
+                "visible": 5.0,
+                "pressure": 5.0
+              },
+              "goodness": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "faithfulness": {
+                "visible": 5.0,
+                "pressure": 5.0
+              },
+              "gentleness": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "self_control": {
+                "visible": 3.0,
+                "pressure": 3.0
+              }
+            }
+          },
+          "fruit_rank": []
+        }
+      ],
+      "expected": {
+        "love_self": 4,
+        "love_observer": 4.666666666666667,
+        "love_self_pressure": 4,
+        "love_observer_pressure": 4,
+        "love_category": "Shared Strength",
+        "love_rank": 3,
+        "love_tier_label": "Most Visible Fruit",
+        "love_tier_description": "Love appears as one of the clearest expressions of Christlike care in this report.",
+        "love_tier_action": "Choose one person to love with both warmth and truth this week.",
+        "love_summary": "Love is one of the most visible fruits in this report and is consistently affirmed by both self and observers.",
+        "love_consistency_note": "Love shows a light difference between self-reflection and observer feedback. This is worth noticing, but it does not need to be overinterpreted.",
+        "love_pressure_note": "Love shows mild pressure sensitivity. Notice the situations where strain may change how this fruit is expressed.",
+        "joy_self": 3.6666666666666665,
+        "joy_observer": 4,
+        "joy_self_pressure": 3,
+        "joy_observer_pressure": 4,
+        "joy_category": "Steady Developing",
+        "joy_rank": 4,
+        "joy_tier_label": "Steady Forming Fruit",
+        "joy_tier_description": "Joy is forming steadily, even if it is still situational or quiet at times.",
+        "joy_tier_action": "Build one repeatable gratitude rhythm into the week.",
+        "joy_summary": "Joy appears present and steadily forming, with room for continued growth.",
+        "joy_consistency_note": "Joy is generally aligned between self-reflection and observer feedback. This suggests resilient gladness is being seen about as clearly by others as by the participant.",
+        "joy_pressure_note": "Joy shows mild pressure sensitivity. Notice the situations where strain may change how this fruit is expressed.",
+        "peace_self": 3.3333333333333335,
+        "peace_observer": 4,
+        "peace_self_pressure": 3,
+        "peace_observer_pressure": 4,
+        "peace_category": "Steady Developing",
+        "peace_rank": 6,
+        "peace_tier_label": "Steady Forming Fruit",
+        "peace_tier_description": "Peace is forming, though stress or uncertainty may still disrupt its visibility.",
+        "peace_tier_action": "Choose one situation where you will pause before solving.",
+        "peace_summary": "Peace appears present and steadily forming, with room for continued growth.",
+        "peace_consistency_note": "Peace shows a light difference between self-reflection and observer feedback. This is worth noticing, but it does not need to be overinterpreted.",
+        "peace_pressure_note": "Peace appears generally steady under pressure in this feedback set. The fruit seems to remain visible when life is strained.",
+        "patience_self": 3,
+        "patience_observer": 3.3333333333333335,
+        "patience_self_pressure": 2,
+        "patience_observer_pressure": 3,
+        "patience_category": "Steady Developing",
+        "patience_rank": 8,
+        "patience_tier_label": "Growth Invitation Fruit",
+        "patience_tier_description": "Patience may be a formation invitation where waiting feels costly or inefficient.",
+        "patience_tier_action": "Ask God where hurry is replacing trust.",
+        "patience_summary": "Patience is a current formation invitation, with room for greater visibility and steadiness.",
+        "patience_consistency_note": "Patience is generally aligned between self-reflection and observer feedback. This suggests gracious endurance is being seen about as clearly by others as by the participant.",
+        "patience_pressure_note": "Patience shows a noticeable pressure drop. This may point to a practical growth edge when stress, conflict, delay, or fatigue rises.",
+        "kindness_self": 4.666666666666667,
+        "kindness_observer": 5,
+        "kindness_self_pressure": 4,
+        "kindness_observer_pressure": 5,
+        "kindness_category": "Shared Strength",
+        "kindness_rank": 1,
+        "kindness_tier_label": "Most Visible Fruit",
+        "kindness_tier_description": "Kindness appears visible through practical care, tenderness, or thoughtful response.",
+        "kindness_tier_action": "Notice one small need and respond before it becomes a task list.",
+        "kindness_summary": "Kindness is one of the most visible fruits in this report and is consistently affirmed by both self and observers.",
+        "kindness_consistency_note": "Kindness is generally aligned between self-reflection and observer feedback. This suggests practical tenderness is being seen about as clearly by others as by the participant.",
+        "kindness_pressure_note": "Kindness shows mild pressure sensitivity. Notice the situations where strain may change how this fruit is expressed.",
+        "goodness_self": 3.6666666666666665,
+        "goodness_observer": 4,
+        "goodness_self_pressure": 3,
+        "goodness_observer_pressure": 4,
+        "goodness_category": "Steady Developing",
+        "goodness_rank": 5,
+        "goodness_tier_label": "Steady Forming Fruit",
+        "goodness_tier_description": "Goodness is forming as conviction becomes more consistent in action.",
+        "goodness_tier_action": "Take one practical step that aligns action with conviction.",
+        "goodness_summary": "Goodness appears present and steadily forming, with room for continued growth.",
+        "goodness_consistency_note": "Goodness is generally aligned between self-reflection and observer feedback. This suggests humble integrity is being seen about as clearly by others as by the participant.",
+        "goodness_pressure_note": "Goodness shows mild pressure sensitivity. Notice the situations where strain may change how this fruit is expressed.",
+        "faithfulness_self": 4.666666666666667,
+        "faithfulness_observer": 5,
+        "faithfulness_self_pressure": 4,
+        "faithfulness_observer_pressure": 5,
+        "faithfulness_category": "Shared Strength",
+        "faithfulness_rank": 2,
+        "faithfulness_tier_label": "Most Visible Fruit",
+        "faithfulness_tier_description": "Faithfulness appears visible through reliability, devotion, and trustworthy follow-through.",
+        "faithfulness_tier_action": "Steward one commitment with renewed honesty and gratitude.",
+        "faithfulness_summary": "Faithfulness is one of the most visible fruits in this report and is consistently affirmed by both self and observers.",
+        "faithfulness_consistency_note": "Faithfulness is generally aligned between self-reflection and observer feedback. This suggests steady devotion is being seen about as clearly by others as by the participant.",
+        "faithfulness_pressure_note": "Faithfulness shows mild pressure sensitivity. Notice the situations where strain may change how this fruit is expressed.",
+        "gentleness_self": 3.3333333333333335,
+        "gentleness_observer": 4,
+        "gentleness_self_pressure": 3,
+        "gentleness_observer_pressure": 4,
+        "gentleness_category": "Steady Developing",
+        "gentleness_rank": 7,
+        "gentleness_tier_label": "Growth Invitation Fruit",
+        "gentleness_tier_description": "Gentleness may be an invitation to bring strength without harshness or avoidance.",
+        "gentleness_tier_action": "Ask where force, fear, or avoidance needs to become humble strength.",
+        "gentleness_summary": "Gentleness is a current formation invitation, with room for greater visibility and steadiness.",
+        "gentleness_consistency_note": "Gentleness shows a light difference between self-reflection and observer feedback. This is worth noticing, but it does not need to be overinterpreted.",
+        "gentleness_pressure_note": "Gentleness appears generally steady under pressure in this feedback set. The fruit seems to remain visible when life is strained.",
+        "self_control_self": 2.6666666666666665,
+        "self_control_observer": 3,
+        "self_control_self_pressure": 2,
+        "self_control_observer_pressure": 3,
+        "self_control_category": "Steady Developing",
+        "self_control_rank": 9,
+        "self_control_tier_label": "Growth Invitation Fruit",
+        "self_control_tier_description": "Self-control may be an invitation to bring desire, attention, and reaction under Christ.",
+        "self_control_tier_action": "Invite accountability around one habit for the next seven days.",
+        "self_control_summary": "Self-control is a current formation invitation, with room for greater visibility and steadiness.",
+        "self_control_consistency_note": "Self-control is generally aligned between self-reflection and observer feedback. This suggests ordered freedom is being seen about as clearly by others as by the participant.",
+        "self_control_pressure_note": "Self-control shows mild pressure sensitivity. Notice the situations where strain may change how this fruit is expressed."
+      }
+    },
+    {
+      "responses": [
+        {
+          "response_type": "self",
+          "answers": {
+            "fruitRatings": {
+              "love": {
+                "visible": 3.6666666666666665,
+                "pressure": 3.0
+              },
+              "joy": {
+                "visible": 4.666666666666667,
+                "pressure": 4.0
+              },
+              "peace": {
+                "visible": 4.0,
+                "pressure": 2.0
+              },
+              "patience": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "kindness": {
+                "visible": 4.333333333333333,
+                "pressure": 3.0
+              },
+              "goodness": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "faithfulness": {
+                "visible": 4.666666666666667,
+                "pressure": 5.0
+              },
+              "gentleness": {
+                "visible": 3.6666666666666665,
+                "pressure": 5.0
+              },
+              "self_control": {
+                "visible": 4.0,
+                "pressure": 4.0
+              }
+            }
+          },
+          "fruit_rank": []
+        }
+      ],
+      "expected": {
+        "love_self": 3.6666666666666665,
+        "love_observer": 3.6666666666666665,
+        "love_self_pressure": 3,
+        "love_observer_pressure": 3,
+        "love_category": "Self-Reflection Forming",
+        "love_rank": 7,
+        "love_tier_label": "Growth Invitation Fruit",
+        "love_tier_description": "Love may be a current formation invitation, especially where care is costly or inconvenient.",
+        "love_tier_action": "Ask God who needs your patient, truthful care right now.",
+        "love_summary": "Love is a current formation invitation, with room for greater visibility and steadiness.",
+        "love_consistency_note": "Love is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "love_pressure_note": "Love shows mild pressure sensitivity in your self-reflection. Notice where strain may change how this fruit is expressed.",
+        "joy_self": 4.666666666666667,
+        "joy_observer": 4.666666666666667,
+        "joy_self_pressure": 4,
+        "joy_observer_pressure": 4,
+        "joy_category": "Self-Visible Strength",
+        "joy_rank": 1,
+        "joy_tier_label": "Most Visible Fruit",
+        "joy_tier_description": "Joy appears visible as hope, gratitude, or life-giving presence in this season.",
+        "joy_tier_action": "Name three signs of grace each day and share one with someone.",
+        "joy_summary": "Joy is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "joy_consistency_note": "Joy is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "joy_pressure_note": "Joy shows mild pressure sensitivity in your self-reflection. Notice where strain may change how this fruit is expressed.",
+        "peace_self": 4,
+        "peace_observer": 4,
+        "peace_self_pressure": 2,
+        "peace_observer_pressure": 2,
+        "peace_category": "Self-Visible Strength",
+        "peace_rank": 4,
+        "peace_tier_label": "Steady Forming Fruit",
+        "peace_tier_description": "Peace is forming, though stress or uncertainty may still disrupt its visibility.",
+        "peace_tier_action": "Choose one situation where you will pause before solving.",
+        "peace_summary": "Peace appears present and steadily forming, with room for continued growth.",
+        "peace_consistency_note": "Peace is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "peace_pressure_note": "Peace shows a major pressure vulnerability in your self-reflection. This is an important formation area for prayer, support, and practice before pressure rises.",
+        "patience_self": 3.3333333333333335,
+        "patience_observer": 3.3333333333333335,
+        "patience_self_pressure": 3,
+        "patience_observer_pressure": 3,
+        "patience_category": "Self-Reflection Forming",
+        "patience_rank": 9,
+        "patience_tier_label": "Growth Invitation Fruit",
+        "patience_tier_description": "Patience may be a formation invitation where waiting feels costly or inefficient.",
+        "patience_tier_action": "Ask God where hurry is replacing trust.",
+        "patience_summary": "Patience is a current formation invitation, with room for greater visibility and steadiness.",
+        "patience_consistency_note": "Patience is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "patience_pressure_note": "Patience appears generally steady under pressure in your self-reflection.",
+        "kindness_self": 4.333333333333333,
+        "kindness_observer": 4.333333333333333,
+        "kindness_self_pressure": 3,
+        "kindness_observer_pressure": 3,
+        "kindness_category": "Self-Visible Strength",
+        "kindness_rank": 3,
+        "kindness_tier_label": "Most Visible Fruit",
+        "kindness_tier_description": "Kindness appears visible through practical care, tenderness, or thoughtful response.",
+        "kindness_tier_action": "Notice one small need and respond before it becomes a task list.",
+        "kindness_summary": "Kindness is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "kindness_consistency_note": "Kindness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "kindness_pressure_note": "Kindness shows a noticeable pressure drop in your self-reflection. This may point to a practical growth edge when stress rises.",
+        "goodness_self": 4,
+        "goodness_observer": 4,
+        "goodness_self_pressure": 4,
+        "goodness_observer_pressure": 4,
+        "goodness_category": "Self-Visible Strength",
+        "goodness_rank": 5,
+        "goodness_tier_label": "Steady Forming Fruit",
+        "goodness_tier_description": "Goodness is forming as conviction becomes more consistent in action.",
+        "goodness_tier_action": "Take one practical step that aligns action with conviction.",
+        "goodness_summary": "Goodness appears present and steadily forming, with room for continued growth.",
+        "goodness_consistency_note": "Goodness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "goodness_pressure_note": "Goodness appears generally steady under pressure in your self-reflection.",
+        "faithfulness_self": 4.666666666666667,
+        "faithfulness_observer": 4.666666666666667,
+        "faithfulness_self_pressure": 5,
+        "faithfulness_observer_pressure": 5,
+        "faithfulness_category": "Self-Visible Strength",
+        "faithfulness_rank": 2,
+        "faithfulness_tier_label": "Most Visible Fruit",
+        "faithfulness_tier_description": "Faithfulness appears visible through reliability, devotion, and trustworthy follow-through.",
+        "faithfulness_tier_action": "Steward one commitment with renewed honesty and gratitude.",
+        "faithfulness_summary": "Faithfulness is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "faithfulness_consistency_note": "Faithfulness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "faithfulness_pressure_note": "Faithfulness appears generally steady under pressure in your self-reflection.",
+        "gentleness_self": 3.6666666666666665,
+        "gentleness_observer": 3.6666666666666665,
+        "gentleness_self_pressure": 5,
+        "gentleness_observer_pressure": 5,
+        "gentleness_category": "Self-Reflection Forming",
+        "gentleness_rank": 8,
+        "gentleness_tier_label": "Growth Invitation Fruit",
+        "gentleness_tier_description": "Gentleness may be an invitation to bring strength without harshness or avoidance.",
+        "gentleness_tier_action": "Ask where force, fear, or avoidance needs to become humble strength.",
+        "gentleness_summary": "Gentleness is a current formation invitation, with room for greater visibility and steadiness.",
+        "gentleness_consistency_note": "Gentleness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "gentleness_pressure_note": "Gentleness appears generally steady under pressure in your self-reflection.",
+        "self_control_self": 4,
+        "self_control_observer": 4,
+        "self_control_self_pressure": 4,
+        "self_control_observer_pressure": 4,
+        "self_control_category": "Self-Visible Strength",
+        "self_control_rank": 6,
+        "self_control_tier_label": "Steady Forming Fruit",
+        "self_control_tier_description": "Self-control is forming as desires and responses become more ordered by grace.",
+        "self_control_tier_action": "Practice one small act of restraint before the pressure rises.",
+        "self_control_summary": "Self-control appears present and steadily forming, with room for continued growth.",
+        "self_control_consistency_note": "Self-control is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "self_control_pressure_note": "Self-control appears generally steady under pressure in your self-reflection."
+      }
+    },
+    {
+      "responses": [
+        {
+          "response_type": "self",
+          "answers": {
+            "fruitRatings": {
+              "love": {
+                "visible": 4.0,
+                "pressure": 2.0
+              },
+              "joy": {
+                "visible": 3.6666666666666665,
+                "pressure": 3.0
+              },
+              "peace": {
+                "visible": 4.333333333333333,
+                "pressure": 4.0
+              },
+              "patience": {
+                "visible": 4.666666666666667,
+                "pressure": 4.0
+              },
+              "kindness": {
+                "visible": 4.333333333333333,
+                "pressure": 3.0
+              },
+              "goodness": {
+                "visible": 4.333333333333333,
+                "pressure": 5.0
+              },
+              "faithfulness": {
+                "visible": 4.666666666666667,
+                "pressure": 5.0
+              },
+              "gentleness": {
+                "visible": 4.0,
+                "pressure": 3.0
+              },
+              "self_control": {
+                "visible": 5.0,
+                "pressure": 4.0
+              }
+            }
+          },
+          "fruit_rank": []
+        }
+      ],
+      "expected": {
+        "love_self": 4,
+        "love_observer": 4,
+        "love_self_pressure": 2,
+        "love_observer_pressure": 2,
+        "love_category": "Self-Visible Strength",
+        "love_rank": 7,
+        "love_tier_label": "Growth Invitation Fruit",
+        "love_tier_description": "Love may be a current formation invitation, especially where care is costly or inconvenient.",
+        "love_tier_action": "Ask God who needs your patient, truthful care right now.",
+        "love_summary": "Love is a current formation invitation, with room for greater visibility and steadiness.",
+        "love_consistency_note": "Love is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "love_pressure_note": "Love shows a major pressure vulnerability in your self-reflection. This is an important formation area for prayer, support, and practice before pressure rises.",
+        "joy_self": 3.6666666666666665,
+        "joy_observer": 3.6666666666666665,
+        "joy_self_pressure": 3,
+        "joy_observer_pressure": 3,
+        "joy_category": "Self-Reflection Forming",
+        "joy_rank": 9,
+        "joy_tier_label": "Growth Invitation Fruit",
+        "joy_tier_description": "Joy may be an invitation to recover gladness that is rooted in God, not ease.",
+        "joy_tier_action": "Ask where discouragement has been louder than grace.",
+        "joy_summary": "Joy is a current formation invitation, with room for greater visibility and steadiness.",
+        "joy_consistency_note": "Joy is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "joy_pressure_note": "Joy shows mild pressure sensitivity in your self-reflection. Notice where strain may change how this fruit is expressed.",
+        "peace_self": 4.333333333333333,
+        "peace_observer": 4.333333333333333,
+        "peace_self_pressure": 4,
+        "peace_observer_pressure": 4,
+        "peace_category": "Self-Visible Strength",
+        "peace_rank": 4,
+        "peace_tier_label": "Steady Forming Fruit",
+        "peace_tier_description": "Peace is forming, though stress or uncertainty may still disrupt its visibility.",
+        "peace_tier_action": "Choose one situation where you will pause before solving.",
+        "peace_summary": "Peace appears present and steadily forming, with room for continued growth.",
+        "peace_consistency_note": "Peace is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "peace_pressure_note": "Peace appears generally steady under pressure in your self-reflection.",
+        "patience_self": 4.666666666666667,
+        "patience_observer": 4.666666666666667,
+        "patience_self_pressure": 4,
+        "patience_observer_pressure": 4,
+        "patience_category": "Self-Visible Strength",
+        "patience_rank": 2,
+        "patience_tier_label": "Most Visible Fruit",
+        "patience_tier_description": "Patience appears visible in the way you give people or processes room to mature.",
+        "patience_tier_action": "Let one slow process mature without forcing control.",
+        "patience_summary": "Patience is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "patience_consistency_note": "Patience is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "patience_pressure_note": "Patience shows mild pressure sensitivity in your self-reflection. Notice where strain may change how this fruit is expressed.",
+        "kindness_self": 4.333333333333333,
+        "kindness_observer": 4.333333333333333,
+        "kindness_self_pressure": 3,
+        "kindness_observer_pressure": 3,
+        "kindness_category": "Self-Visible Strength",
+        "kindness_rank": 5,
+        "kindness_tier_label": "Steady Forming Fruit",
+        "kindness_tier_description": "Kindness is forming as care becomes more visible in ordinary moments.",
+        "kindness_tier_action": "Make one ordinary interaction warmer and more personal.",
+        "kindness_summary": "Kindness appears present and steadily forming, with room for continued growth.",
+        "kindness_consistency_note": "Kindness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "kindness_pressure_note": "Kindness shows a noticeable pressure drop in your self-reflection. This may point to a practical growth edge when stress rises.",
+        "goodness_self": 4.333333333333333,
+        "goodness_observer": 4.333333333333333,
+        "goodness_self_pressure": 5,
+        "goodness_observer_pressure": 5,
+        "goodness_category": "Self-Visible Strength",
+        "goodness_rank": 6,
+        "goodness_tier_label": "Steady Forming Fruit",
+        "goodness_tier_description": "Goodness is forming as conviction becomes more consistent in action.",
+        "goodness_tier_action": "Take one practical step that aligns action with conviction.",
+        "goodness_summary": "Goodness appears present and steadily forming, with room for continued growth.",
+        "goodness_consistency_note": "Goodness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "goodness_pressure_note": "Goodness appears generally steady under pressure in your self-reflection.",
+        "faithfulness_self": 4.666666666666667,
+        "faithfulness_observer": 4.666666666666667,
+        "faithfulness_self_pressure": 5,
+        "faithfulness_observer_pressure": 5,
+        "faithfulness_category": "Self-Visible Strength",
+        "faithfulness_rank": 3,
+        "faithfulness_tier_label": "Most Visible Fruit",
+        "faithfulness_tier_description": "Faithfulness appears visible through reliability, devotion, and trustworthy follow-through.",
+        "faithfulness_tier_action": "Steward one commitment with renewed honesty and gratitude.",
+        "faithfulness_summary": "Faithfulness is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "faithfulness_consistency_note": "Faithfulness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "faithfulness_pressure_note": "Faithfulness appears generally steady under pressure in your self-reflection.",
+        "gentleness_self": 4,
+        "gentleness_observer": 4,
+        "gentleness_self_pressure": 3,
+        "gentleness_observer_pressure": 3,
+        "gentleness_category": "Self-Visible Strength",
+        "gentleness_rank": 8,
+        "gentleness_tier_label": "Growth Invitation Fruit",
+        "gentleness_tier_description": "Gentleness may be an invitation to bring strength without harshness or avoidance.",
+        "gentleness_tier_action": "Ask where force, fear, or avoidance needs to become humble strength.",
+        "gentleness_summary": "Gentleness is a current formation invitation, with room for greater visibility and steadiness.",
+        "gentleness_consistency_note": "Gentleness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "gentleness_pressure_note": "Gentleness shows a noticeable pressure drop in your self-reflection. This may point to a practical growth edge when stress rises.",
+        "self_control_self": 5,
+        "self_control_observer": 5,
+        "self_control_self_pressure": 4,
+        "self_control_observer_pressure": 4,
+        "self_control_category": "Self-Visible Strength",
+        "self_control_rank": 1,
+        "self_control_tier_label": "Most Visible Fruit",
+        "self_control_tier_description": "Self-control appears visible as ordered freedom, wise restraint, and steady response.",
+        "self_control_tier_action": "Choose one boundary that protects love and faithfulness.",
+        "self_control_summary": "Self-control is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "self_control_consistency_note": "Self-control is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "self_control_pressure_note": "Self-control shows a noticeable pressure drop in your self-reflection. This may point to a practical growth edge when stress rises."
+      }
+    },
+    {
+      "responses": [
+        {
+          "response_type": "self",
+          "answers": {
+            "fruitRatings": {
+              "love": {
+                "visible": 3.3333333333333335,
+                "pressure": 3.0
+              },
+              "joy": {
+                "visible": 2.6666666666666665,
+                "pressure": 3.0
+              },
+              "peace": {
+                "visible": 3.6666666666666665,
+                "pressure": 4.0
+              },
+              "patience": {
+                "visible": 1.6666666666666667,
+                "pressure": 2.0
+              },
+              "kindness": {
+                "visible": 2.3333333333333335,
+                "pressure": 5.0
+              },
+              "goodness": {
+                "visible": 4.666666666666667,
+                "pressure": 1.0
+              },
+              "faithfulness": {
+                "visible": 3.0,
+                "pressure": 3.0
+              },
+              "gentleness": {
+                "visible": 4.0,
+                "pressure": 3.0
+              },
+              "self_control": {
+                "visible": 2.0,
+                "pressure": 4.0
+              }
+            }
+          },
+          "fruit_rank": []
+        }
+      ],
+      "expected": {
+        "love_self": 3.3333333333333335,
+        "love_observer": 3.3333333333333335,
+        "love_self_pressure": 3,
+        "love_observer_pressure": 3,
+        "love_category": "Self-Reflection Forming",
+        "love_rank": 4,
+        "love_tier_label": "Steady Forming Fruit",
+        "love_tier_description": "Love is present and forming, though it may not always be the first fruit people name.",
+        "love_tier_action": "Practice one concrete act of care without needing recognition.",
+        "love_summary": "Love appears present and steadily forming, with room for continued growth.",
+        "love_consistency_note": "Love is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "love_pressure_note": "Love appears generally steady under pressure in your self-reflection.",
+        "joy_self": 2.6666666666666665,
+        "joy_observer": 2.6666666666666665,
+        "joy_self_pressure": 3,
+        "joy_observer_pressure": 3,
+        "joy_category": "Self-Reflection Growth Invitation",
+        "joy_rank": 6,
+        "joy_tier_label": "Steady Forming Fruit",
+        "joy_tier_description": "Joy is forming steadily, even if it is still situational or quiet at times.",
+        "joy_tier_action": "Build one repeatable gratitude rhythm into the week.",
+        "joy_summary": "Joy appears present and steadily forming, with room for continued growth.",
+        "joy_consistency_note": "Joy is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "joy_pressure_note": "Joy appears generally steady under pressure in your self-reflection.",
+        "peace_self": 3.6666666666666665,
+        "peace_observer": 3.6666666666666665,
+        "peace_self_pressure": 4,
+        "peace_observer_pressure": 4,
+        "peace_category": "Self-Reflection Forming",
+        "peace_rank": 3,
+        "peace_tier_label": "Most Visible Fruit",
+        "peace_tier_description": "Peace appears visible as steadiness, calm, or trust that helps others breathe.",
+        "peace_tier_action": "Bring calm to one tense conversation by slowing your response.",
+        "peace_summary": "Peace is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "peace_consistency_note": "Peace is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "peace_pressure_note": "Peace appears generally steady under pressure in your self-reflection.",
+        "patience_self": 1.6666666666666667,
+        "patience_observer": 1.6666666666666667,
+        "patience_self_pressure": 2,
+        "patience_observer_pressure": 2,
+        "patience_category": "Self-Reflection Growth Invitation",
+        "patience_rank": 9,
+        "patience_tier_label": "Growth Invitation Fruit",
+        "patience_tier_description": "Patience may be a formation invitation where waiting feels costly or inefficient.",
+        "patience_tier_action": "Ask God where hurry is replacing trust.",
+        "patience_summary": "Patience is a current formation invitation, with room for greater visibility and steadiness.",
+        "patience_consistency_note": "Patience is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "patience_pressure_note": "Patience appears generally steady under pressure in your self-reflection.",
+        "kindness_self": 2.3333333333333335,
+        "kindness_observer": 2.3333333333333335,
+        "kindness_self_pressure": 5,
+        "kindness_observer_pressure": 5,
+        "kindness_category": "Self-Reflection Growth Invitation",
+        "kindness_rank": 7,
+        "kindness_tier_label": "Growth Invitation Fruit",
+        "kindness_tier_description": "Kindness may be an invitation to let care become more visible and concrete.",
+        "kindness_tier_action": "Ask who near you needs gentler attention this week.",
+        "kindness_summary": "Kindness is a current formation invitation, with room for greater visibility and steadiness.",
+        "kindness_consistency_note": "Kindness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "kindness_pressure_note": "Kindness appears generally steady under pressure in your self-reflection.",
+        "goodness_self": 4.666666666666667,
+        "goodness_observer": 4.666666666666667,
+        "goodness_self_pressure": 1,
+        "goodness_observer_pressure": 1,
+        "goodness_category": "Self-Visible Strength",
+        "goodness_rank": 1,
+        "goodness_tier_label": "Most Visible Fruit",
+        "goodness_tier_description": "Goodness appears visible as integrity, courage, and active commitment to what is right.",
+        "goodness_tier_action": "Do one unseen good thing simply because it is right.",
+        "goodness_summary": "Goodness is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "goodness_consistency_note": "Goodness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "goodness_pressure_note": "Goodness shows a major pressure vulnerability in your self-reflection. This is an important formation area for prayer, support, and practice before pressure rises.",
+        "faithfulness_self": 3,
+        "faithfulness_observer": 3,
+        "faithfulness_self_pressure": 3,
+        "faithfulness_observer_pressure": 3,
+        "faithfulness_category": "Self-Reflection Forming",
+        "faithfulness_rank": 5,
+        "faithfulness_tier_label": "Steady Forming Fruit",
+        "faithfulness_tier_description": "Faithfulness is forming as consistency grows over time and in small things.",
+        "faithfulness_tier_action": "Complete one small promise before adding a new one.",
+        "faithfulness_summary": "Faithfulness appears present and steadily forming, with room for continued growth.",
+        "faithfulness_consistency_note": "Faithfulness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "faithfulness_pressure_note": "Faithfulness appears generally steady under pressure in your self-reflection.",
+        "gentleness_self": 4,
+        "gentleness_observer": 4,
+        "gentleness_self_pressure": 3,
+        "gentleness_observer_pressure": 3,
+        "gentleness_category": "Self-Visible Strength",
+        "gentleness_rank": 2,
+        "gentleness_tier_label": "Most Visible Fruit",
+        "gentleness_tier_description": "Gentleness appears visible as humble strength that protects dignity.",
+        "gentleness_tier_action": "Use a softer tone without weakening the truth.",
+        "gentleness_summary": "Gentleness is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "gentleness_consistency_note": "Gentleness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "gentleness_pressure_note": "Gentleness shows a noticeable pressure drop in your self-reflection. This may point to a practical growth edge when stress rises.",
+        "self_control_self": 2,
+        "self_control_observer": 2,
+        "self_control_self_pressure": 4,
+        "self_control_observer_pressure": 4,
+        "self_control_category": "Self-Reflection Growth Invitation",
+        "self_control_rank": 8,
+        "self_control_tier_label": "Growth Invitation Fruit",
+        "self_control_tier_description": "Self-control may be an invitation to bring desire, attention, and reaction under Christ.",
+        "self_control_tier_action": "Invite accountability around one habit for the next seven days.",
+        "self_control_summary": "Self-control is a current formation invitation, with room for greater visibility and steadiness.",
+        "self_control_consistency_note": "Self-control is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "self_control_pressure_note": "Self-control appears generally steady under pressure in your self-reflection."
+      }
+    },
+    {
+      "responses": [
+        {
+          "response_type": "self",
+          "answers": {
+            "fruitRatings": {
+              "love": {
+                "visible": 3.0,
+                "pressure": 3.0
+              },
+              "joy": {
+                "visible": 4.0,
+                "pressure": 4.0
+              },
+              "peace": {
+                "visible": 5.0,
+                "pressure": 5.0
+              },
+              "patience": {
+                "visible": 2.0,
+                "pressure": 2.0
+              },
+              "kindness": {
+                "visible": 1.0,
+                "pressure": 1.0
+              },
+              "goodness": {
+                "visible": 1.6666666666666667,
+                "pressure": 1.0
+              },
+              "faithfulness": {
+                "visible": 2.3333333333333335,
+                "pressure": 3.0
+              },
+              "gentleness": {
+                "visible": 3.3333333333333335,
+                "pressure": 4.0
+              },
+              "self_control": {
+                "visible": 4.666666666666667,
+                "pressure": 4.0
+              }
+            }
+          },
+          "fruit_rank": []
+        }
+      ],
+      "expected": {
+        "love_self": 3,
+        "love_observer": 3,
+        "love_self_pressure": 3,
+        "love_observer_pressure": 3,
+        "love_category": "Self-Reflection Forming",
+        "love_rank": 5,
+        "love_tier_label": "Steady Forming Fruit",
+        "love_tier_description": "Love is present and forming, though it may not always be the first fruit people name.",
+        "love_tier_action": "Practice one concrete act of care without needing recognition.",
+        "love_summary": "Love appears present and steadily forming, with room for continued growth.",
+        "love_consistency_note": "Love is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "love_pressure_note": "Love appears generally steady under pressure in your self-reflection.",
+        "joy_self": 4,
+        "joy_observer": 4,
+        "joy_self_pressure": 4,
+        "joy_observer_pressure": 4,
+        "joy_category": "Self-Visible Strength",
+        "joy_rank": 3,
+        "joy_tier_label": "Most Visible Fruit",
+        "joy_tier_description": "Joy appears visible as hope, gratitude, or life-giving presence in this season.",
+        "joy_tier_action": "Name three signs of grace each day and share one with someone.",
+        "joy_summary": "Joy is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "joy_consistency_note": "Joy is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "joy_pressure_note": "Joy appears generally steady under pressure in your self-reflection.",
+        "peace_self": 5,
+        "peace_observer": 5,
+        "peace_self_pressure": 5,
+        "peace_observer_pressure": 5,
+        "peace_category": "Self-Visible Strength",
+        "peace_rank": 1,
+        "peace_tier_label": "Most Visible Fruit",
+        "peace_tier_description": "Peace appears visible as steadiness, calm, or trust that helps others breathe.",
+        "peace_tier_action": "Bring calm to one tense conversation by slowing your response.",
+        "peace_summary": "Peace is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "peace_consistency_note": "Peace is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "peace_pressure_note": "Peace appears generally steady under pressure in your self-reflection.",
+        "patience_self": 2,
+        "patience_observer": 2,
+        "patience_self_pressure": 2,
+        "patience_observer_pressure": 2,
+        "patience_category": "Self-Reflection Growth Invitation",
+        "patience_rank": 7,
+        "patience_tier_label": "Growth Invitation Fruit",
+        "patience_tier_description": "Patience may be a formation invitation where waiting feels costly or inefficient.",
+        "patience_tier_action": "Ask God where hurry is replacing trust.",
+        "patience_summary": "Patience is a current formation invitation, with room for greater visibility and steadiness.",
+        "patience_consistency_note": "Patience is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "patience_pressure_note": "Patience appears generally steady under pressure in your self-reflection.",
+        "kindness_self": 1,
+        "kindness_observer": 1,
+        "kindness_self_pressure": 1,
+        "kindness_observer_pressure": 1,
+        "kindness_category": "Self-Reflection Growth Invitation",
+        "kindness_rank": 9,
+        "kindness_tier_label": "Growth Invitation Fruit",
+        "kindness_tier_description": "Kindness may be an invitation to let care become more visible and concrete.",
+        "kindness_tier_action": "Ask who near you needs gentler attention this week.",
+        "kindness_summary": "Kindness is a current formation invitation, with room for greater visibility and steadiness.",
+        "kindness_consistency_note": "Kindness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "kindness_pressure_note": "Kindness appears generally steady under pressure in your self-reflection.",
+        "goodness_self": 1.6666666666666667,
+        "goodness_observer": 1.6666666666666667,
+        "goodness_self_pressure": 1,
+        "goodness_observer_pressure": 1,
+        "goodness_category": "Self-Reflection Growth Invitation",
+        "goodness_rank": 8,
+        "goodness_tier_label": "Growth Invitation Fruit",
+        "goodness_tier_description": "Goodness may be an invitation to choose what is right with humility and courage.",
+        "goodness_tier_action": "Ask where compromise, fatigue, or fear has quieted the good.",
+        "goodness_summary": "Goodness is a current formation invitation, with room for greater visibility and steadiness.",
+        "goodness_consistency_note": "Goodness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "goodness_pressure_note": "Goodness shows mild pressure sensitivity in your self-reflection. Notice where strain may change how this fruit is expressed.",
+        "faithfulness_self": 2.3333333333333335,
+        "faithfulness_observer": 2.3333333333333335,
+        "faithfulness_self_pressure": 3,
+        "faithfulness_observer_pressure": 3,
+        "faithfulness_category": "Self-Reflection Growth Invitation",
+        "faithfulness_rank": 6,
+        "faithfulness_tier_label": "Steady Forming Fruit",
+        "faithfulness_tier_description": "Faithfulness is forming as consistency grows over time and in small things.",
+        "faithfulness_tier_action": "Complete one small promise before adding a new one.",
+        "faithfulness_summary": "Faithfulness appears present and steadily forming, with room for continued growth.",
+        "faithfulness_consistency_note": "Faithfulness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "faithfulness_pressure_note": "Faithfulness appears generally steady under pressure in your self-reflection.",
+        "gentleness_self": 3.3333333333333335,
+        "gentleness_observer": 3.3333333333333335,
+        "gentleness_self_pressure": 4,
+        "gentleness_observer_pressure": 4,
+        "gentleness_category": "Self-Reflection Forming",
+        "gentleness_rank": 4,
+        "gentleness_tier_label": "Steady Forming Fruit",
+        "gentleness_tier_description": "Gentleness is forming as strength becomes more submitted to love.",
+        "gentleness_tier_action": "Enter one hard conversation with both clarity and tenderness.",
+        "gentleness_summary": "Gentleness appears present and steadily forming, with room for continued growth.",
+        "gentleness_consistency_note": "Gentleness is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "gentleness_pressure_note": "Gentleness appears generally steady under pressure in your self-reflection.",
+        "self_control_self": 4.666666666666667,
+        "self_control_observer": 4.666666666666667,
+        "self_control_self_pressure": 4,
+        "self_control_observer_pressure": 4,
+        "self_control_category": "Self-Visible Strength",
+        "self_control_rank": 2,
+        "self_control_tier_label": "Most Visible Fruit",
+        "self_control_tier_description": "Self-control appears visible as ordered freedom, wise restraint, and steady response.",
+        "self_control_tier_action": "Choose one boundary that protects love and faithfulness.",
+        "self_control_summary": "Self-control is one of the most visible fruits in this report, with room for continued formation and greater steadiness.",
+        "self_control_consistency_note": "Self-control is ranked from your own reflection in this self-only report. Use it as a prayerful formation signal.",
+        "self_control_pressure_note": "Self-control shows mild pressure sensitivity in your self-reflection. Notice where strain may change how this fruit is expressed."
+      }
+    }
+  ]
+}

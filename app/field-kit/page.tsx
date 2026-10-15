@@ -527,10 +527,15 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
       };
     }
 
+    if (assessment.title === "FruitLife360") {
+      return { ...assessment, status, action: activeFruitLifeSession ? "Continue assessment" : "Start assessment",
+        href: activeFruitLifeSession ? "/field-kit#current-assessment-process" : "/fruitlife360",
+        courseAction: "Go to course", courseHref: "/courses/fruitlife-360-formation", courseAvailable: true };
+    }
     return { ...assessment, status };
   });
   const artifacts: FieldKitArtifact[] = [
-    ...snapshotArtifactSources.map((snapshot) => ({
+    ...snapshotArtifactSources.filter(snapshot => !(snapshot.assessment_type === "fruit_360" && fruitLifeReportSessions.some(session => session.report_snapshot_id === snapshot.id))).map((snapshot) => ({
       action: "Open report",
       courseAction: "Explore course",
       courseHref:
@@ -566,8 +571,8 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
 
       return {
         action: "Open report",
-        courseAction: null,
-        courseHref: null,
+        courseAction: "Explore course",
+        courseHref: "/courses/fruitlife-360-formation",
         detail: `Your ${fruitLifeReportModeLabel(session).toLowerCase()} FruitLife360 report is ready to review.`,
         href: fruitLifeReportHref(session),
         logo: "/brand/tools/fruitful-life-360-logo.jpg",
@@ -655,6 +660,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
 
         <FruitLifeCurrentAssessmentProcess
           created={reviewParams?.fruitlife === "created"}
+          notice={reviewParams?.fruitlife}
           returnTo={fruitLifeReturnPath}
           session={activeFruitLifeSession}
           token={activeFruitLifeToken}
@@ -842,6 +848,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
 
       <FruitLifeCurrentAssessmentProcess
         created={reviewParams?.fruitlife === "created"}
+        notice={reviewParams?.fruitlife}
         session={activeFruitLifeSession}
         token={activeFruitLifeToken}
       />

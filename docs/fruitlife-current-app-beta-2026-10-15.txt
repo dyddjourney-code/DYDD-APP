@@ -1,0 +1,53 @@
+FRUITLIFE 360 — CURRENT APP BETA RESTORATION
+October 15, 2026
+
+Goal
+Start and run FruitLife360 inside the main DYDD app, not the older mini-app lane.
+Keep the existing course. Do not change old completed reports or old Sheet/Make workflows.
+
+Findings
+- Current-app Start Assessment reached a setup endpoint gated by the old per-run entitlement; failed access redirected into lane=fruitlife, hiding the main app navigation.
+- Setup returned to the older entry gate rather than opening the reflection.
+- Cancelled observer tokens remained accepted; cancellation did not reduce the completion requirement.
+- Reminder fallback could resend completed/cancelled invitations.
+- Thank-you copy claimed report/email completion while waiting for observers.
+- Observer tokens could read the participant roster/status; report downloads lacked ownership checks.
+- Repeated submissions used random source IDs and could create duplicate responses.
+- Worker retries created new PDFs; failed final-email artifacts prevented retry; stale processing locks were not recovered.
+- Native report engine used simplified guidance and pooled self/observer ranking, unlike the original source formulas. Many original item statements were rewritten.
+
+Implemented
+- Main app setup and Field Kit continue flow. Main-app beta access follows the same signed-in pattern as DesignID; it does not require/consume the old $10 tripwire purchase. No Stripe product or subscription settings were changed.
+- Participant identity is tied to the signed-in account; up to 12 distinct named observers; goal derives from actual invitations. Setup opens the self reflection immediately.
+- Browser-local draft save/resume for ratings, ranking, step and notes, scoped to session/token/role; saved drafts cleared on submission confirmation. Not cross-device answer syncing.
+- Stable response IDs, strict server-side item/rank/reflection validation, role-specific tokens, cancelled/completed link rejection.
+- Completion totals rebuilt from persisted responses; cancelling an unfinished invite updates the required count and queues the report when appropriate. Pending-only reminders, truthful provider feedback.
+- Participant-only status access and owned/admin report access. Observers can submit without buying anything or creating an account, but cannot read another observer's details or the participant report.
+- Background after-response report worker; stored PDF provider IDs reused on retries; failed email retried; already-sent deduplication/idempotency key; stale-lock recovery. Existing historical ready jobs are not swept into a new email run.
+- Original workbook scoring: observer consistency first, self consistency tie-break, then canonical fruit order; self-only uses own consistency scores. Forced ranking is preserved separately, not substituted for the source formula.
+- Original 36 scored item texts for self and observer restored; saved instrument/scoring versions and complete item definitions on new responses.
+- Source libraries copied verbatim: 9 base fruit entries, 27 tier-formation entries, 72 gap/pressure entries, 27 tier descriptions/actions, report copy and tier guidance. Original tier-specific maturity, invitation, practice and prayer restored. User-written comments HTML-escaped.
+- Existing linked DesignID primary/secondary included when available. Old completed reports are not regenerated or overwritten. Pre-existing native sessions retain their original instrument and report interpretation through versioned compatibility; new current-app sessions use the restored source contract.
+
+Verification
+- Typecheck and production build passed.
+- 631 scoring/band fixtures, including exact gap boundaries and asymmetric observer/self ranking.
+- 10 anonymized historical reports: 1,080 source aggregate values matched.
+- All 72 original self/observer statements match the source; internal field IDs remain stable.
+- All 169 fields referenced by the live PDF template are present.
+- Real form at desktop 1280 and phone 390: all 12 steps, all 36 captured ratings, accessible ranking controls, answer preservation and reload/resume; no overflow.
+- Real server-action lifecycle with in-memory database and mocked email: setup, self, waiting, observer, reminder, cancellation, one queued report; duplicate/invalid/cancelled/wrong-role rejection and observer tracker privacy.
+- Worker tests: failed-email retry, PDF reuse, stale-lock recovery and already-sent email deduplication.
+- Two real PDFMonkey fixture reports generated without email or app record writes: self-only and 360. Both 10 pages; all 45 checked personalized guidance paragraphs present; formation page visually inspected.
+- Authenticated existing owner start/setup and anonymous login/report gates checked locally.
+- Temporary local form capture route and development cache removed before production build; route absent from build output.
+
+Real-account beta confirmation (not yet run in this repair)
+1. Fresh ordinary beta account: main Field Kit -> FruitLife360 -> self-only setup; complete and confirm report in Field Kit plus actual branded inbox delivery.
+2. A separate assessment with observers: receive/open invitations without accounts, complete self, return to Field Kit while waiting, complete observer responses, confirm a single finished 360 report.
+3. Send a reminder only to an unfinished observer; cancel one unfinished invitation and confirm it cannot submit and no longer blocks report completion.
+4. Compare self-only and 360 report content, pressure/gap notes, fruit order, DesignID context, saved course access, and mobile readability.
+5. Return after completion and verify old reports stay accessible and a new FruitLife assessment can begin. FruitLife has no DesignID six-month retake restriction.
+
+Release boundary
+Technical verification and actual PDF rendering are separate from a new real-account save/PDF/email/inbox round trip. No observer/customer invitations or final emails were sent by this repair. The next controlled beta should exercise those live behaviors; do not describe them as already inbox-tested.

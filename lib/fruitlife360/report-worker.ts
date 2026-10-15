@@ -112,7 +112,7 @@ async function upsertFruitLifeSnapshot({
       {
         assessment_type: "fruit_360",
         participant_id: session.participant_id,
-        scores: fruitLifeSnapshotScores(payload),
+        scores: { ...fruitLifeSnapshotScores(payload), reportAccessUrl: `/fruitlife360/report?session=${encodeURIComponent(session.id)}` },
         source: "fruitlife_360_native_app",
         source_response_id: sourceResponseId,
         source_submitted_at: submittedAt,
@@ -241,6 +241,9 @@ export async function processFruitLifeReportJobs({
   const backfilledSnapshots = dryRun
     ? []
     : await backfillReadyFruitLifeSnapshots({ limit, supabase });
+  // Recover a worker interrupted by a server timeout without creating another PDF.
+  if (!dryRun) await supabase.from("fruitlife_360_report_jobs").update({ job_status: "retry", locked_at: null, locked_by: null })
+    .eq("job_status", "processing").lt("locked_at", new Date(Date.now() - 10 * 60 * 1000).toISOString());
   const { data: jobs, error: jobsError } = await supabase
     .from("fruitlife_360_report_jobs")
     .select("id,session_id,payload,attempt_count")
@@ -296,17 +299,27 @@ export async function processFruitLifeReportJobs({
 
       const typedSession = session as FruitLifeSession;
       const filename = reportFilename(typedSession, job.id);
+      const { data: priorPdf } = dryRun ? { data: null } : await supabase.from("fruitlife_360_report_artifacts")
+        .select("id,provider_document_id").eq("report_job_id", job.id).eq("artifact_type", "pdf").limit(1).maybeSingle();
       const createdDocument = dryRun
         ? {
             filename,
             id: "dry-run",
             status: "ready",
           }
-        : await createPdfMonkeyDocument({
+        : priorPdf?.provider_document_id ? await getPdfMonkeyDocument(priorPdf.provider_document_id) : await createPdfMonkeyDocument({
             filename,
             payload: job.payload,
             templateId: fruitLifeTemplateId,
           });
+      // Persist the provider document before waiting so a timeout/retry resumes it.
+      if (!dryRun && !priorPdf) {
+        const { error } = await supabase.from("fruitlife_360_report_artifacts").insert({
+          artifact_status: "draft", artifact_type: "pdf", content_type: "application/pdf", filename,
+          provider: "pdfmonkey", provider_document_id: createdDocument.id, report_job_id: job.id, session_id: job.session_id,
+        });
+        if (error) throw new Error(error.message);
+      }
       const readyDocument = dryRun
         ? createdDocument
         : (await waitForPdf(createdDocument.id, dryRun)) ?? createdDocument;
@@ -324,32 +337,11 @@ export async function processFruitLifeReportJobs({
         : null;
 
       if (!dryRun) {
-        const { data: existingPdf } = await supabase
-          .from("fruitlife_360_report_artifacts")
-          .select("id")
-          .eq("report_job_id", job.id)
-          .eq("artifact_type", "pdf")
-          .limit(1)
-          .maybeSingle();
-
-        if (!existingPdf?.id) {
-          await supabase.from("fruitlife_360_report_artifacts").insert({
-            artifact_status: isReady ? "ready" : "draft",
-            artifact_type: "pdf",
-            content_type: "application/pdf",
-            external_url: url || null,
-            filename,
-            metadata: {
-              checksum: readyDocument.checksum ?? null,
-              pdfMonkeyStatus: readyDocument.status ?? null,
-              previewUrl: readyDocument.preview_url ?? null,
-            },
-            provider: "pdfmonkey",
-            provider_document_id: readyDocument.id,
-            report_job_id: job.id,
-            session_id: job.session_id,
-          });
-        }
+        const { error } = await supabase.from("fruitlife_360_report_artifacts").update({
+          artifact_status: isReady ? "ready" : "draft", external_url: url || null,
+          metadata: { checksum: readyDocument.checksum ?? null, pdfMonkeyStatus: readyDocument.status ?? null, previewUrl: readyDocument.preview_url ?? null },
+        }).eq("report_job_id", job.id).eq("artifact_type", "pdf");
+        if (error) throw new Error(error.message);
       }
 
       let emailSent = false;
@@ -365,6 +357,7 @@ export async function processFruitLifeReportJobs({
               .eq("report_job_id", job.id)
               .eq("artifact_type", "email")
               .eq("provider", "resend")
+              .eq("artifact_status", "sent")
               .contains("metadata", { purpose: "final_report_email" })
               .limit(1)
               .maybeSingle();
@@ -379,9 +372,10 @@ export async function processFruitLifeReportJobs({
                   reportUrl,
                 }),
                 to: typedSession.participant_email,
+                idempotencyKey: `fruitlife-final-${job.id}`,
               });
 
-        emailSent = emailResult.sent;
+        emailSent = emailResult.sent || Boolean(existingFinalEmail?.id);
         emailSkipped = emailResult.skipped;
         emailMessage = emailResult.message ?? "";
 
@@ -409,8 +403,8 @@ export async function processFruitLifeReportJobs({
           .from("fruitlife_360_report_jobs")
           .update({
             completed_at: isReady && emailSent ? new Date().toISOString() : null,
-            job_status: isReady && emailSent ? "sent" : isReady ? "ready" : "retry",
-            last_error: isReady ? null : readyDocument.failure_cause ?? "PDFMonkey document is not ready yet.",
+            job_status: isReady && emailSent ? "sent" : job.attempt_count >= 5 ? "error" : "retry",
+            last_error: isReady && emailSent ? null : isReady ? emailMessage || "Report email is pending." : readyDocument.failure_cause ?? "PDFMonkey document is not ready yet.",
           })
           .eq("id", job.id);
 

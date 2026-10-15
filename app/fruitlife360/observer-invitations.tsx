@@ -30,11 +30,11 @@ export function ObserverInvitations() {
             <span>{observerNumber}</span>
             <label>
               Name
-              <input name={`observer_name_${observerNumber}`} type="text" />
+              <input name={`observer_name_${observerNumber}`} required type="text" />
             </label>
             <label>
               Email
-              <input name={`observer_email_${observerNumber}`} type="email" />
+              <input name={`observer_email_${observerNumber}`} required type="email" />
             </label>
             <label>
               Relationship

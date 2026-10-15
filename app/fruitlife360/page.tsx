@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { PageHelp } from "@/components/page-help";
 import { userHasFruitLifeEntitlement } from "@/lib/commerce/fruitlife-entitlements";
+import { getFruitLifeDashboardSessions, fruitLifeIsActive } from "@/lib/fruitlife360/dashboard";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createFruitLifeSession } from "./actions";
@@ -31,19 +32,26 @@ export default async function FruitLifeSignupPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const returnTo = params?.return_to?.startsWith("/") ? params.return_to : "/fruitlife360/entry";
+  const returnTo = params?.return_to?.startsWith("/") && !params.return_to.startsWith("//") ? params.return_to : "/field-kit#current-assessment-process";
+  const legacyLane = returnTo.includes("lane=fruitlife");
 
   if (!user) {
     redirect(`/login?next=${encodeURIComponent(`/fruitlife360?return_to=${returnTo}`)}`);
   }
 
-  const hasAccess = await userHasFruitLifeEntitlement(user.id);
+  const hasAccess = legacyLane ? await userHasFruitLifeEntitlement(user.id) : true;
 
-  if (!hasAccess && !isFruitLifeAdmin(user.email)) {
+  if (legacyLane && !hasAccess && !isFruitLifeAdmin(user.email)) {
     redirect(
       `/field-kit?lane=fruitlife&checkout=required#current-assessment-process`,
     );
   }
+
+  if (!legacyLane) {
+    const sessions = await getFruitLifeDashboardSessions({ email: normalizeEmail(user.email), enabled: true });
+    if (sessions.some(fruitLifeIsActive)) redirect("/field-kit#current-assessment-process");
+  }
+  const { data: profile } = await supabase.from("school_profiles").select("full_name").eq("id", user.id).maybeSingle();
 
   return (
     <main className="fruitlife-shell fruitlife-public">
@@ -65,7 +73,7 @@ export default async function FruitLifeSignupPage({
           </div>
           <PageHelp
             items={[
-              "Use 0 observers for a self-assessment.",
+              "Leave observers empty for a self-assessment.",
               "Add observer names and emails only when you want feedback from others.",
               "After setup, the app sends your self-reflection link and tracks the report process.",
             ]}
@@ -87,31 +95,27 @@ export default async function FruitLifeSignupPage({
           </p>
           <p>
             <span>4</span>
-            Watch Status
+            Track Progress
           </p>
         </section>
         <section className="fruitlife-panel">
           <p className="section-label">Participant Setup</p>
           <h2>Who is this assessment for?</h2>
           <p>
-            Enter the participant details. For a self-assessment, leave the observer goal at 0.
+            Enter the participant details. For a self-assessment, leave the observer list empty.
           </p>
           <div className="fruitlife-grid two">
             <label>
               Participant name
               <small>This name appears in the app and report process.</small>
-              <input name="participant_name" required type="text" />
+              <input defaultValue={profile?.full_name ?? String(user.user_metadata?.full_name ?? "")} name="participant_name" required type="text" />
             </label>
             <label>
               Participant email
               <small>The self-reflection link is sent here.</small>
-              <input name="participant_email" required type="email" />
+              <input value={user.email ?? ""} readOnly name="participant_email" required type="email" />
             </label>
-            <label>
-              Observer goal
-              <small>Use 0 for self-assessment. Increase this only when inviting observers.</small>
-              <input defaultValue="0" min="0" max="12" name="observer_goal" required type="number" />
-            </label>
+
           </div>
         </section>
 
@@ -125,12 +129,12 @@ export default async function FruitLifeSignupPage({
           <strong>What happens next:</strong>
           <span>
             The app creates the session, emails the participant link, and tracks the report process
-            in Base Camp.
+            in your Field Kit.
           </span>
         </section>
 
         <button className="button primary" type="submit">
-          Create Assessment
+          Start My Reflection
         </button>
       </form>
     </main>

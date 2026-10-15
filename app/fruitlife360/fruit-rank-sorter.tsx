@@ -17,18 +17,20 @@ function moveItem(items: RankedFruit[], fromIndex: number, toIndex: number) {
   return nextItems;
 }
 
-export function FruitRankSorter() {
-  const [rankedFruits, setRankedFruits] = useState<RankedFruit[]>([...fruitLifeFruits]);
+export function FruitRankSorter({ initialOrder, onChange }: { initialOrder?: string[]; onChange?: (order: string[]) => void }) {
+  const [rankedFruits, setRankedFruits] = useState<RankedFruit[]>(() => initialOrder?.length === 9 ? initialOrder.map(key => fruitLifeFruits.find(fruit => fruit.key === key)!).filter(Boolean) : [...fruitLifeFruits]);
   const fruitPositions = useMemo(
     () => new Map(rankedFruits.map((fruit, index) => [fruit.key, index])),
     [rankedFruits],
   );
 
+  function updateOrder(next: RankedFruit[]) { setRankedFruits(next); onChange?.(next.map(fruit => fruit.key)); }
+
   function moveByOne(fruitKey: FruitKey, direction: -1 | 1) {
     const fromIndex = fruitPositions.get(fruitKey);
     if (fromIndex === undefined) return;
     const toIndex = Math.max(0, Math.min(rankedFruits.length - 1, fromIndex + direction));
-    setRankedFruits(moveItem(rankedFruits, fromIndex, toIndex));
+    updateOrder(moveItem(rankedFruits, fromIndex, toIndex));
   }
 
   return (
@@ -49,7 +51,7 @@ export function FruitRankSorter() {
             if (!isFruitKey(draggedKey)) return;
             const fromIndex = fruitPositions.get(draggedKey);
             if (fromIndex === undefined || fromIndex === index) return;
-            setRankedFruits(moveItem(rankedFruits, fromIndex, index));
+            updateOrder(moveItem(rankedFruits, fromIndex, index));
           }}
         >
           <input name={`fruit_rank_${index + 1}`} type="hidden" value={fruit.key} />

@@ -23,12 +23,14 @@ export type FruitLifeDashboardSession = {
   metadata: {
     observerLinks?: Array<{ email?: string; link?: string; name?: string; relationship?: string }>;
     selfLink?: string;
+    invitationDeliveryIssue?: boolean;
   } | null;
   observer_completed_count: number;
   observer_goal: number;
   participant_email: string | null;
   participant_name: string | null;
   report_status: string;
+  report_snapshot_id: string | null;
   report_url: string | null;
   response_count: number;
   self_completed_at: string | null;
@@ -162,7 +164,7 @@ export async function getFruitLifeDashboardSessions({
   let query = supabaseAdmin
     .from("fruitlife_360_sessions")
     .select(
-      "id,metadata,participant_name,participant_email,session_status,report_status,observer_goal,observer_completed_count,response_count,self_completed_at,report_url,created_at,updated_at",
+      "id,metadata,report_snapshot_id,participant_name,participant_email,session_status,report_status,observer_goal,observer_completed_count,response_count,self_completed_at,report_url,created_at,updated_at",
     )
     .order("updated_at", { ascending: false })
     .limit(isAdmin ? 12 : 8);

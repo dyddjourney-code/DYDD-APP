@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   fruitLifeFruits,
   fruitLifePressureQuestions,
@@ -9,6 +9,7 @@ import {
   fruitRatingField,
   type FruitLifeResponseType,
 } from "@/lib/fruitlife360/intake";
+import legacyInstrument from "@/lib/fruitlife360/legacy-instrument.json";
 import { FruitRankSorter } from "./fruit-rank-sorter";
 
 type FruitLifeAssessmentFormProps = {
@@ -19,36 +20,34 @@ type FruitLifeAssessmentFormProps = {
     relationship?: string | null;
   };
   message?: string;
+  instrumentVersion?: string;
   participantName?: string | null;
   responseType: FruitLifeResponseType;
   sessionId?: string;
   token?: string;
 };
 
-const fruitLifeQuestionsByFruit = new Map(
-  fruitLifeFruits.map((fruit) => [
-    fruit.key,
-    fruitLifeQuestionBank.filter((question) => question.fruitKey === fruit.key),
-  ]),
-);
-
-const fruitLifePressureByFruit = new Map(
-  fruitLifeFruits.map((fruit) => [
-    fruit.key,
-    fruitLifePressureQuestions.find((question) => question.fruitKey === fruit.key),
-  ]),
-);
-
 export function FruitLifeAssessmentForm({
   action,
   initialReviewer,
   message,
+  instrumentVersion,
   participantName,
   responseType,
   sessionId,
   token,
 }: FruitLifeAssessmentFormProps) {
   const isSelf = responseType === "self";
+  const questions = instrumentVersion === legacyInstrument.version ? legacyInstrument.questions : fruitLifeQuestionBank;
+  const pressureQuestions = instrumentVersion === legacyInstrument.version ? legacyInstrument.pressureQuestions : fruitLifePressureQuestions;
+  const fruitLifeQuestionsByFruit = new Map(fruitLifeFruits.map(fruit => [fruit.key, questions.filter(question => question.fruitKey === fruit.key)]));
+  const fruitLifePressureByFruit = new Map(fruitLifeFruits.map(fruit => [fruit.key, pressureQuestions.find(question => question.fruitKey === fruit.key)]));
+  const draftKey = `fruitlife360:v1:${sessionId ?? "preview"}:${responseType}:${token ?? ""}`;
+  const [draftLoaded, setDraftLoaded] = useState(false);
+  const [rankOrder, setRankOrder] = useState<string[]>(fruitLifeFruits.map(fruit => fruit.key));
+  const [draftNotice, setDraftNotice] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
   const totalSteps = fruitLifeFruits.length + 3;
   const [stepIndex, setStepIndex] = useState(0);
   const [ratingValues, setRatingValues] = useState<Record<string, string>>({});
@@ -72,7 +71,29 @@ export function FruitLifeAssessmentForm({
   const relationship = initialReviewer?.relationship ?? (isSelf ? "Self" : "");
   const lockIdentity = Boolean(initialReviewer?.name || initialReviewer?.email || initialReviewer?.relationship);
 
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(draftKey);
+      if (saved) {
+        const draft = JSON.parse(saved);
+        setRatingValues(draft.ratings ?? {});
+        setReflectionValues(draft.reflections ?? { encouragement: "", growth: "", strength: "" });
+        if (draft.rank?.length === 9 && new Set(draft.rank).size === 9 && draft.rank.every((key: string) => fruitLifeFruits.some(fruit => fruit.key === key))) setRankOrder(draft.rank);
+        setStepIndex(Math.max(0, Math.min(totalSteps - 1, Number(draft.step) || 0)));
+        setDraftNotice("Your unfinished reflection was restored on this browser.");
+      }
+    } catch { /* Draft storage may be disabled by the browser. */ }
+    setDraftLoaded(true);
+  }, [draftKey, totalSteps]);
+  useEffect(() => {
+    if (!draftLoaded) return;
+    try { localStorage.setItem(draftKey, JSON.stringify({ ratings: ratingValues, reflections: reflectionValues, rank: rankOrder, step: stepIndex })); } catch { /* Assessment still works without local storage. */ }
+  }, [draftKey, draftLoaded, ratingValues, reflectionValues, rankOrder, stepIndex]);
+
   function goNext() {
+    const active = formRef.current?.querySelector(".fruitlife-step-panel.active");
+    const invalid = active?.querySelector<HTMLInputElement>("input:invalid,textarea:invalid,select:invalid");
+    if (invalid) { invalid.reportValidity(); return; }
     setStepIndex((index) => Math.min(totalSteps - 1, index + 1));
   }
 
@@ -88,11 +109,12 @@ export function FruitLifeAssessmentForm({
   }
 
   return (
-    <form action={action} className="fruitlife-form fruitlife-assessment-form">
+    <form ref={formRef} action={action} onSubmit={() => setSubmitting(true)} className="fruitlife-form fruitlife-assessment-form">
       <input name="session_id" type="hidden" value={sessionId ?? ""} />
       <input name="token" type="hidden" value={token ?? ""} />
 
       {message ? <p className="form-message">{message}</p> : null}
+      <p className="fruitlife-latest-note">{draftNotice || "Your progress saves on this browser so you can return using the same link."}</p>
 
       <section className="fruitlife-assessment-card">
         <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife360 logo" />
@@ -162,7 +184,7 @@ export function FruitLifeAssessmentForm({
           Drag the fruit, or use the Up and Down buttons, to place the most visible fruit at the
           top and the least visible fruit at the bottom.
         </p>
-        <FruitRankSorter />
+        {draftLoaded ? <FruitRankSorter initialOrder={rankOrder} onChange={setRankOrder} /> : <p>Loading your reflection…</p>}
       </section>
 
       {fruitLifeFruits.map((fruit, index) => {
@@ -290,8 +312,8 @@ export function FruitLifeAssessmentForm({
             Next
           </button>
         ) : (
-          <button className="button primary" type="submit">
-            Submit FruitLife Reflection
+          <button className="button primary" disabled={submitting} type="submit">
+            {submitting ? "Saving reflection…" : "Submit FruitLife Reflection"}
           </button>
         )}
       </div>

@@ -4,6 +4,7 @@ type SendEmailInput = {
     filename: string;
   }>;
   from?: string;
+  idempotencyKey?: string;
   html: string;
   subject: string;
   text: string;
@@ -34,6 +35,7 @@ export async function sendResendEmail({
   attachments,
   from: fromOverride,
   html,
+  idempotencyKey,
   subject,
   text,
   to,
@@ -60,6 +62,7 @@ export async function sendResendEmail({
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
+      ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
     },
     method: "POST",
   });

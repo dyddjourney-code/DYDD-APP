@@ -10,6 +10,7 @@ type FruitLifeSelfPageProps = {
 };
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 120;
 
 export default async function FruitLifeSelfPage({
   searchParams,
@@ -20,13 +21,13 @@ export default async function FruitLifeSelfPage({
     : null;
   const session = status?.session;
 
-  if (params?.session && params?.token && !status) {
+  if (!status || status.session.self_completed_at) {
     return (
       <main className="fruitlife-shell fruitlife-public">
         <section className="fruitlife-panel fruitlife-message-card">
           <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife360 logo" />
-          <h1>Self link not found.</h1>
-          <p>This self-reflection link is missing, expired, or no longer valid.</p>
+          <h1>Reflection link unavailable.</h1>
+          <p>This reflection link is missing, no longer valid, or already submitted. Return to Field Kit to see your progress.</p>
         </section>
       </main>
     );
@@ -45,6 +46,7 @@ export default async function FruitLifeSelfPage({
               }
             : undefined
         }
+        instrumentVersion={String(session?.metadata?.instrumentVersion ?? "legacy-native-v0")}
         message={params?.message}
         participantName={session?.participant_name}
         responseType="self"

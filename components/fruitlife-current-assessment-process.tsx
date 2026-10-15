@@ -16,8 +16,17 @@ import {
   type FruitLifeDashboardSession,
 } from "@/lib/fruitlife360/dashboard";
 
+const processNotices: Record<string, string> = {
+  reminder_sent: "Reminder emails were accepted for delivery.",
+  reminder_failed: "Some reminders could not be sent. Please try again shortly.",
+  no_reminders_needed: "No unfinished invitations need a reminder.",
+  rescind_sent: "Invitation cancelled. Your completion requirement has been updated.",
+  not_allowed: "Sign in to your own account to manage reminders.",
+};
+
 type FruitLifeCurrentAssessmentProcessProps = {
   created?: boolean;
+  notice?: string;
   returnTo?: string;
   session: FruitLifeDashboardSession | null;
   token: string;
@@ -25,6 +34,7 @@ type FruitLifeCurrentAssessmentProcessProps = {
 
 export function FruitLifeCurrentAssessmentProcess({
   created = false,
+  notice,
   returnTo: returnToPath,
   session,
   token,
@@ -69,6 +79,8 @@ export function FruitLifeCurrentAssessmentProcess({
           finished report moves into Artifacts.
         </p>
       </div>
+      {notice && processNotices[notice] ? <p className="journey-save-notice">{processNotices[notice]}</p> : null}
+      {session.metadata?.invitationDeliveryIssue ? <p className="form-message">Some invitation emails were not sent. Your assessment is saved; use Send reminders to retry the unfinished invitations.</p> : null}
       {created ? (
         <p className="journey-save-notice">
           FruitLife360 started. The assessment tracker is active.

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { isDyddAdminEmail } from "@/lib/admin-access";
 import { PageHelp } from "@/components/page-help";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
@@ -459,6 +460,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
   const hasFruitLife = fruitLifeLane
     ? fruitLifeReportSessions.length > 0
     : ownsAssessment(snapshotLatest, "fruit_360") || fruitLifeReportSessions.length > 0;
+  const hasOwnerAssessmentAccess = Boolean(user && isDyddAdminEmail(user.email));
   const purchaseCards = purchaseAssessments.map((assessment) => {
     const status =
       assessment.title === "DesignID"
@@ -468,6 +470,15 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
           : assessment.title === "Design Pathways"
             ? hasDesignPathways ? "Completed" : assessment.status
             : assessment.status;
+
+    if (assessment.title === "DesignID" && hasOwnerAssessmentAccess) {
+      return {
+        ...assessment,
+        action: hasDesignId ? "Take DesignID again" : "Start DesignID",
+        price: "Owner access",
+        status: hasDesignId ? "Completed · retakes available" : "Ready to start",
+      };
+    }
 
     if (assessment.title === "DesignPD") {
       return {

@@ -7,7 +7,7 @@ const base=process.env.DESIGNID_QA_BASE??'http://localhost:3107';
 assert(new URL(base).hostname==='localhost'||new URL(base).hostname==='127.0.0.1','Local harness only');
 const browser=await puppeteer.launch({args:chromium.args,executablePath:await chromium.executablePath(),headless:true});
 try{
- for(const mobile of [false,true]){
+ for(const mobile of (process.env.DESIGNID_QA_MOBILE_ONLY ? [true] : [false,true])){
   const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.setViewport({width:mobile?390:1280,height:900,isMobile:mobile,hasTouch:mobile});
   await page.goto(base+'/qa-designid-allocation',{waitUntil:'networkidle0'});
@@ -38,6 +38,18 @@ try{
   }
   await page.waitForSelector('.designid-question-panel.active .maps-sort-bank');
   await next();await page.waitForSelector('.form-message.error');
+  // Compact customer-facing copy, alphabetical bank, and all four targets in one row.
+  assert.equal(await page.$eval('.maps-sort-intro h2',e=>e.textContent),'What sounds most like you?');
+  const words=await page.$$eval('.maps-sort-bank .maps-sort-select-word',els=>els.map(e=>e.textContent));
+  assert.deepEqual(words,[...words].sort((a,b)=>a.localeCompare(b)));
+  await page.$eval('.maps-sort-intro',e=>e.scrollIntoView({block:'start',behavior:'instant'}));
+  const targets=await page.$$eval('.maps-sort-bucket',els=>els.map(e=>{const r=e.getBoundingClientRect();return {top:r.top,bottom:r.bottom};}));
+  assert(targets.every(t=>Math.abs(t.top-targets[0].top)<1));
+  await page.screenshot({path:`tmp/designid-sort-geometry-${mobile?'mobile':'desktop'}.png`,fullPage:true});
+  assert(await page.$eval('.maps-sort-bank',e=>e.getBoundingClientRect().top)>targets[0].bottom);
+  const sortText=await page.$eval('.maps-confirmation-sort',e=>e.innerText);
+  assert(!/MAPS|Words to place|of 12 placed|Place selected word|adds another perspective/.test(sortText));
+  await page.screenshot({path:`tmp/designid-sort-clean-${mobile?'mobile':'desktop'}.png`,fullPage:true});
   // Tap placement.
   await page.click('.maps-sort-select-word');
   await page.click('.maps-sort-bucket[data-maps-bucket="most"] .maps-sort-place');
@@ -52,8 +64,8 @@ try{
   let cdp;
   if(mobile){cdp=await page.createCDPSession();await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});}
   else{await page.mouse.move(x,y);await page.mouse.down();}
-  await page.waitForSelector('.maps-sort-drag-dock [data-maps-bucket="most"]');
-  const b=await page.$eval('.maps-sort-drag-dock [data-maps-bucket="most"]',e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height};});
+  await page.waitForSelector('.maps-sort-bucket[data-maps-bucket="most"]');
+  const b=await page.$eval('.maps-sort-bucket[data-maps-bucket="most"]',e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height};});
   const tx=b.x+b.width/2,ty=b.y+b.height/2;
   if(mobile){for(let k=1;k<=8;k++)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x+(tx-x)*k/8,y:y+(ty-y)*k/8}]});await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});}
   else{await page.mouse.move(tx,ty,{steps:10});await page.mouse.up();}
@@ -66,6 +78,8 @@ try{
    const select=await page.$('.maps-sort-bank select');await select.select(bucket);
    await page.waitForFunction((bucket,n)=>document.querySelectorAll(`.maps-sort-bucket[data-maps-bucket="${bucket}"] .maps-sort-word`).length===n,{},bucket,i+1);
   }
+  await page.screenshot({path:`tmp/designid-sort-placed-${mobile?'mobile':'desktop'}.png`,fullPage:true});
+  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   await next();await page.waitForFunction(()=>document.querySelector('.designid-question-panel.active h2')?.textContent==='Submit your DesignID assessment.');
   await page.click('.fruitlife-step-controls button[type="button"]');await page.waitForSelector('.designid-question-panel.active .maps-sort-bank');assert.equal(await page.$$('.maps-sort-bucket .maps-sort-word').then(x=>x.length),12);
   await next();await page.waitForFunction(()=>document.querySelector('.designid-question-panel.active h2')?.textContent==='Submit your DesignID assessment.');

@@ -18,7 +18,9 @@ try {
   const {buildDesignIdReportPayload,designIdSnapshotSections}=require(path.join(out,'lib/designid/report.js'));
   const {scoreMapsConfirmation,mapsConfirmationItems:items}=require(path.join(out,'lib/designid/maps-confirmation.js'));
   const audited=JSON.parse(fs.readFileSync('tests/fixtures/designid-audited-statements.json'));
-  assert.deepEqual(bank.map(({code,reflection,text})=>({code,reflection,text})),audited,'All 80 audited statements and reflection assignments must stay unchanged');
+  const approvedEdits = {'B10_S1':'I bring calm when there is tension.', 'B12_S1':'I stay faithful with what’s entrusted to me.'};
+  assert.deepEqual(bank.map(({code,reflection,text})=>({code,reflection,text})),audited.map(item=>({...item,text:approvedEdits[item.code]??item.text})),'Preserve the audit bank except the two October 15 owner-approved wording edits');
+  assert.equal(new Set(bank.map(item=>item.text.toLowerCase())).size,80,'No repeated statements');
   const key=JSON.parse(fs.readFileSync('tests/fixtures/designid-workbook-formulas.json'))['Key!A1:H85'].slice(1);
   assert.deepEqual(bank.map(({code,reflection})=>[code,reflection]),key.map(r=>[r[1],r[3]]));
   const make=(pattern)=>{const f=new FormData();for(const b of blocks)for(const [i,s] of b.statements.entries())f.set(`designid_points_${s.code}`,String(pattern[i]));return f;};

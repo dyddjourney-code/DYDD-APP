@@ -33,13 +33,13 @@ export function parseMapsConfirmation(form: FormData): MapsAssignments {
   for (const item of mapsConfirmationItems) {
     const values = form.getAll(mapsConfirmationField(item.id));
     if (values.length !== 1 || !mapsConfirmationBuckets.some((bucket) => bucket.id === values[0])) {
-      throw new Error("Place all 12 MAPS words before submitting.");
+      throw new Error("Place all 12 words before submitting.");
     }
     assignments[item.id] = values[0] as MapsBucket;
   }
   for (const bucket of mapsConfirmationBuckets) {
     if (Object.values(assignments).filter((value) => value === bucket.id).length !== 3) {
-      throw new Error("Place exactly three MAPS words in each group.");
+      throw new Error("Place exactly three words in each group.");
     }
   }
   return assignments;
@@ -53,7 +53,7 @@ export function scoreMapsConfirmation(assignments: MapsAssignments, main: Design
   const phaseScores: Record<string, number> = {};
   for (const item of mapsConfirmationItems) {
     const bucket = mapsConfirmationBuckets.find((entry) => entry.id === assignments[item.id]);
-    if (!bucket) throw new Error("A MAPS word has not been placed.");
+    if (!bucket) throw new Error("A word has not been placed.");
     totals[item.reflection] += bucket.weight;
     counts[item.reflection] += 1;
     phaseScores[item.phase] = (phaseScores[item.phase] ?? 0) + bucket.weight;

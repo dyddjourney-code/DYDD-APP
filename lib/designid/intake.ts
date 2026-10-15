@@ -101,7 +101,7 @@ export const designIdQuestionBlocks: Array<{
   {
     block: 10,
     statements: [
-      { auditAction: "Keep", block: 10, code: "B10_S1", original: "I notice moods and bring calm where there’s tension.", reflection: "Shepherd", text: "I notice moods and bring calm where there’s tension." },
+      { auditAction: "Change", block: 10, code: "B10_S1", original: "I notice moods and bring calm where there’s tension.", reflection: "Shepherd", text: "I bring calm when there is tension." },
       { auditAction: "Keep", block: 10, code: "B10_S2", original: "I keep plans realistic and on schedule.", reflection: "Steward", text: "I keep plans realistic and on schedule." },
       { auditAction: "Change", block: 10, code: "B10_S3", original: "I like setting direction for others.", reflection: "Architect", text: "I set direction when people need movement." },
       { auditAction: "Keep", block: 10, code: "B10_S4", original: "I take time to refine details.", reflection: "Artisan", text: "I take time to refine details." },
@@ -119,7 +119,7 @@ export const designIdQuestionBlocks: Array<{
   {
     block: 12,
     statements: [
-      { auditAction: "Keep", block: 12, code: "B12_S1", original: "I’m grateful to stay faithful with what’s entrusted to me.", reflection: "Steward", text: "I’m grateful to stay faithful with what’s entrusted to me." },
+      { auditAction: "Change", block: 12, code: "B12_S1", original: "I’m grateful to stay faithful with what’s entrusted to me.", reflection: "Steward", text: "I stay faithful with what’s entrusted to me." },
       { auditAction: "Change", block: 12, code: "B12_S2", original: "I’m fulfilled when I help people grow.", reflection: "Shepherd", text: "I invest in people’s growth." },
       { auditAction: "Change", block: 12, code: "B12_S3", original: "I’m drawn to projects with clear design.", reflection: "Artisan", text: "I’m drawn to purposeful design." },
       { auditAction: "Keep", block: 12, code: "B12_S4", original: "I feel at home when I’m leading meaningful work.", reflection: "Architect", text: "I feel at home when I’m leading meaningful work." },

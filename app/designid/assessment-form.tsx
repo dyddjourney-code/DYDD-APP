@@ -28,7 +28,7 @@ export function DesignIdAssessmentForm({
   const currentBlock = stepIndex > 0 ? designIdQuestionBlocks[stepIndex - 1] : null;
   const progress = stepIndex === 0 ? 0 : Math.round((stepIndex / totalSteps) * 100);
   const progressLabel = useMemo(() => {
-    if (stepIndex === totalSteps - 1) return "MAPS confirmation";
+    if (stepIndex === totalSteps - 1) return "Final step";
     if (stepIndex === totalSteps) return "Review and submit";
     if (!currentBlock) return "Start";
     return `Question set ${currentBlock.block} of ${designIdQuestionBlocks.length}`;
@@ -42,7 +42,7 @@ export function DesignIdAssessmentForm({
   function validateCurrentBlock() {
     if (stepIndex >= totalSteps - 1) {
       if (Object.keys(mapsAssignments).length !== 12 || mapsConfirmationBuckets.some((bucket) => Object.values(mapsAssignments).filter((value) => value === bucket.id).length !== 3)) {
-        setError("Place all 12 MAPS words, with three in each group, before continuing.");
+        setError("Place all 12 words, with three in each group, before continuing.");
         return false;
       }
     }
@@ -175,7 +175,7 @@ export function DesignIdAssessmentForm({
         </fieldset>
       ))}
 
-      <section className={`fruitlife-panel designid-question-panel ${stepIndex === totalSteps - 1 ? "active" : ""}`}>
+      <section className={`fruitlife-panel designid-question-panel designid-sort-panel ${stepIndex === totalSteps - 1 ? "active" : ""}`}>
         <MapsConfirmationSort assignments={mapsAssignments} onChange={(next) => { setMapsAssignments(next); setError(""); }} />
       </section>
 
@@ -183,8 +183,7 @@ export function DesignIdAssessmentForm({
         <p className="section-label">Ready to Submit</p>
         <h2>Submit your DesignID assessment.</h2>
         <p>
-          The app will score your reflection pattern, create a report artifact, and send the
-          report link to your account email. Your clarification sort is saved separately and does not change your 100-point score.
+          Your report will be saved in Field Kit.
         </p>
       </section>
 

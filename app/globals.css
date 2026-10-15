@@ -19989,3 +19989,22 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .designid-form .designid-progress-card h2 { font-size: clamp(1rem,2.4vw,1.35rem); line-height: 1.25; margin: 0; }
 .designid-form .designid-progress-card .section-label { margin: 0 0 4px; }
 @media (max-width: 480px) { .designid-form .designid-progress-card { grid-template-columns: 32px minmax(0,1fr); } .designid-form .designid-progress-card img { width: 32px; height: 32px; } .designid-form .designid-progress-card .spiritual-gifts-step-meter { grid-column: 1 / -1; width: 100%; } }
+
+/* DesignID five-point allocation: large, keyboard-native touch choices. */
+.designid-form .designid-progress-card { grid-template-columns: 136px minmax(0,1fr) 120px; }
+.designid-form .designid-progress-card img { width: 136px; height: 72px; border-radius: 0; }
+.designid-allocation-total { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; padding: 14px 18px; background: #f2f5ee; border: 1px solid #d5dfcd; border-radius: 8px; }
+.designid-allocation-total strong { color: var(--green-dark); font-size: 1.25rem; }
+.designid-allocation-total span { color: var(--muted); }
+.designid-point-choices { display: grid; grid-template-columns: repeat(4, minmax(44px, 1fr)); gap: 6px; }
+.designid-point-choices label { position: relative; display: grid; min-height: 48px; cursor: pointer; }
+.designid-point-choices input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.designid-point-choices span { display: grid; place-items: center; border: 1px solid #87977b; border-radius: 6px; background: #fff; font-weight: 800; }
+.designid-point-choices input:checked + span { background: var(--green-dark); color: #fff; border-color: var(--green-dark); }
+.designid-point-choices input:focus-visible + span { outline: 3px solid #c39132; outline-offset: 3px; }
+@media (max-width: 600px) {
+  .designid-form .designid-progress-card { grid-template-columns: 112px minmax(0,1fr); }
+  .designid-form .designid-progress-card img { width: 112px; height: 64px; }
+  .designid-form .designid-progress-card .spiritual-gifts-step-meter { grid-column: 1 / -1; width: 100%; }
+  .designid-form .designid-rank-row { grid-template-columns: minmax(0,1fr); }
+}

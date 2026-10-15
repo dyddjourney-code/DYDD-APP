@@ -1,0 +1,3 @@
+"use client";
+import { DesignIdAssessmentForm } from "../designid/assessment-form";
+export default function LocalQa(){return <main className="fruitlife-shell fruitlife-public designid-shell"><DesignIdAssessmentForm initialReviewer={{name:"Local QA",email:"qa@example.invalid"}} action={(data)=>{(window as unknown as {captured:unknown}).captured=Array.from(data.entries());}} /></main>;}

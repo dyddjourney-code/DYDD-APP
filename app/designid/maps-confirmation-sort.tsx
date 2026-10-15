@@ -47,7 +47,12 @@ export function MapsConfirmationSort({ assignments, onChange }: Props) {
   function card(item: (typeof mapsConfirmationItems)[number]) {
     return (
       <article className={`maps-sort-word ${selected === item.id ? "is-selected" : ""}`} key={item.id}
-        draggable onDragStart={(event) => { event.dataTransfer.setData("text/plain", item.id); event.dataTransfer.effectAllowed = "move"; }}>
+        draggable onDragStart={(event) => {
+          // Grip drags use pointer capture and the fixed drop dock; native HTML
+          // dragging would cancel that pointer stream before release.
+          if (pointerItem.current) { event.preventDefault(); return; }
+          event.dataTransfer.setData("text/plain", item.id); event.dataTransfer.effectAllowed = "move";
+        }}>
         <div className="maps-sort-word-heading">
           <button type="button" className="maps-sort-grip" aria-label={`Drag ${item.word}`} onPointerDown={(event) => {
             pointerItem.current = item.id; setTouchDragging(item.id); event.currentTarget.setPointerCapture(event.pointerId);

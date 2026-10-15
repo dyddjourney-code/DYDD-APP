@@ -3,7 +3,7 @@
 import { type FormEvent, useMemo, useState } from "react";
 import { MapsConfirmationSort } from "./maps-confirmation-sort";
 import { mapsConfirmationField, mapsConfirmationBuckets, type MapsAssignments } from "@/lib/designid/maps-confirmation";
-import { designIdQuestionBlocks, designIdRankField } from "@/lib/designid/intake";
+import { designIdQuestionBlocks, designIdAllocationField } from "@/lib/designid/intake";
 
 type DesignIdAssessmentFormProps = {
   action: (formData: FormData) => void | Promise<void>;
@@ -14,13 +14,6 @@ type DesignIdAssessmentFormProps = {
   message?: string;
 };
 
-const rankOptions = [
-  { label: "First / most like me", value: "3" },
-  { label: "Second", value: "2" },
-  { label: "Third", value: "1" },
-  { label: "Fourth / least like me", value: "0" },
-];
-
 export function DesignIdAssessmentForm({
   action,
   initialReviewer,
@@ -28,7 +21,7 @@ export function DesignIdAssessmentForm({
 }: DesignIdAssessmentFormProps) {
   const totalSteps = designIdQuestionBlocks.length + 2;
   const [stepIndex, setStepIndex] = useState(0);
-  const [rankValues, setRankValues] = useState<Record<string, string>>({});
+  const [pointValues, setPointValues] = useState<Record<string, string>>({});
   const [mapsAssignments, setMapsAssignments] = useState<MapsAssignments>({});
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,9 +34,9 @@ export function DesignIdAssessmentForm({
     return `Question set ${currentBlock.block} of ${designIdQuestionBlocks.length}`;
   }, [currentBlock, stepIndex, totalSteps]);
 
-  function setRank(code: string, value: string) {
+  function setPoints(code: string, value: string) {
     setError("");
-    setRankValues((current) => ({ ...current, [code]: value }));
+    setPointValues((current) => ({ ...current, [code]: value }));
   }
 
   function validateCurrentBlock() {
@@ -55,14 +48,14 @@ export function DesignIdAssessmentForm({
     }
     if (!currentBlock) return true;
 
-    const values = currentBlock.statements.map((statement) => rankValues[statement.code]);
-    if (values.some((value) => !value)) {
-      setError("Rank all four statements before continuing.");
+    const values = currentBlock.statements.map((statement) => pointValues[statement.code]);
+    if (values.some((value) => value === undefined || value === "")) {
+      setError("Choose 0, 1, 2, or 3 points for each of the four statements.");
       return false;
     }
 
-    if (new Set(values).size !== 4) {
-      setError("Use each rank once: First, Second, Third, and Fourth.");
+    if (values.reduce((sum, value) => sum + Number(value), 0) !== 5) {
+      setError("Allocate exactly 5 points across these four statements before continuing.");
       return false;
     }
 
@@ -98,10 +91,6 @@ export function DesignIdAssessmentForm({
 
   return (
     <form noValidate action={action} className="designid-form" onSubmit={handleSubmit}>
-      {Object.entries(rankValues).map(([code, value]) => (
-        <input key={code} name={designIdRankField(code)} type="hidden" value={value} />
-      ))}
-
       {Object.entries(mapsAssignments).map(([id, value]) => (
         <input key={id} name={mapsConfirmationField(id)} type="hidden" value={value} />
       ))}
@@ -151,28 +140,36 @@ export function DesignIdAssessmentForm({
           key={block.block}
         >
           <p className="section-label">Question Set {block.block}</p>
-          <h2>Rank all four statements.</h2>
+          <h2>Share 5 points across these four statements.</h2>
           <p>
-            Choose each rank once. First means this sounds most like your natural pattern;
-            fourth means it sounds least like your natural pattern.
+            Give each statement 0, 1, 2, or 3 points. Give more points to what sounds
+            most like you. You can use the same number more than once; your total must be exactly 5.
           </p>
+          <div className="designid-allocation-total" role="status" aria-live="polite" aria-atomic="true">
+            <strong>{block.statements.reduce((sum, statement) => sum + Number(pointValues[statement.code] ?? 0), 0)} / 5 points</strong>
+            <span>{(() => {
+              const total = block.statements.reduce((sum, statement) => sum + Number(pointValues[statement.code] ?? 0), 0);
+              const complete = block.statements.every((statement) => pointValues[statement.code] !== undefined);
+              if (total > 5) return `Remove ${total - 5} ${total - 5 === 1 ? "point" : "points"} to continue.`;
+              if (total < 5) return `${5 - total} ${5 - total === 1 ? "point" : "points"} left to share.`;
+              return complete ? "All 5 points allocated. Ready to continue." : "Choose a number for every statement, including 0.";
+            })()}</span>
+          </div>
           <div className="designid-rank-list">
             {block.statements.map((statement) => (
-              <label className="designid-rank-row" key={statement.code}>
-                <span>{statement.text}</span>
-                <select
-                  onChange={(event) => setRank(statement.code, event.target.value)}
-                  required
-                  value={rankValues[statement.code] ?? ""}
-                >
-                  <option value="">Choose rank</option>
-                  {rankOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
+              <div className="designid-rank-row" key={statement.code}>
+                <span id={`statement-${statement.code}`}>{statement.text}</span>
+                <div className="designid-point-choices" role="radiogroup" aria-labelledby={`statement-${statement.code}`}>
+                  {[0, 1, 2, 3].map((points) => (
+                    <label key={points}>
+                      <input type="radio" name={designIdAllocationField(statement.code)} value={points}
+                        checked={pointValues[statement.code] === String(points)}
+                        onChange={() => setPoints(statement.code, String(points))} />
+                      <span>{points}</span>
+                    </label>
                   ))}
-                </select>
-              </label>
+                </div>
+              </div>
             ))}
           </div>
         </fieldset>
@@ -187,7 +184,7 @@ export function DesignIdAssessmentForm({
         <h2>Submit your DesignID assessment.</h2>
         <p>
           The app will score your reflection pattern, create a report artifact, and send the
-          report link to your account email. Your MAPS confirmation is saved alongside your main scores.
+          report link to your account email. Your clarification sort is saved separately and does not change your 100-point score.
         </p>
       </section>
 

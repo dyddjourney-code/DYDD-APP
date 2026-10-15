@@ -1,4 +1,4 @@
-import type { DesignIdResult } from "./engine";
+import { designIdScorePayload, type DesignIdResult } from "./engine";
 import type { DesignIdReflection } from "./intake";
 
 const reflectionContent: Record<
@@ -208,24 +208,15 @@ export function buildDesignIdReportPayload({
     dateStyle: "medium",
     timeZone: "America/New_York",
   }).format(new Date());
-  const scorePayload = {
-    Architect_Pts: result.scores.Architect,
-    Artisan_Pts: result.scores.Artisan,
-    Shepherd_Pts: result.scores.Shepherd,
-    Steward_Pts: result.scores.Steward,
-    Total_Pts: result.totalPoints,
-    Architect_Pct: Math.round((result.scores.Architect / 60) * 100),
-    Artisan_Pct: Math.round((result.scores.Artisan / 60) * 100),
-    Shepherd_Pct: Math.round((result.scores.Shepherd / 60) * 100),
-    Steward_Pct: Math.round((result.scores.Steward / 60) * 100),
-    Band_Architect: result.bandByReflection.Architect,
-    Band_Artisan: result.bandByReflection.Artisan,
-    Band_Shepherd: result.bandByReflection.Shepherd,
-    Band_Steward: result.bandByReflection.Steward,
-  };
+  const scorePayload = designIdScorePayload(result);
 
   return {
     ...scorePayload,
+    // PDF template prints percentages directly and strips % for its chart.
+    Architect_Pct: `${result.scores.Architect}%`,
+    Artisan_Pct: `${result.scores.Artisan}%`,
+    Shepherd_Pct: `${result.scores.Shepherd}%`,
+    Steward_Pct: `${result.scores.Steward}%`,
     MAPS_Confirmation: result.mapsConfirmation ?? null,
     MAPS_Confirmation_Note: result.mapsConfirmation?.note ?? "",
     Approach_to_Learning:

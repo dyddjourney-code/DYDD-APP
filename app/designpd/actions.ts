@@ -9,7 +9,7 @@ import {
   sendAssessmentReportEmail,
 } from "@/lib/assessment-reporting";
 import { getAssessmentSnapshotsForUser, latestByAssessment } from "@/lib/assessments/student-context";
-import { parseDesignPdRatings, scoreDesignPd } from "@/lib/designpd/engine";
+import { designPdScoringVersion, scoreDesignPd } from "@/lib/designpd/engine";
 import { buildDesignPdReportPayload, designPdSnapshotSections } from "@/lib/designpd/report";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -75,7 +75,7 @@ export async function saveDesignPdResponse(formData: FormData) {
 
   let result;
   try {
-    result = scoreDesignPd(parseDesignPdRatings(formData), designIdSnapshot);
+    result = scoreDesignPd(designIdSnapshot);
   } catch (error) {
     fail(error instanceof Error ? error.message : "Unable to score this DesignPD assessment.");
   }
@@ -112,7 +112,9 @@ export async function saveDesignPdResponse(formData: FormData) {
         channel: "native_app",
         designIdSnapshotId: designIdSnapshot.id,
         profileLanguage: sections.profileLanguage,
-        questionVersion: "designpd-native-v1",
+        questionVersion: "designpd-derived-from-designid-v1",
+        scoringVersion: designPdScoringVersion,
+        movement: result.movement,
         ratings: result.ratings,
         sourceResponseId,
         summary: sections.summary,
@@ -193,7 +195,9 @@ export async function saveDesignPdResponse(formData: FormData) {
         designIdSnapshotId: designIdSnapshot.id,
         pdfMonkey: pdfMetadata,
         profileLanguage: sections.profileLanguage,
-        questionVersion: "designpd-native-v1",
+        questionVersion: "designpd-derived-from-designid-v1",
+        scoringVersion: designPdScoringVersion,
+        movement: result.movement,
         ratings: result.ratings,
         reportAccessUrl,
         resultEmail: emailMetadata,

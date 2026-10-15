@@ -1,0 +1,867 @@
+{
+  "Scored!D1:AC2": [
+    [
+      "Architect_Pts",
+      "Artisan_Pts",
+      "Shepherd_Pts",
+      "Steward_Pts",
+      "Total_Pts",
+      "Architect_Pct",
+      "Artisan_Pct",
+      "Shepherd_Pct",
+      "Steward_Pct",
+      "Band_Architect",
+      "Band_Artisan",
+      "Band_Shepherd",
+      "Band_Steward",
+      "Dreamer",
+      "Doer",
+      "Feel_It",
+      "Think_It",
+      "Solo",
+      "Together",
+      "Move_DreamerMinusDoer",
+      "Move_Feel_ItMinusThink_It",
+      "Move_SoloMinusTogether",
+      "Primary",
+      "Secondary",
+      "PairKey",
+      "Integrative_Reflection"
+    ],
+    [
+      "=ARRAYFORMULA(\n  IF('Form Responses'!A2:A=\"\",\"\",\n    MMULT(\n      IFERROR(VALUE('Form Responses'!D2:CE),0),\n      N(\n        OFFSET(\n          Key!$D$2,\n          0,\n          0,\n          COLUMNS('Form Responses'!D1:CE1),\n          1\n        )=\"ARCHITECT\"\n      )\n    )\n  )\n)\n",
+      "=ARRAYFORMULA(\n  IF('Form Responses'!A2:A=\"\",\"\",\n    MMULT(\n      IFERROR(VALUE('Form Responses'!D2:CE),0),\n      N(\n        OFFSET(\n          Key!$D$2,\n          0,\n          0,\n          COLUMNS('Form Responses'!D1:CE1),\n          1\n        )=\"ARTISAN\"\n      )\n    )\n  )\n)\n",
+      "=ARRAYFORMULA(\n  IF('Form Responses'!A2:A=\"\",\"\",\n    MMULT(\n      IFERROR(VALUE('Form Responses'!D2:CE),0),\n      N(\n        OFFSET(\n          Key!$D$2,\n          0,\n          0,\n          COLUMNS('Form Responses'!D1:CE1),\n          1\n        )=\"SHEPHERD\"\n      )\n    )\n  )\n)\n",
+      "=ARRAYFORMULA(\n  IF('Form Responses'!A2:A=\"\",\"\",\n    MMULT(\n      IFERROR(VALUE('Form Responses'!D2:CE),0),\n      N(\n        OFFSET(\n          Key!$D$2,\n          0,\n          0,\n          COLUMNS('Form Responses'!D1:CE1),\n          1\n        )=\"STEWARD\"\n      )\n    )\n  )\n)\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\", N(D2:D)+N(E2:E)+N(F2:F)+N(G2:G)))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\", IF(H2:H=0, , N(D2:D)/H2:H)))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\", IF(H2:H=0, , N(E2:E)/H2:H)))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\", IF(H2:H=0, , N(F2:F)/H2:H)))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\", IF(H2:H=0, , N(G2:G)/H2:H)))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\",\n  IF(N(D2:D)>=40,\"Abundant\",\n    IF(N(D2:D)>=25,\"Steady\",\n      IF(N(D2:D)>=10,\"Limited\",\n        \"Drained\"\n      )\n    )\n  )\n))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\",\n  IF(N(E2:E)>=40,\"Abundant\",\n    IF(N(E2:E)>=25,\"Steady\",\n      IF(N(E2:E)>=10,\"Limited\",\n        \"Drained\"\n      )\n    )\n  )\n))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\",\n  IF(N(F2:F)>=40,\"Abundant\",\n    IF(N(F2:F)>=25,\"Steady\",\n      IF(N(F2:F)>=10,\"Limited\",\n        \"Drained\"\n      )\n    )\n  )\n))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\",\n  IF(N(G2:G)>=40,\"Abundant\",\n    IF(N(G2:G)>=25,\"Steady\",\n      IF(N(G2:G)>=10,\"Limited\",\n        \"Drained\"\n      )\n    )\n  )\n))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\", (K2:K + J2:J)/2 ))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\", (I2:I + L2:L)/2 ))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\", (I2:I + K2:K)/2 ))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\", (J2:J + L2:L)/2 ))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\", (I2:I + J2:J)/2 ))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\", (K2:K + L2:L)/2 ))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\", IF((LEN(Q2:Q)+LEN(R2:R))=0, , N(Q2:Q)-N(R2:R))))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\", IF((LEN(S2:S)+LEN(T2:T))=0, , N(S2:S)-N(T2:T))))\n",
+      "=ARRAYFORMULA(IF(A2:A=\"\",\"\", IF((LEN(U2:U)+LEN(V2:V))=0, , N(U2:U)-N(V2:V))))\n",
+      "=IF(LEN($A2)=0,\"\",\n  INDEX({\"Architect\",\"Artisan\",\"Shepherd\",\"Steward\"},\n    MATCH(MAX($I2:$L2), $I2:$L2, 0)\n  )\n)\n",
+      "=IF(LEN($A2)=0,\"\",\n  INDEX({\"Architect\",\"Artisan\",\"Shepherd\",\"Steward\"}, 1,\n    MATCH(\n      MAX(IF({\"Architect\",\"Artisan\",\"Shepherd\",\"Steward\"}=$Z2, -1000000000, {$I2,$J2,$K2,$L2})),\n      IF({\"Architect\",\"Artisan\",\"Shepherd\",\"Steward\"}=$Z2, -1000000000, {$I2,$J2,$K2,$L2}),\n      0\n    )\n  )\n)\n\n",
+      "=IF(OR($Z2=\"\", $AA2=\"\"), \"\", TRIM($Z2)&\"|\"&TRIM($AA2))\n",
+      "=IF(LEN($AB2)=0,\"\",\n  IFERROR(\n    VLOOKUP(\n      TRIM($AB2),\n      {\n        \"Architect|Artisan\",\"Visionary\";\n        \"Artisan|Architect\",\"Visionary\";\n        \"Architect|Shepherd\",\"Innovator\";\n        \"Shepherd|Architect\",\"Innovator\";\n        \"Architect|Steward\",\"Overseer\";\n        \"Steward|Architect\",\"Overseer\";\n        \"Artisan|Shepherd\",\"Interpreter\";\n        \"Shepherd|Artisan\",\"Interpreter\";\n        \"Artisan|Steward\",\"Craftsman\";\n        \"Steward|Artisan\",\"Craftsman\";\n        \"Shepherd|Steward\",\"Guardian\";\n        \"Steward|Shepherd\",\"Guardian\"\n      },\n      2, FALSE\n    ),\n    \"\"\n  )\n)\n"
+    ]
+  ],
+  "Key!A1:H85": [
+    [
+      "Block",
+      "Column (Form)",
+      "Statement #",
+      "Dimension",
+      "Statement Text",
+      "New_Statement_Text",
+      "FormCol",
+      "Base_Reflection"
+    ],
+    [
+      1,
+      "B01_S1",
+      1,
+      "Shepherd",
+      "I can tell when someone needs care or encouragement.",
+      "I can sense when someone needs care.",
+      "D",
+      "=ARRAYFORMULA(\n  IF(B2:B=\"\",\"\",\n    IF(REGEXMATCH(TRIM(D2:D),\"(?i)^architect\"),\"Architect\",\n    IF(REGEXMATCH(TRIM(D2:D),\"(?i)^artisan\"),\"Artisan\",\n    IF(REGEXMATCH(TRIM(D2:D),\"(?i)^shepherd\"),\"Shepherd\",\n    IF(REGEXMATCH(TRIM(D2:D),\"(?i)^steward\"),\"Steward\",\"\")))))\n)\n"
+    ],
+    [
+      1,
+      "B01_S2",
+      2,
+      "Artisan",
+      "I notice when things could be clearer or better designed.",
+      "I notice when things could be clearer.",
+      "E"
+    ],
+    [
+      1,
+      "B01_S3",
+      3,
+      "Steward",
+      "I like when things run smoothly and plans stay on track.",
+      "I like when plans stay on track.",
+      "F"
+    ],
+    [
+      1,
+      "B01_S4",
+      4,
+      "Architect",
+      "I like to start things or fix what\u2019s broken.",
+      "I like to start things that need action.",
+      "G"
+    ],
+    [
+      2,
+      "B02_S1",
+      1,
+      "Steward",
+      "I\u2019m happiest when everything is organized and reliable.",
+      "I\u2019m happiest when things are organized.",
+      "H"
+    ],
+    [
+      2,
+      "B02_S2",
+      2,
+      "Shepherd",
+      "I find joy helping people work through problems.",
+      "I find joy helping people grow.",
+      "I"
+    ],
+    [
+      2,
+      "B02_S3",
+      3,
+      "Architect",
+      "I feel alive taking bold action to move things forward.",
+      "I feel alive taking bold action",
+      "J"
+    ],
+    [
+      2,
+      "B02_S4",
+      4,
+      "Artisan",
+      "I enjoy improving ideas until they work well and look good.",
+      "I enjoy improving ideas until they work well.",
+      "K"
+    ],
+    [
+      3,
+      "B03_S1",
+      1,
+      "Artisan",
+      "I like solving puzzles or finding better ways to do things.",
+      "I like finding better ways to do things.",
+      "L"
+    ],
+    [
+      3,
+      "B03_S2",
+      2,
+      "Steward",
+      "I prefer clear routines and steady progress.",
+      "I prefer clear routines that build steady progress.",
+      "M"
+    ],
+    [
+      3,
+      "B03_S3",
+      3,
+      "Shepherd",
+      "I notice when someone feels left out and try to include them.",
+      "I notice when someone feels left out.",
+      "N"
+    ],
+    [
+      3,
+      "B03_S4",
+      4,
+      "Architect",
+      "I naturally take charge when something needs direction.",
+      "I naturally take charge when direction is needed.",
+      "O"
+    ],
+    [
+      4,
+      "B04_S1",
+      1,
+      "Artisan",
+      "I enjoy turning ideas into things people can use.",
+      "I enjoy turning ideas into practical results.",
+      "P"
+    ],
+    [
+      4,
+      "B04_S2",
+      2,
+      "Shepherd",
+      "I listen well and make space for others to share.",
+      "I listen well when others need to speak.",
+      "Q"
+    ],
+    [
+      4,
+      "B04_S3",
+      3,
+      "Architect",
+      "I\u2019m quick to start new projects or lead change.",
+      "I\u2019m quick to start new projects.",
+      "R"
+    ],
+    [
+      4,
+      "B04_S4",
+      4,
+      "Steward",
+      "I feel most at ease when tasks are finished and in order.",
+      "I feel most at ease when tasks are complete.",
+      "S"
+    ],
+    [
+      5,
+      "B05_S1",
+      1,
+      "Artisan",
+      "I like improving how things look, sound, or function.",
+      "I like improving how things function.",
+      "T"
+    ],
+    [
+      5,
+      "B05_S2",
+      2,
+      "Shepherd",
+      "I\u2019m drawn to help when someone is hurting.",
+      "I\u2019m drawn to help people who are hurting.",
+      "U"
+    ],
+    [
+      5,
+      "B05_S3",
+      3,
+      "Steward",
+      "I find peace in doing dependable, consistent work.",
+      "I find peace in doing consistent work.",
+      "V"
+    ],
+    [
+      5,
+      "B05_S4",
+      4,
+      "Architect",
+      "I like challenges that push me to grow.",
+      "I like challenges that build my strength.",
+      "W"
+    ],
+    [
+      6,
+      "B06_S1",
+      1,
+      "Artisan",
+      "I see patterns that help make sense of complex things.",
+      "I see patterns that bring clarity to complex things.",
+      "X"
+    ],
+    [
+      6,
+      "B06_S2",
+      2,
+      "Steward",
+      "I keep systems steady and make sure details are covered.",
+      "I keep systems steady and details aligned.",
+      "Y"
+    ],
+    [
+      6,
+      "B06_S3",
+      3,
+      "Shepherd",
+      "I\u2019m sensitive to the emotions of people around me.",
+      "I\u2019m aware of the emotions of people around me.",
+      "Z"
+    ],
+    [
+      6,
+      "B06_S4",
+      4,
+      "Architect",
+      "I enjoy creating new paths or starting new ventures.",
+      "I enjoy creating new paths.",
+      "AA"
+    ],
+    [
+      7,
+      "B07_S1",
+      1,
+      "Shepherd",
+      "I try to notice how people are really doing.",
+      "I notice how people are really doing.",
+      "AB"
+    ],
+    [
+      7,
+      "B07_S2",
+      2,
+      "Artisan",
+      "I\u2019m happiest when a plan comes together neatly.",
+      "I\u2019m happiest when a plan comes together clearly.",
+      "AC"
+    ],
+    [
+      7,
+      "B07_S3",
+      3,
+      "Architect",
+      "I\u2019m most energized when I\u2019m leading or building something.",
+      "I\u2019m most energized when I\u2019m leading something.",
+      "AD"
+    ],
+    [
+      7,
+      "B07_S4",
+      4,
+      "Steward",
+      "I like following routines that bring stability.",
+      "I like routines that bring stability.",
+      "AE"
+    ],
+    [
+      8,
+      "B08_S1",
+      1,
+      "Artisan",
+      "I see beauty in structure, patterns, and balance.",
+      "I see beauty in structure and balance.",
+      "AF"
+    ],
+    [
+      8,
+      "B08_S2",
+      2,
+      "Steward",
+      "I take satisfaction in keeping things consistent and dependable.",
+      "I take satisfaction in keeping things consistent.",
+      "AG"
+    ],
+    [
+      8,
+      "B08_S3",
+      3,
+      "Architect",
+      "I like finding better ways to reach a goal.",
+      "I find better ways to reach goals.",
+      "AH"
+    ],
+    [
+      8,
+      "B08_S4",
+      4,
+      "Shepherd",
+      "I enjoy comforting people who are stressed or discouraged.",
+      "I enjoy comforting people who are stressed.",
+      "AI"
+    ],
+    [
+      9,
+      "B09_S1",
+      1,
+      "Architect",
+      "I tend to act quickly when I see what needs to be done.",
+      "I act quickly when I see what needs to be done.",
+      "AJ"
+    ],
+    [
+      9,
+      "B09_S2",
+      2,
+      "Shepherd",
+      "I often check in on friends to see how they\u2019re holding up.",
+      "I check in on friends to see how they\u2019re doing.",
+      "AK"
+    ],
+    [
+      9,
+      "B09_S3",
+      3,
+      "Artisan",
+      "I can spot what\u2019s missing or out of place in a design or plan.",
+      "I notice what\u2019s missing in a plan.",
+      "AL"
+    ],
+    [
+      9,
+      "B09_S4",
+      4,
+      "Steward",
+      "I feel best when I can finish what I start.",
+      "I feel best when I finish what I start.",
+      "AM"
+    ],
+    [
+      10,
+      "B10_S1",
+      1,
+      "Shepherd",
+      "I notice moods and try to bring calm where there\u2019s tension.",
+      "I notice moods and bring calm where there\u2019s tension.",
+      "AN"
+    ],
+    [
+      10,
+      "B10_S2",
+      2,
+      "Steward",
+      "I make sure plans stay realistic and on schedule.",
+      "I keep plans realistic and on schedule.",
+      "AO"
+    ],
+    [
+      10,
+      "B10_S3",
+      3,
+      "Architect",
+      "I like setting direction and getting others moving.",
+      "I like setting direction for others.",
+      "AP"
+    ],
+    [
+      10,
+      "B10_S4",
+      4,
+      "Artisan",
+      "I take time to refine details until they feel right.",
+      "I take time to refine details.",
+      "AQ"
+    ],
+    [
+      11,
+      "B11_S1",
+      1,
+      "Shepherd",
+      "I sense when someone needs to be heard.",
+      "I sense when someone needs to talk.",
+      "AR"
+    ],
+    [
+      11,
+      "B11_S2",
+      2,
+      "Artisan",
+      "I bring order to creative or messy situations.",
+      "I bring order to messy situations.",
+      "AS"
+    ],
+    [
+      11,
+      "B11_S3",
+      3,
+      "Steward",
+      "I manage responsibilities carefully and follow through.",
+      "I manage responsibilities carefully.",
+      "AT"
+    ],
+    [
+      11,
+      "B11_S4",
+      4,
+      "Architect",
+      "I like solving problems that others find too big or unclear.",
+      "I like solving problems others find challenging.",
+      "AU"
+    ],
+    [
+      12,
+      "B12_S1",
+      1,
+      "Steward",
+      "I take pride in staying faithful with what\u2019s been trusted to me.",
+      "I\u2019m grateful to stay faithful with what\u2019s entrusted to me.",
+      "AV"
+    ],
+    [
+      12,
+      "B12_S2",
+      2,
+      "Shepherd",
+      "I\u2019m fulfilled when I help people heal or grow.",
+      "I\u2019m fulfilled when I help people grow.",
+      "AW"
+    ],
+    [
+      12,
+      "B12_S3",
+      3,
+      "Artisan",
+      "I\u2019m drawn to projects that combine purpose and design.",
+      "I\u2019m drawn to projects with clear design.",
+      "AX"
+    ],
+    [
+      12,
+      "B12_S4",
+      4,
+      "Architect",
+      "I feel at home when I\u2019m leading something meaningful.",
+      "I feel at home when I\u2019m leading meaningful work.",
+      "AY"
+    ],
+    [
+      13,
+      "B13_S1",
+      1,
+      "Steward",
+      "I keep track of details to make sure nothing falls apart.",
+      "I keep track of details so things stay strong.",
+      "AZ"
+    ],
+    [
+      13,
+      "B13_S2",
+      2,
+      "Artisan",
+      "I enjoy learning how things work and making them better.",
+      "I enjoy learning how things work.",
+      "BA"
+    ],
+    [
+      13,
+      "B13_S3",
+      3,
+      "Architect",
+      "I like inspiring others to believe in what\u2019s possible.",
+      "I like inspiring others to see what\u2019s possible.",
+      "BB"
+    ],
+    [
+      13,
+      "B13_S4",
+      4,
+      "Shepherd",
+      "I care deeply about people\u2019s wellbeing.",
+      "I care about people\u2019s wellbeing.",
+      "BC"
+    ],
+    [
+      14,
+      "B14_S1",
+      1,
+      "Shepherd",
+      "I value kindness and connection in every situation.",
+      "I value kindness and connection.",
+      "BD"
+    ],
+    [
+      14,
+      "B14_S2",
+      2,
+      "Steward",
+      "I like structure that helps people feel secure.",
+      "I like structure that gives people security.",
+      "BE"
+    ],
+    [
+      14,
+      "B14_S3",
+      3,
+      "Artisan",
+      "I like creating clarity where things feel confusing.",
+      "I like creating clarity in confusing situations.",
+      "BF"
+    ],
+    [
+      14,
+      "B14_S4",
+      4,
+      "Architect",
+      "I get excited by new ideas and bold possibilities.",
+      "I get excited by new ideas.",
+      "BG"
+    ],
+    [
+      15,
+      "B15_S1",
+      1,
+      "Architect",
+      "I enjoy motivating others toward a goal.",
+      "I enjoy motivating others toward shared goals",
+      "BH"
+    ],
+    [
+      15,
+      "B15_S2",
+      2,
+      "Artisan",
+      "I find satisfaction in crafting or editing until it feels complete.",
+      "I find satisfaction in crafting until it\u2019s complete.",
+      "BI"
+    ],
+    [
+      15,
+      "B15_S3",
+      3,
+      "Steward",
+      "I take comfort in dependable systems and predictable routines.",
+      "I take comfort in dependable routines.",
+      "BJ"
+    ],
+    [
+      15,
+      "B15_S4",
+      4,
+      "Shepherd",
+      "I enjoy being there for people who need a safe space.",
+      "I enjoy being there for people who need support.",
+      "BK"
+    ],
+    [
+      16,
+      "B16_S1",
+      1,
+      "Steward",
+      "I help things stay on course through steady effort.",
+      "I keep things on course through steady effort.",
+      "BL"
+    ],
+    [
+      16,
+      "B16_S2",
+      2,
+      "Architect",
+      "I like building momentum and bringing vision to life.",
+      "I like building momentum that brings vision to life.",
+      "BM"
+    ],
+    [
+      16,
+      "B16_S3",
+      3,
+      "Shepherd",
+      "I notice when people feel unseen or misunderstood.",
+      "I notice when people feel unseen.",
+      "BN"
+    ],
+    [
+      16,
+      "B16_S4",
+      4,
+      "Artisan",
+      "I see ways to make things more effective or beautiful.",
+      "I see ways to make things more effective.",
+      "BO"
+    ],
+    [
+      17,
+      "B17_S1",
+      1,
+      "Artisan",
+      "I focus on making improvements others might overlook.",
+      "I make improvements others might overlook.",
+      "BP"
+    ],
+    [
+      17,
+      "B17_S2",
+      2,
+      "Steward",
+      "I maintain order even when situations feel uncertain.",
+      "I maintain order during uncertain times.",
+      "BQ"
+    ],
+    [
+      17,
+      "B17_S3",
+      3,
+      "Shepherd",
+      "I encourage people when they lose confidence.",
+      "I encourage people who lose confidence.",
+      "BR"
+    ],
+    [
+      17,
+      "B17_S4",
+      4,
+      "Architect",
+      "I take initiative when something important needs doing.",
+      "I take initiative when something important needs to be done.",
+      "BS"
+    ],
+    [
+      18,
+      "B18_S1",
+      1,
+      "Artisan",
+      "I like refining systems until they run smoothly.",
+      "I like refining systems.",
+      "BT"
+    ],
+    [
+      18,
+      "B18_S2",
+      2,
+      "Steward",
+      "I bring calm by setting clear steps and expectations.",
+      "I bring calm by setting clear steps.",
+      "BU"
+    ],
+    [
+      18,
+      "B18_S3",
+      3,
+      "Architect",
+      "I enjoy taking risks to see what\u2019s possible.",
+      "I enjoy taking risks that lead to growth.",
+      "BV"
+    ],
+    [
+      18,
+      "B18_S4",
+      4,
+      "Shepherd",
+      "I listen deeply to understand someone\u2019s heart.",
+      "I listen deeply to understand others.",
+      "BW"
+    ],
+    [
+      19,
+      "B19_S1",
+      1,
+      "Steward",
+      "I make sure processes are consistent and fair.",
+      "I keep processes consistent and fair.",
+      "BX"
+    ],
+    [
+      19,
+      "B19_S2",
+      2,
+      "Shepherd",
+      "I\u2019m moved to act when someone feels left behind.",
+      "I act when someone feels left behind.",
+      "BY"
+    ],
+    [
+      19,
+      "B19_S3",
+      3,
+      "Artisan",
+      "I notice details that others might miss.",
+      "I notice details others might miss.",
+      "BZ"
+    ],
+    [
+      19,
+      "B19_S4",
+      4,
+      "Architect",
+      "I often think ahead to what could be built or improved.",
+      "I think ahead to what could be built.",
+      "CA"
+    ],
+    [
+      20,
+      "B20_S1",
+      1,
+      "Architect",
+      "I\u2019m quick to envision what could be better.",
+      "I envision what could be better.",
+      "CB"
+    ],
+    [
+      20,
+      "B20_S2",
+      2,
+      "Artisan",
+      "I enjoy shaping ideas into finished work.",
+      "I shape ideas into finished form.",
+      "CC"
+    ],
+    [
+      20,
+      "B20_S3",
+      3,
+      "Shepherd",
+      "I value compassion and connection above success.",
+      "I value compassion.",
+      "CD"
+    ],
+    [
+      20,
+      "B20_S4",
+      4,
+      "Steward",
+      "I stay steady and dependable no matter what\u2019s happening.",
+      "I stay steady.",
+      "CE"
+    ]
+  ],
+  "DesignPD_Helper!D1:Q2": [
+    [
+      "Plan_Tendency",
+      "Decide_Tendency",
+      "Do_Tendency",
+      "Primary",
+      "Secondary",
+      "Integrative_Reflection",
+      "Reflection_Shadow",
+      "Band_Architect",
+      "Band_Artisan",
+      "Band_Shepherd",
+      "Band_Steward",
+      "Move_DreamerMinusDoer",
+      "Move_Feel_ItMinusThink_It",
+      "Move_SoloMinusTogether"
+    ],
+    [
+      "=IF(Scored!B2=\"\",\"\",IF(ABS(VALUE(Scored!W2))<=0.05,\"Balanced\",IF(VALUE(Scored!W2)>0.05,IF(VALUE(Scored!W2)>=0.16,\"Strong_Dreamer\",\"Moderate_Dreamer\"),IF(VALUE(Scored!W2)<=-0.16,\"Strong_Doer\",\"Moderate_Doer\"))))",
+      "=IF(Scored!B2=\"\",\"\",IF(ABS(VALUE(Scored!X2))<=0.05,\"Balanced\",IF(VALUE(Scored!X2)>0.05,IF(VALUE(Scored!X2)>=0.16,\"Strong_Feel_It\",\"Moderate_Feel_It\"),IF(VALUE(Scored!X2)<=-0.16,\"Strong_Think_It\",\"Moderate_Think_It\"))))",
+      "=IF(Scored!B2=\"\",\"\",IF(ABS(VALUE(Scored!Y2))<=0.05,\"Balanced\",IF(VALUE(Scored!Y2)>0.05,IF(VALUE(Scored!Y2)>=0.16,\"Strong_Solo\",\"Moderate_Solo\"),IF(VALUE(Scored!Y2)<=-0.16,\"Strong_Together\",\"Moderate_Together\"))))",
+      "=IF(Scored!B2=\"\",\"\",Scored!Z2)",
+      "=IF(Scored!B2=\"\",\"\",Scored!AA2)",
+      "=IF(Scored!B2=\"\",\"\",Scored!AC2)",
+      "=IF(Scored!B2=\"\",\"\",Scored!BA2)",
+      "=IF(Scored!B2=\"\",\"\",Scored!M2)",
+      "=IF(Scored!B2=\"\",\"\",Scored!N2)",
+      "=IF(Scored!B2=\"\",\"\",Scored!O2)",
+      "=IF(Scored!B2=\"\",\"\",Scored!P2)",
+      "=IF(Scored!B2=\"\",\"\",Scored!W2)",
+      "=IF(Scored!B2=\"\",\"\",Scored!X2)",
+      "=IF(Scored!B2=\"\",\"\",Scored!Y2)"
+    ]
+  ],
+  "DesignPD_Report_Data!CA1:CQ2": [
+    [
+      "Primary",
+      "Secondary",
+      "Integrative_Reflection",
+      "Reflection_Shadow",
+      "Band_Architect",
+      "Band_Artisan",
+      "Band_Shepherd",
+      "Band_Steward",
+      "Plan_Tendency",
+      "Decide_Tendency",
+      "Do_Tendency",
+      "Move_DreamerMinusDoer",
+      "Move_Feel_ItMinusThink_It",
+      "Move_SoloMinusTogether",
+      "Plan_Score",
+      "Decide_Score",
+      "Do_Score"
+    ],
+    [
+      "=IF(A2=\"\",\"\",XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!G:G,\"\"))",
+      "=IF(A2=\"\",\"\",XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!H:H,\"\"))",
+      "=IF(A2=\"\",\"\",XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!I:I,\"\"))",
+      "=IF(A2=\"\",\"\",XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!J:J,\"\"))",
+      "=IF(A2=\"\",\"\",XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!K:K,\"\"))",
+      "=IF(A2=\"\",\"\",XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!L:L,\"\"))",
+      "=IF(A2=\"\",\"\",XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!M:M,\"\"))",
+      "=IF(A2=\"\",\"\",XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!N:N,\"\"))",
+      "=IF(A2=\"\",\"\",XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!D:D,\"\"))",
+      "=IF(A2=\"\",\"\",XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!E:E,\"\"))",
+      "=IF(A2=\"\",\"\",XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!F:F,\"\"))",
+      "=IF(A2=\"\",\"\",XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!O:O,\"\"))",
+      "=IF(A2=\"\",\"\",XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!P:P,\"\"))",
+      "=IF(A2=\"\",\"\",XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!Q:Q,\"\"))",
+      "=IF(A2=\"\",\"\",ABS(ROUND(XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!O:O,\"\")*100,0)))",
+      "=IF(A2=\"\",\"\",ABS(ROUND(XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!P:P,\"\")*100,0)))",
+      "=IF(A2=\"\",\"\",ABS(ROUND(XLOOKUP(A2,DesignPD_Helper!R:R,DesignPD_Helper!Q:Q,\"\")*100,0)))"
+    ]
+  ]
+}

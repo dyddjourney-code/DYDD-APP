@@ -8,13 +8,13 @@ const output = fs.mkdtempSync(path.join(os.tmpdir(), 'designid-maps-'));
 try {
   execFileSync(process.execPath, ['node_modules/typescript/bin/tsc', 'lib/designid/engine.ts', 'lib/designid/intake.ts', 'lib/designid/maps-confirmation.ts', 'lib/designid/report.ts', '--outDir', output, '--module', 'commonjs', '--target', 'es2022', '--skipLibCheck']);
   const { designIdQuestionBlocks } = require(path.join(output, 'intake.js'));
-  const { parseDesignIdRankAnswers, scoreDesignId } = require(path.join(output, 'engine.js'));
+  const { parseDesignIdAllocationAnswers, scoreDesignId } = require(path.join(output, 'engine.js'));
   const { mapsConfirmationItems: items, parseMapsConfirmation, scoreMapsConfirmation } = require(path.join(output, 'maps-confirmation.js'));
   const { buildDesignIdReportPayload } = require(path.join(output, 'report.js'));
   const form = new FormData();
-  for (const block of designIdQuestionBlocks) for (const [i, statement] of block.statements.entries()) form.set(`designid_rank_${statement.code}`, String(3-i));
-  const main = scoreDesignId(parseDesignIdRankAnswers(form));
-  assert.equal(main.totalPoints, 120);
+  for (const block of designIdQuestionBlocks) for (const [i, statement] of block.statements.entries()) form.set(`designid_points_${statement.code}`, String([3, 2, 0, 0][i]));
+  const main = scoreDesignId(parseDesignIdAllocationAnswers(form));
+  assert.equal(main.totalPoints, 100);
   assert.throws(() => parseMapsConfirmation(form));
   for (const [i, item] of items.entries()) form.set(`designid_maps_${item.id}`, ['most', 'often', 'sometimes', 'least'][Math.floor(i/3)]);
   const assignments = parseMapsConfirmation(form);
@@ -29,7 +29,7 @@ try {
   form.set('designid_maps_purpose', 'invalid'); assert.throws(() => parseMapsConfirmation(form));
   form.set('designid_maps_purpose', 'often'); assert.throws(() => parseMapsConfirmation(form));
   form.set('designid_maps_purpose', 'most'); form.append('designid_maps_purpose', 'most'); assert.throws(() => parseMapsConfirmation(form));
-  assert.throws(() => parseDesignIdRankAnswers(new FormData()));
+  assert.throws(() => parseDesignIdAllocationAnswers(new FormData()));
   const strong = { ...main, scores:{Architect:50, Artisan:30, Shepherd:25, Steward:15}, rankOrder:['Architect','Artisan','Shepherd','Steward'], primary:'Architect', secondary:'Artisan' };
   assert.equal(scoreMapsConfirmation(assignments, strong).suggestedTieReflection, null);
   const tied = { ...strong, scores:{Architect:40, Artisan:40, Shepherd:25, Steward:15} };

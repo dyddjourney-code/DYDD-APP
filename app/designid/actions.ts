@@ -8,9 +8,10 @@ import {
   createReadyPdfMonkeyReport,
   sendAssessmentReportEmail,
 } from "@/lib/assessment-reporting";
-import { designIdScorePayload, parseDesignIdRankAnswers, scoreDesignId } from "@/lib/designid/engine";
+import { designIdScoringVersion, designIdScorePayload, parseDesignIdAllocationAnswers, scoreDesignId } from "@/lib/designid/engine";
 import { parseMapsConfirmation, scoreMapsConfirmation } from "@/lib/designid/maps-confirmation";
 import { buildDesignIdReportPayload, designIdSnapshotSections } from "@/lib/designid/report";
+import { designIdQuestionBlocks } from "@/lib/designid/intake";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -80,7 +81,7 @@ export async function saveDesignIdResponse(formData: FormData) {
 
   let result;
   try {
-    result = scoreDesignId(parseDesignIdRankAnswers(formData));
+    result = scoreDesignId(parseDesignIdAllocationAnswers(formData));
     result.mapsConfirmation = scoreMapsConfirmation(parseMapsConfirmation(formData), result);
   } catch (error) {
     fail(error instanceof Error ? error.message : "Unable to score this DesignID assessment.");
@@ -114,10 +115,12 @@ export async function saveDesignIdResponse(formData: FormData) {
       participant_id: participant.id,
       scores: {
         answers: result.answers,
+        blockTotals: Object.fromEntries(designIdQuestionBlocks.map((block) => [block.block, block.statements.reduce((sum, statement) => sum + result.answers[statement.code], 0)])),
         channel: "native_app",
         mapsConfirmation: result.mapsConfirmation,
         profileLanguage: sections.profileLanguage,
         questionVersion: "designid-approved-audit-2026-09-04",
+        scoringVersion: designIdScoringVersion,
         rankOrder: result.rankOrder,
         scores: designIdScorePayload(result),
         sourceResponseId,
@@ -194,11 +197,13 @@ export async function saveDesignIdResponse(formData: FormData) {
     .update({
       scores: {
         answers: result.answers,
+        blockTotals: Object.fromEntries(designIdQuestionBlocks.map((block) => [block.block, block.statements.reduce((sum, statement) => sum + result.answers[statement.code], 0)])),
         channel: "native_app",
         mapsConfirmation: result.mapsConfirmation,
         pdfMonkey: pdfMetadata,
         profileLanguage: sections.profileLanguage,
         questionVersion: "designid-approved-audit-2026-09-04",
+        scoringVersion: designIdScoringVersion,
         rankOrder: result.rankOrder,
         reportAccessUrl,
         resultEmail: emailMetadata,

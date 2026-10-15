@@ -7,10 +7,10 @@ import {
 
 import type { MapsConfirmationResult } from "./maps-confirmation";
 
-export type DesignIdRankAnswers = Record<string, number>;
+export type DesignIdAllocationAnswers = Record<string, number>;
 
 export type DesignIdResult = {
-  answers: DesignIdRankAnswers;
+  answers: DesignIdAllocationAnswers;
   mapsConfirmation?: MapsConfirmationResult;
   bandByReflection: Record<DesignIdReflection, string>;
   movement: {
@@ -39,7 +39,7 @@ export type DesignIdResult = {
   totalPoints: number;
 };
 
-const maxScore = 60;
+export const designIdScoringVersion = "designid-allocation-5x20-v1";
 
 const reflectionTieOrder: DesignIdReflection[] = ["Architect", "Artisan", "Shepherd", "Steward"];
 
@@ -51,32 +51,39 @@ function bandForScore(score: number) {
 }
 
 function percent(score: number) {
-  return Math.round((score / maxScore) * 100);
+  // Workbook percentages are fractions of the full 100-point allocation.
+  return score / 100;
 }
 
-export function parseDesignIdRankAnswers(formData: FormData) {
-  const answers: DesignIdRankAnswers = {};
+export function parseDesignIdAllocationAnswers(formData: FormData) {
+  const answers: DesignIdAllocationAnswers = {};
 
   for (const statement of designIdQuestionBank) {
-    const raw = formData.getAll(`designid_rank_${statement.code}`);
+    const raw = formData.getAll(`designid_points_${statement.code}`);
     const value = raw.length === 1 && typeof raw[0] === "string" && /^[0-3]$/.test(raw[0]) ? Number(raw[0]) : NaN;
     if (!Number.isInteger(value) || value < 0 || value > 3) {
-      throw new Error("Please rank every DesignID statement before submitting.");
+      throw new Error("Choose 0, 1, 2, or 3 points for every DesignID statement.");
     }
     answers[statement.code] = value;
   }
 
   for (const block of designIdQuestionBlocks) {
     const values = block.statements.map((statement) => answers[statement.code]);
-    if (new Set(values).size !== 4) {
-      throw new Error(`Question set ${block.block} needs one First, Second, Third, and Fourth choice.`);
+    if (values.reduce((sum, value) => sum + value, 0) !== 5) {
+      throw new Error(`Question set ${block.block} must total exactly 5 points.`);
     }
   }
 
   return answers;
 }
 
-export function scoreDesignId(answers: DesignIdRankAnswers): DesignIdResult {
+export function scoreDesignId(answers: DesignIdAllocationAnswers): DesignIdResult {
+  for (const block of designIdQuestionBlocks) {
+    const values = block.statements.map((statement) => answers[statement.code]);
+    if (values.some((value) => !Number.isInteger(value) || value < 0 || value > 3) || values.reduce((sum, value) => sum + value, 0) !== 5) {
+      throw new Error(`Question set ${block.block} must have four 0–3 point choices totaling exactly 5.`);
+    }
+  }
   const scores = Object.fromEntries(designIdReflections.map((key) => [key, 0])) as Record<
     DesignIdReflection,
     number
@@ -123,12 +130,13 @@ export function scoreDesignId(answers: DesignIdRankAnswers): DesignIdResult {
   const bandByReflection = Object.fromEntries(
     designIdReflections.map((reflection) => [reflection, bandForScore(scores[reflection])]),
   ) as Record<DesignIdReflection, string>;
-  const dreamer = scores.Architect + scores.Artisan;
-  const doer = scores.Shepherd + scores.Steward;
-  const feelIt = scores.Shepherd + scores.Artisan;
-  const thinkIt = scores.Architect + scores.Steward;
-  const solo = scores.Architect + scores.Steward;
-  const together = scores.Shepherd + scores.Artisan;
+  // Exact Scored!Q:V pairings: averages of total-score fractions, not raw sums.
+  const dreamer = (scores.Shepherd + scores.Artisan) / 200;
+  const doer = (scores.Architect + scores.Steward) / 200;
+  const feelIt = (scores.Architect + scores.Shepherd) / 200;
+  const thinkIt = (scores.Artisan + scores.Steward) / 200;
+  const solo = (scores.Architect + scores.Artisan) / 200;
+  const together = (scores.Shepherd + scores.Steward) / 200;
 
   return {
     answers,
@@ -137,9 +145,9 @@ export function scoreDesignId(answers: DesignIdRankAnswers): DesignIdResult {
       Doer: doer,
       Dreamer: dreamer,
       Feel_It: feelIt,
-      Move_DreamerMinusDoer: Number(((dreamer - doer) / 120).toFixed(2)),
-      Move_Feel_ItMinusThink_It: Number(((feelIt - thinkIt) / 120).toFixed(2)),
-      Move_SoloMinusTogether: Number(((solo - together) / 120).toFixed(2)),
+      Move_DreamerMinusDoer: Number((dreamer - doer).toFixed(10)),
+      Move_Feel_ItMinusThink_It: Number((feelIt - thinkIt).toFixed(10)),
+      Move_SoloMinusTogether: Number((solo - together).toFixed(10)),
       Solo: solo,
       Think_It: thinkIt,
       Together: together,

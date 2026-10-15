@@ -11,7 +11,7 @@ export type DesignIdStatement = {
   text: string;
 };
 
-export const designIdRankField = (code: string) => `designid_rank_${code}`;
+export const designIdAllocationField = (code: string) => `designid_points_${code}`;
 
 export const designIdQuestionBlocks: Array<{
   block: number;

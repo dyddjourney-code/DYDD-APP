@@ -1,0 +1,402 @@
+[
+  {
+    "code": "B01_S1",
+    "reflection": "Shepherd",
+    "text": "I can sense when someone needs care."
+  },
+  {
+    "code": "B01_S2",
+    "reflection": "Artisan",
+    "text": "I improve things until they work clearly."
+  },
+  {
+    "code": "B01_S3",
+    "reflection": "Steward",
+    "text": "I like when plans stay on track."
+  },
+  {
+    "code": "B01_S4",
+    "reflection": "Architect",
+    "text": "I start things when direction is needed."
+  },
+  {
+    "code": "B02_S1",
+    "reflection": "Steward",
+    "text": "I create order where things feel scattered."
+  },
+  {
+    "code": "B02_S2",
+    "reflection": "Shepherd",
+    "text": "I notice growth needs in people."
+  },
+  {
+    "code": "B02_S3",
+    "reflection": "Architect",
+    "text": "I feel alive taking bold action."
+  },
+  {
+    "code": "B02_S4",
+    "reflection": "Artisan",
+    "text": "I enjoy improving ideas until they work well."
+  },
+  {
+    "code": "B03_S1",
+    "reflection": "Artisan",
+    "text": "I like finding better ways to do things."
+  },
+  {
+    "code": "B03_S2",
+    "reflection": "Steward",
+    "text": "I prefer clear routines that build steady progress."
+  },
+  {
+    "code": "B03_S3",
+    "reflection": "Shepherd",
+    "text": "I notice when someone feels left out."
+  },
+  {
+    "code": "B03_S4",
+    "reflection": "Architect",
+    "text": "I naturally take charge when direction is needed."
+  },
+  {
+    "code": "B04_S1",
+    "reflection": "Artisan",
+    "text": "I enjoy turning ideas into practical results."
+  },
+  {
+    "code": "B04_S2",
+    "reflection": "Shepherd",
+    "text": "I listen well when others need to speak."
+  },
+  {
+    "code": "B04_S3",
+    "reflection": "Architect",
+    "text": "I move quickly when something needs to begin."
+  },
+  {
+    "code": "B04_S4",
+    "reflection": "Steward",
+    "text": "I feel most at ease when tasks are complete."
+  },
+  {
+    "code": "B05_S1",
+    "reflection": "Artisan",
+    "text": "I improve how things are formed."
+  },
+  {
+    "code": "B05_S2",
+    "reflection": "Shepherd",
+    "text": "I’m drawn to help people who are hurting."
+  },
+  {
+    "code": "B05_S3",
+    "reflection": "Steward",
+    "text": "I find peace in doing consistent work."
+  },
+  {
+    "code": "B05_S4",
+    "reflection": "Architect",
+    "text": "I grow stronger when facing challenge."
+  },
+  {
+    "code": "B06_S1",
+    "reflection": "Artisan",
+    "text": "I see patterns that bring clarity to complex things."
+  },
+  {
+    "code": "B06_S2",
+    "reflection": "Steward",
+    "text": "I keep systems steady and details aligned."
+  },
+  {
+    "code": "B06_S3",
+    "reflection": "Shepherd",
+    "text": "I notice emotional shifts in people."
+  },
+  {
+    "code": "B06_S4",
+    "reflection": "Architect",
+    "text": "I enjoy creating new paths."
+  },
+  {
+    "code": "B07_S1",
+    "reflection": "Shepherd",
+    "text": "I track how people are doing."
+  },
+  {
+    "code": "B07_S2",
+    "reflection": "Artisan",
+    "text": "I enjoy bringing ideas into order."
+  },
+  {
+    "code": "B07_S3",
+    "reflection": "Architect",
+    "text": "I lead when movement is needed."
+  },
+  {
+    "code": "B07_S4",
+    "reflection": "Steward",
+    "text": "I rely on routines that create stability."
+  },
+  {
+    "code": "B08_S1",
+    "reflection": "Artisan",
+    "text": "I see beauty in structure and balance."
+  },
+  {
+    "code": "B08_S2",
+    "reflection": "Steward",
+    "text": "I keep things consistent over time."
+  },
+  {
+    "code": "B08_S3",
+    "reflection": "Architect",
+    "text": "I see better paths toward a goal."
+  },
+  {
+    "code": "B08_S4",
+    "reflection": "Shepherd",
+    "text": "I enjoy comforting people who are stressed."
+  },
+  {
+    "code": "B09_S1",
+    "reflection": "Architect",
+    "text": "I act quickly when I see what needs to be done."
+  },
+  {
+    "code": "B09_S2",
+    "reflection": "Shepherd",
+    "text": "I notice when friends are struggling."
+  },
+  {
+    "code": "B09_S3",
+    "reflection": "Artisan",
+    "text": "I notice design gaps others miss."
+  },
+  {
+    "code": "B09_S4",
+    "reflection": "Steward",
+    "text": "I feel best when I finish what I start."
+  },
+  {
+    "code": "B10_S1",
+    "reflection": "Shepherd",
+    "text": "I notice moods and bring calm where there’s tension."
+  },
+  {
+    "code": "B10_S2",
+    "reflection": "Steward",
+    "text": "I keep plans realistic and on schedule."
+  },
+  {
+    "code": "B10_S3",
+    "reflection": "Architect",
+    "text": "I set direction when people need movement."
+  },
+  {
+    "code": "B10_S4",
+    "reflection": "Artisan",
+    "text": "I take time to refine details."
+  },
+  {
+    "code": "B11_S1",
+    "reflection": "Shepherd",
+    "text": "I sense when someone needs to talk."
+  },
+  {
+    "code": "B11_S2",
+    "reflection": "Artisan",
+    "text": "I bring form to messy ideas."
+  },
+  {
+    "code": "B11_S3",
+    "reflection": "Steward",
+    "text": "I manage responsibilities carefully."
+  },
+  {
+    "code": "B11_S4",
+    "reflection": "Architect",
+    "text": "I like solving problems others find challenging."
+  },
+  {
+    "code": "B12_S1",
+    "reflection": "Steward",
+    "text": "I’m grateful to stay faithful with what’s entrusted to me."
+  },
+  {
+    "code": "B12_S2",
+    "reflection": "Shepherd",
+    "text": "I invest in people’s growth."
+  },
+  {
+    "code": "B12_S3",
+    "reflection": "Artisan",
+    "text": "I’m drawn to purposeful design."
+  },
+  {
+    "code": "B12_S4",
+    "reflection": "Architect",
+    "text": "I feel at home when I’m leading meaningful work."
+  },
+  {
+    "code": "B13_S1",
+    "reflection": "Steward",
+    "text": "I keep track of details so things stay strong."
+  },
+  {
+    "code": "B13_S2",
+    "reflection": "Artisan",
+    "text": "I study how things are made."
+  },
+  {
+    "code": "B13_S3",
+    "reflection": "Architect",
+    "text": "I like inspiring others to see what’s possible."
+  },
+  {
+    "code": "B13_S4",
+    "reflection": "Shepherd",
+    "text": "I naturally track people’s wellbeing."
+  },
+  {
+    "code": "B14_S1",
+    "reflection": "Shepherd",
+    "text": "I create connection when people feel distant."
+  },
+  {
+    "code": "B14_S2",
+    "reflection": "Steward",
+    "text": "I like structure that gives people security."
+  },
+  {
+    "code": "B14_S3",
+    "reflection": "Artisan",
+    "text": "I clarify ideas through careful shaping."
+  },
+  {
+    "code": "B14_S4",
+    "reflection": "Architect",
+    "text": "I get excited by new possibilities."
+  },
+  {
+    "code": "B15_S1",
+    "reflection": "Architect",
+    "text": "I enjoy motivating others toward shared goals."
+  },
+  {
+    "code": "B15_S2",
+    "reflection": "Artisan",
+    "text": "I find satisfaction in crafting until it’s complete."
+  },
+  {
+    "code": "B15_S3",
+    "reflection": "Steward",
+    "text": "I trust routines that keep things dependable."
+  },
+  {
+    "code": "B15_S4",
+    "reflection": "Shepherd",
+    "text": "I make room for people who need support."
+  },
+  {
+    "code": "B16_S1",
+    "reflection": "Steward",
+    "text": "I keep things on course through steady effort."
+  },
+  {
+    "code": "B16_S2",
+    "reflection": "Architect",
+    "text": "I like building momentum that brings vision to life."
+  },
+  {
+    "code": "B16_S3",
+    "reflection": "Shepherd",
+    "text": "I notice when people feel unseen."
+  },
+  {
+    "code": "B16_S4",
+    "reflection": "Artisan",
+    "text": "I refine things to work better."
+  },
+  {
+    "code": "B17_S1",
+    "reflection": "Artisan",
+    "text": "I make improvements others might overlook."
+  },
+  {
+    "code": "B17_S2",
+    "reflection": "Steward",
+    "text": "I maintain order during uncertain times."
+  },
+  {
+    "code": "B17_S3",
+    "reflection": "Shepherd",
+    "text": "I encourage people who lose confidence."
+  },
+  {
+    "code": "B17_S4",
+    "reflection": "Architect",
+    "text": "I take initiative when something important needs to be done."
+  },
+  {
+    "code": "B18_S1",
+    "reflection": "Artisan",
+    "text": "I refine systems until they work better."
+  },
+  {
+    "code": "B18_S2",
+    "reflection": "Steward",
+    "text": "I create clear steps in uncertain moments."
+  },
+  {
+    "code": "B18_S3",
+    "reflection": "Architect",
+    "text": "I move toward possibility before it is certain."
+  },
+  {
+    "code": "B18_S4",
+    "reflection": "Shepherd",
+    "text": "I listen for what people are really saying."
+  },
+  {
+    "code": "B19_S1",
+    "reflection": "Steward",
+    "text": "I keep processes consistent and fair."
+  },
+  {
+    "code": "B19_S2",
+    "reflection": "Shepherd",
+    "text": "I act when someone feels left behind."
+  },
+  {
+    "code": "B19_S3",
+    "reflection": "Artisan",
+    "text": "I notice design details others miss."
+  },
+  {
+    "code": "B19_S4",
+    "reflection": "Architect",
+    "text": "I think ahead to what should be built."
+  },
+  {
+    "code": "B20_S1",
+    "reflection": "Architect",
+    "text": "I envision what could be better."
+  },
+  {
+    "code": "B20_S2",
+    "reflection": "Artisan",
+    "text": "I shape ideas into finished form."
+  },
+  {
+    "code": "B20_S3",
+    "reflection": "Shepherd",
+    "text": "I respond when people need compassion."
+  },
+  {
+    "code": "B20_S4",
+    "reflection": "Steward",
+    "text": "I remain steady when pressure rises."
+  }
+]

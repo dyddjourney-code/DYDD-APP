@@ -101,13 +101,38 @@ export const defaultPassportBadges: PassportBadge[] = [
     summary: "Applies design through the way you plan, decide, and do.",
     title: "DesignPD",
   },
-  {
-    connectedTo: "Design Pathways trail",
-    earnBy: "Begin the Design Pathways discernment experience.",
-    group: "extension",
-    image: "/brand/badges/design-pathways-badge.png",
-    state: "ahead",
-    summary: "Helps you discern current direction, experiments, and possible next paths.",
-    title: "Design Pathways",
-  },
 ];
+
+export const designIdReflectionBadges: PassportBadge[] = ["Architect", "Artisan", "Shepherd", "Steward"].map((title) => ({
+  title,
+  connectedTo: "Your primary DesignID result",
+  earnBy: "Complete DesignID to discover your primary design.",
+  group: "extension",
+  image: `/brand/badges/${title.toLowerCase()}-badge.png`,
+  state: "ahead",
+  summary: `The ${title} design marker appears on your main trail when it is your primary DesignID result.`,
+}));
+
+export function buildPassportBadges({ completedAssessments, primaryDesign }: {
+  completedAssessments: string[];
+  primaryDesign?: string;
+}): PassportBadge[] {
+  const completed = new Set(completedAssessments);
+  const assessmentByTitle: Record<string, string> = {
+    DesignID: "designid", DesignPD: "designpd",
+    "Spiritual Gifts Assessment": "spiritual_gifts", FruitLife360: "fruit_360",
+  };
+  const earnedReflection = completed.has("designid")
+    ? designIdReflectionBadges.find((badge) => badge.title.toLowerCase() === primaryDesign?.trim().toLowerCase())
+    : undefined;
+  const badges = defaultPassportBadges.flatMap((badge): PassportBadge[] => {
+    const current: PassportBadge = {
+      ...badge,
+      state: completed.has(assessmentByTitle[badge.title]) ? "earned" : badge.state,
+    };
+    return badge.title === "DesignID" && earnedReflection
+      ? [current, { ...earnedReflection, group: "journey", state: "earned" }]
+      : [current];
+  });
+  return [...badges, ...designIdReflectionBadges.filter((badge) => badge.title !== earnedReflection?.title)];
+}

@@ -27,6 +27,9 @@ export function DydPassportBook({
   const nextBadge = badges.find((badge) => badge.state === "next") ?? badges.find((badge) => badge.state !== "earned");
   const journeyBadges = badges.filter((badge) => badge.group !== "extension");
   const extensionBadges = badges.filter((badge) => badge.group === "extension");
+  const primaryDesignBadge = journeyBadges.find((badge) =>
+    ["Architect", "Artisan", "Shepherd", "Steward"].includes(badge.title) && badge.state === "earned",
+  );
   const renderBadgeButton = (badge: PassportBadge) => (
     <button
       className={`passport-badge-button ${badge.state} ${selectedBadge?.title === badge.title ? "selected" : ""}`}
@@ -66,15 +69,34 @@ export function DydPassportBook({
             <small>Earned</small>
           </div>
           <p>
-            Earned badges stay visible first. Future app logic can add dates, trail notes,
-            certificates, journal prompts, and unlocked next steps.
+            Your earned badges mark the steps you have taken. Select any badge to see
+            what it means and how to earn it.
           </p>
         </div>
 
         <div className="passport-badge-stack" aria-label="Possible and earned badges">
-          <div className="passport-badge-grid journey">{journeyBadges.map(renderBadgeButton)}</div>
+          <section aria-label="Main trail badges" className="passport-badge-group">
+            <h3>Main trail badges</h3>
+            <div className="passport-badge-grid journey">
+              {journeyBadges.map((badge) => {
+                if (badge === primaryDesignBadge) return null;
+                if (badge.title === "DesignID" && primaryDesignBadge) {
+                  return (
+                    <div className="passport-designid-markers" key={badge.title} aria-label="DesignID and your primary design">
+                      {renderBadgeButton(badge)}
+                      {renderBadgeButton(primaryDesignBadge)}
+                    </div>
+                  );
+                }
+                return renderBadgeButton(badge);
+              })}
+            </div>
+          </section>
           {extensionBadges.length ? (
-            <div className="passport-badge-grid extension">{extensionBadges.map(renderBadgeButton)}</div>
+            <section aria-label="Short trail badges" className="passport-badge-group">
+              <h3>Short trail badges</h3>
+              <div className="passport-badge-grid extension">{extensionBadges.map(renderBadgeButton)}</div>
+            </section>
           ) : null}
         </div>
 

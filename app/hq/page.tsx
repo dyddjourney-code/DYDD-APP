@@ -43,7 +43,7 @@ import {
   type ReviewSearchParams,
   withReviewQuery,
 } from "@/lib/review/heather";
-import { defaultPassportBadges } from "@/lib/passport-badges";
+import { buildPassportBadges } from "@/lib/passport-badges";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -567,7 +567,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     : newPreview
       ? newReviewName
       : profile?.full_name ?? user?.email ?? "Traveler";
-  const displayName = toDisplayName(rawDisplayName);
+  const displayName = toDisplayName(rawDisplayName.replace(/\s+Preview$/, ""));
   const welcomeName = toDisplayName(displayName.replace(/\s+Preview$/, "").split(/\s+/)[0]);
   const fruitLifeDashboardEmail = heatherPreview
     ? "willoughbyhs@gmail.com"
@@ -591,23 +591,9 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     selectedFruitLifeSession?.id === activeFruitLifeSession?.id && reviewParams?.fruitlife_token
       ? reviewParams.fruitlife_token
       : fruitLifeTokenFromSession(activeFruitLifeSession);
-  const hasDesignId = ownsAssessment(assessmentReport, "designid");
-  const hasDesignPd = ownsAssessment(assessmentReport, "designpd");
-  const hasDesignPathways = ownsAssessment(assessmentReport, "design_pathways");
-  const hasSpiritualGifts = ownsAssessment(assessmentReport, "spiritual_gifts");
-  const hasFruitLife = ownsAssessment(assessmentReport, "fruit_360");
-  const passportBadges = defaultPassportBadges.map((badge) => {
-    const isEarned =
-      (badge.title === "DesignID" && hasDesignId) ||
-      (badge.title === "DesignPD" && hasDesignPd) ||
-      (badge.title === "Design Pathways" && hasDesignPathways) ||
-      (badge.title === "Spiritual Gifts Assessment" && hasSpiritualGifts) ||
-      (badge.title === "FruitLife360" && hasFruitLife);
-
-    return {
-      ...badge,
-      state: isEarned ? "earned" as const : badge.state,
-    };
+  const passportBadges = buildPassportBadges({
+    completedAssessments: assessmentReport.latest.map((snapshot) => snapshot.assessment_type),
+    primaryDesign: buildDesignIdContext(assessmentReport).primary,
   });
 
   if (fruitLifeLane) {
@@ -728,17 +714,9 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             <p className="eyebrow">DYDD Base Camp</p>
             <h1>{displayName}</h1>
           </div>
-          {reviewReport ? (
-            <Link className="button secondary" href="/login">
-              Real sign-in
-            </Link>
-          ) : (
-            <form action={signOut}>
-              <button className="button secondary" type="submit">
-                Sign out
-              </button>
-            </form>
-          )}
+          <form action={signOut}>
+            <button className="button secondary" type="submit">Sign out</button>
+          </form>
         </header>
 
       <section className="basecamp-hero" id="basecamp" aria-label="DYDD Base Camp">
@@ -747,16 +725,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           <div className="basecamp-identity-lockup">
             <div>
               <h2>Welcome, {welcomeName}.</h2>
-              <p>
-                Base Camp is your personal landing place for the DYDD journey.
-              </p>
             </div>
-            <Link
-              className="button primary basecamp-launch-button"
-              href={withReviewQuery("/ranger-station", reviewParams)}
-            >
-              Go to Ranger Station
-            </Link>
           </div>
         </div>
         <div className="basecamp-scene" aria-hidden="true">

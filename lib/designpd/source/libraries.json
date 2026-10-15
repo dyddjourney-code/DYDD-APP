@@ -1,0 +1,1443 @@
+{
+  "sourceSpreadsheetId": "1544PcSoJIyGu7Ot_rYTl2Qui5fL539wpVEkdY-Ub_d4",
+  "retrievedAt": "2026-10-15",
+  "entryCount": 222,
+  "libraries": {
+    "Tendency_Snapshot_Descriptors": {
+      "Plan|Balanced": [
+        "Plan",
+        "Balanced",
+        "As a Balanced Planner, your planning naturally moves between vision and execution. This shapes how you adjust direction based on what is needed in the moment."
+      ],
+      "Plan|Moderate_Dreamer": [
+        "Plan",
+        "Moderate_Dreamer",
+        "As a Moderate Dreamer, your planning naturally expands toward possibility and future direction. This shapes how you frame opportunities before narrowing toward action."
+      ],
+      "Plan|Strong_Dreamer": [
+        "Plan",
+        "Strong_Dreamer",
+        "As a Strong Dreamer, your planning is led by vision and what could be. This shapes how you initiate direction from possibility rather than constraint."
+      ],
+      "Plan|Moderate_Doer": [
+        "Plan",
+        "Moderate_Doer",
+        "As a Moderate Doer, your planning naturally moves toward action and practical steps. This shapes how you bring clarity by narrowing focus toward execution."
+      ],
+      "Plan|Strong_Doer": [
+        "Plan",
+        "Strong_Doer",
+        "As a Strong Doer, your planning is driven by execution and forward movement. This shapes how you establish direction through action rather than extended exploration."
+      ],
+      "Decide|Balanced": [
+        "Decide",
+        "Balanced",
+        "As a Balanced Decision-Maker, your deciding naturally integrates intuition and reasoning. This shapes how you weigh both relational and logical factors when determining direction."
+      ],
+      "Decide|Moderate_Feel_It": [
+        "Decide",
+        "Moderate_Feel_It",
+        "As a Moderate Feel It, your deciding naturally begins with internal conviction and relational awareness. This shapes how you sense direction before fully structuring it."
+      ],
+      "Decide|Strong_Feel_It": [
+        "Decide",
+        "Strong_Feel_It",
+        "As a Strong Feel It, your deciding is led by conviction, empathy, and internal alignment. This shapes how you prioritize relational and intuitive clarity when making decisions."
+      ],
+      "Decide|Moderate_Think_It": [
+        "Decide",
+        "Moderate_Think_It",
+        "As a Moderate Think It, your deciding naturally moves toward structure and logical clarity. This shapes how you evaluate options through reasoning and consistency."
+      ],
+      "Decide|Strong_Think_It": [
+        "Decide",
+        "Strong_Think_It",
+        "As a Strong Think It, your deciding is driven by logic, structure, and clear evaluation. This shapes how you determine direction through analysis rather than instinct."
+      ],
+      "Do|Balanced": [
+        "Do",
+        "Balanced",
+        "As a Balanced Doer, your action naturally moves between independence and collaboration. This shapes how you engage responsibility based on what the situation requires."
+      ],
+      "Do|Moderate_Solo": [
+        "Do",
+        "Moderate_Solo",
+        "As a Moderate Solo, your action naturally leans toward independent ownership. This shapes how you take initiative and move forward without needing constant input."
+      ],
+      "Do|Strong_Solo": [
+        "Do",
+        "Strong_Solo",
+        "As a Strong Solo, your action is driven by personal ownership and autonomy. This shapes how you carry responsibility and move quickly when direction is clear."
+      ],
+      "Do|Moderate_Together": [
+        "Do",
+        "Moderate_Together",
+        "As a Moderate Together, your action naturally leans toward shared effort and collaboration. This shapes how you build momentum through involvement with others."
+      ],
+      "Do|Strong_Together": [
+        "Do",
+        "Strong_Together",
+        "As a Strong Together, your action is driven by collaboration and collective movement. This shapes how you engage responsibility through shared alignment and unity."
+      ]
+    },
+    "Core_Tendency_Blocks": {
+      "Plan|Balanced": [
+        "Plan",
+        "Balanced",
+        "This often creates a flexible approach to planning, allowing you to respond to changing demands while maintaining forward movement. Your strength is adaptability, helping you recognize when to expand possibilities and when to focus on practical execution. Growth comes from recognizing when pressure begins to rush clarity or stall momentum."
+      ],
+      "Plan|Moderate_Dreamer": [
+        "Plan",
+        "Moderate_Dreamer",
+        "This often creates an optimistic and forward-looking approach to planning, where opportunities and emerging direction are recognized early. Your strength is seeing beyond the present and initiating movement with purpose. Growth comes from anchoring vision in structure and accountability so it becomes actionable."
+      ],
+      "Plan|Strong_Dreamer": [
+        "Plan",
+        "Strong_Dreamer",
+        "This often creates a future-oriented approach to planning, where new ideas and emerging possibilities naturally capture your attention. Your strength is foresight and creative faith, allowing you to initiate meaningful direction. Growth comes from pacing vision with structure so imagination becomes sustainable impact."
+      ],
+      "Plan|Moderate_Doer": [
+        "Plan",
+        "Moderate_Doer",
+        "This often creates a practical and action-oriented approach to planning, where movement and follow-through help bring direction into focus. Your strength is generating momentum when uncertainty or hesitation begins to slow progress. Growth comes from pausing long enough to ensure what you are building remains aligned with the bigger picture."
+      ],
+      "Plan|Strong_Doer": [
+        "Plan",
+        "Strong_Doer",
+        "This often creates a decisive and momentum-driven approach to planning, where progress and implementation become immediate priorities. Your strength is the ability to move ideas into action quickly and consistently. Growth comes from creating intentional space for vision and reflection before committing to action."
+      ],
+      "Decide|Balanced": [
+        "Decide",
+        "Balanced",
+        "This often creates a steady and adaptable approach to decision-making, allowing you to evaluate situations from multiple angles without losing clarity. Your strength is integrating perspective, discernment, and stability when navigating complex choices. Growth comes from recognizing which side you instinctively lean toward under pressure."
+      ],
+      "Decide|Moderate_Feel_It": [
+        "Decide",
+        "Moderate_Feel_It",
+        "This often creates a thoughtful and people-aware approach to decision-making, where emotional tone and underlying dynamics are recognized quickly. Your strength is attentiveness to how choices affect both people and atmosphere. Growth comes from inviting structured reflection before committing to direction."
+      ],
+      "Decide|Strong_Feel_It": [
+        "Decide",
+        "Strong_Feel_It",
+        "This often creates a deeply personal and relational approach to decision-making, where discernment is shaped through emotional awareness and inner conviction. Your strength is depth of insight and sensitivity to what is happening beneath the surface. Growth comes from confirming discernment through wise counsel and measured clarity."
+      ],
+      "Decide|Moderate_Think_It": [
+        "Decide",
+        "Moderate_Think_It",
+        "This often creates a measured and analytical approach to decision-making, where consistency and practical evaluation help bring clarity to complex situations. Your strength is objectivity and steadiness when weighing competing options. Growth comes from making space for relational and emotional insight alongside analysis."
+      ],
+      "Decide|Strong_Think_It": [
+        "Decide",
+        "Strong_Think_It",
+        "This often creates a disciplined and analytical approach to decision-making, where evidence, order, and consistency help establish confidence. Your strength is decisiveness and stability under pressure. Growth comes from considering relational and emotional impact alongside reasoning."
+      ],
+      "Do|Balanced": [
+        "Do",
+        "Balanced",
+        "This often creates an adaptable approach to action, allowing you to shift between personal initiative and shared effort without losing momentum. Your strength is flexibility in how you respond to changing responsibilities and environments. Growth comes from recognizing when stress causes you to either isolate or over-consult."
+      ],
+      "Do|Moderate_Solo": [
+        "Do",
+        "Moderate_Solo",
+        "This often creates a self-directed approach to action, where personal responsibility and forward movement are maintained with minimal external support. Your strength is ownership and decisiveness when given space to operate. Growth comes from intentionally inviting collaboration early in the process."
+      ],
+      "Do|Strong_Solo": [
+        "Do",
+        "Strong_Solo",
+        "This often creates a highly self-reliant approach to action, where speed, initiative, and personal accountability drive progress forward. Your strength is the ability to execute with confidence and maintain momentum without needing continual oversight. Growth comes from sharing direction early and often to prevent misalignment."
+      ],
+      "Do|Moderate_Together": [
+        "Do",
+        "Moderate_Together",
+        "This often creates a relational and team-oriented approach to action, where communication and participation help sustain forward movement. Your strength is generating engagement and shared clarity as responsibilities are carried together. Growth comes from practicing decisiveness within group dynamics."
+      ],
+      "Do|Strong_Together": [
+        "Do",
+        "Strong_Together",
+        "This often creates a highly connected approach to action, where participation, communication, and mutual support help move people forward together. Your strength is fostering alignment and cohesion within group effort and shared responsibility. Growth comes from maintaining individual conviction while engaging collaboratively with others."
+      ]
+    },
+    "Primary_Reflection_Overlays": {
+      "Plan|Architect": [
+        "Plan",
+        "Architect",
+        "Your Architect planning reflects initiative and forward movement. You naturally orient toward direction, progress, and building what comes next. Even when your approach is balanced, your plans tend to move toward meaningful impact and tangible advancement. You are rarely satisfied with direction that lacks movement or clear development."
+      ],
+      "Plan|Artisan": [
+        "Plan",
+        "Artisan",
+        "Your Artisan planning reflects refinement and intentional design. You naturally consider how direction can be improved, clarified, and brought into greater alignment before moving forward. Excellence, coherence, and thoughtful development matter deeply to you. You want what is built to feel meaningful, well crafted, and aligned with its intended purpose."
+      ],
+      "Plan|Shepherd": [
+        "Plan",
+        "Shepherd",
+        "Your Shepherd planning keeps people and relational impact in view. Even while shaping direction or strategy, you naturally remain attentive to how decisions influence trust, culture, and belonging. Plans often feel strongest to you when they create support, stability, and healthy connection for those involved."
+      ],
+      "Plan|Steward": [
+        "Plan",
+        "Steward",
+        "Your Steward planning reflects responsibility and sustainability. You naturally consider long-term stability, order, and what must be preserved over time. You value plans that create dependable support and lasting consistency rather than short-lived momentum. Your attention often turns toward what will remain steady beyond immediate progress or pressure."
+      ],
+      "Decide|Architect": [
+        "Decide",
+        "Architect",
+        "Your Architect decisions are shaped by vision, conviction, and forward movement. You are naturally drawn toward direction and progress rather than remaining in prolonged uncertainty. Once a path begins to take shape, movement often feels more energizing than delay."
+      ],
+      "Decide|Artisan": [
+        "Decide",
+        "Artisan",
+        "Your Artisan decisions are shaped by discernment, alignment, and practical coherence. You naturally notice patterns, inconsistencies, and whether something meaningfully fits within the larger picture. Decisions often feel strongest when direction reflects both integrity and clear alignment."
+      ],
+      "Decide|Shepherd": [
+        "Decide",
+        "Shepherd",
+        "Your Shepherd decisions are shaped by attentiveness to people and relational impact. You naturally remain aware of how direction, responsibility, and change affect those around you. Trust, stability, and the wellbeing of others often remain important considerations in your decisions."
+      ],
+      "Decide|Steward": [
+        "Decide",
+        "Steward",
+        "Your Steward decisions are shaped by responsibility, stability, and long-term awareness. You naturally consider how choices will affect trust, sustainability, and what has been entrusted to your care. Decisions often feel most meaningful when they strengthen consistency and lasting support."
+      ],
+      "Do|Architect": [
+        "Do",
+        "Architect",
+        "Your Architect action reflects initiative and ownership. You are inclined to step forward and take responsibility when movement is needed. Momentum energizes you. You are comfortable leading effort rather than waiting for it."
+      ],
+      "Do|Artisan": [
+        "Do",
+        "Artisan",
+        "Your Artisan action reflects focused creation. You bring care and excellence to what you produce. You are attentive to quality and improvement. You prefer environments where your contribution meaningfully strengthens the whole."
+      ],
+      "Do|Shepherd": [
+        "Do",
+        "Shepherd",
+        "Your Shepherd action reflects care, attentiveness, and relational awareness. You remain mindful of people even while accomplishing tasks and carrying responsibility. You value action that strengthens trust, support, and stability for those around you."
+      ],
+      "Do|Steward": [
+        "Do",
+        "Steward",
+        "Your Steward action reflects reliability and follow through. You value completion, consistency, and dependability. Others often experience you as steady and trustworthy. You prefer to ensure that commitments are honored and sustained."
+      ]
+    },
+    "Secondary_Reflection_Modulators": {
+      "Plan|Architect": [
+        "Plan",
+        "Architect",
+        "Your secondary Architect influence adds initiative and forward movement to how you shape plans. Even when it is not primary, you naturally carry a quiet drive toward progress, development, and meaningful advancement."
+      ],
+      "Plan|Artisan": [
+        "Plan",
+        "Artisan",
+        "Your secondary Artisan influence adds thoughtfulness, refinement, and intentionality to how you shape direction. You naturally look for ways to improve clarity, strengthen alignment, and refine what is taking shape before moving ahead."
+      ],
+      "Plan|Shepherd": [
+        "Plan",
+        "Shepherd",
+        "Your secondary Shepherd influence keeps planning attentive to people and relational impact. You naturally remain aware that direction affects trust, connection, and the overall health of those involved."
+      ],
+      "Plan|Steward": [
+        "Plan",
+        "Steward",
+        "Your secondary Steward influence brings stability, sustainability, and thoughtful restraint into how you shape plans. You naturally remain attentive to whether direction will endure and continue to provide long-term support over time."
+      ],
+      "Decide|Architect": [
+        "Decide",
+        "Architect",
+        "Your secondary Architect influence brings initiative and forward momentum into your decisions. You may feel an inner pull to move ahead once direction begins to emerge."
+      ],
+      "Decide|Artisan": [
+        "Decide",
+        "Artisan",
+        "Your secondary Artisan influence brings pattern awareness and thoughtful discernment into your decisions. You naturally pay attention to consistency, fit, and whether direction aligns with the broader picture."
+      ],
+      "Decide|Shepherd": [
+        "Decide",
+        "Shepherd",
+        "Your secondary Shepherd influence brings relational awareness and thoughtful consideration into your decisions. You naturally remain mindful of how choices influence trust, stability, and the people connected to them."
+      ],
+      "Decide|Steward": [
+        "Decide",
+        "Steward",
+        "Your secondary Steward influence brings responsibility and long-term awareness into your decisions. You naturally value choices that reinforce trust, consistency, and sustainable support over time."
+      ],
+      "Do|Architect": [
+        "Do",
+        "Architect",
+        "Your secondary Architect influence adds initiative and momentum to your actions. You are inclined to step forward when movement is needed."
+      ],
+      "Do|Artisan": [
+        "Do",
+        "Artisan",
+        "Your secondary Artisan influence encourages improvement and excellence in execution. You look for ways to refine what is being built."
+      ],
+      "Do|Shepherd": [
+        "Do",
+        "Shepherd",
+        "Your secondary Shepherd influence brings relational awareness and thoughtful consideration into your action. You naturally remain attentive to how decisions and responsibilities affect others, even while maintaining forward movement."
+      ],
+      "Do|Steward": [
+        "Do",
+        "Steward",
+        "Your secondary Steward influence strengthens consistency and dependable follow through. You value completing what has been entrusted to you."
+      ]
+    },
+    "Bandwidth_Amplifiers": {
+      "Plan|Architect|Abundant": [
+        "Plan",
+        "Architect",
+        "Abundant",
+        "Your planning becomes especially driven and forward moving. You may feel strong momentum to build and advance ideas. Guard against taking on more than is sustainable."
+      ],
+      "Plan|Architect|Steady": [
+        "Plan",
+        "Architect",
+        "Steady",
+        "Your planning remains consistent and purposeful. You can move ideas forward without unnecessary strain."
+      ],
+      "Plan|Architect|Limited": [
+        "Plan",
+        "Architect",
+        "Limited",
+        "Initiating or advancing plans may require more intentional effort. Partnering with others can help maintain progress."
+      ],
+      "Plan|Architect|Drained": [
+        "Plan",
+        "Architect",
+        "Drained",
+        "Planning that requires initiative may feel heavy. Delegating or pacing expectations will protect your clarity."
+      ],
+      "Plan|Artisan|Abundant": [
+        "Plan",
+        "Artisan",
+        "Abundant",
+        "Your planning becomes especially thoughtful and refined. You may feel motivated to improve and elevate every detail. Guard against perfection slowing momentum."
+      ],
+      "Plan|Artisan|Steady": [
+        "Plan",
+        "Artisan",
+        "Steady",
+        "Your planning reflects healthy clarity and refinement. You can shape direction without overextending yourself."
+      ],
+      "Plan|Artisan|Limited": [
+        "Plan",
+        "Artisan",
+        "Limited",
+        "Detailed planning may feel taxing. Simplifying expectations or inviting collaboration can preserve focus."
+      ],
+      "Plan|Artisan|Drained": [
+        "Plan",
+        "Artisan",
+        "Drained",
+        "When your Artisan energy is drained, refinement and structure may feel burdensome. Prioritizing essentials will help maintain progress."
+      ],
+      "Plan|Shepherd|Abundant": [
+        "Plan",
+        "Shepherd",
+        "Abundant",
+        "Your planning strongly considers people and relational impact. You may feel deeply invested in how direction affects others. Guard against carrying relational weight alone."
+      ],
+      "Plan|Shepherd|Steady": [
+        "Plan",
+        "Shepherd",
+        "Steady",
+        "Your planning remains attentive to people while staying balanced. You can care for relationships without becoming overwhelmed."
+      ],
+      "Plan|Shepherd|Limited": [
+        "Plan",
+        "Shepherd",
+        "Limited",
+        "Extended relational processing in planning may feel tiring. Clear boundaries and shared responsibility can help."
+      ],
+      "Plan|Shepherd|Drained": [
+        "Plan",
+        "Shepherd",
+        "Drained",
+        "Emotionally complex planning may feel especially heavy. Allow space for rest and invite trusted voices into conversations."
+      ],
+      "Plan|Steward|Abundant": [
+        "Plan",
+        "Steward",
+        "Abundant",
+        "Your planning strongly values stability and sustainability. You may feel responsible for ensuring long term strength. Guard against overcarrying responsibility."
+      ],
+      "Plan|Steward|Steady": [
+        "Plan",
+        "Steward",
+        "Steady",
+        "Your planning reflects healthy responsibility and endurance. You can build with confidence and balance."
+      ],
+      "Plan|Steward|Limited": [
+        "Plan",
+        "Steward",
+        "Limited",
+        "Sustained responsibility in planning may feel weighty. Sharing ownership can prevent fatigue."
+      ],
+      "Plan|Steward|Drained": [
+        "Plan",
+        "Steward",
+        "Drained",
+        "Long term oversight may feel exhausting. Clarifying priorities and reducing load will protect effectiveness."
+      ],
+      "Decide|Architect|Abundant": [
+        "Decide",
+        "Architect",
+        "Abundant",
+        "Your decisions may feel bold and decisive. You may move quickly once clarity forms. Guard against dismissing needed input."
+      ],
+      "Decide|Architect|Steady": [
+        "Decide",
+        "Architect",
+        "Steady",
+        "Your decisions carry confident direction without unnecessary pressure."
+      ],
+      "Decide|Architect|Limited": [
+        "Decide",
+        "Architect",
+        "Limited",
+        "Decisive movement may require more effort. Seeking encouragement or collaboration can help restore clarity."
+      ],
+      "Decide|Architect|Drained": [
+        "Decide",
+        "Architect",
+        "Drained",
+        "Making firm decisions may feel burdensome. Allow space before committing to major direction."
+      ],
+      "Decide|Artisan|Abundant": [
+        "Decide",
+        "Artisan",
+        "Abundant",
+        "Your decisions reflect deep discernment and coherence. You may desire strong alignment before committing. Guard against overanalyzing."
+      ],
+      "Decide|Artisan|Steady": [
+        "Decide",
+        "Artisan",
+        "Steady",
+        "Your evaluation remains clear and balanced. You can weigh options without becoming stalled."
+      ],
+      "Decide|Artisan|Limited": [
+        "Decide",
+        "Artisan",
+        "Limited",
+        "Detailed analysis may feel tiring. Simplifying criteria can help move decisions forward."
+      ],
+      "Decide|Artisan|Drained": [
+        "Decide",
+        "Artisan",
+        "Drained",
+        "Clarity may feel harder to reach. Inviting trusted perspective can bring stability."
+      ],
+      "Decide|Shepherd|Abundant": [
+        "Decide",
+        "Shepherd",
+        "Abundant",
+        "Your decisions strongly reflect empathy and relational awareness. You may feel deeply responsible for how choices affect others. Guard against emotional overextension."
+      ],
+      "Decide|Shepherd|Steady": [
+        "Decide",
+        "Shepherd",
+        "Steady",
+        "Your decisions remain relationally attentive without overwhelming you."
+      ],
+      "Decide|Shepherd|Limited": [
+        "Decide",
+        "Shepherd",
+        "Limited",
+        "Emotionally charged decisions may feel draining. Allow space before finalizing sensitive choices."
+      ],
+      "Decide|Shepherd|Drained": [
+        "Decide",
+        "Shepherd",
+        "Drained",
+        "Relationally complex decisions may feel heavy. Delegating or delaying may protect clarity."
+      ],
+      "Decide|Steward|Abundant": [
+        "Decide",
+        "Steward",
+        "Abundant",
+        "Your decisions strongly value stability and long term order. You may feel protective of responsibility. Guard against rigidity."
+      ],
+      "Decide|Steward|Steady": [
+        "Decide",
+        "Steward",
+        "Steady",
+        "Your decisions remain responsible and measured."
+      ],
+      "Decide|Steward|Limited": [
+        "Decide",
+        "Steward",
+        "Limited",
+        "Carrying responsibility in decisions may feel weighty. Shared counsel can help."
+      ],
+      "Decide|Steward|Drained": [
+        "Decide",
+        "Steward",
+        "Drained",
+        "Long term implications may feel overwhelming. Narrowing focus can restore clarity."
+      ],
+      "Do|Architect|Abundant": [
+        "Do",
+        "Architect",
+        "Abundant",
+        "Your actions may feel bold and forward moving. You may initiate quickly and confidently. Guard against overcommitting."
+      ],
+      "Do|Architect|Steady": [
+        "Do",
+        "Architect",
+        "Steady",
+        "Your action remains confident and consistent."
+      ],
+      "Do|Architect|Limited": [
+        "Do",
+        "Architect",
+        "Limited",
+        "Initiating movement may require more intentional effort. Collaboration can restore momentum."
+      ],
+      "Do|Architect|Drained": [
+        "Do",
+        "Architect",
+        "Drained",
+        "Leading action may feel exhausting. Slowing pace will protect sustainability."
+      ],
+      "Do|Artisan|Abundant": [
+        "Do",
+        "Artisan",
+        "Abundant",
+        "Your execution reflects excellence and improvement. You may desire high quality in every detail. Guard against perfection delaying completion."
+      ],
+      "Do|Artisan|Steady": [
+        "Do",
+        "Artisan",
+        "Steady",
+        "Your action remains thoughtful and well formed."
+      ],
+      "Do|Artisan|Limited": [
+        "Do",
+        "Artisan",
+        "Limited",
+        "Detailed execution may feel tiring. Focusing on essentials can help."
+      ],
+      "Do|Artisan|Drained": [
+        "Do",
+        "Artisan",
+        "Drained",
+        "Detailed execution may feel draining. Simplifying expectations and delegating when possible can protect your energy."
+      ],
+      "Do|Shepherd|Abundant": [
+        "Do",
+        "Shepherd",
+        "Abundant",
+        "Your actions reflect care and connection. You may naturally support and encourage others. Guard against carrying too much for others."
+      ],
+      "Do|Shepherd|Steady": [
+        "Do",
+        "Shepherd",
+        "Steady",
+        "Your action remains relational and supportive."
+      ],
+      "Do|Shepherd|Limited": [
+        "Do",
+        "Shepherd",
+        "Limited",
+        "Relational engagement may require more intentional effort. Clear boundaries can help maintain consistency."
+      ],
+      "Do|Shepherd|Drained": [
+        "Do",
+        "Shepherd",
+        "Drained",
+        "Supporting others may feel exhausting. Creating space for rest and shared responsibility is important."
+      ],
+      "Do|Steward|Abundant": [
+        "Do",
+        "Steward",
+        "Abundant",
+        "Your actions reflect responsibility and follow through. You may carry tasks with consistency and care. Guard against taking on too much."
+      ],
+      "Do|Steward|Steady": [
+        "Do",
+        "Steward",
+        "Steady",
+        "Your action remains consistent and dependable."
+      ],
+      "Do|Steward|Limited": [
+        "Do",
+        "Steward",
+        "Limited",
+        "Maintaining consistency may require more intentional structure. Clear priorities can help."
+      ],
+      "Do|Steward|Drained": [
+        "Do",
+        "Steward",
+        "Drained",
+        "Responsibility may feel heavy. Reducing load and clarifying expectations can restore sustainability."
+      ]
+    },
+    "Practical_Applications_Library": {
+      "Conflict|Plan|Balanced": [
+        "Conflict",
+        "Plan",
+        "Balanced",
+        "You are able to see both possibility and practicality during conflict. You can widen or narrow the frame depending on what the situation requires.",
+        "You may become frustrated when others are fixed on only one side of the issue.",
+        "Clarify the shared objective before debating details."
+      ],
+      "Conflict|Plan|Moderate_Dreamer": [
+        "Conflict",
+        "Plan",
+        "Moderate_Dreamer",
+        "You often approach conflict by looking toward what could improve. You may reframe tension around future potential.",
+        "Others may feel you move past present concerns too quickly.",
+        "Slow down long enough to validate current realities before casting vision."
+      ],
+      "Conflict|Plan|Strong_Dreamer": [
+        "Conflict",
+        "Plan",
+        "Strong_Dreamer",
+        "You instinctively look beyond the immediate disagreement and focus on long term direction. You may push conversations toward growth and change.",
+        "You may overlook practical constraints, or the pace others need.",
+        "Invite concrete next steps and confirm shared understanding before advancing."
+      ],
+      "Conflict|Plan|Moderate_Doer": [
+        "Conflict",
+        "Plan",
+        "Moderate_Doer",
+        "You prefer to resolve conflict by clarifying action. You look for what needs to be done to move forward.",
+        "You may become impatient with extended discussion.",
+        "Ensure the right issue is being addressed before moving to solution."
+      ],
+      "Conflict|Plan|Strong_Doer": [
+        "Conflict",
+        "Plan",
+        "Strong_Doer",
+        "You are inclined to cut through tension quickly and move toward resolution. Action feels stabilizing during disagreement.",
+        "You may rush closure before alignment is fully formed.",
+        "Ask one additional clarifying question before finalizing direction."
+      ],
+      "Conflict|Decide|Balanced": [
+        "Conflict",
+        "Decide",
+        "Balanced",
+        "You are able to weigh both logic and relational impact during disagreement. You can hold clarity and empathy at the same time.",
+        "You may feel tension when others lean heavily to one side.",
+        "Name both the facts and the relational impact before moving forward."
+      ],
+      "Conflict|Decide|Moderate_Feel_It": [
+        "Conflict",
+        "Decide",
+        "Moderate_Feel_It",
+        "You are attentive to emotional tone and relational shifts during conflict. You often sense underlying tension others may miss.",
+        "You may hesitate if the atmosphere feels unsettled.",
+        "Ask for clear information alongside relational processing."
+      ],
+      "Conflict|Decide|Strong_Feel_It": [
+        "Conflict",
+        "Decide",
+        "Strong_Feel_It",
+        "You rely strongly on internal conviction and relational awareness in conflict. You are sensitive to tone, trust, and alignment.",
+        "You may experience conflict deeply and carry emotional weight longer than others.",
+        "Seek confirming input before drawing final conclusions."
+      ],
+      "Conflict|Decide|Moderate_Think_It": [
+        "Conflict",
+        "Decide",
+        "Moderate_Think_It",
+        "You approach disagreement by seeking clarity and structured reasoning. You look for logical alignment in competing views.",
+        "Others may feel their emotional concerns are not fully heard.",
+        "Pause to reflect what you are hearing before offering analysis."
+      ],
+      "Conflict|Decide|Strong_Think_It": [
+        "Conflict",
+        "Decide",
+        "Strong_Think_It",
+        "You prioritize clarity and logical consistency when conflict arises. You are able to separate emotion from issue quickly.",
+        "You may move toward resolution without fully processing relational impact.",
+        "Invite one relational perspective before settling on direction."
+      ],
+      "Conflict|Do|Balanced": [
+        "Conflict",
+        "Do",
+        "Balanced",
+        "You are comfortable engaging conflict independently or collaboratively. You can step forward or invite others into resolution.",
+        "You may feel stretched if others expect you to carry more than your share.",
+        "Clarify shared responsibility before moving ahead."
+      ],
+      "Conflict|Do|Moderate_Solo": [
+        "Conflict",
+        "Do",
+        "Moderate_Solo",
+        "You may prefer to process conflict privately before engaging others. Independent reflection helps you regain clarity.",
+        "Others may interpret space as withdrawal.",
+        "Communicate that you are processing and will return to the conversation."
+      ],
+      "Conflict|Do|Strong_Solo": [
+        "Conflict",
+        "Do",
+        "Strong_Solo",
+        "You are inclined to take ownership in resolving conflict. You may move quickly to stabilize the situation.",
+        "You may carry responsibility alone or close the loop without full collaboration.",
+        "Invite input before finalizing next steps."
+      ],
+      "Conflict|Do|Moderate_Together": [
+        "Conflict",
+        "Do",
+        "Moderate_Together",
+        "You prefer to work through conflict in conversation. Shared dialogue helps you clarify direction.",
+        "You may feel unsettled if others disengage.",
+        "Allow brief space for individual processing when needed."
+      ],
+      "Conflict|Do|Strong_Together": [
+        "Conflict",
+        "Do",
+        "Strong_Together",
+        "You strongly value resolving tension through shared understanding. Alignment feels essential before moving forward.",
+        "You may prolong discussion in pursuit of consensus.",
+        "Set a clear decision point after sufficient dialogue."
+      ],
+      "Collaboration|Plan|Balanced": [
+        "Collaboration",
+        "Plan",
+        "Balanced",
+        "You are able to hold vision and practicality in group settings. You can adjust your perspective to help others see both possibility and execution.",
+        "You may feel tension when conversations remain stuck in one mode.",
+        "Name the shared objective before discussing details."
+      ],
+      "Collaboration|Plan|Moderate_Dreamer": [
+        "Collaboration",
+        "Plan",
+        "Moderate_Dreamer",
+        "You bring future vision into collaborative conversations. You help groups see what could be possible beyond present limitations.",
+        "Others may need more concrete steps than you naturally provide.",
+        "Pair vision with one clear next action."
+      ],
+      "Collaboration|Plan|Strong_Dreamer": [
+        "Collaboration",
+        "Plan",
+        "Strong_Dreamer",
+        "You naturally elevate group thinking toward long term direction and growth. You often energize collaboration with possibility.",
+        "You may move faster than the group can process.",
+        "Confirm shared understanding before advancing."
+      ],
+      "Collaboration|Plan|Moderate_Doer": [
+        "Collaboration",
+        "Plan",
+        "Moderate_Doer",
+        "You help groups clarify actionable steps. You bring momentum when discussions stall.",
+        "You may become impatient with extended brainstorming.",
+        "Allow sufficient exploration before narrowing to action."
+      ],
+      "Collaboration|Plan|Strong_Doer": [
+        "Collaboration",
+        "Plan",
+        "Strong_Doer",
+        "You instinctively move collaborative efforts toward execution. You value tangible progress in group work.",
+        "You may push decisions before full alignment forms.",
+        "Invite final input before closing direction."
+      ],
+      "Collaboration|Decide|Balanced": [
+        "Collaboration",
+        "Decide",
+        "Balanced",
+        "You are able to consider both relational impact and logical clarity when working with others. You help groups find thoughtful and balanced direction.",
+        "You may feel stretched when others insist on only one perspective.",
+        "Name both relational and factual considerations before concluding."
+      ],
+      "Collaboration|Decide|Moderate_Feel_It": [
+        "Collaboration",
+        "Decide",
+        "Moderate_Feel_It",
+        "You are attentive to emotional tone and group dynamics during collaboration. You help others feel seen and heard.",
+        "You may hesitate if relational tension is unresolved.",
+        "Invite structured clarity alongside relational processing."
+      ],
+      "Collaboration|Decide|Strong_Feel_It": [
+        "Collaboration",
+        "Decide",
+        "Strong_Feel_It",
+        "You strongly prioritize alignment and relational trust in collaborative settings. You are sensitive to how decisions affect people.",
+        "You may delay decisions in pursuit of harmony.",
+        "Set a clear moment for decision after sufficient dialogue."
+      ],
+      "Collaboration|Decide|Moderate_Think_It": [
+        "Collaboration",
+        "Decide",
+        "Moderate_Think_It",
+        "You bring structure and reason into collaborative decisions. You help groups clarify assumptions and evaluate options carefully.",
+        "Others may desire more relational processing than you expect.",
+        "Reflect what you are hearing before offering analysis."
+      ],
+      "Collaboration|Decide|Strong_Think_It": [
+        "Collaboration",
+        "Decide",
+        "Strong_Think_It",
+        "You naturally seek clarity and consistency in group decision making. You are able to identify logical gaps quickly.",
+        "You may unintentionally minimize emotional concerns.",
+        "Intentionally ask for relational input before finalizing direction."
+      ],
+      "Collaboration|Do|Balanced": [
+        "Collaboration",
+        "Do",
+        "Balanced",
+        "You are comfortable contributing independently while also engaging shared effort. You can flex between leading and participating.",
+        "You may feel tension if expectations around ownership are unclear.",
+        "Clarify roles and responsibilities early in the process."
+      ],
+      "Collaboration|Do|Moderate_Solo": [
+        "Collaboration",
+        "Do",
+        "Moderate_Solo",
+        "You bring initiative and self direction into collaborative work. You are dependable when given clear space to operate.",
+        "Others may interpret independence as disengagement.",
+        "Communicate progress and invite feedback periodically."
+      ],
+      "Collaboration|Do|Strong_Solo": [
+        "Collaboration",
+        "Do",
+        "Strong_Solo",
+        "You are inclined to take ownership quickly in group settings. You often move work forward without waiting for permission.",
+        "You may unintentionally reduce shared participation.",
+        "Invite contribution before moving into execution."
+      ],
+      "Collaboration|Do|Moderate_Together": [
+        "Collaboration",
+        "Do",
+        "Moderate_Together",
+        "You thrive in shared execution and coordinated effort. Collaboration strengthens your clarity and momentum.",
+        "You may feel unsettled when working alone for extended periods.",
+        "Practice making independent progress between group checkpoints."
+      ],
+      "Collaboration|Do|Strong_Together": [
+        "Collaboration",
+        "Do",
+        "Strong_Together",
+        "You strongly value shared movement and aligned action. Group cohesion energizes your contribution.",
+        "You may slow progress in pursuit of full agreement.",
+        "Identify when sufficient alignment has been reached and move forward."
+      ],
+      "Leadership|Plan|Balanced": [
+        "Leadership",
+        "Plan",
+        "Balanced",
+        "You are able to balance vision and execution in leadership. You can help others see what could be while also clarifying what must be done.",
+        "You may feel tension when teams lean heavily toward only vision or only action.",
+        "Articulate both direction and next steps when casting leadership clarity."
+      ],
+      "Leadership|Plan|Moderate_Dreamer": [
+        "Leadership",
+        "Plan",
+        "Moderate_Dreamer",
+        "You lead by helping others see future possibility. You naturally elevate direction beyond present limitations.",
+        "Teams may need more structure than you instinctively provide.",
+        "Pair vision with clear milestones and accountability."
+      ],
+      "Leadership|Plan|Strong_Dreamer": [
+        "Leadership",
+        "Plan",
+        "Strong_Dreamer",
+        "Your leadership is strongly vision driven. You inspire others by pointing toward growth and expansion.",
+        "You may move faster than systems or people can sustain.",
+        "Confirm readiness and capacity before advancing in a major direction."
+      ],
+      "Leadership|Plan|Moderate_Doer": [
+        "Leadership",
+        "Plan",
+        "Moderate_Doer",
+        "You lead by clarifying actionable priorities. You bring momentum and direction when focus drifts.",
+        "You may narrow exploration too quickly.",
+        "Allow space for input before finalizing direction."
+      ],
+      "Leadership|Plan|Strong_Doer": [
+        "Leadership",
+        "Plan",
+        "Strong_Doer",
+        "You are inclined to lead through decisive movement and clear action. Progress feels stabilizing under your leadership.",
+        "You may prioritize execution over long term vision.",
+        "Regularly revisit the larger purpose behind the work."
+      ],
+      "Leadership|Decide|Balanced": [
+        "Leadership",
+        "Decide",
+        "Balanced",
+        "You are able to integrate clarity and relational awareness when leading others. Your decisions can feel both thoughtful and grounded.",
+        "You may feel pressure when teams demand speed over reflection.",
+        "State both reasoning and relational considerations when making decisions."
+      ],
+      "Leadership|Decide|Moderate_Feel_It": [
+        "Leadership",
+        "Decide",
+        "Moderate_Feel_It",
+        "You lead with sensitivity to group dynamics and morale. You are attentive to how decisions affect trust and alignment.",
+        "You may delay direction if relational tone feels unsettled.",
+        "Set clear timelines for decision making even while honoring process."
+      ],
+      "Leadership|Decide|Strong_Feel_It": [
+        "Leadership",
+        "Decide",
+        "Strong_Feel_It",
+        "Your leadership strongly values relational harmony and emotional awareness. You seek alignment before moving forward.",
+        "You may hesitate when consensus is incomplete.",
+        "Define what level of agreement is necessary before proceeding."
+      ],
+      "Leadership|Decide|Moderate_Think_It": [
+        "Leadership",
+        "Decide",
+        "Moderate_Think_It",
+        "You lead with structured reasoning and clarity. Your decisions often feel steady and well considered.",
+        "Others may desire more emotional acknowledgment than you provide.",
+        "Verbalize relational awareness alongside logic."
+      ],
+      "Leadership|Decide|Strong_Think_It": [
+        "Leadership",
+        "Decide",
+        "Strong_Think_It",
+        "Your leadership is anchored in logical consistency and clarity. You are comfortable making firm decisions under pressure.",
+        "You may unintentionally appear distant in emotionally complex moments.",
+        "Intentionally invite and affirm relational input."
+      ],
+      "Leadership|Do|Balanced": [
+        "Leadership",
+        "Do",
+        "Balanced",
+        "You can lead through independent initiative and shared collaboration. You adjust your involvement based on what the situation requires.",
+        "You may feel tension if ownership is unclear.",
+        "Clarify who carries what responsibility at each stage."
+      ],
+      "Leadership|Do|Moderate_Solo": [
+        "Leadership",
+        "Do",
+        "Moderate_Solo",
+        "You lead by taking initiative and modeling ownership. Others often see you as dependable and self directed.",
+        "You may unintentionally centralize responsibility.",
+        "Delegate visibly and empower others early."
+      ],
+      "Leadership|Do|Strong_Solo": [
+        "Leadership",
+        "Do",
+        "Strong_Solo",
+        "You are inclined to carry leadership weight personally. You move forward decisively without waiting for consensus.",
+        "Teams may become dependent on your direction.",
+        "Create intentional space for shared leadership."
+      ],
+      "Leadership|Do|Moderate_Together": [
+        "Leadership",
+        "Do",
+        "Moderate_Together",
+        "You lead through shared effort and collaborative energy. Alignment strengthens your influence.",
+        "You may hesitate to move without group support.",
+        "Set clear decision points to maintain momentum."
+      ],
+      "Leadership|Do|Strong_Together": [
+        "Leadership",
+        "Do",
+        "Strong_Together",
+        "You strongly value collective ownership in leadership. You build culture through shared responsibility.",
+        "You may prolong decisions in pursuit of unity.",
+        "Recognize when sufficient alignment has been reached and advance."
+      ],
+      "Decision Pressure|Plan|Balanced": [
+        "Decision Pressure",
+        "Plan",
+        "Balanced",
+        "Under pressure you can adjust between vision and practicality as needed. You are able to widen or narrow your focus depending on urgency.",
+        "You may feel tension when others lock into only one approach.",
+        "Clarify the immediate objective before expanding or narrowing the conversation."
+      ],
+      "Decision Pressure|Plan|Moderate_Dreamer": [
+        "Decision Pressure",
+        "Plan",
+        "Moderate_Dreamer",
+        "Under pressure you naturally look beyond the immediate problem toward future direction. You may reframe challenges in terms of opportunity.",
+        "You may overlook present constraints or immediate realities.",
+        "Identify one concrete step before moving to long term framing."
+      ],
+      "Decision Pressure|Plan|Strong_Dreamer": [
+        "Decision Pressure",
+        "Plan",
+        "Strong_Dreamer",
+        "Pressure often activates your long range thinking. You instinctively consider broader impact and future implications.",
+        "You may feel restless with short term fixes.",
+        "Ground direction in immediate next actions before expanding scope."
+      ],
+      "Decision Pressure|Plan|Moderate_Doer": [
+        "Decision Pressure",
+        "Plan",
+        "Moderate_Doer",
+        "Under pressure you narrow focus toward actionable clarity. You seek to define what must be done now.",
+        "You may reduce exploration too quickly.",
+        "Confirm that the right problem is being solved before moving forward."
+      ],
+      "Decision Pressure|Plan|Strong_Doer": [
+        "Decision Pressure",
+        "Plan",
+        "Strong_Doer",
+        "Pressure sharpens your focus on execution. Action feels stabilizing when uncertainty rises.",
+        "You may move quickly without full perspective.",
+        "Pause briefly to confirm alignment before acting."
+      ],
+      "Decision Pressure|Decide|Balanced": [
+        "Decision Pressure",
+        "Decide",
+        "Balanced",
+        "Under pressure you are able to hold both clarity and relational awareness. You can weigh logic and impact simultaneously.",
+        "You may feel internal tension when forced to prioritize speed over balance.",
+        "Name both reasoning and impact before finalizing direction."
+      ],
+      "Decision Pressure|Decide|Moderate_Feel_It": [
+        "Decision Pressure",
+        "Decide",
+        "Moderate_Feel_It",
+        "Pressure heightens your sensitivity to tone and relational shifts. You may become deeply aware of how decisions affect people.",
+        "You may feel unsettled if emotional clarity is lacking.",
+        "Seek concrete information alongside relational processing."
+      ],
+      "Decision Pressure|Decide|Strong_Feel_It": [
+        "Decision Pressure",
+        "Decide",
+        "Strong_Feel_It",
+        "Under stress you rely strongly on internal conviction and relational awareness. You may sense misalignment quickly.",
+        "You may carry emotional weight longer than others.",
+        "Invite confirming input before settling on direction."
+      ],
+      "Decision Pressure|Decide|Moderate_Think_It": [
+        "Decision Pressure",
+        "Decide",
+        "Moderate_Think_It",
+        "Pressure sharpens your focus on clarity and structured reasoning. You seek dependable information before deciding.",
+        "You may minimize emotional concerns unintentionally.",
+        "Briefly acknowledge relational impact before concluding."
+      ],
+      "Decision Pressure|Decide|Strong_Think_It": [
+        "Decision Pressure",
+        "Decide",
+        "Strong_Think_It",
+        "Under pressure you prioritize logic and decisive clarity. You are able to separate emotion from issue quickly.",
+        "You may appear detached during tense moments.",
+        "Slow slightly to confirm relational understanding."
+      ],
+      "Decision Pressure|Do|Balanced": [
+        "Decision Pressure",
+        "Do",
+        "Balanced",
+        "Under pressure you can act independently or collaboratively as needed. You adjust your engagement based on context.",
+        "You may feel stretched if expectations are unclear.",
+        "Clarify who is responsible for what before moving ahead."
+      ],
+      "Decision Pressure|Do|Moderate_Solo": [
+        "Decision Pressure",
+        "Do",
+        "Moderate_Solo",
+        "Pressure may cause you to withdraw briefly to regain clarity. Independent processing helps you stabilize.",
+        "Others may misinterpret space as disengagement.",
+        "Communicate that you are processing and will respond."
+      ],
+      "Decision Pressure|Do|Strong_Solo": [
+        "Decision Pressure",
+        "Do",
+        "Strong_Solo",
+        "Under stress you may take ownership quickly and move forward alone. Action restores your sense of control.",
+        "You may reduce collaboration in urgent moments.",
+        "Invite at least one perspective before finalizing action."
+      ],
+      "Decision Pressure|Do|Moderate_Together": [
+        "Decision Pressure",
+        "Do",
+        "Moderate_Together",
+        "Pressure may increase your desire for shared input and alignment. Conversation helps you stabilize.",
+        "You may feel unsettled if others disengage.",
+        "Define a clear timeline for input before deciding."
+      ],
+      "Decision Pressure|Do|Strong_Together": [
+        "Decision Pressure",
+        "Do",
+        "Strong_Together",
+        "Under stress you strongly prefer alignment before acting. Shared clarity feels stabilizing.",
+        "You may slow necessary action in pursuit of consensus.",
+        "Set a defined decision point to maintain momentum."
+      ],
+      "Sustainability|Plan|Balanced": [
+        "Sustainability",
+        "Plan",
+        "Balanced",
+        "You are able to adjust between vision and practicality over time. You can expand or narrow focus as seasons change.",
+        "You may feel tension when long term direction becomes unclear.",
+        "Revisit both vision and immediate priorities regularly."
+      ],
+      "Sustainability|Plan|Moderate_Dreamer": [
+        "Sustainability",
+        "Plan",
+        "Moderate_Dreamer",
+        "You sustain energy when you can see meaningful future direction. Vision helps you endure present difficulty.",
+        "You may lose motivation when work feels repetitive or constrained.",
+        "Connect daily tasks to long term purpose."
+      ],
+      "Sustainability|Plan|Strong_Dreamer": [
+        "Sustainability",
+        "Plan",
+        "Strong_Dreamer",
+        "Long term direction strongly fuels your endurance. You are energized by growth and forward movement.",
+        "You may become restless in maintenance seasons.",
+        "Build structured milestones to maintain momentum."
+      ],
+      "Sustainability|Plan|Moderate_Doer": [
+        "Sustainability",
+        "Plan",
+        "Moderate_Doer",
+        "You sustain effort through steady action and clear next steps. Progress reinforces your energy.",
+        "You may narrow focus too tightly over time.",
+        "Periodically lift your perspective to reconnect with purpose."
+      ],
+      "Sustainability|Plan|Strong_Doer": [
+        "Sustainability",
+        "Plan",
+        "Strong_Doer",
+        "You maintain momentum through consistent execution. Action creates stability for you.",
+        "You may push pace beyond sustainable limits.",
+        "Schedule deliberate pauses to evaluate direction and capacity."
+      ],
+      "Sustainability|Decide|Balanced": [
+        "Sustainability",
+        "Decide",
+        "Balanced",
+        "You are able to balance clarity and relational awareness over time. Your decisions can remain steady across seasons.",
+        "You may feel internal tension when required to consistently prioritize one side.",
+        "Periodically reflect on both logic and relational impact."
+      ],
+      "Sustainability|Decide|Moderate_Feel_It": [
+        "Sustainability",
+        "Decide",
+        "Moderate_Feel_It",
+        "You sustain engagement when relational tone feels healthy. Emotional alignment strengthens endurance.",
+        "You may feel drained in prolonged tension.",
+        "Address relational strain before it compounds."
+      ],
+      "Sustainability|Decide|Strong_Feel_It": [
+        "Sustainability",
+        "Decide",
+        "Strong_Feel_It",
+        "Your endurance is closely tied to relational harmony and internal conviction. Alignment sustains your motivation.",
+        "Extended emotional strain may deplete you quietly.",
+        "Invite trusted input when tension lingers."
+      ],
+      "Sustainability|Decide|Moderate_Think_It": [
+        "Sustainability",
+        "Decide",
+        "Moderate_Think_It",
+        "You sustain energy when decisions feel clear and structured. Clarity protects your focus.",
+        "You may disengage if reasoning becomes inconsistent.",
+        "Clarify decision criteria before long term commitments."
+      ],
+      "Sustainability|Decide|Strong_Think_It": [
+        "Sustainability",
+        "Decide",
+        "Strong_Think_It",
+        "Long term clarity and logical consistency anchor your endurance. Structure strengthens sustainability for you.",
+        "You may suppress relational strain in pursuit of order.",
+        "Periodically check relational health alongside performance."
+      ],
+      "Sustainability|Do|Balanced": [
+        "Sustainability",
+        "Do",
+        "Balanced",
+        "You can sustain effort independently and collaboratively. You adjust engagement as seasons shift.",
+        "You may feel tension if expectations remain unclear.",
+        "Clarify ownership and boundaries regularly."
+      ],
+      "Sustainability|Do|Moderate_Solo": [
+        "Sustainability",
+        "Do",
+        "Moderate_Solo",
+        "You sustain well when given autonomy and clear responsibility. Independent work preserves focus.",
+        "Extended isolation may reduce support.",
+        "Build periodic collaboration into long term projects."
+      ],
+      "Sustainability|Do|Strong_Solo": [
+        "Sustainability",
+        "Do",
+        "Strong_Solo",
+        "You are capable of carrying responsibility for extended periods. Independent ownership strengthens your consistency.",
+        "You may carry more than is sustainable.",
+        "Share responsibility before strain accumulates."
+      ],
+      "Sustainability|Do|Moderate_Together": [
+        "Sustainability",
+        "Do",
+        "Moderate_Together",
+        "You sustain energy through shared effort and mutual support. Collaboration strengthens endurance.",
+        "You may feel drained when working alone too long.",
+        "Create structured checkpoints with others."
+      ],
+      "Sustainability|Do|Strong_Together": [
+        "Sustainability",
+        "Do",
+        "Strong_Together",
+        "Long term effort feels most sustainable when shared. Collective responsibility strengthens your stability.",
+        "You may delay necessary action waiting for full alignment.",
+        "Define clear independent responsibilities within collaboration."
+      ]
+    },
+    "Tendency_Overview_Sentences": {
+      "Plan|Balanced": [
+        "Plan",
+        "Balanced",
+        "You are able to move between vision and execution, adjusting your planning approach based on what the situation requires."
+      ],
+      "Plan|Moderate_Dreamer": [
+        "Plan",
+        "Moderate_Dreamer",
+        "You naturally begin planning by expanding toward possibility and future direction."
+      ],
+      "Plan|Strong_Dreamer": [
+        "Plan",
+        "Strong_Dreamer",
+        "Vision strongly shapes how you approach planning, often drawing your focus toward what could be."
+      ],
+      "Plan|Moderate_Doer": [
+        "Plan",
+        "Moderate_Doer",
+        "You tend to approach planning by narrowing toward practical action and immediate steps."
+      ],
+      "Plan|Strong_Doer": [
+        "Plan",
+        "Strong_Doer",
+        "Action strongly shapes how you approach planning, often focusing quickly on what needs to be done."
+      ],
+      "Decide|Balanced": [
+        "Decide",
+        "Balanced",
+        "You are able to weigh both relational awareness and logical clarity when determining direction."
+      ],
+      "Decide|Moderate_Feel_It": [
+        "Decide",
+        "Moderate_Feel_It",
+        "You tend to rely on internal conviction and relational awareness when making decisions."
+      ],
+      "Decide|Strong_Feel_It": [
+        "Decide",
+        "Strong_Feel_It",
+        "Inner conviction strongly shapes how you determine direction, often guided by relational and intuitive awareness."
+      ],
+      "Decide|Moderate_Think_It": [
+        "Decide",
+        "Moderate_Think_It",
+        "You tend to rely on structured reasoning and clarity when making decisions."
+      ],
+      "Decide|Strong_Think_It": [
+        "Decide",
+        "Strong_Think_It",
+        "Logic and clear evaluation strongly shape how you determine direction."
+      ],
+      "Do|Balanced": [
+        "Do",
+        "Balanced",
+        "You are able to move between independent action and shared effort depending on what is needed."
+      ],
+      "Do|Moderate_Solo": [
+        "Do",
+        "Moderate_Solo",
+        "You tend to take ownership and move forward independently when acting."
+      ],
+      "Do|Strong_Solo": [
+        "Do",
+        "Strong_Solo",
+        "Independent ownership strongly shapes how you take action, often leading you to move forward quickly on your own."
+      ],
+      "Do|Moderate_Together": [
+        "Do",
+        "Moderate_Together",
+        "You tend to engage others and move forward through shared effort when taking action."
+      ],
+      "Do|Strong_Together": [
+        "Do",
+        "Strong_Together",
+        "Collaboration strongly shapes how you take action, often drawing you toward shared movement and alignment."
+      ]
+    },
+    "Integrative_Shadow_Library": {
+      "Integrative_Lens|Plan|Innovator": [
+        "Integrative_Lens",
+        "Plan",
+        "Innovator",
+        "As an Innovator (Architect + Shepherd), your approach to planning is shaped by the Architect’s ability to envision what could be and the Shepherd’s instinct to consider how it will impact people. You naturally see possibilities before they fully exist and can picture how future direction might unfold. This perspective allows you to plan with creativity and hope, helping others see potential pathways that may not yet be obvious."
+      ],
+      "Integrative_Lens|Plan|Interpreter": [
+        "Integrative_Lens",
+        "Plan",
+        "Interpreter",
+        "As an Interpreter (Artisan + Shepherd), your approach to planning is shaped by the Artisan’s focus on clarity and the Shepherd’s sensitivity to how things are understood and experienced by others. You naturally consider how direction will be understood and experienced by others. This allows your planning to translate ideas into meaning, helping plans feel both thoughtful and understandable."
+      ],
+      "Integrative_Lens|Plan|Guardian": [
+        "Integrative_Lens",
+        "Plan",
+        "Guardian",
+        "As a Guardian (Shepherd + Steward), your approach to planning is shaped by the Shepherd’s care for people and the Steward’s desire to create stability and long term sustainability. You naturally think about protecting what matters, preserving health, and creating environments where people and systems can remain steady. This perspective often leads to planning that emphasizes support, consistency, and long term reliability."
+      ],
+      "Integrative_Lens|Plan|Overseer": [
+        "Integrative_Lens",
+        "Plan",
+        "Overseer",
+        "As an Overseer (Architect + Steward), your approach to planning is shaped by the Architect’s sense of direction and the Steward’s commitment to structure and responsibility. You naturally think in terms of alignment, direction, and responsibility. This allows you to shape plans that not only imagine the future but also consider what structures must exist for that future to become reality."
+      ],
+      "Integrative_Lens|Plan|Visionary": [
+        "Integrative_Lens",
+        "Plan",
+        "Visionary",
+        "As a Visionary (Architect + Artisan), your approach to planning is shaped by the Architect’s ability to imagine what could be and the Artisan’s drive to give those ideas form and expression. You tend to imagine new possibilities and quickly connect ideas into emerging directions. This perspective can help planning feel energizing and forward moving, especially when change or fresh thinking is required."
+      ],
+      "Integrative_Lens|Plan|Craftsman": [
+        "Integrative_Lens",
+        "Plan",
+        "Craftsman",
+        "As a Craftsman (Artisan + Steward), your approach to planning is shaped by the Artisan’s attention to detail and the Steward’s desire to build something that will last. You naturally think about how ideas will function over time and how plans can be shaped with care and excellence. This often results in planning that values refinement, durability, and thoughtful execution."
+      ],
+      "Integrative_Lens|Decide|Innovator": [
+        "Integrative_Lens",
+        "Decide",
+        "Innovator",
+        "As an Innovator (Architect + Shepherd), you tend to make decisions by sensing emerging possibilities while also weighing how those paths will affect the people involved. When evaluating options, you naturally look beyond the immediate choice and consider the broader direction each path creates. This often allows you to move forward with clarity, choosing options that carry both forward momentum and relational alignment."
+      ],
+      "Integrative_Lens|Decide|Interpreter": [
+        "Integrative_Lens",
+        "Decide",
+        "Interpreter",
+        "As an Interpreter (Artisan + Shepherd), you tend to make decisions by listening carefully, drawing out meaning, and considering how choices will be received. When evaluating options, you naturally look for clarity in what is being communicated and how each path will be understood by others. This often allows you to navigate complex situations with nuance, bringing insight and relational awareness into your decisions."
+      ],
+      "Integrative_Lens|Decide|Guardian": [
+        "Integrative_Lens",
+        "Decide",
+        "Guardian",
+        "As a Guardian (Shepherd + Steward), you tend to make decisions by considering what will protect, preserve, and maintain steady progress. When weighing choices, you naturally consider what will preserve health, protect people, and maintain steady progress. This perspective often helps you discern decisions that safeguard both individuals and long term stability."
+      ],
+      "Integrative_Lens|Decide|Overseer": [
+        "Integrative_Lens",
+        "Decide",
+        "Overseer",
+        "As an Overseer (Architect + Steward), you tend to make decisions by evaluating what aligns with long term direction and what will create order and accountability. When weighing options, you naturally look for the path that brings structure to complexity and establishes clear responsibility moving forward. This often helps you discern decisions that strengthen both purpose and organizational clarity."
+      ],
+      "Integrative_Lens|Decide|Visionary": [
+        "Integrative_Lens",
+        "Decide",
+        "Visionary",
+        "As a Visionary (Architect + Artisan), you tend to make decisions by exploring possibilities and shaping them into clear and meaningful direction. When considering options, you naturally look for patterns and connections that bring focus to what could otherwise feel scattered. This often allows you to recognize opportunities that others may not yet see."
+      ],
+      "Integrative_Lens|Decide|Craftsman": [
+        "Integrative_Lens",
+        "Decide",
+        "Craftsman",
+        "As a Craftsman (Artisan + Steward), you tend to make decisions by carefully weighing how well something will function and endure over time. When considering options, you naturally look for what is well built, dependable, and worth investing in for the long run. This perspective often leads to decisions that prioritize quality, reliability, and responsible outcomes."
+      ],
+      "Integrative_Lens|Do|Innovator": [
+        "Integrative_Lens",
+        "Do",
+        "Innovator",
+        "As an Innovator (Architect + Shepherd), when you take action, you naturally move toward new possibilities while bringing others along in the process. As momentum builds, you instinctively engage people in what is unfolding, helping them see their place within the direction ahead. Your actions often create forward movement that is both energizing and shared, allowing progress to take shape with others, not just around them."
+      ],
+      "Integrative_Lens|Do|Interpreter": [
+        "Integrative_Lens",
+        "Do",
+        "Interpreter",
+        "As an Interpreter (Artisan + Shepherd), when you take action, you naturally help translate ideas into understanding, alignment, and shared clarity. As things move forward, you instinctively focus on making communication clear and accessible so others can follow with confidence. Your actions often create momentum by helping people grasp what is happening and why it matters."
+      ],
+      "Integrative_Lens|Do|Guardian": [
+        "Integrative_Lens",
+        "Do",
+        "Guardian",
+        "As a Guardian (Shepherd + Steward), when you take action, you naturally focus on supporting others, protecting what matters, and ensuring consistency over time. As situations unfold, you instinctively create stability by showing up with care, attentiveness, and a steady presence others can rely on. Your actions often create progress through trust, consistency, and responsible follow through."
+      ],
+      "Integrative_Lens|Do|Overseer": [
+        "Integrative_Lens",
+        "Do",
+        "Overseer",
+        "As an Overseer (Architect + Steward), when you take action, you naturally bring structure, clarity, and follow through to what needs to be accomplished. As plans move into execution, you instinctively organize the work, define responsibilities, and ensure each piece is moving in the right direction. Your actions often create momentum by turning vision into reality with consistency and accountability."
+      ],
+      "Integrative_Lens|Do|Visionary": [
+        "Integrative_Lens",
+        "Do",
+        "Visionary",
+        "As a Visionary (Architect + Artisan), when you take action, you naturally bring ideas to life in ways that are both creative and tangible. As you move forward, you instinctively shape and refine what is being built, giving form and direction to emerging ideas. Your actions often generate momentum by introducing fresh approaches and helping progress move beyond familiar patterns."
+      ],
+      "Integrative_Lens|Do|Craftsman": [
+        "Integrative_Lens",
+        "Do",
+        "Craftsman",
+        "As a Craftsman (Artisan + Steward), when you take action, you naturally focus on doing the work well and bringing ideas to completion with care and precision. As you move through execution, you instinctively refine details, solve problems, and ensure each step is done with intention. Your actions often create progress that is marked by quality, reliability, and a strong sense of completion."
+      ],
+      "Shadow_Watch|Plan|Control": [
+        "Shadow_Watch",
+        "Plan",
+        "Control",
+        "When {{reflection_shadow}} from the {{shadow_reflection}} reflection begins to shape your planning, direction can become overly tight or difficult to release. What starts as clarity and intentional leadership can gradually turn into overmanagement or resistance to input. Growth comes from remembering that strong planning creates direction while still leaving room for collaboration and adjustment."
+      ],
+      "Shadow_Watch|Plan|Perfectionism": [
+        "Shadow_Watch",
+        "Plan",
+        "Perfectionism",
+        "When {{reflection_shadow}} from the {{shadow_reflection}} reflection begins to shape your planning, it can become difficult to move forward until every detail feels refined. What begins as thoughtful preparation may gradually slow progress or create pressure to perfect the plan before action begins. Growth comes from recognizing that effective planning prepares the path without requiring flawless certainty."
+      ],
+      "Shadow_Watch|Plan|People-Pleasing": [
+        "Shadow_Watch",
+        "Plan",
+        "People_Pleasing",
+        "When {{reflection_shadow}} from the {{shadow_reflection}} reflection begins to shape your planning, direction can become overly influenced by the expectations or comfort of others. What begins as empathy and care may gradually soften necessary decisions or delay clear priorities. Growth comes from planning with compassion while still honoring conviction and clarity."
+      ],
+      "Shadow_Watch|Plan|Rigidity": [
+        "Shadow_Watch",
+        "Plan",
+        "Rigidity",
+        "When {{reflection_shadow}} from the {{shadow_reflection}} reflection begins to shape your planning, structure can begin to matter more than responsiveness. What starts as consistency and discipline may gradually resist change even when circumstances shift. Growth comes from remembering that wise planning includes both stability and the freedom to adapt."
+      ],
+      "Shadow_Watch|Decide|Control": [
+        "Shadow_Watch",
+        "Decide",
+        "Control",
+        "When {{reflection_shadow}} from the {{shadow_reflection}} reflection begins to shape your decision making, you may feel pressure to resolve uncertainty too quickly or steer the outcome toward a preferred conclusion. What begins as confident leadership can gradually limit the perspectives considered. Growth comes from allowing discernment to remain open long enough for wisdom to emerge."
+      ],
+      "Shadow_Watch|Decide|Perfectionism": [
+        "Shadow_Watch",
+        "Decide",
+        "Perfectionism",
+        "When {{reflection_shadow}} from the {{shadow_reflection}} reflection begins to shape your decision making, the desire for the best possible choice can make it difficult to settle on a direction. What begins as careful evaluation may gradually lead to overanalysis or hesitation. Growth comes from recognizing that wise decisions often emerge through progress rather than exhaustive certainty."
+      ],
+      "Shadow_Watch|Decide|People-Pleasing": [
+        "Shadow_Watch",
+        "Decide",
+        "People_Pleasing",
+        "When {{reflection_shadow}} from the {{shadow_reflection}} reflection begins to shape your decision making, the desire to maintain harmony may begin to outweigh clarity about what is necessary. What begins as empathy may gradually soften convictions or delay difficult choices. Growth comes from honoring both relational care and the responsibility to choose wisely."
+      ],
+      "Shadow_Watch|Decide|Rigidity": [
+        "Shadow_Watch",
+        "Decide",
+        "Rigidity",
+        "When {{reflection_shadow}} from the {{shadow_reflection}} reflection begins to shape your decision making, conclusions may become fixed too early in the process. What begins as principled thinking may gradually limit openness to new information or changing circumstances. Growth comes from allowing discernment to remain attentive and adaptable as understanding deepens."
+      ],
+      "Shadow_Watch|Do|Control": [
+        "Shadow_Watch",
+        "Do",
+        "Control",
+        "When {{reflection_shadow}} from the {{shadow_reflection}} reflection begins to shape your actions, movement can become overly directed or tightly managed. What begins as responsible leadership may gradually turn into overcontrol of how work unfolds. Growth comes from allowing others space to contribute while still providing steady guidance."
+      ],
+      "Shadow_Watch|Do|Perfectionism": [
+        "Shadow_Watch",
+        "Do",
+        "Perfectionism",
+        "When {{reflection_shadow}} from the {{shadow_reflection}} reflection begins to shape your actions, progress may slow as effort is directed toward refining every detail. What begins as a commitment to excellence can gradually delay completion or make it difficult to release work that is ready to move forward. Growth comes from recognizing that faithful action often requires progress before perfection."
+      ],
+      "Shadow_Watch|Do|People-Pleasing": [
+        "Shadow_Watch",
+        "Do",
+        "People_Pleasing",
+        "When {{reflection_shadow}} from the {{shadow_reflection}} reflection begins to shape your actions, effort may become overly focused on meeting expectations or maintaining approval. What begins as relational care can gradually pull attention away from necessary priorities. Growth comes from acting with both compassion and conviction about what truly needs to be done."
+      ],
+      "Shadow_Watch|Do|Rigidity": [
+        "Shadow_Watch",
+        "Do",
+        "Rigidity",
+        "When {{reflection_shadow}} from the {{shadow_reflection}} reflection begins to shape your actions, movement can become overly fixed in established patterns. What begins as dependable execution may gradually resist adjustment even when conditions change. Growth comes from allowing action to remain responsive while still honoring the structures that support progress."
+      ]
+    }
+  },
+  "reflectionShadows": {
+    "Architect": "Control",
+    "Artisan": "Perfectionism",
+    "Shepherd": "People-Pleasing",
+    "Steward": "Rigidity"
+  },
+  "contentVersion": "designpd-legacy-2026-10-15-2f7e58cdfb54"
+}

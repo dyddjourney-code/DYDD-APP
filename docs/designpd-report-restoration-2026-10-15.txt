@@ -1,0 +1,38 @@
+DESIGNPD LEGACY REPORT PARITY RESTORATION — October 15, 2026
+
+Restored the eight authoritative narrative libraries (222 source rows), using the exact source keys and approved wording. No generic fallback copy. Missing keys reject generation before saving a result.
+
+Source: DesignID workbook 1544PcSoJIyGu7Ot_rYTl2Qui5fL539wpVEkdY-Ub_d4, source snapshot October 15, 2026. Content version is embedded in lib/designpd/source/libraries.json and every new native snapshot. No participant data is included in these libraries or committed regression fixtures.
+
+Mapping contract: all 102 legacy Make payload fields are retained. Two additional payload fields retain the source DesignID snapshot ID and completion timestamp. Every generated snapshot stores the exact resolved payload, content version, and PDF template ID. The existing PDFMonkey template is unchanged. The existing numeric engine is unchanged.
+
+Important details:
+- Axis|Tendency selects descriptors, core text and overview sentences.
+- Axis|Primary selects overlays; Axis|Secondary selects modulators.
+- Axis|Reflection|Capacity selects all 12 capacity paragraphs, plus primary amplifier fields.
+- Area|Axis|Tendency selects 45 distinct practical-application fields.
+- Integrative_Lens|Axis|Pair selects the six established reflection pairs.
+- The primary reflection's source Shadow row selects Reflection_Shadow; Shadow_Reflection names its reflection. Native DesignID Potential_Shadow is an integrative warning, NOT this lookup key.
+- Shadow-watch paragraphs substitute both source shadow placeholders.
+- Movement payloads preserve Make's formatted one-decimal percentage strings. Stored numeric fractions and scores are unchanged. This restores CSS positions for all six dots.
+- Report date uses the source DesignID completion date in long-date format, not a new generation timestamp.
+
+Verification:
+- All 222 library rows exercised across 240 profile combinations.
+- 276 historical reports x 102 fields: 28,152 exact comparisons pass.
+- All 130,931 valid four-score vectors preserve derived movements.
+- 48 browser marker checks: all six dots at actual values, zero, both polarities, thresholds and +/-50% endpoints.
+- PDFMonkey-generated reference and migrated proof: identical complete text, identical 21-page pagination, all 21 raster pages pixel-identical at 700px resolution.
+- John corrected proof: all 41 long personalized paragraphs used by the template are present in PDF text.
+- Local authenticated desktop1280/mobile390 owner screens and anonymous login gate pass.
+- Production build and typecheck pass.
+
+Pricing/access:
+- App DesignPD pricing is $15 on Field Kit, HQ and Trailheads; report page describes a per-DesignID-result unlock including its course.
+- Customer checkout remains unavailable pending Stripe setup/fulfillment. Server generation is owner-only until payment entitlement integration exists. A direct POST cannot grant an unlock.
+- Previously saved report links and courses remain accessible. Owner can generate a new review report without an email (checkbox opt-in for emailing a link).
+- No template, source workbook, legacy automation, existing assessment result or report is overwritten.
+
+Re-run core verification from the repository root:
+node scripts/verify-designpd-source-parity.mjs
+Historical verification additionally accepts a private local directory containing historical-formatted.json. Historical participant data and generated proof artifacts are deliberately not committed.

@@ -1,6 +1,7 @@
 "use server";
 
 import crypto from "node:crypto";
+import { isDyddAdminEmail } from "@/lib/admin-access";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import {
@@ -10,14 +11,12 @@ import {
 } from "@/lib/assessment-reporting";
 import { getAssessmentSnapshotsForUser, latestByAssessment } from "@/lib/assessments/student-context";
 import { designPdScoringVersion, scoreDesignPd } from "@/lib/designpd/engine";
-import { buildDesignPdReportPayload, designPdSnapshotSections } from "@/lib/designpd/report";
+import { buildDesignPdReportPayload, designPdSnapshotSections, designPdContentVersion, designPdTemplateId } from "@/lib/designpd/report";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const productionAppUrl = "https://dydd-online-school.vercel.app";
-const designPdTemplateId =
-  process.env.DESIGNPD_PDFMONKEY_TEMPLATE_ID ?? "3f9db53e-6b35-40ba-ba77-5673d6bb727c";
 
 function fail(message: string): never {
   redirect(`/designpd?message=${encodeURIComponent(message)}`);
@@ -73,9 +72,24 @@ export async function saveDesignPdResponse(formData: FormData) {
     fail("Complete DesignID before starting DesignPD.");
   }
 
+  // Existing reports remain accessible; generating for a new DesignID requires
+  // a per-attempt unlock. Stripe fulfillment is intentionally not enabled yet.
+  if (!isDyddAdminEmail(user.email)) {
+    const existing = assessmentReport.all.find((snapshot) =>
+      snapshot.assessment_type === "designpd" &&
+      snapshot.scores.designIdSnapshotId === designIdSnapshot.id &&
+      snapshot.scores.contentVersion === designPdContentVersion &&
+      ["success", "ready"].includes(String((snapshot.scores.pdfMonkey as Record<string, unknown> | undefined)?.status)),
+    );
+    if (existing) redirect(`/designpd/report?snapshot=${encodeURIComponent(existing.id)}`);
+    fail("DesignPD is a $15 add-on for each DesignID result. Checkout is not available yet.");
+  }
+
   let result;
+  let reportPayload;
   try {
     result = scoreDesignPd(designIdSnapshot);
+    reportPayload = buildDesignPdReportPayload({ designIdSnapshot, participantEmail, participantName, result });
   } catch (error) {
     fail(error instanceof Error ? error.message : "Unable to score this DesignPD assessment.");
   }
@@ -100,7 +114,7 @@ export async function saveDesignPdResponse(formData: FormData) {
     fail(participantError?.message ?? "Unable to connect your DesignPD record.");
   }
 
-  const sections = designPdSnapshotSections(result);
+  const sections = designPdSnapshotSections(result, reportPayload);
   const { data: snapshot, error: snapshotError } = await supabase
     .from("assessment_snapshots")
     .insert({
@@ -110,6 +124,9 @@ export async function saveDesignPdResponse(formData: FormData) {
         axisScores: result.axisScores,
         axisTendencies: result.axisTendencies,
         channel: "native_app",
+        contentVersion: designPdContentVersion,
+        reportPayload,
+        reportTemplateId: designPdTemplateId,
         designIdSnapshotId: designIdSnapshot.id,
         profileLanguage: sections.profileLanguage,
         questionVersion: "designpd-derived-from-designid-v1",
@@ -143,12 +160,7 @@ export async function saveDesignPdResponse(formData: FormData) {
   try {
     const report = await createReadyPdfMonkeyReport({
       filename: pdfFilename,
-      payload: buildDesignPdReportPayload({
-        designIdSnapshot,
-        participantEmail,
-        participantName,
-        result,
-      }),
+      payload: reportPayload,
       templateId: designPdTemplateId,
     });
 
@@ -162,7 +174,7 @@ export async function saveDesignPdResponse(formData: FormData) {
       status: report.document.status ?? null,
     };
 
-    if (report.ready) {
+    if (report.ready && (!isDyddAdminEmail(user.email) || formData.get("emailReport") === "yes")) {
       const email = await sendAssessmentReportEmail({
         assessmentName: "DesignPD",
         participantEmail,
@@ -175,6 +187,8 @@ export async function saveDesignPdResponse(formData: FormData) {
         sent: email.sent,
         skipped: email.skipped,
       };
+    } else if (report.ready) {
+      emailMetadata = { sent: false, skipped: true, reason: "owner_review_without_email" };
     }
   } catch (error) {
     pdfMetadata = {
@@ -192,6 +206,9 @@ export async function saveDesignPdResponse(formData: FormData) {
         axisScores: result.axisScores,
         axisTendencies: result.axisTendencies,
         channel: "native_app",
+        contentVersion: designPdContentVersion,
+        reportPayload,
+        reportTemplateId: designPdTemplateId,
         designIdSnapshotId: designIdSnapshot.id,
         pdfMonkey: pdfMetadata,
         profileLanguage: sections.profileLanguage,

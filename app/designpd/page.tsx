@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { isDyddAdminEmail } from "@/lib/admin-access";
 import { redirect } from "next/navigation";
 import { getAssessmentSnapshotsForUser, latestByAssessment } from "@/lib/assessments/student-context";
 import { normalizeEmail } from "@/lib/identity/email";
@@ -39,6 +40,7 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
   const assessmentReport = await getAssessmentSnapshotsForUser(user.id, participantEmail);
   const latest = latestByAssessment(assessmentReport.all);
   const hasDesignId = latest.some((snapshot) => snapshot.assessment_type === "designid");
+  const savedDesignPd = latest.find((snapshot) => snapshot.assessment_type === "designpd");
 
   return (
     <main className="fruitlife-shell fruitlife-public designid-shell designpd-shell">
@@ -48,6 +50,8 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
           action={saveDesignPdResponse}
           participantEmail={participantEmail}
           participantName={participantName}
+          ownerAccess={isDyddAdminEmail(user.email)}
+          savedReportHref={savedDesignPd ? `/designpd/report?snapshot=${encodeURIComponent(savedDesignPd.id)}` : undefined}
         />
       ) : (
         <section className="fruitlife-panel fruitlife-message-card">

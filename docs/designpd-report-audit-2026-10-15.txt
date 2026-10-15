@@ -1,0 +1,40 @@
+DESIGNPD REPORT MIGRATION AUDIT — October 15, 2026
+
+State: diagnosis complete; no production changes, report generation, email or pricing changes.
+
+Confirmed findings:
+1. The app report builder does not use the eight established source narrative libraries. It uses newly authored generic axis text and templated reflection sentences instead. Correct numeric scoring does not establish report parity.
+2. All 45 practical-application fields (five areas x three axes x strength/watch/growth) are filled from only 15 generic sentences. Within each area, Plan/Decide/Do receive identical copy, independent of tendency. Source lookup must be Area|Axis|Tendency_Type.
+3. Primary reflection overlays and secondary reflection modulators do not select the source text. The current secondary modulator is selected by axis tendency rather than the secondary reflection.
+4. The 12 reflection/axis amplifier paragraphs are static, rather than selected by Axis|Reflection|Bandwidth_State. All four reflection capacity bands must participate.
+5. Integrative lens and shadow-watch text are interpolated stand-ins, not the source Integrative_Shadow_Library entries. Reflection_Shadow and Shadow_Reflection are currently set to the same value, although the source provides separate fields.
+6. The published and draft PDFMonkey template place six score dots with left:calc(50% - {{movement}}). App movements are unitless fractions, so nonzero values produce invalid CSS. Chromium CSS.supports rejects calc(50% - 0.14) and accepts calc(50% - 14%). The score polarity, proper scale, center, rail insets and boundaries must be checked against the established website report before choosing the final rendering fix.
+7. The app native snapshot profileLanguage stores only three generic core strings plus a shadow label; it does not retain the fully resolved report payload/content version. Auditability should include the exact resolved report content and source version.
+
+Verified source inventory:
+Current website Make-to-PDFMonkey payload: 102 named fields.
+Current DesignPD_Report_Data sheet: 109 columns, including processing metadata.
+These are different counts from the total content-library entries; this audit does not assert the recalled approximate 200 variables are all independent PDF fields.
+
+Eight authoritative content libraries:
+- Tendency_Snapshot_Descriptors: 15 content rows
+- Core_Tendency_Blocks: 15 content rows
+- Primary_Reflection_Overlays: 12 content rows
+- Secondary_Reflection_Modulators: 12 content rows
+- Bandwidth_Amplifiers: 48 content rows
+- Practical_Applications_Library: 75 content rows
+- Tendency_Overview_Sentences: 15 content rows
+- Integrative_Shadow_Library: 30 content rows
+
+Total: 222 source narrative entries across the eight DesignPD libraries. Additional Integrative_Text and Shadow libraries were inspected for reflection labels.
+
+Repair and acceptance requirements:
+- Port source lookup rules and approved source text; do not fill missing keys with generic fallback copy.
+- Preserve the already verified numeric formulas and exact source DesignID attempt link.
+- Resolve all 102 payload fields, with explicit non-applicable fields distinguished from missing content.
+- Compare every source library key and historical report output, including every tendency, reflection, band, integrative pair and shadow substitution.
+- Verify all six rendered markers: zero, both polarities, boundaries, and the actual participant values.
+- Render a non-delivering corrected proof PDF and compare its full text and pages to the established website output.
+- Preserve the existing report and DesignID record; no automatic overwrite or report emailing.
+
+Evidence: lib/designpd/report.ts, lib/designpd/engine.ts, app/designpd/actions.ts; read-only live Google Sheets formulas/libraries; read-only live PDFMonkey published/draft template; Chromium CSS parser test.

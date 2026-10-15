@@ -1,14 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 type Props = {
   action: (formData: FormData) => void | Promise<void>;
   participantEmail: string;
   participantName: string;
+  ownerAccess: boolean;
+  savedReportHref?: string;
 };
 
-export function DesignPdAssessmentForm({action, participantEmail, participantName}: Props) {
+export function DesignPdAssessmentForm({action, participantEmail, participantName, ownerAccess, savedReportHref}: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   return (
     <form action={action} onSubmit={() => setIsSubmitting(true)} className="designid-form">
@@ -21,7 +24,12 @@ export function DesignPdAssessmentForm({action, participantEmail, participantNam
           <div><span>Email</span><strong>{participantEmail}</strong></div>
         </div>
         <p>No additional assessment questions are needed.</p>
-        <button className="button primary" type="submit" disabled={isSubmitting}>{isSubmitting ? "Preparing your report..." : "Create my DesignPD report"}</button>
+        <p><strong>Unlock your DesignPD report · $15</strong></p>
+        <p>A one-time add-on for this DesignID result, including the supporting course. Your purchased report stays available to reopen and download. A new DesignID result can be unlocked separately.</p>
+        {!ownerAccess ? <p>Checkout is coming soon. No payment will be taken here.</p> : <p>Owner access: you can generate a report without payment.</p>}
+        {ownerAccess ? <label className="fruitlife-checkbox-row"><input type="checkbox" name="emailReport" value="yes" /> Email me a link to this report</label> : null}
+        {savedReportHref ? <p><Link className="button secondary" href={savedReportHref}>Open saved DesignPD report</Link></p> : null}
+        <button className="button primary" type="submit" disabled={isSubmitting || !ownerAccess}>{isSubmitting ? "Preparing your report..." : ownerAccess ? "Create my DesignPD report" : "Unlock DesignPD · $15 (coming soon)"}</button>
       </section>
     </form>
   );

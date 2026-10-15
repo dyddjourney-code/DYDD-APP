@@ -101,7 +101,7 @@ const purchaseAssessments: AssessmentProduct[] = [
     href: "/designpd",
     logo: "/brand/tools/designpd-logo.jpg",
     points: ["Plan, Decide, Do patterns", "Practical rhythms", "Trailhead course included"],
-    price: "$50",
+    price: "$15",
     status: null,
     title: "DesignPD",
   },
@@ -491,7 +491,8 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     if (assessment.title === "DesignPD") {
       return {
         ...assessment,
-        action: hasDesignId ? assessment.action : "Complete DesignID first",
+        action: hasDesignId ? hasOwnerAssessmentAccess ? "Create DesignPD report" : "Unlock DesignPD · $15" : "Complete DesignID first",
+        price: hasOwnerAssessmentAccess ? "Owner access" : assessment.price,
         courseAction: hasDesignPd ? "Explore course" : "Course opens with report",
         courseAvailable: hasDesignPd,
         courseHref: "/courses/designpd-alignment",

@@ -130,7 +130,7 @@ const toolCatalog = [
     href: "/field-kit",
     label: "DesignPD",
     logo: "/brand/tools/designpd-logo.jpg",
-    price: "$50",
+    price: "$15",
   },
 ];
 

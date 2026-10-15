@@ -63,7 +63,6 @@ export default async function FruitLifeSignupPage({
           <div>
             <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife360 logo" />
             <div>
-              <p className="section-label">FruitLife360</p>
               <h1>Set up your assessment</h1>
               <p>
                 Start with your own reflection. Add observers only if you want trusted feedback
@@ -80,39 +79,15 @@ export default async function FruitLifeSignupPage({
             title="Help"
           />
         </section>
-        <section className="fruitlife-intake-overview">
-          <p>
-            <span>1</span>
-            Participant
-          </p>
-          <p>
-            <span>2</span>
-            Observers
-          </p>
-          <p>
-            <span>3</span>
-            Email Links
-          </p>
-          <p>
-            <span>4</span>
-            Track Progress
-          </p>
-        </section>
-        <section className="fruitlife-panel">
-          <p className="section-label">Participant Setup</p>
-          <h2>Who is this assessment for?</h2>
-          <p>
-            Enter the participant details. For a self-assessment, leave the observer list empty.
-          </p>
+        <section className="fruitlife-panel fruitlife-account-summary">
+          <h2>Assessment for</h2>
           <div className="fruitlife-grid two">
             <label>
-              Participant name
-              <small>This name appears in the app and report process.</small>
-              <input defaultValue={profile?.full_name ?? String(user.user_metadata?.full_name ?? "")} name="participant_name" required type="text" />
+              Name
+              <input value={profile?.full_name?.trim() || String(user.user_metadata?.full_name ?? "").trim()} readOnly name="participant_name" type="text" />
             </label>
             <label>
-              Participant email
-              <small>The self-reflection link is sent here.</small>
+              Email
               <input value={user.email ?? ""} readOnly name="participant_email" required type="email" />
             </label>
 
@@ -120,8 +95,8 @@ export default async function FruitLifeSignupPage({
         </section>
 
         <section className="fruitlife-panel">
-          <p className="section-label">Optional Observers</p>
-          <h2>Add trusted observers only if this report should include outside feedback.</h2>
+          <h2>Optional observers</h2>
+          <p>If desired, add trusted observers for a full 360 report.</p>
           <ObserverInvitations />
         </section>
 

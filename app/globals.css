@@ -20016,3 +20016,29 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .designid-form .designid-progress-card .spiritual-gifts-step-meter { grid-column: 1 / -1; width: 100%; }
   .designid-form .designid-rank-row { grid-template-columns: minmax(0,1fr); }
 }
+
+/* Compact account-bound FruitLife360 setup; reflection pages keep their layout. */
+.fruitlife-signup .fruitlife-flow-header > div:first-child {
+  grid-template-columns: 210px minmax(0, 1fr);
+  flex: 1;
+  min-width: 0;
+}
+.fruitlife-signup .fruitlife-flow-header img { width: 210px; }
+.fruitlife-signup .fruitlife-flow-header h1 {
+  max-width: none;
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  line-height: 1.2;
+}
+.fruitlife-signup .fruitlife-panel { gap: 12px; padding: 20px; }
+.fruitlife-signup .fruitlife-panel h2 { margin: 0; font-size: 1.15rem; max-width: none; }
+.fruitlife-signup .fruitlife-account-summary input[readonly] {
+  background: #f3f5ef;
+  color: var(--green-dark);
+  cursor: default;
+}
+@media (max-width: 640px) {
+  .fruitlife-signup .fruitlife-flow-header > div:first-child { grid-template-columns: 1fr; gap: 12px; }
+  .fruitlife-signup .fruitlife-flow-header { position: relative; }
+  .fruitlife-signup .fruitlife-flow-header .page-help { position: absolute; top: 16px; right: 16px; }
+  .fruitlife-signup .fruitlife-flow-header img { width: min(210px, 65vw); }
+}

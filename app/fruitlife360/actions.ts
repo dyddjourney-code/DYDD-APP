@@ -568,18 +568,10 @@ async function saveResponse({
 }
 
 export async function createFruitLifeSession(formData: FormData) {
-  const participantName = getString(formData, "participant_name");
-  const participantEmail = normalizeEmail(getString(formData, "participant_email"));
   const observerSeeds = observerSeedsFromForm(formData);
   const signupSource = getString(formData, "signup_source") || "vercel-fruitlife-intake";
   const returnTo = safeReturnPath(getString(formData, "return_to"));
   const legacyLane = returnTo.includes("lane=fruitlife");
-
-  if (!participantName) {
-    fail("/fruitlife360", "Enter the participant name.");
-  }
-
-  assertEmail(participantEmail, "/fruitlife360");
 
   const supabase = createSupabaseAdminClient();
   const serverSupabase = await createSupabaseServerClient();
@@ -592,7 +584,13 @@ export async function createFruitLifeSession(formData: FormData) {
     Boolean(user?.id && activeEntitlement) || isFruitLifeAdmin(user?.email);
 
   if (!user) redirect(`/login?next=${encodeURIComponent("/fruitlife360")}`);
-  if (normalizeEmail(user.email) !== participantEmail) fail("/fruitlife360", "Use the email connected to your signed-in account.");
+  // Participant identity comes from the signed-in account, never editable form data.
+  const { data: profile } = await serverSupabase.from("school_profiles")
+    .select("full_name").eq("id", user.id).maybeSingle();
+  const participantName = profile?.full_name?.trim() || String(user.user_metadata?.full_name ?? "").trim();
+  const participantEmail = normalizeEmail(user.email);
+  if (!participantName) fail("/fruitlife360", "Add your name to your app account profile before starting your reflection.");
+  assertEmail(participantEmail, "/fruitlife360");
   if (new Set(observerSeeds.map(observer => observer.email)).size !== observerSeeds.length || observerSeeds.some(observer => observer.email === participantEmail)) {
     fail("/fruitlife360", "Use a different email for each observer, separate from your own email.");
   }

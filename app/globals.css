@@ -3412,7 +3412,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   overflow: visible;
   background:
     linear-gradient(90deg, rgba(23, 39, 27, 0.86) 0%, rgba(23, 39, 27, 0.62) 42%, rgba(23, 39, 27, 0.1) 76%),
-    url("/brand/dydd-fieldkit-jungle-banner.png") center / cover no-repeat;
+    url("/brand/dydd-fieldkit-jungle-banner.png") center top / cover no-repeat;
   color: #fbfaf4;
 }
 
@@ -18110,7 +18110,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
   .fieldkit-hero {
     min-height: 330px;
-    background-position: 58% center;
+    background-position: 58% top;
   }
 
   .fieldkit-product-columns,
@@ -20215,7 +20215,8 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .trail-section-title h2 { margin:6px 0 10px; font-size:clamp(24px,2.4vw,32px); color:var(--trail-ink); }
 .trail-section-title>p:not(.section-label) { max-width:700px; color:#59665b; line-height:1.6; }
 .trail-showcase { display:grid; grid-template-columns:minmax(220px,.72fr) minmax(0,1.28fr); align-items:center; gap:30px; padding:24px; border:1px solid #d6d9c8; border-radius:22px; background:linear-gradient(135deg,#e9eedf,#f6f4e9 70%); }
-.trail-showcase-art img { width:100%; height:auto; max-height:660px; object-fit:contain; }
+.trail-showcase-art { align-self:end; }
+.trail-showcase-art img { display:block; width:100%; height:auto; max-height:660px; object-fit:contain; object-position:center bottom; }
 .trail-showcase-content { min-width:0; }
 .trail-dydd-logo { display:block; width:min(340px,80%); height:125px; object-fit:contain; margin:0 auto 20px; }
 .trail-guide-route-list { display:grid; gap:44px; }

@@ -110,9 +110,6 @@ export default async function TrailheadsPage({ searchParams }: Props) {
             course—all from the same trailhead.
           </p>
         </div>
-        <Link className="button secondary" href={fieldKit}>
-          Open My Field Kit
-        </Link>
       </header>
       {mini && checkoutNotice ? (
         <p className="form-message" role="status">

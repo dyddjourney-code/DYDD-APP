@@ -107,14 +107,16 @@ export function DydPassportBook({
           <section aria-label="Short trail badges" className="passport-badge-group passport-trail-section">
             <p className="section-label">Short trails</p>
             <p className="passport-trail-note">Start here or along the main trail. The same milestone is earned everywhere it appears.</p>
-            {shortTrails.map((trail) => (
-              <section className="passport-short-trail" aria-label={`${trail.title} trail badges`} key={trail.title}>
-                <h3>{trail.title}</h3>
-                <div className="passport-badge-grid">{badgesFor(trail.titles).map(renderBadgeButton)}</div>
-              </section>
-            ))}
+            <div className="passport-short-trails-row">
+              {shortTrails.map((trail) => (
+                <section className="passport-short-trail" aria-label={`${trail.title} trail badges`} key={trail.title}>
+                  <h3>{trail.title}</h3>
+                  <div className="passport-badge-grid">{badgesFor(trail.titles).map(renderBadgeButton)}</div>
+                </section>
+              ))}
+            </div>
           </section>
-          <section aria-label="Dig deeper trail badges" className="passport-badge-group passport-trail-section">
+          <section aria-label="Dig deeper trail badges" className="passport-badge-group passport-trail-section passport-deeper-trail">
             <p className="section-label">Dig deeper trails</p>
             <h3>DesignPD</h3>
             <p className="passport-trail-note">Complete DesignID first. DesignPD is an optional expansion with its own assessment and course.</p>

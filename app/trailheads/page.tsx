@@ -1,3 +1,4 @@
+import { hasDesignPdCourseAccess } from "@/lib/designpd/access";
 import Link from "next/link";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
@@ -24,7 +25,7 @@ const featuredCourse = {
   effort: "Main route",
   href: "/journey",
   logo: "/brand/dydd-logo-transparent.webp",
-  permit: "Book or course access",
+  permit: "Included with subscription",
   points: [
     "Walk through the full Discover Your Divine Design framework",
     "Teaching across identity, design, and calling",
@@ -50,7 +51,7 @@ const courses = [
       "Understand reflection and energy patterns",
       "Practical next steps for everyday application",
     ],
-    price: "$20 assessment completed",
+    price: "Included with subscription",
     prerequisite: "Requires a completed DesignID assessment.",
     status: "unlocked",
     slug: "designid",
@@ -70,7 +71,7 @@ const courses = [
       "Connect gifts to humble service",
       "Notice growth areas and next faithful steps",
     ],
-    price: "Free assessment completed",
+    price: "Included with subscription",
     prerequisite: "Requires a completed Spiritual Gifts assessment.",
     status: "unlocked",
     slug: "spiritual-gifts",
@@ -90,7 +91,7 @@ const courses = [
       "Connect report insights to real-life action",
       "Build healthier rhythms for purpose and progress",
     ],
-    price: "$15 report unlock required",
+    price: "Optional expansion",
     prerequisite: "Requires an unlocked DesignPD report from your DesignID result.",
     status: "unlocked",
     slug: "designpd",
@@ -110,7 +111,7 @@ const courses = [
       "Learn from self and observer feedback",
       "Choose simple growth practices for the next season",
     ],
-    price: "Free assessment required",
+    price: "Included with subscription",
     prerequisite: "Requires a completed FruitLife360 assessment.",
     status: "unlocked",
     slug: "fruitlife-360",
@@ -276,8 +277,22 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
     );
   }
 
+  const supabase = await createSupabaseServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data: profile } = user
+    ? await supabase.from("school_profiles").select("email").eq("id", user.id).maybeSingle()
+    : { data: null };
+  const report = user
+    ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(profile?.email ?? user.email))
+    : { all: [], latest: [] };
+  const designPdUnlocked = Boolean(user && hasDesignPdCourseAccess(user.email, report.all));
+  const courseGroups = [
+    { title: "Included with subscription", note: "DesignID, Spiritual Gifts, and FruitLife360 courses accompany your journey subscription.", courses: courses.filter(course => ["designid", "spiritual-gifts", "fruitlife-360"].includes(course.slug)) },
+    { title: "Optional expansion · DesignPD", note: "Go deeper into Plan, Decide, Do. Unlock DesignPD separately after DesignID; the connected course is included with the expansion.", courses: courses.filter(course => course.slug === "designpd") },
+  ];
+
   return (
-    <main className="journey-shell hq-standalone-page">
+    <main className="journey-shell hq-standalone-page beta-tier-catalog">
       <header className="standalone-hero trailheads-hero">
         <div>
           <p className="eyebrow">Trailheads</p>
@@ -301,7 +316,7 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
 
       <section className="course-catalog-section" aria-label="Discover Your Divine Design course catalog">
         <div className="catalog-heading compact course-heading-row">
-          <h2>Main journey hub</h2>
+          <h2>Main journey · Included with subscription</h2>
         </div>
 
         <article className="featured-course-banner trailhead-sign-board">
@@ -345,65 +360,72 @@ export default async function TrailheadsPage({ searchParams }: TrailheadsPagePro
         <div className="trailhead-start-note">
           <p className="section-label">Start logic</p>
           <p>
-            The main DYDD Journey is the hub. Spiritual Gifts, FruitLife360, DesignID,
-            and Design Pathways can begin as entry trails. DesignPD should come after
-            DesignID because it depends on that design language.
+            The main DYDD Journey is the hub. Your subscription includes DesignID,
+            Spiritual Gifts, and FruitLife360. DesignPD is a separate optional
+            expansion that builds on your DesignID results.
           </p>
         </div>
 
-        <div className="catalog-heading compact course-heading-row">
-          <h2>Assessment-based courses</h2>
-        </div>
-
-        <div className="course-catalog-grid">
-          {courses.map((course) => (
-            <article
-              className={`catalog-course-card ${course.status === "unlocked" ? "open" : "locked"}`}
-              id={course.slug}
-              key={course.title}
-            >
-              <div className="catalog-course-logo">
-                <img
-                  className="catalog-course-signpost"
-                  src={course.signpost}
-                  alt={`${course.title} signpost`}
-                />
-              </div>
-              <div>
-                <span>{course.status === "unlocked" ? "Course unlocked" : "Assessment required"}</span>
-                <h3>{course.title}</h3>
-                <p>{course.description}</p>
-                <dl className="trailhead-facts compact">
-                  <div>
-                    <dt>Effort</dt>
-                    <dd>{course.effort}</dd>
+        {courseGroups.map((group) => (
+          <section className="course-catalog-section tier-course-group" key={group.title} aria-label={group.title}>
+            <div className="catalog-heading compact course-heading-row">
+              <h2>{group.title}</h2>
+            </div>
+            <p className="fieldkit-section-note">{group.note}</p>
+            <div className="course-catalog-grid">
+              {group.courses.map((course) => {
+                const isUnlocked = course.slug !== "designpd" || designPdUnlocked;
+                return (
+                  <article
+                  className={`catalog-course-card ${isUnlocked ? "open" : "locked"}`}
+                  id={course.slug}
+                  key={course.title}
+                >
+                  <div className="catalog-course-logo">
+                    <img
+                      className="catalog-course-signpost"
+                      src={course.signpost}
+                      alt={`${course.title} signpost`}
+                    />
                   </div>
                   <div>
-                    <dt>Difficulty</dt>
-                    <dd>{course.difficulty}</dd>
+                    <span>{isUnlocked ? course.slug === "designpd" ? "Expansion unlocked" : "Included with subscription" : "Expansion locked"}</span>
+                    <h3>{course.title}</h3>
+                    <p>{course.description}</p>
+                    <dl className="trailhead-facts compact">
+                      <div>
+                        <dt>Effort</dt>
+                        <dd>{course.effort}</dd>
+                      </div>
+                      <div>
+                        <dt>Difficulty</dt>
+                        <dd>{course.difficulty}</dd>
+                      </div>
+                      <div>
+                        <dt>Permit</dt>
+                        <dd>{course.price}</dd>
+                      </div>
+                    </dl>
+                    <ul>
+                      {course.points.map((point) => (
+                        <li key={point}>{point}</li>
+                      ))}
+                    </ul>
+                    <small>Access: {course.price}</small>
+                    <small>Prerequisite: {course.prerequisite}</small>
                   </div>
-                  <div>
-                    <dt>Permit</dt>
-                    <dd>{course.price}</dd>
-                  </div>
-                </dl>
-                <ul>
-                  {course.points.map((point) => (
-                    <li key={point}>{point}</li>
-                  ))}
-                </ul>
-                <small>Price: {course.price}</small>
-                <small>Prerequisite: {course.prerequisite}</small>
-              </div>
-              <Link
-                className={`button ${course.status === "unlocked" ? "primary" : "secondary"}`}
-                href={course.href}
-              >
-                {course.action}
-              </Link>
-            </article>
-          ))}
-        </div>
+                  <Link
+                    className={`button ${isUnlocked ? "primary" : "secondary"}`}
+                    href={isUnlocked ? course.href : "/designpd"}
+                  >
+                    {isUnlocked ? course.action : "Explore DesignPD expansion"}
+                  </Link>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        ))}
       </section>
     </main>
   );

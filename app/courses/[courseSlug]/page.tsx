@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+import { hasDesignPdCourseAccess } from "@/lib/designpd/access";
 import { notFound } from "next/navigation";
 import {
   buildAssessmentCourseInsights,
@@ -91,6 +93,14 @@ export default async function LearningCoursePage({
   const assessmentReport = reviewReport ?? (user
     ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
     : { all: [], latest: [] });
+  // Always authorize against the signed-in account, never preview report data.
+  if (course.slug === "designpd-alignment") {
+    if (!user) redirect(`/login?next=${encodeURIComponent("/courses/designpd-alignment")}`);
+    const ownReport = reviewReport
+      ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
+      : assessmentReport;
+    if (!hasDesignPdCourseAccess(user.email, ownReport.all)) redirect("/field-kit#optional-expansions");
+  }
   const insights = buildAssessmentCourseInsights(
     assessmentReport,
     course.assessmentType,

@@ -20061,3 +20061,23 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .fruitlife-assessment-card.fruitlife-self-header { grid-template-columns: minmax(0, 1fr); }
   .fruitlife-self-header .fruitlife-assessment-steps { grid-template-columns: 1fr 1fr; }
 }
+
+/* Subscription and expansion tiers share readable, responsive course rows. */
+.beta-tier-catalog .course-heading-row h2 {
+  max-width: none;
+  white-space: normal;
+}
+.beta-tier-catalog .tier-course-group .course-catalog-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+.beta-tier-catalog .trailhead-facts.compact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.beta-tier-catalog .trailhead-facts dd {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 640px) {
+  .beta-tier-catalog .trailhead-facts.compact {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

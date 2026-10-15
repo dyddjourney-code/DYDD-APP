@@ -1,3 +1,4 @@
+import { hasDesignPdCourseAccess } from "@/lib/designpd/access";
 import { getDesignIdEligibility } from "@/lib/designid/retake";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -80,7 +81,7 @@ export const dynamic = "force-dynamic";
 
 const purchaseAssessments: AssessmentProduct[] = [
   {
-    action: "Purchase assessment",
+    action: "Start assessment",
     courseAction: "Continue to course",
     courseHref: "/courses/designid-foundations",
     detail:
@@ -88,12 +89,12 @@ const purchaseAssessments: AssessmentProduct[] = [
     href: "/designid",
     logo: "/brand/tools/designid-logo.webp",
     points: ["Reflection pattern", "Report artifact", "Trailhead course included"],
-    price: "$20",
+    price: "Included with subscription",
     status: null,
     title: "DesignID",
   },
   {
-    action: "Purchase assessment",
+    action: "Start assessment",
     courseAction: null,
     courseHref: null,
     detail:
@@ -101,12 +102,12 @@ const purchaseAssessments: AssessmentProduct[] = [
     href: "/designpd",
     logo: "/brand/tools/designpd-logo.jpg",
     points: ["Plan, Decide, Do patterns", "Practical rhythms", "Trailhead course included"],
-    price: "$15",
+    price: "Optional expansion",
     status: null,
     title: "DesignPD",
   },
   {
-    action: "Purchase assessment",
+    action: "Start assessment",
     courseAction: null,
     courseHref: null,
     detail:
@@ -130,7 +131,7 @@ const freeAssessments: AssessmentProduct[] = [
     href: "/spiritual-gifts",
     logo: "/brand/tools/spiritual-gifts-logo.jpg",
     points: ["Gifts language", "Service reflection", "Trailhead course included"],
-    price: "Free",
+    price: "Included with subscription",
     status: "Completed",
     title: "Spiritual Gifts",
   },
@@ -143,7 +144,7 @@ const freeAssessments: AssessmentProduct[] = [
     href: "/fruitlife360",
     logo: "/brand/tools/fruitful-life-360-logo.jpg",
     points: ["Self reflection", "Observer feedback", "Trailhead course included"],
-    price: "Free",
+    price: "Included with subscription",
     status: null,
     title: "FruitLife360",
   },
@@ -182,44 +183,6 @@ const artifacts = [
   },
 ];
 
-const earnedBadges = [
-  {
-    image: "/brand/badges/designid-badge.png",
-    note: "Earned badge: DesignID",
-    title: "DesignID",
-  },
-  {
-    image: "/brand/badges/shepherd-badge.svg",
-    note: "Earned badge: Shepherd",
-    title: "Shepherd",
-  },
-  {
-    image: "/brand/badges/spiritual-gifts-badge.png",
-    note: "Earned badge: Spiritual Gifts",
-    title: "Spiritual Gifts",
-  },
-];
-
-const nextBadge = {
-  action: "Begin the first D.E.S.I.G.N. step inside the Discover Your Divine Design Journey.",
-  image: "/brand/badges/identity-badge.svg",
-  title: "Identity",
-};
-
-const journeyBadgePath = [
-  { image: "/brand/badges/designid-badge.png", label: "DesignID", state: "earned" },
-  { image: "/brand/badges/shepherd-badge.svg", label: "Shepherd", state: "earned" },
-  { image: "/brand/badges/spiritual-gifts-badge.png", label: "Spiritual Gifts", state: "earned" },
-  { image: "/brand/badges/identity-badge.svg", label: "Identity", state: "next" },
-  { image: "/brand/badges/expertise-badge.svg", label: "Expertise", state: "ahead" },
-  { image: "/brand/badges/story-badge.svg", label: "Story", state: "ahead" },
-  { image: "/brand/badges/desire-badge.svg", label: "Desire", state: "ahead" },
-  { image: "/brand/badges/gifts-badge.svg", label: "Gifts", state: "ahead" },
-  { image: "/brand/badges/niche-badge.svg", label: "Niche", state: "ahead" },
-  { image: "/brand/badges/designpd-badge.png", label: "DesignPD", state: "ahead" },
-  { image: "/brand/badges/fruitlife-360-badge.png", label: "FruitLife360", state: "ahead" },
-];
-
 const assessmentFlow = [
   {
     detail:
@@ -241,47 +204,12 @@ const assessmentFlow = [
   },
 ];
 
-const badgeGroups = [
-  {
-    badges: [
-      ["Identity", "/brand/badges/identity-badge.svg"],
-      ["Expertise", "/brand/badges/expertise-badge.svg"],
-      ["Story", "/brand/badges/story-badge.svg"],
-      ["Desire", "/brand/badges/desire-badge.svg"],
-      ["Gifts", "/brand/badges/gifts-badge.svg"],
-      ["Niche", "/brand/badges/niche-badge.svg"],
-    ],
-    note: "Badges earned as the learner moves through the main Discover Your Divine Design Journey.",
-    title: "D.E.S.I.G.N. Badges",
-  },
-  {
-    badges: [
-      ["DesignID", "/brand/badges/designid-badge.png"],
-      ["Spiritual Gifts", "/brand/badges/spiritual-gifts-badge.png"],
-      ["Design Pathways", "/brand/badges/design-pathways-badge.png"],
-      ["DesignPD", "/brand/badges/designpd-badge.png"],
-      ["FruitLife360", "/brand/badges/fruitlife-360-badge.png"],
-    ],
-    note: "Badges earned when each assessment or report is completed.",
-    title: "Assessment Badges",
-  },
-  {
-    badges: [
-      ["Artisan", "/brand/badges/artisan-badge.svg"],
-      ["Architect", "/brand/badges/architect-badge.svg"],
-      ["Steward", "/brand/badges/steward-badge.svg"],
-    ],
-    note: "For awareness. The completed DesignID reflection badge is earned from the report, while the other reflection badges are references only.",
-    title: "Reflection Badges",
-  },
-];
-
 function AssessmentCard({
   assessment,
   kind,
 }: {
   assessment: AssessmentProduct;
-  kind: "Purchase" | "Free";
+  kind: "Subscription" | "Expansion" | "Purchase";
 }) {
   return (
     <article className="fieldkit-assessment-card">
@@ -289,7 +217,7 @@ function AssessmentCard({
         <img src={assessment.logo} alt={`${assessment.title} logo`} />
       </div>
       <div className="fieldkit-assessment-copy">
-        <span>{kind} assessment</span>
+        <span>{kind === "Subscription" ? "Included with subscription" : kind === "Expansion" ? "Optional expansion" : "Purchase assessment"}</span>
         <h3>{assessment.title}</h3>
         <p>{assessment.detail}</p>
         <div className="fieldkit-assessment-meta">
@@ -456,7 +384,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
   );
   const hasDesignId = ownsAssessment(snapshotLatest, "designid");
   const hasDesignPd = ownsAssessment(snapshotLatest, "designpd");
-  const hasDesignPathways = ownsAssessment(snapshotLatest, "design_pathways");
+  const designPdUnlocked = Boolean(user && hasDesignPdCourseAccess(user.email, snapshotHistory));
   const hasSpiritualGifts = ownsAssessment(snapshotLatest, "spiritual_gifts");
   const hasFruitLife = fruitLifeLane
     ? fruitLifeReportSessions.length > 0
@@ -469,9 +397,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         ? hasDesignId ? "Completed" : assessment.status
         : assessment.title === "DesignPD"
           ? hasDesignPd ? "Completed" : hasDesignId ? assessment.status : "Requires DesignID"
-          : assessment.title === "Design Pathways"
-            ? hasDesignPathways ? "Completed" : assessment.status
-            : assessment.status;
+          : assessment.status;
 
     if (assessment.title === "DesignID" && hasOwnerAssessmentAccess) {
       return {
@@ -491,10 +417,10 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     if (assessment.title === "DesignPD") {
       return {
         ...assessment,
-        action: hasDesignId ? hasOwnerAssessmentAccess ? "Create DesignPD report" : "Unlock DesignPD · $15" : "Complete DesignID first",
+        action: hasDesignId ? hasOwnerAssessmentAccess ? "Create DesignPD report" : "Explore DesignPD unlock" : "Complete DesignID first",
         price: hasOwnerAssessmentAccess ? "Owner access" : assessment.price,
-        courseAction: hasDesignPd ? "Explore course" : "Course opens with report",
-        courseAvailable: hasDesignPd,
+        courseAction: designPdUnlocked ? "Explore course" : "Course opens with expansion",
+        courseAvailable: designPdUnlocked,
         courseHref: "/courses/designpd-alignment",
         href: hasDesignId ? assessment.href : "/designid",
         status,
@@ -534,6 +460,11 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     }
     return { ...assessment, status };
   });
+  const subscriptionCards = [
+    ...purchaseCards.filter(assessment => assessment.title === "DesignID"),
+    ...freeCards,
+  ];
+  const expansionCards = purchaseCards.filter(assessment => assessment.title === "DesignPD");
   const artifacts: FieldKitArtifact[] = [
     ...snapshotArtifactSources.filter(snapshot => !(snapshot.assessment_type === "fruit_360" && fruitLifeReportSessions.some(session => session.report_snapshot_id === snapshot.id))).map((snapshot) => ({
       action: "Open report",
@@ -545,7 +476,9 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
             ? "/courses/spiritual-gifts-service"
             : snapshot.assessment_type === "fruit_360"
               ? "/courses/fruitlife-360-formation"
-              : "/trailheads",
+              : snapshot.assessment_type === "designpd" && designPdUnlocked
+                ? "/courses/designpd-alignment"
+                : "/trailheads",
       detail: `Completed ${displayDateTime(snapshot.source_submitted_at ?? snapshot.created_at)}.`,
       href: artifactDownloadHref(snapshot, reviewParams),
       logo:
@@ -718,53 +651,6 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     );
   }
 
-  const earnedBadgeCards = [
-    hasDesignId
-      ? {
-          image: "/brand/badges/designid-badge.png",
-          note: "Earned badge: DesignID",
-          title: "DesignID",
-        }
-      : null,
-    hasSpiritualGifts
-      ? {
-          image: "/brand/badges/spiritual-gifts-badge.png",
-          note: "Earned badge: Spiritual Gifts",
-          title: "Spiritual Gifts",
-        }
-      : null,
-    hasDesignPd
-      ? {
-          image: "/brand/badges/designpd-badge.png",
-          note: "Earned badge: DesignPD",
-          title: "DesignPD",
-        }
-      : null,
-    hasFruitLife
-      ? {
-          image: "/brand/badges/fruitlife-360-badge.png",
-          note: "Earned badge: FruitLife360",
-          title: "FruitLife360",
-        }
-      : null,
-  ].filter(Boolean) as Array<{
-    image: string;
-    note: string;
-    title: string;
-  }>;
-  const journeyBadgePath = [
-    { image: "/brand/badges/designid-badge.png", label: "DesignID", state: hasDesignId ? "earned" : "ahead" },
-    { image: "/brand/badges/spiritual-gifts-badge.png", label: "Spiritual Gifts", state: hasSpiritualGifts ? "earned" : "ahead" },
-    { image: "/brand/badges/fruitlife-360-badge.png", label: "FruitLife360", state: hasFruitLife ? "earned" : "ahead" },
-    { image: "/brand/badges/identity-badge.svg", label: "Identity", state: "next" },
-    { image: "/brand/badges/expertise-badge.svg", label: "Expertise", state: "ahead" },
-    { image: "/brand/badges/story-badge.svg", label: "Story", state: "ahead" },
-    { image: "/brand/badges/desire-badge.svg", label: "Desire", state: "ahead" },
-    { image: "/brand/badges/gifts-badge.svg", label: "Gifts", state: "ahead" },
-    { image: "/brand/badges/niche-badge.svg", label: "Niche", state: "ahead" },
-    { image: "/brand/badges/designpd-badge.png", label: "DesignPD", state: hasDesignPd ? "earned" : "ahead" },
-  ];
-
   return (
     <main className="journey-shell hq-standalone-page">
       <header className="standalone-hero fieldkit-hero">
@@ -772,17 +658,17 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
           <p className="eyebrow">Field Kit</p>
           <h1>Tools for the journey.</h1>
           <p className="lede">
-            Assessments, reports, and earned badges collect here so each learner can carry
-            their discoveries into the next step.
+            Your subscription assessments and reports collect here, with optional
+            expansions for the next step. Your journey stamps live in the Base Camp Passport.
           </p>
         </div>
         <div className="fieldkit-help">
           <PageHelp
             title="Field Kit Help"
             items={[
-              "Use Assessments to open or purchase the tools that feed the Discover Your Divine Design journey.",
+              "Your subscription includes DesignID, Spiritual Gifts, and FruitLife360. DesignPD is an optional expansion.",
               "Use Artifacts for completed reports and saved results.",
-              "Use Trail Badges to see earned markers first, with possible badges tucked away.",
+              "Visit your Passport in Base Camp for journey stamps and progress.",
             ]}
           />
         </div>
@@ -814,32 +700,33 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         <div className="fieldkit-product-columns">
           <section
             className="fieldkit-product-group"
-            id="purchase-assessments"
-            aria-label="Purchase assessments"
+            id="subscription-assessments"
+            aria-label="Subscription assessments"
           >
             <div className="fieldkit-product-heading">
-              <span>For purchase</span>
-              <h3>Purchase assessments</h3>
+              <span>Your journey subscription</span>
+              <h3>Included with subscription</h3>
             </div>
             <div className="fieldkit-assessment-list">
-              {purchaseCards.map((assessment) => (
-                <AssessmentCard assessment={assessment} kind="Purchase" key={assessment.title} />
+              {subscriptionCards.map((assessment) => (
+                <AssessmentCard assessment={assessment} kind="Subscription" key={assessment.title} />
               ))}
             </div>
           </section>
 
           <section
             className="fieldkit-product-group"
-            id="free-assessments"
-            aria-label="Free assessments"
+            id="optional-expansions"
+            aria-label="Optional expansions"
           >
             <div className="fieldkit-product-heading">
-              <span>No-cost entry points</span>
-              <h3>Free assessments</h3>
+              <span>Go deeper</span>
+              <h3>Optional expansion · DesignPD</h3>
+              <p>Unlock DesignPD separately after DesignID. Your expansion includes the report and connected course.</p>
             </div>
             <div className="fieldkit-assessment-list">
-              {freeCards.map((assessment) => (
-                <AssessmentCard assessment={assessment} kind="Free" key={assessment.title} />
+              {expansionCards.map((assessment) => (
+                <AssessmentCard assessment={assessment} kind="Expansion" key={assessment.title} />
               ))}
             </div>
           </section>
@@ -906,92 +793,6 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         </div>
       </section>
 
-      <section className="badge-panel" id="trail-badges">
-        <div className="badge-board-heading">
-          <div>
-            <p className="section-label">Trail Badges</p>
-            <p>Here are the badges you've earned so far, {firstName}.</p>
-          </div>
-        </div>
-
-        <aside className="next-badge-card" aria-label="Next badge">
-          <img src={nextBadge.image} alt={`${nextBadge.title} badge`} />
-          <div>
-            <span>Next badge</span>
-            <strong>{nextBadge.title}</strong>
-            <p>{nextBadge.action}</p>
-          </div>
-        </aside>
-
-        <div className="earned-badge-grid" aria-label="Earned trail badges">
-          {earnedBadgeCards.map((badge) => (
-            <article className="trail-badge earned" key={badge.title}>
-              <div className="badge-art">
-                <img src={badge.image} alt={`${badge.title} badge`} />
-                <span>Earned</span>
-              </div>
-              <div className="badge-copy">
-                <strong>{badge.title}</strong>
-                <p>{badge.note}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <section className="badge-journey-strip" aria-label="Journey badge progress">
-          <div>
-            <p className="section-label">Journey ahead</p>
-            <p>Earned badges stay visible while the next markers show what is still ahead.</p>
-          </div>
-          <ol>
-            {journeyBadgePath.map((badge, index) => (
-              <li className={`badge-path-item ${badge.state}`} key={`${badge.label}-${index}`}>
-                <img src={badge.image} alt={`${badge.label} badge`} />
-                <span>{badge.label}</span>
-                <small>
-                  {badge.state === "earned"
-                    ? "Earned"
-                    : badge.state === "next"
-                      ? "Next"
-                      : "Ahead"}
-                </small>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        <details className="possible-badge-board" aria-label="Possible trail badges">
-          <summary>
-            <span>Discover more of the journey ahead.</span>
-            <strong>Explore possible badges</strong>
-          </summary>
-          <div className="badge-accordion-groups">
-            {badgeGroups.map((group) => (
-              <section className="badge-group" key={group.title}>
-                <div className="badge-group-heading">
-                  <h3>{group.title}</h3>
-                  <small>Preview</small>
-                </div>
-                <p className="badge-group-note">{group.note}</p>
-                <div className="badge-grid">
-                  {group.badges.map(([title, image]) => (
-                    <article className="trail-badge locked" key={title}>
-                      <div className="badge-art">
-                        <img src={image} alt={`${title} badge`} />
-                      </div>
-                      <div className="badge-copy">
-                        <span>Possible</span>
-                        <strong>{title}</strong>
-                        <p>Condition logic will connect during the Journey build.</p>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            ))}
-          </div>
-        </details>
-      </section>
     </main>
   );
 }

@@ -43,7 +43,7 @@ export default async function FruitLifeSignupPage({
 
   if (legacyLane && !hasAccess && !isFruitLifeAdmin(user.email)) {
     redirect(
-      `/field-kit?lane=fruitlife&checkout=required#current-assessment-process`,
+      `/trailheads?lane=fruitlife&checkout=required#fruitlife-360`,
     );
   }
 

@@ -1,3 +1,4 @@
+import { requireTrailCourseAssessment } from "@/lib/trails/course-access";
 import Link from "next/link";
 import {
   buildDesignIdContext,
@@ -16,6 +17,9 @@ import { normalizeEmail } from "@/lib/identity/email";
 import {
   buildHeatherReviewContext,
   getHeatherReviewReport,
+  getNewReviewReport,
+  isHeatherReviewRequest,
+  newReviewName,
   reviewQuery,
   type ReviewSearchParams,
   withReviewQuery,
@@ -34,7 +38,7 @@ export default async function DesignIdCoursePage({
   searchParams,
 }: DesignIdCoursePageProps) {
   const reviewParams = await searchParams;
-  const reviewReport = await getHeatherReviewReport(reviewParams);
+  const reviewReport = await getHeatherReviewReport(reviewParams) ?? await getNewReviewReport(reviewParams);
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -42,8 +46,9 @@ export default async function DesignIdCoursePage({
   const assessmentReport = reviewReport ?? (user
     ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
     : { all: [], latest: [] });
+  await requireTrailCourseAssessment({ slug: "designid-foundations", snapshots: assessmentReport.all, email: normalizeEmail(user?.email), signedIn: Boolean(user), preview: Boolean(reviewReport), params: reviewParams });
   const designId = buildDesignIdContext(assessmentReport);
-  const reviewContext = reviewReport ? buildHeatherReviewContext(reviewReport) : null;
+  const reviewContext = reviewReport ? { ...buildHeatherReviewContext(reviewReport), ...(isHeatherReviewRequest(reviewParams) ? {} : { displayName: newReviewName }) } : null;
   const studentContext = reviewContext ?? {
     assessmentReport,
     designId,
@@ -76,7 +81,8 @@ export default async function DesignIdCoursePage({
   return (
     <main className="journey-shell designid-course-shell">
       <nav className="course-nav" aria-label="Course navigation">
-        <Link href={withReviewQuery("/hq", reviewParams)}>Back to HQ</Link>
+        <Link href={withReviewQuery("/trailheads", reviewParams) + "#designid"}>Back to Trailhead</Link>
+        <Link href="/journey">Return to My Journey</Link>
         <Link href="/">DYDD home</Link>
       </nav>
 
@@ -133,7 +139,7 @@ export default async function DesignIdCoursePage({
           <h2>
             {connected
               ? reviewContext
-                ? "You are previewing Heather's personalized DesignID pattern."
+                ? "You are previewing a saved DesignID pattern."
                 : "This course can now read the learner's DesignID pattern."
               : "Sign in with the assessment email to personalize this course."}
           </h2>

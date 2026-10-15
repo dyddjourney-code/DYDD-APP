@@ -348,6 +348,7 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
           <div className="spiritual-gifts-cta-actions">
             <Link className="button primary" href="/courses/spiritual-gifts-service">Open course</Link>
             <Link className="button secondary" href="/field-kit">Open Field Kit</Link>
+            <Link className="button secondary" href="/journey">Return to My Journey</Link>
           </div>
         </section>
       ) : null}

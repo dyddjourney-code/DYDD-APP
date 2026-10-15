@@ -237,12 +237,12 @@ export function SpiritualGiftsAssessmentForm({
             <span>{accountLookupComplete ? "Account not found" : "Checking account"}</span>
             <p>
               {accountLookupComplete
-                ? "Return to Field Kit and refresh your account session before starting."
+                ? "Return to Trailheads and refresh your account session before starting."
                 : "Loading the account name and email for this assessment."}
             </p>
             {accountLookupComplete ? (
-              <a className="button secondary" href="/field-kit">
-                Back to Field Kit
+              <a className="button secondary" href="/trailheads#spiritual-gifts">
+                Back to Trailheads
               </a>
             ) : null}
           </div>

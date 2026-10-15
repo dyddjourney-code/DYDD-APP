@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { CourseModule } from "@/lib/courses/course-catalog";
 import { CompanionAudioCard } from "@/components/companion-audio-card";
 
@@ -108,6 +108,14 @@ export function AssessmentCourseNavigator({
 }: AssessmentCourseNavigatorProps) {
   const flatLessons = useMemo(() => flattenModules(modules), [modules]);
   const [activeSlug, setActiveSlug] = useState(flatLessons[0]?.lesson.slug ?? "");
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(`dydd-course-${courseSlug}`);
+      const match = flatLessons.find(item => item.lesson.slug === saved);
+      if (match) { setActiveSlug(match.lesson.slug); setOpenModules([match.module.slug]); }
+      if (!match && flatLessons[0]) localStorage.setItem(`dydd-course-${courseSlug}`, flatLessons[0].lesson.slug);
+    } catch { /* Storage is optional; learning stays available. */ }
+  }, [flatLessons, courseSlug]);
   const [openModules, setOpenModules] = useState<string[]>([]);
   const [reflectionDrafts, setReflectionDrafts] =
     useState<Record<string, string>>(savedReflections);
@@ -131,6 +139,7 @@ export function AssessmentCourseNavigator({
 
   const setLesson = (item: FlatLesson) => {
     setActiveSlug(item.lesson.slug);
+    try { localStorage.setItem(`dydd-course-${courseSlug}`, item.lesson.slug); } catch {}
     setOpenModules((current) =>
       current.includes(item.module.slug) ? current : [...current, item.module.slug],
     );

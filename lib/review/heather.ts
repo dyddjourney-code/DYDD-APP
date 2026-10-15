@@ -59,7 +59,10 @@ export function withReviewQuery(path: string, params?: ReviewSearchParams | null
     return path;
   }
 
-  return `${path}${path.includes("?") ? "&" : "?"}${query.slice(1)}`;
+  const hashIndex = path.indexOf("#");
+  const base = hashIndex < 0 ? path : path.slice(0, hashIndex);
+  const hash = hashIndex < 0 ? "" : path.slice(hashIndex);
+  return `${base}${base.includes("?") ? "&" : "?"}${query.slice(1)}${hash}`;
 }
 
 export async function getHeatherReviewReport(params?: ReviewSearchParams | null) {

@@ -596,7 +596,7 @@ export async function createFruitLifeSession(formData: FormData) {
   }
   if (legacyLane && !canCreatePaidSession) {
     redirect(
-      `/field-kit?lane=fruitlife&checkout=required#current-assessment-process`,
+      `/trailheads?lane=fruitlife&checkout=required#fruitlife-360`,
     );
   }
 

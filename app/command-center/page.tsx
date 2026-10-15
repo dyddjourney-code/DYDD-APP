@@ -1851,7 +1851,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                     <p>
                       Couple-facing reports can include Spiritual Gifts and DesignID first. DesignPD tendencies will appear here after that layer is unlocked.
                     </p>
-                    <Link href="/field-kit">Explore DesignPD</Link>
+                    <Link href="/trailheads#designpd">Explore DesignPD</Link>
                   </div>
                 ) : designPdComparison.some((axis) => axis.members.length) ? (
                   <div className="designpd-axis-stack">

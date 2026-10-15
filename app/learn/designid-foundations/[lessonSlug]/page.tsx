@@ -1,3 +1,4 @@
+import { requireTrailCourseAssessment } from "@/lib/trails/course-access";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -16,6 +17,9 @@ import { normalizeEmail } from "@/lib/identity/email";
 import {
   buildHeatherReviewContext,
   getHeatherReviewReport,
+  getNewReviewReport,
+  isHeatherReviewRequest,
+  newReviewName,
   type ReviewSearchParams,
   withReviewQuery,
 } from "@/lib/review/heather";
@@ -65,12 +69,13 @@ export default async function DesignIdLessonPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const reviewReport = await getHeatherReviewReport(reviewParams);
+  const reviewReport = await getHeatherReviewReport(reviewParams) ?? await getNewReviewReport(reviewParams);
   const assessmentReport = reviewReport ?? (user
     ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
     : { all: [], latest: [] });
+  await requireTrailCourseAssessment({ slug: "designid-foundations", snapshots: assessmentReport.all, email: normalizeEmail(user?.email), signedIn: Boolean(user), preview: Boolean(reviewReport), params: reviewParams });
   const studentContext = reviewReport
-    ? buildHeatherReviewContext(reviewReport)
+    ? { ...buildHeatherReviewContext(reviewReport), ...(isHeatherReviewRequest(reviewParams) ? {} : { displayName: newReviewName }) }
     : {
         assessmentReport,
         designId: buildDesignIdContext(assessmentReport),
@@ -89,7 +94,8 @@ export default async function DesignIdLessonPage({
         <Link href={withReviewQuery("/courses/designid-foundations", reviewParams)}>
           Course map
         </Link>
-        <Link href={withReviewQuery("/hq", reviewParams)}>HQ</Link>
+        <Link href={withReviewQuery("/trailheads", reviewParams) + "#designid"}>Back to Trailhead</Link>
+        <Link href="/journey">Return to My Journey</Link>
       </nav>
 
       <article className="lesson-page polished-lesson">

@@ -1,432 +1,356 @@
-import { hasDesignPdCourseAccess } from "@/lib/designpd/access";
 import Link from "next/link";
+import { TrailPlacard } from "@/components/trail-placard";
+import { TrailResumeLink } from "@/components/trail-resume-link";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
-import { PageHelp } from "@/components/page-help";
 import {
   getAssessmentSnapshotsForUser,
   latestByAssessment,
 } from "@/lib/assessments/student-context";
 import {
-  fruitLifeReportArtifact,
   getFruitLifeDashboardSessions,
+  fruitLifeIsActive,
+  fruitLifeReportArtifact,
 } from "@/lib/fruitlife360/dashboard";
+import { hasDesignPdCourseAccess } from "@/lib/designpd/access";
+import { userHasFruitLifeEntitlement } from "@/lib/commerce/fruitlife-entitlements";
 import { normalizeEmail } from "@/lib/identity/email";
-import { reviewQuery, type ReviewSearchParams, withReviewQuery } from "@/lib/review/heather";
+import {
+  getHeatherReviewReport,
+  getNewReviewReport,
+  isHeatherReviewRequest,
+  isNewReviewRequest,
+  heatherReviewEmail,
+  jordanReviewEmail,
+  reviewQuery,
+  withReviewQuery,
+  type ReviewSearchParams,
+} from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import {
+  trailDefinitions,
+  isTrailAssessmentComplete,
+} from "@/lib/trails/catalog";
 
 export const dynamic = "force-dynamic";
-
-const featuredCourse = {
-  action: "Start journey",
-  difficulty: "Guided",
-  description:
-    "A full scope course that guides you through the complete Discover Your Divine Design journey, helping you connect the core themes and move toward clearer calling and direction.",
-  effort: "Main route",
-  href: "/journey",
-  logo: "/brand/dydd-logo-transparent.webp",
-  permit: "Included with subscription",
-  points: [
-    "Walk through the full Discover Your Divine Design framework",
-    "Teaching across identity, design, and calling",
-    "Practical guidance for faithful application",
-  ],
-  prerequisite:
-    "Best starting point for the full Discover Your Divine Design experience. Assessment results can be added as you move through the journey.",
-  title: "Discover Your Divine Design Journey",
+type Props = {
+  searchParams?: Promise<
+    ReviewSearchParams & { lane?: string; from?: string; checkout?: string }
+  >;
 };
-
-const courses = [
-  {
-    action: "Launch course",
-    difficulty: "Easy to moderate",
-    description:
-      "A short course that helps you understand your DesignID results with clarity and confidence.",
-    effort: "Short trail",
-    href: "/courses/designid-foundations",
-    logo: "/brand/tools/designid-logo.webp",
-    signpost: "/brand/trailheads/designid-signpost.png",
-    points: [
-      "Clear walkthrough of your report",
-      "Understand reflection and energy patterns",
-      "Practical next steps for everyday application",
-    ],
-    price: "Included with subscription",
-    prerequisite: "Requires a completed DesignID assessment.",
-    status: "unlocked",
-    slug: "designid",
-    title: "Unpack Your DesignID Assessment",
-  },
-  {
-    action: "Launch course",
-    difficulty: "Easy",
-    description:
-      "A focused course that helps you read your Spiritual Gifts results as grace for service, maturity, and love.",
-    effort: "Short trail",
-    href: "/courses/spiritual-gifts-service",
-    logo: "/brand/tools/spiritual-gifts-logo.jpg",
-    signpost: "/brand/trailheads/spiritual-gifts-signpost.png",
-    points: [
-      "Understand your top gifts",
-      "Connect gifts to humble service",
-      "Notice growth areas and next faithful steps",
-    ],
-    price: "Included with subscription",
-    prerequisite: "Requires a completed Spiritual Gifts assessment.",
-    status: "unlocked",
-    slug: "spiritual-gifts",
-    title: "Spiritual Gifts in Service",
-  },
-  {
-    action: "Launch course",
-    difficulty: "Deeper application",
-    description:
-      "A self-paced course created to help you understand your DesignPD report and apply your design in the way you plan, make decisions, and move into purposeful action.",
-    effort: "Medium trail",
-    href: "/courses/designpd-alignment",
-    logo: "/brand/tools/designpd-logo.jpg",
-    signpost: "/brand/trailheads/designpd-signpost.png",
-    points: [
-      "Understand your Plan, Decide, and Do patterns",
-      "Connect report insights to real-life action",
-      "Build healthier rhythms for purpose and progress",
-    ],
-    price: "Optional expansion",
-    prerequisite: "Requires an unlocked DesignPD report from your DesignID result.",
-    status: "unlocked",
-    slug: "designpd",
-    title: "Unpack Your DesignPD Report",
-  },
-  {
-    action: "Launch course",
-    difficulty: "Reflective",
-    description:
-      "A formation course using visible fruit, observer feedback, and honest growth conversations.",
-    effort: "Medium trail",
-    href: "/courses/fruitlife-360-formation",
-    logo: "/brand/tools/fruitful-life-360-logo.jpg",
-    signpost: "/brand/trailheads/fruitlife-360-signpost.png",
-    points: [
-      "Review fruit of the Spirit formation themes",
-      "Learn from self and observer feedback",
-      "Choose simple growth practices for the next season",
-    ],
-    price: "Included with subscription",
-    prerequisite: "Requires a completed FruitLife360 assessment.",
-    status: "unlocked",
-    slug: "fruitlife-360",
-    title: "FruitLife360 Growth Course",
-  },
-  {
-    action: "Launch course",
-    difficulty: "Discernment",
-    description:
-      "A discernment course that helps you understand possible pathways, test them with small experiments, and choose the next faithful step.",
-    effort: "Medium trail",
-    href: "/courses/design-pathways-discernment",
-    logo: "/brand/tools/design-pathways-logo.jpg",
-    signpost: "/brand/trailheads/design-pathways-signpost.png",
-    points: [
-      "Identify your current pathway",
-      "Connect pathway insight to next steps",
-      "Use your results inside the larger Discover Your Divine Design journey",
-    ],
-    price: "Free assessment planned",
-    prerequisite: "Design Pathways can begin as a guided discernment course while the assessment is being finalized.",
-    status: "unlocked",
-    slug: "design-pathways",
-    title: "Design Pathways Discernment",
-  },
-];
-
-type TrailheadsPageProps = {
-  searchParams?: Promise<ReviewSearchParams & {
-    lane?: string;
-  }>;
-};
-
-export default async function TrailheadsPage({ searchParams }: TrailheadsPageProps) {
+export default async function TrailheadsPage({ searchParams }: Props) {
   const params = await searchParams;
-  const fruitLifeLane = params?.lane === "fruitlife";
-  const fruitLifeReviewQuery = reviewQuery(params);
-  const fruitLifeCourse = courses.find((course) => course.slug === "fruitlife-360");
-  const spiritualGiftsCourse = courses.find((course) => course.slug === "spiritual-gifts");
-
-  if (fruitLifeLane && fruitLifeCourse && spiritualGiftsCourse) {
-    const supabase = await createSupabaseServerClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    const { data: profile } = user
-      ? await supabase
-          .from("school_profiles")
-          .select("email")
-          .eq("id", user.id)
-          .maybeSingle()
-      : { data: null };
-    const fruitLifeEmail = normalizeEmail(profile?.email ?? user?.email);
-    const fruitLifeSessions = await getFruitLifeDashboardSessions({
-      email: fruitLifeEmail,
-      enabled: Boolean(fruitLifeEmail),
-    });
-    const hasFruitLifeReport = fruitLifeSessions.some((session) =>
-      Boolean(fruitLifeReportArtifact(session)),
-    );
-    const assessmentReport = user
-      ? await getAssessmentSnapshotsForUser(user.id, fruitLifeEmail)
-      : { all: [], latest: [] };
-    const latestSnapshots = latestByAssessment(assessmentReport.all);
-    const hasSpiritualGiftsReport = latestSnapshots.some(
-      (snapshot) => snapshot.assessment_type === "spiritual_gifts",
-    );
-    const miniAppCourses = [
-      {
-        course: spiritualGiftsCourse,
-        isUnlocked: hasSpiritualGiftsReport,
-        lockedAction: "Take Spiritual Gifts first",
-        lockedHref: "/spiritual-gifts?lane=fruitlife",
-        permit: "Spiritual Gifts report",
-        statusText: hasSpiritualGiftsReport
-          ? "Included with Spiritual Gifts"
-          : "Complete Spiritual Gifts first",
-      },
-      {
-        course: fruitLifeCourse,
-        isUnlocked: hasFruitLifeReport,
-        lockedAction: "Take FruitLife360 first",
-        lockedHref: "/field-kit?lane=fruitlife",
-        permit: "FruitLife360 report",
-        statusText: hasFruitLifeReport
-          ? "Included with FruitLife360"
-          : "Complete FruitLife360 first",
-      },
-    ];
-
-    return (
-      <main className="journey-shell hq-standalone-page fruitlife-release-shell">
-        <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} />
-        <header className="standalone-hero trailheads-hero">
-          <div>
-            <p className="eyebrow">Trailheads</p>
-            <h1>Courses for your completed assessments.</h1>
-            <p className="lede">
-              Spiritual Gifts and FruitLife360 each open the course support
-              connected to that report. Finish the assessment, then launch the
-              matching course from here.
-            </p>
-          </div>
-        </header>
-
-        <section className="course-catalog-section" aria-label="Mini app courses">
-          <div className="catalog-heading compact course-heading-row">
-            <h2>{hasSpiritualGiftsReport || hasFruitLifeReport ? "Available now" : "Unlocked after your reports"}</h2>
-          </div>
-          <div className="course-catalog-grid">
-            {miniAppCourses.map(({ course, isUnlocked, lockedAction, lockedHref, permit, statusText }) => (
-              <article
-                className={`catalog-course-card ${isUnlocked ? "open" : "locked"}`}
-                id={course.slug}
-                key={course.slug}
-              >
-                <div className="catalog-course-logo">
-                  <img
-                    className="catalog-course-signpost"
-                    src={course.signpost}
-                    alt={`${course.title} signpost`}
-                  />
-                </div>
-                <div>
-                  <span>{statusText}</span>
-                  <h3>{course.title}</h3>
-                  <p>{course.description}</p>
-                  <dl className="trailhead-facts compact">
-                    <div>
-                      <dt>Effort</dt>
-                      <dd>{course.effort}</dd>
-                    </div>
-                    <div>
-                      <dt>Difficulty</dt>
-                      <dd>{course.difficulty}</dd>
-                    </div>
-                    <div>
-                      <dt>Permit</dt>
-                      <dd>{permit}</dd>
-                    </div>
-                  </dl>
-                  <ul>
-                    {course.points.map((point) => (
-                      <li key={point}>{point}</li>
-                    ))}
-                  </ul>
-                </div>
-                {isUnlocked ? (
-                  <Link className="button primary" href={withReviewQuery(`${course.href}?lane=fruitlife`, params)}>
-                    {course.action}
-                  </Link>
-                ) : (
-                  <Link className="button secondary" href={withReviewQuery(lockedHref, params)}>
-                    {lockedAction}
-                  </Link>
-                )}
-              </article>
-            ))}
-          </div>
-        </section>
-        <FruitLifeMiniFooter />
-      </main>
-    );
-  }
-
+  const mini = params?.lane === "fruitlife";
   const supabase = await createSupabaseServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   const { data: profile } = user
-    ? await supabase.from("school_profiles").select("email").eq("id", user.id).maybeSingle()
+    ? await supabase
+        .from("school_profiles")
+        .select("email")
+        .eq("id", user.id)
+        .maybeSingle()
     : { data: null };
-  const report = user
-    ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(profile?.email ?? user.email))
-    : { all: [], latest: [] };
-  const designPdUnlocked = Boolean(user && hasDesignPdCourseAccess(user.email, report.all));
-  const courseGroups = [
-    { title: "Included with subscription", note: "DesignID, Spiritual Gifts, and FruitLife360 courses accompany your journey subscription.", courses: courses.filter(course => ["designid", "spiritual-gifts", "fruitlife-360"].includes(course.slug)) },
-    { title: "Optional expansion · DesignPD", note: "Go deeper into Plan, Decide, Do. Unlock DesignPD separately after DesignID; the connected course is included with the expansion.", courses: courses.filter(course => course.slug === "designpd") },
-  ];
-
+  const email = isHeatherReviewRequest(params)
+    ? heatherReviewEmail
+    : isNewReviewRequest(params)
+      ? jordanReviewEmail
+      : normalizeEmail(profile?.email ?? user?.email);
+  const preview =
+    (await getHeatherReviewReport(params)) ??
+    (await getNewReviewReport(params));
+  const report =
+    preview ??
+    (user
+      ? await getAssessmentSnapshotsForUser(user.id, email)
+      : { all: [], latest: [] });
+  const snapshots = latestByAssessment(report.all);
+  const ownPdReport =
+    preview && user
+      ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
+      : report;
+  const checkoutNotice =
+    params?.checkout === "success"
+      ? "FruitLife360 is unlocked. You can start your assessment now."
+      : params?.checkout === "cancelled"
+        ? "Checkout was cancelled. You can return when you are ready."
+        : params?.checkout === "required"
+          ? "Unlock FruitLife360 to begin your assessment."
+          : params?.checkout
+            ? "Your checkout could not be confirmed. Please return to your Field Kit or try again."
+            : null;
+  const sessions = await getFruitLifeDashboardSessions({
+    email,
+    enabled: Boolean(email),
+  });
+  const active = sessions.find(fruitLifeIsActive);
+  const fruitReady = sessions.some((session) =>
+    Boolean(fruitLifeReportArtifact(session)),
+  );
+  const fruitPermit =
+    mini && user ? await userHasFruitLifeEntitlement(user.id) : false;
+  const fromJourney = params?.from === "journey";
+  const path = (href: string) => withReviewQuery(href, params);
+  const fieldKit = path(mini ? "/field-kit?lane=fruitlife" : "/field-kit");
+  const trails = trailDefinitions.filter(
+    (trail) => !mini || ["spiritual-gifts", "fruitlife-360"].includes(trail.id),
+  );
   return (
-    <main className="journey-shell hq-standalone-page beta-tier-catalog">
+    <main
+      className={`journey-shell hq-standalone-page trailhead-renewal${mini ? " fruitlife-release-shell" : ""}`}
+    >
+      {mini ? <FruitLifeMiniNav reviewQuery={reviewQuery(params)} /> : null}
       <header className="standalone-hero trailheads-hero">
         <div>
           <p className="eyebrow">Trailheads</p>
-          <h1>Choose your trailhead.</h1>
+          <h1>One trail. Your next faithful step.</h1>
           <p className="lede">
-            Every trailhead gives you the name of the route, the expected effort,
-            the difficulty, and the access needed before you begin.
+            Begin an assessment, explore what you discover, and walk the
+            course—all from the same trailhead.
           </p>
         </div>
-        <div className="trailheads-help">
-          <PageHelp
-            title="Courses Help"
-            items={[
-              "Start with the Discover Your Divine Design Journey when someone needs the full walkthrough.",
-              "Use the smaller courses after the matching assessment has been completed.",
-              "If an assessment is missing, send the learner to the assessment first instead of opening the course.",
-            ]}
-          />
-        </div>
+        <Link className="button secondary" href={fieldKit}>
+          Open My Field Kit
+        </Link>
       </header>
-
-      <section className="course-catalog-section" aria-label="Discover Your Divine Design course catalog">
-        <div className="catalog-heading compact course-heading-row">
-          <h2>Main journey · Included with subscription</h2>
-        </div>
-
-        <article className="featured-course-banner trailhead-sign-board">
-          <img
-            className="featured-course-guide"
-            src="/brand/dydd-trailheads-signpost-dydi.png"
-            alt="Dydi beside the Discover Your Divine Design course signpost"
-          />
-          <div className="featured-course-copy">
-            <div className="featured-course-logo-block">
-              <img src={featuredCourse.logo} alt="Discover Your Divine Design logo" />
-            </div>
-            <h3>{featuredCourse.title}</h3>
-            <p>{featuredCourse.description}</p>
-            <dl className="trailhead-facts">
-              <div>
-                <dt>Time or effort</dt>
-                <dd>{featuredCourse.effort}</dd>
-              </div>
-              <div>
-                <dt>Difficulty</dt>
-                <dd>{featuredCourse.difficulty}</dd>
-              </div>
-              <div>
-                <dt>Permit</dt>
-                <dd>{featuredCourse.permit}</dd>
-              </div>
-            </dl>
-            <ul>
-              {featuredCourse.points.map((point) => (
-                <li key={point}>{point}</li>
-              ))}
-            </ul>
-            <small>Prerequisite: {featuredCourse.prerequisite}</small>
-            <Link className="button primary" href={featuredCourse.href}>
-              {featuredCourse.action}
-            </Link>
+      {mini && checkoutNotice ? (
+        <p className="form-message" role="status">
+          {checkoutNotice}
+        </p>
+      ) : null}
+      {fromJourney ? (
+        <aside className="trail-return-note">
+          <strong>Your Journey is holding your place.</strong>
+          <span>Explore this trail, then return to the lesson you left.</span>
+          <Link className="button secondary" href="/journey">
+            Return to My Journey
+          </Link>
+        </aside>
+      ) : null}
+      {!mini ? (
+        <section className="trail-main-route" aria-label="Main journey">
+          <div className="trail-section-title">
+            <p className="section-label">The main journey</p>
+            <h2>Bring the whole picture together.</h2>
           </div>
-        </article>
-
-        <div className="trailhead-start-note">
-          <p className="section-label">Start logic</p>
+          <article className="trail-showcase">
+            <div className="trail-showcase-art">
+              <img
+                src="/brand/dydd-trailheads-signpost-dydi.png"
+                alt="Dydi beside the Discover Your Divine Design trail sign"
+              />
+            </div>
+            <div className="trail-showcase-content">
+              <img
+                className="trail-dydd-logo"
+                src="/brand/dydd-logo-transparent.webp"
+                alt="Discover Your Divine Design"
+              />
+              <TrailPlacard
+                number="01"
+                name="Discover Your Divine Design Journey"
+                description="A guided journey through identity, design, gifting, and calling—connecting what you discover to the life God is inviting you to live."
+                rating="Moderate"
+                ratingNote="A longer journey, walked one faithful step at a time."
+                terrain="Guided teaching, personal reflection, and everyday application"
+                gear="Discover Your Divine Design book and a place to reflect"
+                bestFor="Anyone ready to connect the whole picture"
+                permit="Included"
+                main
+              >
+                <p className="trail-prerequisite">
+                  No assessment needed to begin. Explore the connected
+                  assessments as you go.
+                </p>
+                <TrailResumeLink
+                  href="/journey"
+                  progressKey="dydd-journey-position"
+                  startLabel="Start the Journey"
+                  continueLabel="Continue My Journey"
+                />
+              </TrailPlacard>
+            </div>
+          </article>
+        </section>
+      ) : null}
+      <section
+        className="trail-short-routes"
+        aria-label="Assessment and course trails"
+        id="subscription-assessments"
+      >
+        <div className="trail-section-title">
+          <p className="section-label">
+            {mini ? "Your connected trails" : "Focused trails"}
+          </p>
+          <h2>Start with discovery. Grow through practice.</h2>
           <p>
-            The main DYDD Journey is the hub. Your subscription includes DesignID,
-            Spiritual Gifts, and FruitLife360. DesignPD is a separate optional
-            expansion that builds on your DesignID results.
+            Your assessment and course belong together. Completed reports stay
+            in My Field Kit.
           </p>
         </div>
-
-        {courseGroups.map((group) => (
-          <section className="course-catalog-section tier-course-group" key={group.title} aria-label={group.title}>
-            <div className="catalog-heading compact course-heading-row">
-              <h2>{group.title}</h2>
-            </div>
-            <p className="fieldkit-section-note">{group.note}</p>
-            <div className="course-catalog-grid">
-              {group.courses.map((course) => {
-                const isUnlocked = course.slug !== "designpd" || designPdUnlocked;
-                return (
-                  <article
-                  className={`catalog-course-card ${isUnlocked ? "open" : "locked"}`}
-                  id={course.slug}
-                  key={course.title}
+        <div className="trail-guide-route-list">
+          {trails.map((trail, index) => {
+            const complete =
+              isTrailAssessmentComplete(trail.assessmentType, report.all) ||
+              (trail.id === "fruitlife-360" && fruitReady);
+            const pdAccess =
+              trail.id !== "designpd" ||
+              Boolean(
+                user &&
+                  isTrailAssessmentComplete("designpd", ownPdReport.all) &&
+                  hasDesignPdCourseAccess(user.email, ownPdReport.all),
+              );
+            const ready = complete && pdAccess;
+            const designIdReady = snapshots.some(
+              (s) => s.assessment_type === "designid",
+            );
+            const inProgress = trail.id === "fruitlife-360" && Boolean(active);
+            let startHref: string = trail.assessmentHref;
+            if (mini && trail.id === "spiritual-gifts")
+              startHref += "&lane=fruitlife";
+            if (trail.id === "fruitlife-360") {
+              startHref = inProgress
+                ? `${mini ? "/field-kit?lane=fruitlife" : "/field-kit"}#current-assessment-process`
+                : mini && !fruitPermit
+                  ? `/api/stripe/fruitlife-checkout?return_to=${encodeURIComponent("/trailheads?lane=fruitlife")}`
+                  : mini
+                    ? `/fruitlife360?return_to=${encodeURIComponent("/field-kit?lane=fruitlife#current-assessment-process")}`
+                    : "/fruitlife360";
+            }
+            if (trail.id === "designpd" && !designIdReady)
+              startHref = "/designid";
+            const courseHref = path(
+              `${trail.courseHref}${mini ? "?lane=fruitlife" : ""}`,
+            );
+            return (
+              <article
+                className={`trail-guide-route trail-guide-route-${trail.id}`}
+                id={trail.id}
+                key={trail.id}
+              >
+                <div className="trail-guide-route-art">
+                  <img
+                    src={trail.signpost}
+                    alt={`${trail.name} trail signpost`}
+                    loading="lazy"
+                  />
+                </div>
+                <TrailPlacard
+                  number={String(index + 2).padStart(2, "0")}
+                  name={trail.name}
+                  description={trail.description}
+                  rating={trail.rating}
+                  ratingNote={trail.ratingNote}
+                  terrain={trail.terrain}
+                  gear={trail.gear}
+                  bestFor={trail.bestFor}
+                  permit={
+                    trail.id === "designpd"
+                      ? complete
+                        ? "Expansion unlocked"
+                        : "$15 optional expansion"
+                      : mini && trail.id === "fruitlife-360"
+                        ? fruitPermit
+                          ? "Unlocked"
+                          : "$10 assessment"
+                        : "Included"
+                  }
                 >
-                  <div className="catalog-course-logo">
-                    <img
-                      className="catalog-course-signpost"
-                      src={course.signpost}
-                      alt={`${course.title} signpost`}
-                    />
-                  </div>
-                  <div>
-                    <span>{isUnlocked ? course.slug === "designpd" ? "Expansion unlocked" : "Included with subscription" : "Expansion locked"}</span>
-                    <h3>{course.title}</h3>
-                    <p>{course.description}</p>
-                    <dl className="trailhead-facts compact">
-                      <div>
-                        <dt>Effort</dt>
-                        <dd>{course.effort}</dd>
-                      </div>
-                      <div>
-                        <dt>Difficulty</dt>
-                        <dd>{course.difficulty}</dd>
-                      </div>
-                      <div>
-                        <dt>Permit</dt>
-                        <dd>{course.price}</dd>
-                      </div>
-                    </dl>
-                    <ul>
-                      {course.points.map((point) => (
-                        <li key={point}>{point}</li>
-                      ))}
-                    </ul>
-                    <small>Access: {course.price}</small>
-                    <small>Prerequisite: {course.prerequisite}</small>
-                  </div>
-                  <Link
-                    className={`button ${isUnlocked ? "primary" : "secondary"}`}
-                    href={isUnlocked ? course.href : "/designpd"}
+                  <ol
+                    className="trail-step-strip"
+                    aria-label={`${trail.name} progression`}
                   >
-                    {isUnlocked ? course.action : "Explore DesignPD expansion"}
-                  </Link>
-                  </article>
-                );
-              })}
-            </div>
-          </section>
-        ))}
+                    <li className={complete ? "complete" : "current"}>
+                      <span>01</span>
+                      {trail.id === "designpd" ? "Report" : "Assessment"}
+                      <small>
+                        {complete
+                          ? "Completed"
+                          : inProgress
+                            ? "In progress"
+                            : "Begin here"}
+                      </small>
+                    </li>
+                    <li className={complete ? "complete" : ""}>
+                      <span>02</span>Explore results
+                      <small>
+                        {complete ? "Saved in Field Kit" : "After discovery"}
+                      </small>
+                    </li>
+                    <li className={ready ? "current" : ""}>
+                      <span>03</span>Take the course
+                      <small>
+                        {ready ? "Ready to explore" : "Results required"}
+                      </small>
+                    </li>
+                  </ol>
+                  <p className="trail-prerequisite">
+                    {trail.id === "designpd" && !designIdReady
+                      ? "Complete DesignID first. Then unlock your DesignPD report and its course."
+                      : ready
+                        ? "Your results are connected. Bring them along as you explore the course."
+                        : inProgress
+                          ? "Your assessment is underway. Track responses in Field Kit; the course opens with your completed report."
+                          : trail.prerequisite}
+                  </p>
+                  <div className="trail-guide-route-actions">
+                    {ready ? (
+                      <TrailResumeLink
+                        href={courseHref}
+                        progressKey={`dydd-course-${trail.courseSlug}`}
+                        startLabel="Start the Course"
+                        continueLabel="Continue the Course"
+                      />
+                    ) : (
+                      <Link className="button primary" href={path(startHref)}>
+                        {trail.id === "designpd"
+                          ? designIdReady
+                            ? "Explore DesignPD Expansion"
+                            : "Complete DesignID First"
+                          : inProgress
+                            ? "Continue Assessment"
+                            : mini &&
+                                trail.id === "fruitlife-360" &&
+                                !fruitPermit
+                              ? "Unlock FruitLife360"
+                              : `Take ${trail.name}`}
+                      </Link>
+                    )}
+                    {complete ? (
+                      <Link
+                        className="button secondary"
+                        href={`${fieldKit}#artifacts`}
+                      >
+                        View My Results
+                      </Link>
+                    ) : null}
+                    {ready && inProgress ? (
+                      <Link className="button secondary" href={path(startHref)}>
+                        Track Current Assessment
+                      </Link>
+                    ) : null}
+                  </div>
+                </TrailPlacard>
+              </article>
+            );
+          })}
+        </div>
       </section>
+      <aside className="trail-fieldkit-note">
+        <div>
+          <p className="section-label">Keep what you discover</p>
+          <h2>Your Field Kit travels with you.</h2>
+          <p>
+            Find saved reports, results, and active FruitLife360 progress in one
+            place.
+          </p>
+        </div>
+        <Link className="button secondary" href={fieldKit}>
+          Open My Field Kit
+        </Link>
+      </aside>
+      {mini ? <FruitLifeMiniFooter /> : null}
     </main>
   );
 }

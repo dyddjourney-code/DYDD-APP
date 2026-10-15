@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { hasDesignPdCourseAccess } from "@/lib/designpd/access";
+import { requireTrailCourseAssessment } from "@/lib/trails/course-access";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -14,6 +14,7 @@ import type { CourseModule } from "@/lib/courses/course-catalog";
 import { normalizeEmail } from "@/lib/identity/email";
 import {
   getHeatherReviewReport,
+  getNewReviewReport,
   reviewQuery,
   type ReviewSearchParams,
   withReviewQuery,
@@ -122,18 +123,13 @@ export default async function LearningLessonPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const reviewReport = await getHeatherReviewReport(reviewParams);
+  const reviewReport = await getHeatherReviewReport(reviewParams) ?? await getNewReviewReport(reviewParams);
   const assessmentReport = reviewReport ?? (user
     ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
     : { all: [], latest: [] });
-  // Always authorize against the signed-in account, never preview report data.
-  if (course.slug === "designpd-alignment") {
-    if (!user) redirect(`/login?next=${encodeURIComponent("/courses/designpd-alignment")}`);
-    const ownReport = reviewReport
-      ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
-      : assessmentReport;
-    if (!hasDesignPdCourseAccess(user.email, ownReport.all)) redirect("/field-kit#optional-expansions");
-  }
+  const accessReport = course.slug === "designpd-alignment" && reviewReport && user
+    ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email)) : assessmentReport;
+  await requireTrailCourseAssessment({ slug: course.slug, snapshots: accessReport.all, email: normalizeEmail(user?.email), signedIn: Boolean(user), preview: Boolean(reviewReport), params: reviewParams });
   const insights = buildAssessmentCourseInsights(
     assessmentReport,
     course.assessmentType,
@@ -148,6 +144,8 @@ export default async function LearningLessonPage({
       {!fruitLifeLane ? (
         <nav className="course-nav" aria-label="Lesson navigation">
           <Link href={courseMapHref}>Course map</Link>
+          <Link href="/journey">Return to My Journey</Link>
+          <Link href={withReviewQuery("/trailheads", reviewParams)}>Back to Trailheads</Link>
           <Link href={withReviewQuery("/hq", reviewParams)}>
             Base Camp
           </Link>

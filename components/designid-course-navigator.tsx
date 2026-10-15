@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { CompanionMoment } from "@/lib/courses/companion-moments";
 import { CompanionAudioCard } from "@/components/companion-audio-card";
 
@@ -53,6 +53,14 @@ export function DesignIdCourseNavigator({
 }: DesignIdCourseNavigatorProps) {
   const flatLessons = useMemo(() => flattenModules(modules), [modules]);
   const [activeSlug, setActiveSlug] = useState(flatLessons[0]?.lesson.slug ?? "");
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("dydd-course-designid-foundations");
+      const match = flatLessons.find(item => item.lesson.slug === saved);
+      if (match) { setActiveSlug(match.lesson.slug); setOpenModules([match.module.slug]); }
+      if (!match && flatLessons[0]) localStorage.setItem("dydd-course-designid-foundations", flatLessons[0].lesson.slug);
+    } catch {}
+  }, [flatLessons]);
   const [openModules, setOpenModules] = useState<string[]>([]);
   const activeLessonRef = useRef<HTMLElement | null>(null);
   const activeIndex = Math.max(
@@ -72,6 +80,7 @@ export function DesignIdCourseNavigator({
 
   const setLesson = (item: FlatDesignIdLesson) => {
     setActiveSlug(item.lesson.slug);
+    try { localStorage.setItem("dydd-course-designid-foundations", item.lesson.slug); } catch {}
     setOpenModules((current) =>
       current.includes(item.module.slug) ? current : [...current, item.module.slug],
     );

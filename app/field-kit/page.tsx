@@ -1,16 +1,13 @@
+import { FieldKitLegacyLinks } from "@/components/field-kit-legacy-links";
 import { hasDesignPdCourseAccess } from "@/lib/designpd/access";
-import { getDesignIdEligibility } from "@/lib/designid/retake";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { isDyddAdminEmail } from "@/lib/admin-access";
 import { PageHelp } from "@/components/page-help";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 import { FruitLifeCurrentAssessmentProcess } from "@/components/fruitlife-current-assessment-process";
-import { userHasFruitLifeEntitlement } from "@/lib/commerce/fruitlife-entitlements";
 import {
   assessmentLabels,
-  displayDate,
   displayDateTime,
   getAssessmentSnapshotsForParticipantMatch,
   getAssessmentSnapshotsForUser,
@@ -39,7 +36,6 @@ import {
   type ReviewSearchParams,
   withReviewQuery,
 } from "@/lib/review/heather";
-import { withSpiritualGiftsAppIdentity } from "@/lib/spiritual-gifts/app-identity";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type FieldKitPageProps = {
@@ -63,200 +59,7 @@ type FieldKitArtifact = {
   title: string;
 };
 
-type AssessmentProduct = {
-  action: string;
-  courseAction: string | null;
-  courseAvailable?: boolean;
-  courseHref: string | null;
-  detail: string;
-  href: string;
-  logo: string;
-  points: string[];
-  price: string;
-  status: string | null;
-  title: string;
-};
-
 export const dynamic = "force-dynamic";
-
-const purchaseAssessments: AssessmentProduct[] = [
-  {
-    action: "Start assessment",
-    courseAction: "Continue to course",
-    courseHref: "/courses/designid-foundations",
-    detail:
-      "Names reflection style, contribution language, energy patterns, and the way a person tends to experience purpose.",
-    href: "/designid",
-    logo: "/brand/tools/designid-logo.webp",
-    points: ["Reflection pattern", "Report artifact", "Trailhead course included"],
-    price: "Included with subscription",
-    status: null,
-    title: "DesignID",
-  },
-  {
-    action: "Start assessment",
-    courseAction: null,
-    courseHref: null,
-    detail:
-      "Helps people see how they plan, decide, and move into action so purpose becomes more practical.",
-    href: "/designpd",
-    logo: "/brand/tools/designpd-logo.jpg",
-    points: ["Plan, Decide, Do patterns", "Practical rhythms", "Trailhead course included"],
-    price: "Optional expansion",
-    status: null,
-    title: "DesignPD",
-  },
-  {
-    action: "Start assessment",
-    courseAction: null,
-    courseHref: null,
-    detail:
-      "A discernment assessment for clarifying pathway, next experiments, and the most helpful route forward.",
-    href: "/field-kit",
-    logo: "/brand/tools/design-pathways-logo.jpg",
-    points: ["Pathway clarity", "Next-step experiments", "Trailhead course included"],
-    price: "$10",
-    status: null,
-    title: "Design Pathways",
-  },
-];
-
-const freeAssessments: AssessmentProduct[] = [
-  {
-    action: "Start assessment",
-    courseAction: "Go to course",
-    courseHref: "/courses/spiritual-gifts-service",
-    detail:
-      "A first-step tool for naming how the Spirit may be empowering service, maturity, and love.",
-    href: "/spiritual-gifts",
-    logo: "/brand/tools/spiritual-gifts-logo.jpg",
-    points: ["Gifts language", "Service reflection", "Trailhead course included"],
-    price: "Included with subscription",
-    status: "Completed",
-    title: "Spiritual Gifts",
-  },
-  {
-    action: "Start assessment",
-    courseAction: null,
-    courseHref: null,
-    detail:
-      "A 360-style mirror for visible fruit, feedback, and honest growth conversations over time.",
-    href: "/fruitlife360",
-    logo: "/brand/tools/fruitful-life-360-logo.jpg",
-    points: ["Self reflection", "Observer feedback", "Trailhead course included"],
-    price: "Included with subscription",
-    status: null,
-    title: "FruitLife360",
-  },
-];
-
-const artifacts = [
-  {
-    action: "Open report",
-    courseAction: "Explore course",
-    courseHref: "/courses/designid-foundations",
-    detail:
-      "Your DesignID results are ready to review. The connected course helps you understand and apply what the report is showing.",
-    href: "/courses/designid-foundations",
-    logo: "/brand/tools/designid-logo.webp",
-    meta: [
-      ["Status", "Completed"],
-      ["Reflection", "Shepherd"],
-      ["Course", "Unlocked"],
-    ],
-    title: "DesignID Report",
-  },
-  {
-    action: "Open report",
-    courseAction: "Explore course",
-    courseHref: "/trailheads",
-    detail:
-      "Your Spiritual Gifts results are ready to review. The connected course helps you explore how those gifts can be used in faithful service.",
-    href: "/field-kit",
-    logo: "/brand/tools/spiritual-gifts-logo.jpg",
-    meta: [
-      ["Status", "Completed"],
-      ["Result", "Loaded"],
-      ["Course", "Unlocked"],
-    ],
-    title: "Spiritual Gifts Report",
-  },
-];
-
-const assessmentFlow = [
-  {
-    detail:
-      "Each assessment captures a focused snapshot of design, gifting, fruit, pathway, or practical action patterns. These will become your journey artifacts.",
-    step: "1",
-    title: "Take the assessment",
-  },
-  {
-    detail:
-      "Completed assessments open the Trailhead course connected to that tool so the learner can understand and apply the results.",
-    step: "2",
-    title: "Explore the Trailhead",
-  },
-  {
-    detail:
-      "Reports become artifacts that personalize Trailheads and the full Discover Your Divine Design Journey as progress is made.",
-    step: "3",
-    title: "Review the artifact",
-  },
-];
-
-function AssessmentCard({
-  assessment,
-  kind,
-}: {
-  assessment: AssessmentProduct;
-  kind: "Subscription" | "Expansion" | "Purchase";
-}) {
-  return (
-    <article className="fieldkit-assessment-card">
-      <div className="fieldkit-assessment-logo">
-        <img src={assessment.logo} alt={`${assessment.title} logo`} />
-      </div>
-      <div className="fieldkit-assessment-copy">
-        <span>{kind === "Subscription" ? "Included with subscription" : kind === "Expansion" ? "Optional expansion" : "Purchase assessment"}</span>
-        <h3>{assessment.title}</h3>
-        <p>{assessment.detail}</p>
-        <div className="fieldkit-assessment-meta">
-          <span>{assessment.price}</span>
-          {assessment.status ? <strong>{assessment.status}</strong> : null}
-        </div>
-        <ul>
-          {assessment.points.map((point) => (
-            <li key={point}>{point}</li>
-          ))}
-        </ul>
-      </div>
-      <div className="fieldkit-assessment-actions">
-        {assessment.status === "Purchased" ? (
-          <span className="button secondary fieldkit-status-button">{assessment.status}</span>
-        ) : (
-          <Link className="button primary" href={assessment.href}>
-            {assessment.action}
-          </Link>
-        )}
-        {assessment.courseAction && assessment.courseHref ? (
-          assessment.courseAvailable === false ? (
-            <span className="button secondary fieldkit-status-button">
-              {assessment.courseAction}
-            </span>
-          ) : (
-            <Link className="button primary" href={assessment.courseHref}>
-              {assessment.courseAction}
-            </Link>
-          )
-        ) : null}
-      </div>
-    </article>
-  );
-}
-
-function ownsAssessment(snapshots: AssessmentSnapshotSummary[], assessmentType: string) {
-  return snapshots.some((snapshot) => snapshot.assessment_type === assessmentType);
-}
 
 function artifactDownloadHref(
   snapshot: AssessmentSnapshotSummary,
@@ -376,95 +179,10 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     selectedFruitLifeSession?.id === activeFruitLifeSession?.id && reviewParams?.fruitlife_token
       ? reviewParams.fruitlife_token
       : fruitLifeTokenFromSession(activeFruitLifeSession);
-  const hasFruitLifePurchaseAccess = user?.id
-    ? await userHasFruitLifeEntitlement(user.id)
-    : false;
   const fruitLifeReportSessions = fruitLifeSessions.filter((session) =>
     Boolean(fruitLifeReportArtifact(session)),
   );
-  const hasDesignId = ownsAssessment(snapshotLatest, "designid");
-  const hasDesignPd = ownsAssessment(snapshotLatest, "designpd");
   const designPdUnlocked = Boolean(user && hasDesignPdCourseAccess(user.email, snapshotHistory));
-  const hasSpiritualGifts = ownsAssessment(snapshotLatest, "spiritual_gifts");
-  const hasFruitLife = fruitLifeLane
-    ? fruitLifeReportSessions.length > 0
-    : ownsAssessment(snapshotLatest, "fruit_360") || fruitLifeReportSessions.length > 0;
-  const hasOwnerAssessmentAccess = Boolean(user && isDyddAdminEmail(user.email));
-  const designIdEligibility = user ? await getDesignIdEligibility(user.id, participantEmail, hasOwnerAssessmentAccess) : null;
-  const purchaseCards = purchaseAssessments.map((assessment) => {
-    const status =
-      assessment.title === "DesignID"
-        ? hasDesignId ? "Completed" : assessment.status
-        : assessment.title === "DesignPD"
-          ? hasDesignPd ? "Completed" : hasDesignId ? assessment.status : "Requires DesignID"
-          : assessment.status;
-
-    if (assessment.title === "DesignID" && hasOwnerAssessmentAccess) {
-      return {
-        ...assessment,
-        action: hasDesignId ? "Take DesignID again" : "Start DesignID",
-        price: "Owner access",
-        status: hasDesignId ? "Completed · retakes available" : "Ready to start",
-      };
-    }
-
-    if (assessment.title === "DesignID" && designIdEligibility && !designIdEligibility.allowed) {
-      const savedDesignId = snapshotLatest.find(s => s.assessment_type === 'designid');
-      return { ...assessment, action: 'View DesignID report', href: savedDesignId ? artifactDownloadHref(savedDesignId, reviewParams) : '/courses/designid-foundations',
-        status: `Next assessment: ${designIdEligibility.nextEligibleLabel}` };
-    }
-
-    if (assessment.title === "DesignPD") {
-      return {
-        ...assessment,
-        action: hasDesignId ? hasOwnerAssessmentAccess ? "Create DesignPD report" : "Explore DesignPD unlock" : "Complete DesignID first",
-        price: hasOwnerAssessmentAccess ? "Owner access" : assessment.price,
-        courseAction: designPdUnlocked ? "Explore course" : "Course opens with expansion",
-        courseAvailable: designPdUnlocked,
-        courseHref: "/courses/designpd-alignment",
-        href: hasDesignId ? assessment.href : "/designid",
-        status,
-      };
-    }
-
-    return { ...assessment, status };
-  });
-  const freeCards = freeAssessments.map((assessment) => {
-    const status =
-      assessment.title === "Spiritual Gifts"
-        ? hasSpiritualGifts ? "Completed" : null
-        : assessment.title === "FruitLife360"
-          ? activeFruitLifeSession ? "In progress" : hasFruitLife ? "Completed" : null
-          : assessment.status;
-
-    if (assessment.title === "Spiritual Gifts") {
-      return {
-        ...assessment,
-        courseAction: hasSpiritualGifts ? "Go to course" : "Course available after assessment",
-        courseAvailable: hasSpiritualGifts,
-        href: withSpiritualGiftsAppIdentity(
-          withReviewQuery("/spiritual-gifts?channel=app", reviewParams),
-          {
-            email: participantEmail,
-            name: displayName.replace(/\s+Preview$/, ""),
-          },
-        ),
-        status,
-      };
-    }
-
-    if (assessment.title === "FruitLife360") {
-      return { ...assessment, status, action: activeFruitLifeSession ? "Continue assessment" : "Start assessment",
-        href: activeFruitLifeSession ? "/field-kit#current-assessment-process" : "/fruitlife360",
-        courseAction: "Go to course", courseHref: "/courses/fruitlife-360-formation", courseAvailable: true };
-    }
-    return { ...assessment, status };
-  });
-  const subscriptionCards = [
-    ...purchaseCards.filter(assessment => assessment.title === "DesignID"),
-    ...freeCards,
-  ];
-  const expansionCards = purchaseCards.filter(assessment => assessment.title === "DesignPD");
   const artifacts: FieldKitArtifact[] = [
     ...snapshotArtifactSources.filter(snapshot => !(snapshot.assessment_type === "fruit_360" && fruitLifeReportSessions.some(session => session.report_snapshot_id === snapshot.id))).map((snapshot) => ({
       action: "Open report",
@@ -528,11 +246,6 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     const fruitLifeArtifacts = artifacts.filter((artifact) =>
       artifact.meta.some(([label, value]) => label === "Source" && value === "FruitLife360")
     );
-    const fruitLifeStartHref = activeFruitLifeSession
-      ? fruitLifeReturnPath
-      : hasFruitLifePurchaseAccess
-        ? `/fruitlife360?return_to=${encodeURIComponent("/field-kit?lane=fruitlife#current-assessment-process")}`
-        : `/api/stripe/fruitlife-checkout?return_to=${encodeURIComponent("/field-kit?lane=fruitlife#current-assessment-process")}`;
     const checkoutMessage =
       reviewParams?.checkout === "success"
         ? "FruitLife360 is unlocked. You can start your assessment now."
@@ -562,33 +275,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
 
         <section className="fieldkit-assessments-section" aria-label="FruitLife360 access">
           {checkoutMessage ? <p className="form-message">{checkoutMessage}</p> : null}
-          <div className="fieldkit-assessment-list single">
-            <AssessmentCard
-              assessment={{
-                action: activeFruitLifeSession
-                  ? "Open progress"
-                  : hasFruitLifePurchaseAccess
-                    ? "Start FruitLife360"
-                    : "Purchase FruitLife360",
-                courseAction: hasFruitLife ? "Explore course" : "Course opens with your report",
-                courseAvailable: hasFruitLife,
-                courseHref: "/courses/fruitlife-360-formation?lane=fruitlife",
-                detail:
-                  "A formation mirror using self reflection and observer feedback to notice visible fruit, pressure patterns, and growth invitations.",
-                href: fruitLifeStartHref,
-                logo: "/brand/tools/fruitful-life-360-logo.jpg",
-                points: ["Participant setup", "Observer invitations", "Progress tracking", "Report artifact"],
-                price: "$10 each time",
-                status: activeFruitLifeSession
-                  ? "In progress"
-                  : hasFruitLifePurchaseAccess
-                    ? "Ready to start"
-                    : null,
-                title: "FruitLife360",
-              }}
-              kind="Purchase"
-            />
-          </div>
+          <div className="trail-fieldkit-note"><div><h2>Your next step starts at Trailheads.</h2><p>Begin FruitLife360 or open its connected course there. Track your responses and collect your report here.</p></div><Link className="button primary" href={withReviewQuery("/trailheads?lane=fruitlife#fruitlife-360", reviewParams)}>Open FruitLife360 Trailhead</Link></div>
         </section>
 
         <FruitLifeCurrentAssessmentProcess
@@ -653,20 +340,20 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
 
   return (
     <main className="journey-shell hq-standalone-page">
+      <FieldKitLegacyLinks />
       <header className="standalone-hero fieldkit-hero">
         <div>
           <p className="eyebrow">Field Kit</p>
-          <h1>Tools for the journey.</h1>
+          <h1>What you’ve discovered. Ready to use.</h1>
           <p className="lede">
-            Your subscription assessments and reports collect here, with optional
-            expansions for the next step. Your journey stamps live in the Base Camp Passport.
+            Your saved results, reports, and journey resources travel with you here. Start or continue a trail at Trailheads; find your journey stamps in the Base Camp Passport.
           </p>
         </div>
         <div className="fieldkit-help">
           <PageHelp
             title="Field Kit Help"
             items={[
-              "Your subscription includes DesignID, Spiritual Gifts, and FruitLife360. DesignPD is an optional expansion.",
+              "Start assessments and their connected courses at Trailheads.",
               "Use Artifacts for completed reports and saved results.",
               "Visit your Passport in Base Camp for journey stamps and progress.",
             ]}
@@ -674,64 +361,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         </div>
       </header>
 
-      <section className="fieldkit-assessments-section" aria-label="Assessment products">
-        <div className="catalog-heading fieldkit-section-heading">
-          <h2>Journey Assessments</h2>
-          <p>
-            Assessments can stand on their own for focused insight, and they also feed the
-            larger Discover Your Divine Design journey. Each one creates a result artifact,
-            opens the related Trailhead course, and gives the system personal information it
-            can use later inside course lessons and the main DYDD Journey.
-          </p>
-        </div>
-
-        <div className="fieldkit-assessment-flow" aria-label="Assessment progression">
-          {assessmentFlow.map((item) => (
-            <article key={item.title}>
-              <span>{item.step}</span>
-              <div>
-                <h3>{item.title}</h3>
-                <p>{item.detail}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <div className="fieldkit-product-columns">
-          <section
-            className="fieldkit-product-group"
-            id="subscription-assessments"
-            aria-label="Subscription assessments"
-          >
-            <div className="fieldkit-product-heading">
-              <span>Your journey subscription</span>
-              <h3>Included with subscription</h3>
-            </div>
-            <div className="fieldkit-assessment-list">
-              {subscriptionCards.map((assessment) => (
-                <AssessmentCard assessment={assessment} kind="Subscription" key={assessment.title} />
-              ))}
-            </div>
-          </section>
-
-          <section
-            className="fieldkit-product-group"
-            id="optional-expansions"
-            aria-label="Optional expansions"
-          >
-            <div className="fieldkit-product-heading">
-              <span>Go deeper</span>
-              <h3>Optional expansion · DesignPD</h3>
-              <p>Unlock DesignPD separately after DesignID. Your expansion includes the report and connected course.</p>
-            </div>
-            <div className="fieldkit-assessment-list">
-              {expansionCards.map((assessment) => (
-                <AssessmentCard assessment={assessment} kind="Expansion" key={assessment.title} />
-              ))}
-            </div>
-          </section>
-        </div>
-      </section>
+      <aside className="trail-fieldkit-note"><div><p className="section-label">Ready for another discovery?</p><h2>Every new trail begins at Trailheads.</h2><p>Start assessments and continue their connected courses there. Your reports and results stay here.</p></div><Link className="button primary" href={withReviewQuery("/trailheads", reviewParams)}>Explore Trailheads</Link></aside>
 
       <FruitLifeCurrentAssessmentProcess
         created={reviewParams?.fruitlife === "created"}
@@ -770,7 +400,7 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
                   {artifact.action}
                 </Link>
                 {artifact.courseHref && artifact.courseAction ? (
-                  <Link className="button secondary" href={artifact.courseHref}>
+                  <Link className="button secondary" href={withReviewQuery(artifact.courseHref, reviewParams)}>
                     {artifact.courseAction}
                   </Link>
                 ) : null}

@@ -119,7 +119,7 @@ const toolCatalog = [
   {
     assessmentType: "designid",
     detail: "Identity, contribution, reflection language, and a completed report.",
-    href: "/field-kit",
+    href: "/trailheads#designid",
     label: "DesignID",
     logo: "/brand/tools/designid-logo.webp",
     price: "$20",
@@ -127,7 +127,7 @@ const toolCatalog = [
   {
     assessmentType: "designpd",
     detail: "Plan, Decide, and Do patterns for practical daily alignment.",
-    href: "/field-kit",
+    href: "/trailheads#designpd",
     label: "DesignPD",
     logo: "/brand/tools/designpd-logo.jpg",
     price: "$15",

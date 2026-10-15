@@ -50,6 +50,8 @@ export default async function DesignIdThanksPage({ searchParams }: DesignIdThank
           <Link className="button primary" href={reportHref}>
             Open report
           </Link>
+          <Link className="button secondary" href="/trailheads#designid">Continue This Trail</Link>
+          <Link className="button secondary" href="/journey">Return to My Journey</Link>
           <Link className="button secondary" href="/field-kit">
             Back to Field Kit
           </Link>

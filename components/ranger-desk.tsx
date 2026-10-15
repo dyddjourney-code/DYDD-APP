@@ -17,22 +17,22 @@ const questions = [
   {
     question: "What will DesignID help me discover?",
     answer: "DesignID explores how you naturally reflect God's design through your primary reflection: Architect, Artisan, Shepherd, or Steward. Start with the assessment, then use the course to understand your design language and how you contribute.",
-    href: "/field-kit", action: "Find the DesignID assessment",
+    href: "/trailheads#designid", action: "Find the DesignID assessment",
   },
   {
     question: "Where do I explore my spiritual gifts?",
     answer: "The Spiritual Gifts assessment helps you recognize gifting to explore through prayer, service, and feedback. The accompanying course helps connect those discoveries to maturity and faithful action. Your results are a starting point for discernment, not a limit on how God can use you.",
-    href: "/field-kit", action: "Find Spiritual Gifts",
+    href: "/trailheads#spiritual-gifts", action: "Find Spiritual Gifts",
   },
   {
     question: "What is FruitLife360?",
     answer: "FruitLife360 is a focused path for reflecting on the fruit of the Spirit in everyday life. It brings personal reflection and feedback into a conversation about growth, with a course to help you consider your next practical step.",
-    href: "/fruitlife360", action: "Explore FruitLife360",
+    href: "/trailheads#fruitlife-360", action: "Explore FruitLife360",
   },
   {
     question: "When am I ready for DesignPD?",
-    answer: "Begin with DesignID so you know your primary reflection. DesignPD builds on that foundation to explore your tendencies in planning, deciding, and doing. Your available DesignPD options and any access requirements are shown in Field Kit.",
-    href: "/field-kit", action: "View DesignPD options",
+    answer: "Begin with DesignID so you know your primary reflection. DesignPD builds on that foundation to explore your tendencies in planning, deciding, and doing. Your available DesignPD options and any access requirements are shown at Trailheads.",
+    href: "/trailheads#designpd", action: "View DesignPD options",
   },
   {
     question: "Where are my assessment results?",

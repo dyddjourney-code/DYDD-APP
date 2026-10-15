@@ -942,13 +942,17 @@ export async function getFruitLifeSessionStatus(sessionId: string, token: string
       .order("submitted_at", { ascending: false }),
     supabase
       .from("fruitlife_360_report_artifacts")
-      .select("artifact_status,artifact_type,created_at,external_url,filename,provider")
+      .select("artifact_status,artifact_type,created_at,external_url,filename,provider,metadata")
       .eq("session_id", sessionId)
       .order("created_at", { ascending: false }),
   ]);
 
   return {
-    artifacts: artifacts ?? [],
+    artifacts: (artifacts ?? []).map(({ metadata: _metadata, ...artifact }) => artifact),
+    selfInvitationSent: isSelfToken && (artifacts ?? []).some((artifact) =>
+      artifact.artifact_type === "email" && artifact.artifact_status === "sent" &&
+      artifact.metadata?.purpose === "initial_invite_email"
+    ),
     canManage: isSelfToken,
     invites,
     responses: responses ?? [],

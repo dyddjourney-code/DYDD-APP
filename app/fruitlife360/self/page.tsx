@@ -47,6 +47,9 @@ export default async function FruitLifeSelfPage({
             : undefined
         }
         instrumentVersion={String(session?.metadata?.instrumentVersion ?? "legacy-native-v0")}
+        invitationNotice={status.selfInvitationSent
+          ? "A link to this same reflection has also been emailed to you. Continue here, or use that link to return before submitting. You only need to complete it once."
+          : undefined}
         message={params?.message}
         participantName={session?.participant_name}
         responseType="self"

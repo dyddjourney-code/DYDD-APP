@@ -20,6 +20,7 @@ type FruitLifeAssessmentFormProps = {
     relationship?: string | null;
   };
   message?: string;
+  invitationNotice?: string;
   instrumentVersion?: string;
   participantName?: string | null;
   responseType: FruitLifeResponseType;
@@ -30,6 +31,7 @@ type FruitLifeAssessmentFormProps = {
 export function FruitLifeAssessmentForm({
   action,
   initialReviewer,
+  invitationNotice,
   message,
   instrumentVersion,
   participantName,
@@ -134,6 +136,7 @@ export function FruitLifeAssessmentForm({
       <section className={`fruitlife-panel fruitlife-step-panel ${stepIndex === 0 ? "active" : ""}`}>
         <p className="section-label">{isSelf ? "Self Reflection" : "Observer Reflection"}</p>
         <h2>{isSelf ? "Your reflection details" : "Your observer details"}</h2>
+        {isSelf && invitationNotice ? <p className="journey-save-notice">{invitationNotice}</p> : null}
         <p>
           {isSelf
             ? "These details connect this reflection to your FruitLife360 report."

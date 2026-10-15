@@ -81,7 +81,7 @@ export function MapsConfirmationSort({ assignments, onChange }: Props) {
       {mapsConfirmationBuckets.map((bucket) => {
         const members = alphabeticalItems.filter((item) => assignments[item.id] === bucket.id);
         return <section className="maps-sort-bucket" data-maps-bucket={bucket.id} key={bucket.id} aria-label={bucket.label} onDragOver={(event) => event.preventDefault()} onDrop={(event) => drop(event, bucket.id)}>
-          <header><button className="maps-sort-place" type="button" aria-label={`Place selected word in ${bucket.label}`} disabled={!selected || members.length >= 3 || assignments[selected] === bucket.id} onClick={() => { if (selected) move(selected, bucket.id); }}>{bucket.label}</button></header>
+          <header><button className="maps-sort-place" type="button" aria-label={`Place selected word in ${bucket.label}`} disabled={!selected || members.length >= 3 || assignments[selected] === bucket.id} onClick={() => { if (selected) move(selected, bucket.id); }}><span>{bucket.label.replace(" like me", "")}</span><span>like me</span></button></header>
           {members.map(card)}
         </section>;
       })}

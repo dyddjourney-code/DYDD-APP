@@ -19962,6 +19962,8 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .maps-sort-bucket header { min-width: 0; }
 .maps-sort-place { width: 100%; min-height: 44px; padding: 4px; border: 0; background: transparent; color: var(--green-dark); font: inherit; font-size: .95rem; font-weight: 800; text-align: center; cursor: pointer; }
 .maps-sort-place:disabled { cursor: default; }
+.maps-sort-place span { display: inline; }
+.maps-sort-place span + span::before { content: " "; }
 .maps-sort-word { background: #fff; border: 1px solid rgba(71,107,66,.28); border-radius: 7px; padding: 10px; min-width: 0; }
 .maps-sort-word.is-selected { outline: 3px solid var(--green-dark); outline-offset: 1px; }
 .maps-sort-word-heading { display: flex; align-items: start; gap: 2px; }
@@ -19976,11 +19978,13 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 @media (max-width: 700px) {
   .designid-sort-panel { padding: 14px; }
   .maps-sort-word-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-  .maps-sort-bank .maps-sort-select-word { font-size: .9rem; }
+  .maps-sort-bank .maps-sort-select-word { font-size: .82rem; letter-spacing: -.02em; white-space: nowrap; }
   .maps-sort-bank .maps-sort-menu { width: 22px; }
   .maps-sort-buckets { gap: 5px; }
   .maps-sort-bucket { padding: 5px; gap: 5px; max-height: 36vh; }
-  .maps-sort-place { font-size: .7rem; line-height: 1.3; padding: 0; }
+  .maps-sort-place { font-size: .66rem; line-height: 1.3; padding: 0; }
+  .maps-sort-place span { display: block; white-space: nowrap; }
+  .maps-sort-place span + span::before { content: none; }
   .maps-sort-bucket .maps-sort-word { padding: 4px; }
   .maps-sort-bucket .maps-sort-word-heading { flex-wrap: wrap; }
   .maps-sort-bucket .maps-sort-select-word { font-size: .73rem; min-height: 28px; }

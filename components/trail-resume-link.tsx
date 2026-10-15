@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import { ReviewAwareLink as Link } from "@/components/review-aware-link";
 import { useEffect, useState } from "react";
 export function TrailResumeLink({
   href,

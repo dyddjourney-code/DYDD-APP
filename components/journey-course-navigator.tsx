@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ReviewAwareLink } from "@/components/review-aware-link";
 import { CompanionAudioCard } from "@/components/companion-audio-card";
 import { dyddJourney } from "@/lib/journey/dydd-journey";
 import type {
@@ -633,7 +634,7 @@ export function JourneyCourseNavigator({ modules }: JourneyCourseNavigatorProps)
             ) : null}
           </section>
 
-          {(active.unit.type === "assessment-link" || active.unit.type === "designid-reflection" || active.unit.slug.includes("spiritual-gifts-assessment")) ? <aside className="trail-fieldkit-note"><div><p className="section-label">A connected trail</p><h2>{active.unit.slug.includes("spiritual-gifts") ? "Explore your Spiritual Gifts" : active.unit.type === "designid-reflection" ? "Bring your DesignID into the Journey" : "Discover your connected assessments"}</h2><p>Take the assessment, explore your results, and walk its course. Your place in this Journey will be here when you return.</p></div><a className="button primary" href={`/trailheads?from=journey${active.unit.slug.includes("spiritual-gifts") ? "#spiritual-gifts" : active.unit.type === "designid-reflection" ? "#designid" : ""}`} onClick={() => { try { localStorage.setItem("dydd-journey-position", active.unit.slug); } catch {} }}>Open Connected Trail</a></aside> : null}
+          {(active.unit.type === "assessment-link" || active.unit.type === "designid-reflection" || active.unit.slug.includes("spiritual-gifts-assessment")) ? <aside className="trail-fieldkit-note"><div><p className="section-label">A connected trail</p><h2>{active.unit.slug.includes("spiritual-gifts") ? "Explore your Spiritual Gifts" : active.unit.type === "designid-reflection" ? "Bring your DesignID into the Journey" : "Discover your connected assessments"}</h2><p>Take the assessment, explore your results, and walk its course. Your place in this Journey will be here when you return.</p></div><ReviewAwareLink className="button primary" href={`/trailheads?from=journey${active.unit.slug.includes("spiritual-gifts") ? "#spiritual-gifts" : active.unit.type === "designid-reflection" ? "#designid" : ""}`} onClick={() => { try { localStorage.setItem("dydd-journey-position", active.unit.slug); } catch {} }}>Open Connected Trail</ReviewAwareLink></aside> : null}
 
           <CompanionAudioCard moment={active.unit.companionMoment} />
 

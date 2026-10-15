@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { useState } from "react";
+import { ReviewAwareLink as Link } from "@/components/review-aware-link";
+import { Suspense, useState } from "react";
 
 const questions = [
   {
@@ -93,7 +93,7 @@ export function RangerDesk() {
           <div className="ranger-faq-answer" id="ranger-desk-answer" role="region" aria-label="Dydi's answer" aria-live="polite" aria-atomic="true">
             <h3>{active.question}</h3>
             <p>{active.answer}</p>
-            <Link href={active.href}>{active.action}<span aria-hidden="true"> &rarr;</span></Link>
+            <Suspense fallback={<a href={active.href}>{active.action}<span aria-hidden="true"> &rarr;</span></a>}><Link href={active.href}>{active.action}<span aria-hidden="true"> &rarr;</span></Link></Suspense>
           </div>
         </div>
       </article>

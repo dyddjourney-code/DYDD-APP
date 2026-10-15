@@ -144,7 +144,7 @@ export default async function LearningLessonPage({
       {!fruitLifeLane ? (
         <nav className="course-nav" aria-label="Lesson navigation">
           <Link href={courseMapHref}>Course map</Link>
-          <Link href="/journey">Return to My Journey</Link>
+          <Link href={withReviewQuery("/journey", reviewParams)}>Return to My Journey</Link>
           <Link href={withReviewQuery("/trailheads", reviewParams)}>Back to Trailheads</Link>
           <Link href={withReviewQuery("/hq", reviewParams)}>
             Base Camp

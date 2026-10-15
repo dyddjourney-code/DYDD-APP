@@ -95,7 +95,7 @@ export default async function DesignIdLessonPage({
           Course map
         </Link>
         <Link href={withReviewQuery("/trailheads", reviewParams) + "#designid"}>Back to Trailhead</Link>
-        <Link href="/journey">Return to My Journey</Link>
+        <Link href={withReviewQuery("/journey", reviewParams)}>Return to My Journey</Link>
       </nav>
 
       <article className="lesson-page polished-lesson">

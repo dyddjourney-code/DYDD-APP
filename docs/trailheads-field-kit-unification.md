@@ -23,12 +23,13 @@
 - Course/standalone lesson navigation and DesignID/DesignPD submitted pages offer Return to My Journey and trail return actions.
 - Retired Field Kit `#subscription-assessments` / `#optional-expansions` bookmarks forward to Trailheads.
 - Field Kit artifact/download links, FruitLife active-session tokens, report delivery paths, invitation/reminder actions, and public assessment entry URLs remain intact.
-- Review query construction preserves fragments correctly.
+- Review query construction preserves fragments correctly. Ranger Desk, Journey bridges, main-Journey start/continue, and course return links retain the selected sample account throughout the loop.
 
 ## Verification
 
 - Production build/typecheck.
 - `node tests/trails/access.cjs`: 20 prerequisite cases plus review-fragment cases, with no real learner writes.
+- Focused preview-context regression: `tests/trails/preview-navigation.mjs` checks Ranger Desk → DesignID Trailhead → course → Journey → connected trail → same lesson, retaining the same review account without sign-in or data submission.
 - Browser harness: `tests/trails/navigation.mjs`; 1280/768/390 new-user layout/artwork/actions, signed-in Field Kit without assessment catalog, report-completed preview course routes, saved Journey round trip, all four course lesson resumes, resume label, retired bookmark forwarding, mini-app layouts. No assessment submissions, email sends, purchases, or report generation.
 
 ## Unchanged / deferred

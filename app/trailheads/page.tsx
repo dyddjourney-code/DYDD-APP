@@ -123,7 +123,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
         <aside className="trail-return-note">
           <strong>Your Journey is holding your place.</strong>
           <span>Explore this trail, then return to the lesson you left.</span>
-          <Link className="button secondary" href="/journey">
+          <Link className="button secondary" href={path("/journey")}>
             Return to My Journey
           </Link>
         </aside>

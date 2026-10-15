@@ -82,7 +82,7 @@ export default async function DesignIdCoursePage({
     <main className="journey-shell designid-course-shell">
       <nav className="course-nav" aria-label="Course navigation">
         <Link href={withReviewQuery("/trailheads", reviewParams) + "#designid"}>Back to Trailhead</Link>
-        <Link href="/journey">Return to My Journey</Link>
+        <Link href={withReviewQuery("/journey", reviewParams)}>Return to My Journey</Link>
         <Link href="/">DYDD home</Link>
       </nav>
 
@@ -100,7 +100,7 @@ export default async function DesignIdCoursePage({
             className="button primary"
             href="#designid-course-player"
           >
-            Start first lesson
+            Open course lessons
           </Link>
         </div>
         <aside className="course-verse">

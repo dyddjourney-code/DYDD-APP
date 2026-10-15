@@ -14,6 +14,7 @@ import {
   getHeatherReviewReport,
   getNewReviewReport,
   reviewQuery,
+  withReviewQuery,
   type ReviewSearchParams,
 } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -125,7 +126,7 @@ export default async function LearningCoursePage({
   return (
     <main className={`course-shell course-shell-${course.accent}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}>
       {fruitLifeLane ? <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} /> : null}
-      <nav className="course-nav" aria-label="Trail navigation"><a href={`/trailheads${courseQuery}#${course.assessmentType === "spiritual_gifts" ? "spiritual-gifts" : course.assessmentType === "fruit_360" ? "fruitlife-360" : course.assessmentType}`}>Back to Trailhead</a><a href="/journey">Return to My Journey</a></nav>
+      <nav className="course-nav" aria-label="Trail navigation"><a href={`/trailheads${courseQuery}#${course.assessmentType === "spiritual_gifts" ? "spiritual-gifts" : course.assessmentType === "fruit_360" ? "fruitlife-360" : course.assessmentType}`}>Back to Trailhead</a><a href={withReviewQuery("/journey", reviewParams)}>Return to My Journey</a></nav>
       <header className="mini-course-logo-intro">
         <img src={course.logo} alt={`${course.title} logo`} />
       </header>

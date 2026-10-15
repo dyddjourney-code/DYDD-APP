@@ -1,9 +1,10 @@
-export type PassportBadgeState = "earned" | "next" | "ahead";
+export type PassportBadgeState = "earned" | "next" | "ahead" | "locked";
 
 export type PassportBadge = {
   connectedTo: string;
   earnBy: string;
   group?: "journey" | "extension";
+  kind?: "course";
   image: string;
   state: PassportBadgeState;
   summary: string;
@@ -110,12 +111,20 @@ export const designIdReflectionBadges: PassportBadge[] = ["Architect", "Artisan"
   group: "extension",
   image: `/brand/badges/${title.toLowerCase()}-badge.png`,
   state: "ahead",
-  summary: `The ${title} design marker appears on your main trail when it is your primary DesignID result.`,
+  summary: `The ${title} design marker is earned on both your main trail and DesignID short trail when it is your primary result.`,
 }));
 
-export function buildPassportBadges({ completedAssessments, primaryDesign }: {
+const courseMarkers = [
+  { title: "DesignID Course", slug: "designid-foundations", assessment: "DesignID" },
+  { title: "Spiritual Gifts Course", slug: "spiritual-gifts-service", assessment: "Spiritual Gifts Assessment" },
+  { title: "FruitLife360 Course", slug: "fruitlife-360-formation", assessment: "FruitLife360" },
+  { title: "DesignPD Course", slug: "designpd-alignment", assessment: "DesignPD" },
+];
+
+export function buildPassportBadges({ completedAssessments, primaryDesign, completedCourses = [] }: {
   completedAssessments: string[];
   primaryDesign?: string;
+  completedCourses?: string[];
 }): PassportBadge[] {
   const completed = new Set(completedAssessments);
   const assessmentByTitle: Record<string, string> = {
@@ -128,11 +137,21 @@ export function buildPassportBadges({ completedAssessments, primaryDesign }: {
   const badges = defaultPassportBadges.flatMap((badge): PassportBadge[] => {
     const current: PassportBadge = {
       ...badge,
-      state: completed.has(assessmentByTitle[badge.title]) ? "earned" : badge.state,
+      state: completed.has(assessmentByTitle[badge.title]) ? "earned" : badge.title === "DesignPD" && !completed.has("designid") ? "locked" : badge.state,
     };
     return badge.title === "DesignID" && earnedReflection
       ? [current, { ...earnedReflection, group: "journey", state: "earned" }]
       : [current];
   });
-  return [...badges, ...designIdReflectionBadges.filter((badge) => badge.title !== earnedReflection?.title)];
+  const courses: PassportBadge[] = courseMarkers.map((marker) => {
+    const assessment = defaultPassportBadges.find((badge) => badge.title === marker.assessment)!;
+    return {
+      title: marker.title, image: assessment.image, group: "extension", kind: "course",
+      connectedTo: marker.assessment === "DesignPD" ? "DesignPD dig deeper trail" : `${marker.assessment === "Spiritual Gifts Assessment" ? "Spiritual Gifts" : marker.assessment} short trail`,
+      earnBy: `Complete all lessons in the ${marker.title.replace(" Course", "")} course.`,
+      summary: "Recognizes completing the teaching and guided learning, separately from the assessment.",
+      state: completedCourses.includes(marker.slug) ? "earned" : marker.assessment === "DesignPD" && !completed.has("designid") ? "locked" : "ahead",
+    };
+  });
+  return [...badges, ...(earnedReflection ? [] : designIdReflectionBadges), ...courses];
 }

@@ -591,7 +591,16 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     selectedFruitLifeSession?.id === activeFruitLifeSession?.id && reviewParams?.fruitlife_token
       ? reviewParams.fruitlife_token
       : fruitLifeTokenFromSession(activeFruitLifeSession);
+  const { data: completedEnrollments, error: passportProgressError } = user && !reviewReport
+    ? await supabase.from("enrollments").select("courses(slug)").eq("user_id", user.id).eq("status", "completed")
+    : { data: [], error: null };
+  if (passportProgressError) console.error("Passport course completion lookup failed", passportProgressError.code);
+  const completedCourses = (completedEnrollments ?? []).flatMap((enrollment) => {
+    const courses = enrollment.courses as { slug: string } | { slug: string }[] | null;
+    return (Array.isArray(courses) ? courses : courses ? [courses] : []).map((course) => course.slug);
+  });
   const passportBadges = buildPassportBadges({
+    completedCourses,
     completedAssessments: assessmentReport.latest.map((snapshot) => snapshot.assessment_type),
     primaryDesign: buildDesignIdContext(assessmentReport).primary,
   });

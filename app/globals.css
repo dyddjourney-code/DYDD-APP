@@ -20104,3 +20104,15 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .passport-designid-markers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; grid-column: span 2; }
+
+/* Passport: one row per trail, with shared milestone states. */
+.passport-trail-section { padding-top: 18px; border-top: 1px dashed rgba(116, 76, 46, 0.24); }
+.passport-badge-group > .section-label { margin: 0; }
+.passport-trail-note { margin: 0; color: var(--muted); font-size: .86rem; line-height: 1.5; }
+.passport-short-trail { display: grid; gap: 10px; min-width: 0; padding-top: 8px; }
+.passport-short-trail + .passport-short-trail { padding-top: 16px; }
+.passport-badge-button { position: relative; }
+.passport-badge-button.locked { opacity: .65; border-style: dashed; }
+.passport-course-ribbon { color: var(--green-dark); font-weight: 800; text-transform: uppercase; font-size: .65rem; letter-spacing: .08em; }
+.passport-badge-popover { align-self: start; position: sticky; top: 16px; }
+@media (max-width: 1000px) { .passport-badge-popover { position: static; } }

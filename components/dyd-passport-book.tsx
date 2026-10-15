@@ -1,16 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { defaultPassportBadges, type PassportBadge, type PassportBadgeState } from "@/lib/passport-badges";
+import { buildPassportBadges, type PassportBadge, type PassportBadgeState } from "@/lib/passport-badges";
 
 const badgeStatusLabel: Record<PassportBadgeState, string> = {
   ahead: "Ahead",
+  locked: "Locked",
   earned: "Earned",
   next: "Next",
 };
 
 export function DydPassportBook({
-  badges = defaultPassportBadges,
+  badges = buildPassportBadges({ completedAssessments: [] }),
   firstName = "Traveler",
 }: {
   badges?: PassportBadge[];
@@ -24,9 +25,16 @@ export function DydPassportBook({
     [badges, selectedTitle],
   );
   const earnedCount = badges.filter((badge) => badge.state === "earned").length;
-  const nextBadge = badges.find((badge) => badge.state === "next") ?? badges.find((badge) => badge.state !== "earned");
+  const nextBadge = badges.find((badge) => badge.state === "next") ?? badges.find((badge) => badge.state === "ahead");
   const journeyBadges = badges.filter((badge) => badge.group !== "extension");
-  const extensionBadges = badges.filter((badge) => badge.group === "extension");
+  const reflectionNames = ["Architect", "Artisan", "Shepherd", "Steward"];
+  const shortTrails = [
+    { title: "Spiritual Gifts", titles: ["Spiritual Gifts Assessment", "Spiritual Gifts Course"] },
+    { title: "FruitLife360", titles: ["FruitLife360", "FruitLife360 Course"] },
+    { title: "DesignID", titles: ["DesignID", ...reflectionNames, "DesignID Course"] },
+  ];
+  const badgesFor = (titles: string[]) => titles.flatMap((title) => badges.filter((badge) => badge.title === title));
+  const deeperBadges = badgesFor(["DesignPD", "DesignPD Course"]);
   const primaryDesignBadge = journeyBadges.find((badge) =>
     ["Architect", "Artisan", "Shepherd", "Steward"].includes(badge.title) && badge.state === "earned",
   );
@@ -36,9 +44,12 @@ export function DydPassportBook({
       key={badge.title}
       onClick={() => setSelectedTitle(badge.title)}
       onMouseEnter={() => setSelectedTitle(badge.title)}
+      onFocus={() => setSelectedTitle(badge.title)}
+      aria-pressed={selectedBadge?.title === badge.title}
       type="button"
     >
       <img src={badge.image} alt={`${badge.title} badge`} />
+      {badge.kind === "course" ? <small className="passport-course-ribbon">Course</small> : null}
       <span>{badgeStatusLabel[badge.state]}</span>
       <strong>{badge.title}</strong>
     </button>
@@ -76,7 +87,8 @@ export function DydPassportBook({
 
         <div className="passport-badge-stack" aria-label="Possible and earned badges">
           <section aria-label="Main trail badges" className="passport-badge-group">
-            <h3>Main trail badges</h3>
+            <p className="section-label">Main trail</p>
+            <h3>Discover Your Divine Design Journey Badges</h3>
             <div className="passport-badge-grid journey">
               {journeyBadges.map((badge) => {
                 if (badge === primaryDesignBadge) return null;
@@ -92,12 +104,22 @@ export function DydPassportBook({
               })}
             </div>
           </section>
-          {extensionBadges.length ? (
-            <section aria-label="Short trail badges" className="passport-badge-group">
-              <h3>Short trail badges</h3>
-              <div className="passport-badge-grid extension">{extensionBadges.map(renderBadgeButton)}</div>
-            </section>
-          ) : null}
+          <section aria-label="Short trail badges" className="passport-badge-group passport-trail-section">
+            <p className="section-label">Short trails</p>
+            <p className="passport-trail-note">Start here or along the main trail. The same milestone is earned everywhere it appears.</p>
+            {shortTrails.map((trail) => (
+              <section className="passport-short-trail" aria-label={`${trail.title} trail badges`} key={trail.title}>
+                <h3>{trail.title}</h3>
+                <div className="passport-badge-grid">{badgesFor(trail.titles).map(renderBadgeButton)}</div>
+              </section>
+            ))}
+          </section>
+          <section aria-label="Dig deeper trail badges" className="passport-badge-group passport-trail-section">
+            <p className="section-label">Dig deeper trails</p>
+            <h3>DesignPD</h3>
+            <p className="passport-trail-note">Complete DesignID first. DesignPD is an optional expansion with its own assessment and course.</p>
+            <div className="passport-badge-grid">{deeperBadges.map(renderBadgeButton)}</div>
+          </section>
         </div>
 
         {selectedBadge ? (
@@ -110,7 +132,7 @@ export function DydPassportBook({
               <dl>
                 <div>
                   <dt>Earn it by</dt>
-                  <dd>{selectedBadge.earnBy}</dd>
+                  <dd>{selectedBadge.state === "locked" ? "Complete DesignID first, then unlock the DesignPD expansion." : selectedBadge.earnBy}</dd>
                 </div>
                 <div>
                   <dt>Connected to</dt>

@@ -7,6 +7,7 @@ John confirmed DesignID scores are plain integer points: 22, never 22% or
 - Saved point fields take precedence, including non-100 historical totals.
 - Official PDFMonkey DesignID template published/draft chart formatters changed
   in exactly two places from return value + percent suffix to Math.round(value).
+  The main table heading is now Score, replacing Reflection with percent sign.
 - Template body/settings backed up privately; unrelated prose/layout retained.
 - Existing DesignID PDF archives regenerated; original scores/answers retained.
 - No Make, scoring, authentication, RLS or email changes.

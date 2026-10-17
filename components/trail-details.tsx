@@ -40,7 +40,7 @@ const details = {
     before: "Complete the FruitLife360 assessment process and receive your report before entering FruitLife360 Formation. If responses are still being collected, follow the active assessment in Field Kit.",
     experience: "Explore your report, the nine fruit of the Spirit, differences between your own view and others' observations, and the ways pressure affects your responses. Choose small practices rooted in grace and prayer.",
     outcome: "Name one area for intentional growth, choose a Spirit-led practice, and use feedback as a helpful mirror rather than a verdict about your worth or standing before God.",
-    access: "Included in the full app experience. The separate FruitLife360 mini-app requires its own $10 assessment unlock; existing purchases remain honored.",
+    access: "The FruitLife360 assessment and connected course are included in your monthly subscription.",
   },
   designpd: {
     name: "DesignPD",

@@ -95,7 +95,9 @@ export function ReflectionSession({
   dirty.current = Object.entries(drafts).some(
     ([id, value]) => value !== (latest[id]?.response ?? ""),
   );
-  const readOnly = Boolean(round && data.rounds[0]?.id !== round.id);
+  const readOnly = Boolean(
+    round && (data.rounds[0]?.id !== round.id || data.nextAssessmentReportId),
+  );
   const reload = async () => {
     setLoading(true);
     setError("");
@@ -104,8 +106,23 @@ export function ReflectionSession({
         `/api/course-reflections?courseSlug=${encodeURIComponent(courseSlug)}`,
         { cache: "no-store" },
       );
-      const body = await r.json();
+      let body = await r.json();
       if (!r.ok) throw Error(body.error);
+      if (body.nextAssessmentReportId) {
+        const sync = await fetch("/api/course-reflections", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "sync-round", courseSlug }),
+        });
+        const synced = await sync.json();
+        if (!sync.ok) throw Error(synced.error);
+        const fresh = await fetch(
+          `/api/course-reflections?courseSlug=${encodeURIComponent(courseSlug)}`,
+          { cache: "no-store" },
+        );
+        body = await fresh.json();
+        if (!fresh.ok) throw Error(body.error);
+      }
       setData(body);
       const requestedRound = new URLSearchParams(window.location.search).get(
         "round",
@@ -332,8 +349,9 @@ export function ReflectionSession({
           <p className="section-label">Your private workbook</p>
           <h2>Reflections for this walk.</h2>
           <p>
-            Save what you discover. A new round keeps earlier reflections
-            intact.
+            Save what you discover. Your current walkthrough stays editable. A
+            newly completed assessment opens a fresh walkthrough; earlier
+            reflections stay intact and read-only.
           </p>
         </div>
         {loading ? (
@@ -440,7 +458,9 @@ export function ReflectionAnswer({
   reading?: boolean;
 }) {
   const inputId = useId();
+  const [editingHere, setEditingHere] = useState(false);
   const s = useContext(Context);
+  useEffect(() => setEditingHere(false), [s?.round?.id]);
   if (!s) return null;
   const q = s.questions.find((q) => q.id === questionId);
   if (!q) return null;
@@ -467,12 +487,21 @@ export function ReflectionAnswer({
       {showQuestion ? <h3>{q.prompt}</h3> : null}
       {s.loading ? (
         <p>Loading answer…</p>
-      ) : s.readOnly || reading ? (
+      ) : s.readOnly || (reading && !editingHere) ? (
         <>
           <p className="reflection-read-answer">
             <ReflectionText text={value || "Not answered in this round."} />
           </p>
           {current ? <small>Saved {date(current.saved_at)}</small> : null}
+          {!s.readOnly && s.round ? (
+            <button
+              className="button secondary"
+              type="button"
+              onClick={() => setEditingHere(true)}
+            >
+              {current?.response ? "Edit reflection" : "Add reflection"}
+            </button>
+          ) : null}
         </>
       ) : (
         <>
@@ -556,6 +585,10 @@ export function ReflectionWorkbook() {
   const [editing, setEditing] = useState(false);
   const [moduleFilter, setModuleFilter] = useState("");
   const [answerFilter, setAnswerFilter] = useState("all");
+  const [exportScope, setExportScope] = useState("round");
+  const [exportStatus, setExportStatus] = useState("");
+  const [exporting, setExporting] = useState(false);
+  const [savingAll, setSavingAll] = useState(false);
   const workbook = useRef<HTMLDivElement>(null);
   const s = useContext(Context);
   const answered = useMemo(() => {
@@ -575,6 +608,70 @@ export function ReflectionWorkbook() {
     );
   }, [s?.data.entries, s?.round?.id, s?.drafts, s?.questions]);
   if (!s) return null;
+  const dirtyQuestions = s.questions.filter((q) => {
+    const latest = s.data.entries
+      .filter((e) => e.round_id === s.round?.id && e.question_id === q.id)
+      .sort((a, b) => b.revision - a.revision)[0];
+    return (
+      s.drafts[q.id] !== undefined &&
+      s.drafts[q.id] !== (latest?.response ?? "")
+    );
+  });
+  const exportSaved = async (email: boolean) => {
+    setExporting(true);
+    setExportStatus("");
+    try {
+      const query = new URLSearchParams({
+        courseSlug: s.courseSlug,
+        scope: exportScope,
+        round: s.round?.id ?? "",
+      });
+      const response = await fetch(`/api/course-reflections/export?${query}`, {
+        method: email ? "POST" : "GET",
+      });
+      if (!response.ok) {
+        const body = await response.json();
+        throw Error(body.error ?? "Could not export reflections.");
+      }
+      if (email) {
+        const body = await response.json();
+        setExportStatus(`Sent to ${body.email}. Check your inbox.`);
+      } else {
+        const blob = await response.blob(),
+          url = URL.createObjectURL(blob),
+          link = document.createElement("a");
+        link.href = url;
+        link.download =
+          response.headers
+            .get("Content-Disposition")
+            ?.match(/filename="([^"]+)"/)?.[1] ?? "dydd-reflections.txt";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        setExportStatus(
+          "Text file downloaded. It includes saved questions and answers, including unanswered questions.",
+        );
+      }
+    } catch (error) {
+      setExportStatus(
+        error instanceof Error
+          ? error.message
+          : "Could not export. Please try again.",
+      );
+    } finally {
+      setExporting(false);
+    }
+  };
+  const saveAll = async () => {
+    if (savingAll) return;
+    setSavingAll(true);
+    try {
+      for (const question of dirtyQuestions) await s.save(question);
+    } finally {
+      setSavingAll(false);
+    }
+  };
   const modules = [...new Set(s.questions.map((q) => q.moduleTitle))];
   const hasAnswer = (q: ReflectionQuestion) => answered.has(q.id);
   const visibleQuestions = s.questions.filter(
@@ -614,6 +711,79 @@ export function ReflectionWorkbook() {
           </button>
         ) : null}
       </div>
+      {!s.readOnly && s.round ? (
+        <div className="reflection-review-edit-bar">
+          <p>
+            Current walkthrough: edit any reflection here or in the course. Both
+            use the same saved answer. Earlier walkthroughs stay read-only.
+          </p>
+          {dirtyQuestions.length ? (
+            <>
+              <button
+                className="button primary"
+                type="button"
+                disabled={
+                  savingAll || Object.values(s.statuses).includes("Saving…")
+                }
+                onClick={() => void saveAll()}
+              >
+                {savingAll
+                  ? "Saving changes…"
+                  : `Save all changes (${dirtyQuestions.length})`}
+              </button>
+              <p role="status">
+                {dirtyQuestions.length} unsaved{" "}
+                {dirtyQuestions.length === 1 ? "reflection" : "reflections"}.
+                Downloads and email include saved answers only.
+              </p>
+            </>
+          ) : null}
+        </div>
+      ) : null}
+      {s.data.signedIn && s.data.rounds.length ? (
+        <section
+          className="reflection-export-controls"
+          aria-label="Take your reflections with you"
+        >
+          <div>
+            <h3>Take your reflections with you</h3>
+            <p>
+              Download a text file or email your saved questions and answers to
+              your account email.
+            </p>
+          </div>
+          <label>
+            Include
+            <select
+              value={exportScope}
+              onChange={(e) => setExportScope(e.target.value)}
+            >
+              <option value="round">This dated walkthrough</option>
+              <option value="course">All walkthroughs in this workbook</option>
+              <option value="all">All my reflection workbooks</option>
+            </select>
+          </label>
+          <div className="reflection-export-actions">
+            <button
+              className="button secondary"
+              type="button"
+              disabled={exporting || s.loading}
+              onClick={() => void exportSaved(false)}
+            >
+              {exporting ? "Preparing…" : "Download text"}
+            </button>
+            <button
+              className="button secondary"
+              type="button"
+              disabled={exporting || s.loading}
+              onClick={() => void exportSaved(true)}
+            >
+              Email to me
+            </button>
+          </div>
+          {exportStatus ? <p role="status">{exportStatus}</p> : null}
+        </section>
+      ) : null}
       <div
         className="reflection-browse-controls"
         aria-label="Filter reflections"

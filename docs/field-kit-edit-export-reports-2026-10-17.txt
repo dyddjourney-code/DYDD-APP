@@ -1,0 +1,67 @@
+FIELD KIT EDITING, PORTABLE REFLECTIONS AND REPORT ACCESS — October 17, 2026
+
+John authorized editing/saving from the review workbook, preserving older dated
+walkthroughs, downloading/emailing saved information and fixing report opening.
+
+Implemented
+- Individual Edit/Add reflection buttons in the reading view; existing whole-
+  workbook edit mode retained. Save-all submits only changed answers. Existing
+  revision history, stale-tab protection and unsaved-draft guards are retained.
+- Current walkthrough remains editable; earlier ones are read-only at the UI,
+  API, save RPC and direct entry-insert RLS policy.
+- A new completed assessment report after the current walkthrough began creates
+  a new connected walkthrough when the learner next opens the workbook/course.
+  Synchronization uses a per-account/course advisory lock to prevent duplicate
+  rounds when several tabs open together. Prior answers are never overwritten.
+  First-time reflection creation remains deliberate. Manual new rounds remain
+  available. This rollover happens on report completion, not assessment intake.
+- Download text / Email to me: selected dated walkthrough, all walkthroughs in
+  this workbook, or all five workbooks. Exports include every frozen question,
+  module/lesson, latest saved answer, explicit unanswered items, dates and report
+  labels. Unsaved drafts are excluded and clearly identified as such in the UI.
+- Exports require a signed-in account and owner-only queries/RLS. Email can only
+  go to the verified account email, not a recipient supplied by the browser.
+  Existing Resend sender is reused; matching TXT attachment, escaped HTML,
+  plain-text body, duplicate-send idempotency and actionable failure feedback.
+- The Jordan preview download route now accepts its existing restricted review
+  access. Heather and authenticated ownership rules are retained. Field Kit
+  consistently uses the authorized report resolver instead of status links.
+- Resolver refreshes attached PDFMonkey URLs without generating new reports or
+  sending email. Older imported snapshots without a PDF open readable saved
+  results with Print/Save as PDF and HTML download; they are not misrepresented
+  as full historical PDFs. In Jordan's 178-item preview, 175 are saved-result
+  snapshots and 3 redirect to attached FruitLife PDFs. Historical PDF recovery
+  or regeneration is not part of this change.
+- FruitLife report-session links carry the restricted review authorization;
+  unauthorized sessions still cannot be accessed. Provider failures fall back
+  to existing saved links. Private/no-store and no-referrer responses retained.
+- Legacy DesignID fractional percentages display as percentages (0.22 -> 22%),
+  without changing scores. Phone result tables render as readable cards.
+- Account snapshot retrieval includes both participant-linked and direct user-
+  owned records, so direct app results do not disappear after participant sync.
+
+Database
+- Additive migration 20261017170014_fieldkit_current_walkthrough_and_exports.sql
+  applied through the existing linked pooler and registered in migration history.
+- Previous save function definition backed up privately before replacement.
+- No stored learner answers or earlier rounds were rewritten.
+- Security advisors completed: no findings involving reflection resources.
+  Existing unrelated project findings were not changed.
+
+Verification
+- Production build and TypeScript; catalog; report resolver unit tests.
+- Text/email tests use a mocked transport: exact content, no foreign data,
+  matching TXT attachment, verified-recipient enforcement, HTML escaping,
+  idempotency, anonymous/cross-origin denial and provider-failure feedback.
+- Full established five-course real-account/browser regression: saves, dated
+  histories, stale tabs, blank answers, course/workbook shared records, niche
+  source links, failure draft preservation, privacy and 1280/768/390/320 widths.
+- New focused real-account suite: all export scopes, actual downloaded text,
+  per-answer editing/save-all/reload, archive UI/API/RPC/direct-insert denial,
+  concurrent atomic report rollover and automatic new-walk browser entry.
+- Real Jordan report collection: all 178 opening routes checked; readable
+  saved-results report additionally checked for narrow-phone overflow.
+- Temporary synthetic users and records removed by exact IDs after each suite.
+- No actual reflection email sent as part of QA; live provider access checked
+  read-only (recognized send-only key; domain-list access is intentionally
+  restricted). End-to-end inbox receipt remains untested until Email to me is used.

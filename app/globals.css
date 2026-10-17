@@ -20436,3 +20436,16 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
  .fieldkit-current-process .fruitlife-control-roster article {grid-template-columns:minmax(0,1fr);}
  .fieldkit-current-process .fruitlife-session-meta span {white-space:normal;line-height:1.5;}
 }
+
+/* Field Kit: current-walk editing and portable saved reflections. */
+.reflection-review-edit-bar, .reflection-export-controls { padding: 1.25rem; margin: 1rem 0; border: 1px solid var(--line, #d9d6c7); border-radius: 14px; background: #f8f7ef; }
+.reflection-review-edit-bar p, .reflection-export-controls p { margin: .4rem 0 .8rem; }
+.reflection-export-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 1rem; }
+.reflection-export-controls > div:first-child { flex: 1 1 270px; }
+.reflection-export-controls > label { display: grid; gap: .4rem; min-width: 0; flex: 1 1 230px; }
+.reflection-export-controls select { width: 100%; min-width: 0; padding: .65rem; }
+.reflection-export-controls > p { flex-basis: 100%; overflow-wrap: anywhere; }
+.reflection-read-answer + small { display: block; margin-bottom: .7rem; }
+@media (max-width: 600px) { .reflection-export-controls { display: grid; } .reflection-export-controls .reflection-export-actions { display: flex; flex-wrap: wrap; } .reflection-export-controls .button { white-space: normal; } }
+
+.reflection-export-actions { display: flex; gap: .7rem; flex-wrap: wrap; }

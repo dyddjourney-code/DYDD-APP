@@ -68,21 +68,6 @@ function artifactDownloadHref(
   snapshot: AssessmentSnapshotSummary,
   reviewParams?: ReviewSearchParams | null,
 ) {
-  const statusHref = snapshot.scores?.statusHref;
-  const reportAccessUrl = snapshot.scores?.reportAccessUrl;
-
-  if (typeof reportAccessUrl === "string" && reportAccessUrl) {
-    return reportAccessUrl;
-  }
-
-  if (
-    snapshot.assessment_type !== "spiritual_gifts" &&
-    typeof statusHref === "string" &&
-    statusHref
-  ) {
-    return statusHref;
-  }
-
   return withReviewQuery(
     `/api/artifacts/${encodeURIComponent(snapshot.id)}/download`,
     reviewParams,
@@ -260,7 +245,7 @@ export default async function FieldKitPage({
         courseAction: "Explore course",
         courseHref: "/courses/fruitlife-360-formation",
         detail: `Your ${fruitLifeReportModeLabel(session).toLowerCase()} FruitLife360 report is ready to review.`,
-        href: fruitLifeReportHref(session),
+        href: withReviewQuery(fruitLifeReportHref(session), reviewParams),
         logo: "/brand/tools/fruitful-life-360-logo.jpg",
         meta: [
           ["Status", "Completed"],

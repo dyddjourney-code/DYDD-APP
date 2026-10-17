@@ -29,4 +29,5 @@ export type ReflectionData = {
   reports: ReflectionReport[];
   canStart: boolean;
   signedIn: boolean;
+  nextAssessmentReportId?: string | null;
 };

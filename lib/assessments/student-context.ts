@@ -298,7 +298,7 @@ export async function getAssessmentSnapshotsForUser(
     .order("created_at", { ascending: false });
 
   const { data } = participantId
-    ? await query.eq("participant_id", participantId)
+    ? await query.or(`participant_id.eq.${participantId},user_id.eq.${userId}`)
     : await query.eq("user_id", userId);
 
   const all = (data ?? []) as AssessmentSnapshotSummary[];

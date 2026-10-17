@@ -3,13 +3,15 @@ import {
   assessmentLabels,
   displayDate,
   getAssessmentSnapshotsForUser,
-  getAssessmentSnapshotsForEmail,
   snapshotHighlights,
   type AssessmentSnapshotSummary,
 } from "@/lib/assessments/student-context";
+import { getPdfMonkeyDocument } from "@/lib/pdfmonkey/client";
 import { normalizeEmail } from "@/lib/identity/email";
 import {
   getHeatherReviewReport,
+  getNewReviewReport,
+  isNewReviewRequest,
   isHeatherReviewRequest,
 } from "@/lib/review/heather";
 import { isOwnerPreviewRequest } from "@/lib/owner-preview";
@@ -28,7 +30,7 @@ function escapeHtml(value: string) {
 
 function compactValue(value: unknown) {
   if (value === null || value === undefined || value === "") return "";
-  if (typeof value === "number") return Number.isInteger(value) ? String(value) : value.toFixed(1);
+  if (typeof value === "number") return String(value);
   if (typeof value === "boolean") return value ? "Yes" : "No";
   return String(value).trim();
 }
@@ -49,7 +51,10 @@ function snapshotSections(snapshot: AssessmentSnapshotSummary) {
   ];
 }
 
-function firstSnapshotValue(snapshot: AssessmentSnapshotSummary, keys: string[]) {
+function firstSnapshotValue(
+  snapshot: AssessmentSnapshotSummary,
+  keys: string[],
+) {
   for (const key of keys) {
     for (const section of snapshotSections(snapshot)) {
       const value = compactValue(section[key]);
@@ -85,29 +90,6 @@ function spiritualGiftRank(snapshot: AssessmentSnapshotSummary, rank: number) {
   ]);
 
   return label ? { label, score } : null;
-}
-
-function snapshotReportHref(snapshot: AssessmentSnapshotSummary) {
-  const direct = compactValue(snapshot.scores?.reportAccessUrl);
-  if (direct) return direct;
-
-  const pdfMonkey = scoreObject(snapshot, "pdfMonkey");
-  const providerUrl = compactValue(pdfMonkey.providerUrl);
-  if (providerUrl) return providerUrl;
-
-  if (snapshot.assessment_type === "designid") {
-    return `/designid/report?snapshot=${encodeURIComponent(snapshot.id)}`;
-  }
-
-  if (snapshot.assessment_type === "designpd") {
-    return `/designpd/report?snapshot=${encodeURIComponent(snapshot.id)}`;
-  }
-
-  if (snapshot.assessment_type === "spiritual_gifts") {
-    return `/spiritual-gifts/report?snapshot=${encodeURIComponent(snapshot.id)}`;
-  }
-
-  return "";
 }
 
 const designIdReflections = [
@@ -157,15 +139,23 @@ function designIdReflectionRows(snapshot: AssessmentSnapshotSummary) {
         `${reflection.key}_Band`,
         `${reflection.key.toLowerCase()}Band`,
       ]);
-      const percentNumber = Number(String(percent).replace("%", ""));
-      const width = Number.isFinite(percentNumber) ? Math.max(8, Math.min(100, percentNumber)) : 8;
-      const score = percent ? `${percent.replace(/%$/, "")}%` : points || "Saved";
+      const rawPercent = Number(String(percent).replace("%", ""));
+      const percentNumber =
+        !percent.includes("%") && rawPercent > 0 && rawPercent <= 1
+          ? rawPercent * 100
+          : rawPercent;
+      const width = Number.isFinite(percentNumber)
+        ? Math.max(8, Math.min(100, percentNumber))
+        : 8;
+      const score = percent
+        ? `${percent.replace(/%$/, "")}%`
+        : points || "Saved";
       const detail = points && percent ? `${points} pts` : points || "";
 
       return `<tr>
         <td><strong>${reflection.key}</strong><small>${reflection.creator}</small></td>
-        <td><strong>${escapeHtml(score)}</strong>${detail ? `<small>${escapeHtml(detail)}</small>` : ""}</td>
-        <td><strong>${escapeHtml(band || "Saved")}</strong></td>
+        <td data-label="Score"><strong>${escapeHtml(score)}</strong>${detail ? `<small>${escapeHtml(detail)}</small>` : ""}</td>
+        <td data-label="Capacity"><strong>${escapeHtml(band || "Saved")}</strong></td>
         <td>${escapeHtml(reflection.application)}<span class="mini-bar"><i style="width:${width}%;background:${reflection.color};"></i></span></td>
       </tr>`;
     })
@@ -175,7 +165,12 @@ function designIdReflectionRows(snapshot: AssessmentSnapshotSummary) {
 function designIdSummaryBlock(snapshot: AssessmentSnapshotSummary) {
   if (snapshot.assessment_type !== "designid") return "";
 
-  const primary = firstSnapshotValue(snapshot, ["Primary", "Primary_Reflection", "primaryReflection", "primary"]);
+  const primary = firstSnapshotValue(snapshot, [
+    "Primary",
+    "Primary_Reflection",
+    "primaryReflection",
+    "primary",
+  ]);
   const secondary = firstSnapshotValue(snapshot, [
     "Secondary",
     "Secondary_Reflection",
@@ -187,7 +182,11 @@ function designIdSummaryBlock(snapshot: AssessmentSnapshotSummary) {
     "integrativeReflection",
     "PairName",
   ]);
-  const shadow = firstSnapshotValue(snapshot, ["Reflection_Shadow", "Potential_Shadow", "shadow"]);
+  const shadow = firstSnapshotValue(snapshot, [
+    "Reflection_Shadow",
+    "Potential_Shadow",
+    "shadow",
+  ]);
   const rows = designIdReflectionRows(snapshot);
 
   return `<section>
@@ -198,7 +197,7 @@ function designIdSummaryBlock(snapshot: AssessmentSnapshotSummary) {
         <div><small>Integrative</small><strong>${escapeHtml(integrative || "Saved")}</strong></div>
         <div><small>Shadow</small><strong>${escapeHtml(shadow || "Saved")}</strong></div>
       </div>
-      <table class="reflection-table">
+      <div class="report-table-scroll"><table class="reflection-table">
         <thead>
           <tr>
             <th>Reflection</th>
@@ -208,7 +207,7 @@ function designIdSummaryBlock(snapshot: AssessmentSnapshotSummary) {
           </tr>
         </thead>
         <tbody>${rows}</tbody>
-      </table>
+      </table></div>
     </section>`;
 }
 
@@ -219,7 +218,7 @@ function visualArtifact(snapshot: AssessmentSnapshotSummary) {
     snapshot.source_submitted_at ?? snapshot.created_at,
   );
   const highlights = snapshotHighlights(snapshot);
-  const reportHref = snapshotReportHref(snapshot);
+  const reportHref = ""; // The endpoint itself resolves attached full reports first.
   const giftRows =
     snapshot.assessment_type === "spiritual_gifts"
       ? [1, 2, 3, 4, 5]
@@ -240,7 +239,7 @@ function visualArtifact(snapshot: AssessmentSnapshotSummary) {
       : "";
   const highlightRows = highlights.length
     ? highlights
-    .map(
+        .map(
           (item) =>
             `<tr><th>${escapeHtml(item.label)}</th><td>${escapeHtml(item.value)}</td></tr>`,
         )
@@ -275,7 +274,10 @@ function visualArtifact(snapshot: AssessmentSnapshotSummary) {
     .gift-row:first-child { border-top:0; }
     .gift-row span { display:block; height:12px; background:#edf1e8; border-radius:999px; overflow:hidden; }
     .gift-row i { display:block; height:100%; background:linear-gradient(90deg,var(--green),var(--gold)); border-radius:999px; }
+    .report-table-scroll { max-width:100%; overflow-x:auto; }
+    .reflection-table { min-width:560px; }
     table { width:100%; border-collapse:collapse; }
+    td, th { overflow-wrap:anywhere; }
     th,td { border-top:1px solid rgba(36,63,39,.12); padding:12px; text-align:left; vertical-align:top; }
     th { color:var(--green); width:34%; }
     .reflection-table th { width:auto; color:var(--dark); background:#fbfaf4; }
@@ -283,8 +285,17 @@ function visualArtifact(snapshot: AssessmentSnapshotSummary) {
     .mini-bar { display:block; height:10px; margin-top:8px; overflow:hidden; border-radius:999px; background:#edf1e8; }
     .mini-bar i { display:block; height:100%; border-radius:inherit; }
     a { color:var(--dark); font-weight:900; }
-    @media (max-width: 720px) { body { padding:14px; } .meta, .summary-strip { grid-template-columns:1fr; } }
-    @media print { body { background:white; padding:0; } main { box-shadow:none; } }
+    @media (max-width: 720px) { body { padding:14px; } header { padding:22px; } section { padding:18px; min-width:0; } h1 { font-size:clamp(28px,7vw,38px); } .meta, .summary-strip, .gift-row { grid-template-columns:1fr; } }
+    @media screen and (max-width: 720px) {
+      .reflection-table { min-width:0; }
+      .reflection-table, .reflection-table tbody { display:block; }
+      .reflection-table thead { display:none; }
+      .reflection-table tr { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); border:1px solid var(--line); border-radius:8px; margin-bottom:14px; padding:8px; }
+      .reflection-table td { display:block; width:auto !important; border:0; padding:10px; text-align:left !important; }
+      .reflection-table td:first-child, .reflection-table td:last-child { grid-column:1/-1; }
+      .reflection-table td[data-label]::before { content:attr(data-label); display:block; color:var(--muted); font-size:11px; margin-bottom:4px; }
+    }
+    @media print { body { background:white; padding:0; } main { box-shadow:none; } .report-table-scroll { overflow:visible; } .reflection-table { min-width:0; } button, section > a { display:none; } }
   </style>
 </head>
 <body>
@@ -292,13 +303,9 @@ function visualArtifact(snapshot: AssessmentSnapshotSummary) {
     <header>
       <div class="label">Discover Your Divine Design</div>
       <h1>${escapeHtml(label)} Snapshot</h1>
-      <p>Owner-ready summary for quick review, group comparison, and participant support.</p>
+      <p>Your saved assessment results.</p>
     </header>
-    <section class="meta">
-      <div><strong>Completed</strong><small>${escapeHtml(completedAt)}</small></div>
-      <div><strong>Source</strong><small>${escapeHtml(snapshot.source ?? "DYDD source")}</small></div>
-      <div><strong>Snapshot ID</strong><small>${escapeHtml(snapshot.id.slice(0, 8))}</small></div>
-    </section>
+    <section><p>${escapeHtml(completedAt)}</p><p>This older result has saved assessment information but no attached full PDF.</p><button onclick="window.print()">Print / Save as PDF</button> <a href="${escapeHtml(`?${new URLSearchParams({ download: "1" }).toString()}`)}" onclick="event.preventDefault();const u=new URL(location.href);u.searchParams.set('download','1');location.href=u.href">Download saved results</a></section>
     ${
       giftRows
         ? `<section><h2>Top Spiritual Gifts</h2><div class="gift-list">${giftRows}</div></section>`
@@ -319,15 +326,20 @@ function visualArtifact(snapshot: AssessmentSnapshotSummary) {
 </html>`;
 }
 
-function downloadResponse(snapshot: AssessmentSnapshotSummary) {
+function downloadResponse(
+  snapshot: AssessmentSnapshotSummary,
+  attachment = false,
+) {
   const label =
     assessmentLabels[snapshot.assessment_type] ?? snapshot.assessment_type;
   const filename = `${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-snapshot-${snapshot.id.slice(0, 8)}.html`;
 
   return new NextResponse(visualArtifact(snapshot), {
     headers: {
-      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Content-Disposition": `${attachment ? "attachment" : "inline"}; filename="${filename}"`,
       "Content-Type": "text/html; charset=utf-8",
+      "Cache-Control": "private, no-store",
+      "Referrer-Policy": "no-referrer",
     },
   });
 }
@@ -343,6 +355,11 @@ async function findAuthorizedSnapshot(
 
   if (isHeatherReviewRequest(reviewParams)) {
     const report = await getHeatherReviewReport(reviewParams);
+    return report?.all.find((snapshot) => snapshot.id === snapshotId) ?? null;
+  }
+
+  if (isNewReviewRequest(reviewParams)) {
+    const report = await getNewReviewReport(reviewParams);
     return report?.all.find((snapshot) => snapshot.id === snapshotId) ?? null;
   }
 
@@ -386,5 +403,39 @@ export async function GET(
     return NextResponse.json({ error: "Artifact not found." }, { status: 404 });
   }
 
-  return downloadResponse(snapshot);
+  // Refresh expiring PDF links without regenerating reports or sending email.
+  const pdf = scoreObject(snapshot, "pdfMonkey");
+  let url = compactValue(pdf.providerUrl);
+  if (typeof pdf.documentId === "string" && pdf.documentId) {
+    try {
+      const document = await getPdfMonkeyDocument(pdf.documentId);
+      url =
+        document.public_share_link ??
+        document.download_url ??
+        document.preview_url ??
+        url;
+    } catch {
+      /* Keep the saved link if the provider is temporarily unavailable. */
+    }
+  }
+  const accessUrl = compactValue(snapshot.scores?.reportAccessUrl);
+  if (
+    !url &&
+    accessUrl &&
+    !accessUrl.includes(`/api/artifacts/${snapshot.id}/`)
+  )
+    url = accessUrl;
+  if (url) {
+    const target = new URL(url, request.url);
+    if (["https:", "http:"].includes(target.protocol)) {
+      const response = NextResponse.redirect(target);
+      response.headers.set("Cache-Control", "private, no-store");
+      response.headers.set("Referrer-Policy", "no-referrer");
+      return response;
+    }
+  }
+  return downloadResponse(
+    snapshot,
+    request.nextUrl.searchParams.get("download") === "1",
+  );
 }

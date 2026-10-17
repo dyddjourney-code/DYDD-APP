@@ -55,6 +55,7 @@ async function context(
       )
       .map((s) => ({
         id: s.id,
+        completedAt: s.source_submitted_at ?? s.created_at,
         label: `${experience.title} — ${displayDateTime(s.source_submitted_at ?? s.created_at)}`,
       })),
   };
@@ -118,6 +119,13 @@ export async function GET(request: Request) {
     reports: ctx.reports,
     canStart: ctx.canStart,
     signedIn: true,
+    nextAssessmentReportId: rounds?.[0]
+      ? ctx.reports[0] &&
+        ctx.reports[0].id !== rounds[0].assessment_snapshot_id &&
+        new Date(ctx.reports[0].completedAt) > new Date(rounds[0].started_at)
+        ? ctx.reports[0].id
+        : null
+      : null,
   });
 }
 export async function POST(request: Request) {
@@ -133,6 +141,32 @@ export async function POST(request: Request) {
     !getReflectionExperience(b.courseSlug)
   )
     return json({ error: "Unknown course." }, 400);
+  if (b.action === "sync-round") {
+    const ctx = await context(b.courseSlug, user);
+    if (!ctx?.canStart)
+      return json({ error: "Complete this trail’s report first." }, 403);
+    const report = ctx.reports[0];
+    if (!report)
+      return json({ error: "No completed assessment report found." }, 400);
+    const { data: round, error } = await s.rpc(
+      "sync_assessment_reflection_round",
+      {
+        p_course_slug: b.courseSlug,
+        p_snapshot_id: report.id,
+        p_questions: ctx.experience.questions,
+        p_label: report.label,
+      },
+    );
+    if (error)
+      return json(
+        {
+          error:
+            "Could not open your new walkthrough. Your earlier reflections are safe. Try loading again.",
+        },
+        500,
+      );
+    return json({ round });
+  }
   if (b.action === "new-round") {
     const ctx = await context(b.courseSlug, user);
     if (!ctx || !ctx.canStart)
@@ -210,12 +244,26 @@ export async function POST(request: Request) {
     );
   const { data: round } = await s
     .from("reflection_rounds")
-    .select("id")
+    .select("id,started_at,assessment_snapshot_id")
     .eq("id", b.roundId)
     .eq("user_id", user.id)
     .eq("course_slug", b.courseSlug)
     .maybeSingle();
   if (!round) return json({ error: "Reflection round not found." }, 404);
+  const ctx = await context(b.courseSlug, user);
+  const latestReport = ctx?.reports[0];
+  if (
+    latestReport &&
+    latestReport.id !== round.assessment_snapshot_id &&
+    new Date(latestReport.completedAt) > new Date(round.started_at)
+  )
+    return json(
+      {
+        error:
+          "A new assessment has opened a fresh walkthrough. Your draft is still here; copy it and reload to continue in the current walkthrough.",
+      },
+      409,
+    );
   const { data: entry, error } = await s.rpc("save_reflection_entry", {
     p_round_id: b.roundId,
     p_question_id: b.questionId,
@@ -228,9 +276,17 @@ export async function POST(request: Request) {
         error:
           error.code === "PT409"
             ? "This answer changed in another tab. Your draft is still here. Copy it, reload, and review the latest answer before saving."
-            : "Could not save. Your draft is still here; please try again.",
+            : error.code === "PT403"
+              ? "Previous walkthroughs are read-only. Your draft is still here; choose the current walkthrough."
+              : "Could not save. Your draft is still here; please try again.",
       },
-      error.code === "PT409" ? 409 : error.code === "22023" ? 400 : 500,
+      error.code === "PT409"
+        ? 409
+        : error.code === "PT403"
+          ? 403
+          : error.code === "22023"
+            ? 400
+            : 500,
     );
   return json({ entry });
 }

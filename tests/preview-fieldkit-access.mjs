@@ -10,6 +10,7 @@ const c = JSON.parse(fs.readFileSync('/home/openclaw/.openclaw/secrets/dydd-onli
 const admin = createClient(c.project_url, c.service_role_key, { auth: { persistSession: false } });
 const bucket = admin.storage.from('assessment-report-pdfs');
 const backup = new Map();
+const qaMarker = crypto.randomUUID(), qaRounds = new Set();
 const slugs = ['discover-your-divine-design', 'designid-foundations', 'spiritual-gifts-service', 'fruitlife-360-formation', 'designpd-alignment'];
 for (const mode of ['new', 'heather'])
     for (const slug of slugs) {
@@ -46,13 +47,14 @@ try {
         assert.equal(get.status, 200, JSON.stringify(data));
         assert.equal(data.preview, true);
         console.log('Workbook/API loaded ' + mode);
-        if (!data.rounds.length) {
+        {
             const b = await fetch(api, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: base }, body: JSON.stringify({ action: 'new-round', courseSlug: 'discover-your-divine-design' }) });
             assert.equal(b.status, 200, await b.text());
             data = await (await fetch(api)).json();
+            qaRounds.add(data.rounds[0].id);
         }
         const round = data.rounds[0], question = round.questions[0], last = data.entries.filter(e => e.round_id === round.id && e.question_id === question.id).sort((a, b) => b.revision - a.revision)[0];
-        const answer = `Preview access verification ${tag} ${mode}`;
+        const answer = `Preview access verification ${tag} ${mode} ${qaMarker}`;
         const body = { action: 'save', courseSlug: 'discover-your-divine-design', roundId: round.id, questionId: question.id, response: answer, expectedRevision: last?.revision ?? 0 };
         const saved = await fetch(api, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: base }, body: JSON.stringify(body) });
         assert.equal(saved.status, 200, await saved.text());
@@ -62,11 +64,15 @@ try {
         await page.reload({ waitUntil: 'networkidle2' });
         await page.waitForFunction(() => document.body.textContent.includes('Edit my reflections'));
         assert((await page.$eval('body', e => e.textContent)).includes(answer));
-        await page.evaluate(id => { const e = document.querySelector(`[data-question="${id}"]`); let p = e; while (p) {
-            if (p.tagName === 'DETAILS')
-                p.open = true;
-            p = p.parentElement;
-        } }, question.id);
+        await page.evaluate(id => {
+            const e = document.querySelector(`[data-question="${id}"]`);
+            let p = e;
+            while (p) {
+                if (p.tagName === 'DETAILS')
+                    p.open = true;
+                p = p.parentElement;
+            }
+        }, question.id);
         const article = await page.$(`[data-question="${question.id}"]`);
         const edit = await article.$('button');
         assert(edit);
@@ -110,8 +116,9 @@ try {
         const start = await fetch(api, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: base }, body: JSON.stringify({ courseSlug: slug, action: 'new-round' }) });
         assert.equal(start.status, 200);
         const { round } = await start.json();
+        qaRounds.add(round.id);
         const q = round.questions[0];
-        const save = { courseSlug: slug, action: 'save', roundId: round.id, questionId: q.id, response: 'Preview lifecycle QA ' + tag, expectedRevision: 0 };
+        const save = { courseSlug: slug, action: 'save', roundId: round.id, questionId: q.id, response: 'Preview lifecycle QA ' + tag + ' ' + qaMarker, expectedRevision: 0 };
         const saved = await fetch(api, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: base }, body: JSON.stringify(save) });
         assert.equal(saved.status, 200);
         const fresh = await (await fetch(api)).json();
@@ -120,6 +127,7 @@ try {
         assert.equal(foreign.status, 403);
         const next = await fetch(api, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: base }, body: JSON.stringify({ courseSlug: slug, action: 'new-round' }) });
         assert.equal(next.status, 200);
+        qaRounds.add((await next.json()).round.id);
         const archived = await fetch(api, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: base }, body: JSON.stringify({ ...save, expectedRevision: 1 }) });
         assert.equal(archived.status, 409);
         console.log('PASS ' + slug + ': durable save, next round, previous round read-only, foreign origin denied');
@@ -127,24 +135,40 @@ try {
     const h = await fetch(`${base}/api/course-reflections?${new URLSearchParams({ courseSlug: 'discover-your-divine-design', review: 'heather', key })}`);
     assert.equal(h.status, 200);
     const hd = await h.json();
-    assert(!hd.entries.some(e => e.response.includes('Preview access verification')), 'Preview personas must not share answers');
+    assert(!hd.entries.some(e => e.response.includes(qaMarker)), 'Preview personas must not share answers');
     const all = await fetch(`${base}/api/course-reflections/export?${new URLSearchParams({ scope: 'all', review: 'new', key })}`);
     assert.equal(all.status, 200);
     const anon = await fetch(base + '/field-kit', { redirect: 'manual' });
     assert(anon.status >= 300 && anon.status < 400);
     const bad = await fetch(base + '/field-kit?review=owner&key=invalid', { redirect: 'manual' });
     assert(bad.status >= 300 && bad.status < 400);
-    console.log('PASS anonymous/invalid-token denial, cross-persona isolation, export all. QA writes restored.');
+    console.log('PASS anonymous/invalid-token denial, cross-persona isolation, export all. QA answers and rounds removed without restoring over other writes.');
 }
 finally {
     await browser.close();
-    for (const [path, bytes] of backup) {
-        if (bytes) {
-            const r = await bucket.upload(path, bytes, { upsert: true, contentType: 'application/json' });
-            if (r.error)
-                throw r.error;
+    for (const [path] of backup) {
+        const lock = path.replace(/\.json$/, '.lock');
+        const lease = await bucket.upload(lock, Buffer.from('{}'), { upsert: false, contentType: 'application/json' });
+        if (lease.error)
+            throw Error('Cleanup deferred: another save is active; do not overwrite it.');
+        try {
+            const current = await bucket.download(path, { cacheNonce: crypto.randomUUID() }, { cache: 'no-store' });
+            if (!current.data)
+                continue;
+            const saved = JSON.parse(await current.data.text());
+            saved.entries = saved.entries.filter(e => !e.response.includes(qaMarker));
+            const occupied = new Set(saved.entries.map(e => e.round_id));
+            saved.rounds = saved.rounds.filter(r => !qaRounds.has(r.id) || occupied.has(r.id));
+            if (saved.rounds.length) {
+                const r = await bucket.upload(path, Buffer.from(JSON.stringify(saved)), { upsert: true, contentType: 'application/json', cacheControl: '0' });
+                if (r.error)
+                    throw r.error;
+            }
+            else
+                await bucket.remove([path]);
         }
-        else
-            await bucket.remove([path]);
+        finally {
+            await bucket.remove([lock]);
+        }
     }
 }

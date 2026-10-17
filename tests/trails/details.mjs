@@ -26,11 +26,12 @@ try {
    await buttons[i].click();
    await page.waitForSelector('dialog[open]');
    assert(await page.$eval('dialog[open]',e=>e.scrollTop===0),'details open at beginning');
-   const rect=await page.$eval('dialog[open]',e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,overflow:e.scrollWidth>e.clientWidth,scroll:document.body.style.overflow,title:e.querySelector('h2').textContent,stats:e.querySelector('.trail-details-stats').textContent,outline:e.querySelectorAll('details').length};});
+   const rect=await page.$eval('dialog[open]',e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,overflow:e.scrollWidth>e.clientWidth,scroll:document.body.style.overflow,title:e.querySelector('h2').textContent,stats:e.querySelector('.trail-details-stats').textContent,outline:e.querySelectorAll('details').length,subheading:parseFloat(getComputedStyle(e.querySelector('.trail-details-content h3')).fontSize)};});
    assert(Math.abs(rect.x+rect.w/2-width/2)<2,'horizontally centered');
    assert(Math.abs(rect.y+rect.h/2-450)<2,'vertically centered');
    assert(!rect.overflow&&rect.y>=0&&rect.h<=900);
    assert.equal(rect.scroll,'hidden');
+   assert.equal(rect.subheading,21,'modal subheading does not inherit large mobile placard title');
    const expected=[null,[3,13],[6,12],[5,19],[8,23]][i];
    if(expected){assert.equal(rect.outline,expected[0]);assert(rect.stats.includes(`${expected[1]} lessons`));} else { const sums=await page.$$eval('dialog[open] details',es=>({modules:es.length,units:es.reduce((n,e)=>n+e.querySelectorAll('li').length,0)})); assert(rect.stats.includes(`${sums.modules} modules · ${sums.units} lesson and workbook units`)); }
    const summary=await page.$('dialog[open] details summary');await summary.click();

@@ -1,3 +1,5 @@
+import { getReflectionExperience } from "@/lib/reflections/catalog";
+import { ReflectionCourseShell } from "@/components/reflection-course-shell";
 import { requireTrailCourseAssessment } from "@/lib/trails/course-access";
 import Link from "next/link";
 import {
@@ -38,17 +40,35 @@ export default async function DesignIdCoursePage({
   searchParams,
 }: DesignIdCoursePageProps) {
   const reviewParams = await searchParams;
-  const reviewReport = await getHeatherReviewReport(reviewParams) ?? await getNewReviewReport(reviewParams);
+  const reviewReport =
+    (await getHeatherReviewReport(reviewParams)) ??
+    (await getNewReviewReport(reviewParams));
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const assessmentReport = reviewReport ?? (user
-    ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
-    : { all: [], latest: [] });
-  await requireTrailCourseAssessment({ slug: "designid-foundations", snapshots: assessmentReport.all, email: normalizeEmail(user?.email), signedIn: Boolean(user), preview: Boolean(reviewReport), params: reviewParams });
+  const assessmentReport =
+    reviewReport ??
+    (user
+      ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
+      : { all: [], latest: [] });
+  await requireTrailCourseAssessment({
+    slug: "designid-foundations",
+    snapshots: assessmentReport.all,
+    email: normalizeEmail(user?.email),
+    signedIn: Boolean(user),
+    preview: Boolean(reviewReport),
+    params: reviewParams,
+  });
   const designId = buildDesignIdContext(assessmentReport);
-  const reviewContext = reviewReport ? { ...buildHeatherReviewContext(reviewReport), ...(isHeatherReviewRequest(reviewParams) ? {} : { displayName: newReviewName }) } : null;
+  const reviewContext = reviewReport
+    ? {
+        ...buildHeatherReviewContext(reviewReport),
+        ...(isHeatherReviewRequest(reviewParams)
+          ? {}
+          : { displayName: newReviewName }),
+      }
+    : null;
   const studentContext = reviewContext ?? {
     assessmentReport,
     designId,
@@ -73,7 +93,8 @@ export default async function DesignIdCoursePage({
         slug: lesson.slug,
         summary: lesson.summary,
         title: lesson.title,
-        companionMoment: "companionMoment" in lesson ? lesson.companionMoment : undefined,
+        companionMoment:
+          "companionMoment" in lesson ? lesson.companionMoment : undefined,
       };
     }),
   }));
@@ -81,8 +102,12 @@ export default async function DesignIdCoursePage({
   return (
     <main className="journey-shell designid-course-shell">
       <nav className="course-nav" aria-label="Course navigation">
-        <Link href={withReviewQuery("/trailheads", reviewParams) + "#designid"}>Back to Trailhead</Link>
-        <Link href={withReviewQuery("/journey", reviewParams)}>Return to My Journey</Link>
+        <Link href={withReviewQuery("/trailheads", reviewParams) + "#designid"}>
+          Back to Trailhead
+        </Link>
+        <Link href={withReviewQuery("/journey", reviewParams)}>
+          Return to My Journey
+        </Link>
         <Link href="/">DYDD home</Link>
       </nav>
 
@@ -96,10 +121,7 @@ export default async function DesignIdCoursePage({
           <p className="eyebrow">DYDD class branch</p>
           <h1>{designIdCourse.title}</h1>
           <p className="lede">{designIdCourse.description}</p>
-          <Link
-            className="button primary"
-            href="#designid-course-player"
-          >
+          <Link className="button primary" href="#designid-course-player">
             Open course lessons
           </Link>
         </div>
@@ -121,7 +143,10 @@ export default async function DesignIdCoursePage({
         title="How to use this course"
       />
 
-      <section className="dydd-progress-racetrack journey-top-racetrack designid-top-racetrack" aria-label="DesignID module quick reference">
+      <section
+        className="dydd-progress-racetrack journey-top-racetrack designid-top-racetrack"
+        aria-label="DesignID module quick reference"
+      >
         <ol>
           {designIdCourse.modules.map((module, index) => (
             <li key={module.slug}>
@@ -133,7 +158,10 @@ export default async function DesignIdCoursePage({
         </ol>
       </section>
 
-      <section className="course-personalization" aria-label="Personalization status">
+      <section
+        className="course-personalization"
+        aria-label="Personalization status"
+      >
         <div>
           <p className="section-label">Individual walkthrough</p>
           <h2>
@@ -167,10 +195,15 @@ export default async function DesignIdCoursePage({
       </section>
 
       <div id="designid-course-player">
-        <DesignIdCourseNavigator
-          modules={personalizedModules}
-          reviewQuery={reviewQuery(reviewParams)}
-        />
+        <ReflectionCourseShell courseSlug="designid-foundations">
+          <DesignIdCourseNavigator
+            reflectionQuestions={
+              getReflectionExperience("designid-foundations")!.questions
+            }
+            modules={personalizedModules}
+            reviewQuery={reviewQuery(reviewParams)}
+          />
+        </ReflectionCourseShell>
       </div>
 
       <details className="journey-advanced-planning designid-source-accordion">
@@ -178,7 +211,10 @@ export default async function DesignIdCoursePage({
           <span>Source lesson links</span>
           <strong>Open the original standalone lesson routes if needed</strong>
         </summary>
-        <section className="module-stack" aria-label="DesignID standalone lesson links">
+        <section
+          className="module-stack"
+          aria-label="DesignID standalone lesson links"
+        >
           {designIdCourse.modules.map((module, moduleIndex) => (
             <article key={module.slug} className="module-panel">
               <div>

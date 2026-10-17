@@ -1,4 +1,9 @@
 "use client";
+import type { ReflectionQuestion } from "@/lib/reflections/catalog";
+import {
+  useReflectionPosition,
+  ReflectionAnswer,
+} from "@/components/reflection-session";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CompanionMoment } from "@/lib/courses/companion-moments";
@@ -22,6 +27,7 @@ type DesignIdModuleView = {
 
 type DesignIdCourseNavigatorProps = {
   modules: readonly DesignIdModuleView[];
+  reflectionQuestions: ReflectionQuestion[];
   reviewQuery: string;
 };
 
@@ -49,16 +55,42 @@ function withReview(path: string, reviewQuery: string) {
 
 export function DesignIdCourseNavigator({
   modules,
+  reflectionQuestions,
   reviewQuery,
 }: DesignIdCourseNavigatorProps) {
   const flatLessons = useMemo(() => flattenModules(modules), [modules]);
-  const [activeSlug, setActiveSlug] = useState(flatLessons[0]?.lesson.slug ?? "");
+  const savedPosition = useReflectionPosition();
+  useEffect(() => {
+    if (!savedPosition.roundId) return;
+    const requested =
+      new URLSearchParams(window.location.search).get("lesson") ??
+      savedPosition.lessonSlug;
+    const match =
+      flatLessons.find((item) => item.lesson.slug === requested) ??
+      flatLessons[0];
+    if (match) {
+      setActiveSlug(match.lesson.slug);
+      setOpenModules([match.module.slug]);
+    }
+  }, [savedPosition.roundId]);
+  const [activeSlug, setActiveSlug] = useState(
+    flatLessons[0]?.lesson.slug ?? "",
+  );
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("dydd-course-designid-foundations");
-      const match = flatLessons.find(item => item.lesson.slug === saved);
-      if (match) { setActiveSlug(match.lesson.slug); setOpenModules([match.module.slug]); }
-      if (!match && flatLessons[0]) localStorage.setItem("dydd-course-designid-foundations", flatLessons[0].lesson.slug);
+      const saved =
+        new URLSearchParams(window.location.search).get("lesson") ??
+        localStorage.getItem("dydd-course-designid-foundations");
+      const match = flatLessons.find((item) => item.lesson.slug === saved);
+      if (match) {
+        setActiveSlug(match.lesson.slug);
+        setOpenModules([match.module.slug]);
+      }
+      if (!match && flatLessons[0])
+        localStorage.setItem(
+          "dydd-course-designid-foundations",
+          flatLessons[0].lesson.slug,
+        );
     } catch {}
   }, [flatLessons]);
   const [openModules, setOpenModules] = useState<string[]>([]);
@@ -69,7 +101,8 @@ export function DesignIdCourseNavigator({
   );
   const active = flatLessons[activeIndex] ?? flatLessons[0];
   const previous = activeIndex > 0 ? flatLessons[activeIndex - 1] : null;
-  const next = activeIndex < flatLessons.length - 1 ? flatLessons[activeIndex + 1] : null;
+  const next =
+    activeIndex < flatLessons.length - 1 ? flatLessons[activeIndex + 1] : null;
   const progress = flatLessons.length
     ? Math.round(((activeIndex + 1) / flatLessons.length) * 100)
     : 0;
@@ -80,9 +113,17 @@ export function DesignIdCourseNavigator({
 
   const setLesson = (item: FlatDesignIdLesson) => {
     setActiveSlug(item.lesson.slug);
-    try { localStorage.setItem("dydd-course-designid-foundations", item.lesson.slug); } catch {}
+    savedPosition.recordPosition?.(item.lesson.slug);
+    try {
+      localStorage.setItem(
+        "dydd-course-designid-foundations",
+        item.lesson.slug,
+      );
+    } catch {}
     setOpenModules((current) =>
-      current.includes(item.module.slug) ? current : [...current, item.module.slug],
+      current.includes(item.module.slug)
+        ? current
+        : [...current, item.module.slug],
     );
     window.setTimeout(() => {
       activeLessonRef.current?.scrollIntoView({ block: "start" });
@@ -107,7 +148,10 @@ export function DesignIdCourseNavigator({
           <p className="section-label">Course menu</p>
           <h2>Choose a module and lesson.</h2>
         </div>
-        <div className="journey-course-progress" aria-label="Current lesson progress">
+        <div
+          className="journey-course-progress"
+          aria-label="Current lesson progress"
+        >
           <span style={{ width: `${progress}%` }} />
         </div>
         <p className="journey-course-progress-label">
@@ -131,7 +175,9 @@ export function DesignIdCourseNavigator({
                   type="button"
                 >
                   <span>{String(moduleIndex + 1).padStart(2, "0")}</span>
-                  <strong>{module.title.replace(/^Module\s+\d+:\s*/i, "")}</strong>
+                  <strong>
+                    {module.title.replace(/^Module\s+\d+:\s*/i, "")}
+                  </strong>
                   <small>{module.lessons.length} lessons</small>
                 </button>
                 {moduleOpen ? (
@@ -145,11 +191,19 @@ export function DesignIdCourseNavigator({
                         return (
                           <li key={lesson.slug}>
                             <button
-                              className={lesson.slug === active.lesson.slug ? "active" : ""}
-                              onClick={() => flatLesson ? setLesson(flatLesson) : undefined}
+                              className={
+                                lesson.slug === active.lesson.slug
+                                  ? "active"
+                                  : ""
+                              }
+                              onClick={() =>
+                                flatLesson ? setLesson(flatLesson) : undefined
+                              }
                               type="button"
                             >
-                              <span className="designid">Lesson {lessonIndex + 1}</span>
+                              <span className="designid">
+                                Lesson {lessonIndex + 1}
+                              </span>
                               <strong>{lesson.title}</strong>
                             </button>
                           </li>
@@ -182,7 +236,10 @@ export function DesignIdCourseNavigator({
           </div>
         </header>
 
-        <section className="journey-active-section-marker" aria-label="Current module">
+        <section
+          className="journey-active-section-marker"
+          aria-label="Current module"
+        >
           <span>{active.module.title}</span>
           <strong>
             DesignID gives the learner language for how God has shaped them to
@@ -211,7 +268,10 @@ export function DesignIdCourseNavigator({
               </ul>
             </section>
 
-            <section className="lesson-source designid-lesson-source" aria-label="Lesson body">
+            <section
+              className="lesson-source designid-lesson-source"
+              aria-label="Lesson body"
+            >
               <p className="section-label">{active.lesson.title}</p>
               <div
                 className="source-lesson-body designid-source-lesson-body"
@@ -219,14 +279,11 @@ export function DesignIdCourseNavigator({
               />
             </section>
 
-            <section className="lesson-callout designid-reflection-direction" aria-label="Reflection direction">
-              <p className="section-label">Reflection</p>
-              <h3>Where do you see this in real life?</h3>
-              <p>
-                Notice one place this design language gives you clarity about
-                your relationships, work, ministry, or next faithful step.
-              </p>
-            </section>
+            {reflectionQuestions
+              .filter((q) => q.lessonSlug === active.lesson.slug)
+              .map((q) => (
+                <ReflectionAnswer key={q.id} questionId={q.id} />
+              ))}
           </section>
         </div>
 
@@ -243,7 +300,9 @@ export function DesignIdCourseNavigator({
               Next: {next.lesson.title}
             </button>
           ) : (
-            <a href={withReview("/journey", reviewQuery)}>Continue to DYDD Journey</a>
+            <a href={withReview("/journey", reviewQuery)}>
+              Continue to DYDD Journey
+            </a>
           )}
         </footer>
       </article>

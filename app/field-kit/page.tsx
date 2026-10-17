@@ -1,3 +1,5 @@
+import { isTrailAssessmentComplete } from "@/lib/trails/catalog";
+import { FieldKitCollection } from "@/components/field-kit-collection";
 import { FieldKitLegacyLinks } from "@/components/field-kit-legacy-links";
 import { hasDesignPdCourseAccess } from "@/lib/designpd/access";
 import Link from "next/link";
@@ -11,7 +13,6 @@ import {
   displayDateTime,
   getAssessmentSnapshotsForParticipantMatch,
   getAssessmentSnapshotsForUser,
-  latestByAssessment,
   type AssessmentSnapshotSummary,
 } from "@/lib/assessments/student-context";
 import {
@@ -27,11 +28,9 @@ import { normalizeEmail } from "@/lib/identity/email";
 import {
   getHeatherReviewReport,
   getNewReviewReport,
-  heatherReviewName,
   isHeatherReviewRequest,
   isNewReviewRequest,
   jordanReviewEmail,
-  newReviewName,
   reviewQuery,
   type ReviewSearchParams,
   withReviewQuery,
@@ -39,16 +38,21 @@ import {
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type FieldKitPageProps = {
-  searchParams?: Promise<ReviewSearchParams & {
-    fruitlife?: string;
-    fruitlife_session?: string;
-    fruitlife_token?: string;
-    checkout?: string;
-    lane?: string;
-  }>;
+  searchParams?: Promise<
+    ReviewSearchParams & {
+      fruitlife?: string;
+      fruitlife_session?: string;
+      fruitlife_token?: string;
+      checkout?: string;
+      lane?: string;
+    }
+  >;
 };
 
 type FieldKitArtifact = {
+  id?: string;
+  completedAt?: string;
+  experienceSlug?: string;
   action: string;
   courseAction?: string | null;
   courseHref?: string | null;
@@ -68,10 +72,7 @@ function artifactDownloadHref(
   const statusHref = snapshot.scores?.statusHref;
   const reportAccessUrl = snapshot.scores?.reportAccessUrl;
 
-  if (
-    typeof reportAccessUrl === "string" &&
-    reportAccessUrl
-  ) {
+  if (typeof reportAccessUrl === "string" && reportAccessUrl) {
     return reportAccessUrl;
   }
 
@@ -117,7 +118,9 @@ async function getFieldKitAssessmentReport(
   return { all: [], latest: [] };
 }
 
-export default async function FieldKitPage({ searchParams }: FieldKitPageProps) {
+export default async function FieldKitPage({
+  searchParams,
+}: FieldKitPageProps) {
   const reviewParams = await searchParams;
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
   const supabase = await createSupabaseServerClient();
@@ -132,7 +135,8 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
         .maybeSingle()
     : { data: null };
   const reviewReport =
-    (await getHeatherReviewReport(reviewParams)) ?? (await getNewReviewReport(reviewParams));
+    (await getHeatherReviewReport(reviewParams)) ??
+    (await getNewReviewReport(reviewParams));
   const fruitLifeReviewQuery = reviewQuery(reviewParams);
 
   if (!user && fruitLifeLane && !reviewReport) {
@@ -140,7 +144,9 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
   }
 
   if (!user && !reviewReport && process.env.DYDD_REVIEW_TOKEN) {
-    redirect(`/field-kit?review=new&key=${encodeURIComponent(process.env.DYDD_REVIEW_TOKEN)}`);
+    redirect(
+      `/field-kit?review=new&key=${encodeURIComponent(process.env.DYDD_REVIEW_TOKEN)}`,
+    );
   }
 
   const participantEmail = isHeatherReviewRequest(reviewParams)
@@ -148,79 +154,109 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
     : isNewReviewRequest(reviewParams)
       ? jordanReviewEmail
       : normalizeEmail(profile?.email ?? user?.email);
-  const displayName = isHeatherReviewRequest(reviewParams)
-    ? `${heatherReviewName} Preview`
-    : isNewReviewRequest(reviewParams)
-      ? newReviewName
-      : profile?.full_name ?? user?.email ?? "Traveler";
-  const firstName = displayName.replace(/\s+Preview$/, "").split(/\s+/)[0] ?? "Traveler";
   const assessmentReport = reviewReport ??
-    (await getFieldKitAssessmentReport(user?.id ?? "", participantEmail, reviewParams)) ??
-    { all: [], latest: [] };
+    (await getFieldKitAssessmentReport(
+      user?.id ?? "",
+      participantEmail,
+      reviewParams,
+    )) ?? { all: [], latest: [] };
   const snapshotHistory = assessmentReport.all;
-  const snapshotLatest = latestByAssessment(snapshotHistory);
   const snapshotArtifactSources = fruitLifeLane
-    ? snapshotLatest.filter((snapshot) => snapshot.assessment_type !== "fruit_360")
-    : [
-        ...snapshotLatest.filter((snapshot) => snapshot.assessment_type !== "fruit_360"),
-        ...snapshotHistory.filter((snapshot) => snapshot.assessment_type === "fruit_360"),
-      ];
+    ? snapshotHistory.filter((s) => s.assessment_type !== "fruit_360")
+    : snapshotHistory;
   const fruitLifeSessions = await getFruitLifeDashboardSessions({
     email: participantEmail,
     enabled: Boolean(participantEmail),
   });
   const selectedFruitLifeSession =
-    fruitLifeSessions.find((session) => session.id === reviewParams?.fruitlife_session) ?? null;
+    fruitLifeSessions.find(
+      (session) => session.id === reviewParams?.fruitlife_session,
+    ) ?? null;
   const activeFruitLifeSession =
     (selectedFruitLifeSession && fruitLifeIsActive(selectedFruitLifeSession)
       ? selectedFruitLifeSession
       : fruitLifeSessions.find(fruitLifeIsActive)) ?? null;
   const activeFruitLifeToken =
-    selectedFruitLifeSession?.id === activeFruitLifeSession?.id && reviewParams?.fruitlife_token
+    selectedFruitLifeSession?.id === activeFruitLifeSession?.id &&
+    reviewParams?.fruitlife_token
       ? reviewParams.fruitlife_token
       : fruitLifeTokenFromSession(activeFruitLifeSession);
   const fruitLifeReportSessions = fruitLifeSessions.filter((session) =>
     Boolean(fruitLifeReportArtifact(session)),
   );
-  const designPdUnlocked = Boolean(user && hasDesignPdCourseAccess(user.email, snapshotHistory));
+  const designPdUnlocked = Boolean(
+    user && hasDesignPdCourseAccess(user.email, snapshotHistory),
+  );
   const artifacts: FieldKitArtifact[] = [
-    ...snapshotArtifactSources.filter(snapshot => !(snapshot.assessment_type === "fruit_360" && fruitLifeReportSessions.some(session => session.report_snapshot_id === snapshot.id))).map((snapshot) => ({
-      action: "Open report",
-      courseAction: "Explore course",
-      courseHref:
-        snapshot.assessment_type === "designid"
-          ? "/courses/designid-foundations"
-          : snapshot.assessment_type === "spiritual_gifts"
-            ? "/courses/spiritual-gifts-service"
-            : snapshot.assessment_type === "fruit_360"
-              ? "/courses/fruitlife-360-formation"
-              : snapshot.assessment_type === "designpd" && designPdUnlocked
-                ? "/courses/designpd-alignment"
-                : "/trailheads",
-      detail: `Completed ${displayDateTime(snapshot.source_submitted_at ?? snapshot.created_at)}.`,
-      href: artifactDownloadHref(snapshot, reviewParams),
-      logo:
-        snapshot.assessment_type === "designid"
-          ? "/brand/tools/designid-logo.webp"
-          : snapshot.assessment_type === "spiritual_gifts"
-            ? "/brand/tools/spiritual-gifts-logo.jpg"
-            : snapshot.assessment_type === "designpd"
-              ? "/brand/tools/designpd-logo.jpg"
+    ...snapshotArtifactSources
+      .filter((snapshot) =>
+        isTrailAssessmentComplete(snapshot.assessment_type, [snapshot]),
+      )
+      .filter(
+        (snapshot) =>
+          !(
+            snapshot.assessment_type === "fruit_360" &&
+            fruitLifeReportSessions.some(
+              (session) => session.report_snapshot_id === snapshot.id,
+            )
+          ),
+      )
+      .map((snapshot) => ({
+        id: snapshot.id,
+        completedAt: snapshot.source_submitted_at ?? snapshot.created_at,
+        experienceSlug: (
+          {
+            designid: "designid-foundations",
+            spiritual_gifts: "spiritual-gifts-service",
+            fruit_360: "fruitlife-360-formation",
+            designpd: "designpd-alignment",
+          } as Record<string, string>
+        )[snapshot.assessment_type],
+        action: "Open report",
+        courseAction: "Explore course",
+        courseHref:
+          snapshot.assessment_type === "designid"
+            ? "/courses/designid-foundations"
+            : snapshot.assessment_type === "spiritual_gifts"
+              ? "/courses/spiritual-gifts-service"
               : snapshot.assessment_type === "fruit_360"
-                ? "/brand/tools/fruitful-life-360-logo.jpg"
-                : "/brand/tools/design-pathways-logo.jpg",
-      meta: [
-        ["Status", "Completed"],
-        ["Completed", displayDateTime(snapshot.source_submitted_at ?? snapshot.created_at)],
-        ["Source", snapshot.source ?? "DYDD"],
-      ] as Array<[string, string]>,
-      title: snapshotArtifactTitle(snapshot),
-    })),
+                ? "/courses/fruitlife-360-formation"
+                : snapshot.assessment_type === "designpd" && designPdUnlocked
+                  ? "/courses/designpd-alignment"
+                  : "/trailheads",
+        detail: `Completed ${displayDateTime(snapshot.source_submitted_at ?? snapshot.created_at)}.`,
+        href: artifactDownloadHref(snapshot, reviewParams),
+        logo:
+          snapshot.assessment_type === "designid"
+            ? "/brand/tools/designid-logo.webp"
+            : snapshot.assessment_type === "spiritual_gifts"
+              ? "/brand/tools/spiritual-gifts-logo.jpg"
+              : snapshot.assessment_type === "designpd"
+                ? "/brand/tools/designpd-logo.jpg"
+                : snapshot.assessment_type === "fruit_360"
+                  ? "/brand/tools/fruitful-life-360-logo.jpg"
+                  : "/brand/tools/design-pathways-logo.jpg",
+        meta: [
+          ["Status", "Completed"],
+          [
+            "Completed",
+            displayDateTime(
+              snapshot.source_submitted_at ?? snapshot.created_at,
+            ),
+          ],
+          ["Source", snapshot.source ?? "DYDD"],
+        ] as Array<[string, string]>,
+        title: snapshotArtifactTitle(snapshot),
+      })),
     ...fruitLifeReportSessions.map((session) => {
       const reportArtifact = fruitLifeReportArtifact(session);
-      const reportTimestamp = reportArtifact?.created_at ?? session.updated_at ?? session.created_at;
+      const reportTimestamp =
+        reportArtifact?.created_at ?? session.updated_at ?? session.created_at;
 
       return {
+        id: session.id,
+        completedAt: reportTimestamp,
+        experienceSlug: "fruitlife-360-formation",
         action: "Open report",
         courseAction: "Explore course",
         courseHref: "/courses/fruitlife-360-formation",
@@ -240,11 +276,15 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
   if (fruitLifeLane) {
     const fruitLifeReturnPath = selectedFruitLifeSession
       ? `/field-kit?lane=fruitlife&fruitlife_session=${encodeURIComponent(selectedFruitLifeSession.id)}${
-          activeFruitLifeToken ? `&fruitlife_token=${encodeURIComponent(activeFruitLifeToken)}` : ""
+          activeFruitLifeToken
+            ? `&fruitlife_token=${encodeURIComponent(activeFruitLifeToken)}`
+            : ""
         }#current-assessment-process`
       : "/field-kit?lane=fruitlife#current-assessment-process";
     const fruitLifeArtifacts = artifacts.filter((artifact) =>
-      artifact.meta.some(([label, value]) => label === "Source" && value === "FruitLife360")
+      artifact.meta.some(
+        ([label, value]) => label === "Source" && value === "FruitLife360",
+      ),
     );
     const checkoutMessage =
       reviewParams?.checkout === "success"
@@ -273,9 +313,31 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
           </div>
         </header>
 
-        <section className="fieldkit-assessments-section" aria-label="FruitLife360 access">
-          {checkoutMessage ? <p className="form-message">{checkoutMessage}</p> : null}
-          <div className="trail-fieldkit-note"><div><h2>Your next step starts at Trailheads.</h2><p>Begin FruitLife360 or open its connected course there. Track your responses and collect your report here.</p></div><Link className="button primary" href={withReviewQuery("/trailheads?lane=fruitlife#fruitlife-360", reviewParams)}>Open FruitLife360 Trailhead</Link></div>
+        <section
+          className="fieldkit-assessments-section"
+          aria-label="FruitLife360 access"
+        >
+          {checkoutMessage ? (
+            <p className="form-message">{checkoutMessage}</p>
+          ) : null}
+          <div className="trail-fieldkit-note">
+            <div>
+              <h2>Your next step starts at Trailheads.</h2>
+              <p>
+                Begin FruitLife360 or open its connected course there. Track
+                your responses and collect your report here.
+              </p>
+            </div>
+            <Link
+              className="button primary"
+              href={withReviewQuery(
+                "/trailheads?lane=fruitlife#fruitlife-360",
+                reviewParams,
+              )}
+            >
+              Open FruitLife360 Trailhead
+            </Link>
+          </div>
         </section>
 
         <FruitLifeCurrentAssessmentProcess
@@ -292,61 +354,103 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
             <h2>FruitLife360 artifacts</h2>
           </div>
           <div className="artifact-download-list">
-            {fruitLifeArtifacts.length ? fruitLifeArtifacts.map((artifact) => (
-              <article className="artifact-download fieldkit-artifact-card" key={artifact.title}>
-                <div className="fieldkit-artifact-title">
-                  <img src={artifact.logo} alt={`${artifact.title} logo`} />
-                  <div>
-                    <span>{artifact.title}</span>
-                    <p>{artifact.detail}</p>
-                  </div>
-                </div>
-                <dl>
-                  {artifact.meta.map(([label, value]) => (
-                    <div key={label}>
-                      <dt>{label}</dt>
-                      <dd>{value}</dd>
+            {fruitLifeArtifacts.length ? (
+              fruitLifeArtifacts.map((artifact) => (
+                <article
+                  className="artifact-download fieldkit-artifact-card"
+                  key={artifact.title}
+                >
+                  <div className="fieldkit-artifact-title">
+                    <img src={artifact.logo} alt={`${artifact.title} logo`} />
+                    <div>
+                      <span>{artifact.title}</span>
+                      <p>{artifact.detail}</p>
                     </div>
-                  ))}
-                </dl>
-                <div className="fieldkit-artifact-actions">
-                  <Link className="button primary" href={artifact.href}>
-                    {artifact.action}
-                  </Link>
-                  {artifact.courseHref && artifact.courseAction ? (
-                    <Link className="button secondary" href={withReviewQuery(artifact.courseHref, reviewParams)}>
-                      {artifact.courseAction}
+                  </div>
+                  <dl>
+                    {artifact.meta.map(([label, value]) => (
+                      <div key={label}>
+                        <dt>{label}</dt>
+                        <dd>{value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <div className="fieldkit-artifact-actions">
+                    <Link className="button primary" href={artifact.href}>
+                      {artifact.action}
                     </Link>
-                  ) : null}
-                </div>
-              </article>
-            )) : (
+                    {artifact.courseHref && artifact.courseAction ? (
+                      <Link
+                        className="button secondary"
+                        href={withReviewQuery(
+                          artifact.courseHref,
+                          reviewParams,
+                        )}
+                      >
+                        {artifact.courseAction}
+                      </Link>
+                    ) : null}
+                  </div>
+                </article>
+              ))
+            ) : (
               <article className="artifact-download fieldkit-artifact-card">
                 <div className="fieldkit-artifact-title">
-                  <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife360 logo" />
+                  <img
+                    src="/brand/tools/fruitful-life-360-logo.jpg"
+                    alt="FruitLife360 logo"
+                  />
                   <div>
                     <span>No FruitLife360 report yet</span>
-                    <p>Your completed report will appear here when it is ready.</p>
+                    <p>
+                      Your completed report will appear here when it is ready.
+                    </p>
                   </div>
                 </div>
               </article>
             )}
           </div>
         </section>
+        <section className="reflection-round-bar">
+          <p className="section-label">Course Reflections</p>
+          <h2>Your FruitLife360 reflection history.</h2>
+          <p>
+            Read your dated reflections, continue your current workbook, or
+            begin a new round without replacing earlier answers.
+          </p>
+          <Link
+            className="button primary"
+            href={withReviewQuery(
+              "/field-kit/reflections/fruitlife-360-formation",
+              reviewParams,
+            )}
+          >
+            Review my reflections
+          </Link>
+        </section>
         <FruitLifeMiniFooter />
       </main>
     );
   }
 
+  const { data: reflectionRounds } = user
+    ? await supabase
+        .from("reflection_rounds")
+        .select("course_slug,started_at")
+        .eq("user_id", user.id)
+        .order("started_at", { ascending: false })
+    : { data: [] };
   return (
-    <main className="journey-shell hq-standalone-page">
+    <main className="journey-shell hq-standalone-page fieldkit-renewal">
       <FieldKitLegacyLinks />
       <header className="standalone-hero fieldkit-hero">
         <div>
           <p className="eyebrow">Field Kit</p>
           <h1>What you’ve discovered. Ready to use.</h1>
           <p className="lede">
-            Your saved results, reports, and journey resources travel with you here. Start or continue a trail at Trailheads; find your journey stamps in the Base Camp Passport.
+            Your reports and course reflections, together by trail. Revisit
+            earlier discoveries, see your growth over time, and bring what you
+            learn into your Journey.
           </p>
         </div>
         <div className="fieldkit-help">
@@ -354,75 +458,25 @@ export default async function FieldKitPage({ searchParams }: FieldKitPageProps) 
             title="Field Kit Help"
             items={[
               "Start assessments and their connected courses at Trailheads.",
-              "Use Artifacts for completed reports and saved results.",
+              "Each trail keeps all dated reports beside its course reflection history.",
+              "Begin a new reflection round to capture growth without replacing earlier answers.",
               "Visit your Passport in Base Camp for journey stamps and progress.",
             ]}
           />
         </div>
       </header>
 
-      <aside className="trail-fieldkit-note"><div><p className="section-label">Ready for another discovery?</p><h2>Every new trail begins at Trailheads.</h2><p>Start assessments and continue their connected courses there. Your reports and results stay here.</p></div><Link className="button primary" href={withReviewQuery("/trailheads", reviewParams)}>Explore Trailheads</Link></aside>
-
+      <FieldKitCollection
+        artifacts={artifacts}
+        rounds={reflectionRounds ?? []}
+        reviewParams={reviewParams}
+      />
       <FruitLifeCurrentAssessmentProcess
         created={reviewParams?.fruitlife === "created"}
         notice={reviewParams?.fruitlife}
         session={activeFruitLifeSession}
         token={activeFruitLifeToken}
       />
-
-      <section className="artifact-panel artifact-workbench" id="artifacts">
-        <div className="card-heading">
-          <p className="section-label">Artifacts</p>
-        </div>
-        <p className="fieldkit-section-note">
-          Hi {firstName}, here are the artifacts you've collected from your journey so far.
-        </p>
-        <div className="artifact-download-list">
-          {artifacts.length ? artifacts.map((artifact) => (
-            <article className="artifact-download fieldkit-artifact-card" key={artifact.title}>
-              <div className="fieldkit-artifact-title">
-                <img src={artifact.logo} alt={`${artifact.title} logo`} />
-                <div>
-                  <span>{artifact.title}</span>
-                  <p>{artifact.detail}</p>
-                </div>
-              </div>
-              <dl>
-                {artifact.meta.map(([label, value]) => (
-                  <div key={label}>
-                    <dt>{label}</dt>
-                    <dd>{value}</dd>
-                  </div>
-                ))}
-              </dl>
-              <div className="fieldkit-artifact-actions">
-                <Link className="button primary" href={artifact.href}>
-                  {artifact.action}
-                </Link>
-                {artifact.courseHref && artifact.courseAction ? (
-                  <Link className="button secondary" href={withReviewQuery(artifact.courseHref, reviewParams)}>
-                    {artifact.courseAction}
-                  </Link>
-                ) : null}
-                <Link className="button secondary" href="/gear">
-                  Add feedback
-                </Link>
-              </div>
-            </article>
-          )) : (
-            <article className="artifact-download fieldkit-artifact-card">
-              <div className="fieldkit-artifact-title">
-                <img src="/brand/tools/designid-logo.webp" alt="DYDD artifact logo" />
-                <div>
-                  <span>No completed artifacts yet</span>
-                  <p>Finished assessment reports will appear here with completion dates.</p>
-                </div>
-              </div>
-            </article>
-          )}
-        </div>
-      </section>
-
     </main>
   );
 }

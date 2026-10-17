@@ -1,0 +1,82 @@
+FIELD KIT + ACCOUNT REFLECTION HISTORY — October 17, 2026
+
+Authorization: John approved implementation and production rollout across all
+five experiences together, not a Spiritual Gifts-only pilot. Preserve Trailheads
+visual hierarchy: full DYDD Journey; focused DesignID / Spiritual Gifts /
+FruitLife360; extended DesignPD. No companion or automated trend analysis yet.
+
+Architecture
+- Canonical question catalog: lib/reflections/catalog.ts. Exact course reflection
+  prompts; DesignID Reflect/Notice/Respond prompts come from its original HTML.
+  Journey lesson, CARE/workbook, Pathfinder and supplemental chapter prompts
+  share stable IDs. Every question appears, even when unanswered.
+- Each account has independently dated reflection_rounds. Each round freezes the
+  actual questions and versions, with an optional owned assessment-report link.
+- reflection_entries is append-only. Each edit adds a revision; it does not
+  replace an earlier answer. An expected revision detects stale browser tabs.
+  PostgreSQL advisory locking makes per-question saves atomic. PT409 is used
+  for an application-level stale-edit conflict (not serialization retry 40001).
+- Round creation requires existing assessment/report/course access; DesignPD
+  retains its independent existing report access checks. Reading one's own
+  history does not require repurchasing. Preview sessions cannot write.
+- Both tables enforce owner-only RLS. Entries cannot be updated/deleted by the
+  authenticated role. Round update grants are limited to lesson position and
+  updated_at; user_id and immutable question snapshots cannot be reassigned.
+- Only the newest round is editable in the UI; earlier rounds are readable.
+  Reopening a course continues its current round. A new round requires an
+  explicit click, optionally linked to one of the account's reports.
+- Current course position saves to the round/account, not just browser storage.
+  Existing browser position keys remain as a fallback before a round exists.
+
+Surfaces
+- /field-kit: all dated reports, no longer just the latest non-FruitLife report;
+  reports and Course Reflections beside each other in each named experience.
+- /field-kit/reflections/[courseSlug]: readable question-and-answer workbook;
+  deliberate editing mode, dated rounds, previous answers and revision history.
+- Actual course players, standalone lesson routes and supplementary Journey
+  workbook fields use the same reflection records, not separate copies.
+- Niche builder: modal Field Kit side panel, experience and dated-round browsing,
+  source-attributed insight insertion, and an account-saved working declaration.
+  Report collection opens in another tab so the niche draft remains in place.
+- Existing FruitLife assessment tracking and dedicated access route retained.
+
+Preservation / deployment
+1. Private local backup of both original reflection tables before any changes.
+2. Apply supabase/migrations/20261017160434_reflection_rounds_and_history.sql.
+3. Generate additive import SQL using:
+   node scripts/migrate-reflection-history.cjs > PRIVATE_IMPORT.sql
+   Apply through the existing privileged database connection. This is idempotent;
+   old tables are left intact. Saved question text, answers, and actual timestamps
+   are retained. Existing chapter-form revisions are preserved if present.
+4. Before release, verify exact equality with the original records. Audit found
+   two course answers and zero old chapter-form answers; both answers preserved.
+5. Build, catalog/access tests, isolated-account lifecycle and browser QA; then
+   commit/push and verify the stable production alias.
+
+Companion readiness
+Keep report IDs, period dates, original question/version, response and revisions.
+An unanswered field is not a negative result. A question absent from an older
+round is explicitly distinguished from one left unanswered. No invented earlier
+rounds or reconstructed personal growth history.
+
+Verification details are recorded after the final local/live test runs.
+
+Local verification (production build, isolated temporary accounts)
+- 249 versioned questions: Journey 167; DesignID 29; Spiritual Gifts 12;
+  FruitLife360 19; DesignPD 22. Complete catalog and stable-ID checks PASS.
+- Existing assessment-first and independent DesignPD access: 20 cases PASS.
+- All five experiences: save, revise, stale-tab conflict, identical retry, new
+  dated round, previous round preservation and explicit blank answer PASS.
+- Actual browser workbook save/reload and same answer inside all five actual
+  course players PASS. Account-backed resume works after clearing browser storage.
+- Cross-account API + direct database access, forged round/report denial,
+  immutable entry history and anonymous write denial PASS.
+- Field Kit order / every report / no overflow at 1280,768,390,320 pixels PASS.
+- Read-only prior rounds; failed-save draft retention; unsaved-navigation guard;
+  niche side panel; attributed insight insertion, saved declaration/reload and
+  exact dated-source links PASS. No browser errors.
+- Temporary QA users, snapshots, rounds and entries removed by exact IDs.
+- Supabase security advisor HTTP 200; no findings for the new resources.
+- Exact original reflection tables compared with pre-change backup: unchanged.
+  Both imported answers match original prompt, response and saved timestamp.
+- Assessment scoring, report generation and payment/access rules were not rebuilt.

@@ -1,0 +1,243 @@
+import Link from "next/link";
+import { trailDefinitions } from "@/lib/trails/catalog";
+import { withReviewQuery, type ReviewSearchParams } from "@/lib/review/heather";
+export type CollectedArtifact = {
+  id?: string;
+  completedAt?: string;
+  action: string;
+  courseAction?: string | null;
+  courseHref?: string | null;
+  detail: string;
+  href: string;
+  logo: string;
+  meta: Array<[string, string]>;
+  title: string;
+  experienceSlug?: string;
+};
+export function FieldKitCollection({
+  artifacts,
+  rounds,
+  reviewParams,
+}: {
+  artifacts: CollectedArtifact[];
+  rounds: Array<{ course_slug: string; started_at: string }>;
+  reviewParams?: ReviewSearchParams;
+}) {
+  const section = (
+    slug: string,
+    name: string,
+    description: string,
+    courseHref: string,
+    number: string,
+    main = false,
+  ) => {
+    const reports = artifacts
+      .filter((a) => a.experienceSlug === slug)
+      .sort(
+        (a, b) =>
+          new Date(b.completedAt ?? 0).getTime() -
+          new Date(a.completedAt ?? 0).getTime(),
+      );
+    const saved = rounds.filter((r) => r.course_slug === slug);
+    const path = (href: string) => withReviewQuery(href, reviewParams);
+    return (
+      <div
+        className={`trail-placard fieldkit-collection${main ? " trail-placard-main" : ""}`}
+      >
+        <div className="trail-placard-top">
+          <span>DYDD · FIELD KIT</span>
+          <span>{number}</span>
+        </div>
+        <div className="trail-placard-body">
+          {main ? (
+            <img
+              className="trail-dydd-logo"
+              src="/brand/dydd-logo-trailheads.webp"
+              alt="Discover Your Divine Design"
+            />
+          ) : null}
+          <h3>{name}</h3>
+          <p className="trail-description">{description}</p>
+          <div className="fieldkit-collection-columns">
+            <section aria-label={`${name} reports`}>
+              <p className="section-label">Reports</p>
+              <h4>
+                {main
+                  ? "Your connected discoveries"
+                  : `${reports.length} saved ${reports.length === 1 ? "report" : "reports"}`}
+              </h4>
+              {main ? (
+                <p>
+                  Your assessment reports are organized by trail below. Bring
+                  them into your Journey whenever you need them.
+                </p>
+              ) : reports.length ? (
+                <div className="fieldkit-report-history">
+                  {reports.map((a) => (
+                    <details key={a.id ?? a.href}>
+                      <summary>
+                        <strong>{a.title}</strong>
+                        <span>
+                          {a.meta.find(
+                            ([label]) => label === "Completed",
+                          )?.[1] ?? a.detail}
+                        </span>
+                      </summary>
+                      <p>{a.detail}</p>
+                      <dl>
+                        {a.meta.map(([label, value]) => (
+                          <div key={label}>
+                            <dt>{label}</dt>
+                            <dd>{value}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                      <Link className="button secondary" href={a.href}>
+                        {a.action}
+                      </Link>
+                    </details>
+                  ))}
+                </div>
+              ) : (
+                <p>
+                  No completed report yet. Start this trail at Trailheads; your
+                  completed reports will collect here.
+                </p>
+              )}
+            </section>
+            <section aria-label={`${name} course reflections`}>
+              <p className="section-label">Course Reflections</p>
+              <h4>
+                {saved.length
+                  ? `${saved.length} dated reflection ${saved.length === 1 ? "round" : "rounds"}`
+                  : "Your personal workbook"}
+              </h4>
+              <p>
+                {saved.length
+                  ? "Return to your current answers or read previous dated reflections. New rounds keep earlier discoveries intact."
+                  : "Keep every question and your answers together, including questions you haven’t answered yet."}
+              </p>
+              <Link
+                className="button primary"
+                href={path(`/field-kit/reflections/${slug}`)}
+              >
+                Review my reflections
+              </Link>
+            </section>
+          </div>
+          <div className="fieldkit-collection-footer">
+            <Link className="button secondary" href={path(courseHref)}>
+              Continue course
+            </Link>
+            {!main ? (
+              <Link
+                href={path(
+                  `/trailheads#${trailDefinitions.find((t) => t.courseSlug === slug)?.id ?? ""}`,
+                )}
+              >
+                Return to Trailhead
+              </Link>
+            ) : (
+              <p>
+                The same workbook is available here and inside your Journey.
+              </p>
+            )}
+            {!main ? <Link href="/gear">Add feedback</Link> : null}
+          </div>
+        </div>
+        <div className="trail-placard-foot" aria-hidden="true">
+          <span />
+          KEEP WHAT YOU DISCOVER
+          <span />
+        </div>
+      </div>
+    );
+  };
+  return (
+    <section
+      id="artifacts"
+      className="fieldkit-collections"
+      aria-label="Collected reports and reflections"
+    >
+      <section
+        className="trail-main-route"
+        aria-label="Main Journey collection"
+      >
+        <div className="trail-section-title">
+          <p className="section-label">The main journey</p>
+          <h2>Discover Your Divine Design.</h2>
+          <p>
+            Your complete Journey workbook, ready to revisit inside or outside
+            the class.
+          </p>
+        </div>
+        <article className="trail-showcase">
+          <div className="trail-showcase-art">
+            <img
+              src="/brand/dydd-trailheads-signpost-dydi.png"
+              alt="Discover Your Divine Design trail sign"
+            />
+          </div>
+          <div className="trail-showcase-content">
+            {section(
+              "discover-your-divine-design",
+              "Discover Your Divine Design Journey",
+              "Collect your reflections on identity, design, gifting, and purpose—and return to them as you shape your niche.",
+              "/journey",
+              "01",
+              true,
+            )}
+          </div>
+        </article>
+      </section>
+      {[
+        {
+          label: "Focused trails",
+          title: "Your practical first steps.",
+          description:
+            "Your reports and course reflections, organized by the trail you explored.",
+          trails: trailDefinitions.filter((t) => t.id !== "designpd"),
+        },
+        {
+          label: "Extended trails",
+          title: "Build on what you’ve discovered.",
+          description:
+            "DesignPD adds its own reports and reflection workbook to your DesignID discoveries.",
+          trails: trailDefinitions.filter((t) => t.id === "designpd"),
+        },
+      ].map((group) => (
+        <section className="trail-guide-section" key={group.label}>
+          <div className="trail-section-title">
+            <p className="section-label">{group.label}</p>
+            <h2>{group.title}</h2>
+            <p>{group.description}</p>
+          </div>
+          <div className="trail-guide-routes">
+            {group.trails.map((t) => (
+              <article
+                className={`trail-guide-route trail-guide-route-${t.id}`}
+                key={t.id}
+                id={`collection-${t.id}`}
+              >
+                <div className="trail-guide-route-art">
+                  <img
+                    src={t.signpost}
+                    alt={`${t.name} trail signpost`}
+                    loading="lazy"
+                  />
+                </div>
+                {section(
+                  t.courseSlug,
+                  t.name,
+                  t.description,
+                  t.courseHref,
+                  String(trailDefinitions.indexOf(t) + 2).padStart(2, "0"),
+                )}
+              </article>
+            ))}
+          </div>
+        </section>
+      ))}
+    </section>
+  );
+}

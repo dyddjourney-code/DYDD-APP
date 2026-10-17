@@ -20311,3 +20311,51 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .trail-details-content { padding:20px 18px; }
   .trail-details-stats { grid-template-columns:1fr; gap:12px; }
 }
+
+/* Field Kit follows the same green/cream trail hierarchy as Trailheads. */
+.fieldkit-collections { display:grid; gap:4rem; margin-top:2rem; }
+.fieldkit-collections .trail-showcase-content { min-width:0; }
+.fieldkit-collection { width:100%; min-width:0; }
+.fieldkit-collection-columns { display:grid; grid-template-columns:1fr 1fr; gap:1.75rem; margin-top:1.5rem; }
+.fieldkit-collection-columns > section { min-width:0; }
+.fieldkit-collection-columns > section + section { border-left:1px solid #c7cbb7; padding-left:1.5rem; }
+.fieldkit-collection h4 { font-size:1.15rem; color:#234536; margin:.5rem 0; }
+.fieldkit-collection p { line-height:1.65; }
+.fieldkit-report-history details { border-top:1px solid #c7cbb7; padding:.8rem 0; }
+.fieldkit-report-history summary { cursor:pointer; overflow-wrap:anywhere; }
+.fieldkit-report-history summary span { display:block; margin-top:.35rem; font-size:.9rem; }
+.fieldkit-report-history dl > div { display:flex; flex-wrap:wrap; gap:.4rem; margin:.3rem 0; }
+.fieldkit-report-history dt { font-weight:700; }.fieldkit-report-history dd{margin:0;overflow-wrap:anywhere;}
+.fieldkit-collection-footer { display:flex; flex-wrap:wrap; align-items:center; gap:1rem; border-top:1px solid #c7cbb7; margin-top:1.5rem; padding-top:1.25rem; }
+.reflection-round-bar { background:#f6f2e7; border:1px solid #bdc5b1; border-top:5px solid #31553d; padding:1.5rem; border-radius:12px; margin:1.5rem 0; color:#243d2f; }
+.reflection-round-bar h2 { font-size:1.4rem; margin:.4rem 0; }.reflection-round-bar p{line-height:1.6;}
+.reflection-round-controls { display:flex; flex-wrap:wrap; gap:1rem; align-items:end; margin-top:1rem; }.reflection-round-controls > p { flex-basis:100%; margin:0; }
+.reflection-round-controls label { display:grid; gap:.45rem; min-width:0; flex:1 1 220px; font-weight:700; }
+.reflection-round-controls select { width:100%; max-width:100%; min-width:0; border:1px solid #abb7a5; background:#fffdf7; color:#243d2f; border-radius:6px; padding:.8rem; font:inherit; font-weight:400; }
+.reflection-answer { padding:1.25rem; margin:1rem 0; border:1px solid #cdd2bf; border-radius:10px; background:#fffdf7; color:#243d2f; min-width:0; }
+.reflection-answer h3 { font-size:1.15rem; line-height:1.6; margin:0 0 1rem; }.reflection-answer label { display:grid; gap:.5rem; font-weight:600; }
+.reflection-answer textarea { display:block; width:100%; box-sizing:border-box; min-width:0; min-height:130px; border:1px solid #aab7a0; border-radius:6px; padding:1rem; font:inherit; font-weight:400; line-height:1.7; resize:vertical; background:#fff; color:#243d2f; }
+.reflection-answer textarea:focus,.reflection-round-controls select:focus { outline:3px solid #748e65; outline-offset:2px; }.reflection-answer textarea:disabled { background:#f2f0e8; }
+.reflection-answer-actions { display:flex; flex-wrap:wrap; gap:.8rem; align-items:center; margin-top:.8rem; }.reflection-answer-actions span{font-size:.9rem;max-width:65ch;}
+.reflection-history { border-top:1px solid #d6dacb; margin-top:1rem; padding-top:1rem; }.reflection-history summary { cursor:pointer; font-weight:700; }.reflection-history article { padding:1rem 0; border-bottom:1px solid #d6dacb; }.reflection-history h4 { margin:0 0 .5rem; }
+.reflection-read-answer { white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.8; }
+.reflection-workbook-question { border-bottom:1px solid #cdd2bf; padding:1.5rem 0; }.reflection-workbook-question > h2 {font-size:1.35rem;}.reflection-workbook { max-width:1000px; margin:auto; }
+.reflection-source-panel { padding:1.25rem; border:1px solid #b9c5b1; border-radius:10px; background:#f6f2e7; margin:1rem 0; }.reflection-source-panel > summary{cursor:pointer;font-weight:700;}.reflection-source-panel article{border-top:1px solid #cdd2bf;padding:1rem 0;}.reflection-source-panel select{max-width:100%;padding:.6rem;}.reflection-source-panel button{margin:.5rem 0;}.reflection-source-panel p{overflow-wrap:anywhere;}
+.reflection-answer button:active,.reflection-round-bar button:active{transform:translateY(1px);}
+@media(max-width:850px){.fieldkit-collection-columns{grid-template-columns:1fr;}.fieldkit-collection-columns > section + section{border-left:0;border-top:1px solid #c7cbb7;padding-left:0;padding-top:1.25rem;}}
+@media(max-width:480px){.reflection-round-bar,.reflection-answer{padding:1rem;}.reflection-round-controls{display:grid;grid-template-columns:minmax(0,1fr);}.reflection-round-controls button,.fieldkit-collection .button{width:100%;text-align:center;white-space:normal;}.fieldkit-collections{gap:2.5rem;}.fieldkit-collection-footer{align-items:stretch;}.reflection-round-controls label{font-size:.95rem;}}
+@media print{.reflection-round-bar,.reflection-answer-actions,.course-nav,.reflection-source-panel{display:none;}.reflection-answer{break-inside:avoid;}.reflection-answer textarea{border:0;}}
+.fieldkit-source-dialog {position:fixed;inset:0 0 0 auto;margin:0;width:min(640px,100%);height:100dvh;max-height:100dvh;box-sizing:border-box;border:0;border-left:2px solid #b8c3ac;background:#fffdf7;color:#243d2f;padding:1.5rem;overflow-y:auto;}
+.fieldkit-source-dialog::backdrop{background:#18372666;}.fieldkit-source-dialog header{display:flex;align-items:center;justify-content:space-between;gap:1rem;}.fieldkit-source-dialog label{display:grid;gap:.5rem;margin:1rem 0;font-weight:700;}.fieldkit-source-dialog select{padding:.8rem;font:inherit;width:100%;min-width:0;}.fieldkit-source-dialog article{padding:1.25rem 0;border-bottom:1px solid #cdd2bf;}.fieldkit-source-dialog button{padding:.7rem 1rem;background:#31553d;color:#fffdf7;border:0;border-radius:6px;cursor:pointer;}.fieldkit-source-dialog h3{font-size:1.1rem;line-height:1.6;}.fieldkit-source-dialog button:disabled{opacity:.5;cursor:not-allowed;}
+.reflection-workbook-toolbar {display:flex;justify-content:space-between;gap:1rem;align-items:center;flex-wrap:wrap;padding:1rem 0;border-bottom:1px solid #cdd2bf;}.reflection-workbook-toolbar p{max-width:60ch;line-height:1.6;}
+@media print{.reflection-workbook-toolbar{display:none;}}
+
+.fieldkit-renewal {--trail-green:#2c503e;--trail-cream:#faf7ed;--trail-ink:#243f32;}
+.fieldkit-collections .trail-guide-routes{display:grid;gap:44px;}
+.fieldkit-collections .trail-description{font-size:18px;}
+.fieldkit-collections .trail-placard .button{font-size:16px;line-height:1.45;}
+
+.fieldkit-renewal .fieldkit-hero h1{font-size:clamp(30px,3.5vw,46px);max-width:650px;word-break:normal;overflow-wrap:normal;text-wrap:balance;}
+.fieldkit-collection.trail-placard-main .fieldkit-collection-columns{grid-template-columns:1fr;gap:1rem;}
+.fieldkit-collection.trail-placard-main .fieldkit-collection-columns > section + section{border-left:0;border-top:1px solid #c7cbb7;padding:1rem 0 0;}
+.fieldkit-collections .trail-showcase-art{align-self:center;}

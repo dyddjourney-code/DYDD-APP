@@ -1,3 +1,5 @@
+import { ReflectionCourseShell } from "@/components/reflection-course-shell";
+import { ReflectionAnswer } from "@/components/reflection-session";
 import { redirect } from "next/navigation";
 import { requireTrailCourseAssessment } from "@/lib/trails/course-access";
 import Link from "next/link";
@@ -28,9 +30,11 @@ type LearningLessonPageProps = {
     courseSlug: string;
     lessonSlug: string;
   }>;
-  searchParams?: Promise<ReviewSearchParams & {
-    lane?: string;
-  }>;
+  searchParams?: Promise<
+    ReviewSearchParams & {
+      lane?: string;
+    }
+  >;
 };
 
 export const dynamic = "force-dynamic";
@@ -123,13 +127,26 @@ export default async function LearningLessonPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const reviewReport = await getHeatherReviewReport(reviewParams) ?? await getNewReviewReport(reviewParams);
-  const assessmentReport = reviewReport ?? (user
-    ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
-    : { all: [], latest: [] });
-  const accessReport = course.slug === "designpd-alignment" && reviewReport && user
-    ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email)) : assessmentReport;
-  await requireTrailCourseAssessment({ slug: course.slug, snapshots: accessReport.all, email: normalizeEmail(user?.email), signedIn: Boolean(user), preview: Boolean(reviewReport), params: reviewParams });
+  const reviewReport =
+    (await getHeatherReviewReport(reviewParams)) ??
+    (await getNewReviewReport(reviewParams));
+  const assessmentReport =
+    reviewReport ??
+    (user
+      ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
+      : { all: [], latest: [] });
+  const accessReport =
+    course.slug === "designpd-alignment" && reviewReport && user
+      ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
+      : assessmentReport;
+  await requireTrailCourseAssessment({
+    slug: course.slug,
+    snapshots: accessReport.all,
+    email: normalizeEmail(user?.email),
+    signedIn: Boolean(user),
+    preview: Boolean(reviewReport),
+    params: reviewParams,
+  });
   const insights = buildAssessmentCourseInsights(
     assessmentReport,
     course.assessmentType,
@@ -139,16 +156,22 @@ export default async function LearningLessonPage({
     : withReviewQuery(`/courses/${course.slug}`, reviewParams);
 
   return (
-    <main className={`lesson-shell lesson-shell-${course.accent}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}>
-      {fruitLifeLane ? <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} /> : null}
+    <main
+      className={`lesson-shell lesson-shell-${course.accent}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}
+    >
+      {fruitLifeLane ? (
+        <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} />
+      ) : null}
       {!fruitLifeLane ? (
         <nav className="course-nav" aria-label="Lesson navigation">
           <Link href={courseMapHref}>Course map</Link>
-          <Link href={withReviewQuery("/journey", reviewParams)}>Return to My Journey</Link>
-          <Link href={withReviewQuery("/trailheads", reviewParams)}>Back to Trailheads</Link>
-          <Link href={withReviewQuery("/hq", reviewParams)}>
-            Base Camp
+          <Link href={withReviewQuery("/journey", reviewParams)}>
+            Return to My Journey
           </Link>
+          <Link href={withReviewQuery("/trailheads", reviewParams)}>
+            Back to Trailheads
+          </Link>
+          <Link href={withReviewQuery("/hq", reviewParams)}>Base Camp</Link>
         </nav>
       ) : null}
 
@@ -178,7 +201,10 @@ export default async function LearningLessonPage({
           <CompanionAudioCard moment={lesson.companionMoment} />
 
           {!fruitLifeLane ? (
-            <section className="personal-walkthrough" aria-label="Learner data panel">
+            <section
+              className="personal-walkthrough"
+              aria-label="Learner data panel"
+            >
               <p className="section-label">Assessment connection</p>
               <h2>
                 {insights.connected
@@ -203,8 +229,17 @@ export default async function LearningLessonPage({
             </section>
           ) : null}
 
-          <div className={lesson.image ? "assessment-lesson-content with-image" : "assessment-lesson-content"}>
-            <section className="lesson-source readable-lesson-body" aria-label="Lesson body">
+          <div
+            className={
+              lesson.image
+                ? "assessment-lesson-content with-image"
+                : "assessment-lesson-content"
+            }
+          >
+            <section
+              className="lesson-source readable-lesson-body"
+              aria-label="Lesson body"
+            >
               <p className="section-label">{lesson.title}</p>
               {lesson.body.map((block) => renderLessonBodyBlock(block))}
             </section>
@@ -228,20 +263,23 @@ export default async function LearningLessonPage({
             ) : null}
           </div>
 
-          {lesson.reflectionPrompt ? (
-            <section className="lesson-callout assessment-reflection-direction" aria-label="Reflection prompt">
-              <p className="section-label">Reflection</p>
-              <h2>{lesson.reflectionPrompt}</h2>
-            </section>
-          ) : null}
+          <ReflectionCourseShell courseSlug={course.slug}>
+            <ReflectionAnswer questionId={lesson.slug} />
+          </ReflectionCourseShell>
 
           <footer className="lesson-pagination" aria-label="Lesson pagination">
             {previousLesson ? (
               <Link
                 href={
                   fruitLifeLane
-                    ? withReviewQuery(`/learn/${course.slug}/${previousLesson.slug}?lane=fruitlife`, reviewParams)
-                    : withReviewQuery(`/learn/${course.slug}/${previousLesson.slug}`, reviewParams)
+                    ? withReviewQuery(
+                        `/learn/${course.slug}/${previousLesson.slug}?lane=fruitlife`,
+                        reviewParams,
+                      )
+                    : withReviewQuery(
+                        `/learn/${course.slug}/${previousLesson.slug}`,
+                        reviewParams,
+                      )
                 }
               >
                 Previous: {previousLesson.title}
@@ -253,16 +291,20 @@ export default async function LearningLessonPage({
               <Link
                 href={
                   fruitLifeLane
-                    ? withReviewQuery(`/learn/${course.slug}/${nextLesson.slug}?lane=fruitlife`, reviewParams)
-                    : withReviewQuery(`/learn/${course.slug}/${nextLesson.slug}`, reviewParams)
+                    ? withReviewQuery(
+                        `/learn/${course.slug}/${nextLesson.slug}?lane=fruitlife`,
+                        reviewParams,
+                      )
+                    : withReviewQuery(
+                        `/learn/${course.slug}/${nextLesson.slug}`,
+                        reviewParams,
+                      )
                 }
               >
                 Next: {nextLesson.title}
               </Link>
             ) : (
-              <Link href={courseMapHref}>
-                Back to course map
-              </Link>
+              <Link href={courseMapHref}>Back to course map</Link>
             )}
           </footer>
         </div>

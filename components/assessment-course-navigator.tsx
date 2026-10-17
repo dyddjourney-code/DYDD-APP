@@ -1,4 +1,8 @@
 "use client";
+import {
+  useReflectionPosition,
+  ReflectionAnswer,
+} from "@/components/reflection-session";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CourseModule } from "@/lib/courses/course-catalog";
@@ -18,8 +22,6 @@ type AssessmentCourseNavigatorProps = {
   insights: readonly AssessmentInsightRow[];
   modules: readonly CourseModule[];
   reviewQuery: string;
-  savedReflections?: Record<string, string>;
-  savedReflectionsEnabled?: boolean;
   showPersonalization?: boolean;
   showStandaloneLessonLink?: boolean;
 };
@@ -101,26 +103,47 @@ export function AssessmentCourseNavigator({
   insights,
   modules,
   reviewQuery,
-  savedReflections = {},
-  savedReflectionsEnabled = false,
   showPersonalization = true,
   showStandaloneLessonLink = true,
 }: AssessmentCourseNavigatorProps) {
   const flatLessons = useMemo(() => flattenModules(modules), [modules]);
-  const [activeSlug, setActiveSlug] = useState(flatLessons[0]?.lesson.slug ?? "");
+  const savedPosition = useReflectionPosition();
+  useEffect(() => {
+    if (!savedPosition.roundId) return;
+    const requested =
+      new URLSearchParams(window.location.search).get("lesson") ??
+      savedPosition.lessonSlug;
+    const match =
+      flatLessons.find((item) => item.lesson.slug === requested) ??
+      flatLessons[0];
+    if (match) {
+      setActiveSlug(match.lesson.slug);
+      setOpenModules([match.module.slug]);
+    }
+  }, [savedPosition.roundId]);
+  const [activeSlug, setActiveSlug] = useState(
+    flatLessons[0]?.lesson.slug ?? "",
+  );
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(`dydd-course-${courseSlug}`);
-      const match = flatLessons.find(item => item.lesson.slug === saved);
-      if (match) { setActiveSlug(match.lesson.slug); setOpenModules([match.module.slug]); }
-      if (!match && flatLessons[0]) localStorage.setItem(`dydd-course-${courseSlug}`, flatLessons[0].lesson.slug);
-    } catch { /* Storage is optional; learning stays available. */ }
+      const saved =
+        new URLSearchParams(window.location.search).get("lesson") ??
+        localStorage.getItem(`dydd-course-${courseSlug}`);
+      const match = flatLessons.find((item) => item.lesson.slug === saved);
+      if (match) {
+        setActiveSlug(match.lesson.slug);
+        setOpenModules([match.module.slug]);
+      }
+      if (!match && flatLessons[0])
+        localStorage.setItem(
+          `dydd-course-${courseSlug}`,
+          flatLessons[0].lesson.slug,
+        );
+    } catch {
+      /* Storage is optional; learning stays available. */
+    }
   }, [flatLessons, courseSlug]);
   const [openModules, setOpenModules] = useState<string[]>([]);
-  const [reflectionDrafts, setReflectionDrafts] =
-    useState<Record<string, string>>(savedReflections);
-  const [reflectionStatus, setReflectionStatus] =
-    useState<Record<string, "idle" | "saving" | "saved" | "error">>({});
   const activeLessonRef = useRef<HTMLElement | null>(null);
   const activeIndex = Math.max(
     0,
@@ -128,7 +151,8 @@ export function AssessmentCourseNavigator({
   );
   const active = flatLessons[activeIndex] ?? flatLessons[0];
   const previous = activeIndex > 0 ? flatLessons[activeIndex - 1] : null;
-  const next = activeIndex < flatLessons.length - 1 ? flatLessons[activeIndex + 1] : null;
+  const next =
+    activeIndex < flatLessons.length - 1 ? flatLessons[activeIndex + 1] : null;
   const progress = flatLessons.length
     ? Math.round(((activeIndex + 1) / flatLessons.length) * 100)
     : 0;
@@ -139,9 +163,14 @@ export function AssessmentCourseNavigator({
 
   const setLesson = (item: FlatLesson) => {
     setActiveSlug(item.lesson.slug);
-    try { localStorage.setItem(`dydd-course-${courseSlug}`, item.lesson.slug); } catch {}
+    savedPosition.recordPosition?.(item.lesson.slug);
+    try {
+      localStorage.setItem(`dydd-course-${courseSlug}`, item.lesson.slug);
+    } catch {}
     setOpenModules((current) =>
-      current.includes(item.module.slug) ? current : [...current, item.module.slug],
+      current.includes(item.module.slug)
+        ? current
+        : [...current, item.module.slug],
     );
     window.setTimeout(() => {
       activeLessonRef.current?.scrollIntoView({ block: "start" });
@@ -156,38 +185,6 @@ export function AssessmentCourseNavigator({
     );
   };
 
-  const saveReflection = async () => {
-    if (!savedReflectionsEnabled) {
-      return;
-    }
-
-    setReflectionStatus((current) => ({
-      ...current,
-      [active.lesson.slug]: "saving",
-    }));
-
-    const response = await fetch("/api/course-reflections", {
-      body: JSON.stringify({
-        courseSlug,
-        lessonSlug: active.lesson.slug,
-        lessonTitle: active.lesson.title,
-        prompt: active.lesson.reflectionPrompt,
-        response: reflectionDrafts[active.lesson.slug] ?? "",
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-    });
-
-    setReflectionStatus((current) => ({
-      ...current,
-      [active.lesson.slug]: response.ok ? "saved" : "error",
-    }));
-  };
-
-  const activeReflectionStatus = reflectionStatus[active.lesson.slug] ?? "idle";
-
   return (
     <section
       className={`journey-course-walkthrough assessment-course-walkthrough assessment-course-${accent}`}
@@ -198,7 +195,10 @@ export function AssessmentCourseNavigator({
           <p className="section-label">Course menu</p>
           <h2>Choose a module and lesson.</h2>
         </div>
-        <div className="journey-course-progress" aria-label="Current lesson progress">
+        <div
+          className="journey-course-progress"
+          aria-label="Current lesson progress"
+        >
           <span style={{ width: `${progress}%` }} />
         </div>
         <p className="journey-course-progress-label">
@@ -222,7 +222,9 @@ export function AssessmentCourseNavigator({
                   type="button"
                 >
                   <span>{String(moduleIndex + 1).padStart(2, "0")}</span>
-                  <strong>{module.title.replace(/^Module\s+\d+:\s*/i, "")}</strong>
+                  <strong>
+                    {module.title.replace(/^Module\s+\d+:\s*/i, "")}
+                  </strong>
                   <small>{module.lessons.length} lessons</small>
                 </button>
                 {moduleOpen ? (
@@ -236,8 +238,14 @@ export function AssessmentCourseNavigator({
                         return (
                           <li key={lesson.slug}>
                             <button
-                              className={lesson.slug === active.lesson.slug ? "active" : ""}
-                              onClick={() => flatLesson ? setLesson(flatLesson) : undefined}
+                              className={
+                                lesson.slug === active.lesson.slug
+                                  ? "active"
+                                  : ""
+                              }
+                              onClick={() =>
+                                flatLesson ? setLesson(flatLesson) : undefined
+                              }
                               type="button"
                             >
                               <span>{`Lesson ${lessonIndex + 1}`}</span>
@@ -268,9 +276,13 @@ export function AssessmentCourseNavigator({
           </div>
         </header>
 
-        <section className="journey-active-section-marker" aria-label="Current module">
+        <section
+          className="journey-active-section-marker"
+          aria-label="Current module"
+        >
           <span>
-            Module {active.moduleIndex + 1}: {active.module.title.replace(/^Module\s+\d+:\s*/i, "")}
+            Module {active.moduleIndex + 1}:{" "}
+            {active.module.title.replace(/^Module\s+\d+:\s*/i, "")}
           </span>
         </section>
 
@@ -288,7 +300,11 @@ export function AssessmentCourseNavigator({
             {showPersonalization ? (
               <section className="personal-walkthrough assessment-personal-walkthrough">
                 <p className="section-label">Assessment connection</p>
-                <h3>{connected ? "Connected data can speak into this lesson." : "Ready for connected data."}</h3>
+                <h3>
+                  {connected
+                    ? "Connected data can speak into this lesson."
+                    : "Ready for connected data."}
+                </h3>
                 {insights.length ? (
                   <dl className="lesson-insight-list">
                     {insights.slice(0, 6).map((row) => (
@@ -307,10 +323,21 @@ export function AssessmentCourseNavigator({
               </section>
             ) : null}
 
-            <div className={active.lesson.image ? "assessment-lesson-content with-image" : "assessment-lesson-content"}>
-              <section className="lesson-source readable-lesson-body" aria-label="Lesson body">
+            <div
+              className={
+                active.lesson.image
+                  ? "assessment-lesson-content with-image"
+                  : "assessment-lesson-content"
+              }
+            >
+              <section
+                className="lesson-source readable-lesson-body"
+                aria-label="Lesson body"
+              >
                 <p className="section-label">{active.lesson.title}</p>
-                {active.lesson.body.map((block) => renderLessonBodyBlock(block))}
+                {active.lesson.body.map((block) =>
+                  renderLessonBodyBlock(block),
+                )}
               </section>
               {active.lesson.image ? (
                 <figure
@@ -333,55 +360,7 @@ export function AssessmentCourseNavigator({
             </div>
 
             {active.lesson.reflectionPrompt ? (
-              <section className="lesson-callout assessment-reflection-direction" aria-label="Reflection direction">
-                <div className="assessment-reflection-heading">
-                  <p className="section-label">Reflection</p>
-                  {savedReflectionsEnabled ? (
-                    <details>
-                      <summary>Why save this?</summary>
-                      <p>
-                        Class reflections are stored privately in your account so
-                        they can support future summaries, ministry declarations,
-                        and the larger Discover Your Divine Design journey if you
-                        choose to use them. Only you can access these reflections
-                        while signed in.
-                      </p>
-                    </details>
-                  ) : null}
-                </div>
-                <h3>{active.lesson.reflectionPrompt}</h3>
-                {savedReflectionsEnabled ? (
-                  <div className="assessment-reflection-entry">
-                    <label htmlFor={`reflection-${active.lesson.slug}`}>
-                      <span>Your private reflection</span>
-                      <textarea
-                        id={`reflection-${active.lesson.slug}`}
-                        onChange={(event) =>
-                          setReflectionDrafts((current) => ({
-                            ...current,
-                            [active.lesson.slug]: event.target.value,
-                          }))
-                        }
-                        placeholder="Write what you want to remember from this lesson."
-                        value={reflectionDrafts[active.lesson.slug] ?? ""}
-                      />
-                    </label>
-                    <div className="assessment-reflection-actions">
-                      <button
-                        disabled={activeReflectionStatus === "saving"}
-                        onClick={saveReflection}
-                        type="button"
-                      >
-                        {activeReflectionStatus === "saving" ? "Saving..." : "Save reflection"}
-                      </button>
-                      {activeReflectionStatus === "saved" ? <span>Saved</span> : null}
-                      {activeReflectionStatus === "error" ? (
-                        <span className="error">Could not save. Try again.</span>
-                      ) : null}
-                    </div>
-                  </div>
-                ) : null}
-              </section>
+              <ReflectionAnswer questionId={active.lesson.slug} />
             ) : null}
           </section>
         </div>
@@ -399,10 +378,17 @@ export function AssessmentCourseNavigator({
               Next: {next.lesson.title}
             </button>
           ) : (
-            <a href={completionHref ?? withReview("/field-kit", reviewQuery)}>Complete Course</a>
+            <a href={completionHref ?? withReview("/field-kit", reviewQuery)}>
+              Complete Course
+            </a>
           )}
           {showStandaloneLessonLink ? (
-            <a href={withReview(`/learn/${courseSlug}/${active.lesson.slug}`, reviewQuery)}>
+            <a
+              href={withReview(
+                `/learn/${courseSlug}/${active.lesson.slug}`,
+                reviewQuery,
+              )}
+            >
               Open lesson route
             </a>
           ) : null}

@@ -1,3 +1,4 @@
+import { ReflectionCourseShell } from "@/components/reflection-course-shell";
 import { redirect } from "next/navigation";
 import { requireTrailCourseAssessment } from "@/lib/trails/course-access";
 import { notFound } from "next/navigation";
@@ -27,9 +28,11 @@ type LearningCoursePageProps = {
   params: Promise<{
     courseSlug: string;
   }>;
-  searchParams?: Promise<ReviewSearchParams & {
-    lane?: string;
-  }>;
+  searchParams?: Promise<
+    ReviewSearchParams & {
+      lane?: string;
+    }
+  >;
 };
 
 export function generateStaticParams() {
@@ -91,42 +94,48 @@ export default async function LearningCoursePage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const reviewReport = await getHeatherReviewReport(reviewParams) ?? await getNewReviewReport(reviewParams);
-  const assessmentReport = reviewReport ?? (user
-    ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
-    : { all: [], latest: [] });
-  const accessReport = course.slug === "designpd-alignment" && reviewReport && user
-    ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email)) : assessmentReport;
-  await requireTrailCourseAssessment({ slug: course.slug, snapshots: accessReport.all, email: normalizeEmail(user?.email), signedIn: Boolean(user), preview: Boolean(reviewReport), params: reviewParams });
+  const reviewReport =
+    (await getHeatherReviewReport(reviewParams)) ??
+    (await getNewReviewReport(reviewParams));
+  const assessmentReport =
+    reviewReport ??
+    (user
+      ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
+      : { all: [], latest: [] });
+  const accessReport =
+    course.slug === "designpd-alignment" && reviewReport && user
+      ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email))
+      : assessmentReport;
+  await requireTrailCourseAssessment({
+    slug: course.slug,
+    snapshots: accessReport.all,
+    email: normalizeEmail(user?.email),
+    signedIn: Boolean(user),
+    preview: Boolean(reviewReport),
+    params: reviewParams,
+  });
   const insights = buildAssessmentCourseInsights(
     assessmentReport,
     course.assessmentType,
   );
-  const savedReflectionsEnabled = [
-    "designpd-alignment",
-    "fruitlife-360-formation",
-    "spiritual-gifts-service",
-  ].includes(course.slug);
-  const savedReflections = user && savedReflectionsEnabled
-    ? await supabase
-        .from("course_lesson_reflections")
-        .select("lesson_slug,response")
-        .eq("user_id", user.id)
-        .eq("course_slug", course.slug)
-        .then(({ data }) =>
-          Object.fromEntries(
-            (data ?? []).map((row) => [
-              row.lesson_slug as string,
-              (row.response as string | null) ?? "",
-            ]),
-          ),
-        )
-    : {};
 
   return (
-    <main className={`course-shell course-shell-${course.accent}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}>
-      {fruitLifeLane ? <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} /> : null}
-      <nav className="course-nav" aria-label="Trail navigation"><a href={`/trailheads${courseQuery}#${course.assessmentType === "spiritual_gifts" ? "spiritual-gifts" : course.assessmentType === "fruit_360" ? "fruitlife-360" : course.assessmentType}`}>Back to Trailhead</a><a href={withReviewQuery("/journey", reviewParams)}>Return to My Journey</a></nav>
+    <main
+      className={`course-shell course-shell-${course.accent}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}
+    >
+      {fruitLifeLane ? (
+        <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} />
+      ) : null}
+      <nav className="course-nav" aria-label="Trail navigation">
+        <a
+          href={`/trailheads${courseQuery}#${course.assessmentType === "spiritual_gifts" ? "spiritual-gifts" : course.assessmentType === "fruit_360" ? "fruitlife-360" : course.assessmentType}`}
+        >
+          Back to Trailhead
+        </a>
+        <a href={withReviewQuery("/journey", reviewParams)}>
+          Return to My Journey
+        </a>
+      </nav>
       <header className="mini-course-logo-intro">
         <img src={course.logo} alt={`${course.title} logo`} />
       </header>
@@ -154,20 +163,20 @@ export default async function LearningCoursePage({
       ) : null}
 
       <div id={`${course.slug}-course-player`}>
-        <AssessmentCourseNavigator
-          accent={course.accent}
-          assessmentLabel={course.title}
-          connected={insights.connected}
-          completionHref={getCourseCompletionHref(course.slug, fruitLifeLane)}
-          courseSlug={course.slug}
-          insights={insights.rows}
-          modules={course.modules}
-          reviewQuery={courseQuery}
-          savedReflections={savedReflections}
-          savedReflectionsEnabled={savedReflectionsEnabled}
-          showPersonalization={false}
-          showStandaloneLessonLink={false}
-        />
+        <ReflectionCourseShell courseSlug={course.slug}>
+          <AssessmentCourseNavigator
+            accent={course.accent}
+            assessmentLabel={course.title}
+            connected={insights.connected}
+            completionHref={getCourseCompletionHref(course.slug, fruitLifeLane)}
+            courseSlug={course.slug}
+            insights={insights.rows}
+            modules={course.modules}
+            reviewQuery={courseQuery}
+            showPersonalization={false}
+            showStandaloneLessonLink={false}
+          />
+        </ReflectionCourseShell>
       </div>
     </main>
   );

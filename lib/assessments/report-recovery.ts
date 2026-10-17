@@ -1,3 +1,4 @@
+import { designIdPdfDisplayPayload } from "@/lib/pdfmonkey/score-display";
 import { spiritualGifts } from "@/lib/spiritual-gifts/intake";
 import type { AssessmentSnapshotSummary } from "./student-context";
 import { buildDesignIdReportPayload } from "@/lib/designid/report";
@@ -67,12 +68,12 @@ function completeGiftPayload(row: Record<string, any>) {
 /** Map an exact retained workbook row to the original official template contract. */
 export function workbookReportPayload(type: string, row: Record<string, any>) {
   if (type === "designid")
-    return {
+    return designIdPdfDisplayPayload({
       ...row,
       qc_donut: row.Chart_Image ?? row.qc_donut ?? "",
       safe_date: row.Timestamp ?? "",
       t: row.Timestamp ?? "",
-    };
+    });
   if (type === "spiritual_gifts") return completeGiftPayload(row);
   const payload: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(row))
@@ -140,7 +141,9 @@ export function recoveryReport(snapshot: AssessmentSnapshotSummary): {
     return {
       templateId,
       payload:
-        type === "spiritual_gifts"
+        type === "designid"
+          ? workbookReportPayload(type, saved)
+          : type === "spiritual_gifts"
           ? completeGiftPayload(saved)
           : root.reportPayloadFormat === "template-v1" ||
               (type === "designpd" && Boolean(saved.plan_core))

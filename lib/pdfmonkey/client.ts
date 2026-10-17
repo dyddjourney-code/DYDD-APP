@@ -1,3 +1,4 @@
+import { pdfScoreDisplayPayload } from "./score-display";
 type CreatePdfMonkeyDocumentInput = {
   filename: string;
   payload: Record<string, unknown>;
@@ -63,7 +64,7 @@ export async function createPdfMonkeyDocument({
       document: {
         document_template_id: templateId,
         meta: { _filename: filename },
-        payload,
+        payload: pdfScoreDisplayPayload(templateId, payload),
         status: "pending",
       },
     }),

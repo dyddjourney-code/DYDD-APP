@@ -1,0 +1,39 @@
+DYDD PDF score display repair — October 17, 2026
+
+Issue: recovered DesignID workbook payloads retained fractional _Pct values
+(e.g. 0.22). The official PDF template prints them directly and also uses them
+as the data labels in both donut charts. Existing app snapshots were already
+formatted correctly, so a valid PDF-byte check did not detect this error.
+
+Repair:
+- Normalize percentages in the workbook/template-v1 recovery path.
+- Add a shared last-mile PDFMonkey payload safeguard for every app PDF creation.
+- Display 22% rather than 0.22; keep the raw saved score vector unchanged.
+- Preserve historical instruments with non-100 totals: retain their points and
+  totals, format their saved proportional percentages, and never rescore them.
+- Regenerated all four archived DesignID PDFs with saved source prose/order.
+  Private pre-repair PDFs and metadata retained locally for rollback.
+- No assessment answers, rankings, saved scores, payment gates, authentication,
+  reflection data, Make scenarios or live PDFMonkey templates were changed.
+- No email calls or learner assessment submissions were made.
+
+Verification:
+- Full paginated inventory: 1,086 saved records; 860 recoverable and 226 summary
+  only; all recovery calls succeed without mutating source data.
+- Four official report templates audited; MAPS/couple numeric source paths
+  reviewed. DesignPD axes already use integer scores. Spiritual Gifts retains
+  integer raw gift scores; its current PDF does not print the numeric scores.
+- FruitLife360 intentionally uses a 1–5 scale rounded to one decimal, not integer
+  percentages. Its scoring and presentation precision remain unchanged.
+- All 14 privately archived PDFs downloaded through production artifact routes
+  and checked for score format. All four DesignID archives verified, including
+  tables and both donuts. Rendered pages 3 and 11 visually checked.
+- Regression: fractional/numeric/string/explicit-percent/native/template-v1,
+  0/1/100 boundaries, legacy totals and partial source preservation, mocked
+  actual provider request boundary, storage safety and artifact access.
+- DesignID scoring regression plus 130,931 DesignPD vectors and all 222 source
+  content rows / 240 profile combinations pass. No scoring code changed.
+
+Local private evidence (excluded from Git): tmp/pdf-score-format/,
+  tmp/pdf-score-live.log, tmp/score-format-before-private.json,
+  tmp/score-format-complete-private.json, tmp/pdf-score-build-final.log.

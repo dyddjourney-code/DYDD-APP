@@ -20449,3 +20449,6 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 @media (max-width: 600px) { .reflection-export-controls { display: grid; } .reflection-export-controls .reflection-export-actions { display: flex; flex-wrap: wrap; } .reflection-export-controls .button { white-space: normal; } }
 
 .reflection-export-actions { display: flex; gap: .7rem; flex-wrap: wrap; }
+
+.fieldkit-report-actions { display:flex; flex-wrap:wrap; gap:.55rem; justify-content:flex-end; }
+@media(max-width:600px) { .fieldkit-report-actions { justify-content:flex-start; width:100%; } .fieldkit-report-actions .button { white-space:normal; } }

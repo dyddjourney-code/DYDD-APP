@@ -1,6 +1,6 @@
+import shadowSource from "../designpd/source/libraries.json";
 import { designIdScorePayload, type DesignIdResult } from "./engine";
 import type { DesignIdReflection } from "./intake";
-
 const reflectionContent: Record<
   DesignIdReflection,
   {
@@ -15,35 +15,30 @@ const reflectionContent: Record<
     scripture: "Genesis 1:1; Nehemiah 2:17-18",
     summary:
       "Architects see what could be built, repaired, or moved forward. They often bring courage, direction, and catalytic energy when something needs to begin.",
-    text:
-      "The Architect reflects the creative and initiating nature of God. Architects often see possibility before there is structure, respond when direction is needed, and help people move from idea to action.",
+    text: "The Architect reflects the creative and initiating nature of God. Architects often see possibility before there is structure, respond when direction is needed, and help people move from idea to action.",
   },
   Artisan: {
     core: "Form, craft, pattern, beauty, and refinement.",
     scripture: "Exodus 31:1-5; Psalm 139:14",
     summary:
       "Artisans refine what is forming. They notice patterns, improve expression, and bring clarity, beauty, and usefulness to ideas and work.",
-    text:
-      "The Artisan reflects the God who forms with wisdom and beauty. Artisans often notice what is unclear, unfinished, or poorly shaped and help bring it into meaningful form.",
+    text: "The Artisan reflects the God who forms with wisdom and beauty. Artisans often notice what is unclear, unfinished, or poorly shaped and help bring it into meaningful form.",
   },
   Shepherd: {
     core: "Care, presence, protection, encouragement, and restoration.",
     scripture: "Psalm 23; John 10:11",
     summary:
       "Shepherds notice people. They sense needs, create belonging, offer encouragement, and help restore courage where people feel unseen or strained.",
-    text:
-      "The Shepherd reflects the compassionate and restoring heart of God. Shepherds often notice emotional and relational realities quickly and respond with care, presence, and faithful attention.",
+    text: "The Shepherd reflects the compassionate and restoring heart of God. Shepherds often notice emotional and relational realities quickly and respond with care, presence, and faithful attention.",
   },
   Steward: {
     core: "Faithfulness, order, responsibility, trust, and endurance.",
     scripture: "1 Peter 4:10; Matthew 25:21",
     summary:
       "Stewards protect what matters. They bring steadiness, reliability, structure, and follow-through so good things can endure.",
-    text:
-      "The Steward reflects the faithfulness and sustaining nature of God. Stewards often create order, guard trust, carry responsibility, and help people and systems remain steady over time.",
+    text: "The Steward reflects the faithfulness and sustaining nature of God. Stewards often create order, guard trust, carry responsibility, and help people and systems remain steady over time.",
   },
 };
-
 const pairContent: Record<
   string,
   {
@@ -57,7 +52,8 @@ const pairContent: Record<
   }
 > = {
   "Architect|Artisan": {
-    growth: "Anchor possibility in patient craft so vision becomes excellent, useful, and sustainable.",
+    growth:
+      "Anchor possibility in patient craft so vision becomes excellent, useful, and sustainable.",
     name: "Visionary",
     reflectionOfGod: "Creator + Designer",
     shadow: "Perfectionism or restless discontent",
@@ -79,7 +75,8 @@ const pairContent: Record<
       "The Visionary brings design and possibility together. This pattern often sees both what could exist and how it might be shaped with excellence.",
   },
   "Architect|Shepherd": {
-    growth: "Lead with compassion while resisting the pressure to rescue every need personally.",
+    growth:
+      "Lead with compassion while resisting the pressure to rescue every need personally.",
     name: "Innovator",
     reflectionOfGod: "Creator + Comforter",
     shadow: "Emotional exhaustion or rescuing instead of leading",
@@ -90,7 +87,8 @@ const pairContent: Record<
       "The Innovator brings movement and compassion together. This pattern often sees what needs to change and cares deeply about how that change affects people.",
   },
   "Shepherd|Architect": {
-    growth: "Let care become courageous movement without turning every burden into your assignment.",
+    growth:
+      "Let care become courageous movement without turning every burden into your assignment.",
     name: "Innovator",
     reflectionOfGod: "Creator + Comforter",
     shadow: "Emotional exhaustion or rescuing instead of leading",
@@ -101,7 +99,8 @@ const pairContent: Record<
       "The Innovator brings compassion and initiative together. This pattern often senses what people need and moves toward action when restoration requires change.",
   },
   "Architect|Steward": {
-    growth: "Let conviction stay submitted to trust, patience, and shared ownership.",
+    growth:
+      "Let conviction stay submitted to trust, patience, and shared ownership.",
     name: "Overseer",
     reflectionOfGod: "Sustainer + Creator",
     shadow: "Control or fear of failure",
@@ -112,7 +111,8 @@ const pairContent: Record<
       "The Overseer brings direction and responsibility together. This pattern often sees what must be built and feels the weight of stewarding it well.",
   },
   "Steward|Architect": {
-    growth: "Let faithfulness make room for Spirit-led initiative and timely movement.",
+    growth:
+      "Let faithfulness make room for Spirit-led initiative and timely movement.",
     name: "Overseer",
     reflectionOfGod: "Sustainer + Creator",
     shadow: "Control or fear of failure",
@@ -123,10 +123,12 @@ const pairContent: Record<
       "The Overseer brings responsibility and direction together. This pattern often protects what matters while helping good work move forward with clarity.",
   },
   "Artisan|Shepherd": {
-    growth: "Let empathy inform expression without causing you to lose your voice.",
+    growth:
+      "Let empathy inform expression without causing you to lose your voice.",
     name: "Interpreter",
     reflectionOfGod: "Designer + Healer",
-    shadow: "Overidentifying with others' feelings or losing creative voice in caretaking",
+    shadow:
+      "Overidentifying with others' feelings or losing creative voice in caretaking",
     shadowOverview:
       "The Interpreter shadow can appear when sensitivity absorbs too much or when care makes it hard to speak clear truth.",
     strength: "Wisdom tempered by empathy.",
@@ -134,10 +136,12 @@ const pairContent: Record<
       "The Interpreter brings clarity and care together. This pattern often translates complexity into language, beauty, or expression that helps people feel understood.",
   },
   "Shepherd|Artisan": {
-    growth: "Let compassion stay clear enough to speak truth gently and faithfully.",
+    growth:
+      "Let compassion stay clear enough to speak truth gently and faithfully.",
     name: "Interpreter",
     reflectionOfGod: "Designer + Healer",
-    shadow: "Overidentifying with others' feelings or losing creative voice in caretaking",
+    shadow:
+      "Overidentifying with others' feelings or losing creative voice in caretaking",
     shadowOverview:
       "The Interpreter shadow can appear when the desire to comfort others blurs the truth that needs to be formed and spoken.",
     strength: "Empathy expressed with wisdom and clarity.",
@@ -156,7 +160,8 @@ const pairContent: Record<
       "The Craftsman brings refinement and faithfulness together. This pattern often forms excellent work that can be trusted over time.",
   },
   "Steward|Artisan": {
-    growth: "Let dependability preserve beauty without turning standards into strain.",
+    growth:
+      "Let dependability preserve beauty without turning standards into strain.",
     name: "Craftsman",
     reflectionOfGod: "Designer + Sustainer",
     shadow: "Legalism or overcontrol",
@@ -167,10 +172,12 @@ const pairContent: Record<
       "The Craftsman brings faithfulness and refinement together. This pattern often protects quality and brings careful form to what has been entrusted.",
   },
   "Shepherd|Steward": {
-    growth: "Let love remain faithful without carrying more than grace has assigned.",
+    growth:
+      "Let love remain faithful without carrying more than grace has assigned.",
     name: "Guardian",
     reflectionOfGod: "Healer + Sustainer",
-    shadow: "Over-responsibility or exhaustion from carrying others' burdens too long",
+    shadow:
+      "Over-responsibility or exhaustion from carrying others' burdens too long",
     shadowOverview:
       "The Guardian shadow can appear when dependable care becomes exhaustion, resentment, or quiet over-responsibility.",
     strength: "Reliability rooted in love.",
@@ -178,10 +185,12 @@ const pairContent: Record<
       "The Guardian brings care and steadiness together. This pattern often protects people and helps them feel safe through faithful presence.",
   },
   "Steward|Shepherd": {
-    growth: "Let responsibility be carried with tenderness, boundaries, and trust.",
+    growth:
+      "Let responsibility be carried with tenderness, boundaries, and trust.",
     name: "Guardian",
     reflectionOfGod: "Healer + Sustainer",
-    shadow: "Over-responsibility or exhaustion from carrying others' burdens too long",
+    shadow:
+      "Over-responsibility or exhaustion from carrying others' burdens too long",
     shadowOverview:
       "The Guardian shadow can appear when steadiness becomes burden-bearing without rest, help, or boundaries.",
     strength: "Steady love that protects and restores.",
@@ -189,9 +198,7 @@ const pairContent: Record<
       "The Guardian brings steadiness and care together. This pattern often builds trust through faithful presence, protection, and patient support.",
   },
 };
-
 const defaultPair = pairContent["Architect|Artisan"];
-
 export function buildDesignIdReportPayload({
   participantEmail,
   participantName,
@@ -209,7 +216,6 @@ export function buildDesignIdReportPayload({
     timeZone: "America/New_York",
   }).format(new Date());
   const scorePayload = designIdScorePayload(result);
-
   return {
     ...scorePayload,
     // PDF template prints percentages directly and strips % for its chart.
@@ -241,7 +247,7 @@ export function buildDesignIdReportPayload({
     Primary_Summary: primary.summary,
     Primary_Text: primary.text,
     Reflection_Of_God: pair.reflectionOfGod,
-    Reflection_Shadow: pair.shadow,
+    Reflection_Shadow: shadowSource.reflectionShadows[result.primary],
     Secondary: result.secondary,
     Secondary_Core: secondary.core,
     Secondary_Reflection: result.secondary,
@@ -272,14 +278,12 @@ export function buildDesignIdReportPayload({
     t: new Date().toISOString(),
   };
 }
-
 export function designIdSnapshotSections(result: DesignIdResult) {
   const payload = buildDesignIdReportPayload({
     participantEmail: "",
     participantName: "",
     result,
   });
-
   return {
     profileLanguage: {
       Approach_to_Learning: payload.Approach_to_Learning,
@@ -296,6 +300,7 @@ export function designIdSnapshotSections(result: DesignIdResult) {
       Integrative_Reflection: payload.Integrative_Reflection,
       PairKey: result.pairKey,
       Potential_Shadow: payload.Potential_Shadow,
+      Reflection_Shadow: payload.Reflection_Shadow,
       Primary: result.primary,
       Reflection_Of_God: payload.Reflection_Of_God,
       ReportReady: "OK",

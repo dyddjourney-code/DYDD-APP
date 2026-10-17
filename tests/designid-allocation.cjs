@@ -9,8 +9,10 @@ try {
   const files=['lib/designid/intake.ts','lib/designid/engine.ts','lib/designid/maps-confirmation.ts','lib/designid/report.ts','lib/designpd/intake.ts','lib/designpd/engine.ts','lib/designpd/report.ts'];
   for (const f of files) {
     const target=path.join(out,f.replace(/\.ts$/,'.js'));fs.mkdirSync(path.dirname(target),{recursive:true});
-    fs.writeFileSync(target,ts.transpileModule(fs.readFileSync(f,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText);
+    fs.writeFileSync(target,ts.transpileModule(fs.readFileSync(f,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true}}).outputText);
   }
+  fs.mkdirSync(path.join(out,'lib/designpd/source'),{recursive:true});
+  fs.copyFileSync('lib/designpd/source/libraries.json',path.join(out,'lib/designpd/source/libraries.json'));
   const {designIdQuestionBlocks:blocks,designIdQuestionBank:bank}=require(path.join(out,'lib/designid/intake.js'));
   const {scoreDesignId,parseDesignIdAllocationAnswers:parse,designIdScorePayload:payload}=require(path.join(out,'lib/designid/engine.js'));
   const {scoreDesignPd}=require(path.join(out,'lib/designpd/engine.js'));
@@ -48,7 +50,7 @@ try {
     const labels={plan:['Doer','Dreamer'],decide:['Think_It','Feel_It'],do:['Together','Solo']};
     for(const axis of ['plan','decide','do']){const v=expected[axis],abs=Math.abs(v);assert.equal(pd.axisScores[axis],Math.round(abs*100));assert.equal(pd.axisTendencies[axis],abs<=.05?'Balanced':`${abs>=.16?'Strong':'Moderate'}_${labels[axis][v>0?1:0]}`);}
     const pdReport=buildDesignPdReportPayload({designIdSnapshot:snap,participantName:'Local QA',participantEmail:'qa@example.invalid',result:pd});
-    assert.equal(pdReport.move_dreamer_minus_doer,expected.plan);assert.equal(pdReport.plan_score,Math.round(Math.abs(expected.plan)*100));
+    assert.equal(pdReport.move_dreamer_minus_doer,`${(expected.plan*100).toFixed(1)}%`);assert.equal(pdReport.plan_score,Math.round(Math.abs(expected.plan)*100));
     const before=JSON.stringify(main),pdBefore=JSON.stringify(pd);
     for(const reverse of [false,true]){
       const assignments=Object.fromEntries(items.map((item,i)=>[item.id,['most','often','sometimes','least'][Math.floor((reverse?11-i:i)/3)]]));

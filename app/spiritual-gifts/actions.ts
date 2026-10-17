@@ -1,5 +1,8 @@
 "use server";
-
+import {
+  archiveReportPdf,
+  type StoredReport,
+} from "@/lib/assessments/report-storage";
 import crypto from "node:crypto";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -27,11 +30,10 @@ import { verifySpiritualGiftsAppIdentity } from "@/lib/spiritual-gifts/app-ident
 import { buildSpiritualGiftsPdfMonkeyPayload } from "@/lib/spiritual-gifts/pdfmonkey-payload";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-
 const productionAppUrl = "https://dydd-online-school.vercel.app";
 const spiritualGiftsTemplateId =
-  process.env.SPIRITUAL_GIFTS_PDFMONKEY_TEMPLATE_ID ?? "1c56c723-1210-4690-968f-a1aa5e5faeb5";
-
+  process.env.SPIRITUAL_GIFTS_PDFMONKEY_TEMPLATE_ID ??
+  "1c56c723-1210-4690-968f-a1aa5e5faeb5";
 type SpiritualGiftsSessionLookup = {
   created_by_user_id: string | null;
   id: string;
@@ -45,19 +47,15 @@ type SpiritualGiftsSessionLookup = {
   session_status: string;
   submitted_at: string | null;
 };
-
 function makeToken() {
   return crypto.randomBytes(24).toString("base64url");
 }
-
 function hashToken(token: string) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
-
 function getString(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
 }
-
 function escapeHtml(value: string) {
   return value
     .replace(/&/g, "&amp;")
@@ -66,23 +64,28 @@ function escapeHtml(value: string) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
-
 function cleanFilename(value: string) {
-  return value.replace(/[^\w .'-]+/g, " ").replace(/\s+/g, " ").trim();
+  return value
+    .replace(/[^\w .'-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
-
 function pdfReportFilename(participantName: string, sessionId: string) {
-  const participant = cleanFilename(participantName || "Spiritual Gifts Participant");
+  const participant = cleanFilename(
+    participantName || "Spiritual Gifts Participant",
+  );
   return `Spiritual Gifts Report - ${participant} - ${sessionId.slice(0, 8)}.pdf`;
 }
-
 function pdfReportLink(document: PdfMonkeyDocument) {
-  return document.public_share_link ?? document.download_url ?? document.preview_url ?? "";
+  return (
+    document.public_share_link ??
+    document.download_url ??
+    document.preview_url ??
+    ""
+  );
 }
-
 async function waitForPdfMonkeyDocument(documentId: string) {
   let document = await getPdfMonkeyDocument(documentId);
-
   for (
     let attempt = 0;
     attempt < 12 && ["pending", "generating"].includes(String(document.status));
@@ -91,87 +94,78 @@ async function waitForPdfMonkeyDocument(documentId: string) {
     await new Promise((resolve) => setTimeout(resolve, 1500));
     document = await getPdfMonkeyDocument(documentId);
   }
-
   return document;
 }
-
 async function pdfAttachmentFromUrl(reportUrl: string, filename: string) {
   if (!reportUrl) {
     return null;
   }
-
   const response = await fetch(reportUrl);
-
   if (!response.ok) {
     return null;
   }
-
   const arrayBuffer = await response.arrayBuffer();
-
   return {
     content: Buffer.from(arrayBuffer).toString("base64"),
     filename,
   };
 }
-
 function fail(path: string, message: string): never {
   redirect(`${path}?message=${encodeURIComponent(message)}`);
 }
-
 function assertEmail(email: string, path: string) {
   if (!email || !email.includes("@")) {
     fail(path, "Enter a valid email address.");
   }
 }
-
 function assertCompleteGiftRatings(formData: FormData) {
   const missingQuestion = spiritualGiftQuestionBank.find((question) => {
-    const value = String(formData.get(spiritualGiftRatingField(question.code)) ?? "");
+    const value = String(
+      formData.get(spiritualGiftRatingField(question.code)) ?? "",
+    );
     return !["1", "2", "3", "4", "5"].includes(value);
   });
-
   if (missingQuestion) {
-    throw new Error("Please answer every Spiritual Gifts statement before submitting.");
+    throw new Error(
+      "Please answer every Spiritual Gifts statement before submitting.",
+    );
   }
 }
-
 function isUuid(value: string) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
     value,
   );
 }
-
 async function getAppBaseUrl() {
   const requestHeaders = await headers();
   const configuredUrl =
     process.env.DYDD_APP_URL ??
     process.env.NEXT_PUBLIC_SITE_URL ??
     process.env.NEXT_PUBLIC_APP_URL;
-
   if (configuredUrl) {
     return configuredUrl.replace(/\/$/, "");
   }
-
-  const vercelUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
-
+  const vercelUrl =
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
   if (vercelUrl) {
     return `https://${vercelUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}`;
   }
-
   const origin = requestHeaders.get("origin");
-
   if (origin) {
     return origin.replace(/\/$/, "");
   }
-
-  return process.env.NODE_ENV === "production" ? productionAppUrl : "http://localhost:3000";
+  return process.env.NODE_ENV === "production"
+    ? productionAppUrl
+    : "http://localhost:3000";
 }
-
-async function getSessionForToken(sessionId: string, token: string, path: string) {
+async function getSessionForToken(
+  sessionId: string,
+  token: string,
+  path: string,
+) {
   if (!sessionId || !token) {
     fail(path, "This Spiritual Gifts link is missing its session token.");
   }
-
   const supabase = createSupabaseAdminClient();
   const { data: session, error } = await supabase
     .from("spiritual_gifts_sessions")
@@ -180,20 +174,15 @@ async function getSessionForToken(sessionId: string, token: string, path: string
     )
     .eq("id", sessionId)
     .single();
-
   if (error || !session) {
     fail(path, "This Spiritual Gifts session was not found.");
   }
-
   const typedSession = session as SpiritualGiftsSessionLookup;
-
   if (typedSession.intake_token_hash !== hashToken(token)) {
     fail(path, "This Spiritual Gifts link is not valid.");
   }
-
   return { session: typedSession, supabase };
 }
-
 function spiritualGiftsResultEmail({
   participantName,
   reportUrl,
@@ -213,10 +202,12 @@ function spiritualGiftsResultEmail({
   const fallbackVerifiedSender = process.env.FRUITLIFE_EMAIL_FROM;
   const spiritualGiftsSender = fallbackVerifiedSender
     ? fallbackVerifiedSender.includes("<")
-      ? fallbackVerifiedSender.replace(/^.*<([^>]+)>.*$/, "Discover Your Divine Design <$1>")
+      ? fallbackVerifiedSender.replace(
+          /^.*<([^>]+)>.*$/,
+          "Discover Your Divine Design <$1>",
+        )
       : `Discover Your Divine Design <${fallbackVerifiedSender}>`
     : "Discover Your Divine Design <support@discoverdivine.design>";
-
   return {
     from:
       process.env.SPIRITUAL_GIFTS_EMAIL_FROM ??
@@ -233,14 +224,16 @@ function spiritualGiftsResultEmail({
     text,
   };
 }
-
 async function sendSpiritualGiftsResultEmail({
   attachment,
   participantEmail,
   participantName,
   reportUrl,
 }: {
-  attachment?: { content: string; filename: string } | null;
+  attachment?: {
+    content: string;
+    filename: string;
+  } | null;
   participantEmail: string;
   participantName: string;
   reportUrl?: string;
@@ -251,7 +244,6 @@ async function sendSpiritualGiftsResultEmail({
     to: participantEmail,
   });
 }
-
 async function saveCompletedSpiritualGiftsResponse({
   participantId,
   participantName,
@@ -276,7 +268,6 @@ async function saveCompletedSpiritualGiftsResponse({
   sessionMetadata?: Record<string, unknown> | null;
 }) {
   assertCompleteGiftRatings(formData);
-
   const nextStep = getString(formData, "next_step");
   const submittedAt = new Date().toISOString();
   const scores = buildSpiritualGiftScores(formData);
@@ -340,7 +331,17 @@ async function saveCompletedSpiritualGiftsResponse({
       tiedAtScore: gift.tiedAtScore,
     })),
   }));
+  const reportPayload = buildSpiritualGiftsPdfMonkeyPayload({
+    deepDiveGifts: scores.deepDiveGifts,
+    participantEmail,
+    participantName,
+    nextStepReflection: nextStep,
+    tieSummary: scores.tieSummary,
+    topGifts: scores.topGifts,
+  });
   const snapshotScorePayload = {
+    reportPayload,
+    reportPayloadFormat: "template-v1",
     channel: "native_app",
     deepDiveGifts: deepDivePayload,
     rankedGifts: rankedGiftPayload,
@@ -351,7 +352,6 @@ async function saveCompletedSpiritualGiftsResponse({
     topGifts: topGiftPayload,
     totals: scores.giftScores,
   };
-
   const { data: response, error: responseError } = await supabase
     .from("spiritual_gifts_responses")
     .insert({
@@ -381,11 +381,11 @@ async function saveCompletedSpiritualGiftsResponse({
     })
     .select("id")
     .single();
-
   if (responseError || !response?.id) {
-    throw new Error(responseError?.message ?? "Unable to save Spiritual Gifts response.");
+    throw new Error(
+      responseError?.message ?? "Unable to save Spiritual Gifts response.",
+    );
   }
-
   const { data: snapshot } = await supabase
     .from("assessment_snapshots")
     .insert({
@@ -399,36 +399,29 @@ async function saveCompletedSpiritualGiftsResponse({
     })
     .select("id")
     .maybeSingle();
-
   const pdfFilename = pdfReportFilename(participantName, sessionId);
-  let pdfMetadata:
-    | {
-        documentId: string;
-        error?: string | null;
-        filename: string;
-        providerUrl?: string;
-        reportAccessUrl?: string;
-        status?: string | null;
-      }
-    | null = null;
-  let pdfAttachment: { content: string; filename: string } | null = null;
-
+  let pdfMetadata: {
+    storage?: StoredReport;
+    archiveError?: string;
+    documentId: string;
+    error?: string | null;
+    filename: string;
+    providerUrl?: string;
+    reportAccessUrl?: string;
+    status?: string | null;
+  } | null = null;
+  let pdfAttachment: {
+    content: string;
+    filename: string;
+  } | null = null;
   try {
     const createdDocument = await createPdfMonkeyDocument({
       filename: pdfFilename,
-      payload: buildSpiritualGiftsPdfMonkeyPayload({
-        deepDiveGifts: scores.deepDiveGifts,
-        participantEmail,
-        participantName,
-        nextStepReflection: nextStep,
-        tieSummary: scores.tieSummary,
-        topGifts: scores.topGifts,
-      }),
+      payload: reportPayload,
       templateId: spiritualGiftsTemplateId,
     });
     const readyDocument = await waitForPdfMonkeyDocument(createdDocument.id);
     const providerUrl = pdfReportLink(readyDocument);
-
     pdfMetadata = {
       documentId: readyDocument.id,
       error: readyDocument.failure_cause ?? null,
@@ -437,42 +430,61 @@ async function saveCompletedSpiritualGiftsResponse({
       reportAccessUrl,
       status: readyDocument.status ?? null,
     };
-
-    if (providerUrl && ["ready", "success"].includes(String(readyDocument.status))) {
+    if (
+      providerUrl &&
+      ["ready", "success"].includes(String(readyDocument.status))
+    ) {
+      try {
+        pdfMetadata.storage = await archiveReportPdf(
+          readyDocument.download_url ?? providerUrl,
+          `spiritual_gifts/${snapshot?.id ?? sessionId}`,
+          pdfFilename,
+        );
+      } catch (error) {
+        pdfMetadata.archiveError =
+          error instanceof Error ? error.message : "PDF archive failed";
+      }
       pdfAttachment = await pdfAttachmentFromUrl(providerUrl, pdfFilename);
     }
   } catch (error) {
     pdfMetadata = {
       documentId: "",
-      error: error instanceof Error ? error.message : "Unable to generate Spiritual Gifts PDF.",
+      error:
+        error instanceof Error
+          ? error.message
+          : "Unable to generate Spiritual Gifts PDF.",
       filename: pdfFilename,
       reportAccessUrl,
       status: "error",
     };
   }
-
   let emailResult = participantEmail
     ? await sendSpiritualGiftsResultEmail({
         attachment: pdfAttachment,
         participantEmail,
         participantName,
-        reportUrl: pdfMetadata?.providerUrl || pdfMetadata?.documentId ? reportAccessUrl : undefined,
+        reportUrl:
+          pdfMetadata?.providerUrl || pdfMetadata?.documentId
+            ? reportAccessUrl
+            : undefined,
       })
     : { message: "Participant email is missing.", sent: false, skipped: true };
-  let emailRetryResult: Awaited<ReturnType<typeof sendSpiritualGiftsResultEmail>> | null = null;
-
+  let emailRetryResult: Awaited<
+    ReturnType<typeof sendSpiritualGiftsResultEmail>
+  > | null = null;
   if (participantEmail && !emailResult.sent && pdfAttachment) {
     emailRetryResult = await sendSpiritualGiftsResultEmail({
       participantEmail,
       participantName,
-      reportUrl: pdfMetadata?.providerUrl || pdfMetadata?.documentId ? reportAccessUrl : undefined,
+      reportUrl:
+        pdfMetadata?.providerUrl || pdfMetadata?.documentId
+          ? reportAccessUrl
+          : undefined,
     });
-
     if (emailRetryResult.sent) {
       emailResult = emailRetryResult;
     }
   }
-
   if (snapshot?.id) {
     await supabase
       .from("assessment_snapshots")
@@ -480,6 +492,8 @@ async function saveCompletedSpiritualGiftsResponse({
         scores: {
           ...snapshotScorePayload,
           pdfMonkey: pdfMetadata,
+          reportPayload,
+          reportPayloadFormat: "template-v1",
           reportAccessUrl,
           resultEmail: {
             attachmentIncluded: Boolean(pdfAttachment),
@@ -489,7 +503,6 @@ async function saveCompletedSpiritualGiftsResponse({
       })
       .eq("id", snapshot.id);
   }
-
   await supabase
     .from("spiritual_gifts_sessions")
     .update({
@@ -516,13 +529,16 @@ async function saveCompletedSpiritualGiftsResponse({
         reportAccessUrl,
         resultUrl,
       },
-      report_status: emailResult.sent ? "sent" : pdfMetadata?.providerUrl ? "ready" : "error",
+      report_status: emailResult.sent
+        ? "sent"
+        : pdfMetadata?.providerUrl
+          ? "ready"
+          : "error",
       result_snapshot_id: snapshot?.id ?? null,
       session_status: "completed",
       submitted_at: submittedAt,
     })
     .eq("id", sessionId);
-
   return {
     sessionId,
     statusHref,
@@ -531,18 +547,17 @@ async function saveCompletedSpiritualGiftsResponse({
     resultEmail: emailResult,
   };
 }
-
 export async function createSpiritualGiftsSession(formData: FormData) {
   const participantName = getString(formData, "participant_name");
-  const participantEmail = normalizeEmail(getString(formData, "participant_email"));
-  const signupSource = getString(formData, "signup_source") || "vercel-spiritual-gifts-intake";
-
+  const participantEmail = normalizeEmail(
+    getString(formData, "participant_email"),
+  );
+  const signupSource =
+    getString(formData, "signup_source") || "vercel-spiritual-gifts-intake";
   if (!participantName) {
     fail("/spiritual-gifts", "Enter the participant name.");
   }
-
   assertEmail(participantEmail, "/spiritual-gifts");
-
   const supabase = createSupabaseAdminClient();
   const serverSupabase = await createSupabaseServerClient();
   const {
@@ -550,7 +565,6 @@ export async function createSpiritualGiftsSession(formData: FormData) {
   } = await serverSupabase.auth.getUser();
   const token = makeToken();
   const baseUrl = await getAppBaseUrl();
-
   const { data: participant, error: participantError } = await supabase
     .from("assessment_participants")
     .upsert(
@@ -563,17 +577,17 @@ export async function createSpiritualGiftsSession(formData: FormData) {
     )
     .select("id")
     .single();
-
   if (participantError || !participant?.id) {
-    fail("/spiritual-gifts", participantError?.message ?? "Unable to create participant.");
+    fail(
+      "/spiritual-gifts",
+      participantError?.message ?? "Unable to create participant.",
+    );
   }
-
   const sessionMetadata = {
     channel: "native_app",
     liveProcessTouched: false,
     source: signupSource,
   };
-
   const { data: session, error: sessionError } = await supabase
     .from("spiritual_gifts_sessions")
     .insert({
@@ -588,13 +602,13 @@ export async function createSpiritualGiftsSession(formData: FormData) {
     })
     .select("id")
     .single();
-
   if (sessionError || !session?.id) {
-    fail("/spiritual-gifts", sessionError?.message ?? "Unable to create Spiritual Gifts session.");
+    fail(
+      "/spiritual-gifts",
+      sessionError?.message ?? "Unable to create Spiritual Gifts session.",
+    );
   }
-
   const selfLink = `${baseUrl}/spiritual-gifts/self?session=${session.id}&token=${token}`;
-
   await supabase
     .from("spiritual_gifts_sessions")
     .update({
@@ -605,16 +619,13 @@ export async function createSpiritualGiftsSession(formData: FormData) {
       session_status: "waiting_for_self",
     })
     .eq("id", session.id);
-
   redirect(
-    `/spiritual-gifts/status?session=${encodeURIComponent(session.id)}&token=${encodeURIComponent(
-      token,
-    )}&message=${encodeURIComponent("Spiritual Gifts app session created.")}`,
+    `/spiritual-gifts/status?session=${encodeURIComponent(session.id)}&token=${encodeURIComponent(token)}&message=${encodeURIComponent("Spiritual Gifts app session created.")}`,
   );
 }
-
 export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
-  const signupSource = getString(formData, "signup_source") || "public-spiritual-gifts-assessment";
+  const signupSource =
+    getString(formData, "signup_source") || "public-spiritual-gifts-assessment";
   const isAppChannel = signupSource === "app-spiritual-gifts-assessment";
   const reviewParams = {
     key: getString(formData, "key"),
@@ -645,27 +656,34 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
         .eq("id", user.id)
         .maybeSingle()
     : { data: null };
-
   if (isAppChannel && !user && !reviewIdentity && !signedAppIdentity) {
-    fail("/spiritual-gifts", "Sign in before starting your app-linked Spiritual Gifts assessment.");
+    fail(
+      "/spiritual-gifts",
+      "Sign in before starting your app-linked Spiritual Gifts assessment.",
+    );
   }
-
   const participantEmail = normalizeEmail(
     user
-      ? profile?.email ?? user.email
-      : reviewIdentity?.email ?? signedAppIdentity?.email ?? getString(formData, "reviewer_email"),
+      ? (profile?.email ?? user.email)
+      : (reviewIdentity?.email ??
+          signedAppIdentity?.email ??
+          getString(formData, "reviewer_email")),
   );
-  const userMetadataName = String(user?.user_metadata?.full_name ?? user?.user_metadata?.name ?? "").trim();
+  const userMetadataName = String(
+    user?.user_metadata?.full_name ?? user?.user_metadata?.name ?? "",
+  ).trim();
   const participantName = user
-    ? profile?.full_name?.trim() || userMetadataName || user.email?.split("@")[0] || ""
-    : reviewIdentity?.name ?? signedAppIdentity?.name ?? getString(formData, "reviewer_name");
-
+    ? profile?.full_name?.trim() ||
+      userMetadataName ||
+      user.email?.split("@")[0] ||
+      ""
+    : (reviewIdentity?.name ??
+      signedAppIdentity?.name ??
+      getString(formData, "reviewer_name"));
   if (!participantName) {
     fail("/spiritual-gifts", "Enter your name.");
   }
-
   assertEmail(participantEmail, "/spiritual-gifts");
-
   const linkedUserId =
     user?.id ??
     (
@@ -676,7 +694,6 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
         .maybeSingle()
     ).data?.id ??
     null;
-
   const { data: participant, error: participantError } = await supabase
     .from("assessment_participants")
     .upsert(
@@ -689,17 +706,17 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
     )
     .select("id")
     .single();
-
   if (participantError || !participant?.id) {
-    fail("/spiritual-gifts", participantError?.message ?? "Unable to create participant.");
+    fail(
+      "/spiritual-gifts",
+      participantError?.message ?? "Unable to create participant.",
+    );
   }
-
   const sessionMetadata = {
     channel: isAppChannel ? "native_app" : "public_assessment",
     liveProcessTouched: false,
     source: signupSource,
   };
-
   const { data: session, error: sessionError } = await supabase
     .from("spiritual_gifts_sessions")
     .insert({
@@ -716,11 +733,12 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
     })
     .select("id")
     .single();
-
   if (sessionError || !session?.id) {
-    fail("/spiritual-gifts", sessionError?.message ?? "Unable to create Spiritual Gifts record.");
+    fail(
+      "/spiritual-gifts",
+      sessionError?.message ?? "Unable to create Spiritual Gifts record.",
+    );
   }
-
   try {
     await saveCompletedSpiritualGiftsResponse({
       participantEmail,
@@ -737,39 +755,38 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
   } catch (error) {
     fail(
       "/spiritual-gifts",
-      error instanceof Error ? error.message : "Unable to save Spiritual Gifts response.",
+      error instanceof Error
+        ? error.message
+        : "Unable to save Spiritual Gifts response.",
     );
   }
-
   const resultParams = new URLSearchParams({
     channel: isAppChannel ? "app" : "public",
     message: isAppChannel
       ? "Your Spiritual Gifts assessment has been saved."
       : "Your Spiritual Gifts assessment has been submitted. Your PDF report is being delivered to your email.",
   });
-
   if (isAppChannel) {
     resultParams.set("session", session.id);
     resultParams.set("token", token);
   }
-
   redirect(`/spiritual-gifts/thanks?${resultParams.toString()}`);
 }
-
 export async function saveSpiritualGiftsSelfResponse(formData: FormData) {
   const sessionId = getString(formData, "session_id");
   const token = getString(formData, "token");
   const reviewerName = getString(formData, "reviewer_name");
   const reviewerEmail = normalizeEmail(getString(formData, "reviewer_email"));
   const path = "/spiritual-gifts/self";
-
   if (!reviewerName) {
     fail(path, "Enter your name.");
   }
-
   assertEmail(reviewerEmail, path);
-
-  const { session, supabase } = await getSessionForToken(sessionId, token, path);
+  const { session, supabase } = await getSessionForToken(
+    sessionId,
+    token,
+    path,
+  );
   try {
     await saveCompletedSpiritualGiftsResponse({
       participantEmail: reviewerEmail,
@@ -784,24 +801,28 @@ export async function saveSpiritualGiftsSelfResponse(formData: FormData) {
       sessionMetadata: session.metadata,
     });
   } catch (error) {
-    fail(path, error instanceof Error ? error.message : "Unable to save Spiritual Gifts response.");
+    fail(
+      path,
+      error instanceof Error
+        ? error.message
+        : "Unable to save Spiritual Gifts response.",
+    );
   }
-
   const resultParams = new URLSearchParams({
     channel: "app",
     message: "Your Spiritual Gifts assessment was saved inside the app.",
     session: session.id,
     token,
   });
-
   redirect(`/spiritual-gifts/thanks?${resultParams.toString()}`);
 }
-
-export async function getSpiritualGiftsSessionStatus(sessionId: string, token: string) {
+export async function getSpiritualGiftsSessionStatus(
+  sessionId: string,
+  token: string,
+) {
   if (!sessionId || !token || !isUuid(sessionId)) {
     return null;
   }
-
   const supabase = createSupabaseAdminClient();
   const { data: session } = await supabase
     .from("spiritual_gifts_sessions")
@@ -810,17 +831,16 @@ export async function getSpiritualGiftsSessionStatus(sessionId: string, token: s
     )
     .eq("id", sessionId)
     .maybeSingle();
-
   if (!session || session.intake_token_hash !== hashToken(token)) {
     return null;
   }
-
   const { data: responses } = await supabase
     .from("spiritual_gifts_responses")
-    .select("id,derived_scores,gift_rank,participant_email,participant_name,submitted_at")
+    .select(
+      "id,derived_scores,gift_rank,participant_email,participant_name,submitted_at",
+    )
     .eq("session_id", sessionId)
     .order("submitted_at", { ascending: false });
-
   return {
     responses: responses ?? [],
     session,

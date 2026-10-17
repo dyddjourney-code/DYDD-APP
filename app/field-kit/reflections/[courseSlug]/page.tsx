@@ -1,3 +1,5 @@
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 import { learningCourses } from "@/lib/courses/course-catalog";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -8,9 +10,19 @@ export const dynamic = "force-dynamic";
 export default async function ReflectionWorkbookPage({
   params,
 }: {
-  params: Promise<{ courseSlug: string }>;
+  params: Promise<{
+    courseSlug: string;
+  }>;
 }) {
   const { courseSlug } = await params;
+  const s = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await s.auth.getUser();
+  if (!user)
+    redirect(
+      `/login?next=${encodeURIComponent(`/field-kit/reflections/${courseSlug}`)}`,
+    );
   const experience = getReflectionExperience(courseSlug);
   if (!experience) notFound();
   const journey = courseSlug === "discover-your-divine-design";

@@ -1,10 +1,13 @@
+import {
+  storedReportUrl,
+  type StoredReport,
+} from "@/lib/assessments/report-storage";
 import { NextResponse, type NextRequest } from "next/server";
 import { getPdfMonkeyDocument } from "@/lib/pdfmonkey/client";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-
 import {
   isHeatherReviewRequest,
   isNewReviewRequest,
@@ -12,17 +15,14 @@ import {
   jordanReviewEmail,
 } from "@/lib/review/heather";
 export const runtime = "nodejs";
-
 export async function GET(request: NextRequest) {
   const sessionId = request.nextUrl.searchParams.get("session") ?? "";
-
   if (!sessionId) {
     return NextResponse.json(
       { error: "Missing FruitLife session." },
       { status: 400 },
     );
   }
-
   const supabase = createSupabaseAdminClient();
   const server = await createSupabaseServerClient();
   const {
@@ -43,32 +43,75 @@ export async function GET(request: NextRequest) {
     );
   const { data: session } = await supabase
     .from("fruitlife_360_sessions")
-    .select("created_by_user_id,participant_email")
+    .select("created_by_user_id,participant_email,report_snapshot_id")
     .eq("id", sessionId)
     .maybeSingle();
   const reviewAllowed = Boolean(
     session &&
-      ((reviewingHeather &&
-        heatherReviewEmails
-          .map(normalizeEmail)
-          .includes(normalizeEmail(session.participant_email))) ||
-        (reviewingJordan &&
-          normalizeEmail(session.participant_email) ===
-            normalizeEmail(jordanReviewEmail))),
+    ((reviewingHeather &&
+      heatherReviewEmails
+        .map(normalizeEmail)
+        .includes(normalizeEmail(session.participant_email))) ||
+      (reviewingJordan &&
+        normalizeEmail(session.participant_email) ===
+          normalizeEmail(jordanReviewEmail))),
   );
   const accountAllowed = Boolean(
     user &&
-      session &&
-      (session.created_by_user_id === user.id ||
-        normalizeEmail(session.participant_email) ===
-          normalizeEmail(user.email) ||
-        isDyddAdminEmail(user.email)),
+    session &&
+    (session.created_by_user_id === user.id ||
+      normalizeEmail(session.participant_email) ===
+        normalizeEmail(user.email) ||
+      isDyddAdminEmail(user.email)),
   );
   if (!session || !(reviewAllowed || accountAllowed))
     return NextResponse.json(
       { error: "Report not found." },
       { status: 404, headers: { "Cache-Control": "private, no-store" } },
     );
+  // Recovery archives the real PDF on the assessment record. Prefer it even
+  // when an older session artifact still contains an expired provider URL.
+  if (session.report_snapshot_id) {
+    const { data: snapshot } = await supabase
+      .from("assessment_snapshots")
+      .select("scores")
+      .eq("id", session.report_snapshot_id)
+      .maybeSingle();
+    const saved =
+      snapshot?.scores?.reportArtifact ?? snapshot?.scores?.pdfMonkey?.storage;
+    if (saved?.path === `fruit_360/${session.report_snapshot_id}/report.pdf`) {
+      const url = await storedReportUrl(
+        saved as StoredReport,
+        request.nextUrl.searchParams.get("download") === "1",
+      );
+      if (url)
+        return NextResponse.redirect(url, {
+          headers: {
+            "Cache-Control": "private, no-store",
+            "Referrer-Policy": "no-referrer",
+          },
+        });
+    }
+  }
+  if (session.report_snapshot_id) {
+    const target = new URL(
+      `/api/artifacts/${encodeURIComponent(session.report_snapshot_id)}/download`,
+      request.url,
+    );
+    for (const key of ["review", "key", "download"]) {
+      const value = request.nextUrl.searchParams.get(key);
+      if (value) target.searchParams.set(key, value);
+    }
+    // The shared route verifies the same owned snapshot before offering recovery.
+    if (
+      user?.id === session.created_by_user_id ||
+      reviewAllowed ||
+      normalizeEmail(user?.email) === normalizeEmail(session.participant_email)
+    )
+      return NextResponse.redirect(target, {
+        headers: { "Cache-Control": "private, no-store" },
+      });
+  }
   const { data: artifact } = await supabase
     .from("fruitlife_360_report_artifacts")
     .select("external_url,metadata,provider,provider_document_id,report_job_id")
@@ -78,14 +121,33 @@ export async function GET(request: NextRequest) {
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
-
+  const storage = (
+    artifact?.metadata as {
+      storage?: StoredReport;
+    } | null
+  )?.storage;
+  if (
+    storage?.path ===
+    `fruit_360/${session.report_snapshot_id ?? sessionId}/report.pdf`
+  ) {
+    const url = await storedReportUrl(
+      storage,
+      request.nextUrl.searchParams.get("download") === "1",
+    );
+    if (url)
+      return NextResponse.redirect(url, {
+        headers: {
+          "Cache-Control": "private, no-store",
+          "Referrer-Policy": "no-referrer",
+        },
+      });
+  }
   if (!artifact?.external_url) {
     return NextResponse.json(
       { error: "FruitLife report is not ready yet." },
       { status: 404 },
     );
   }
-
   if (artifact.provider === "pdfmonkey" && artifact.provider_document_id) {
     let document;
     try {
@@ -101,7 +163,6 @@ export async function GET(request: NextRequest) {
       document.download_url ??
       document.preview_url ??
       "";
-
     if (freshUrl) {
       if (freshUrl !== artifact.external_url) {
         await supabase
@@ -117,20 +178,17 @@ export async function GET(request: NextRequest) {
           .eq("session_id", sessionId)
           .eq("artifact_type", "pdf")
           .eq("provider_document_id", artifact.provider_document_id);
-
         await supabase
           .from("fruitlife_360_sessions")
           .update({ report_url: freshUrl })
           .eq("id", sessionId);
       }
-
       const response = NextResponse.redirect(freshUrl);
       response.headers.set("Cache-Control", "private, no-store");
       response.headers.set("Referrer-Policy", "no-referrer");
       return response;
     }
   }
-
   const response = NextResponse.redirect(artifact.external_url);
   response.headers.set("Cache-Control", "private, no-store");
   response.headers.set("Referrer-Policy", "no-referrer");

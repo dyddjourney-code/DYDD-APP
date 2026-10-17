@@ -1,12 +1,9 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
-
 import { google } from "googleapis";
-
 import type { AssessmentSnapshotPayload, AssessmentType } from "./types";
-
-export type AssessmentSourceName = "designid" | "designpd" | "spiritual_gifts" | "fruit_360";
-
+export type AssessmentSourceName =
+  "designid" | "designpd" | "spiritual_gifts" | "fruit_360";
 type SourceConfig = {
   assessmentType: AssessmentType;
   emailColumn: string;
@@ -21,16 +18,21 @@ type SourceConfig = {
   summaryColumns: string[];
   timestampColumn: string;
 };
-
 export type AssessmentSyncResult = {
   applied: boolean;
-  errors: { message: string; source: AssessmentSourceName; sourceResponseId?: string }[];
+  errors: {
+    message: string;
+    source: AssessmentSourceName;
+    sourceResponseId?: string;
+  }[];
   payloads: number;
   rawRows: number;
   source: AssessmentSourceName;
 };
-
-export const assessmentSourceConfigs: Record<AssessmentSourceName, SourceConfig> = {
+export const assessmentSourceConfigs: Record<
+  AssessmentSourceName,
+  SourceConfig
+> = {
   designid: {
     assessmentType: "designid",
     emailColumn: "Email",
@@ -71,6 +73,7 @@ export const assessmentSourceConfigs: Record<AssessmentSourceName, SourceConfig>
       "Reflection_Of_God",
       "Spiritual_Strength",
       "Potential_Shadow",
+      "Reflection_Shadow",
       "ReportReady",
     ],
     profileColumns: [
@@ -349,9 +352,9 @@ export const assessmentSourceConfigs: Record<AssessmentSourceName, SourceConfig>
     ],
   },
 };
-
-type SheetRecord = Record<string, string | number> & { __rowNumber: number };
-
+type SheetRecord = Record<string, string | number> & {
+  __rowNumber: number;
+};
 const ignoredFruitLifeParticipantIds = new Set([
   "FL360-SAMPLE",
   "FL360-",
@@ -361,7 +364,6 @@ const ignoredFruitLifeParticipantIds = new Set([
   "FL360-6623764982748128899",
   "FL360-6623772952748222782",
 ]);
-
 const ignoredFruitLifeParticipantNames = new Set([
   "George Jetson",
   "Greg Brady",
@@ -372,7 +374,6 @@ const ignoredFruitLifeParticipantNames = new Set([
   "Wallace ObserverPath Test",
   "Wallace SelfOnly Test",
 ]);
-
 function coerceValue(value: unknown) {
   if (typeof value !== "string") return value ?? "";
   const trimmed = value.trim();
@@ -384,13 +385,13 @@ function coerceValue(value: unknown) {
   }
   return trimmed;
 }
-
 function hash(value: string) {
   return crypto.createHash("sha256").update(value).digest("hex").slice(0, 16);
 }
-
 function normalizeEmail(value: unknown) {
-  const email = String(value ?? "").trim().toLowerCase();
+  const email = String(value ?? "")
+    .trim()
+    .toLowerCase();
   if (!email.includes("@")) return "";
   const [localPart, domain] = email.split("@");
   if (domain === "gmail.com" || domain === "googlemail.com") {
@@ -398,7 +399,6 @@ function normalizeEmail(value: unknown) {
   }
   return email;
 }
-
 function pick(record: SheetRecord, columns: string[]) {
   return Object.fromEntries(
     columns
@@ -406,51 +406,54 @@ function pick(record: SheetRecord, columns: string[]) {
       .filter(([, value]) => value !== ""),
   );
 }
-
 function sourceSubmittedAt(config: SourceConfig, record: SheetRecord) {
-  const raw = String(record[config.submittedAtColumn ?? config.timestampColumn] ?? "").trim();
+  const raw = String(
+    record[config.submittedAtColumn ?? config.timestampColumn] ?? "",
+  ).trim();
   const serialMatch = raw.match(/\|(?<serial>\d{5,}(?:\.\d+)?)$/);
   const serialRaw = serialMatch?.groups?.serial ?? raw;
   const serialDate = Number(serialRaw);
-
-  if (Number.isFinite(serialDate) && serialDate > 1_000_000_000_000) {
+  if (Number.isFinite(serialDate) && serialDate > 1000000000000) {
     const date = new Date(serialDate);
     return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
   }
-
-  if (Number.isFinite(serialDate) && serialDate > 1_000_000_000) {
+  if (Number.isFinite(serialDate) && serialDate > 1000000000) {
     const date = new Date(serialDate * 1000);
     return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
   }
-
   if (Number.isFinite(serialDate) && serialDate > 20000) {
     const googleEpochOffset = 25569;
     const millisecondsPerDay = 86400 * 1000;
-    const date = new Date((serialDate - googleEpochOffset) * millisecondsPerDay);
+    const date = new Date(
+      (serialDate - googleEpochOffset) * millisecondsPerDay,
+    );
     return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
   }
-
   const parsed = Date.parse(raw);
   const date = new Date(parsed);
   return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
 }
-
 function sourceResponseId(config: SourceConfig, record: SheetRecord) {
-  const configuredId = String(record[config.responseIdColumn ?? ""] ?? "").trim();
+  const configuredId = String(
+    record[config.responseIdColumn ?? ""] ?? "",
+  ).trim();
   if (configuredId) {
     return `${config.sourceSlug}:${configuredId}`;
   }
-
   const timestamp = record[config.timestampColumn] ?? "";
   const email = normalizeEmail(record[config.emailColumn]);
   const name = String(record[config.nameColumn] ?? "").trim();
-  const basis = [config.sourceSlug, timestamp, email, name, record.__rowNumber].join("|");
+  const basis = [
+    config.sourceSlug,
+    timestamp,
+    email,
+    name,
+    record.__rowNumber,
+  ].join("|");
   return `${config.sourceSlug}:${hash(basis)}`;
 }
-
 export function toObjects(values: unknown[][]): SheetRecord[] {
   const [headers = [], ...rows] = values;
-
   return rows.map((row, rowIndex) => {
     const record = { __rowNumber: rowIndex + 2 } as SheetRecord;
     headers.forEach((header, index) => {
@@ -461,7 +464,6 @@ export function toObjects(values: unknown[][]): SheetRecord[] {
     return record;
   });
 }
-
 export function buildAssessmentPayload(
   config: SourceConfig,
   record: SheetRecord,
@@ -470,8 +472,11 @@ export function buildAssessmentPayload(
   const participantEmail = normalizeEmail(record[config.emailColumn]);
   const participantName = String(record[config.nameColumn] ?? "").trim();
   const responseId = sourceResponseId(config, record);
-  const fallbackKeyBasis = [config.sourceSlug, participantName, responseId].join("|");
-
+  const fallbackKeyBasis = [
+    config.sourceSlug,
+    participantName,
+    responseId,
+  ].join("|");
   return {
     assessmentType: config.assessmentType,
     participantEmail: participantEmail || undefined,
@@ -480,6 +485,9 @@ export function buildAssessmentPayload(
         ? undefined
         : `dydd:${config.assessmentType}:${hash(fallbackKeyBasis)}`,
     participantName: participantName || undefined,
+    reportPayload: Object.fromEntries(
+      Object.entries(record).filter(([key]) => key !== "__rowNumber"),
+    ),
     profileLanguage: pick(record, config.profileColumns),
     scores: pick(record, config.scoreColumns),
     sourceResponseId: responseId,
@@ -489,12 +497,12 @@ export function buildAssessmentPayload(
     syncBatchId,
   };
 }
-
 export function hasUsablePayload(payload: AssessmentSnapshotPayload) {
   if (payload.assessmentType === "fruit_360") {
     const participantId = String(payload.summary?.Participant_ID ?? "").trim();
-    const participantName = (payload.participantName ?? "").replace(/\s+/g, " ").trim();
-
+    const participantName = (payload.participantName ?? "")
+      .replace(/\s+/g, " ")
+      .trim();
     if (
       ignoredFruitLifeParticipantIds.has(participantId) ||
       ignoredFruitLifeParticipantNames.has(participantName)
@@ -502,14 +510,12 @@ export function hasUsablePayload(payload: AssessmentSnapshotPayload) {
       return false;
     }
   }
-
   return (
     Boolean(payload.participantEmail || payload.participantKey) &&
     Object.keys(payload.scores).length > 0 &&
     Object.keys(payload.summary ?? {}).length > 0
   );
 }
-
 function parseServiceAccount() {
   const json =
     process.env.DYDD_GOOGLE_SERVICE_ACCOUNT_JSON ??
@@ -520,26 +526,28 @@ function parseServiceAccount() {
   const keyFile =
     process.env.DYDD_GOOGLE_SERVICE_ACCOUNT_FILE ??
     process.env.GOOGLE_APPLICATION_CREDENTIALS;
-
   if (json) return JSON.parse(json);
   if (b64) return JSON.parse(Buffer.from(b64, "base64").toString("utf8"));
   if (keyFile) return JSON.parse(fs.readFileSync(keyFile, "utf8"));
-
   throw new Error(
     "Missing Google service account credentials. Set DYDD_GOOGLE_SERVICE_ACCOUNT_B64 or DYDD_GOOGLE_SERVICE_ACCOUNT_JSON.",
   );
 }
-
-export async function readGoogleSheetValues(spreadsheetId: string, range: string) {
+export async function readGoogleSheetValues(
+  spreadsheetId: string,
+  range: string,
+) {
   const auth = new google.auth.GoogleAuth({
     credentials: parseServiceAccount(),
     scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
   });
   const sheets = google.sheets({ auth, version: "v4" });
-  const response = await sheets.spreadsheets.values.get({ spreadsheetId, range });
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range,
+  });
   return response.data.values ?? [];
 }
-
 export async function buildSourcePayloads({
   limit = Number.POSITIVE_INFINITY,
   source,
@@ -551,11 +559,9 @@ export async function buildSourcePayloads({
 }) {
   const config = assessmentSourceConfigs[source];
   const spreadsheetId = process.env[config.envKey];
-
   if (!spreadsheetId) {
     throw new Error(`Missing ${config.envKey}.`);
   }
-
   const values = await readGoogleSheetValues(spreadsheetId, config.range);
   const records = toObjects(values).filter((record) =>
     Object.values(record).some((value) => String(value ?? "").trim()),
@@ -564,6 +570,5 @@ export async function buildSourcePayloads({
     .map((record) => buildAssessmentPayload(config, record, syncBatchId))
     .filter(hasUsablePayload)
     .slice(0, limit);
-
   return { payloads, rawRows: records.length };
 }

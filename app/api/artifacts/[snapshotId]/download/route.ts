@@ -6,7 +6,10 @@ import {
   snapshotHighlights,
   type AssessmentSnapshotSummary,
 } from "@/lib/assessments/student-context";
-import { getPdfMonkeyDocument } from "@/lib/pdfmonkey/client";
+import {
+  createPdfMonkeyDocument,
+  getPdfMonkeyDocument,
+} from "@/lib/pdfmonkey/client";
 import { normalizeEmail } from "@/lib/identity/email";
 import {
   getHeatherReviewReport,
@@ -17,333 +20,117 @@ import {
 import { isOwnerPreviewRequest } from "@/lib/owner-preview";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-
+import {
+  archiveReportPdf,
+  storedReportUrl,
+  type StoredReport,
+  reportBucket,
+} from "@/lib/assessments/report-storage";
+import {
+  object,
+  recoveryReport,
+  sourceShadow,
+} from "@/lib/assessments/report-recovery";
 export const runtime = "nodejs";
-
-function escapeHtml(value: string) {
-  return value
+export const maxDuration = 120;
+const headers = {
+  "Cache-Control": "private, no-store",
+  "Referrer-Policy": "no-referrer",
+};
+const html = (v: unknown) =>
+  String(v ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;");
-}
-
-function compactValue(value: unknown) {
-  if (value === null || value === undefined || value === "") return "";
-  if (typeof value === "number") return String(value);
-  if (typeof value === "boolean") return value ? "Yes" : "No";
-  return String(value).trim();
-}
-
-function scoreObject(snapshot: AssessmentSnapshotSummary, key: string) {
-  const value = snapshot.scores?.[key];
-  return typeof value === "object" && value !== null && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : {};
-}
-
-function snapshotSections(snapshot: AssessmentSnapshotSummary) {
-  return [
-    scoreObject(snapshot, "summary"),
-    scoreObject(snapshot, "profileLanguage"),
-    scoreObject(snapshot, "scores"),
-    snapshot.scores ?? {},
-  ];
-}
-
-function firstSnapshotValue(
-  snapshot: AssessmentSnapshotSummary,
-  keys: string[],
-) {
-  for (const key of keys) {
-    for (const section of snapshotSections(snapshot)) {
-      const value = compactValue(section[key]);
-      if (value) return value;
+function value(snapshot: AssessmentSnapshotSummary, ...keys: string[]) {
+  for (const key of keys)
+    for (const section of [
+      object(snapshot.scores.summary),
+      object(snapshot.scores.profileLanguage),
+      object(snapshot.scores.scores),
+      object(snapshot.scores.reportPayload),
+      snapshot.scores,
+    ]) {
+      const v = section[key];
+      if (v !== undefined && v !== null && v !== "") return String(v);
     }
-  }
-
   return "";
 }
-
-function spiritualGiftRank(snapshot: AssessmentSnapshotSummary, rank: number) {
-  const topGifts = snapshot.scores?.topGifts;
-  const gift = Array.isArray(topGifts) ? topGifts[rank - 1] : null;
-
-  if (typeof gift === "object" && gift !== null) {
-    const data = gift as Record<string, unknown>;
-    const label = compactValue(data.label) || compactValue(data.name);
-    const score = compactValue(data.score) || compactValue(data.value);
-
-    if (label) return { label, score };
-  }
-
-  const label = firstSnapshotValue(snapshot, [
-    `Top${rank}_Name`,
-    `Top_${rank}_Name`,
-    `Top${rank}`,
-  ]);
-  const score = firstSnapshotValue(snapshot, [
-    `Top${rank}_Score`,
-    `Top_${rank}_Score`,
-    `Top${rank}_Pct`,
-    `Top_${rank}_Pct`,
-  ]);
-
-  return label ? { label, score } : null;
+function layout(title: string, content: string) {
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${html(title)}</title><style>
+  *{box-sizing:border-box}body{margin:0;padding:24px;background:#f8f6ee;color:#243f27;font:17px/1.5 system-ui,sans-serif}main{max-width:900px;margin:auto;background:#fff;border:1px solid #ded8c8;border-radius:12px;overflow:hidden}header{padding:28px;background:#243f27;color:#fff9ed}header p{margin:4px 0}h1{font-size:clamp(25px,5vw,38px);margin:6px 0}h2{font-size:23px}section{padding:24px;border-top:1px solid #e5decc}a,button{display:inline-block;color:#243f27;font:inherit;font-weight:700;margin:6px 10px 6px 0}button{cursor:pointer;padding:12px 18px;background:#eeeadd;border:1px solid #c6c0af;border-radius:6px}.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.card{padding:16px;background:#f8f6ee;border:1px solid #e5decc}.card small{display:block;color:#64715d}.card strong{font-size:20px}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:12px;border-bottom:1px solid #e5decc;overflow-wrap:anywhere}.gift{padding:15px 0;border-bottom:1px solid #e5decc}.gift p{margin:6px 0}form{display:inline}.notice{background:#faf7e8}@media(max-width:480px){body{padding:10px}section,header{padding:18px}td,th{padding:8px}.summary{grid-template-columns:1fr 1fr}}@media print{body{padding:0;background:white}.actions{display:none}main{border:0}header{color:#243f27;background:white}}
+  </style></head><body><main><header><p>Discover Your Divine Design</p><h1>${html(title)}</h1></header>${content}</main></body></html>`;
 }
-
-const designIdReflections = [
-  {
-    application: "Building, leading, and initiating",
-    color: "#d4a451",
-    creator: "Creator",
-    key: "Architect",
-  },
-  {
-    application: "Refining and communicating truth through beauty",
-    color: "#647c9b",
-    creator: "Designer",
-    key: "Artisan",
-  },
-  {
-    application: "Nurturing, healing, and restoring through presence",
-    color: "#739d5e",
-    creator: "Comforter",
-    key: "Shepherd",
-  },
-  {
-    application: "Maintaining and securing what has been entrusted",
-    color: "#5a496b",
-    creator: "Sustainer",
-    key: "Steward",
-  },
-];
-
-function designIdReflectionRows(snapshot: AssessmentSnapshotSummary) {
-  if (snapshot.assessment_type !== "designid") return "";
-
-  return designIdReflections
-    .map((reflection) => {
-      const points = firstSnapshotValue(snapshot, [
-        `${reflection.key}_Pts`,
-        `${reflection.key}_Points`,
-        `${reflection.key.toLowerCase()}Pts`,
-      ]);
-      const percent = firstSnapshotValue(snapshot, [
-        `${reflection.key}_Pct`,
-        `${reflection.key}_Percent`,
-        `${reflection.key.toLowerCase()}Pct`,
-      ]);
-      const band = firstSnapshotValue(snapshot, [
-        `Band_${reflection.key}`,
-        `${reflection.key}_Band`,
-        `${reflection.key.toLowerCase()}Band`,
-      ]);
-      const rawPercent = Number(String(percent).replace("%", ""));
-      const percentNumber =
-        !percent.includes("%") && rawPercent > 0 && rawPercent <= 1
-          ? rawPercent * 100
-          : rawPercent;
-      const width = Number.isFinite(percentNumber)
-        ? Math.max(8, Math.min(100, percentNumber))
-        : 8;
-      const score = percent
-        ? `${percent.replace(/%$/, "")}%`
-        : points || "Saved";
-      const detail = points && percent ? `${points} pts` : points || "";
-
-      return `<tr>
-        <td><strong>${reflection.key}</strong><small>${reflection.creator}</small></td>
-        <td data-label="Score"><strong>${escapeHtml(score)}</strong>${detail ? `<small>${escapeHtml(detail)}</small>` : ""}</td>
-        <td data-label="Capacity"><strong>${escapeHtml(band || "Saved")}</strong></td>
-        <td>${escapeHtml(reflection.application)}<span class="mini-bar"><i style="width:${width}%;background:${reflection.color};"></i></span></td>
-      </tr>`;
-    })
-    .join("");
-}
-
-function designIdSummaryBlock(snapshot: AssessmentSnapshotSummary) {
-  if (snapshot.assessment_type !== "designid") return "";
-
-  const primary = firstSnapshotValue(snapshot, [
-    "Primary",
-    "Primary_Reflection",
-    "primaryReflection",
-    "primary",
-  ]);
-  const secondary = firstSnapshotValue(snapshot, [
-    "Secondary",
-    "Secondary_Reflection",
-    "secondaryReflection",
-    "secondary",
-  ]);
-  const integrative = firstSnapshotValue(snapshot, [
-    "Integrative_Reflection",
-    "integrativeReflection",
-    "PairName",
-  ]);
-  const shadow = firstSnapshotValue(snapshot, [
-    "Reflection_Shadow",
-    "Potential_Shadow",
-    "shadow",
-  ]);
-  const rows = designIdReflectionRows(snapshot);
-
-  return `<section>
-      <h2>DesignID Reflection Summary</h2>
-      <div class="summary-strip">
-        <div><small>Primary</small><strong>${escapeHtml(primary || "Saved")}</strong></div>
-        <div><small>Secondary</small><strong>${escapeHtml(secondary || "Saved")}</strong></div>
-        <div><small>Integrative</small><strong>${escapeHtml(integrative || "Saved")}</strong></div>
-        <div><small>Shadow</small><strong>${escapeHtml(shadow || "Saved")}</strong></div>
-      </div>
-      <div class="report-table-scroll"><table class="reflection-table">
-        <thead>
-          <tr>
-            <th>Reflection</th>
-            <th>Score</th>
-            <th>Capacity</th>
-            <th>Application</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table></div>
-    </section>`;
-}
-
-function visualArtifact(snapshot: AssessmentSnapshotSummary) {
-  const label =
-    assessmentLabels[snapshot.assessment_type] ?? snapshot.assessment_type;
-  const completedAt = displayDate(
-    snapshot.source_submitted_at ?? snapshot.created_at,
+function snapshotHtml(snapshot: AssessmentSnapshotSummary, url: URL) {
+  const type = snapshot.assessment_type,
+    label = assessmentLabels[type] ?? type;
+  let content = "";
+  if (type === "designid") {
+    const strip = [
+      ["Primary", value(snapshot, "Primary")],
+      ["Secondary", value(snapshot, "Secondary")],
+      ["Integrative", value(snapshot, "Integrative_Reflection")],
+      ["Shadow", sourceShadow(snapshot)],
+    ]
+      .filter(([, v]) => v)
+      .map(
+        ([k, v]) =>
+          `<div class="card"><small>${html(k)}</small><strong>${html(v)}</strong></div>`,
+      )
+      .join("");
+    const rows = ["Architect", "Artisan", "Shepherd", "Steward"]
+      .map((r) => {
+        const points = value(snapshot, `${r}_Pts`, `${r}_Points`);
+        return `<tr><th>${r}</th><td>${points && Number.isFinite(Number(points)) ? Math.round(Number(points)) : "—"}</td><td>${html(value(snapshot, `Band_${r}`))}</td></tr>`;
+      })
+      .join("");
+    content = `<section><div class="summary">${strip}</div><h2>Your reflections</h2><table><thead><tr><th>Reflection</th><th>Score</th><th>Capacity</th></tr></thead><tbody>${rows}</tbody></table></section>`;
+  } else if (type === "spiritual_gifts") {
+    const top = snapshot.scores.topGifts;
+    const gifts = [1, 2, 3, 4, 5]
+      .map((rank) => {
+        const gift = Array.isArray(top) ? object(top[rank - 1]) : {};
+        const name = gift.label ?? value(snapshot, `Top${rank}_Name`);
+        const definition =
+          gift.definition ?? value(snapshot, `Top${rank}_Definition`);
+        return name
+          ? `<div class="gift"><strong>${rank}. ${html(name)}</strong>${definition ? `<p>${html(definition)}</p>` : ""}</div>`
+          : "";
+      })
+      .join("");
+    content = `<section><h2>Top five spiritual gifts</h2>${gifts}</section>`;
+  } else if (type === "designpd") {
+    content = `<section><h2>How you plan, decide, and act</h2>${["Plan", "Decide", "Do"].map((axis) => `<div class="gift"><h3>${axis}</h3><strong>${html(value(snapshot, `${axis}_Tendency`)).replaceAll("_", " ")}</strong><p>${html(value(snapshot, `${axis}_Descriptor`, `${axis.toLowerCase()}_descriptor`, `${axis}_Overview_Sentence`))}</p></div>`).join("")}</section>`;
+  } else
+    content = `<section><h2>Saved highlights</h2><table>${snapshotHighlights(
+      snapshot,
+    )
+      .map((x) => `<tr><th>${html(x.label)}</th><td>${html(x.value)}</td></tr>`)
+      .join("")}</table></section>`;
+  const pdfUrl = new URL(url);
+  pdfUrl.searchParams.delete("view");
+  pdfUrl.searchParams.delete("download");
+  return layout(
+    `${label} Snapshot`,
+    `<section><p>Completed ${html(displayDate(snapshot.source_submitted_at ?? snapshot.created_at))}</p><p>This is a quick summary of your saved assessment, not your full PDF report.</p><div class="actions"><a href="${html(pdfUrl.pathname + pdfUrl.search)}">Full PDF report</a></div></section>${content}`,
   );
-  const highlights = snapshotHighlights(snapshot);
-  const reportHref = ""; // The endpoint itself resolves attached full reports first.
-  const giftRows =
-    snapshot.assessment_type === "spiritual_gifts"
-      ? [1, 2, 3, 4, 5]
-          .map((rank) => {
-            const gift = spiritualGiftRank(snapshot, rank);
-            if (!gift) return "";
-            const score = Number(gift.score);
-            const width = Number.isFinite(score)
-              ? Math.max(8, Math.min(100, (score / 100) * 100))
-              : 20;
-
-            return `<div class="gift-row">
-              <div><strong>${rank}. ${escapeHtml(gift.label)}</strong><small>${escapeHtml(gift.score || "Saved")}</small></div>
-              <span aria-hidden="true"><i style="width:${width}%"></i></span>
-            </div>`;
-          })
-          .join("")
-      : "";
-  const highlightRows = highlights.length
-    ? highlights
-        .map(
-          (item) =>
-            `<tr><th>${escapeHtml(item.label)}</th><td>${escapeHtml(item.value)}</td></tr>`,
-        )
-        .join("")
-    : `<tr><td colspan="2">No compact highlights are available for this snapshot yet.</td></tr>`;
-
-  return `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>${escapeHtml(label)} Snapshot</title>
-  <style>
-    :root { color-scheme: light; --ink:#172116; --muted:#667263; --paper:#fbfaf4; --line:#e4dccb; --green:#476b42; --dark:#243f27; --gold:#b88a43; }
-    body { margin:0; background:linear-gradient(180deg,#fbfaf4,#f4f1e8); color:var(--ink); font-family:Aptos,Segoe UI,Arial,sans-serif; padding:34px; }
-    main { max-width:920px; margin:0 auto; background:white; border:1px solid var(--line); box-shadow:0 24px 70px rgba(70,58,35,.12); }
-    header { background:linear-gradient(135deg,var(--dark),var(--green)); color:#fffaf0; padding:30px; }
-    .label { color:#f6d36d; font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
-    h1 { margin:8px 0 8px; font-size:38px; line-height:1; }
-    header p { margin:0; color:rgba(255,250,240,.86); }
-    section { padding:26px 30px; border-top:1px solid var(--line); }
-    .meta { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
-    .meta div { background:#fbfaf4; border:1px solid var(--line); padding:14px; }
-    .meta small, .gift-row small, .reflection-table small { display:block; color:var(--muted); font-weight:800; margin-top:4px; }
-    h2 { color:var(--dark); margin:0 0 16px; font-size:22px; }
-    .summary-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:18px; }
-    .summary-strip div { background:#fbfaf4; border:1px solid var(--line); padding:14px; }
-    .summary-strip small { display:block; color:var(--muted); font-size:11px; font-weight:900; letter-spacing:.08em; margin-bottom:4px; text-transform:uppercase; }
-    .summary-strip strong { color:var(--dark); line-height:1.25; }
-    .gift-list { display:grid; gap:10px; }
-    .gift-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(160px,280px); gap:18px; align-items:center; padding:12px 0; border-top:1px solid rgba(36,63,39,.1); }
-    .gift-row:first-child { border-top:0; }
-    .gift-row span { display:block; height:12px; background:#edf1e8; border-radius:999px; overflow:hidden; }
-    .gift-row i { display:block; height:100%; background:linear-gradient(90deg,var(--green),var(--gold)); border-radius:999px; }
-    .report-table-scroll { max-width:100%; overflow-x:auto; }
-    .reflection-table { min-width:560px; }
-    table { width:100%; border-collapse:collapse; }
-    td, th { overflow-wrap:anywhere; }
-    th,td { border-top:1px solid rgba(36,63,39,.12); padding:12px; text-align:left; vertical-align:top; }
-    th { color:var(--green); width:34%; }
-    .reflection-table th { width:auto; color:var(--dark); background:#fbfaf4; }
-    .reflection-table td:nth-child(2), .reflection-table td:nth-child(3) { width:110px; text-align:center; }
-    .mini-bar { display:block; height:10px; margin-top:8px; overflow:hidden; border-radius:999px; background:#edf1e8; }
-    .mini-bar i { display:block; height:100%; border-radius:inherit; }
-    a { color:var(--dark); font-weight:900; }
-    @media (max-width: 720px) { body { padding:14px; } header { padding:22px; } section { padding:18px; min-width:0; } h1 { font-size:clamp(28px,7vw,38px); } .meta, .summary-strip, .gift-row { grid-template-columns:1fr; } }
-    @media screen and (max-width: 720px) {
-      .reflection-table { min-width:0; }
-      .reflection-table, .reflection-table tbody { display:block; }
-      .reflection-table thead { display:none; }
-      .reflection-table tr { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); border:1px solid var(--line); border-radius:8px; margin-bottom:14px; padding:8px; }
-      .reflection-table td { display:block; width:auto !important; border:0; padding:10px; text-align:left !important; }
-      .reflection-table td:first-child, .reflection-table td:last-child { grid-column:1/-1; }
-      .reflection-table td[data-label]::before { content:attr(data-label); display:block; color:var(--muted); font-size:11px; margin-bottom:4px; }
-    }
-    @media print { body { background:white; padding:0; } main { box-shadow:none; } .report-table-scroll { overflow:visible; } .reflection-table { min-width:0; } button, section > a { display:none; } }
-  </style>
-</head>
-<body>
-  <main>
-    <header>
-      <div class="label">Discover Your Divine Design</div>
-      <h1>${escapeHtml(label)} Snapshot</h1>
-      <p>Your saved assessment results.</p>
-    </header>
-    <section><p>${escapeHtml(completedAt)}</p><p>This older result has saved assessment information but no attached full PDF.</p><button onclick="window.print()">Print / Save as PDF</button> <a href="${escapeHtml(`?${new URLSearchParams({ download: "1" }).toString()}`)}" onclick="event.preventDefault();const u=new URL(location.href);u.searchParams.set('download','1');location.href=u.href">Download saved results</a></section>
-    ${
-      giftRows
-        ? `<section><h2>Top Spiritual Gifts</h2><div class="gift-list">${giftRows}</div></section>`
-        : ""
-    }
-    ${designIdSummaryBlock(snapshot)}
-    <section>
-      <h2>Saved Highlights</h2>
-      <table>${highlightRows}</table>
-    </section>
-    ${
-      reportHref
-        ? `<section><h2>Full Report Link</h2><p><a href="${escapeHtml(reportHref)}">${escapeHtml(reportHref)}</a></p></section>`
-        : ""
-    }
-  </main>
-</body>
-</html>`;
 }
-
-function downloadResponse(
+function recoveryHtml(
   snapshot: AssessmentSnapshotSummary,
-  attachment = false,
+  url: URL,
+  message = "",
 ) {
   const label =
     assessmentLabels[snapshot.assessment_type] ?? snapshot.assessment_type;
-  const filename = `${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-snapshot-${snapshot.id.slice(0, 8)}.html`;
-
-  return new NextResponse(visualArtifact(snapshot), {
-    headers: {
-      "Content-Disposition": `${attachment ? "attachment" : "inline"}; filename="${filename}"`,
-      "Content-Type": "text/html; charset=utf-8",
-      "Cache-Control": "private, no-store",
-      "Referrer-Policy": "no-referrer",
-    },
-  });
+  const view = new URL(url);
+  view.searchParams.set("view", "snapshot");
+  const canRecover = Boolean(recoveryReport(snapshot));
+  return layout(
+    `${label} PDF Report`,
+    `<section><p>${html(message || "The original PDF is not currently archived in your Field Kit.")}</p><p>This page is not a substitute report or a printed snapshot.</p>${canRecover ? `<p>Recreate the full report using this assessment’s saved report data and the official report template. Your scores will not change, and no email will be sent.</p><form method="post"><button type="submit">Prepare full PDF report</button></form>` : `<p>The complete source report data is not available for this older record. Its snapshot remains available; we cannot honestly recreate the original PDF from a partial summary.</p>`}<p><a href="${html(view.pathname + view.search)}">View snapshot</a></p></section>`,
+  );
 }
-
 async function findAuthorizedSnapshot(
   request: NextRequest,
   snapshotId: string,
@@ -352,17 +139,14 @@ async function findAuthorizedSnapshot(
     key: request.nextUrl.searchParams.get("key") ?? undefined,
     review: request.nextUrl.searchParams.get("review") ?? undefined,
   };
-
   if (isHeatherReviewRequest(reviewParams)) {
     const report = await getHeatherReviewReport(reviewParams);
     return report?.all.find((snapshot) => snapshot.id === snapshotId) ?? null;
   }
-
   if (isNewReviewRequest(reviewParams)) {
     const report = await getNewReviewReport(reviewParams);
     return report?.all.find((snapshot) => snapshot.id === snapshotId) ?? null;
   }
-
   if (isOwnerPreviewRequest(reviewParams)) {
     const supabaseAdmin = createSupabaseAdminClient();
     const { data } = await supabaseAdmin
@@ -370,72 +154,247 @@ async function findAuthorizedSnapshot(
       .select("id,assessment_type,created_at,scores,source,source_submitted_at")
       .eq("id", snapshotId)
       .maybeSingle();
-
     return data as AssessmentSnapshotSummary | null;
   }
-
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
   if (!user) {
     return null;
   }
-
   const report = await getAssessmentSnapshotsForUser(
     user.id,
     normalizeEmail(user.email),
   );
-
   return report.all.find((snapshot) => snapshot.id === snapshotId) ?? null;
 }
-
+async function persist(
+  snapshot: AssessmentSnapshotSummary,
+  update: Record<string, unknown>,
+) {
+  const s = createSupabaseAdminClient();
+  const { data, error } = await s
+    .from("assessment_snapshots")
+    .select("scores")
+    .eq("id", snapshot.id)
+    .single();
+  if (error) throw Error("Could not read the saved report record.");
+  const result = await s
+    .from("assessment_snapshots")
+    .update({ scores: { ...data.scores, ...update } })
+    .eq("id", snapshot.id);
+  if (result.error) throw Error("Could not attach the report to Field Kit.");
+}
+async function pdfResponse(
+  snapshot: AssessmentSnapshotSummary,
+  request: NextRequest,
+) {
+  const stored = object(
+    snapshot.scores.reportArtifact ?? object(snapshot.scores.pdfMonkey).storage,
+  );
+  if (stored.path === `${snapshot.assessment_type}/${snapshot.id}/report.pdf`) {
+    const url = await storedReportUrl(
+      stored as StoredReport,
+      request.nextUrl.searchParams.get("download") === "1",
+    );
+    if (url) return NextResponse.redirect(url, { headers });
+  }
+  const pdf = object(snapshot.scores.pdfMonkey);
+  let providerUrl = String(pdf.providerUrl ?? "");
+  if (pdf.documentId)
+    try {
+      const doc = await getPdfMonkeyDocument(pdf.documentId);
+      providerUrl = doc.download_url ?? doc.public_share_link ?? providerUrl;
+    } catch {
+      /* Try the saved provider link, then show honest recovery. */
+    }
+  if (providerUrl)
+    try {
+      const reportArtifact = await archiveReportPdf(
+        providerUrl,
+        `${snapshot.assessment_type}/${snapshot.id}`,
+        String(pdf.filename ?? `${snapshot.assessment_type}-report.pdf`),
+      );
+      await persist(snapshot, { reportArtifact });
+      const url = await storedReportUrl(
+        reportArtifact,
+        request.nextUrl.searchParams.get("download") === "1",
+      );
+      if (url) return NextResponse.redirect(url, { headers });
+    } catch {
+      /* An expired provider URL must not be called a working report. */
+    }
+  return new NextResponse(recoveryHtml(snapshot, request.nextUrl), {
+    headers: { ...headers, "Content-Type": "text/html; charset=utf-8" },
+  });
+}
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<unknown> },
+  context: {
+    params: Promise<{
+      snapshotId?: string;
+    }>;
+  },
 ) {
-  const params = (await context.params) as { snapshotId?: string };
-  const snapshotId = params.snapshotId ?? "";
+  const { snapshotId = "" } = await context.params;
   const snapshot = await findAuthorizedSnapshot(request, snapshotId);
-
-  if (!snapshot) {
-    return NextResponse.json({ error: "Artifact not found." }, { status: 404 });
-  }
-
-  // Refresh expiring PDF links without regenerating reports or sending email.
-  const pdf = scoreObject(snapshot, "pdfMonkey");
-  let url = compactValue(pdf.providerUrl);
-  if (typeof pdf.documentId === "string" && pdf.documentId) {
-    try {
-      const document = await getPdfMonkeyDocument(pdf.documentId);
-      url =
-        document.public_share_link ??
-        document.download_url ??
-        document.preview_url ??
-        url;
-    } catch {
-      /* Keep the saved link if the provider is temporarily unavailable. */
+  if (!snapshot)
+    return NextResponse.json(
+      { error: "Artifact not found." },
+      { status: 404, headers },
+    );
+  if (request.nextUrl.searchParams.get("view") === "snapshot")
+    return new NextResponse(snapshotHtml(snapshot, request.nextUrl), {
+      headers: { ...headers, "Content-Type": "text/html; charset=utf-8" },
+    });
+  return pdfResponse(snapshot, request);
+}
+export async function POST(
+  request: NextRequest,
+  context: {
+    params: Promise<{
+      snapshotId?: string;
+    }>;
+  },
+) {
+  const origin = request.headers.get("origin");
+  if (origin && origin !== request.nextUrl.origin)
+    return NextResponse.json(
+      { error: "Open this report from your Field Kit." },
+      { status: 403, headers },
+    );
+  const { snapshotId = "" } = await context.params;
+  const snapshot = await findAuthorizedSnapshot(request, snapshotId);
+  if (!snapshot)
+    return NextResponse.json(
+      { error: "Artifact not found." },
+      { status: 404, headers },
+    );
+  if (object(snapshot.scores.reportArtifact).path)
+    return pdfResponse(snapshot, request);
+  const report = recoveryReport(snapshot);
+  if (report) {
+    const { data: identity } = await createSupabaseAdminClient()
+      .from("assessment_snapshots")
+      .select("assessment_participants(display_name,normalized_email)")
+      .eq("id", snapshot.id)
+      .single();
+    const participant = Array.isArray(identity?.assessment_participants)
+      ? identity.assessment_participants[0]
+      : identity?.assessment_participants;
+    const name = participant?.display_name ?? "",
+      email = participant?.normalized_email ?? "";
+    if (snapshot.assessment_type === "designid") {
+      report.payload.Name ||= name;
+      report.payload.Email ||= email;
+    }
+    if (snapshot.assessment_type === "spiritual_gifts") {
+      report.payload.Full_Name ||= name;
+      report.payload.Email_Address ||= email;
+    }
+    if (snapshot.assessment_type === "designpd") {
+      report.payload.name ||= name;
+      report.payload.email ||= email;
     }
   }
-  const accessUrl = compactValue(snapshot.scores?.reportAccessUrl);
-  if (
-    !url &&
-    accessUrl &&
-    !accessUrl.includes(`/api/artifacts/${snapshot.id}/`)
-  )
-    url = accessUrl;
-  if (url) {
-    const target = new URL(url, request.url);
-    if (["https:", "http:"].includes(target.protocol)) {
-      const response = NextResponse.redirect(target);
-      response.headers.set("Cache-Control", "private, no-store");
-      response.headers.set("Referrer-Policy", "no-referrer");
-      return response;
+  if (!report)
+    return new NextResponse(recoveryHtml(snapshot, request.nextUrl), {
+      status: 422,
+      headers: { ...headers, "Content-Type": "text/html; charset=utf-8" },
+    });
+  const s = createSupabaseAdminClient(),
+    lockPath = `locks/${snapshot.id}.json`;
+  // Storage's create-if-absent prevents simultaneous clicks creating duplicate PDFs.
+  const lease = await s.storage
+    .from(reportBucket)
+    .upload(
+      lockPath,
+      Buffer.from(JSON.stringify({ startedAt: new Date().toISOString() })),
+      { contentType: "application/json", upsert: false },
+    );
+  if (lease.error)
+    return new NextResponse(
+      recoveryHtml(
+        snapshot,
+        request.nextUrl,
+        "This report is already being prepared. Wait a moment, then reload this page.",
+      ),
+      {
+        status: 409,
+        headers: { ...headers, "Content-Type": "text/html; charset=utf-8" },
+      },
+    );
+  try {
+    let documentId = String(
+      object(snapshot.scores.pdfRecovery).documentId ?? "",
+    );
+    let document = documentId
+      ? await getPdfMonkeyDocument(documentId).catch(() => null)
+      : null;
+    if (!document) {
+      document = await createPdfMonkeyDocument({
+        templateId: report.templateId,
+        payload: report.payload,
+        filename: `${assessmentLabels[snapshot.assessment_type] ?? snapshot.assessment_type} Report.pdf`,
+      });
+      documentId = document.id;
+      await persist(snapshot, {
+        pdfRecovery: { documentId, startedAt: new Date().toISOString() },
+      });
     }
+    for (
+      let i = 0;
+      i < 45 &&
+      ["pending", "generating", "draft"].includes(String(document.status));
+      i++
+    ) {
+      await new Promise((r) => setTimeout(r, 1500));
+      document = await getPdfMonkeyDocument(documentId);
+    }
+    const url = document.download_url ?? document.public_share_link;
+    if (!url || !["ready", "success"].includes(String(document.status)))
+      throw Error(
+        "The PDF provider has not finished preparing this report. Please try again shortly.",
+      );
+    const reportArtifact = await archiveReportPdf(
+      url,
+      `${snapshot.assessment_type}/${snapshot.id}`,
+      `${assessmentLabels[snapshot.assessment_type] ?? snapshot.assessment_type} Report.pdf`,
+    );
+    await persist(snapshot, {
+      reportArtifact,
+      pdfMonkey: {
+        ...object(snapshot.scores.pdfMonkey),
+        documentId,
+        providerUrl: url,
+        status: document.status,
+      },
+      pdfRecovery: {
+        documentId,
+        completedAt: new Date().toISOString(),
+        source: "saved-assessment-report-data",
+      },
+    });
+    const target = new URL(request.url);
+    target.searchParams.delete("view");
+    target.searchParams.set("download", "1");
+    return NextResponse.redirect(target, { status: 303, headers });
+  } catch (error) {
+    return new NextResponse(
+      recoveryHtml(
+        snapshot,
+        request.nextUrl,
+        error instanceof Error
+          ? error.message
+          : "Could not prepare this report. Your saved assessment is safe.",
+      ),
+      {
+        status: 502,
+        headers: { ...headers, "Content-Type": "text/html; charset=utf-8" },
+      },
+    );
+  } finally {
+    await s.storage.from(reportBucket).remove([lockPath]);
   }
-  return downloadResponse(
-    snapshot,
-    request.nextUrl.searchParams.get("download") === "1",
-  );
 }

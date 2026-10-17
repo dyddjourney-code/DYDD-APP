@@ -70,6 +70,7 @@ const sourceConfigs = {
       "Reflection_Of_God",
       "Spiritual_Strength",
       "Potential_Shadow",
+      "Reflection_Shadow",
       "ReportReady",
     ],
     profileColumns: [
@@ -534,6 +535,7 @@ function buildPayload(config, record, syncBatchId) {
         ? undefined
         : `dydd:${config.assessmentType}:${hash(fallbackKeyBasis)}`,
     participantName: participantName || undefined,
+    reportPayload: Object.fromEntries(Object.entries(record).filter(([key]) => key !== "__rowNumber")),
     profileLanguage: pick(record, config.profileColumns),
     scores: pick(record, config.scoreColumns),
     sourceResponseId: responseId,

@@ -1,41 +1,53 @@
+import {
+  archiveReportPdf,
+  type StoredReport,
+} from "@/lib/assessments/report-storage";
 import { sendResendEmail } from "@/lib/email/resend";
 import {
   createPdfMonkeyDocument,
   getPdfMonkeyDocument,
   type PdfMonkeyDocument,
 } from "@/lib/pdfmonkey/client";
-
 export function cleanReportFilename(value: string) {
-  return value.replace(/[^\w .'-]+/g, " ").replace(/\s+/g, " ").trim();
+  return value
+    .replace(/[^\w .'-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
-
 export function pdfMonkeyReportLink(document: PdfMonkeyDocument) {
-  return document.public_share_link ?? document.download_url ?? document.preview_url ?? "";
+  return (
+    document.public_share_link ??
+    document.download_url ??
+    document.preview_url ??
+    ""
+  );
 }
-
-export async function waitForPdfMonkeyDocument(documentId: string, attempts = 18) {
+export async function waitForPdfMonkeyDocument(
+  documentId: string,
+  attempts = 18,
+) {
   let document = await getPdfMonkeyDocument(documentId);
-
   for (
     let attempt = 0;
-    attempt < attempts && ["pending", "generating"].includes(String(document.status));
+    attempt < attempts &&
+    ["pending", "generating"].includes(String(document.status));
     attempt += 1
   ) {
     await new Promise((resolve) => setTimeout(resolve, 1500));
     document = await getPdfMonkeyDocument(documentId);
   }
-
   return document;
 }
-
 export async function createReadyPdfMonkeyReport({
   filename,
   payload,
   templateId,
+  archiveKey,
 }: {
   filename: string;
   payload: Record<string, unknown>;
   templateId: string;
+  archiveKey?: string;
 }) {
   const createdDocument = await createPdfMonkeyDocument({
     filename,
@@ -44,14 +56,32 @@ export async function createReadyPdfMonkeyReport({
   });
   const readyDocument = await waitForPdfMonkeyDocument(createdDocument.id);
   const providerUrl = pdfMonkeyReportLink(readyDocument);
-
+  let storage: StoredReport | undefined;
+  let archiveError: string | undefined;
+  if (
+    archiveKey &&
+    providerUrl &&
+    ["ready", "success"].includes(String(readyDocument.status))
+  ) {
+    try {
+      storage = await archiveReportPdf(
+        readyDocument.download_url ?? providerUrl,
+        archiveKey,
+        filename,
+      );
+    } catch (error) {
+      archiveError =
+        error instanceof Error ? error.message : "PDF archive failed";
+    }
+  }
   return {
+    storage,
+    archiveError,
     document: readyDocument,
     providerUrl,
     ready: ["ready", "success"].includes(String(readyDocument.status)),
   };
 }
-
 export async function sendAssessmentReportEmail({
   assessmentName,
   participantEmail,
@@ -64,7 +94,6 @@ export async function sendAssessmentReportEmail({
   reportUrl: string;
 }) {
   const text = `Hi ${participantName},\n\nYour ${assessmentName} report is ready.\n\nOpen your report here: ${reportUrl}\n\nSincerely,\nDiscover Your Divine Design Team`;
-
   return sendResendEmail({
     html: [
       `<p>Hi ${participantName},</p>`,

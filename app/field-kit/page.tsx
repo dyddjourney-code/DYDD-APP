@@ -35,7 +35,6 @@ import {
   withReviewQuery,
 } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-
 type FieldKitPageProps = {
   searchParams?: Promise<
     ReviewSearchParams & {
@@ -47,12 +46,13 @@ type FieldKitPageProps = {
     }
   >;
 };
-
 type FieldKitArtifact = {
   id?: string;
   completedAt?: string;
   experienceSlug?: string;
   action: string;
+  pdfHref?: string;
+  pdfReady?: boolean;
   courseAction?: string | null;
   courseHref?: string | null;
   detail: string;
@@ -61,23 +61,19 @@ type FieldKitArtifact = {
   meta: Array<[string, string]>;
   title: string;
 };
-
 export const dynamic = "force-dynamic";
-
 function artifactDownloadHref(
   snapshot: AssessmentSnapshotSummary,
   reviewParams?: ReviewSearchParams | null,
 ) {
   return withReviewQuery(
-    `/api/artifacts/${encodeURIComponent(snapshot.id)}/download`,
+    `/api/artifacts/${encodeURIComponent(snapshot.id)}/download?download=1`,
     reviewParams,
   );
 }
-
 function snapshotArtifactTitle(snapshot: AssessmentSnapshotSummary) {
-  return `${assessmentLabels[snapshot.assessment_type] ?? snapshot.assessment_type} Report`;
+  return `${assessmentLabels[snapshot.assessment_type] ?? snapshot.assessment_type} · Saved assessment`;
 }
-
 async function getFieldKitAssessmentReport(
   userId: string,
   email: string,
@@ -86,22 +82,17 @@ async function getFieldKitAssessmentReport(
   if (isHeatherReviewRequest(reviewParams)) {
     return getHeatherReviewReport(reviewParams);
   }
-
   if (isNewReviewRequest(reviewParams)) {
     return getNewReviewReport(reviewParams);
   }
-
   if (userId) {
     return getAssessmentSnapshotsForUser(userId, email);
   }
-
   if (email) {
     return getAssessmentSnapshotsForParticipantMatch({ emails: [email] });
   }
-
   return { all: [], latest: [] };
 }
-
 export default async function FieldKitPage({
   searchParams,
 }: FieldKitPageProps) {
@@ -122,17 +113,12 @@ export default async function FieldKitPage({
     (await getHeatherReviewReport(reviewParams)) ??
     (await getNewReviewReport(reviewParams));
   const fruitLifeReviewQuery = reviewQuery(reviewParams);
-
   if (!user && fruitLifeLane && !reviewReport) {
     redirect(`/login?next=${encodeURIComponent("/field-kit?lane=fruitlife")}`);
   }
-
   if (!user && !reviewReport && process.env.DYDD_REVIEW_TOKEN) {
-    redirect(
-      `/field-kit?review=new&key=${encodeURIComponent(process.env.DYDD_REVIEW_TOKEN)}`,
-    );
+    redirect("/login?next=%2Ffield-kit");
   }
-
   const participantEmail = isHeatherReviewRequest(reviewParams)
     ? "willoughbyhs@gmail.com"
     : isNewReviewRequest(reviewParams)
@@ -196,7 +182,18 @@ export default async function FieldKitPage({
             designpd: "designpd-alignment",
           } as Record<string, string>
         )[snapshot.assessment_type],
-        action: "Open report",
+        action: "View snapshot",
+        pdfHref: artifactDownloadHref(snapshot, reviewParams),
+        pdfReady: Boolean(
+          snapshot.scores.reportArtifact ||
+          (
+            snapshot.scores.pdfMonkey as
+              | {
+                  storage?: unknown;
+                }
+              | undefined
+          )?.storage,
+        ),
         courseAction: "Explore course",
         courseHref:
           snapshot.assessment_type === "designid"
@@ -209,7 +206,10 @@ export default async function FieldKitPage({
                   ? "/courses/designpd-alignment"
                   : "/trailheads",
         detail: `Completed ${displayDateTime(snapshot.source_submitted_at ?? snapshot.created_at)}.`,
-        href: artifactDownloadHref(snapshot, reviewParams),
+        href: withReviewQuery(
+          `/api/artifacts/${encodeURIComponent(snapshot.id)}/download?view=snapshot`,
+          reviewParams,
+        ),
         logo:
           snapshot.assessment_type === "designid"
             ? "/brand/tools/designid-logo.webp"
@@ -236,7 +236,6 @@ export default async function FieldKitPage({
       const reportArtifact = fruitLifeReportArtifact(session);
       const reportTimestamp =
         reportArtifact?.created_at ?? session.updated_at ?? session.created_at;
-
       return {
         id: session.id,
         completedAt: reportTimestamp,
@@ -282,7 +281,6 @@ export default async function FieldKitPage({
               : reviewParams?.checkout === "config-error"
                 ? "FruitLife360 checkout is not fully configured yet."
                 : null;
-
     return (
       <main className="journey-shell hq-standalone-page fruitlife-release-shell">
         <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} />
@@ -416,7 +414,6 @@ export default async function FieldKitPage({
       </main>
     );
   }
-
   const { data: reflectionRounds } = user
     ? await supabase
         .from("reflection_rounds")
@@ -450,6 +447,18 @@ export default async function FieldKitPage({
         </div>
       </header>
 
+      {reviewReport ? (
+        <aside className="notice">
+          <p>
+            <strong>Report preview collection</strong> · These are imported
+            assessment records. Personal reflection editing and email use your
+            signed-in account.
+          </p>
+          <Link href="/login?next=%2Ffield-kit">
+            Open my personal Field Kit
+          </Link>
+        </aside>
+      ) : null}
       <FieldKitCollection
         artifacts={artifacts}
         rounds={reflectionRounds ?? []}

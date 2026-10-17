@@ -5,6 +5,8 @@ export type CollectedArtifact = {
   id?: string;
   completedAt?: string;
   action: string;
+  pdfHref?: string;
+  pdfReady?: boolean;
   courseAction?: string | null;
   courseHref?: string | null;
   detail: string;
@@ -28,9 +30,16 @@ function ReportRow({ artifact }: { artifact: CollectedArtifact }) {
           <span className="fieldkit-report-status">{status}</span>
         ) : null}
       </div>
-      <Link className="button secondary" href={artifact.href}>
-        {artifact.action}
-      </Link>
+      <div className="fieldkit-report-actions">
+        <Link className="button secondary" href={artifact.href}>
+          {artifact.action}
+        </Link>
+        {artifact.pdfHref ? (
+          <Link className="button primary" href={artifact.pdfHref}>
+            {artifact.pdfReady ? "Download PDF" : "Full PDF report"}
+          </Link>
+        ) : null}
+      </div>
     </article>
   );
 }
@@ -40,7 +49,10 @@ export function FieldKitCollection({
   reviewParams,
 }: {
   artifacts: CollectedArtifact[];
-  rounds: Array<{ course_slug: string; started_at: string }>;
+  rounds: Array<{
+    course_slug: string;
+    started_at: string;
+  }>;
   reviewParams?: ReviewSearchParams;
 }) {
   const section = (

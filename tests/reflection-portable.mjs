@@ -252,8 +252,7 @@ try {
     redirect: "manual",
   });
   assert.equal(artifact.status, 200);
-  assert.match(artifact.headers.get("Content-Disposition"), /^inline/);
-  assert((await artifact.text()).includes("Print / Save as PDF"));
+  assert((await artifact.text()).includes("not a substitute report"));
   assert.equal(
     (
       await fetch(`${base}/api/artifacts/${snap.id}/download`, {
@@ -288,11 +287,9 @@ try {
     headers: { Cookie: a.cookie },
     redirect: "manual",
   });
-  assert.equal(pdf.status, 307);
-  assert.equal(
-    pdf.headers.get("location"),
-    "https://example.invalid/saved-report.pdf",
-  );
+  assert.equal(pdf.status, 200);
+  assert((await pdf.text()).includes("not a substitute report"));
+  assert.equal(pdf.headers.get("location"), null, "An unverified provider URL must not masquerade as a working PDF");
   console.log(
     "PASS all-five-workbook text exports, selected/all dated scopes, blank questions, anonymous/foreign denial, archive API/RPC/direct-insert denial, atomic assessment rollover, saved-answer preservation and report opening.",
   );

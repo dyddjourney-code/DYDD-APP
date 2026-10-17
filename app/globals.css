@@ -20233,6 +20233,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .trail-rating { display:grid; grid-template-columns:22px minmax(0,1fr) auto; gap:12px; align-items:center; border-block:1px solid #d7d5c3; padding:16px 0; }
 .trail-rating-marker { width:18px; height:18px; border-radius:50%; background:#5d783c; border:3px solid #e4e7d0; outline:1px solid #5d783c; }
 .trail-rating-moderate .trail-rating-marker { border-radius:2px; background:#a67c36; outline-color:#a67c36; transform:rotate(45deg); }
+.trail-rating-challenging .trail-rating-marker { border-radius:2px; background:#34483f; outline-color:#34483f; transform:rotate(45deg); }
 .trail-rating strong { font-size:17px; }.trail-rating p { margin:4px 0 0; font-size:13px; line-height:1.5; color:#616851; }
 .trail-rating small { width:88px; max-width:100px; font-size:9px; text-transform:uppercase; letter-spacing:.12em; line-height:1.6; color:#6c705b; }
 .trail-placard-facts { display:grid; grid-template-columns:1fr 1fr; margin:8px 0 18px; }

@@ -10,8 +10,8 @@ export const trailDefinitions = [
     signpost: "/brand/trailheads/designid-signpost.png",
     description:
       "Discover your reflection of God’s design, then learn how it shapes your contribution, relationships, and everyday life.",
-    rating: "Easy",
-    ratingNote: "A focused discovery with practical next steps.",
+    rating: "Moderate",
+    ratingNote: "Personal discovery with thoughtful reflection and practical application.",
     terrain: "Personal discovery, report exploration, and reflection",
     gear: "Your completed DesignID results for the course",
     bestFor: "Anyone exploring how they naturally contribute",
@@ -46,8 +46,8 @@ export const trailDefinitions = [
     signpost: "/brand/trailheads/fruitlife-360-signpost.png",
     description:
       "Notice the fruit of the Spirit in everyday life through honest reflection and feedback, then choose meaningful practices for growth.",
-    rating: "Moderate",
-    ratingNote: "A reflective trail; observer feedback may take time.",
+    rating: "Easy",
+    ratingNote: "Gentle reflection and simple practices; allow time for observer feedback.",
     terrain: "Self-reflection, feedback, and everyday formation",
     gear: "Your completed FruitLife360 report for the course",
     bestFor: "Those ready for honest feedback and intentional growth",

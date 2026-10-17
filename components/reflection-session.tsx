@@ -1048,13 +1048,13 @@ export function ReflectionNicheBuilder() {
             ))}
           </select>
         </label>
-        <a
+        <ReviewAwareLink
           href={`/field-kit#${sourceSlug === "discover-your-divine-design" ? "artifacts" : `collection-${sourceSlug.startsWith("designid") ? "designid" : sourceSlug.startsWith("designpd") ? "designpd" : sourceSlug.startsWith("spiritual") ? "spiritual-gifts" : "fruitlife-360"}`}`}
           target="_blank"
           rel="noopener noreferrer"
         >
           Open report collection in another tab
-        </a>
+        </ReviewAwareLink>
         {sourceLoading ? <p role="status">Loading reflections…</p> : null}
         {sourceError ? <p role="alert">{sourceError}</p> : null}
         {source?.rounds.length ? (

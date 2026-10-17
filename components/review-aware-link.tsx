@@ -18,7 +18,7 @@ export function ReviewAwareLink({ href, ...props }: ReviewAwareLinkProps) {
   }
 
   const url = new URL(href, "https://dydd.local");
-  url.searchParams.set("review", review);
+  url.searchParams.set("review", url.pathname.startsWith("/command-center") ? "owner" : review);
   url.searchParams.set("key", key);
 
   return <Link href={`${url.pathname}${url.search}${url.hash}`} {...props} />;

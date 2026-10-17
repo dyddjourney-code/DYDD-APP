@@ -1,4 +1,5 @@
 "use client";
+import { ReviewAwareLink } from "@/components/review-aware-link";
 import {
   createContext,
   useContext,
@@ -15,6 +16,12 @@ import type {
   ReflectionEntry,
   ReflectionRound,
 } from "@/lib/reflections/types";
+function reflectionFetch(input: string, init?: RequestInit) {
+  const url = new URL(input, window.location.origin);
+  const current = new URLSearchParams(window.location.search);
+  for (const name of ["review", "key"]) { const value = current.get(name); if (value) url.searchParams.set(name,value); }
+  return fetch(url.pathname + url.search, init);
+}
 const date = (value: string) =>
   new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
@@ -29,9 +36,9 @@ function ReflectionText({ text }: { text: string }) {
         )
         .map((part, index) =>
           part.startsWith("/field-kit/reflections/") ? (
-            <a key={index} href={part}>
+            <ReviewAwareLink key={index} href={part}>
               Open source reflection
-            </a>
+            </ReviewAwareLink>
           ) : (
             part
           ),
@@ -102,21 +109,21 @@ export function ReflectionSession({
     setLoading(true);
     setError("");
     try {
-      const r = await fetch(
+      const r = await reflectionFetch(
         `/api/course-reflections?courseSlug=${encodeURIComponent(courseSlug)}`,
         { cache: "no-store" },
       );
       let body = await r.json();
       if (!r.ok) throw Error(body.error);
       if (body.nextAssessmentReportId) {
-        const sync = await fetch("/api/course-reflections", {
+        const sync = await reflectionFetch("/api/course-reflections", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ action: "sync-round", courseSlug }),
         });
         const synced = await sync.json();
         if (!sync.ok) throw Error(synced.error);
-        const fresh = await fetch(
+        const fresh = await reflectionFetch(
           `/api/course-reflections?courseSlug=${encodeURIComponent(courseSlug)}`,
           { cache: "no-store" },
         );
@@ -228,7 +235,7 @@ export function ReflectionSession({
     setCreating(true);
     setError("");
     try {
-      const r = await fetch("/api/course-reflections", {
+      const r = await reflectionFetch("/api/course-reflections", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -257,7 +264,7 @@ export function ReflectionSession({
     const value = drafts[q.id] ?? latest[q.id]?.response ?? "";
     setStatuses((s) => ({ ...s, [q.id]: "Saving…" }));
     try {
-      const r = await fetch("/api/course-reflections", {
+      const r = await reflectionFetch("/api/course-reflections", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -279,7 +286,7 @@ export function ReflectionSession({
         ...s,
         [q.id]:
           (draftRef.current[q.id] ?? value) === value
-            ? "Saved to your account"
+            ? data.preview ? "Saved to your preview workbook" : "Saved to your account"
             : "Unsaved changes",
       }));
     } catch (e) {
@@ -306,7 +313,7 @@ export function ReflectionSession({
     positionQueue.current = positionQueue.current
       .catch(() => {})
       .then(async () => {
-        const response = await fetch("/api/course-reflections", {
+        const response = await reflectionFetch("/api/course-reflections", {
           method: "POST",
           keepalive: true,
           headers: { "Content-Type": "application/json" },
@@ -420,7 +427,7 @@ export function ReflectionSession({
               </>
             ) : (
               <p>
-                Begin this trail at <a href="/trailheads">Trailheads</a>; its
+                Begin this trail at <ReviewAwareLink href="/trailheads">Trailheads</ReviewAwareLink>; its
                 completed report opens new reflection rounds.
               </p>
             )}
@@ -626,7 +633,7 @@ export function ReflectionWorkbook() {
         scope: exportScope,
         round: s.round?.id ?? "",
       });
-      const response = await fetch(`/api/course-reflections/export?${query}`, {
+      const response = await reflectionFetch(`/api/course-reflections/export?${query}`, {
         method: email ? "POST" : "GET",
       });
       if (!response.ok) {
@@ -775,12 +782,14 @@ export function ReflectionWorkbook() {
             <button
               className="button secondary"
               type="button"
-              disabled={exporting || s.loading}
+              disabled={exporting || s.loading || s.data.preview}
+              title={s.data.preview ? "Preview mode does not send email; use Download text." : undefined}
               onClick={() => void exportSaved(true)}
             >
               Email to me
             </button>
           </div>
+          {s.data.preview ? <p>Preview mode: saves and text downloads work. Email is not sent from previews.</p> : null}
           {exportStatus ? <p role="status">{exportStatus}</p> : null}
         </section>
       ) : null}
@@ -906,12 +915,12 @@ export function ReflectionWorkbook() {
                           />
                         </article>
                       ))}
-                      <a
+                      <ReviewAwareLink
                         className="reflection-return-lesson"
                         href={`${s.courseSlug === "discover-your-divine-design" ? "/journey" : `/courses/${s.courseSlug}`}?lesson=${encodeURIComponent(lessonSlug)}`}
                       >
                         Return to this lesson
-                      </a>
+                      </ReviewAwareLink>
                     </details>
                   );
                 })}
@@ -958,7 +967,7 @@ export function ReflectionNicheBuilder() {
     setSource(null);
     setSourceSlug(slug);
     try {
-      const r = await fetch(
+      const r = await reflectionFetch(
         `/api/course-reflections?courseSlug=${encodeURIComponent(slug)}`,
         { cache: "no-store" },
       );

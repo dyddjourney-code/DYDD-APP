@@ -1,3 +1,4 @@
+import { previewParams, previewExport } from "@/lib/reflections/preview";
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getReflectionExperience } from "@/lib/reflections/catalog";
@@ -85,6 +86,8 @@ async function prepare(request: Request) {
   };
 }
 export async function GET(request: Request) {
+  const preview = previewParams(new URL(request.url));
+  if (preview) return previewExport(request, preview);
   const result = await prepare(request);
   if (result.error) return result.error;
   return new NextResponse(result.text, {
@@ -97,6 +100,8 @@ export async function GET(request: Request) {
   });
 }
 export async function POST(request: Request) {
+  const preview = previewParams(new URL(request.url));
+  if (preview) return previewExport(request, preview);
   const origin = request.headers.get("origin");
   if (origin && origin !== new URL(request.url).origin)
     return fail("Please send from your workbook page.", 403);

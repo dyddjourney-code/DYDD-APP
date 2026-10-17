@@ -36,9 +36,9 @@ function ReportRow({ artifact }: { artifact: CollectedArtifact }) {
         </Link>
         {artifact.pdfHref ? (
           <Link className="button primary" href={artifact.pdfHref}>
-            {artifact.pdfReady ? "Download PDF" : "Full PDF report"}
+            {artifact.pdfReady ? "Download PDF" : "Prepare full PDF"}
           </Link>
-        ) : null}
+        ) : <span className="fieldkit-report-status">Imported summary · no full PDF retained</span>}
       </div>
     </article>
   );

@@ -1,3 +1,5 @@
+import { previewParams } from "@/lib/reflections/preview";
+import { withReviewQuery, type ReviewSearchParams } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { learningCourses } from "@/lib/courses/course-catalog";
@@ -8,18 +10,21 @@ import { ReflectionCourseShell } from "@/components/reflection-course-shell";
 import { ReflectionWorkbook } from "@/components/reflection-session";
 export const dynamic = "force-dynamic";
 export default async function ReflectionWorkbookPage({
-  params,
+  params, searchParams,
 }: {
+  searchParams: Promise<ReviewSearchParams>;
   params: Promise<{
     courseSlug: string;
   }>;
 }) {
   const { courseSlug } = await params;
+  const preview = previewParams(await searchParams);
+  const path = (href: string) => withReviewQuery(href, preview);
   const s = await createSupabaseServerClient();
   const {
     data: { user },
   } = await s.auth.getUser();
-  if (!user)
+  if (!user && !preview)
     redirect(
       `/login?next=${encodeURIComponent(`/field-kit/reflections/${courseSlug}`)}`,
     );
@@ -32,8 +37,8 @@ export default async function ReflectionWorkbookPage({
   return (
     <main className="journey-shell hq-standalone-page reflection-notebook-page">
       <nav className="course-nav">
-        <Link href="/field-kit#artifacts">Back to Field Kit</Link>
-        <Link href={experience.href}>Continue course</Link>
+        <Link href={path("/field-kit#artifacts")}>Back to Field Kit</Link>
+        <Link href={path(experience.href)}>Continue course</Link>
       </nav>
       <header
         className={`reflection-notebook-hero${journey ? " reflection-notebook-hero-journey" : ""}`}
@@ -56,6 +61,7 @@ export default async function ReflectionWorkbookPage({
           </p>
         </div>
       </header>
+      {preview ? <p className="notice">Owner preview · {preview.review === "heather" ? "Heather" : "Jordan"} workbook. Your preview reflections are saved here separately from learner accounts. No additional sign-in is needed.</p> : null}
       <ReflectionCourseShell courseSlug={courseSlug}>
         <ReflectionWorkbook />
       </ReflectionCourseShell>

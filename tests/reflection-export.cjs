@@ -78,6 +78,7 @@ const db = {
     ),
 };
 const route = load("app/api/course-reflections/export/route.ts", {
+  "@/lib/reflections/preview": {previewParams: () => null},
   "@/lib/supabase/server": { createSupabaseServerClient: async () => db },
   "@/lib/email/resend": {
     sendResendEmail: async (input) => {

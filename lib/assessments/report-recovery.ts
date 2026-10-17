@@ -237,13 +237,13 @@ export function recoveryReport(snapshot: AssessmentSnapshotSummary): {
   ) {
     return {
       templateId,
-      payload: buildSpiritualGiftsPdfMonkeyPayload({
-        participantName: "",
-        participantEmail: "",
-        topGifts: root.topGifts,
-        deepDiveGifts: root.topGifts.slice(0, 3),
-        tieSummary: object(root.tieSummary),
-      } as Parameters<typeof buildSpiritualGiftsPdfMonkeyPayload>[0]),
+      payload: completeGiftPayload({
+        ...buildSpiritualGiftsPdfMonkeyPayload({
+          participantName: "", participantEmail: "", topGifts: root.topGifts,
+          deepDiveGifts: root.topGifts.slice(0, 3), tieSummary: object(root.tieSummary),
+        } as Parameters<typeof buildSpiritualGiftsPdfMonkeyPayload>[0]),
+        ...Object.fromEntries(root.topGifts.slice(0,5).flatMap((g: Record<string,any>,i:number) => [[`Top${i+1}_Name`,g.label],[`Top${i+1}_Score`,g.score]])),
+      }),
     };
   }
   return null;

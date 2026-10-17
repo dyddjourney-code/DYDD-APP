@@ -1,3 +1,4 @@
+import { previewParams, previewReflectionRequest } from "@/lib/reflections/preview";
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
@@ -61,6 +62,8 @@ async function context(
   };
 }
 export async function GET(request: Request) {
+  const preview = previewParams(new URL(request.url));
+  if (preview) return previewReflectionRequest(request, preview);
   const courseSlug = new URL(request.url).searchParams.get("courseSlug") ?? "";
   if (!getReflectionExperience(courseSlug))
     return json({ error: "Unknown course." }, 400);
@@ -129,6 +132,8 @@ export async function GET(request: Request) {
   });
 }
 export async function POST(request: Request) {
+  const preview = previewParams(new URL(request.url));
+  if (preview) return previewReflectionRequest(request, preview);
   const s = await createSupabaseServerClient();
   const {
     data: { user },

@@ -113,7 +113,7 @@ function snapshotHtml(snapshot: AssessmentSnapshotSummary, url: URL) {
   pdfUrl.searchParams.delete("download");
   return layout(
     `${label} Snapshot`,
-    `<section><p>Completed ${html(displayDate(snapshot.source_submitted_at ?? snapshot.created_at))}</p><p>This is a quick summary of your saved assessment, not your full PDF report.</p><div class="actions"><a href="${html(pdfUrl.pathname + pdfUrl.search)}">Full PDF report</a></div></section>${content}`,
+    `<section><p>Completed ${html(displayDate(snapshot.source_submitted_at ?? snapshot.created_at))}</p><p>This is a quick summary of your saved assessment, not your full PDF report.</p><div class="actions">${snapshot.scores.reportArtifact || recoveryReport(snapshot) ? `<a href="${html(pdfUrl.pathname + pdfUrl.search)}">${snapshot.scores.reportArtifact ? "Full PDF report" : "Prepare full PDF"}</a>` : `<p>Imported summary only: no full PDF was retained for this record. Full reports from complete assessment records are listed separately in Field Kit.</p>`}</div></section>${content}`,
   );
 }
 function recoveryHtml(

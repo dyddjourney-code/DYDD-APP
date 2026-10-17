@@ -1,3 +1,5 @@
+import { recoveryReport } from "@/lib/assessments/report-recovery";
+import { previewParams, previewReflectionRounds } from "@/lib/reflections/preview";
 import { isTrailAssessmentComplete } from "@/lib/trails/catalog";
 import { FieldKitCollection } from "@/components/field-kit-collection";
 import { FieldKitLegacyLinks } from "@/components/field-kit-legacy-links";
@@ -96,7 +98,9 @@ async function getFieldKitAssessmentReport(
 export default async function FieldKitPage({
   searchParams,
 }: FieldKitPageProps) {
-  const reviewParams = await searchParams;
+  const rawParams = await searchParams;
+  const preview = previewParams(rawParams ?? {});
+  const reviewParams = preview ? {...rawParams, ...preview} : rawParams;
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
   const supabase = await createSupabaseServerClient();
   const {
@@ -183,7 +187,7 @@ export default async function FieldKitPage({
           } as Record<string, string>
         )[snapshot.assessment_type],
         action: "View snapshot",
-        pdfHref: artifactDownloadHref(snapshot, reviewParams),
+        pdfHref: snapshot.scores.reportArtifact || recoveryReport(snapshot) ? artifactDownloadHref(snapshot, reviewParams) : undefined,
         pdfReady: Boolean(
           snapshot.scores.reportArtifact ||
           (
@@ -414,7 +418,9 @@ export default async function FieldKitPage({
       </main>
     );
   }
-  const { data: reflectionRounds } = user
+  const { data: reflectionRounds } = preview
+    ? {data: await previewReflectionRounds(preview)}
+    : user
     ? await supabase
         .from("reflection_rounds")
         .select("course_slug,started_at")

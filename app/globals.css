@@ -20258,3 +20258,55 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 @media(max-width:640px) { .trail-showcase,.trail-guide-route { grid-template-columns:1fr; gap:16px; }.trail-showcase { padding:16px 10px; }.trail-showcase-art img { max-height:300px; }.trail-guide-route-art img { max-height:255px; }.trail-guide-route-list { gap:35px; }.trail-dydd-logo { height:100px; }.trail-placard { border-width:6px; border-radius:13px; }.trail-placard-body { padding:20px 16px; }.trail-placard-top { padding-inline:16px; font-size:9px; }.trail-placard h3 { font-size:26px; }.trail-rating { grid-template-columns:20px minmax(0,1fr); }.trail-rating small { display:none; }.trail-placard-facts dd { font-size:12px; }.trail-step-strip li { font-size:10px; padding:10px 6px; }.trail-step-strip small { font-size:9px; }.trail-fieldkit-note,.trail-return-note { align-items:flex-start; flex-direction:column; padding:22px; }.trail-guide-route-actions .button { width:100%; }.trailhead-renewal .trailheads-hero { display:flex; flex-direction:column; align-items:flex-start; } }
 .trail-loading-sign { border:8px solid #2c503e; background:#faf7ed; padding:40px; border-radius:16px; max-width:740px; min-height:330px; }
 .trail-loading-sign div { height:24px; margin:20px 0; background:#e3e6d7; border-radius:4px; }.trail-loading-sign div:first-child { height:42px; width:70%; }.trail-loading-sign div:last-child { width:55%; }
+
+/* Trailheads readability and centered, on-demand course guides. Preserve placard artwork/layout. */
+.trailhead-renewal .trailheads-hero .lede { font-size:19px; line-height:1.65; max-width:850px; }
+.trailhead-renewal .eyebrow,.trailhead-renewal .section-label { font-size:14px; }
+.trailhead-renewal .trail-section-title>p:not(.section-label) { font-size:18px; max-width:800px; }
+.trailhead-renewal .trail-placard-top { font-size:12px; letter-spacing:.15em; }
+.trailhead-renewal .trail-placard h3 { font-size:clamp(29px,2.9vw,38px); }
+.trailhead-renewal .trail-placard .trail-description { font-size:18px; }
+.trailhead-renewal .trail-rating { grid-template-columns:minmax(95px,.6fr) minmax(0,1.4fr); gap:18px; }
+.trailhead-renewal .trail-rating small { display:block; width:auto; max-width:none; font-size:13px; letter-spacing:.08em; }
+.trail-rating-summary { display:grid; grid-template-columns:22px minmax(0,1fr); align-items:center; gap:12px; }
+.trailhead-renewal .trail-rating strong { font-size:20px; }
+.trailhead-renewal .trail-rating p { font-size:16px; }
+.trailhead-renewal .trail-placard-facts dt { font-size:13px; letter-spacing:.1em; }
+.trailhead-renewal .trail-placard-facts dd { font-size:16px; }
+.trailhead-renewal .trail-step-strip li { font-size:14px; overflow-wrap:anywhere; }
+.trailhead-renewal .trail-step-strip li>span,.trailhead-renewal .trail-step-strip small { font-size:13px; }
+.trailhead-renewal .trail-prerequisite { font-size:16px; }
+.trailhead-renewal .trail-placard .button { font-size:16px; line-height:1.45; text-align:center; }
+.trailhead-renewal .trail-placard-foot { font-size:11px; letter-spacing:.16em; }
+.trail-details-action { display:flex; justify-content:flex-end; margin-top:18px; }
+.trail-details-dialog { --trail-ink:#243f32; --trail-green:#2c503e; box-sizing:border-box; width:min(760px,calc(100vw - 32px)); max-width:none; max-height:calc(100dvh - 48px); margin:auto; padding:0; border:2px solid #2c503e; border-radius:18px; background:#faf7ed; color:#243f32; box-shadow:0 24px 80px #172c2455; overscroll-behavior:contain; }
+.trail-details-dialog::backdrop { background:rgb(20 38 30 / .62); }
+.trail-details-heading { position:sticky; top:0; z-index:1; display:flex; align-items:flex-start; justify-content:space-between; gap:20px; padding:24px 28px; background:#faf7ed; border-bottom:1px solid #d7d5c3; }
+.trail-details-heading .section-label { margin:0 0 8px; font-size:13px; color:#59664d; }
+.trail-details-heading h2 { margin:0; font-size:clamp(24px,3vw,32px); line-height:1.2; }
+.trail-details-close { flex-shrink:0; padding:10px 14px; min-height:44px; border:1px solid #2c503e; border-radius:8px; color:#243f32; background:transparent; font:inherit; font-size:16px; cursor:pointer; }
+.trail-details-content { padding:24px 28px 30px; font-size:17px; line-height:1.65; }
+.trail-details-content p { margin:0 0 14px; }
+.trail-details-content section { margin-top:26px; }
+.trailhead-renewal .trail-details-content h3 { margin:0 0 8px; font-size:21px; line-height:1.3; letter-spacing:normal; }
+.trail-details-stats { display:grid; grid-template-columns:1fr 1fr; gap:18px; padding:18px 0; margin:20px 0; border-block:1px solid #d7d5c3; }
+.trail-details-stats dt { font-size:13px; text-transform:uppercase; letter-spacing:.08em; color:#626b58; }
+.trail-details-stats dd { margin:5px 0 0; font-weight:650; }
+.trail-details-outline details { border-bottom:1px solid #d7d5c3; }
+.trail-details-outline summary { padding:16px 0; cursor:pointer; font-weight:650; }
+.trail-details-outline summary span { display:block; padding-left:20px; font-size:14px; font-weight:450; color:#626b58; }
+.trail-details-outline ol { margin:0 0 18px; padding-left:28px; }
+.trail-details-outline li { margin-bottom:8px; }
+.trail-details-dialog :focus-visible,.trailhead-renewal button:focus-visible { outline:3px solid #a67c36; outline-offset:3px; }
+@media(max-width:640px) {
+  .trailhead-renewal .trail-placard h3 { font-size:30px; }
+  .trailhead-renewal .trail-rating { grid-template-columns:minmax(85px,.7fr) minmax(0,1.3fr); gap:12px; }
+  .trailhead-renewal .trail-rating-summary { gap:8px; }
+  .trailhead-renewal .trail-placard-facts dd { font-size:16px; }
+  .trailhead-renewal .trail-placard-facts>div:nth-child(even) { padding-left:12px; }
+  .trailhead-renewal .trail-step-strip li { font-size:14px; padding:10px 6px; }
+  .trailhead-renewal .trail-step-strip small { font-size:13px; }
+  .trail-details-heading { padding:20px 18px; gap:12px; }
+  .trail-details-content { padding:20px 18px; }
+  .trail-details-stats { grid-template-columns:1fr; gap:12px; }
+}

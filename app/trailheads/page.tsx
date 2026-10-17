@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TrailDetails } from "@/components/trail-details";
 import { TrailPlacard } from "@/components/trail-placard";
 import { TrailResumeLink } from "@/components/trail-resume-link";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
@@ -104,10 +105,11 @@ export default async function TrailheadsPage({ searchParams }: Props) {
       <header className="standalone-hero trailheads-hero">
         <div>
           <p className="eyebrow">Trailheads</p>
-          <h1>One trail. Your next faithful step.</h1>
+          <h1>Take your next faithful step.</h1>
           <p className="lede">
-            Begin an assessment, explore what you discover, and walk the
-            course—all from the same trailhead.
+            Trailheads are courses that pair personal assessments with practical
+            teaching to help you understand your design, deepen your faith, and
+            live with purpose.
           </p>
         </div>
       </header>
@@ -129,7 +131,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
         <section className="trail-main-route" aria-label="Main journey">
           <div className="trail-section-title">
             <p className="section-label">The main journey</p>
-            <h2>Bring the whole picture together.</h2>
+            <h2>Understand your design. Live with purpose.</h2>
           </div>
           <article className="trail-showcase">
             <div className="trail-showcase-art">
@@ -141,7 +143,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
             <div className="trail-showcase-content">
               <img
                 className="trail-dydd-logo"
-                src="/brand/dydd-logo-transparent.webp"
+                src="/brand/dydd-logo-trailheads.webp"
                 alt="Discover Your Divine Design"
               />
               <TrailPlacard
@@ -152,9 +154,10 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                 ratingNote="A longer journey, walked one faithful step at a time."
                 terrain="Guided teaching, personal reflection, and everyday application"
                 gear="Discover Your Divine Design book and a place to reflect"
-                bestFor="Anyone ready to connect the whole picture"
+                bestFor="Anyone seeking clarity about their God-given design and purpose"
                 permit="Included"
                 main
+                details={<TrailDetails trailId="journey" />}
               >
                 <p className="trail-prerequisite">
                   No assessment needed to begin. Explore the connected
@@ -171,23 +174,27 @@ export default async function TrailheadsPage({ searchParams }: Props) {
           </article>
         </section>
       ) : null}
+      {[
+        { id: "focused", trails: trails.filter((trail) => trail.id !== "designpd") },
+        ...(!mini ? [{ id: "extended", trails: trails.filter((trail) => trail.id === "designpd") }] : []),
+      ].map((group) => (
       <section
         className="trail-short-routes"
-        aria-label="Assessment and course trails"
-        id="subscription-assessments"
+        aria-label={group.id === "extended" ? "Extended trails" : "Focused trails"}
+        id={group.id === "extended" ? "optional-expansions" : "subscription-assessments"}
+        key={group.id}
       >
         <div className="trail-section-title">
-          <p className="section-label">
-            {mini ? "Your connected trails" : "Focused trails"}
-          </p>
-          <h2>Start with discovery. Grow through practice.</h2>
+          <p className="section-label">{group.id === "extended" ? "Extended trails" : "Focused trails"}</p>
+          <h2>{group.id === "extended" ? "Put your design into action." : "Practical first steps."}</h2>
           <p>
-            Your assessment and course belong together. Completed reports stay
-            in My Field Kit.
+            {group.id === "extended"
+              ? "Go further with what you have discovered. DesignPD builds on DesignID to help you understand how you plan, decide, and do—and apply that insight in everyday life."
+              : "Not ready for the full Journey? Start with one area: your design, spiritual gifts, or growth in Christ. Take the assessment, explore your results, and follow the course into everyday practice."}
           </p>
         </div>
         <div className="trail-guide-route-list">
-          {trails.map((trail, index) => {
+          {group.trails.map((trail) => {
             const complete =
               isTrailAssessmentComplete(trail.assessmentType, report.all) ||
               (trail.id === "fruitlife-360" && fruitReady);
@@ -234,9 +241,10 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                   />
                 </div>
                 <TrailPlacard
-                  number={String(index + 2).padStart(2, "0")}
+                  number={String(trailDefinitions.indexOf(trail) + 2).padStart(2, "0")}
                   name={trail.name}
                   description={trail.description}
+                  details={<TrailDetails trailId={trail.id} />}
                   rating={trail.rating}
                   ratingNote={trail.ratingNote}
                   terrain={trail.terrain}
@@ -334,19 +342,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
           })}
         </div>
       </section>
-      <aside className="trail-fieldkit-note">
-        <div>
-          <p className="section-label">Keep what you discover</p>
-          <h2>Your Field Kit travels with you.</h2>
-          <p>
-            Find saved reports, results, and active FruitLife360 progress in one
-            place.
-          </p>
-        </div>
-        <Link className="button secondary" href={fieldKit}>
-          Open My Field Kit
-        </Link>
-      </aside>
+      ))}
       {mini ? <FruitLifeMiniFooter /> : null}
     </main>
   );

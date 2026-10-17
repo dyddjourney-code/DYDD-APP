@@ -35,3 +35,15 @@
 ## Unchanged / deferred
 
 Assessment content/scoring, retake limits, report generation, customer data, Stripe pricing/fulfillment, Passport badge rules, Ranger Station map/header, and site navigation names are unchanged. Persistent cross-device course completion remains separate work.
+
+## Trailheads refinement — 2026-10-17
+
+- Hero: “Take your next faithful step.” Trailheads are defined as courses pairing assessments with practical teaching.
+- Main Journey: “Understand your design. Live with purpose.” No initial assessment requirement.
+- Focused Trails: “Practical first steps.” DesignID, Spiritual Gifts, FruitLife360 only.
+- Extended Trails: DesignPD, with a short explanation of its DesignID foundation. Existing gates and pricing unchanged.
+- Placards retain their signposts, green/cream frame, fact grid and progression. Larger text, commitment label left/rating right (also on phones), bottom-right “Explore this trail” button.
+- Five centered native modal dialogs provide purpose, audience, prerequisites, course experience, clearly labeled time estimates, outcomes, access/cost and expandable complete curriculum. Counts derive from current course modules and actual Journey outline, not the older catalog placeholder. DesignPD description notes existing new-purchase checkout availability.
+- Separate white-matte-corrected logo asset fixes enclosed letter counters without changing logos elsewhere. Bottom Field Kit banner removed; results links remain.
+- `node tests/trails/details.mjs`: 1280/768/390/320 layouts, five modal interactions, real curriculum counts, keyboard focus containment/restore, Escape/Close/backdrop, mobile commitment label, enlarged type, no overflow, mini-app two-trail scope.
+- October 17 verification: build/typecheck, 20 access cases, all new modal/responsive checks, and existing authenticated navigation/Field Kit/Journey round-trip checks pass. Existing review-navigation fixture expects a completed DesignID report that the current sample no longer has: it fails identically on unchanged production and locally (`/designid` vs expected course URL). No sample/customer data changed to satisfy that outdated fixture; completed-state authorization remains covered by the access matrix. Actual main Journey is 8 modules / 70 units.

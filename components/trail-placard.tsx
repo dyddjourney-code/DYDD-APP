@@ -10,6 +10,7 @@ type Props = {
   bestFor: string;
   permit: string;
   main?: boolean;
+  details: ReactNode;
   children: ReactNode;
 };
 export function TrailPlacard({
@@ -23,6 +24,7 @@ export function TrailPlacard({
   bestFor,
   permit,
   main,
+  details,
   children,
 }: Props) {
   return (
@@ -35,12 +37,14 @@ export function TrailPlacard({
         <h3>{name}</h3>
         <p className="trail-description">{description}</p>
         <div className={`trail-rating trail-rating-${rating.toLowerCase()}`}>
-          <span className="trail-rating-marker" aria-hidden="true" />
-          <div>
-            <strong>{rating}</strong>
-            <p>{ratingNote}</p>
-          </div>
           <small>Trail commitment</small>
+          <div className="trail-rating-summary">
+            <span className="trail-rating-marker" aria-hidden="true" />
+            <div>
+              <strong>{rating}</strong>
+              <p>{ratingNote}</p>
+            </div>
+          </div>
         </div>
         <dl className="trail-placard-facts">
           <div>
@@ -61,6 +65,7 @@ export function TrailPlacard({
           </div>
         </dl>
         {children}
+        <div className="trail-details-action">{details}</div>
       </div>
       <div className="trail-placard-foot" aria-hidden="true">
         <span />

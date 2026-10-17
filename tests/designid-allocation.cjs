@@ -56,7 +56,7 @@ try {
       const assignments=Object.fromEntries(items.map((item,i)=>[item.id,['most','often','sometimes','least'][Math.floor((reverse?11-i:i)/3)]]));
       main.mapsConfirmation=scoreMapsConfirmation(assignments,main);assert.equal(JSON.stringify(scoreDesignPd({...snap,scores:{...snap.scores,mapsConfirmation:main.mapsConfirmation}})),pdBefore);
       const report=buildDesignIdReportPayload({participantName:'Local QA',participantEmail:'qa@example.invalid',result:main});
-      assert.equal(report.Total_Pts,100);assert.equal(report.Architect_Pct,`${points.Architect}%`);
+      assert.equal(report.Total_Pts,100);assert.equal(report.Architect_Pct,`${points.Architect}`);
       delete main.mapsConfirmation;assert.equal(JSON.stringify(main),before);
     }
     cases++;

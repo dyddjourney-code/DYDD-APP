@@ -218,11 +218,11 @@ export function buildDesignIdReportPayload({
   const scorePayload = designIdScorePayload(result);
   return {
     ...scorePayload,
-    // PDF template prints percentages directly and strips % for its chart.
-    Architect_Pct: `${result.scores.Architect}%`,
-    Artisan_Pct: `${result.scores.Artisan}%`,
-    Shepherd_Pct: `${result.scores.Shepherd}%`,
-    Steward_Pct: `${result.scores.Steward}%`,
+    // Historical field names; PDF tables and charts display plain integer points.
+    Architect_Pct: `${result.scores.Architect}`,
+    Artisan_Pct: `${result.scores.Artisan}`,
+    Shepherd_Pct: `${result.scores.Shepherd}`,
+    Steward_Pct: `${result.scores.Steward}`,
     MAPS_Confirmation: result.mapsConfirmation ?? null,
     MAPS_Confirmation_Note: result.mapsConfirmation?.note ?? "",
     Approach_to_Learning:

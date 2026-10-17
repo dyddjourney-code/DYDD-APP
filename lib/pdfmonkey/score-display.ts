@@ -4,16 +4,14 @@ function numeric(value: unknown) {
   return Number(value);
 }
 /** PDF-only units; never mutate saved scores, totals, ranking, or source prose.
- * _Pct is printed verbatim and stripped of '%' for BOTH official donut charts.
- * Prefer a complete 100-point vector. Older instruments may have other totals:
- * preserve those points and format their retained proportional percentages.
+ * Historical _Pct field names are retained for template compatibility only.
+ * Display actual whole-number points, never percent signs or decimal fractions.
+ * Prefer saved points, including older instruments with non-100 totals.
  */
 export function designIdPdfDisplayPayload(payload: Record<string, unknown>) {
   const out = { ...payload };
   const points = reflections.map((r) => numeric(payload[`${r}_Pts`]));
   const completePoints = points.every((v) => Number.isFinite(v) && v >= 0);
-  const total = points.reduce((a, b) => a + b, 0);
-  const canonical = completePoints && Math.abs(total - 100) < 0.000001;
   const raw = reflections.map((r) => payload[`${r}_Pct`]);
   // Whole-number numeric vectors can include 1; don't mistake that for 100%.
   const wholeUnits = raw.some((v) => {
@@ -22,17 +20,15 @@ export function designIdPdfDisplayPayload(payload: Record<string, unknown>) {
   });
   reflections.forEach((r, i) => {
     const value = raw[i];
-    if (canonical) {
-      out[`${r}_Pct`] = `${Math.round(points[i])}%`;
+    if (completePoints) {
+      out[`${r}_Pct`] = `${Math.round(points[i])}`;
     } else if (value !== undefined && value !== null && value !== "") {
       const explicit = typeof value === "string" && value.trim().endsWith("%");
       const n = numeric(explicit ? (value as string).trim().slice(0, -1) : value);
       const pct = n * (explicit || wholeUnits ? 1 : 100);
       if (!Number.isFinite(pct) || pct < 0 || pct > 100)
         throw new Error("DesignID PDF contains an invalid saved percentage.");
-      out[`${r}_Pct`] = `${Math.round(pct)}%`;
-    } else if (completePoints && total > 0) {
-      out[`${r}_Pct`] = `${Math.round(points[i] / total * 100)}%`;
+      out[`${r}_Pct`] = `${Math.round(pct)}`;
     }
   });
   return out;

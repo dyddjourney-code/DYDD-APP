@@ -225,7 +225,7 @@ export function recoveryReport(snapshot: AssessmentSnapshotSummary): {
       ...summary,
       ...scores,
     };
-    for (const r of reflections) payload[`${r}_Pct`] = `${points[r]}%`;
+    for (const r of reflections) payload[`${r}_Pct`] = `${points[r]}`;
     payload.Reflection_Shadow =
       pdSource.reflectionShadows[
         summary.Primary as keyof typeof pdSource.reflectionShadows

@@ -1,3 +1,18 @@
+CORRECTION — October 17, 2026, plain-number requirement
+
+John confirmed DesignID scores are plain integer points: 22, never 22% or
+0.22. The earlier percent-sign decision below was incorrect and superseded.
+
+- Native, recovered and final provider payloads now print integer points.
+- Saved point fields take precedence, including non-100 historical totals.
+- Official PDFMonkey DesignID template published/draft chart formatters changed
+  in exactly two places from return value + percent suffix to Math.round(value).
+- Template body/settings backed up privately; unrelated prose/layout retained.
+- Existing DesignID PDF archives regenerated; original scores/answers retained.
+- No Make, scoring, authentication, RLS or email changes.
+
+Prior repair record (superseded display policy):
+
 DYDD PDF score display repair — October 17, 2026
 
 Issue: recovered DesignID workbook payloads retained fractional _Pct values

@@ -31,11 +31,11 @@ function ReportRow({ artifact }: { artifact: CollectedArtifact }) {
         ) : null}
       </div>
       <div className="fieldkit-report-actions">
-        <Link className="button secondary" href={artifact.href}>
+        <Link className="button secondary" href={artifact.href} target="_blank" rel="noopener noreferrer" prefetch={false}>
           {artifact.action}
         </Link>
         {artifact.pdfHref ? (
-          <Link className="button primary" href={artifact.pdfHref}>
+          <Link className="button primary" href={artifact.pdfHref} target="_blank" rel="noopener noreferrer" prefetch={false}>
             {artifact.pdfReady ? "Download PDF" : "Prepare full PDF"}
           </Link>
         ) : <span className="fieldkit-report-status">Imported summary · no full PDF retained</span>}

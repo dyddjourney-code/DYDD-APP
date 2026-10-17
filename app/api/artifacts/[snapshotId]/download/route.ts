@@ -113,7 +113,7 @@ function snapshotHtml(snapshot: AssessmentSnapshotSummary, url: URL) {
   pdfUrl.searchParams.delete("download");
   return layout(
     `${label} Snapshot`,
-    `<section><p>Completed ${html(displayDate(snapshot.source_submitted_at ?? snapshot.created_at))}</p><p>This is a quick summary of your saved assessment, not your full PDF report.</p><div class="actions">${snapshot.scores.reportArtifact || recoveryReport(snapshot) ? `<a href="${html(pdfUrl.pathname + pdfUrl.search)}">${snapshot.scores.reportArtifact ? "Full PDF report" : "Prepare full PDF"}</a>` : `<p>Imported summary only: no full PDF was retained for this record. Full reports from complete assessment records are listed separately in Field Kit.</p>`}</div></section>${content}`,
+    `<section><p>Completed ${html(displayDate(snapshot.source_submitted_at ?? snapshot.created_at))}</p><p>This is a quick summary of your saved assessment, not your full PDF report.</p><div class="actions">${snapshot.scores.reportArtifact || recoveryReport(snapshot) ? `<a href="${html(pdfUrl.pathname + pdfUrl.search)}" target="_blank" rel="noopener noreferrer">${snapshot.scores.reportArtifact ? "Full PDF report" : "Prepare full PDF"}</a>` : `<p>Imported summary only: no full PDF was retained for this record. Full reports from complete assessment records are listed separately in Field Kit.</p>`}</div></section>${content}`,
   );
 }
 function recoveryHtml(
@@ -128,7 +128,7 @@ function recoveryHtml(
   const canRecover = Boolean(recoveryReport(snapshot));
   return layout(
     `${label} PDF Report`,
-    `<section><p>${html(message || "The original PDF is not currently archived in your Field Kit.")}</p><p>This page is not a substitute report or a printed snapshot.</p>${canRecover ? `<p>Recreate the full report using this assessment’s saved report data and the official report template. Your scores will not change, and no email will be sent.</p><form method="post"><button type="submit">Prepare full PDF report</button></form>` : `<p>The complete source report data is not available for this older record. Its snapshot remains available; we cannot honestly recreate the original PDF from a partial summary.</p>`}<p><a href="${html(view.pathname + view.search)}">View snapshot</a></p></section>`,
+    `<section><p>${html(message || "The original PDF is not currently archived in your Field Kit.")}</p><p>This page is not a substitute report or a printed snapshot.</p>${canRecover ? `<p>Recreate the full report using this assessment’s saved report data and the official report template. Your scores will not change, and no email will be sent.</p><form method="post"><button type="submit">Prepare full PDF report</button></form>` : `<p>The complete source report data is not available for this older record. Its snapshot remains available; we cannot honestly recreate the original PDF from a partial summary.</p>`}<p><a href="${html(view.pathname + view.search)}" target="_blank" rel="noopener noreferrer">View snapshot</a></p></section>`,
   );
 }
 async function findAuthorizedSnapshot(

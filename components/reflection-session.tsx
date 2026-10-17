@@ -163,13 +163,28 @@ export function ReflectionSession({
     }
   };
   useEffect(() => {
-    if (selected && window.location.hash.startsWith("#reflection-")) {
-      const anchor = document.getElementById(
-        decodeURIComponent(window.location.hash.slice(1)),
-      );
-      anchor?.scrollIntoView({ block: "start" });
-    }
-  }, [selected]);
+    const reveal = () => {
+      if (!window.location.hash.startsWith("#reflection-")) return;
+      let anchor: HTMLElement | null;
+      try {
+        anchor = document.getElementById(
+          decodeURIComponent(window.location.hash.slice(1)),
+        );
+      } catch {
+        return;
+      }
+      if (!anchor) return;
+      let parent = anchor.parentElement;
+      while (parent) {
+        if (parent instanceof HTMLDetailsElement) parent.open = true;
+        parent = parent.parentElement;
+      }
+      requestAnimationFrame(() => anchor?.scrollIntoView({ block: "start" }));
+    };
+    reveal();
+    window.addEventListener("hashchange", reveal);
+    return () => window.removeEventListener("hashchange", reveal);
+  }, [selected, loading]);
   const changeRound = (id: string) => {
     if (busy.current.size) return;
     if (
@@ -539,17 +554,57 @@ export function ReflectionAnswer({
 }
 export function ReflectionWorkbook() {
   const [editing, setEditing] = useState(false);
+  const [moduleFilter, setModuleFilter] = useState("");
+  const [answerFilter, setAnswerFilter] = useState("all");
+  const workbook = useRef<HTMLDivElement>(null);
   const s = useContext(Context);
+  const answered = useMemo(() => {
+    const latest: Record<string, ReflectionEntry> = {};
+    for (const entry of s?.data.entries ?? []) {
+      if (entry.round_id !== s?.round?.id) continue;
+      if (
+        !latest[entry.question_id] ||
+        latest[entry.question_id].revision < entry.revision
+      )
+        latest[entry.question_id] = entry;
+    }
+    return new Set(
+      (s?.questions ?? [])
+        .filter((q) => (s?.drafts[q.id] ?? latest[q.id]?.response ?? "").trim())
+        .map((q) => q.id),
+    );
+  }, [s?.data.entries, s?.round?.id, s?.drafts, s?.questions]);
   if (!s) return null;
+  const modules = [...new Set(s.questions.map((q) => q.moduleTitle))];
+  const hasAnswer = (q: ReflectionQuestion) => answered.has(q.id);
+  const visibleQuestions = s.questions.filter(
+    (q) =>
+      (!moduleFilter || q.moduleTitle === moduleFilter) &&
+      (answerFilter === "all" ||
+        hasAnswer(q) === (answerFilter === "answered")),
+  );
+  const toggleSections = (open: boolean) => {
+    workbook.current
+      ?.querySelectorAll<HTMLDetailsElement>(
+        "details.reflection-module, details.reflection-lesson",
+      )
+      .forEach((section) => {
+        section.open = open;
+      });
+  };
   return (
-    <div className="reflection-workbook">
-      {!s.readOnly && s.round ? (
-        <div className="reflection-workbook-toolbar">
+    <div className="reflection-workbook" ref={workbook}>
+      <div className="reflection-workbook-toolbar">
+        <div>
+          <p className="section-label">Explore your workbook</p>
+          <h2>Choose a module. Open a lesson.</h2>
           <p>
             {editing
               ? "Save each reflection when you finish editing."
-              : "Read your collected reflections. Open editing whenever you want to continue."}
+              : "Everything stays tucked away until you choose to open it."}
           </p>
+        </div>
+        {!s.readOnly && s.round ? (
           <button
             className="button secondary"
             type="button"
@@ -557,24 +612,150 @@ export function ReflectionWorkbook() {
           >
             {editing ? "Read my reflections" : "Edit my reflections"}
           </button>
-        </div>
-      ) : null}
-      {s.questions.map((q) => (
-        <article
-          key={q.id}
-          className="reflection-workbook-question"
-          id={`reflection-${q.id}`}
-        >
-          <p className="section-label">{q.moduleTitle}</p>
-          <h2>{q.lessonTitle}</h2>
-          <ReflectionAnswer questionId={q.id} reading={!editing} />
-          <a
-            href={`${s.courseSlug === "discover-your-divine-design" ? "/journey" : `/courses/${s.courseSlug}`}?lesson=${encodeURIComponent(q.lessonSlug)}`}
+        ) : null}
+      </div>
+      <div
+        className="reflection-browse-controls"
+        aria-label="Filter reflections"
+      >
+        <label>
+          Module
+          <select
+            value={moduleFilter}
+            onChange={(e) => setModuleFilter(e.target.value)}
           >
-            Return to this lesson
-          </a>
-        </article>
-      ))}
+            <option value="">All modules</option>
+            {modules.map((title) => (
+              <option key={title} value={title}>
+                {title}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Show
+          <select
+            value={answerFilter}
+            onChange={(e) => setAnswerFilter(e.target.value)}
+          >
+            <option value="all">All reflections</option>
+            <option value="answered">Answered</option>
+            <option value="unanswered">Not answered yet</option>
+          </select>
+        </label>
+        <div className="reflection-section-actions">
+          <button type="button" onClick={() => toggleSections(true)}>
+            Expand all
+          </button>
+          <button type="button" onClick={() => toggleSections(false)}>
+            Collapse all
+          </button>
+        </div>
+      </div>
+      <p className="reflection-filter-count" role="status">
+        {visibleQuestions.length} of {s.questions.length} reflections ·{" "}
+        {modules.length} modules
+      </p>
+      <div className="reflection-module-list" key={s.round?.id ?? "preview"}>
+        {modules.map((title, index) => {
+          const questions = visibleQuestions.filter(
+            (q) => q.moduleTitle === title,
+          );
+          const allQuestions = s.questions.filter(
+            (q) => q.moduleTitle === title,
+          );
+          const lessons = [...new Set(allQuestions.map((q) => q.lessonSlug))];
+          return (
+            <details
+              className={`reflection-module${title === "Niche" ? " reflection-module-niche" : ""}`}
+              key={title}
+              hidden={!questions.length}
+            >
+              <summary>
+                <span className="reflection-module-number">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="reflection-module-heading">
+                  <strong>{title}</strong>
+                  <small>
+                    {lessons.length}{" "}
+                    {lessons.length === 1 ? "lesson" : "lessons"} ·{" "}
+                    {allQuestions.filter(hasAnswer).length} of{" "}
+                    {allQuestions.length} answered
+                  </small>
+                </span>
+                <span className="reflection-disclosure" aria-hidden="true" />
+              </summary>
+              <div className="reflection-module-content">
+                {title === "Niche" ? (
+                  <p className="reflection-niche-note">
+                    Your purpose, Pathfinder discoveries, and working niche
+                    declaration—together in their own space.
+                  </p>
+                ) : null}
+                {lessons.map((lessonSlug) => {
+                  const lessonQuestions = allQuestions.filter(
+                    (q) => q.lessonSlug === lessonSlug,
+                  );
+                  const visible = questions.filter(
+                    (q) => q.lessonSlug === lessonSlug,
+                  );
+                  return (
+                    <details
+                      className="reflection-lesson"
+                      key={lessonSlug}
+                      hidden={!visible.length}
+                    >
+                      <summary>
+                        <span>
+                          <strong>{lessonQuestions[0].lessonTitle}</strong>
+                          <small>
+                            {lessonQuestions.length}{" "}
+                            {lessonQuestions.length === 1
+                              ? "reflection"
+                              : "reflections"}{" "}
+                            · {lessonQuestions.filter(hasAnswer).length}{" "}
+                            answered
+                          </small>
+                        </span>
+                        <span
+                          className="reflection-disclosure"
+                          aria-hidden="true"
+                        />
+                      </summary>
+                      {lessonQuestions.map((q) => (
+                        <article
+                          key={q.id}
+                          className="reflection-workbook-question"
+                          id={`reflection-${q.id}`}
+                          hidden={!visible.some((item) => item.id === q.id)}
+                        >
+                          <ReflectionAnswer
+                            questionId={q.id}
+                            reading={!editing}
+                          />
+                        </article>
+                      ))}
+                      <a
+                        className="reflection-return-lesson"
+                        href={`${s.courseSlug === "discover-your-divine-design" ? "/journey" : `/courses/${s.courseSlug}`}?lesson=${encodeURIComponent(lessonSlug)}`}
+                      >
+                        Return to this lesson
+                      </a>
+                    </details>
+                  );
+                })}
+              </div>
+            </details>
+          );
+        })}
+      </div>
+      {!visibleQuestions.length ? (
+        <p className="reflection-filter-empty">
+          No reflections match this view. Choose another module or show all
+          reflections.
+        </p>
+      ) : null}
     </div>
   );
 }

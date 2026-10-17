@@ -14,6 +14,26 @@ export type CollectedArtifact = {
   title: string;
   experienceSlug?: string;
 };
+function ReportRow({ artifact }: { artifact: CollectedArtifact }) {
+  const timestamp =
+    artifact.meta.find(([label]) => label === "Completed")?.[1] ??
+    artifact.detail.replace(/^Completed\s+/i, "").replace(/\.$/, "");
+  const status = artifact.meta.find(([label]) => label === "Status")?.[1];
+  return (
+    <article className="fieldkit-report-row">
+      <div>
+        <h5>{artifact.title}</h5>
+        <p className="fieldkit-report-date">{timestamp}</p>
+        {status && status.toLowerCase() !== "completed" ? (
+          <span className="fieldkit-report-status">{status}</span>
+        ) : null}
+      </div>
+      <Link className="button secondary" href={artifact.href}>
+        {artifact.action}
+      </Link>
+    </article>
+  );
+}
 export function FieldKitCollection({
   artifacts,
   rounds,
@@ -62,9 +82,7 @@ export function FieldKitCollection({
             <section aria-label={`${name} reports`}>
               <p className="section-label">Reports</p>
               <h4>
-                {main
-                  ? "Your connected discoveries"
-                  : `${reports.length} saved ${reports.length === 1 ? "report" : "reports"}`}
+                {main ? "Your connected discoveries" : "Your latest reports"}
               </h4>
               {main ? (
                 <p>
@@ -73,30 +91,27 @@ export function FieldKitCollection({
                 </p>
               ) : reports.length ? (
                 <div className="fieldkit-report-history">
-                  {reports.map((a) => (
-                    <details key={a.id ?? a.href}>
-                      <summary>
-                        <strong>{a.title}</strong>
-                        <span>
-                          {a.meta.find(
-                            ([label]) => label === "Completed",
-                          )?.[1] ?? a.detail}
-                        </span>
-                      </summary>
-                      <p>{a.detail}</p>
-                      <dl>
-                        {a.meta.map(([label, value]) => (
-                          <div key={label}>
-                            <dt>{label}</dt>
-                            <dd>{value}</dd>
-                          </div>
-                        ))}
-                      </dl>
-                      <Link className="button secondary" href={a.href}>
-                        {a.action}
-                      </Link>
-                    </details>
+                  {reports.slice(0, 2).map((artifact) => (
+                    <ReportRow
+                      key={artifact.id ?? artifact.href}
+                      artifact={artifact}
+                    />
                   ))}
+                  {reports.length > 2 ? (
+                    <details className="fieldkit-older-reports">
+                      <summary>
+                        View older reports ({reports.length - 2})
+                      </summary>
+                      <div className="fieldkit-older-report-list">
+                        {reports.slice(2).map((artifact) => (
+                          <ReportRow
+                            key={artifact.id ?? artifact.href}
+                            artifact={artifact}
+                          />
+                        ))}
+                      </div>
+                    </details>
+                  ) : null}
                 </div>
               ) : (
                 <p>

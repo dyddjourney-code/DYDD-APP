@@ -20359,3 +20359,80 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .fieldkit-collection.trail-placard-main .fieldkit-collection-columns{grid-template-columns:1fr;gap:1rem;}
 .fieldkit-collection.trail-placard-main .fieldkit-collection-columns > section + section{border-left:0;border-top:1px solid #c7cbb7;padding:1rem 0 0;}
 .fieldkit-collections .trail-showcase-art{align-self:center;}
+
+/* Workbook browsing: calm at entry, one module and lesson at a time. */
+.reflection-notebook-hero {display:grid;grid-template-columns:minmax(180px,.7fr) minmax(0,1.3fr);align-items:center;gap:2rem;background:#f6f2e7;border:1px solid #c7cbb7;border-radius:18px;overflow:hidden;color:#243d2f;}
+.reflection-notebook-hero > div {padding:2rem 2rem 2rem 0;min-width:0;}
+.reflection-notebook-hero h1 {font-size:clamp(1.8rem,3.5vw,2.8rem);line-height:1.15;margin:.7rem 0;}
+.reflection-notebook-hero .lede {font-size:1.08rem;line-height:1.75;margin:0;}
+.reflection-notebook-art {display:block;width:100%;max-height:260px;object-fit:contain;padding:1.5rem;box-sizing:border-box;}
+.reflection-notebook-hero-journey {grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+.reflection-notebook-hero-journey .reflection-notebook-art {height:310px;max-height:none;object-fit:cover;padding:0;}
+.fieldkit-report-row {display:flex;flex-direction:column;align-items:flex-start;gap:.65rem;padding:1rem 0;border-top:1px solid #c7cbb7;}
+.fieldkit-report-row > div {min-width:0;}
+.fieldkit-report-row h5 {font:inherit;font-weight:700;font-size:1rem;margin:0;line-height:1.5;overflow-wrap:anywhere;}
+.fieldkit-report-row .fieldkit-report-date {font-size:.9rem;line-height:1.5;margin:.35rem 0 0;color:#4e5e4d;}
+.fieldkit-report-row .button {flex-shrink:0;padding:.6rem .8rem;font-size:.9rem;}
+.fieldkit-report-status {display:inline-block;font-size:.85rem;margin-top:.35rem;color:#6c502c;}
+.fieldkit-report-history .fieldkit-older-reports {padding:1rem 0 0;}
+.fieldkit-older-reports > summary {font-weight:700;color:#31553d;}
+.fieldkit-older-report-list {max-height:440px;overflow-y:auto;padding-right:.5rem;margin-top:1rem;overscroll-behavior:contain;}
+.reflection-workbook-toolbar {border:0;padding:1.5rem 0 .5rem;}
+.reflection-workbook-toolbar h2 {font-size:1.4rem;line-height:1.4;margin:.5rem 0;}
+.reflection-workbook-toolbar p {margin:.5rem 0;}
+.reflection-browse-controls {display:flex;align-items:end;flex-wrap:wrap;gap:1rem;background:#f6f2e7;border:1px solid #cdd2bf;border-radius:10px;padding:1rem;}
+.reflection-browse-controls label {display:grid;gap:.5rem;flex:1 1 200px;min-width:0;font-weight:700;font-size:.9rem;}
+.reflection-browse-controls select {width:100%;min-width:0;max-width:100%;padding:.75rem;background:#fffdf7;border:1px solid #aab7a0;border-radius:6px;font:inherit;font-weight:400;color:#243d2f;}
+.reflection-section-actions {display:flex;flex-wrap:wrap;gap:.75rem;}
+.reflection-section-actions button {background:transparent;border:1px solid #aab7a0;border-radius:6px;padding:.75rem;font:inherit;color:#31553d;cursor:pointer;}
+.reflection-filter-count {font-size:.9rem;color:#53644e;margin:1rem 0;}
+.reflection-module-list {display:grid;gap:1rem;}
+.reflection-module {border:1px solid #c5cdbb;border-radius:12px;background:#fffdf7;color:#243d2f;overflow:hidden;}
+.reflection-module > summary,.reflection-lesson > summary {display:flex;list-style:none;align-items:center;gap:1rem;cursor:pointer;padding:1.25rem;}
+.reflection-module > summary::-webkit-details-marker,.reflection-lesson > summary::-webkit-details-marker {display:none;}
+.reflection-module > summary:hover {background:#f3f4eb;}
+.reflection-module-number {display:grid;place-items:center;flex-shrink:0;width:2.3rem;height:2.3rem;background:#e8eddf;border-radius:50%;font-size:.9rem;font-weight:700;}
+.reflection-module-heading {min-width:0;}
+.reflection-module strong {display:block;font-size:1.08rem;line-height:1.55;overflow-wrap:anywhere;}
+.reflection-module small {display:block;color:#53644e;margin-top:.25rem;font-size:.85rem;line-height:1.5;}
+.reflection-disclosure {flex-shrink:0;width:.55rem;height:.55rem;border-right:2px solid #466044;border-bottom:2px solid #466044;transform:rotate(45deg);margin:0 .35rem .35rem auto;transition:transform .15s;}
+.reflection-module[open] > summary .reflection-disclosure,.reflection-lesson[open] > summary .reflection-disclosure {transform:rotate(225deg);margin-bottom:0;}
+.reflection-module[open] > summary {border-bottom:1px solid #d6dacb;background:#eef1e6;}
+.reflection-module-niche {border-color:#9d946f;}
+.reflection-module-niche .reflection-module-number {background:#eee5ce;color:#63522f;}
+.reflection-module-content {padding:.25rem 1.25rem 1rem;}
+.reflection-niche-note {font-size:.95rem;line-height:1.7;color:#655d44;}
+.reflection-lesson {border-bottom:1px solid #d6dacb;}
+.reflection-lesson:last-child {border-bottom:0;}
+.reflection-lesson > summary {padding:1rem 0;}
+.reflection-lesson > summary strong {font-size:1rem;}
+.reflection-lesson[open] > summary {color:#31553d;}
+.reflection-workbook-question {padding:0;border:0;scroll-margin-top:100px;}
+.reflection-workbook-question .reflection-answer {margin:.5rem 0 1rem;}
+.reflection-return-lesson {display:inline-block;font-size:.9rem;font-weight:600;margin:0 0 1.25rem;text-underline-offset:3px;}
+.reflection-filter-empty {padding:1.5rem;border:1px dashed #aab7a0;border-radius:10px;line-height:1.7;}
+.reflection-browse-controls button:focus-visible,.reflection-browse-controls select:focus-visible,.reflection-module summary:focus-visible,.fieldkit-older-reports summary:focus-visible {outline:3px solid #748e65;outline-offset:3px;}
+.reflection-module[hidden],.reflection-lesson[hidden],.reflection-workbook-question[hidden] {display:none;}
+@media(max-width:650px){
+ .reflection-notebook-hero,.reflection-notebook-hero-journey {grid-template-columns:minmax(0,1fr);gap:0;}
+ .reflection-notebook-hero > div {padding:1.25rem;}
+ .reflection-notebook-art {max-height:150px;padding:1rem;}
+ .reflection-notebook-hero-journey .reflection-notebook-art {height:190px;object-position:center 55%;}
+ .reflection-module > summary {padding:1rem;gap:.75rem;}
+ .reflection-module-content {padding:.25rem .8rem 1rem;}
+ .reflection-browse-controls {align-items:stretch;}
+ .reflection-section-actions {width:100%;}
+ .reflection-section-actions button {flex:1;}
+ .fieldkit-report-row {align-items:flex-start;flex-direction:column;gap:.75rem;}
+ .fieldkit-report-row .button {width:auto;}
+}
+@media(prefers-reduced-motion:reduce){.reflection-disclosure{transition:none;}}
+@media print{.reflection-browse-controls,.reflection-filter-count,.reflection-section-actions{display:none;}}
+/* Keep active FruitLife status readable alongside large Field Kit collections. */
+.fieldkit-current-process .fruitlife-control-roster,.fieldkit-current-process .fruitlife-control-roster article > div {min-width:0;}
+.fieldkit-current-process .fruitlife-control-roster small {overflow-wrap:anywhere;}
+@media(max-width:850px){
+ .fieldkit-current-process .fruitlife-control-grid {grid-template-columns:minmax(0,1fr);}
+ .fieldkit-current-process .fruitlife-control-roster article {grid-template-columns:minmax(0,1fr);}
+ .fieldkit-current-process .fruitlife-session-meta span {white-space:normal;line-height:1.5;}
+}

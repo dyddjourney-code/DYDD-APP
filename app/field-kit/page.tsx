@@ -16,7 +16,6 @@ import {
   type AssessmentSnapshotSummary,
 } from "@/lib/assessments/student-context";
 import {
-  fruitLifeArtifactTitle,
   fruitLifeIsActive,
   fruitLifeReportArtifact,
   fruitLifeReportHref,
@@ -269,7 +268,7 @@ export default async function FieldKitPage({
           ["Completed", displayDateTime(reportTimestamp)],
           ["Source", "FruitLife360"],
         ] as Array<[string, string]>,
-        title: fruitLifeArtifactTitle(session),
+        title: `FruitLife360 Report · ${fruitLifeReportModeLabel(session)}`,
       };
     }),
   ];

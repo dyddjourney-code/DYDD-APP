@@ -102,6 +102,9 @@ try {
     "fruit_360",
     "designpd",
     "spiritual_gifts",
+    "spiritual_gifts",
+    "spiritual_gifts",
+    "spiritual_gifts",
   ]) {
     const snapshot = await check(
       await admin
@@ -335,24 +338,48 @@ try {
     ]);
     assert.equal(
       await page.$$eval(
-        "#collection-spiritual-gifts .fieldkit-report-history details",
+        "#collection-spiritual-gifts .fieldkit-report-history > .fieldkit-report-row",
         (es) => es.length,
       ),
       2,
-      "All Spiritual Gifts retakes listed, not just latest",
+      "Only two recent reports shown by default",
     );
+    const archive = "#collection-spiritual-gifts .fieldkit-older-reports";
+    assert.equal(await page.$eval(archive, (e) => e.open), false);
+    assert.equal(
+      await page.$$eval(`${archive} .fieldkit-report-row`, (es) => es.length),
+      3,
+    );
+    assert.equal(
+      await page.$$eval(
+        ".fieldkit-report-row dl, .fieldkit-report-row dt",
+        (es) => es.length,
+      ),
+      0,
+    );
+    const recentDates = await page.$$eval(
+      "#collection-spiritual-gifts .fieldkit-report-history > .fieldkit-report-row .fieldkit-report-date",
+      (es) => es.map((e) => e.textContent),
+    );
+    assert.equal(recentDates.length, 2);
+    await page.click(`${archive} > summary`);
+    assert.equal(await page.$eval(archive, (e) => e.open), true);
+    await page.click(`${archive} > summary`);
     assert(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
       `Field Kit ${width}px overflow`,
     );
+    await (
+      await page.$("#collection-spiritual-gifts")
+    ).screenshot({ path: `tmp/fieldkit-compact-reports-${tag}-${width}.png` });
     await page.screenshot({
       path: `tmp/fieldkit-reflections-${tag}-${width}.png`,
       fullPage: true,
     });
     console.log(
-      `PASS Field Kit ${width}px: five collections in Trailheads order; every report; no horizontal overflow.`,
+      `PASS Field Kit ${width}px: five collections in Trailheads order; two recent reports, older reports collapsed but accessible; no horizontal overflow.`,
     );
   }
   for (const exp of reflectionExperiences) {
@@ -365,6 +392,109 @@ try {
           .querySelector(".reflection-round-bar")
           ?.textContent.includes("Loading your reflection history"),
     );
+    assert.equal(
+      await page.$$eval(".reflection-module[open]", (es) => es.length),
+      0,
+      "Modules collapsed at entry",
+    );
+    assert.equal(
+      await page.$$eval(".reflection-lesson[open]", (es) => es.length),
+      0,
+      "Lessons collapsed at entry",
+    );
+    assert.equal(
+      await page.$$eval(".reflection-module", (es) => es.length),
+      new Set(exp.questions.map((q) => q.moduleTitle)).size,
+    );
+    assert(
+      await page.$eval(
+        ".reflection-notebook-art",
+        (e) => e.complete && e.naturalWidth > 0,
+      ),
+    );
+    for (const width of [1280, 768, 390, 320]) {
+      await page.setViewport({ width, height: 1000 });
+      assert(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+        `${exp.slug} workbook ${width}px overflow`,
+      );
+      if ([1280, 390].includes(width))
+        await page.screenshot({
+          path: `tmp/workbook-organized-${tag}-${exp.slug}-${width}.png`,
+          fullPage: true,
+        });
+    }
+    const lastModule = exp.questions.at(-1).moduleTitle;
+    await page.select(
+      ".reflection-browse-controls label:first-child select",
+      lastModule,
+    );
+    assert.equal(
+      await page.$$eval(".reflection-module:not([hidden])", (es) => es.length),
+      1,
+    );
+    if (exp.slug === "discover-your-divine-design")
+      assert.equal(
+        await page.$eval(
+          ".reflection-module:not([hidden]) strong",
+          (e) => e.textContent,
+        ),
+        "Niche",
+      );
+    await page.select(
+      ".reflection-browse-controls label:first-child select",
+      "",
+    );
+    await page.select(
+      ".reflection-browse-controls label:nth-child(2) select",
+      "answered",
+    );
+    assert.equal(
+      await page.$$eval(
+        ".reflection-workbook-question:not([hidden])",
+        (es) => es.length,
+      ),
+      1,
+      "Answered filter isolates saved answers",
+    );
+    await page.select(
+      ".reflection-browse-controls label:nth-child(2) select",
+      "unanswered",
+    );
+    assert.equal(
+      await page.$$eval(
+        ".reflection-workbook-question:not([hidden])",
+        (es) => es.length,
+      ),
+      exp.questions.length - 1,
+    );
+    await page.select(
+      ".reflection-browse-controls label:nth-child(2) select",
+      "all",
+    );
+    await page.click(".reflection-section-actions button:first-child");
+    assert.equal(
+      await page.$$eval(".reflection-lesson:not([open])", (es) => es.length),
+      0,
+    );
+    await page.click(".reflection-section-actions button:nth-child(2)");
+    assert.equal(
+      await page.$$eval(
+        ".reflection-module[open], .reflection-lesson[open]",
+        (es) => es.length,
+      ),
+      0,
+    );
+    await page.focus(".reflection-module > summary");
+    await page.keyboard.press("Enter");
+    assert.equal(
+      await page.$eval(".reflection-module", (e) => e.open),
+      true,
+      "Keyboard expands module",
+    );
+    await page.click(".reflection-module .reflection-lesson > summary");
     assert.equal(
       await page.$$eval(".reflection-workbook-question", (es) => es.length),
       exp.questions.length,
@@ -477,6 +607,8 @@ try {
   );
   await firstSelector.select(options[0]);
   await page.click(".reflection-workbook-toolbar button");
+  await page.click(".reflection-module > summary");
+  await page.click(".reflection-module .reflection-lesson > summary");
   // Offline/save errors retain the draft and show a retryable error.
   await page.setRequestInterception(true);
   page.on("request", (request) => {
@@ -500,7 +632,8 @@ try {
   await page.keyboard.up("Control");
   await page.keyboard.press("Backspace");
   await draft.type("Draft retained during failed save");
-  await page.click(".reflection-answer-actions button");
+  await page.focus(".reflection-answer-actions button");
+  await page.keyboard.press("Enter");
   await page.waitForFunction(() =>
     document
       .querySelector(".reflection-answer-actions")
@@ -512,6 +645,27 @@ try {
   );
   await page.setRequestInterception(false);
   page.removeAllListeners("request");
+  await page.click(".reflection-section-actions button:nth-child(2)");
+  await page.click(".reflection-module > summary");
+  await page.click(".reflection-module .reflection-lesson > summary");
+  assert.equal(
+    await page.$eval(".reflection-answer textarea", (e) => e.value),
+    "Draft retained during failed save",
+    "Collapse/reopen preserves unsaved draft",
+  );
+  const otherModule = reflectionExperiences
+    .find((e) => e.slug === "spiritual-gifts-service")
+    .questions.at(-1).moduleTitle;
+  await page.select(
+    ".reflection-browse-controls label:first-child select",
+    otherModule,
+  );
+  await page.select(".reflection-browse-controls label:first-child select", "");
+  assert.equal(
+    await page.$eval(".reflection-answer textarea", (e) => e.value),
+    "Draft retained during failed save",
+    "Filtering away and back preserves unsaved draft",
+  );
   // Cancel the unsaved-change prompt and verify the editor stays intact.
   page.once("dialog", (dialog) => dialog.dismiss());
   await page.click(".course-nav a");
@@ -584,6 +738,17 @@ try {
   assert.match(
     await page.$eval(".reflection-answer", (e) => e.textContent),
     /Browser reflection Spiritual Gifts/,
+  );
+  assert(
+    await page.$eval(".reflection-workbook-question", (e) => {
+      let parent = e.parentElement;
+      while (parent) {
+        if (parent instanceof HTMLDetailsElement && !parent.open) return false;
+        parent = parent.parentElement;
+      }
+      return true;
+    }),
+    "Source deep link expands its module and lesson automatically",
   );
   console.log(
     "PASS niche insight links reopen the exact owned, dated source reflection.",

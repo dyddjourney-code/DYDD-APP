@@ -64,8 +64,8 @@ export function TrailPlacard({
             <dd>{permit}</dd>
           </div>
         </dl>
-        {children}
         <div className="trail-details-action">{details}</div>
+        {children}
       </div>
       <div className="trail-placard-foot" aria-hidden="true">
         <span />

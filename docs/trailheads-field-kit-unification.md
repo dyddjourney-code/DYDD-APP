@@ -47,3 +47,10 @@ Assessment content/scoring, retake limits, report generation, customer data, Str
 - Separate white-matte-corrected logo asset fixes enclosed letter counters without changing logos elsewhere. Bottom Field Kit banner removed; results links remain.
 - `node tests/trails/details.mjs`: 1280/768/390/320 layouts, five modal interactions, real curriculum counts, keyboard focus containment/restore, Escape/Close/backdrop, mobile commitment label, enlarged type, no overflow, mini-app two-trail scope.
 - October 17 verification: build/typecheck, 20 access cases, all new modal/responsive checks, and existing authenticated navigation/Field Kit/Journey round-trip checks pass. Existing review-navigation fixture expects a completed DesignID report that the current sample no longer has: it fails identically on unchanged production and locally (`/designid` vs expected course URL). No sample/customer data changed to satisfy that outdated fixture; completed-state authorization remains covered by the access matrix. Actual main Journey is 8 modules / 70 units.
+
+## Trail readability and action hierarchy — 2026-10-19
+
+- All five placards use consistent dark green ink: Trail commitment matches Terrain/Gear/Best for labels; rating explanations and prerequisite/results notes are stronger and darker. Progress captions and footer text no longer rely on faint type.
+- “Review trail guide” replaces “Explore this trail” in visible and accessible trigger labels. It is a secondary underlined text action before the prerequisite/primary start controls, leaving Start/Continue Journey or assessment/course as the clear next step.
+- Guide paragraphs, statistics labels, and module lesson counts use the same dark ink; small module counts are now 16px. Existing artwork, course content, dialogs, assessment gates, prices, and learner records are unchanged.
+- Verification: production build, 20 existing prerequisite cases, existing five-guide modal/responsive suite (1280/768/390/320 plus mini lane), and rendered-font/action-order audit (1280/390/320) pass. Dark ink on cream contrast is 10.69:1.

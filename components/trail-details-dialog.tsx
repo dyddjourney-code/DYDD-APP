@@ -21,10 +21,10 @@ export function TrailDetailsDialog({ name, children }: Props) {
 
   return (
     <>
-      <button ref={trigger} className="button secondary trail-details-trigger" type="button"
-        aria-haspopup="dialog" aria-label={`Explore this trail: ${name}`}
+      <button ref={trigger} className="trail-details-trigger" type="button"
+        aria-haspopup="dialog" aria-label={`Review trail guide: ${name}`}
         onClick={() => { dialog.current?.showModal(); if (dialog.current) dialog.current.scrollTop = 0; setOpen(true); }}>
-        Explore this trail
+        Review trail guide
       </button>
       <dialog ref={dialog} className="trail-details-dialog" aria-labelledby={titleId}
         onClose={() => { setOpen(false); trigger.current?.focus({ preventScroll: true }); }}

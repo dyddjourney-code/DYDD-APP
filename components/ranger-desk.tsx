@@ -47,7 +47,7 @@ const questions = [
   {
     question: "Where can I find a short encouragement?",
     answer: "Visit Fireside for teaching and encouragement, or explore Waypoints for shorter reflections between bigger steps. You can pause there and return to your trail when you are ready.",
-    href: "/fireside#waypoints", action: "Explore Waypoints",
+    href: "/waypoints", action: "Explore Waypoints",
   },
   {
     question: "Where do I see my passport and badges?",

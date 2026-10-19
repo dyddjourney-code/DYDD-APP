@@ -21,8 +21,8 @@ const navItems = [
     label: "Fireside",
     href: "/fireside",
     children: [
-      { icon: "flashlight", label: "Waypoints", href: "/fireside#waypoints" },
-      { icon: "calendar", label: "Live", href: "/fireside#live" },
+      { icon: "flashlight", label: "Waypoints", href: "/waypoints" },
+      { icon: "calendar", label: "Live", href: "/live" },
     ],
   },
   {

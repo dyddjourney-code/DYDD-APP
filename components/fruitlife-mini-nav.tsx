@@ -5,7 +5,7 @@ const fruitLifeNavItems = [
   { href: "/spiritual-gifts?lane=fruitlife", label: "Spiritual Gifts" },
   { href: "/field-kit?lane=fruitlife", label: "Field Kit" },
   { href: "/trailheads?lane=fruitlife", label: "Trailheads" },
-  { href: "/fireside?lane=fruitlife#waypoints", label: "Waypoints" },
+  { href: "/waypoints?lane=fruitlife", label: "Waypoints" },
   { href: "/gear?lane=fruitlife", label: "Gear" },
 ];
 

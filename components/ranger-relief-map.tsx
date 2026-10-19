@@ -114,7 +114,7 @@ const mapPoints: MapPoint[] = [
       "Waypoints are shorter pauses along the road. They give people timely teaching, reflection, and encouragement they can revisit between bigger course or assessment steps.",
     bullets: ["Short teachings and reflections", "Podcast, video, and written prompts", "A growing library of places to revisit"],
     cta: "Find Waypoints",
-    href: "/fireside#waypoints",
+    href: "/waypoints",
     id: "waypoints",
     image: "/brand/dydd-waypoints-banner.png",
     imageAlt: "Illustrated DYDD Waypoints trail banner",

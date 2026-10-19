@@ -20460,3 +20460,44 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .fieldkit-collection-heading h3, .trail-placard-heading h3 { min-width:0; margin:0; }
 .fieldkit-collection-icon, .trail-placard-icon { display:block; flex-shrink:0; width:40px; height:40px; object-fit:contain; }
 @media(max-width:640px) { .fieldkit-collection-icon, .trail-placard-icon { width:34px; height:34px; } }
+
+/* Fireside is an overview; the full libraries live on their own pages. */
+.fireside-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.fireside-overview-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  gap: 14px;
+}
+.fireside-preview-image {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid rgba(36, 63, 39, 0.16);
+}
+.fireside-preview-image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 18 / 7;
+  object-fit: cover;
+}
+.fireside-overview-card h2 {
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(1.3rem, 2.4vw, 2rem);
+}
+.fireside-overview-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.58;
+}
+.fireside-overview-card > .button { margin-top: auto; }
+@media (max-width: 640px) {
+  .fireside-overview-grid { grid-template-columns: 1fr; gap: 28px; }
+}

@@ -1,5 +1,8 @@
 import { ReviewAwareLink } from "@/components/review-aware-link";
 
+// Review-aware navigation reads request query parameters at render time.
+export const dynamic = "force-dynamic";
+
 export default function FiresidePage() {
   return (
     <main className="journey-shell hq-standalone-page fireside-page">

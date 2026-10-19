@@ -251,3 +251,10 @@ export function recoveryReport(snapshot: AssessmentSnapshotSummary): {
   }
   return null;
 }
+
+/** A retained PDF, provider document, or complete saved report can be downloaded. */
+export function hasFullReport(snapshot: AssessmentSnapshotSummary) {
+  const pdf = object(snapshot.scores.pdfMonkey);
+  return Boolean(object(snapshot.scores.reportArtifact).path || object(pdf.storage).path ||
+    pdf.documentId || pdf.providerUrl || recoveryReport(snapshot));
+}

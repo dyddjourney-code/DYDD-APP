@@ -16,7 +16,7 @@ export type CollectedArtifact = {
   title: string;
   experienceSlug?: string;
 };
-function ReportRow({ artifact }: { artifact: CollectedArtifact }) {
+function ReportRow({ artifact, latest = false }: { artifact: CollectedArtifact; latest?: boolean }) {
   const timestamp =
     artifact.meta.find(([label]) => label === "Completed")?.[1] ??
     artifact.detail.replace(/^Completed\s+/i, "").replace(/\.$/, "");
@@ -25,7 +25,7 @@ function ReportRow({ artifact }: { artifact: CollectedArtifact }) {
     <article className="fieldkit-report-row">
       <div>
         <h5>{artifact.title}</h5>
-        <p className="fieldkit-report-date">{timestamp}</p>
+        <p className="fieldkit-report-date">{timestamp}{latest ? " · Latest" : ""}</p>
         {status && status.toLowerCase() !== "completed" ? (
           <span className="fieldkit-report-status">{status}</span>
         ) : null}
@@ -36,9 +36,9 @@ function ReportRow({ artifact }: { artifact: CollectedArtifact }) {
         </Link>
         {artifact.pdfHref ? (
           <Link className="button primary" href={artifact.pdfHref} target="_blank" rel="noopener noreferrer" prefetch={false}>
-            {artifact.pdfReady ? "Download PDF" : "Prepare full PDF"}
+            Download PDF
           </Link>
-        ) : <span className="fieldkit-report-status">Imported summary · no full PDF retained</span>}
+        ) : <span className="fieldkit-report-status">Snapshot only — original PDF unavailable</span>}
       </div>
     </article>
   );
@@ -103,19 +103,20 @@ export function FieldKitCollection({
                 </p>
               ) : reports.length ? (
                 <div className="fieldkit-report-history">
-                  {reports.slice(0, 2).map((artifact) => (
+                  {reports.slice(0, 1).map((artifact) => (
                     <ReportRow
                       key={artifact.id ?? artifact.href}
                       artifact={artifact}
+                      latest
                     />
                   ))}
-                  {reports.length > 2 ? (
+                  {reports.length > 1 ? (
                     <details className="fieldkit-older-reports">
                       <summary>
-                        View older reports ({reports.length - 2})
+                        Assessment history ({reports.length - 1})
                       </summary>
                       <div className="fieldkit-older-report-list">
-                        {reports.slice(2).map((artifact) => (
+                        {reports.slice(1).map((artifact) => (
                           <ReportRow
                             key={artifact.id ?? artifact.href}
                             artifact={artifact}

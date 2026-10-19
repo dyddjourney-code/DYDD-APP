@@ -76,7 +76,14 @@ const route = load("app/api/artifacts/[snapshotId]/download/route.ts", {
   },
   "@/lib/supabase/admin": {
     createSupabaseAdminClient: () => ({
-      from: () => q,
+      from: (table) => table.startsWith("fruitlife_") ? {
+        select(){return this},eq(){return this},order(){return this},limit(){return this},
+        maybeSingle: async () => ({data: table === "fruitlife_360_sessions" ? {id:"owned-session"} : {
+          provider_document_id:"retained-fruit-document",external_url:"https://provider.test/fruit.pdf",metadata:{storage:{
+            bucket:"assessment-report-pdfs",path:`fruit_360/${snapshot.id}/report.pdf`,filename:"FruitLife.pdf"
+          }}
+        }})
+      } : q,
       storage: {
         from: () => ({
           upload: async () => ({ error: null }),
@@ -136,8 +143,10 @@ const get = (query = "", id = snapshot.id) =>
     assert.equal((await get(query)).status, 404);
   assert.equal((await get("?review=new&key=valid", "foreign")).status, 404);
   r = await get("?review=new&key=valid");
-  assert((await r.text()).includes("Prepare full PDF report"));
+  assert((await r.text()).includes("Preparing your PDF"));
   assert.equal(generated, 0);
+  assert.equal(r.headers.get("referrer-policy"), "same-origin");
+  assert(text.includes("Download PDF"));
   snapshot.scores.pdfMonkey = {
     documentId: "doc",
     providerUrl: "https://provider.test/old.pdf",
@@ -154,7 +163,7 @@ const get = (query = "", id = snapshot.id) =>
   fail = true;
   r = await get("?review=new&key=valid");
   assert.equal(r.status, 200);
-  assert((await r.text()).includes("Prepare full PDF report"));
+  assert((await r.text()).includes("Preparing your PDF"));
   fail = false;
   delete snapshot.scores.pdfMonkey;
   r = await route.POST(
@@ -204,7 +213,7 @@ const get = (query = "", id = snapshot.id) =>
     ...snapshot,
     assessment_type: "designpd",
     scores: {
-      scores: { Plan_Tendency: "Strong_Dreamer" },
+      scores: { Plan_Tendency: "Strong_Dreamer", Plan_Score: 0, Decide_Score: 17 },
       summary: { Plan_Descriptor: "Exact saved description" },
     },
   };
@@ -212,6 +221,16 @@ const get = (query = "", id = snapshot.id) =>
   text = await r.text();
   assert(text.includes("Strong Dreamer"));
   assert(text.includes("Exact saved description"));
+  assert(text.includes('Score: <strong>0</strong>'));
+  assert(text.includes('Score: <strong>17</strong>'));
+  assert(text.includes('Score: <strong>Not retained</strong>'));
+  assert.equal(r.headers.get("referrer-policy"), "same-origin");
+  snapshot = { ...snapshot, assessment_type: "fruit_360", scores: {} };
+  r = await get("?review=new&key=valid&view=snapshot");
+  assert((await r.text()).includes("Download PDF"));
+  r = await get("?review=new&key=valid");
+  assert.equal(r.status,307,"Legacy FruitLife session PDF is not snapshot-only");
+  assert.equal((await get("?review=new&key=invalid")).status,404);
   console.log(
     "PASS snapshot score/label fidelity, no duplicate highlights or arbitrary gift bars, explicit PDF separation, authorization/foreign denial, real PDF archival, expired-link recovery, origin check and full-template generation without email.",
   );

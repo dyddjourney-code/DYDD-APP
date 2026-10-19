@@ -1,4 +1,4 @@
-import { recoveryReport } from "@/lib/assessments/report-recovery";
+import { hasFullReport } from "@/lib/assessments/report-recovery";
 import { previewParams, previewReflectionRounds } from "@/lib/reflections/preview";
 import { isTrailAssessmentComplete } from "@/lib/trails/catalog";
 import { FieldKitCollection } from "@/components/field-kit-collection";
@@ -164,16 +164,8 @@ export default async function FieldKitPage({
   const artifacts: FieldKitArtifact[] = [
     ...snapshotArtifactSources
       .filter((snapshot) =>
-        isTrailAssessmentComplete(snapshot.assessment_type, [snapshot]),
-      )
-      .filter(
-        (snapshot) =>
-          !(
-            snapshot.assessment_type === "fruit_360" &&
-            fruitLifeReportSessions.some(
-              (session) => session.report_snapshot_id === snapshot.id,
-            )
-          ),
+        isTrailAssessmentComplete(snapshot.assessment_type, [snapshot]) ||
+        (snapshot.assessment_type === "fruit_360" && fruitLifeReportSessions.some(s => s.report_snapshot_id === snapshot.id)),
       )
       .map((snapshot) => ({
         id: snapshot.id,
@@ -187,7 +179,10 @@ export default async function FieldKitPage({
           } as Record<string, string>
         )[snapshot.assessment_type],
         action: "View snapshot",
-        pdfHref: snapshot.scores.reportArtifact || recoveryReport(snapshot) ? artifactDownloadHref(snapshot, reviewParams) : undefined,
+        pdfHref: hasFullReport(snapshot) ? artifactDownloadHref(snapshot, reviewParams) :
+          snapshot.assessment_type === "fruit_360" && fruitLifeReportSessions.some(s => s.report_snapshot_id === snapshot.id)
+            ? artifactDownloadHref(snapshot, reviewParams)
+            : undefined,
         pdfReady: Boolean(
           snapshot.scores.reportArtifact ||
           (
@@ -236,7 +231,7 @@ export default async function FieldKitPage({
         ] as Array<[string, string]>,
         title: snapshotArtifactTitle(snapshot),
       })),
-    ...fruitLifeReportSessions.map((session) => {
+    ...fruitLifeReportSessions.filter(session => !snapshotArtifactSources.some(s => s.id === session.report_snapshot_id)).map((session) => {
       const reportArtifact = fruitLifeReportArtifact(session);
       const reportTimestamp =
         reportArtifact?.created_at ?? session.updated_at ?? session.created_at;
@@ -245,6 +240,8 @@ export default async function FieldKitPage({
         completedAt: reportTimestamp,
         experienceSlug: "fruitlife-360-formation",
         action: "Open report",
+        pdfHref: withReviewQuery(fruitLifeReportHref(session) + "&download=1", reviewParams),
+        pdfReady: true,
         courseAction: "Explore course",
         courseHref: "/courses/fruitlife-360-formation",
         detail: `Your ${fruitLifeReportModeLabel(session).toLowerCase()} FruitLife360 report is ready to review.`,

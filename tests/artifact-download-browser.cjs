@@ -1,0 +1,16 @@
+/** Real browser regression: recovery HTML must POST with a non-null Origin. */
+const assert=require('node:assert/strict'),http=require('node:http'),load=require('../scripts/fruitlife-test-load.cjs');
+const {NextRequest}=require('next/server'),puppeteer=require('puppeteer-core'),chromium=require('@sparticuz/chromium').default;
+const snapshot={id:'browser-fixture',assessment_type:'designpd',created_at:'2026-10-19T00:00:00Z',scores:{axisScores:{plan:0,decide:17,do:12},reportPayload:{plan_core:'Saved plan',decide_core:'Saved decision',do_core:'Saved action'},reportPayloadFormat:'template-v1'}};
+let generated=0,origin;const query={select(){return this},eq(){return this},single:async()=>({data:{scores:snapshot.scores}}),update(v){snapshot.scores=v.scores;return this},then(resolve){return Promise.resolve({error:null}).then(resolve)}};
+let base;
+const route=load('app/api/artifacts/[snapshotId]/download/route.ts',{
+ '@/lib/assessments/student-context':{assessmentLabels:{designpd:'DesignPD'},displayDate:()=> 'October 19, 2026',snapshotHighlights:()=>[]},
+ '@/lib/review/heather':{isHeatherReviewRequest:()=>false,isNewReviewRequest:()=>true,getNewReviewReport:async()=>({all:[snapshot]})},
+ '@/lib/owner-preview':{isOwnerPreviewRequest:()=>false},
+ '@/lib/supabase/admin':{createSupabaseAdminClient:()=>({from:()=>query,storage:{from:()=>({upload:async()=>({error:null}),remove:async()=>({error:null})})}})},
+ '@/lib/assessments/report-storage':{reportBucket:'assessment-report-pdfs',storedReportUrl:async()=>base+'/ready.pdf',archiveReportPdf:async()=>({path:'designpd/browser-fixture/report.pdf'})},
+ '@/lib/pdfmonkey/client':{createPdfMonkeyDocument:async()=>{generated++;return{id:'fixture-document',status:'success',download_url:'https://provider.test/ready.pdf'}},getPdfMonkeyDocument:async()=>{throw Error('No existing document')}}
+});
+const server=http.createServer(async(req,res)=>{try{if(req.url==='/ready.pdf'){res.writeHead(200,{'Content-Type':'application/pdf'});res.end('%PDF-1.4\nfixture');return;}const request=new NextRequest(base+req.url,{method:req.method,headers:req.headers});if(req.method==='POST')origin=req.headers.origin;const response=await route[req.method](request,{params:Promise.resolve({snapshotId:snapshot.id})});res.writeHead(response.status,Object.fromEntries(response.headers));res.end(Buffer.from(await response.arrayBuffer()));}catch(e){res.writeHead(500);res.end(e.message);}});
+(async()=>{await new Promise(r=>server.listen(0,'127.0.0.1',r));base='http://localhost:'+server.address().port;const browser=await puppeteer.launch({args:chromium.args,executablePath:await chromium.executablePath(),headless:true});try{const page=await browser.newPage();const posted=page.waitForResponse(r=>r.request().method()==='POST');await page.goto(base+'/api/artifacts/browser-fixture/download?review=new&key=fixture',{waitUntil:'domcontentloaded'}).catch(e=>{if(!e.message.includes('ERR_ABORTED'))throw e});const response=await posted;assert.equal(response.status(),303);assert.equal(origin,base);assert.equal(generated,1);assert.equal(snapshot.scores.axisScores.plan,0);console.log('PASS actual browser automatic PDF preparation, valid same-origin POST, private PDF redirect, saved scores preserved');}finally{await browser.close();server.close();}})().catch(e=>{console.error(e);server.close();process.exitCode=1});

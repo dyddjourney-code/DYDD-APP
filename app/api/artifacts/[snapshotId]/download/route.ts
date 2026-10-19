@@ -28,6 +28,7 @@ import {
 } from "@/lib/assessments/report-storage";
 import {
   object,
+  hasFullReport,
   recoveryReport,
   sourceShadow,
 } from "@/lib/assessments/report-recovery";
@@ -35,7 +36,7 @@ export const runtime = "nodejs";
 export const maxDuration = 120;
 const headers = {
   "Cache-Control": "private, no-store",
-  "Referrer-Policy": "no-referrer",
+  "Referrer-Policy": "same-origin",
 };
 const html = (v: unknown) =>
   String(v ?? "")
@@ -52,7 +53,7 @@ function value(snapshot: AssessmentSnapshotSummary, ...keys: string[]) {
       object(snapshot.scores.reportPayload),
       snapshot.scores,
     ]) {
-      const v = section[key];
+      const v = section[key] ?? section[key.toLowerCase()];
       if (v !== undefined && v !== null && v !== "") return String(v);
     }
   return "";
@@ -101,7 +102,7 @@ function snapshotHtml(snapshot: AssessmentSnapshotSummary, url: URL) {
       .join("");
     content = `<section><h2>Top five spiritual gifts</h2>${gifts}</section>`;
   } else if (type === "designpd") {
-    content = `<section><h2>How you plan, decide, and act</h2>${["Plan", "Decide", "Do"].map((axis) => `<div class="gift"><h3>${axis}</h3><strong>${html(value(snapshot, `${axis}_Tendency`)).replaceAll("_", " ")}</strong><p>${html(value(snapshot, `${axis}_Descriptor`, `${axis.toLowerCase()}_descriptor`, `${axis}_Overview_Sentence`))}</p></div>`).join("")}</section>`;
+    content = `<section><h2>How you plan, decide, and act</h2>${["Plan", "Decide", "Do"].map((axis) => `<div class="gift"><h3>${axis}</h3><strong>${html(value(snapshot, `${axis}_Tendency`)).replaceAll("_", " ")}</strong><p>Score: <strong>${html(value(snapshot, `${axis}_Score`) || (object(snapshot.scores.axisScores)[axis.toLowerCase()] ?? "Not retained"))}</strong></p><p>${html(value(snapshot, `${axis}_Descriptor`, `${axis.toLowerCase()}_descriptor`, `${axis}_Overview_Sentence`))}</p></div>`).join("")}</section>`;
   } else
     content = `<section><h2>Saved highlights</h2><table>${snapshotHighlights(
       snapshot,
@@ -110,16 +111,17 @@ function snapshotHtml(snapshot: AssessmentSnapshotSummary, url: URL) {
       .join("")}</table></section>`;
   const pdfUrl = new URL(url);
   pdfUrl.searchParams.delete("view");
-  pdfUrl.searchParams.delete("download");
+  pdfUrl.searchParams.set("download", "1");
   return layout(
     `${label} Snapshot`,
-    `<section><p>Completed ${html(displayDate(snapshot.source_submitted_at ?? snapshot.created_at))}</p><p>This is a quick summary of your saved assessment, not your full PDF report.</p><div class="actions">${snapshot.scores.reportArtifact || recoveryReport(snapshot) ? `<a href="${html(pdfUrl.pathname + pdfUrl.search)}" target="_blank" rel="noopener noreferrer">${snapshot.scores.reportArtifact ? "Full PDF report" : "Prepare full PDF"}</a>` : `<p>Imported summary only: no full PDF was retained for this record. Full reports from complete assessment records are listed separately in Field Kit.</p>`}</div></section>${content}`,
+    `<section><p>Completed ${html(displayDate(snapshot.source_submitted_at ?? snapshot.created_at))}</p><p>This is a quick summary of your saved assessment, not your full PDF report.</p><div class="actions">${hasFullReport(snapshot) ? `<a href="${html(pdfUrl.pathname + pdfUrl.search)}" target="_blank" rel="noopener noreferrer">Download PDF</a>` : `<p>Snapshot only — original PDF unavailable. Complete report data was not retained for this historical record.</p>`}</div></section>${content}`,
   );
 }
 function recoveryHtml(
   snapshot: AssessmentSnapshotSummary,
   url: URL,
   message = "",
+  autoStart = false,
 ) {
   const label =
     assessmentLabels[snapshot.assessment_type] ?? snapshot.assessment_type;
@@ -128,10 +130,10 @@ function recoveryHtml(
   const canRecover = Boolean(recoveryReport(snapshot));
   return layout(
     `${label} PDF Report`,
-    `<section><p>${html(message || "The original PDF is not currently archived in your Field Kit.")}</p><p>This page is not a substitute report or a printed snapshot.</p>${canRecover ? `<p>Recreate the full report using this assessment’s saved report data and the official report template. Your scores will not change, and no email will be sent.</p><form method="post"><button type="submit">Prepare full PDF report</button></form>` : `<p>The complete source report data is not available for this older record. Its snapshot remains available; we cannot honestly recreate the original PDF from a partial summary.</p>`}<p><a href="${html(view.pathname + view.search)}" target="_blank" rel="noopener noreferrer">View snapshot</a></p></section>`,
+    `<section><p role="status">${html(message || (canRecover ? "Preparing your PDF from this assessment’s saved report data…" : "The original PDF is not available for this historical record."))}</p>${canRecover ? `<p>Your saved scores will not change. No email will be sent.</p><form method="post" action="${html(url.pathname + url.search)}"><button type="submit">${message ? "Retry download" : "Download PDF"}</button></form>${autoStart && !message ? `<script>const form=document.querySelector('form');form.querySelector('button').textContent='Preparing PDF…';form.querySelector('button').disabled=true;form.requestSubmit();</script><noscript>Select Download PDF to continue.</noscript>` : ""}` : `<p>Snapshot only — original PDF unavailable. Complete source data was not retained, so we cannot recreate this report accurately.</p>`}<p><a href="${html(view.pathname + view.search)}" target="_blank" rel="noopener noreferrer">View snapshot</a></p></section>`,
   );
 }
-async function findAuthorizedSnapshot(
+async function findSnapshot(
   request: NextRequest,
   snapshotId: string,
 ) {
@@ -168,6 +170,27 @@ async function findAuthorizedSnapshot(
     normalizeEmail(user.email),
   );
   return report.all.find((snapshot) => snapshot.id === snapshotId) ?? null;
+}
+/** Supplement legacy FruitLife snapshots with their owned session’s retained PDF. */
+async function findAuthorizedSnapshot(request: NextRequest, snapshotId: string) {
+  const snapshot = await findSnapshot(request, snapshotId);
+  if (!snapshot || snapshot.assessment_type !== "fruit_360") return snapshot;
+  const admin = createSupabaseAdminClient();
+  const { data: session } = await admin.from("fruitlife_360_sessions")
+    .select("id").eq("report_snapshot_id", snapshot.id).maybeSingle();
+  if (!session) return snapshot;
+  const { data: artifact } = await admin.from("fruitlife_360_report_artifacts")
+    .select("external_url,metadata,provider_document_id")
+    .eq("session_id", session.id).eq("artifact_type", "pdf").eq("artifact_status", "ready")
+    .order("created_at", { ascending: false }).limit(1).maybeSingle();
+  if (!artifact) return snapshot;
+  const saved = object(snapshot.scores.pdfMonkey);
+  return { ...snapshot, scores: { ...snapshot.scores, pdfMonkey: {
+    ...saved,
+    storage: saved.storage ?? object(artifact.metadata).storage,
+    documentId: saved.documentId || artifact.provider_document_id,
+    providerUrl: saved.providerUrl || artifact.external_url,
+  } } };
 }
 async function persist(
   snapshot: AssessmentSnapshotSummary,
@@ -225,7 +248,7 @@ async function pdfResponse(
     } catch {
       /* An expired provider URL must not be called a working report. */
     }
-  return new NextResponse(recoveryHtml(snapshot, request.nextUrl), {
+  return new NextResponse(recoveryHtml(snapshot, request.nextUrl, "", true), {
     headers: { ...headers, "Content-Type": "text/html; charset=utf-8" },
   });
 }
@@ -271,8 +294,11 @@ export async function POST(
       { error: "Artifact not found." },
       { status: 404, headers },
     );
-  if (object(snapshot.scores.reportArtifact).path)
-    return pdfResponse(snapshot, request);
+  const archived = object(snapshot.scores.reportArtifact ?? object(snapshot.scores.pdfMonkey).storage);
+  if (archived.path === `${snapshot.assessment_type}/${snapshot.id}/report.pdf`) {
+    const url = await storedReportUrl(archived as StoredReport, true);
+    if (url) return NextResponse.redirect(url, { status: 303, headers });
+  }
   const report = recoveryReport(snapshot);
   if (report) {
     const { data: identity } = await createSupabaseAdminClient()
@@ -332,7 +358,7 @@ export async function POST(
     let document = documentId
       ? await getPdfMonkeyDocument(documentId).catch(() => null)
       : null;
-    if (!document) {
+    if (!document || document.status === "failure" || document.status === "failed") {
       document = await createPdfMonkeyDocument({
         templateId: report.templateId,
         payload: report.payload,

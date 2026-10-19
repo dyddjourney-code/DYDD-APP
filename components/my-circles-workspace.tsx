@@ -3,6 +3,7 @@
 import type { CSSProperties } from "react";
 import { useState } from "react";
 import { PageHelp } from "@/components/page-help";
+import { CircleSetupPlanner } from "@/components/circle-setup-planner";
 import {
   facilitatorPlaybookAppendices,
   facilitatorPlaybookHighlights,
@@ -605,6 +606,8 @@ export default function MyCirclesWorkspace() {
           </p>
         </div>
       </header>
+
+      <CircleSetupPlanner />
 
       <PageHelp
         items={[

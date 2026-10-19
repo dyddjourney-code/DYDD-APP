@@ -20508,3 +20508,68 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   padding-left: 20px;
   border-left: 3px solid var(--green-dark);
 }
+
+/* Camp Circles overview and invitation-only planning workspace. */
+.circle-story-intro { gap: 24px; }
+.circle-story-intro > .button { justify-self: start; }
+.circle-value-list { display: grid; align-content: start; gap: 22px; }
+.circle-value-list article + article { padding-top: 20px; border-top: 1px solid rgba(36,63,39,.14); }
+.circle-value-list h3, .circle-format-list h3, .circle-planner-body h3 { margin: 0 0 10px; color: var(--green-dark); font-size: clamp(1.15rem,2vw,1.55rem); }
+.circle-value-list p, .circle-format-list p, .circle-steps p, .circle-closing p, .circle-planner-body p, .circle-next-stage p { margin: 0; color: var(--muted); line-height: 1.65; }
+.circle-format-list { display: grid; }
+.circle-format-list article { display: grid; grid-template-columns: minmax(160px,.7fr) minmax(0,1.3fr); gap: 28px; padding: 24px 0; border-top: 1px solid rgba(36,63,39,.14); }
+.circle-format-list .section-label { display: block; margin-bottom: 12px; }
+.circle-format-list h3 { font-size: 1.7rem; }
+.circle-steps { list-style: decimal-leading-zero; margin: 0; padding-left: 30px; display: grid; gap: 22px; }
+.circle-steps li { padding-left: 10px; }
+.circle-steps li::marker { color: var(--brass); font-weight: 800; }
+.circle-steps strong { display: block; margin-bottom: 6px; color: var(--green-dark); }
+.circle-action-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.circle-action-row .button { max-width: 100%; white-space: normal; text-align: center; }
+.circle-fine-print { font-size: .85rem; line-height: 1.6; color: var(--muted); }
+.circle-setup { scroll-margin-top: 24px; }
+.circle-setup-stages { padding: 0; margin: 6px 0 10px; list-style: none; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }
+.circle-setup-stages li { display: flex; gap: 9px; align-items: center; padding: 12px 0; border-bottom: 2px solid rgba(36,63,39,.14); color: var(--muted); font-size: .86rem; font-weight: 750; }
+.circle-setup-stages li[aria-current] { color: var(--green-dark); border-color: var(--green); }
+.circle-setup-stages li span { display: grid; place-content: center; min-width: 26px; height: 26px; border-radius: 50%; background: var(--green-soft); }
+.circle-planner-body { display: grid; grid-template-columns: minmax(0,1.25fr) minmax(0,.75fr); gap: clamp(20px,4vw,48px); }
+.circle-planner-fields { min-width: 0; display: grid; gap: 18px; align-content: start; }
+.circle-planner-fields > h3 { margin: 0; }
+.circle-field-pair { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.circle-field-pair > *, .circle-builder-form, .circle-builder-form label { min-width: 0; }
+.circle-builder-form input, .circle-builder-form select { box-sizing: border-box; max-width: 100%; min-width: 0; }
+.circle-builder-form .button { justify-self: start; }
+.circle-access-explainer { min-width: 0; padding: 24px; border-radius: 8px; background: var(--green-soft); display: grid; gap: 20px; align-content: start; overflow-wrap: anywhere; }
+.circle-access-explainer h3 { margin: 0; }
+.circle-access-explainer strong { color: var(--green-dark); }
+.circle-access-explainer p { margin-top: 7px; font-size: .91rem; }
+.circle-planned-roster { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.circle-planned-roster li { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 14px 0; border-top: 1px solid rgba(36,63,39,.14); }
+.circle-planned-roster li div { display: grid; gap: 5px; min-width: 0; overflow-wrap: anywhere; }
+.circle-planned-roster small { color: var(--muted); }
+.circle-plan-review { display: grid; gap: 22px; overflow-wrap: anywhere; }
+.circle-plan-review dl { margin: 0; display: grid; gap: 14px; }
+.circle-plan-review dl div { border-bottom: 1px solid rgba(36,63,39,.12); padding-bottom: 12px; }
+.circle-plan-review dt { font-size: .8rem; color: var(--muted); margin-bottom: 5px; }
+.circle-plan-review dd { margin: 0; font-weight: 650; color: var(--green-dark); }
+.circle-plan-review h4 { margin: 0 0 10px; }
+.circle-plan-review ol { margin: 0 0 12px; padding-left: 22px; line-height: 1.8; }
+.circle-planner-fields .circle-form-error { color: #993e2b; font-weight: 650; }
+.circle-planner-fields .circle-form-notice { color: var(--green-dark); font-size: .9rem; }
+.circle-form-notice:empty { display: none; }
+.circle-next-stage { border-top: 1px solid rgba(36,63,39,.16); padding-top: 20px; }
+.circle-next-stage summary { color: var(--green-dark); font-weight: 750; cursor: pointer; line-height: 1.5; }
+.circle-next-stage > div { display: grid; gap: 12px; padding-top: 16px; }
+.camp-circle-page, .camp-circle-page section, .camp-circle-main, .camp-circle-sidebar, .circle-console-panel, .circle-data-dashboard, .circle-data-visual-grid, .couple-data-grid, .circle-visual-card { min-width: 0; }
+.camp-circle-page p, .camp-circle-page h2, .camp-circle-page h3, .camp-circle-sidebar select { overflow-wrap: anywhere; }
+.camp-circle-main .group-designpd-panel { max-width: 100%; }
+@media (max-width: 1000px) { .circle-planner-body { grid-template-columns: minmax(0,1fr); } }
+@media (max-width: 640px) {
+  .circle-setup-stages { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .circle-setup-stages li { font-size: .8rem; }
+  .circle-format-list article, .circle-field-pair { grid-template-columns: minmax(0,1fr); gap: 12px; }
+  .circle-access-explainer { padding: 18px; }
+}
+.camp-circle-main .circle-progress-split,
+.camp-circle-main .circle-data-visual-grid,
+.camp-circle-main .couple-data-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }

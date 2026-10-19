@@ -9,5 +9,8 @@
       "maxDuration": 120
     }
   },
-  "crons": []
+  "crons": [],
+  "git": {
+    "deploymentEnabled": false
+  }
 }

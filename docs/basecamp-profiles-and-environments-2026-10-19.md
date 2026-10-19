@@ -14,7 +14,7 @@
 - Sandbox uses its own accounts and authentication credentials. Password signup enabled without confirmation emails. In-app magic links/password-reset emails are blocked in sandbox. Existing live passwords do not work there.
 - Sandbox env vars are allowlisted, not copied from production: own Supabase URL/key/service role, new review token, sandbox marker/reference and app URL. No Resend, Stripe, PDFMonkey, Google Sheets or production webhook credentials.
 - Database config fails closed if sandbox is pointed at live school DB or any unexpected project. Email sender, payments and external PDF generation have explicit sandbox guards.
-- Sandbox branch `vercel.json` has no cron jobs. Main project's preview deploys disabled so feature-branch pushes cannot accidentally run against inherited live credentials. Its production `master` deployments remain enabled.
+- Sandbox branch `vercel.json` has no cron jobs. Main project's Git deployment configuration disables automatic `sandbox` branch deployment while retaining `master` production deployment. The sandbox project has its own configuration and explicit deploy command.
 - Sandbox Vercel project intentionally has no automatic Git linkage. Deploy explicitly with `node scripts/deploy-sandbox.mjs`; it validates separate project/database and always deploys the pushed `sandbox` ref. This prevents pushes to master changing sandbox and sandbox pushes changing live.
 - Banner distinguishes sandbox. Conversation/discussion flags start OFF and cannot enable those features on stable beta through these flags.
 

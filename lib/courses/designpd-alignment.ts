@@ -21,7 +21,7 @@ export const designPdCourse = {
             "As you move through the course, read slowly and personally. Ask where the language feels accurate, where it feels stretching, and where it gives you a better sentence for something you have experienced for a long time. DesignPD becomes useful when it helps you live and lead with clarity, humility, and healthier movement.",
             {
               kind: "scripture",
-              text: "\"Commit to the Lord whatever you do, and he will establish your plans.\" Proverbs 16:3",
+              text: "“Commit to the Lord whatever you do, and he will establish your plans.” Proverbs 16:3",
             },
           ],
           companionMoment: designPdCompanionMoments.welcome,
@@ -125,6 +125,10 @@ export const designPdCourse = {
           body: [
             "Planning reveals how you naturally approach direction, preparation, change, and future movement. Some people begin by opening possibilities. They see what could be, imagine future paths, connect ideas, and expand the horizon before the details are clear. In DesignPD language, that is Dreamer energy. Others begin by narrowing toward what can be done. They look for order, sequence, responsibility, and the next practical step. In DesignPD language, that is Doer energy.",
             "Neither side is better. Dreamers help people see beyond the current moment and make room for faith, possibility, creativity, and vision. Doers help people move from intention into traction by asking what is workable, what is ready, and what needs to happen next. Planning becomes healthier when both sides are honored. Vision without structure can float. Structure without vision can become small, rigid, or reactive.",
+            {
+              kind: "scripture",
+              text: "“Where there is no revelation, people cast off restraint;     but blessed is the one who heeds wisdom’s instruction.” Proverbs 29:18",
+            },
             "Your planning tendency helps explain what you usually need at the beginning of a project, decision, or assignment. A Dreamer may need room to explore before narrowing too quickly. A Doer may need enough clarity to begin moving without getting lost in endless possibilities. Growth often begins by learning to receive the other side as support rather than threat.",
           ],
           companionMoment: designPdCompanionMoments.planning,
@@ -198,6 +202,10 @@ export const designPdCourse = {
           body: [
             "Deciding reveals how you tend to process choices when something needs to be judged, selected, committed to, or released. Some people begin with internal awareness, relational impact, atmosphere, conviction, and what feels aligned or misaligned. In DesignPD language, that is Feel It energy. Others begin with criteria, analysis, comparison, consistency, and what can be logically supported. In DesignPD language, that is Think It energy.",
             "Feel It does not mean emotional guessing, and Think It does not mean cold detachment. Both can be wise and both can be immature. Feel It is at its healthiest when it notices what is happening beneath the surface without assuming it knows everything. Think It is at its healthiest when it brings clarity and structure without dismissing people, timing, or the movement of the Spirit.",
+            {
+              kind: "scripture",
+              text: "“Trust in the Lord with all your heart and lean not on your own understanding; in all your ways submit to him, and he will make your paths straight.” Proverbs 3:5–6",
+            },
             "Most decisions need both discernment and clarity. A Feel It tendency may need to slow down and name the criteria behind the conviction. A Think It tendency may need to slow down and ask who is affected and what wisdom cannot be captured in a chart. Your Decide tendency helps you notice where you naturally begin so you can invite the missing support before the decision hardens into action.",
           ],
           companionMoment: designPdCompanionMoments.deciding,
@@ -272,6 +280,10 @@ export const designPdCourse = {
             "Doing reveals how you tend to carry responsibility and move work forward once action is required. Some people gain momentum through independent ownership. They like clarity, room to move, and the ability to carry a task without too much interruption. In DesignPD language, that is Solo energy. Others gain momentum through shared effort, conversation, mutual alignment, and the energy that comes when people are moving together. In DesignPD language, that is Together energy.",
             "Solo does not mean selfish or isolated. At its healthiest, Solo brings ownership, initiative, focus, and responsibility. Together does not mean dependent or slow. At its healthiest, Together brings shared clarity, collaboration, encouragement, and broader buy-in. Both are needed. Many problems happen because people assume everyone should carry action the way they do.",
             "Your Doing tendency helps explain what kind of action rhythm is most sustainable for you. A Solo pattern may need defined ownership and fewer unnecessary meetings. A Together pattern may need alignment, conversation, and appropriate partnership. Growth begins when you stop shaming the pattern and start stewarding it with wisdom.",
+            {
+              kind: "scripture",
+              text: "“Whatever you do, work at it with all your heart, as working for the Lord, not for human masters, since you know that you will receive an inheritance from the Lord as a reward. It is the Lord Christ you are serving.” Colossians 3:23–24",
+            },
           ],
           companionMoment: designPdCompanionMoments.doing,
           focus: [
@@ -391,6 +403,10 @@ export const designPdCourse = {
             "Conflict often makes movement patterns visible because tension exposes what people reach for first. A Dreamer may want to reframe the future. A Doer may want to solve the practical issue. A Feel It pattern may sense relational strain quickly. A Think It pattern may want the facts arranged clearly. A Solo pattern may withdraw to process or act independently. A Together pattern may need conversation before peace feels possible.",
             "DesignPD helps you slow conflict down enough to ask better questions. What is actually happening? What is being assumed? What does each person need in order to plan, decide, and act wisely? Conflict becomes more destructive when people treat their own movement pattern as the only reasonable one. It becomes more redeemable when each person can name what they need without demanding that everyone process the same way.",
             "In conflict, your strongest tendency may become louder than wisdom. Planning can become control or avoidance. Deciding can become emotional assumption or rigid logic. Doing can become isolation or pressure for group agreement. The goal is to return to humility, truth, love, and one faithful next step.",
+            {
+              kind: "scripture",
+              text: "“Everyone should be quick to listen, slow to speak and slow to become angry.” James 1:19",
+            },
           ],
           focus: [
             "Conflict exposes how people plan, decide, and act under tension.",
@@ -413,6 +429,10 @@ export const designPdCourse = {
             "Collaboration is where movement patterns either become a gift or become friction. People often say they want teamwork, but they may mean very different things by that word. One person may think collaboration means shared brainstorming. Another may think it means clear roles and efficient execution. One may want to talk before moving. Another may want to move and report back. DesignPD gives teams language for these differences.",
             "Good collaboration does not require everyone to work the same way. It requires shared clarity about purpose, process, ownership, communication, and pace. Dreamers may help the group see possibilities. Doers may help the group translate ideas into traction. Feel It patterns may notice tone, motivation, and relational impact. Think It patterns may bring criteria and structure. Solo patterns may carry defined responsibility well. Together patterns may strengthen alignment and shared momentum.",
             "The practical question is: what does this collaboration actually need? Some work needs expansion. Some needs narrowing. Some needs counsel. Some needs decision criteria. Some needs personal ownership. Some needs shared movement. Collaboration becomes healthier when the team stops treating difference as resistance and starts treating difference as information.",
+            {
+              kind: "scripture",
+              text: "“Two are better than one, because they have a good return for their labor.” Ecclesiastes 4:9",
+            },
           ],
           focus: [
             "Collaboration requires clarity about purpose, process, ownership, communication, and pace.",
@@ -435,6 +455,10 @@ export const designPdCourse = {
             "Leadership is not only about position. It is about influence, movement, responsibility, and care. Your DesignPD pattern shapes the way you naturally lead because it shapes how you create direction, process decisions, and move people or work forward. Some leaders cast vision first. Others clarify the next step. Some lead through relational awareness. Others lead through structured thinking. Some carry ownership directly. Others mobilize people through shared effort.",
             "Healthy leadership makes the process visible. People do not only need your conclusion; they often need to understand how you got there, what you are asking them to carry, and what kind of participation is needed. If you are a Dreamer leader, help people see the next concrete step. If you are a Doer leader, help people see the larger purpose. If you are Feel It, name the criteria. If you are Think It, name the people impact. If you are Solo, communicate before others feel excluded. If you are Together, define ownership so shared movement does not become confusion.",
             "DesignPD gives leaders a practical mirror. It can show where your natural leadership movement brings strength and where it may unintentionally create pressure for others. Leadership matures when your pattern becomes a servant of the mission and the people, not a demand that everyone move like you.",
+            {
+              kind: "scripture",
+              text: "“Not so with you. Instead, whoever wants to become great among you must be your servant.” Matthew 20:26",
+            },
           ],
           focus: [
             "Leadership is shaped by how you create direction, make decisions, and move action forward.",
@@ -457,6 +481,10 @@ export const designPdCourse = {
             "Pressure often exaggerates the strongest parts of a pattern. A healthy Dreamer may become scattered or keep expanding possibilities when focus is needed. A healthy Doer may become urgent and narrow too quickly. Feel It may absorb emotional weight or assume meaning before it is clear. Think It may detach or overanalyze. Solo may isolate. Together may become dependent on group energy or group agreement before acting.",
             "Pressure is not proof that your pattern is bad. It is a signal that your pattern needs support. The question is not, \"Why am I like this?\" The better question is, \"What does my design need when strain increases?\" You may need prayer, rest, counsel, a smaller next step, clearer criteria, a better deadline, a relational conversation, or permission to pause before reacting.",
             "DesignPD helps you prepare before pressure arrives. If you know how your pattern tends to react under strain, you can build a wise response plan. Name the warning signs. Name the support you need. Name the one sentence that brings you back to truth. Pressure does not have to control the pattern when the pattern is submitted to wisdom.",
+            {
+              kind: "scripture",
+              text: "“Be completely humble and gentle; be patient, bearing with one another in love.” Ephesians 4:2",
+            },
           ],
           focus: [
             "Pressure can exaggerate otherwise healthy tendencies.",
@@ -479,6 +507,10 @@ export const designPdCourse = {
             "Sustainability asks whether your way of moving can remain healthy over time. A pattern may work for a sprint but fail as a rhythm. You may be able to force planning, decisions, or action for a season, but if the way you move constantly violates your design, drains your capacity, or disconnects you from prayer, rest, and community, the fruit will eventually suffer.",
             "DesignPD supports sustainability by helping you build with your design instead of constantly fighting it. A Dreamer may need recurring structure. A Doer may need scheduled imagination and reflection. Feel It may need criteria and boundaries. Think It may need relational check-ins. Solo may need intentional communication and support. Together may need defined personal ownership. Sustainability is not about making life easy. It is about building a faithful rhythm that can hold responsibility without unnecessary burnout.",
             "A sustainable pattern usually includes a few simple guardrails: a planning rhythm, a decision rhythm, an action rhythm, rest, feedback, and review. Guardrails do not limit purpose. They protect it. They help your design serve over time with humility, strength, and grace.",
+            {
+              kind: "scripture",
+              text: "“Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.” Galatians 6:9",
+            },
           ],
           focus: [
             "Sustainability asks whether your movement pattern can stay healthy over time.",
@@ -507,6 +539,10 @@ export const designPdCourse = {
             "The MAPS model helps you connect your design to a larger journey of purpose. MAPS gives language for Mission, Approach, Process, and Send. Mission asks why you are moving and what you are called to serve. Approach asks how you tend to enter, relate, and respond. Process asks how the work becomes ordered, formed, and carried. Send asks how your design moves outward into contribution, multiplication, and impact.",
             "DesignPD fits naturally inside MAPS because planning, deciding, and doing are movement patterns. Your Plan tendency influences how you see direction and prepare for what is ahead. Your Decide tendency influences how you discern and commit. Your Do tendency influences how you carry action and move responsibility forward. MAPS helps place those patterns inside a bigger environment so DesignPD does not become isolated self-awareness.",
             "Alignment happens when your identity, movement, gifts, fruit, and context begin to work together. DesignPD is one lens within that larger picture. It helps you understand how movement happens, but MAPS helps you ask where that movement is headed, what it requires, who it affects, and how it can become faithful contribution.",
+            {
+              kind: "scripture",
+              text: "“For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” Ephesians 2:10",
+            },
           ],
           companionMoment: designPdCompanionMoments.alignment,
           focus: [

@@ -20573,3 +20573,11 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .camp-circle-main .circle-progress-split,
 .camp-circle-main .circle-data-visual-grid,
 .camp-circle-main .couple-data-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+.camp-circle-main .group-designid-bar-row { grid-template-columns: minmax(0, 120px) minmax(0, 1fr) 48px; }
+.camp-circle-main .group-horizontal-bar-row { grid-template-columns: minmax(0, .8fr) minmax(0, 1fr) 34px 60px; }
+.camp-circle-main .group-designpd-axis-track { grid-template-columns: minmax(0, 1fr); }
+.camp-circle-main .group-designpd-axis-track > small:last-child { text-align: right; }
+@media (max-width: 640px) {
+  .camp-circle-main .group-designid-bar-row, .camp-circle-main .group-horizontal-bar-row { grid-template-columns: minmax(0, 1fr); }
+  .camp-circle-main .group-designid-bar-row b, .camp-circle-main .group-horizontal-bar-row strong, .camp-circle-main .group-horizontal-bar-row em { text-align: left; }
+}

@@ -16,6 +16,12 @@ export type CollectedArtifact = {
   title: string;
   experienceSlug?: string;
 };
+const assessmentIcons: Record<string, string> = {
+  "designid-foundations": "/brand/tools/badge-icons/designid-icon.png",
+  "spiritual-gifts-service": "/brand/tools/badge-icons/spiritual-gifts-icon.png",
+  "fruitlife-360-formation": "/brand/tools/badge-icons/fruitlife-360-icon.png",
+  "designpd-alignment": "/brand/tools/badge-icons/designpd-icon.png",
+};
 function ReportRow({ artifact, latest = false }: { artifact: CollectedArtifact; latest?: boolean }) {
   const timestamp =
     artifact.meta.find(([label]) => label === "Completed")?.[1] ??
@@ -88,7 +94,18 @@ export function FieldKitCollection({
               alt="Discover Your Divine Design"
             />
           ) : null}
-          <h3>{name}</h3>
+          {assessmentIcons[slug] ? (
+            <div className="fieldkit-collection-heading">
+              <h3>{name}</h3>
+              <img
+                className="fieldkit-collection-icon"
+                src={assessmentIcons[slug]}
+                alt=""
+                width={40}
+                height={40}
+              />
+            </div>
+          ) : <h3>{name}</h3>}
           <p className="trail-description">{description}</p>
           <div className="fieldkit-collection-columns">
             <section aria-label={`${name} reports`}>

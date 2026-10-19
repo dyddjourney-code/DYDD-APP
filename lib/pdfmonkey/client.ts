@@ -21,6 +21,9 @@ function getPdfMonkeyApiKey() {
 }
 
 async function pdfMonkeyRequest<T>(path: string, init?: RequestInit): Promise<T> {
+  if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox") {
+    throw new Error("External report generation is disabled in the sandbox.");
+  }
   const apiKey = getPdfMonkeyApiKey();
 
   if (!apiKey) {

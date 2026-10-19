@@ -16,6 +16,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        {process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox" ? (
+          <div role="note" style={{ padding: "10px 20px", background: "#f0d99e", color: "#3f381d", fontSize: 14, textAlign: "center" }}>
+            DYDD Sandbox — separate test accounts and data. Email, payments and external report delivery are off.
+          </div>
+        ) : null}
         <AppChrome>{children}</AppChrome>
       </body>
     </html>

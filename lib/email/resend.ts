@@ -40,6 +40,9 @@ export async function sendResendEmail({
   text,
   to,
 }: SendEmailInput): Promise<SendEmailResult> {
+  if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox") {
+    return { sent: false, skipped: true, message: "Sandbox email delivery is disabled." };
+  }
   const { apiKey, from } = getResendConfig(fromOverride);
 
   if (!apiKey) {

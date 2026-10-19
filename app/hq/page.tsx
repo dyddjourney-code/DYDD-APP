@@ -1,3 +1,4 @@
+import { BaseCampProfile } from "@/components/basecamp-profile";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
@@ -555,6 +556,10 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         .maybeSingle()
     : { data: null };
 
+  const { data: baseCampIdentity } = user && !reviewReport
+    ? await supabase.from("basecamp_profiles").select("display_name").eq("user_id", user.id).maybeSingle()
+    : { data: null };
+
   const assessmentReport: StudentAssessmentReport = reviewReport ??
     (await getAssessmentSnapshotsForUser(user?.id ?? "", normalizeEmail(user?.email)));
   const snapshots = assessmentReport.latest;
@@ -566,7 +571,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     ? `${heatherReviewName} Preview`
     : newPreview
       ? newReviewName
-      : profile?.full_name ?? user?.email ?? "Traveler";
+      : baseCampIdentity?.display_name || profile?.full_name || user?.email || "Traveler";
   const displayName = toDisplayName(rawDisplayName.replace(/\s+Preview$/, ""));
   const welcomeName = toDisplayName(displayName.replace(/\s+Preview$/, "").split(/\s+/)[0]);
   const fruitLifeDashboardEmail = heatherPreview
@@ -650,6 +655,8 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               </div>
             </div>
           </section>
+
+          <BaseCampProfile initialName={displayName} preview={Boolean(reviewReport)} />
 
           <section className="fruitlife-basecamp-intro" aria-label="What you can do here">
             <article>
@@ -745,6 +752,8 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           </div>
         </div>
       </section>
+
+      <BaseCampProfile initialName={displayName} preview={Boolean(reviewReport)} />
 
       <section className="basecamp-orientation-band" aria-label="DYDD Base Camp next step">
         <div className="basecamp-ranger-launch-card">

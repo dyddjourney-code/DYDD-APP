@@ -8,5 +8,12 @@ export function getSupabaseConfig() {
     );
   }
 
+  if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox") {
+    const expected = process.env.NEXT_PUBLIC_DYDD_SANDBOX_SUPABASE_REF;
+    if (!expected || new URL(url).hostname !== `${expected}.supabase.co` || expected === "laojrzlqbkmirzcbcnyw") {
+      throw new Error("Sandbox database isolation is not configured.");
+    }
+  }
+
   return { anonKey, url };
 }

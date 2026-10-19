@@ -8,6 +8,9 @@ export const fruitLifeStripePriceId =
 let stripeClient: Stripe | null = null;
 
 export function getStripeClient() {
+  if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox") {
+    throw new Error("Payments are disabled in the sandbox.");
+  }
   const secretKey = process.env.STRIPE_SECRET_KEY;
 
   if (!secretKey) {

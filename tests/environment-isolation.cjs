@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict');
+const load=require('../scripts/fruitlife-test-load.cjs');
+const env=load('lib/environment.ts'),config=load('lib/supabase/config.ts');
+process.env.NEXT_PUBLIC_SUPABASE_URL='https://laojrzlqbkmirzcbcnyw.supabase.co';process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY='test';
+process.env.DYDD_FEATURE_CIRCLE_CONVERSATIONS='true';process.env.DYDD_FEATURE_DISCUSSION_PINS='true';
+assert.equal(env.schoolFeatures().circleConversations,false);assert.equal(env.schoolFeatures().journeyDiscussionPins,false);
+process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT='sandbox';process.env.NEXT_PUBLIC_DYDD_SANDBOX_SUPABASE_REF='laojrzlqbkmirzcbcnyw';
+assert.throws(()=>config.getSupabaseConfig(),/isolation/);
+process.env.NEXT_PUBLIC_DYDD_SANDBOX_SUPABASE_REF='atemrshtshxoqnuevvqu';assert.throws(()=>config.getSupabaseConfig(),/isolation/);
+process.env.NEXT_PUBLIC_SUPABASE_URL='https://atemrshtshxoqnuevvqu.supabase.co';assert(config.getSupabaseConfig());assert(env.schoolFeatures().circleConversations);
+global.fetch=()=>{throw Error('An external request must never run in sandbox guard tests')};
+const email=load('lib/email/resend.ts'),stripe=load('lib/commerce/stripe.ts'),pdf=load('lib/pdfmonkey/client.ts');
+(async()=>{assert.equal((await email.sendResendEmail({html:'test',text:'test',subject:'test',to:'nobody@example.com'})).skipped,true);assert.throws(()=>stripe.getStripeClient(),/disabled/);await assert.rejects(()=>pdf.createPdfMonkeyDocument({filename:'test',payload:{},templateId:'test'}),/disabled/);console.log('PASS sandbox DB mismatch fails closed, social features off on stable beta, sandbox email/payment/external PDF blocked before any network request');})();

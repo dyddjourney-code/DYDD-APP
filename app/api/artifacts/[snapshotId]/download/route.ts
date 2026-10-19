@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { nativeDesignPdRecoveryPayload } from "@/lib/assessments/native-designpd-recovery";
 import {
   assessmentLabels,
   displayDate,
@@ -174,8 +175,24 @@ async function findSnapshot(
 /** Supplement legacy FruitLife snapshots with their owned session’s retained PDF. */
 async function findAuthorizedSnapshot(request: NextRequest, snapshotId: string) {
   const snapshot = await findSnapshot(request, snapshotId);
-  if (!snapshot || snapshot.assessment_type !== "fruit_360") return snapshot;
+  if (!snapshot) return null;
   const admin = createSupabaseAdminClient();
+  if (snapshot.assessment_type === "designpd" && snapshot.scores.channel === "native_app" &&
+      !snapshot.scores.reportArtifact && !Object.keys(object(snapshot.scores.reportPayload)).length &&
+      typeof snapshot.scores.designIdSnapshotId === "string") {
+    const { data: linked } = await admin.from("assessment_snapshots")
+      .select("id,participant_id,assessment_type,created_at,scores,source,source_submitted_at")
+      .in("id", [snapshot.id, snapshot.scores.designIdSnapshotId]);
+    const destination = linked?.find(row => row.id === snapshot.id);
+    const source = linked?.find(row => row.id === snapshot.scores.designIdSnapshotId);
+    // A saved foreign source reference must never read another participant’s result.
+    if (source && destination?.participant_id && destination.participant_id === source.participant_id) {
+      const payload = nativeDesignPdRecoveryPayload(snapshot, source);
+      if (payload) return { ...snapshot, scores: { ...snapshot.scores,
+        reportPayload: payload, reportPayloadFormat: "template-v1" } };
+    }
+  }
+  if (snapshot.assessment_type !== "fruit_360") return snapshot;
   const { data: session } = await admin.from("fruitlife_360_sessions")
     .select("id").eq("report_snapshot_id", snapshot.id).maybeSingle();
   if (!session) return snapshot;

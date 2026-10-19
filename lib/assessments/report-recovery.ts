@@ -256,5 +256,7 @@ export function recoveryReport(snapshot: AssessmentSnapshotSummary): {
 export function hasFullReport(snapshot: AssessmentSnapshotSummary) {
   const pdf = object(snapshot.scores.pdfMonkey);
   return Boolean(object(snapshot.scores.reportArtifact).path || object(pdf.storage).path ||
-    pdf.documentId || pdf.providerUrl || recoveryReport(snapshot));
+    pdf.documentId || pdf.providerUrl || recoveryReport(snapshot) ||
+    (snapshot.assessment_type === "designpd" && snapshot.scores.channel === "native_app" &&
+      snapshot.scores.designIdSnapshotId && Object.keys(object(snapshot.scores.axisScores)).length === 3));
 }

@@ -24,6 +24,7 @@ let snapshot = {
     reportPayload: { Name: "Test", Architect_Pct: "22%" },
   },
 };
+let linkedRows = [];
 let archived = 0,
   generated = 0,
   fail = false;
@@ -34,6 +35,7 @@ const q = {
   eq() {
     return this;
   },
+  in() { return Promise.resolve({data:linkedRows}); },
   single: async () => ({
     data: {
       scores: snapshot.scores,
@@ -225,6 +227,18 @@ const get = (query = "", id = snapshot.id) =>
   assert(text.includes('Score: <strong>17</strong>'));
   assert(text.includes('Score: <strong>Not retained</strong>'));
   assert.equal(r.headers.get("referrer-policy"), "same-origin");
+  const source={id:'linked-source',participant_id:'same-owner',assessment_type:'designid',created_at:snapshot.created_at,scores:{scores:{Architect_Pts:22,Artisan_Pts:21,Shepherd_Pts:41,Steward_Pts:16,Total_Pts:100,Band_Architect:'Steady',Band_Artisan:'Steady',Band_Shepherd:'Abundant',Band_Steward:'Steady'},summary:{Primary:'Shepherd',Secondary:'Architect'}}};
+  const result=load('lib/designpd/engine.ts').scoreDesignPd(source);
+  snapshot={...snapshot,scores:{channel:'native_app',designIdSnapshotId:source.id,axisScores:result.axisScores,axisTendencies:result.axisTendencies,movement:result.movement}};
+  linkedRows=[{...snapshot,participant_id:'same-owner'},source];
+  r=await get('?review=new&key=valid');
+  assert((await r.text()).includes('Preparing your PDF'),'Exact owned source recovers native PD');
+  linkedRows=[{...snapshot,participant_id:'different-owner'},source];
+  r=await get('?review=new&key=valid');
+  assert((await r.text()).includes('Snapshot only'),'Foreign participant source cannot recover native PD');
+  linkedRows=[{...snapshot,participant_id:'same-owner'}];
+  r=await get('?review=new&key=valid');
+  assert((await r.text()).includes('Snapshot only'),'Missing source cannot recover native PD');
   snapshot = { ...snapshot, assessment_type: "fruit_360", scores: {} };
   r = await get("?review=new&key=valid&view=snapshot");
   assert((await r.text()).includes("Download PDF"));

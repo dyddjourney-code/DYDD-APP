@@ -27,6 +27,7 @@ import {
   withReviewQuery,
 } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { designIdLessonPresentation } from "@/lib/courses/designid-lesson-presentation";
 import { DesignIdCourseNavigator } from "@/components/designid-course-navigator";
 import { PageHelp } from "@/components/page-help";
 
@@ -83,11 +84,13 @@ export default async function DesignIdCoursePage({
     slug: module.slug,
     title: module.title,
     lessons: module.lessons.map((lesson) => {
-      const lessonBody = lessonsBySlug.get(lesson.slug)?.bodyHtml ?? "";
+      const presentation = designIdLessonPresentation[lesson.slug];
+      const lessonBody = presentation?.bodyHtml ?? lessonsBySlug.get(lesson.slug)?.bodyHtml ?? "";
       const walkthrough = buildWalkthroughPrompt(lesson.title, studentContext);
 
       return {
         bodyHtml: personalizeDesignIdHtml(lessonBody, studentContext),
+        images: presentation?.images ?? [],
         focus: lesson.focus,
         personalizedNotes: walkthrough.items,
         slug: lesson.slug,

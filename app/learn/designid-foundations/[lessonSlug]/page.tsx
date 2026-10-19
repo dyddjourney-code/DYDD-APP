@@ -24,6 +24,8 @@ import {
   withReviewQuery,
 } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { designIdLessonPresentation } from "@/lib/courses/designid-lesson-presentation";
+import { getDesignIdReflectionPrompts } from "@/lib/courses/designid-reflection-prompts";
 import { CompanionAudioCard } from "@/components/companion-audio-card";
 
 type LessonPageProps = {
@@ -84,7 +86,7 @@ export default async function DesignIdLessonPage({
       };
   const walkthrough = buildWalkthroughPrompt(lesson.title, studentContext);
   const personalizedBody = personalizeDesignIdHtml(
-    lesson.bodyHtml,
+    designIdLessonPresentation[lesson.slug]?.bodyHtml ?? lesson.bodyHtml,
     studentContext,
   );
 
@@ -121,50 +123,34 @@ export default async function DesignIdLessonPage({
             </ul>
           </section>
 
-          <section className="lesson-callout" aria-label="Reflection prompt">
-            <p className="section-label">Reflection prompt</p>
-            <h2>Where do you see this in real life?</h2>
-            <p>
-              Notice one place this design language gives you clarity about
-              your relationships, work, ministry, or next faithful step.
-            </p>
-          </section>
-
           <CompanionAudioCard
             moment={"companionMoment" in lesson ? lesson.companionMoment : undefined}
           />
 
-          <section
-            className="personal-walkthrough"
-            aria-label="Personalized DesignID walkthrough"
-          >
-            <p className="section-label">Personal walkthrough</p>
-            <h2>{walkthrough.heading}</h2>
-            <ul>
-              {walkthrough.items.map((item) => (
-                <li key={item}>{item}</li>
+          <div className="assessment-lesson-content designid-lesson-content with-image">
+            <section className="lesson-source readable-lesson-body" aria-label="Complete lesson body">
+              <h2 className="lesson-body-subheading">{lesson.title}</h2>
+              <div className="designid-semantic-body" dangerouslySetInnerHTML={{ __html: personalizedBody }} />
+            </section>
+            <aside className="designid-lesson-artwork" aria-label="Lesson artwork">
+              {designIdLessonPresentation[lesson.slug]?.images.map(image => (
+                <figure className="assessment-lesson-image contain" key={image.src}>
+                  <a href={image.src} target="_blank" rel="noopener noreferrer" aria-label={`Open ${image.alt} full size`}>
+                      <img src={image.src} alt={image.alt} loading="lazy" />
+                    </a>
+                    <figcaption><span>Open image full size</span></figcaption>
+                </figure>
               ))}
-            </ul>
-            {studentContext.isSignedIn ? (
-              <Link
-                className="button secondary"
-                href={withReviewQuery("/hq", reviewParams)}
-              >
-                Review my HQ records
-              </Link>
-            ) : (
-              <Link className="button secondary" href="/login">
-                Sign in to personalize
-              </Link>
-            )}
-          </section>
-
-          <section className="lesson-source" aria-label="Complete lesson body">
-            <p className="section-label">Complete course lesson</p>
-            <div
-              className="source-lesson-body designid-source-lesson-body"
-              dangerouslySetInnerHTML={{ __html: personalizedBody }}
-            />
+            </aside>
+          </div>
+          <details className="designid-report-connection">
+            <summary>Connect this lesson to your report</summary>
+            <ul>{walkthrough.items.map(item => <li key={item}>{item}</li>)}</ul>
+          </details>
+          <section className="designid-lesson-reflections" aria-label="Lesson reflections">
+            <p className="section-label">Reflect and apply</p>
+            {getDesignIdReflectionPrompts(lesson.slug).map(question => <p key={question.id}>{question.prompt}</p>)}
+            <Link className="button secondary" href={withReviewQuery(`/courses/designid-foundations`, reviewParams) + (withReviewQuery("", reviewParams).includes("?") ? "&" : "?") + `lesson=${lesson.slug}#designid-course-player`}>Open this lesson to save your reflections</Link>
           </section>
 
           <footer className="lesson-pagination" aria-label="Lesson pagination">

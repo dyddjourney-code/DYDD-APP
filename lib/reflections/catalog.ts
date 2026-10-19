@@ -111,7 +111,7 @@ export const reflectionExperiences: ReflectionExperience[] = [
           lessonTitle: l.title,
           moduleTitle: m.title,
           prompt: prompt.prompt,
-          version: questionVersion,
+          version: "2026-10-19",
         })),
       ),
     ),

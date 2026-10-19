@@ -11,6 +11,7 @@ import { CompanionAudioCard } from "@/components/companion-audio-card";
 
 type DesignIdLessonView = {
   bodyHtml: string;
+  images: readonly { src: string; alt: string }[];
   companionMoment?: CompanionMoment;
   focus: readonly string[];
   personalizedNotes: readonly string[];
@@ -228,7 +229,7 @@ export function DesignIdCourseNavigator({
               Module {active.moduleIndex + 1} / Lesson {active.lessonIndex + 1}
             </p>
             <h2>{active.lesson.title}</h2>
-            <p>{active.lesson.summary}</p>
+
           </div>
           <div className="journey-active-meta">
             <span>DesignID</span>
@@ -241,10 +242,7 @@ export function DesignIdCourseNavigator({
           aria-label="Current module"
         >
           <span>{active.module.title}</span>
-          <strong>
-            DesignID gives the learner language for how God has shaped them to
-            reflect His image, love others, and walk with purpose.
-          </strong>
+
         </section>
 
         <div className="journey-active-body has-care">
@@ -258,32 +256,35 @@ export function DesignIdCourseNavigator({
 
             <CompanionAudioCard moment={active.lesson.companionMoment} />
 
-            <section className="personal-walkthrough designid-personal-walkthrough">
-              <p className="section-label">Personal walkthrough</p>
-              <h3>Connect this lesson to your report.</h3>
-              <ul>
-                {active.lesson.personalizedNotes.map((item) => (
-                  <li key={item}>{item}</li>
+            <div className="assessment-lesson-content designid-lesson-content with-image">
+              <section className="lesson-source readable-lesson-body designid-clean-lesson" aria-label="Lesson body">
+                <h3 className="lesson-body-subheading">{active.lesson.title}</h3>
+                <div className="designid-semantic-body" dangerouslySetInnerHTML={{ __html: active.lesson.bodyHtml }} />
+              </section>
+              <aside className="designid-lesson-artwork" aria-label="Lesson artwork">
+                {active.lesson.images.map((image) => (
+                  <figure className="assessment-lesson-image contain" key={image.src}>
+                    <a href={image.src} target="_blank" rel="noopener noreferrer" aria-label={`Open ${image.alt} full size`}>
+                      <img src={image.src} alt={image.alt} loading="lazy" />
+                    </a>
+                    <figcaption><span>Open image full size</span></figcaption>
+                  </figure>
                 ))}
-              </ul>
-            </section>
-
-            <section
-              className="lesson-source designid-lesson-source"
-              aria-label="Lesson body"
-            >
-              <p className="section-label">{active.lesson.title}</p>
-              <div
-                className="source-lesson-body designid-source-lesson-body"
-                dangerouslySetInnerHTML={{ __html: active.lesson.bodyHtml }}
-              />
-            </section>
+              </aside>
+            </div>
+            <details className="designid-report-connection">
+              <summary>Connect this lesson to your report</summary>
+              <ul>{active.lesson.personalizedNotes.map((item) => <li key={item}>{item}</li>)}</ul>
+            </details>
+            <section className="designid-lesson-reflections" aria-label="Lesson reflections">
+              <p className="section-label">Reflect and apply</p>
 
             {reflectionQuestions
               .filter((q) => q.lessonSlug === active.lesson.slug)
               .map((q) => (
                 <ReflectionAnswer key={q.id} questionId={q.id} />
               ))}
+            </section>
           </section>
         </div>
 

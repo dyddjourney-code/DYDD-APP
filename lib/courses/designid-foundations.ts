@@ -24,7 +24,7 @@ export const designIdCourse = {
   source:
     "DesignIDCourseCode---40bef919-638d-4f9b-8a2a-0fb09597b63a.txt",
   description:
-    "A first app-native pass of the GHL DesignID course, organized for the DYDD school journey.",
+    "Understand your DesignID results, recognize how God has shaped you, and begin putting your design into practice.",
   modules: [
     {
       slug: "welcome",

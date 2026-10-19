@@ -1,0 +1,23 @@
+DesignID course presentation — October 19, 2026
+
+Scope: all 13 DesignID Foundations lessons; course player and standalone routes.
+
+The legacy source HTML remains unchanged in lib/courses/designid-source-html.ts.
+Generate the semantic presentation with python3 scripts/normalize-designid-lessons.py.
+The generator verifies each retained teaching paragraph/list item against the output.
+Only legacy Practice/Reflection panels, transition panels, section-number labels,
+and duplicate Reflect/Notice/Respond blocks are removed from the teaching display.
+The specific source reflection questions remain in the normal saved-answer section.
+Five generic fallback prompts are now lesson-specific. Existing question IDs stay
+unchanged and new DesignID questions are versioned October 19. Historical rounds
+continue to show their original questions and retain all saved responses.
+
+Layout: focus, existing companion audio, lesson-titled teaching with selected
+artwork on the right, expandable report connection, then normal reflection fields.
+Charts/matrices/frameworks are retained alongside selected primary artwork;
+images open full size. On smaller screens the artwork stacks below teaching.
+No instrument wording, scoring, assessment/report generation, course order,
+lesson IDs, customer answers, or other courses were changed.
+
+Separate next work: John-led Journey lesson rewrite together with a deeper,
+book-informed, unit-by-unit Field Guide review. Not implemented by this change.

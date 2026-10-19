@@ -9,6 +9,13 @@ const clean = (text: string) =>
     .replace(/\s+/g, " ")
     .trim();
 /** Source headings are deliberately narrow: teaching questions are not automatically workbook fields. */
+const lessonPrompts: Record<string, string> = {
+  "what-is-in-the-report": "Which part of your DesignID report would you most like to understand, and what would that clarity help you do?",
+  "your-design-profile": "Where do you recognize your primary and secondary reflections in a recent experience?",
+  "reflection-capacity": "Where does your current capacity invite you to set a boundary, receive help, or make room for rest?",
+  "exploring-the-dydd-ecosystem": "Which part of the DYDD journey connects most closely with what God is inviting you to explore next?",
+  "call-to-arms": "What is one faithful step you will take with what God has revealed through your DesignID?",
+};
 export function getDesignIdReflectionPrompts(lessonSlug: string) {
   const source =
     designIdLessonBodies[lessonSlug as keyof typeof designIdLessonBodies] ?? "";
@@ -24,5 +31,5 @@ export function getDesignIdReflectionPrompts(lessonSlug: string) {
     }));
   return prompts.length
     ? prompts
-    : [{ id: lessonSlug, prompt: "Where do you see this in real life?" }];
+    : [{ id: lessonSlug, prompt: lessonPrompts[lessonSlug] ?? "What is one practical step this lesson invites you to take?" }];
 }

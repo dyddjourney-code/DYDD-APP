@@ -29,6 +29,9 @@ const navItems = [
     icon: "group",
     label: "Camp Circles",
     href: "/camp-circle",
+    children: [
+      { icon: "group", label: "My Circles", href: "/camp-circle/my-circles" },
+    ],
   },
   {
     icon: "compass",

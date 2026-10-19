@@ -20501,3 +20501,10 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 @media (max-width: 640px) {
   .fireside-overview-grid { grid-template-columns: 1fr; gap: 28px; }
 }
+
+/* Keep personal circle navigation visibly nested on phones, too. */
+.mobile-app-nav nav a.mobile-app-subnav-item {
+  margin-left: 14px;
+  padding-left: 20px;
+  border-left: 3px solid var(--green-dark);
+}

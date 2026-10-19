@@ -10,6 +10,7 @@ const mobileNavItems = [
   { href: "/waypoints", label: "Waypoints" },
   { href: "/live", label: "Live" },
   { href: "/camp-circle", label: "Camp Circles" },
+  { href: "/camp-circle/my-circles", label: "My Circles", child: true },
   { href: "/command-center", label: "Command Center" },
   { href: "/command-center/design-map", label: "Design Map" },
   { href: "/command-center/expedition", label: "Expedition" },
@@ -24,7 +25,7 @@ export function AppMobileNav() {
       </summary>
       <nav aria-label="Mobile app navigation">
         {mobileNavItems.map((item) => (
-          <ReviewAwareLink href={item.href} key={item.href}>
+          <ReviewAwareLink className={"child" in item && item.child ? "mobile-app-subnav-item" : undefined} href={item.href} key={item.href}>
             {item.label}
           </ReviewAwareLink>
         ))}

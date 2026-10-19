@@ -1,19 +1,8 @@
-import { redirect } from "next/navigation";
 import { ReviewAwareLink } from "@/components/review-aware-link";
-import { FiresideLegacyLinks } from "@/components/fireside-legacy-links";
-import { reviewQuery, type ReviewSearchParams } from "@/lib/review/heather";
 
-type FiresidePageProps = { searchParams?: Promise<ReviewSearchParams & { lane?: string }> };
-
-export default async function FiresidePage({ searchParams }: FiresidePageProps) {
-  const params = await searchParams;
-  if (params?.lane === "fruitlife") {
-    const review = reviewQuery(params).replace(/^\?/, "");
-    redirect(`/waypoints?lane=fruitlife${review ? `&${review}` : ""}`);
-  }
+export default function FiresidePage() {
   return (
     <main className="journey-shell hq-standalone-page fireside-page">
-      <FiresideLegacyLinks />
       <header className="standalone-hero fireside-page-hero">
         <div>
           <p className="eyebrow">Fireside</p>

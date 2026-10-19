@@ -20456,7 +20456,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 @media(max-width:600px) { .fieldkit-report-actions { justify-content:flex-start; width:100%; } .fieldkit-report-actions .button { white-space:normal; } }
 
 /* Assessment identity marks stay opposite their title in the cream panel. */
-.fieldkit-collection-heading { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:12px; }
-.fieldkit-collection-heading h3 { min-width:0; margin:0; }
-.fieldkit-collection-icon { display:block; flex-shrink:0; width:40px; height:40px; object-fit:contain; }
-@media(max-width:640px) { .fieldkit-collection-icon { width:34px; height:34px; } }
+.fieldkit-collection-heading, .trail-placard-heading { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:12px; }
+.fieldkit-collection-heading h3, .trail-placard-heading h3 { min-width:0; margin:0; }
+.fieldkit-collection-icon, .trail-placard-icon { display:block; flex-shrink:0; width:40px; height:40px; object-fit:contain; }
+@media(max-width:640px) { .fieldkit-collection-icon, .trail-placard-icon { width:34px; height:34px; } }

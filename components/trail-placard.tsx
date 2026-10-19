@@ -10,6 +10,7 @@ type Props = {
   bestFor: string;
   permit: string;
   main?: boolean;
+  assessmentIcon?: string;
   details: ReactNode;
   children: ReactNode;
 };
@@ -24,6 +25,7 @@ export function TrailPlacard({
   bestFor,
   permit,
   main,
+  assessmentIcon,
   details,
   children,
 }: Props) {
@@ -34,7 +36,18 @@ export function TrailPlacard({
         <span>{number}</span>
       </div>
       <div className="trail-placard-body">
-        <h3>{name}</h3>
+        {assessmentIcon ? (
+          <div className="trail-placard-heading">
+            <h3>{name}</h3>
+            <img
+              className="trail-placard-icon"
+              src={assessmentIcon}
+              alt=""
+              width={40}
+              height={40}
+            />
+          </div>
+        ) : <h3>{name}</h3>}
         <p className="trail-description">{description}</p>
         <div className={`trail-rating trail-rating-${rating.toLowerCase()}`}>
           <small>Trail commitment</small>

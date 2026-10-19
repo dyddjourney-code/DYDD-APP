@@ -243,6 +243,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                 <TrailPlacard
                   number={String(trailDefinitions.indexOf(trail) + 2).padStart(2, "0")}
                   name={trail.name}
+                  assessmentIcon={`/brand/tools/badge-icons/${trail.id}-icon.png`}
                   description={trail.description}
                   details={<TrailDetails trailId={trail.id} />}
                   rating={trail.rating}

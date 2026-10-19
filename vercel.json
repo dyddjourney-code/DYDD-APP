@@ -22,5 +22,11 @@
       "path": "/api/cron/waypoints-release",
       "schedule": "0 12,13 * * 5"
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "master": true,
+      "sandbox": false
+    }
+  }
 }

@@ -20681,3 +20681,36 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .circle-setup .circle-form-error { color: #993e2b; font-weight: 650; overflow-wrap: anywhere; }
 .circle-setup .circle-form-notice { color: var(--green-dark); font-size: .9rem; }
+
+/* Saved Circles use one compact workspace; sample rosters never alter membership. */
+.circle-dashboard-heading { margin-bottom: 16px; gap: 14px; flex-wrap: wrap; }
+.circle-current-heading, .circle-card-topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.circle-current-heading h3 { margin: 0; }
+.circle-current-heading > span, .circle-card-topline { font-size: .76rem; color: var(--muted); }
+.circle-saved-list > div.circle-current-heading { display: flex; margin: 0; }
+.circle-saved-item { padding: 16px; gap: 8px; transition: border-color .18s, background .18s; }
+.circle-saved-item:hover { border-color: var(--green-dark); }
+.circle-saved-item:focus-visible { outline: 3px solid var(--brass-soft); outline-offset: 3px; }
+.circle-saved-item > strong { font-size: 1.1rem; }
+.circle-card-topline b { border-radius: 999px; padding: 3px 8px; background: #e6eddf; color: var(--green-dark); font-size: .7rem; }
+.circle-saved-item .circle-card-next { display: grid; gap: 3px; padding-top: 8px; border-top: 1px solid #d4dfce; }
+.circle-archive-drawer { margin-top: 14px; font-size: .84rem; }
+.circle-archive-drawer summary, .circle-roster-details summary { cursor: pointer; font-weight: 700; padding: 8px 0; }
+.circle-archive-drawer .circle-saved-item { margin-top: 8px; width: 100%; }
+.circle-selected-summary { display: flex; flex-wrap: wrap; gap: 6px 20px; padding: 12px 0; border-bottom: 1px solid #d4dfce; margin-bottom: 12px; font-size: .82rem; color: var(--muted); }
+.circle-selected-summary strong { color: var(--green-dark); }
+.circle-sample-toggle { display: flex; gap: 8px; align-items: center; font-size: .82rem; margin: 16px 0; }
+.circle-sample-toggle input { width: 17px; height: 17px; accent-color: var(--green-dark); }
+.circle-compact-progress { margin: 18px 0; }
+.circle-compact-progress .circle-racer { grid-template-columns: minmax(115px, .7fr) minmax(0, 2fr) 112px; padding: 8px 0; border-bottom: 1px solid #e1e7da; }
+.circle-compact-progress .circle-racer > div { height: 18px; margin-left: 10px; }
+.circle-compact-progress .circle-racer i { width: 17px; height: 17px; box-shadow: none; }
+.circle-compact-progress .circle-racer small { font-size: .73rem; text-align: right; }
+.circle-roster-details { margin-top: 12px; font-size: .82rem; }
+@media (max-width: 560px) {
+ .circle-compact-progress .circle-racer { grid-template-columns: minmax(85px, .8fr) minmax(0, 1fr); gap: 6px 12px; }
+ .circle-compact-progress .circle-racer small { grid-column: 2; text-align: left; }
+ .circle-dashboard-heading .button { width: 100%; }
+ .circle-selected-summary { display: grid; gap: 5px; }
+ .circle-card-topline { flex-wrap: wrap; }
+}

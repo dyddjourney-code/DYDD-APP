@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   blankCirclePlan,
@@ -16,7 +16,7 @@ import {
 import { CircleScheduleEditor } from "./circle-schedule-editor";
 import { facilitatorPlaybookStages } from "@/lib/journey/facilitator-playbook";
 const stages = ["Circle details", "Meeting schedule", "People", "Review"];
-export function CircleSetupPlanner() {
+export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (plan: CirclePlan, tab: string, samples: boolean) => ReactNode }) {
   const params = useSearchParams();
   const query = new URLSearchParams();
   for (const key of ["review", "key"])
@@ -29,7 +29,9 @@ export function CircleSetupPlanner() {
     [selected, setSelected] = useState<SavedCircle | null>(null);
   const [newId, setNewId] = useState(""),
     [workspace, setWorkspace] = useState(false),
-    [tab, setTab] = useState("Schedule");
+    [tab, setTab] = useState("Progress");
+  const [showSetup, setShowSetup] = useState(true);
+  const [samples, setSamples] = useState(true);
   const [participant, setParticipant] = useState({ name: "", email: "" });
   const [notice, setNotice] = useState(""),
     [error, setError] = useState(""),
@@ -51,13 +53,15 @@ export function CircleSetupPlanner() {
         else {
           setSignedIn(true);
           setCircles(data.circles);
+          setShowSetup(data.circles.length === 0);
           const requested = new URL(window.location.href).searchParams.get(
             "circle",
           );
           const circle = data.circles.find(
-            (c: SavedCircle) => c.id === requested,
+            (c: SavedCircle) => requested ? c.id === requested : c.status === "active",
           );
           if (circle) {
+            setShowSetup(true);
             setSelected(circle);
             setPlan(normalizePlan(circle.plan));
             setWorkspace(circle.status !== "draft");
@@ -67,7 +71,8 @@ export function CircleSetupPlanner() {
         const saved = localStorage.getItem(storageKey);
         if (
           saved &&
-          !new URL(window.location.href).searchParams.get("circle")
+          !new URL(window.location.href).searchParams.get("circle") &&
+          !data.circles?.some((c: SavedCircle) => c.status === "active")
         ) {
           try {
             const p = normalizePlan(JSON.parse(saved));
@@ -101,6 +106,9 @@ export function CircleSetupPlanner() {
     window.history.replaceState(null, "", url);
   }
   function open(circle: SavedCircle) {
+    setShowSetup(true);
+    setTab("Progress");
+    setSamples(true);
     rememberCircle(circle.id);
     setSelected(circle);
     setPlan(normalizePlan(circle.plan));
@@ -111,6 +119,8 @@ export function CircleSetupPlanner() {
     setNotice("");
   }
   function startNew() {
+    setShowSetup(true);
+    setSamples(true);
     rememberCircle();
     setSelected(null);
     setNewId(crypto.randomUUID());
@@ -187,7 +197,8 @@ export function CircleSetupPlanner() {
         ...current.filter((c) => c.id !== circle.id),
       ]);
       setPlan(normalizePlan(circle.plan));
-      setWorkspace(circle.status === "active");
+      setWorkspace(circle.status !== "draft");
+      if (!workspace) setTab("Progress");
       try {
         localStorage.removeItem(storageKey);
       } catch {}
@@ -339,52 +350,16 @@ export function CircleSetupPlanner() {
       className="camp-circle-panel circle-setup"
       aria-labelledby="start-circle-title"
     >
-      <div className="card-heading wide-heading">
-        <h2 id="start-circle-title">
-          {workspace
-            ? plan.name
-            : selected
-              ? "Edit your Circle"
-              : "Start a Circle"}
-        </h2>
-        {(workspace || selected) && (
-          <button
-            className="button secondary"
-            type="button"
-            onClick={startNew}
-            disabled={busy}
-          >
-            Start another Circle
-          </button>
-        )}
-      </div>
+      <div className="card-heading wide-heading circle-dashboard-heading"><h2 id="start-circle-title">{showSetup ? (workspace ? plan.name : selected ? "Edit your Circle" : "Start a Circle") : "Your Circles"}</h2><button className="button secondary" type="button" onClick={startNew} disabled={busy}>Start another Circle</button></div>
       {!loaded ? (
         <p role="status">Loading your Circles…</p>
       ) : (
         <>
-          {circles.length > 0 && (
-            <details className="circle-saved-list" open>
-              <summary>Your saved Circles ({circles.length})</summary>
-              <div>
-                {circles.map((c) => (
-                  <button
-                    type="button"
-                    className={`circle-saved-item${selected?.id === c.id ? " selected" : ""}`}
-                    key={c.id}
-                    onClick={() => open(c)}
-                    disabled={busy}
-                  >
-                    <strong>{c.plan.name}</strong>
-                    <span>
-                      {c.status === "draft"
-                        ? "Draft · continue setup"
-                        : "Open workspace"}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </details>
-          )}
+          {circles.length > 0 && <section className="circle-saved-list" aria-label="Your saved Circles"><div className="circle-current-heading"><h3>Current Circles</h3><span>{circles.filter(c => c.status !== "archived").length} Circles</span></div><div>{circles.filter(c => c.status !== "archived").map(c => {
+            const ds = scheduledDates(c.plan), today = new Date().toLocaleDateString("en-CA", { timeZone: c.plan.timezone }), upcoming = ds.find(d => d >= today), number = upcoming ? ds.indexOf(upcoming) + 1 : 0;
+            const modules = number ? [...new Set(meetingLessons(c.plan, number).map(l => l.moduleTitle))].join(" · ") : "";
+            return <button type="button" className={`circle-saved-item${selected?.id === c.id && showSetup ? " selected" : ""}`} key={c.id} onClick={() => open(c)} disabled={busy} aria-pressed={selected?.id === c.id && showSetup}><span className="circle-card-topline">{c.plan.format}<b>{c.status === "draft" ? "Draft" : ds[0] && ds[0] > today ? "Not started" : "Scheduled"}</b></span><strong>{c.plan.name}</strong><span>{c.plan.expectedPeople} planned · {c.plan.participants.length + 1} listed</span><span>Start: {ds[0] || "Not set"} · Finish: {ds.at(-1) || "Not set"}</span><span className="circle-card-next"><b>Next meeting</b>{upcoming ? `${upcoming}${c.plan.time ? ` · ${c.plan.time}` : ""} · ${c.plan.timezone}` : "No upcoming meeting scheduled"}</span>{modules && <small>{modules}</small>}<span>{c.status === "draft" ? "Continue setup" : "Progress · Data · Schedule · People · Field Guide"}</span></button>;
+          })}</div><details className="circle-archive-drawer"><summary>Archived Circles ({circles.filter(c => c.status === "archived").length})</summary>{circles.filter(c => c.status === "archived").map(c => <button className="circle-saved-item" type="button" key={c.id} onClick={() => open(c)}><strong>{c.plan.name}</strong><span>{c.plan.expectedPeople} planned · View archive</span></button>)}{!circles.some(c => c.status === "archived") && <p>No archived Circles.</p>}</details></section>}
           {!signedIn && (
             <p className="circle-form-error">
               <a
@@ -397,7 +372,7 @@ export function CircleSetupPlanner() {
               to save or create your Circle.
             </p>
           )}
-          {workspace ? (
+          {showSetup && (workspace ? (
             <>
               <div className="circle-workspace-meta">
                 <span>{plan.format}</span>
@@ -410,7 +385,7 @@ export function CircleSetupPlanner() {
                 className="circle-action-row"
                 aria-label="Circle workspace sections"
               >
-                {["Schedule", "People", "Field Guide"].map((t) => (
+                {["Progress", "Data", "Schedule", "People", "Field Guide"].map((t) => (
                   <button
                     type="button"
                     className={`button${t === tab ? "" : " secondary"}`}
@@ -422,6 +397,8 @@ export function CircleSetupPlanner() {
                   </button>
                 ))}
               </div>
+              {(tab === "Progress" || tab === "Data") && <><label className="circle-sample-toggle"><input type="checkbox" checked={samples} onChange={e => setSamples(e.target.checked)} />Preview with sample people ({plan.expectedPeople})</label>{renderDashboard?.(plan, tab, samples)}</>}
+              <div className="circle-selected-summary"><strong>{plan.name}</strong><span>{Number(plan.expectedPeople)} planned · {plan.participants.length + 1} listed</span><span>Next: {dates.find(d => d >= new Date().toLocaleDateString("en-CA", {timeZone: plan.timezone})) || "No upcoming meeting"}{plan.time ? ` · ${plan.time}` : ""} · {plan.timezone}</span></div>
               {tab === "Schedule" && (
                 <>
                   <p className="circle-fine-print">
@@ -490,7 +467,7 @@ export function CircleSetupPlanner() {
                   type="button"
                   className="button"
                   onClick={() => save("active")}
-                  disabled={busy}
+                  disabled={busy || selected?.status === "archived"}
                 >
                   {busy ? "Saving…" : "Save changes"}
                 </button>
@@ -502,7 +479,7 @@ export function CircleSetupPlanner() {
                     setStep(0);
                     setNotice("");
                   }}
-                  disabled={busy}
+                  disabled={busy || selected?.status === "archived"}
                 >
                   Edit Circle details
                 </button>
@@ -862,6 +839,7 @@ export function CircleSetupPlanner() {
                 </div>
               </div>
             </>
+          )
           )}
           {error && (
             <p className="circle-form-error" role="alert">

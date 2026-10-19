@@ -209,45 +209,6 @@ export default async function DesignIdCoursePage({
         </ReflectionCourseShell>
       </div>
 
-      <details className="journey-advanced-planning designid-source-accordion">
-        <summary>
-          <span>Source lesson links</span>
-          <strong>Open the original standalone lesson routes if needed</strong>
-        </summary>
-        <section
-          className="module-stack"
-          aria-label="DesignID standalone lesson links"
-        >
-          {designIdCourse.modules.map((module, moduleIndex) => (
-            <article key={module.slug} className="module-panel">
-              <div>
-                <p className="section-label">
-                  Module {String(moduleIndex + 1).padStart(2, "0")}
-                </p>
-                <h2>{module.title}</h2>
-              </div>
-              <ol>
-                {module.lessons.map((lesson, index) => (
-                  <li key={lesson.slug}>
-                    <span>{String(index + 1).padStart(2, "0")}</span>
-                    <div>
-                      <Link
-                        href={withReviewQuery(
-                          `/learn/designid-foundations/${lesson.slug}`,
-                          reviewParams,
-                        )}
-                      >
-                        {lesson.title}
-                      </Link>
-                      <p>{lesson.summary}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </article>
-          ))}
-        </section>
-      </details>
     </main>
   );
 }

@@ -20651,3 +20651,33 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
  .circle-type-options label input { top: 16px; }
  .circle-setup .circle-plan-review dl { grid-template-columns: minmax(0,1fr); }
 }
+
+/* Account-saved Circle organizer and curriculum-aware scheduling. */
+.circle-saved-list, .circle-breaks, .circle-lesson-allocation, .circle-meeting-list > details, .circle-guide-by-meeting > details { border: 1px solid #d4dfce; border-radius: 12px; padding: 12px 16px; margin: 12px 0; min-width: 0; }
+.circle-setup summary { cursor: pointer; overflow-wrap: anywhere; }
+.circle-saved-list > div { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px,100%),1fr)); gap: 10px; margin-top: 12px; }
+.circle-saved-item { display: grid; text-align: left; gap: 4px; padding: 12px; border: 1px solid #d4dfce; border-radius: 10px; background: #f4f7f0; color: #233f2c; cursor: pointer; overflow-wrap: anywhere; min-width: 0; }
+.circle-saved-item.selected { border-color: #456438; background: #e8efdf; }
+.circle-saved-item span { font-size: .82rem; }
+.circle-schedule-editor { display: grid; gap: 12px; min-width: 0; }
+.circle-schedule-editor > .button { justify-self: start; }
+.circle-finish-summary { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 14px 16px; background: #233f2c; color: #fff; border-radius: 10px; }
+.circle-meeting-list > details { margin: 0 0 8px; background: #fafbf7; }
+.circle-meeting-list summary, .circle-guide-by-meeting summary { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: baseline; }
+.circle-meeting-list summary small, .circle-guide-by-meeting summary small { flex-basis: 100%; }
+.circle-meeting-list ol { padding-left: 22px; }
+.circle-lesson-allocation > details { border-top: 1px solid #d4dfce; padding: 12px 0; }
+.circle-lesson-allocation > details > label { margin-top: 10px; }
+.circle-lesson-row { display: grid !important; grid-template-columns: minmax(0,1fr) 150px; align-items: center; gap: 12px; padding: 8px 0; border-top: 1px solid #e2e8dc; }
+.circle-lesson-row small { display: block; font-size: .78rem; font-weight: 400; }
+.circle-workspace-meta { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+.circle-workspace-meta span { border-radius: 8px; padding: 6px 10px; background: #eaf0e1; font-size: .85rem; }
+.circle-setup .card-heading { display: flex; justify-content: space-between; flex-wrap: wrap; align-items: center; gap: 10px; }
+.circle-setup button:disabled { opacity: .55; cursor: not-allowed; }
+.circle-guide-by-meeting li, .circle-meeting-list li { overflow-wrap: anywhere; }
+.circle-setup select, .circle-setup input { min-width: 0; max-width: 100%; }
+.circle-setup dd, .circle-planned-roster li > div { overflow-wrap: anywhere; min-width: 0; }
+@media (max-width: 560px) { .circle-lesson-row { grid-template-columns: minmax(0,1fr); gap: 6px; } .circle-saved-list, .circle-breaks, .circle-lesson-allocation, .circle-meeting-list > details, .circle-guide-by-meeting > details { padding: 10px; } }
+
+.circle-setup .circle-form-error { color: #993e2b; font-weight: 650; overflow-wrap: anywhere; }
+.circle-setup .circle-form-notice { color: var(--green-dark); font-size: .9rem; }

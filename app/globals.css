@@ -20581,3 +20581,52 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .camp-circle-main .group-designid-bar-row, .camp-circle-main .group-horizontal-bar-row { grid-template-columns: minmax(0, 1fr); }
   .camp-circle-main .group-designid-bar-row b, .camp-circle-main .group-horizontal-bar-row strong, .camp-circle-main .group-horizontal-bar-row em { text-align: left; }
 }
+
+/* Camp Circles: a welcoming, compact overview; personal workspaces stay unchanged. */
+.camp-circle-overview { gap: 30px; }
+.camp-circle-overview .camp-circle-hero { margin-bottom: 0; }
+.camp-circle-overview > section { min-width: 0; }
+.camp-circle-overview > section h2 { margin: 0; max-width: none; color: var(--green-dark); font-size: clamp(1.45rem, 2.3vw, 2.2rem); line-height: 1.2; }
+.camp-circle-overview > section p { margin: 0; max-width: none; color: #465347; line-height: 1.65; }
+.circle-overview-intro, .circle-overview-section { display: grid; gap: 14px; }
+.camp-circle-overview .circle-overview-intro { padding: 0; }
+.camp-circle-overview .circle-journey-note { padding: 12px 16px; border-left: 3px solid #627c4e; background: #e9efdf; border-radius: 0 8px 8px 0; font-size: .92rem; }
+.circle-overview-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.circle-tile { padding: clamp(18px, 2vw, 24px); border: 1px solid rgba(42, 70, 41, .14); border-radius: 12px; }
+.camp-circle-overview .circle-tile h3, .circle-support-grid h3, .circle-privacy-details h3 { margin: 0 0 10px; color: #294a32; font-size: 1.15rem; line-height: 1.3; }
+.camp-circle-overview .circle-tile p { font-size: .96rem; }
+.circle-tile-sage { background: #e5eddf; }
+.circle-tile-sand { background: #f2e8d2; }
+.circle-tile-moss { background: #d8e5d7; }
+.circle-format-cards .circle-tile { border-top: 4px solid #627c4e; }
+.circle-support-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+.circle-field-guide { display: grid; gap: 12px; align-content: start; background: #304d38; border-radius: 12px; padding: 24px; }
+.camp-circle-overview .circle-field-guide h3 { color: #fff8e8; margin: 0; font-size: 1.3rem; }
+.camp-circle-overview .circle-field-guide p { color: #edf2e8; }
+.circle-support-details { display: grid; gap: 18px; align-content: center; padding: 8px 0 8px 8px; }
+.circle-simple-steps { list-style: none; margin: 0; padding: 0; }
+.circle-simple-steps .circle-tile { background: #f2f3e9; }
+.circle-simple-steps span { display: inline-grid; place-items: center; width: 34px; height: 34px; margin-bottom: 14px; border-radius: 50%; background: #35573d; color: #fff9e9; font-size: .8rem; font-weight: 750; }
+.circle-overview-privacy { display: grid; gap: 14px; padding: 24px; border: 1px solid #c9d8c1; border-radius: 12px; background: #eaf0e4; }
+.circle-privacy-details { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); gap: 24px; border-top: 1px solid #c9d8c1; padding-top: 16px; }
+.circle-privacy-details h3 { font-size: 1rem; margin-bottom: 5px; }
+.circle-privacy-details p { font-size: .93rem; }
+.circle-overview-closing { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px 24px; align-items: center; padding: clamp(22px, 3vw, 34px); border-radius: 14px; background: #243f2b; border: 1px solid #38563d; }
+.camp-circle-overview .circle-overview-closing h2 { color: #fff6df; margin-bottom: 10px; }
+.camp-circle-overview .circle-overview-closing p { color: #e0ead9; }
+.circle-overview-closing .button { background: #e4c789; color: #233d2a; border: 1px solid #e4c789; }
+.circle-overview-closing .button.secondary { background: transparent; color: #fff6df; border: 1px solid #9eaf95; }
+.circle-overview-closing .button:hover { filter: brightness(1.08); }
+.circle-overview-closing .button:focus-visible { outline: 3px solid #fff6df; outline-offset: 4px; }
+.circle-overview-closing .button:active { transform: translateY(1px); }
+.camp-circle-overview .circle-invitation-note { grid-column: 1 / -1; font-size: .85rem; }
+@media (max-width: 1000px) {
+  .circle-overview-closing { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 700px) {
+  .camp-circle-overview { gap: 24px; }
+  .circle-overview-cards, .circle-support-grid, .circle-privacy-details { grid-template-columns: minmax(0, 1fr); }
+  .circle-support-details { padding: 0; }
+  .circle-overview-privacy, .circle-field-guide { padding: 20px; }
+  .circle-privacy-details { gap: 14px; }
+}

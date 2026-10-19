@@ -3,14 +3,14 @@ import { ReviewAwareLink } from "@/components/review-aware-link";
 export const dynamic = "force-dynamic";
 
 const formats = [
-  { label: "Couple", note: "Two people. One intentional journey.", detail: "Make room to understand how God has designed each of you. Explore your differences with grace, name your strengths, and practice living out your purpose together." },
-  { label: "Small group", note: "Discovery grows through conversation.", detail: "Gather friends, a home group, or a ministry team. Bring your personal discoveries into thoughtful conversation, encourage one another, and take practical next steps." },
-  { label: "Class", note: "A shared path, guided by a leader.", detail: "Bring a church or larger group through the journey with a facilitator, a common schedule, and space for each participant to discover and apply their own design." },
+  { label: "Couple", detail: "Make time to listen, understand your differences, and see how God has designed each of you. Let what you discover draw you closer as you live out your purpose together." },
+  { label: "Small group", detail: "Gather friends, a home group, or a ministry team. Share what you are learning, pray for one another, and make room for honest conversations about faith and everyday life." },
+  { label: "Class", detail: "Walk through the journey with your church or a larger group. A facilitator helps guide the conversations while each person has room to discover and apply their own design." },
 ];
 
 export default function CampCirclePage() {
   return (
-    <main className="journey-shell hq-standalone-page camp-circle-page">
+    <main className="journey-shell hq-standalone-page camp-circle-page camp-circle-overview">
       <header className="standalone-hero camp-circle-hero">
         <div>
           <p className="eyebrow">Together</p>
@@ -24,46 +24,51 @@ export default function CampCirclePage() {
         </div>
       </header>
 
-      <section className="camp-circle-panel circle-story-intro" aria-labelledby="circle-invitation">
-        <div className="card-heading wide-heading">
-          <p className="section-label">The main journey. Together.</p>
-          <h2 id="circle-invitation">Discover your design.<br />Walk it out together.</h2>
-          <p>God designed you with purpose. Sometimes the people walking beside you help you see it more clearly. A Camp Circle brings a couple, small group, or class through the full Discover Your Divine Design journey—with room for honest discovery, meaningful conversation, and encouragement to live what you are learning.</p>
-        </div>
-        <div className="privacy-callout"><strong>Built for the full DYDD journey</strong><p>Camp Circles are for the main Discover Your Divine Design journey, not the standalone short courses. Every participant keeps their own account and active paid journey subscription.</p></div>
-        <ReviewAwareLink className="button" href="/camp-circle/my-circles#start-circle">Start a Circle</ReviewAwareLink>
+      <section className="circle-overview-intro" aria-labelledby="circle-invitation">
+        <h2 id="circle-invitation">Discover your design. Walk it out together.</h2>
+        <p>God designed you with purpose. Sometimes the people walking beside you help you see it more clearly. A Camp Circle brings a couple, small group, or class through the full Discover Your Divine Design journey—with room for honest discovery, meaningful conversation, and encouragement to live what you are learning.</p>
+        <p className="circle-journey-note">Camp Circles are for the <strong>main DYDD journey</strong>, not the standalone short courses.</p>
       </section>
 
-      <section className="camp-circle-panel" aria-labelledby="circle-why">
-        <div className="card-heading wide-heading"><p className="section-label">Why journey together?</p><h2 id="circle-why">See more. Encourage one another. Put discovery into practice.</h2></div>
-        <div className="circle-value-list">
-          <article><h3>Recognize what you might overlook</h3><p>Other people can notice the strengths, gifts, and patterns you take for granted. Their perspective can deepen your understanding without defining you.</p></article>
-          <article><h3>Keep taking the next step</h3><p>A shared rhythm creates space to reflect, come back to the journey, and encourage each other when life gets busy.</p></article>
-          <article><h3>Bring purpose into everyday life</h3><p>Move from “That sounds like me” to “How will I live differently?” Apply your discoveries in faith, marriage, relationships, service, and leadership.</p></article>
+      <section className="circle-overview-section" aria-labelledby="circle-why">
+        <h2 id="circle-why">Do life together.</h2>
+        <div className="circle-overview-cards">
+          <article className="circle-tile circle-tile-sage"><h3>Recognize what you might overlook</h3><p>Sometimes a friend sees a gift in you before you see it yourself. Listen to one another, share what you notice, and leave room for God to deepen your understanding.</p></article>
+          <article className="circle-tile circle-tile-sand"><h3>Keep taking the next step</h3><p>Life gets busy. Having people beside you gives you a reason to return, a place to ask questions, and someone to encourage you when the next step feels hard.</p></article>
+          <article className="circle-tile circle-tile-moss"><h3>Bring purpose into everyday life</h3><p>Talk about what your discoveries mean at home, at work, in your church, and in your relationships. Help one another put what you are learning into practice.</p></article>
         </div>
       </section>
 
-      <section className="camp-circle-panel circle-options-panel" aria-labelledby="circle-formats">
-        <div className="card-heading wide-heading"><p className="section-label">Choose your Circle</p><h2 id="circle-formats">Different gatherings. The same purposeful journey.</h2><p>You do not need a large class to begin. Choose the gathering that fits the people you want to walk with.</p></div>
-        <div className="circle-format-list">{formats.map((format) => <article key={format.label}><div><span className="section-label">{format.note}</span><h3>{format.label}</h3></div><p>{format.detail}</p></article>)}</div>
+      <section className="circle-overview-section" aria-labelledby="circle-formats">
+        <h2 id="circle-formats">Start a purposeful journey.</h2>
+        <p>Choose the kind of Circle that fits the people you want to walk with.</p>
+        <div className="circle-overview-cards circle-format-cards">{formats.map((format, i) => <article className={`circle-tile circle-tile-${["sage", "sand", "moss"][i]}`} key={format.label}><h3>{format.label}</h3><p>{format.detail}</p></article>)}</div>
       </section>
 
-      <section className="camp-circle-panel camp-circle-two-column" aria-labelledby="circle-receives">
-        <div className="card-heading wide-heading"><p className="section-label">Support for the journey</p><h2 id="circle-receives">Personal discovery.<br />Shared direction.</h2><p>Each person follows the main journey in their own account. Your Circle gives that personal work a shared setting for conversation and application.</p><p>The leader’s <strong>Field Guide</strong> brings the Circle Host Playbook alongside the journey: preparation checklists, session guidance, discussion prompts, assessment timing, and reusable email ideas. This is a group-leadership resource, not a standalone short-course extra.</p></div>
-        <div className="circle-value-list"><article><h3>Your own journey</h3><p>Personal lessons, assessments, reflections, and progress stay connected to your own account.</p></article><article><h3>A rhythm you choose</h3><p>Plan a start date and weekly, every-other-week, or custom meetings. Keep meeting dates distinct from the sections you aim to complete.</p></article><article><h3>A prepared leader</h3><p>Use the Field Guide to prepare meaningful conversations and help participants put their discoveries into practice.</p></article></div>
+      <section className="circle-overview-section" aria-labelledby="circle-receives">
+        <h2 id="circle-receives">You don’t have to lead on your own.</h2>
+        <div className="circle-support-grid">
+          <article className="circle-field-guide"><h3>A Field Guide for your Circle</h3><p>You don’t need to have every answer. Circle leaders receive the <strong>Field Guide</strong>, with help preparing for each gathering, questions to open up conversation, and guidance for walking through the journey together.</p><p>It is there to help you care for your people—not give you one more thing to figure out.</p></article>
+          <div className="circle-support-details"><article><h3>Room for each person</h3><p>Everyone works through their lessons, assessments, and reflections in their own account, then brings what they choose to share into the conversation.</p></article><article><h3>A pace that fits your lives</h3><p>Choose a start date and a meeting rhythm that works for your people—weekly, every other week, or a schedule of your own.</p></article></div>
+        </div>
       </section>
 
-      <section className="camp-circle-panel" aria-labelledby="circle-how">
-        <div className="card-heading wide-heading"><p className="section-label">The Circle experience</p><h2 id="circle-how">Start with your people. Build a shared rhythm.</h2><p>We are preparing the Circle setup and invitation tools around this simple process. You can plan your Circle in My Circles now; invitation delivery, subscription checks, and scheduled emails are the next stage.</p></div>
-        <ol className="circle-steps"><li><strong>Name your Circle</strong><p>Choose Couple, Small Group, or Class.</p></li><li><strong>Invite your people</strong><p>Add each participant’s name and email. Their personal invitation provides the link to your Circle; Circles are not open for public joining.</p></li><li><strong>Accept and activate access</strong><p>Already using the app with an active paid journey subscription? Accept the invitation to enter. New participants create an account and subscribe first. Existing users without an active journey subscription activate it before entering.</p></li><li><strong>Begin together</strong><p>Set your start date, meeting time, time zone, and pace. Prepare with the Field Guide and keep encouraging one another along the way.</p></li></ol>
+      <section className="circle-overview-section" aria-labelledby="circle-how">
+        <h2 id="circle-how">A journey together.</h2>
+        <ol className="circle-overview-cards circle-simple-steps">
+          <li className="circle-tile"><span aria-hidden="true">01</span><h3>Name your Circle</h3><p>Give it a name and choose Couple, Small Group, or Class.</p></li>
+          <li className="circle-tile"><span aria-hidden="true">02</span><h3>Invite your people</h3><p>Choose who you want to walk with. Each person joins through their own invitation.</p></li>
+          <li className="circle-tile"><span aria-hidden="true">03</span><h3>Begin together</h3><p>Choose when to start, make time to gather, and take the journey one step at a time.</p></li>
+        </ol>
       </section>
 
-      <section className="camp-circle-panel camp-circle-two-column" aria-labelledby="circle-privacy">
-        <div className="card-heading wide-heading"><p className="section-label">Personal does not mean alone</p><h2 id="circle-privacy">A shared journey doesn’t mean sharing everything.</h2><p>Your private reflections belong to you. Circle participation is not permission to publish your workbook answers or assessment details. Shared progress should help a leader support the group—not turn personal discovery into comparison.</p></div>
-        <div className="privacy-callout"><strong>Invitation-only. Individual accounts. Paid participation.</strong><p>There is no public Circle directory or open “join” path. Invitations connect people; they do not replace an account or bypass the journey subscription. Everyone—including the organizer—needs active paid journey access.</p><p>Chat is not part of the current Circle experience. Automated welcome, before-session, and follow-up emails will be added with scheduling controls in a later stage.</p></div>
+      <section className="circle-overview-privacy" aria-labelledby="circle-privacy">
+        <h2 id="circle-privacy">A shared journey doesn’t mean sharing everything.</h2>
+        <p>Your private reflections stay yours. Share what you are ready to share; being in a Circle does not open your workbook answers or assessment details to everyone else.</p>
+        <div className="circle-privacy-details"><article><h3>Invitation-only</h3><p>Your Circle is for the people you invite. There is no public directory or open joining.</p></article><article><h3>Individual accounts</h3><p>Each person, including the leader, needs their own account and active paid journey subscription. New participants create an account and subscribe before entering.</p></article></div>
       </section>
 
-      <section className="camp-circle-panel circle-closing" aria-labelledby="circle-next"><p className="section-label">Your next step</p><h2 id="circle-next">Who will you walk with?</h2><p>Plan a Circle for the people already on your heart, or return to the Circles you are part of.</p><div className="circle-action-row"><ReviewAwareLink className="button" href="/camp-circle/my-circles#start-circle">Start a Circle</ReviewAwareLink><ReviewAwareLink className="button secondary" href="/camp-circle/my-circles">My Circles</ReviewAwareLink></div><p className="circle-fine-print">Received an invitation? Open the link in your invitation email. There is no separate public sign-up for a Circle.</p></section>
+      <section className="circle-overview-closing" aria-labelledby="circle-next"><div><h2 id="circle-next">Who will you walk with?</h2><p>Plan a Circle for the people already on your heart, or return to the Circles you are part of.</p></div><div className="circle-action-row"><ReviewAwareLink className="button" href="/camp-circle/my-circles#start-circle">Start a Circle</ReviewAwareLink><ReviewAwareLink className="button secondary" href="/camp-circle/my-circles">My Circles</ReviewAwareLink></div><p className="circle-invitation-note">Already invited? Follow the link in your invitation email.</p></section>
     </main>
   );
 }

@@ -17717,9 +17717,19 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
     font-size: 0.76rem;
   }
 
+  .fireside-board-heading {
+    flex-wrap: wrap;
+  }
+
+  .fireside-board-heading > span {
+    white-space: normal;
+    max-width: 100%;
+  }
+
   .live-title span {
     top: 230px;
-    max-width: 13ch;
+    max-width: min(13ch, calc(100vw - 100px));
+    overflow-wrap: anywhere;
     font-size: 1.2rem;
   }
 

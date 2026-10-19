@@ -23,15 +23,6 @@ const questionVersion = "2026-10-17";
 const journeyQuestions: ReflectionQuestion[] = [];
 for (const [moduleIndex, module] of dyddMainCourseOutline.entries()) {
   for (const [unitIndex, unit] of module.units.entries()) {
-    if (unit.reflectionPrompt)
-      journeyQuestions.push({
-        id: `${unit.slug}-lesson-reflection`,
-        lessonSlug: unit.slug,
-        lessonTitle: unit.title,
-        moduleTitle: module.title,
-        prompt: unit.reflectionPrompt,
-        version: questionVersion,
-      });
     const experience = getWorkbookExperience({
       module,
       moduleIndex,

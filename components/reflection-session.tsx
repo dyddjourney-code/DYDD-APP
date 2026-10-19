@@ -337,7 +337,12 @@ export function ReflectionSession({
     round,
     loading,
     error,
-    questions: round?.questions ?? questions,
+    // Retired Journey lesson prompts stay in saved history, not the active workbook.
+    questions: (round?.questions ?? questions).filter(
+      (question) =>
+        courseSlug !== "discover-your-divine-design" ||
+        !question.id.endsWith("-lesson-reflection"),
+    ),
     drafts,
     setDraft: (id, value) => {
       setDrafts((d) => ({ ...d, [id]: value }));

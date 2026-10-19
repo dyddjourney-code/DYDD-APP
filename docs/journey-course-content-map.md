@@ -28,6 +28,31 @@ Current UX direction:
 - Preserve stable unit slugs/types so Camp Circle can later show group progress
   without exposing private workbook responses.
 
+## Lesson Layout and Reflection Policy — October 19, 2026
+
+John requested the Journey follow the Spiritual Gifts, FruitLife360, and DesignPD
+lesson layout, not the DesignID layout:
+
+1. Keep the module/section/lesson sidebar and stable lesson identifiers.
+2. Show lesson-focus blocks first, then existing companion audio where available.
+3. Title the teaching section with the lesson title, not “Teaching block.”
+4. Place the illustration to the right of the teaching on desktop and below it
+   on smaller screens. Reuse existing lesson media; otherwise use chapter artwork.
+5. Keep book/workbook page references and the attached CARE workbook experience.
+
+Do not add a generic reflection or practice response to every Journey lesson.
+Only the established CARE/workbook/Pathfinder experience should ask for responses.
+The 70 generic `-lesson-reflection` prompts have been retired from the current
+question catalog and hidden from the interactive Journey workbook even when an
+older saved round still contains them. Existing saved answers and historical
+round snapshots are not deleted or rewritten; saved-history exports retain them.
+CARE question IDs, source wording, Pathfinder/niche support, and answer history
+remain unchanged.
+
+The teaching copy is still placeholder material awaiting John's lesson-by-lesson
+rewrite. This layout pass does not finalize the curriculum, CARE content, module
+pacing, or Field Guide. Other assessment courses are unchanged.
+
 ## Master Outline Translation
 
 Source file reviewed: `DYDD_Course_Content---1a6c7c74-a82a-48b3-a28d-dd2e4d63dc2f.xlsx`.

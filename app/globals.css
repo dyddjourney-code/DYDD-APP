@@ -14734,6 +14734,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .journey-top-racetrack {
   display: block;
+  overflow: hidden;
   margin-top: -1px;
   margin-bottom: 18px;
   padding: 14px 16px 16px;
@@ -14746,6 +14747,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .journey-top-racetrack ol {
+  overflow-x: auto;
   grid-template-columns: repeat(8, minmax(92px, 1fr));
   gap: 8px;
   padding-top: 8px;
@@ -14841,6 +14843,29 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   gap: clamp(18px, 3vw, 28px);
   align-items: start;
   margin-bottom: 28px;
+}
+
+.dydd-journey-class {
+  padding: clamp(18px, 2vw, 32px);
+}
+
+.dydd-journey-walkthrough {
+  grid-template-columns: minmax(220px, 0.32fr) minmax(0, 1fr);
+  gap: 18px;
+}
+
+.dydd-journey-walkthrough .journey-active-lesson {
+  padding: clamp(18px, 2vw, 26px);
+}
+
+.dydd-journey-walkthrough .assessment-lesson-content.with-image {
+  grid-template-columns: minmax(0, 0.64fr) minmax(150px, 0.36fr);
+}
+
+@media (max-width: 980px) {
+  .dydd-journey-walkthrough .assessment-lesson-content.with-image {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .journey-course-index,
@@ -15245,6 +15270,10 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   font-size: 0.9rem;
   font-weight: 850;
   line-height: 1.36;
+}
+
+.dydd-journey-walkthrough .journey-active-focus > span:only-child {
+  grid-column: 1 / -1;
 }
 
 .assessment-lesson-content {

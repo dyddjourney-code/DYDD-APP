@@ -184,6 +184,17 @@ export function JourneyCourseNavigator({
     Boolean(workbookExperience),
   );
   const showNicheBuilder = active ? isNicheBuilderUnit(active) : false;
+  const chapterArtwork = [
+    "identity", "expertise", "story", "desire", "gifts", "niche",
+  ].includes(active.module.slug)
+    ? `/brand/badges/${active.module.slug}-badge.png`
+    : "/brand/dydd-journey-road-waymarkers.png";
+  const lessonImage = active.unit.media?.image ?? chapterArtwork;
+  const lessonImageLabel =
+    active.unit.media?.label ?? `${active.module.title} Journey illustration`;
+  const lessonFocus = active.unit.focus?.length
+    ? active.unit.focus
+    : [lessonMainIdea];
 
   if (!active) {
     return null;
@@ -227,7 +238,7 @@ export function JourneyCourseNavigator({
 
   return (
     <section
-      className="journey-course-walkthrough"
+      className="journey-course-walkthrough dydd-journey-walkthrough"
       aria-label="Guided course walkthrough"
     >
       <aside className="journey-course-index">
@@ -362,75 +373,38 @@ export function JourneyCourseNavigator({
           <strong>{active.module.summary}</strong>
         </section>
 
-        <div
-          className={
-            workbookExperience
-              ? "journey-active-body has-care"
-              : "journey-active-body"
-          }
-        >
-          {active.unit.media ? (
-            <figure
-              className={
-                active.unit.media.type === "video"
-                  ? "journey-active-media video"
-                  : "journey-active-media"
-              }
-            >
-              {active.unit.media.image ? (
-                <img
-                  src={active.unit.media.image}
-                  alt={active.unit.media.label}
-                />
-              ) : null}
-              {active.unit.media.type === "video" ? (
-                <span aria-hidden="true" className="journey-video-play">
-                  <svg fill="none" viewBox="0 0 42 42">
-                    <circle
-                      cx="21"
-                      cy="21"
-                      r="20"
-                      fill="#fffaf0"
-                      stroke="#243f27"
-                      strokeWidth="2"
-                    />
-                    <path
-                      d="m18 14 11 7-11 7V14Z"
-                      fill="#476b42"
-                      stroke="#243f27"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                    />
-                  </svg>
-                </span>
-              ) : null}
-              <figcaption>{active.unit.media.label}</figcaption>
-            </figure>
-          ) : null}
+        <div className="journey-active-body has-care">
+          <section className="journey-teaching-card assessment-teaching-card">
+            <p className="section-label">Lesson focus</p>
+            <div className="journey-active-focus" aria-label="Lesson focus">
+              {lessonFocus.map((item) => (
+                <span key={item}>{item}</span>
+              ))}
+            </div>
 
-          <section className="journey-teaching-card">
-            <p className="section-label">Teaching block</p>
-            {active.unit.focus?.length ? (
-              <div className="journey-active-focus" aria-label="Lesson focus">
-                {active.unit.focus.map((item) => (
-                  <span key={item}>{item}</span>
-                ))}
-              </div>
-            ) : null}
-            {active.unit.teachingBlocks.map((block) => (
-              <p key={block}>
-                {cleanTeachingBlock(block, Boolean(workbookExperience))}
-              </p>
-            ))}
-            {active.unit.practice ? (
+            <CompanionAudioCard moment={active.unit.companionMoment} />
+
+            <div className="assessment-lesson-content with-image">
               <section
-                className="journey-active-practice"
-                aria-label="Lesson practice"
+                className="lesson-source readable-lesson-body"
+                aria-label="Lesson body"
               >
-                <span>{active.unit.practice.title}</span>
-                <strong>{active.unit.practice.prompt}</strong>
+                <h3 className="lesson-body-subheading">{active.unit.title}</h3>
+                {active.unit.teachingBlocks.map((block) => (
+                  <p key={block}>
+                    {cleanTeachingBlock(block, Boolean(workbookExperience))}
+                  </p>
+                ))}
               </section>
-            ) : null}
+              <figure
+                className={`assessment-lesson-image${active.unit.media?.type === "video" ? " contain" : ""}`}
+              >
+                <img src={lessonImage} alt={lessonImageLabel} loading="lazy" />
+                {active.unit.media ? (
+                  <figcaption>{active.unit.media.label}</figcaption>
+                ) : null}
+              </figure>
+            </div>
           </section>
 
           {active.unit.type === "assessment-link" ||
@@ -467,13 +441,6 @@ export function JourneyCourseNavigator({
                 Open Connected Trail
               </ReviewAwareLink>
             </aside>
-          ) : null}
-
-          <CompanionAudioCard moment={active.unit.companionMoment} />
-          {active.unit.reflectionPrompt ? (
-            <ReflectionAnswer
-              questionId={`${active.unit.slug}-lesson-reflection`}
-            />
           ) : null}
 
           {workbookExperience ? (

@@ -27,7 +27,7 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
   const params = await searchParams;
 
   return (
-    <main className="journey-shell">
+    <main className="journey-shell dydd-journey-class">
       <header className="journey-hero">
         <div>
           <p className="eyebrow">Full DYDD journey</p>

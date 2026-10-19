@@ -34,7 +34,6 @@ export type DyddCourseUnit = {
     prompt: string;
     title: string;
   };
-  reflectionPrompt: string;
   teachingBlocks: string[];
 };
 export type DyddCourseModule = {
@@ -61,7 +60,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "4-6 min",
         lessonMainIdea: "Welcome the learner into Welcome to Discover Your Divine Design and make the next part of the journey feel clear, doable, and personal.",
         companionMoment: dyddJourneyCompanionMoments.welcome,
-        reflectionPrompt: "What do you need to notice or practice after Welcome to Discover Your Divine Design?",
         teachingBlocks: [
           "This lesson introduces Welcome to Discover Your Divine Design as part of the Welcome & Orientation movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -76,7 +74,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         typeLabel: "Orientation",
         duration: "4-6 min",
         lessonMainIdea: "Welcome the learner into Course Outline & Objectives and make the next part of the journey feel clear, doable, and personal.",
-        reflectionPrompt: "What do you need to notice or practice after Course Outline & Objectives?",
         teachingBlocks: [
           "This lesson introduces Course Outline & Objectives as part of the Welcome & Orientation movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -105,7 +102,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
           title: "Pace decision",
           prompt: "Choose whether you are walking this weekly, in a short intensive, with a partner, or inside a group. That pace will shape reminders and chapter expectations later.",
         },
-        reflectionPrompt: "What rhythm will help you walk this journey with steadiness instead of rushing it?",
         teachingBlocks: [
           "Every chapter should feel familiar without becoming flat. The learner begins with a short teaching section, moves into reflection, practices the CARE rhythm, and carries Pathfinder language forward when a chapter is building toward niche.",
           "The goal is not to finish a checklist. The goal is to slow down enough to recognize what God is revealing and then take the next faithful step with it.",
@@ -122,7 +118,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         typeLabel: "Orientation",
         duration: "4-6 min",
         lessonMainIdea: "Welcome the learner into Course Resources and make the next part of the journey feel clear, doable, and personal.",
-        reflectionPrompt: "What do you need to notice or practice after Course Resources?",
         teachingBlocks: [
           "This lesson introduces Course Resources as part of the Welcome & Orientation movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -145,7 +140,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         typeLabel: "Orientation",
         duration: "4-6 min",
         lessonMainIdea: "Welcome the learner into What is DYDD? and make the next part of the journey feel clear, doable, and personal.",
-        reflectionPrompt: "What do you need to notice or practice after What is DYDD?",
         teachingBlocks: [
           "This lesson introduces What is DYDD? as part of the What is DYDD? movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -160,7 +154,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         typeLabel: "Orientation",
         duration: "4-6 min",
         lessonMainIdea: "Welcome the learner into Grace and make the next part of the journey feel clear, doable, and personal.",
-        reflectionPrompt: "What do you need to notice or practice after Grace?",
         teachingBlocks: [
           "This lesson introduces Grace as part of the What is DYDD? movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -175,7 +168,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         typeLabel: "Orientation",
         duration: "4-6 min",
         lessonMainIdea: "Welcome the learner into On Purpose For Purpose and make the next part of the journey feel clear, doable, and personal.",
-        reflectionPrompt: "What do you need to notice or practice after On Purpose For Purpose?",
         teachingBlocks: [
           "This lesson introduces On Purpose For Purpose as part of the What is DYDD? movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -190,7 +182,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         typeLabel: "Orientation",
         duration: "4-6 min",
         lessonMainIdea: "Welcome the learner into D.E.S.I.G.N and make the next part of the journey feel clear, doable, and personal.",
-        reflectionPrompt: "What do you need to notice or practice after D.E.S.I.G.N?",
         teachingBlocks: [
           "This lesson introduces D.E.S.I.G.N as part of the What is DYDD? movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -207,7 +198,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach How to C.A.R.E with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         companionMoment: dyddJourneyCompanionMoments.care,
-        reflectionPrompt: "What do you need to notice or practice after How to C.A.R.E?",
         teachingBlocks: [
           "This lesson introduces How to C.A.R.E as part of the What is DYDD? movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -222,7 +212,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         typeLabel: "Assessment step",
         duration: "8-12 min",
         lessonMainIdea: "Help the learner complete or reconnect the assessment, then bring the result back into the Journey record.",
-        reflectionPrompt: "What did this assessment help you see, confirm, or question?",
         teachingBlocks: [
           "This lesson should briefly explain why the assessment matters, send the learner to complete or review it, and then confirm whether the result is connected to their account.",
           "The deeper teaching can stay in the assessment course. The Journey only needs the bridge, the reflection, and the return path.",
@@ -237,7 +226,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         typeLabel: "Orientation",
         duration: "4-6 min",
         lessonMainIdea: "Welcome the learner into Pathfinder (Niche) and make the next part of the journey feel clear, doable, and personal.",
-        reflectionPrompt: "What do you need to notice or practice after Pathfinder (Niche)?",
         teachingBlocks: [
           "This lesson introduces Pathfinder (Niche) as part of the What is DYDD? movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -261,7 +249,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Purpose with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Ephesians 2:10",
-        reflectionPrompt: "What do you need to notice or practice after Purpose?",
         teachingBlocks: [
           "This lesson introduces Purpose as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -277,7 +264,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Handiwork with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Ephesians 2:10",
-        reflectionPrompt: "What do you need to notice or practice after Handiwork?",
         teachingBlocks: [
           "This lesson introduces Handiwork as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -297,7 +283,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         lessonMainIdea: "Teach Who Vs. Whose with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Ephesians 2:10",
         companionMoment: dyddJourneyCompanionMoments.identity,
-        reflectionPrompt: "Who are you and whose are you?",
         teachingBlocks: [
           "This lesson introduces Who Vs. Whose as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -313,7 +298,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Good Works with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Ephesians 2:10",
-        reflectionPrompt: "What do you need to notice or practice after Good Works?",
         teachingBlocks: [
           "This lesson introduces Good Works as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -329,7 +313,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Niche with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Ephesians 2:10",
-        reflectionPrompt: "What do you need to notice or practice after Niche?",
         teachingBlocks: [
           "This lesson introduces Niche as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -349,7 +332,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "10-15 min",
         lessonMainIdea: "Use DesignID as a mirror inside Identity, helping the learner connect assessment language to faithful love and service.",
         anchorScripture: "Ephesians 2:10",
-        reflectionPrompt: "Unpack your reflections",
         teachingBlocks: [
           "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
           "Placed inside Identity, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course.",
@@ -368,7 +350,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Identity among believers with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Ephesians 2:10",
-        reflectionPrompt: "Your Identity Among Believers",
         teachingBlocks: [
           "This lesson introduces Identity among believers as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -386,7 +367,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "10-15 min",
         lessonMainIdea: "Use DesignID as a mirror inside Identity, helping the learner connect assessment language to faithful love and service.",
         anchorScripture: "Ephesians 2:10",
-        reflectionPrompt: "The Design Reflections and Love",
         teachingBlocks: [
           "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
           "Placed inside Identity, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course.",
@@ -405,7 +385,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Love your neighbor as yourself with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Ephesians 2:10",
-        reflectionPrompt: "Love Yourself, Love Others",
         teachingBlocks: [
           "This lesson introduces Love your neighbor as yourself as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -423,7 +402,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "10-15 min",
         lessonMainIdea: "Use DesignID as a mirror inside Identity, helping the learner connect assessment language to faithful love and service.",
         anchorScripture: "Ephesians 2:10",
-        reflectionPrompt: "Reflections and One Anothering",
         teachingBlocks: [
           "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
           "Placed inside Identity, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course.",
@@ -442,7 +420,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "12-20 min",
         lessonMainIdea: "Shape the Identity chapter into one useful line for the learner's developing niche declaration.",
         anchorScripture: "Ephesians 2:10",
-        reflectionPrompt: "I believe God created me...",
         teachingBlocks: [
           "This Pathfinder moment turns the Identity chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
           "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration.",
@@ -470,7 +447,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         lessonMainIdea: "Teach The Journey to Expertise with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Colossians 3:23",
         companionMoment: dyddJourneyCompanionMoments.expertise,
-        reflectionPrompt: "The slow and faithful journey to Expertise",
         teachingBlocks: [
           "This lesson introduces The Journey to Expertise as part of the Expertise movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -489,7 +465,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Talent with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Colossians 3:23",
-        reflectionPrompt: "What are your talents?",
         teachingBlocks: [
           "This lesson introduces Talent as part of the Expertise movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -508,7 +483,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Competence with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Colossians 3:23",
-        reflectionPrompt: "Where are you growing in Competency?",
         teachingBlocks: [
           "This lesson introduces Competence as part of the Expertise movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -527,7 +501,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Expertise with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Colossians 3:23",
-        reflectionPrompt: "What is expertise?",
         teachingBlocks: [
           "This lesson introduces Expertise as part of the Expertise movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -546,7 +519,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Being Vs. Doing with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Colossians 3:23",
-        reflectionPrompt: "Being Before Doing",
         teachingBlocks: [
           "This lesson introduces Being Vs. Doing as part of the Expertise movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -562,7 +534,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Applied Capacity with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Colossians 3:23",
-        reflectionPrompt: "What do you need to notice or practice after Applied Capacity?",
         teachingBlocks: [
           "This lesson introduces Applied Capacity as part of the Expertise movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -581,7 +552,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "10-15 min",
         lessonMainIdea: "Use DesignID as a mirror inside Expertise, helping the learner connect assessment language to faithful love and service.",
         anchorScripture: "Colossians 3:23",
-        reflectionPrompt: "The Reflections: Talent - Competency - Expertise",
         teachingBlocks: [
           "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
           "Placed inside Expertise, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course.",
@@ -600,7 +570,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "12-20 min",
         lessonMainIdea: "Shape the Expertise chapter into one useful line for the learner's developing niche declaration.",
         anchorScripture: "Colossians 3:23",
-        reflectionPrompt: "Which will enable me to use my...",
         teachingBlocks: [
           "This Pathfinder moment turns the Expertise chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
           "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration.",
@@ -628,7 +597,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         lessonMainIdea: "Teach Why story matters with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Romans 8:28",
         companionMoment: dyddJourneyCompanionMoments.story,
-        reflectionPrompt: "The moments that shape us",
         teachingBlocks: [
           "This lesson introduces Why story matters as part of the Story movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -644,7 +612,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach God never wastes a hurt with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Romans 8:28",
-        reflectionPrompt: "What do you need to notice or practice after God never wastes a hurt?",
         teachingBlocks: [
           "This lesson introduces God never wastes a hurt as part of the Story movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -661,7 +628,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach What is a testimony? with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Romans 8:28",
-        reflectionPrompt: "What do you need to notice or practice after What is a testimony??",
         teachingBlocks: [
           "This lesson introduces What is a testimony? as part of the Story movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -680,7 +646,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Paul's Testimony with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Romans 8:28",
-        reflectionPrompt: "Sharing your faith story",
         teachingBlocks: [
           "This lesson introduces Paul's Testimony as part of the Story movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -699,7 +664,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Family & Culture with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Romans 8:28",
-        reflectionPrompt: "Your Family & Culture story",
         teachingBlocks: [
           "This lesson introduces Family & Culture as part of the Story movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -718,7 +682,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Your Work Matters! with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Romans 8:28",
-        reflectionPrompt: "Called where you are",
         teachingBlocks: [
           "This lesson introduces Your Work Matters! as part of the Story movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -737,7 +700,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Your Church Story with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Romans 8:28",
-        reflectionPrompt: "Church Vs. The Body of Christ",
         teachingBlocks: [
           "This lesson introduces Your Church Story as part of the Story movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -755,7 +717,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "10-15 min",
         lessonMainIdea: "Use DesignID as a mirror inside Story, helping the learner connect assessment language to faithful love and service.",
         anchorScripture: "Romans 8:28",
-        reflectionPrompt: "Divine reflections within your stories",
         teachingBlocks: [
           "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
           "Placed inside Story, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course.",
@@ -772,7 +733,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "10-15 min",
         lessonMainIdea: "Use DesignID as a mirror inside Story, helping the learner connect assessment language to faithful love and service.",
         anchorScripture: "Romans 8:28",
-        reflectionPrompt: "What do you need to notice or practice after What is Learned Helplessness??",
         teachingBlocks: [
           "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
           "Placed inside Story, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course.",
@@ -788,7 +748,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "10-15 min",
         lessonMainIdea: "Use DesignID as a mirror inside Story, helping the learner connect assessment language to faithful love and service.",
         anchorScripture: "Romans 8:28",
-        reflectionPrompt: "What do you need to notice or practice after Shadows: Anxiety & Fear?",
         teachingBlocks: [
           "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
           "Placed inside Story, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course.",
@@ -804,7 +763,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "10-15 min",
         lessonMainIdea: "Use DesignID as a mirror inside Story, helping the learner connect assessment language to faithful love and service.",
         anchorScripture: "Romans 8:28",
-        reflectionPrompt: "What do you need to notice or practice after From fear to alignment?",
         teachingBlocks: [
           "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
           "Placed inside Story, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course.",
@@ -823,7 +781,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "12-20 min",
         lessonMainIdea: "Shape the Story chapter into one useful line for the learner's developing niche declaration.",
         anchorScripture: "Romans 8:28",
-        reflectionPrompt: "Coming From...",
         teachingBlocks: [
           "This Pathfinder moment turns the Story chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
           "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration.",
@@ -851,7 +808,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         lessonMainIdea: "Use DesignID as a mirror inside Desire, helping the learner connect assessment language to faithful love and service.",
         anchorScripture: "Psalm 37:4",
         companionMoment: dyddJourneyCompanionMoments.desire,
-        reflectionPrompt: "The reflections and the desires of the heart",
         teachingBlocks: [
           "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
           "Placed inside Desire, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course.",
@@ -867,7 +823,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Aligning Desire with Purpose with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Psalm 37:4",
-        reflectionPrompt: "What do you need to notice or practice after Aligning Desire with Purpose?",
         teachingBlocks: [
           "This lesson introduces Aligning Desire with Purpose as part of the Desire movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -886,7 +841,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Will Vs. Ways with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Psalm 37:4",
-        reflectionPrompt: "Desire aligned with God's Design",
         teachingBlocks: [
           "This lesson introduces Will Vs. Ways as part of the Desire movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -905,7 +859,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Identity & Desire with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Psalm 37:4",
-        reflectionPrompt: "Pulling it all together",
         teachingBlocks: [
           "This lesson introduces Identity & Desire as part of the Desire movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -922,7 +875,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Expertise & Desire with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Psalm 37:4",
-        reflectionPrompt: "What do you need to notice or practice after Expertise & Desire?",
         teachingBlocks: [
           "This lesson introduces Expertise & Desire as part of the Desire movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -939,7 +891,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Story & Desire with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Psalm 37:4",
-        reflectionPrompt: "What do you need to notice or practice after Story & Desire?",
         teachingBlocks: [
           "This lesson introduces Story & Desire as part of the Desire movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -955,7 +906,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Precious vs. Worthless with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Psalm 37:4",
-        reflectionPrompt: "What do you need to notice or practice after Precious vs. Worthless?",
         teachingBlocks: [
           "This lesson introduces Precious vs. Worthless as part of the Desire movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -974,7 +924,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "12-20 min",
         lessonMainIdea: "Shape the Desire chapter into one useful line for the learner's developing niche declaration.",
         anchorScripture: "Psalm 37:4",
-        reflectionPrompt: "Impassioned by...",
         teachingBlocks: [
           "This Pathfinder moment turns the Desire chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
           "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration.",
@@ -1000,7 +949,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         lessonMainIdea: "Teach The spiritual Gifts Assessment with DYDD with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "1 Peter 4:10",
         companionMoment: dyddJourneyCompanionMoments.gifts,
-        reflectionPrompt: "What do you need to notice or practice after The spiritual Gifts Assessment with DYDD?",
         teachingBlocks: [
           "This lesson introduces The spiritual Gifts Assessment with DYDD as part of the Gifts movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -1019,7 +967,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach What are and are not the Spiritual Gifts? with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "1 Peter 4:10",
-        reflectionPrompt: "From Design to Power",
         teachingBlocks: [
           "This lesson introduces What are and are not the Spiritual Gifts? as part of the Gifts movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -1037,7 +984,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "8-12 min",
         lessonMainIdea: "Slow down and complete the workbook reflection: Unpack Your Spiritual Gifts.",
         anchorScripture: "1 Peter 4:10",
-        reflectionPrompt: "Unpack Your Spiritual Gifts",
         teachingBlocks: [
           "This checkpoint should feel like guided reflection, not a plain form. It gives the learner space to answer the workbook and save the entry as part of the personal record.",
           "Later, these saved responses can shape progress tracking, companion prompts, and Camp Circle visibility without exposing private content.",
@@ -1056,7 +1002,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "10-15 min",
         lessonMainIdea: "Use DesignID as a mirror inside Gifts, helping the learner connect assessment language to faithful love and service.",
         anchorScripture: "1 Peter 4:10",
-        reflectionPrompt: "Spiritual Gifts and your divine reflection",
         teachingBlocks: [
           "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
           "Placed inside Gifts, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course.",
@@ -1075,7 +1020,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Spiritual Gifts & Expertise with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "1 Peter 4:10",
-        reflectionPrompt: "Considering your path forward",
         teachingBlocks: [
           "This lesson introduces Spiritual Gifts & Expertise as part of the Gifts movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -1094,7 +1038,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Spiritual gifts & Story/Desire with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "1 Peter 4:10",
-        reflectionPrompt: "Spiritual Gifts: Pulling it all together",
         teachingBlocks: [
           "This lesson introduces Spiritual gifts & Story/Desire as part of the Gifts movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -1113,7 +1056,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "12-20 min",
         lessonMainIdea: "Shape the Gifts chapter into one useful line for the learner's developing niche declaration.",
         anchorScripture: "1 Peter 4:10",
-        reflectionPrompt: "Supported by...",
         teachingBlocks: [
           "This Pathfinder moment turns the Gifts chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
           "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration.",
@@ -1138,7 +1080,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Who do you see? with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Matthew 5:16",
-        reflectionPrompt: "What do you need to notice or practice after Who do you see??",
         teachingBlocks: [
           "This lesson introduces Who do you see? as part of the Niche movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -1155,7 +1096,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach Who is calling? with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Matthew 5:16",
-        reflectionPrompt: "What do you need to notice or practice after Who is calling??",
         teachingBlocks: [
           "This lesson introduces Who is calling? as part of the Niche movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -1171,7 +1111,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "6-9 min",
         lessonMainIdea: "Teach The Promised Land Journey with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
         anchorScripture: "Matthew 5:16",
-        reflectionPrompt: "What do you need to notice or practice after The Promised Land Journey?",
         teachingBlocks: [
           "This lesson introduces The Promised Land Journey as part of the Niche movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
           "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
@@ -1192,7 +1131,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         lessonMainIdea: "Shape the Niche chapter into one useful line for the learner's developing niche declaration.",
         anchorScripture: "Matthew 5:16",
         companionMoment: dyddJourneyCompanionMoments.nicheConversation,
-        reflectionPrompt: "I believe God created me...",
         teachingBlocks: [
           "This Pathfinder moment turns the Niche chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
           "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration.",
@@ -1209,7 +1147,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "12-20 min",
         lessonMainIdea: "Shape the Niche chapter into one useful line for the learner's developing niche declaration.",
         anchorScripture: "Matthew 5:16",
-        reflectionPrompt: "Coming from...",
         teachingBlocks: [
           "This Pathfinder moment turns the Niche chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
           "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration.",
@@ -1226,7 +1163,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "12-20 min",
         lessonMainIdea: "Shape the Niche chapter into one useful line for the learner's developing niche declaration.",
         anchorScripture: "Matthew 5:16",
-        reflectionPrompt: "Which will enable me to use my...",
         teachingBlocks: [
           "This Pathfinder moment turns the Niche chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
           "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration.",
@@ -1243,7 +1179,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "12-20 min",
         lessonMainIdea: "Shape the Niche chapter into one useful line for the learner's developing niche declaration.",
         anchorScripture: "Matthew 5:16",
-        reflectionPrompt: "Impassioned by...",
         teachingBlocks: [
           "This Pathfinder moment turns the Niche chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
           "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration.",
@@ -1260,7 +1195,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "12-20 min",
         lessonMainIdea: "Shape the Niche chapter into one useful line for the learner's developing niche declaration.",
         anchorScripture: "Matthew 5:16",
-        reflectionPrompt: "Supported by...",
         teachingBlocks: [
           "This Pathfinder moment turns the Niche chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
           "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration.",
@@ -1277,7 +1211,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "12-20 min",
         lessonMainIdea: "Shape the Niche chapter into one useful line for the learner's developing niche declaration.",
         anchorScripture: "Matthew 5:16",
-        reflectionPrompt: "Resulting in my...",
         teachingBlocks: [
           "This Pathfinder moment turns the Niche chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
           "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration.",
@@ -1294,7 +1227,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "12-20 min",
         lessonMainIdea: "Shape the Niche chapter into one useful line for the learner's developing niche declaration.",
         anchorScripture: "Matthew 5:16",
-        reflectionPrompt: "Encouraged by...",
         teachingBlocks: [
           "This Pathfinder moment turns the Niche chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
           "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration.",
@@ -1310,7 +1242,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "5-8 min",
         lessonMainIdea: "Close the Journey with prayer, celebration, and one concrete next step beyond the course.",
         anchorScripture: "Matthew 5:16",
-        reflectionPrompt: "What next faithful step are you ready to take?",
         teachingBlocks: [
           "The ending should feel like a commissioning, not a hard stop. The learner has gathered language, evidence, prayers, and next steps that now need to be lived.",
           "This unit can point them toward their next faithful experiment, future coaching, a Camp Circle, or deeper work with the Field Guide.",
@@ -1326,7 +1257,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "5-8 min",
         lessonMainIdea: "Close the Journey with prayer, celebration, and one concrete next step beyond the course.",
         anchorScripture: "Matthew 5:16",
-        reflectionPrompt: "What next faithful step are you ready to take?",
         teachingBlocks: [
           "The ending should feel like a commissioning, not a hard stop. The learner has gathered language, evidence, prayers, and next steps that now need to be lived.",
           "This unit can point them toward their next faithful experiment, future coaching, a Camp Circle, or deeper work with the Field Guide.",
@@ -1342,7 +1272,6 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         duration: "5-8 min",
         lessonMainIdea: "Close the Journey with prayer, celebration, and one concrete next step beyond the course.",
         anchorScripture: "Matthew 5:16",
-        reflectionPrompt: "What next faithful step are you ready to take?",
         teachingBlocks: [
           "The ending should feel like a commissioning, not a hard stop. The learner has gathered language, evidence, prayers, and next steps that now need to be lived.",
           "This unit can point them toward their next faithful experiment, future coaching, a Camp Circle, or deeper work with the Field Guide.",

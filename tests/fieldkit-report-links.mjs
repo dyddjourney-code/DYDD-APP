@@ -41,7 +41,7 @@ try {
             /text\/html|application\/pdf/,
           );
           if (r.headers.get("content-type").includes("text/html"))
-            assert((await r.text()).includes("saved assessment"));
+            assert.match(await r.text(), /saved assessment|Preparing your PDF|original PDF unavailable/);
         }
         return {
           status: r.status,

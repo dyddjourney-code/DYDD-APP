@@ -193,6 +193,20 @@ export function JourneyCourseNavigator({
   const lessonImage = active.unit.media?.image ?? chapterArtwork;
   const lessonImageLabel =
     active.unit.media?.label ?? `${active.module.title} Journey illustration`;
+  // Owner-review pilot: no other lesson changes its reading layout.
+  const wrapLessonImage = active.unit.slug === "what-is-dydd-d-e-s-i-g-n-9";
+  const lessonArtwork = (
+    <div className="journey-lesson-images">
+      {[{ image: lessonImage, label: lessonImageLabel }, ...(active.unit.media?.additionalImages ?? [])].map((image) => (
+        <figure
+          key={image.image}
+          className={`assessment-lesson-image${active.unit.media?.type === "video" || active.unit.media?.additionalImages?.length ? " contain" : ""}`}
+        >
+          <img src={image.image} alt={image.label} loading="lazy" />
+        </figure>
+      ))}
+    </div>
+  );
   const lessonFocus = active.unit.focus?.length
     ? active.unit.focus.flatMap((item) =>
         item.split(/[,;\n]+|(?<=\?)\s+(?=[A-Z])/).map((focus) => focus.trim()).filter(Boolean),
@@ -382,11 +396,12 @@ export function JourneyCourseNavigator({
               <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} />
             ) : null}
 
-            <div className="assessment-lesson-content with-image">
+            <div className={`assessment-lesson-content with-image${wrapLessonImage ? " journey-wrap-pilot" : ""}`}>
               <section
                 className="lesson-source readable-lesson-body"
                 aria-label="Lesson body"
               >
+                {wrapLessonImage ? lessonArtwork : null}
                 <h3 className="lesson-body-subheading">{active.unit.title}</h3>
                 {active.unit.contentStatus === "draft" ? (
                   <p role="status">Lesson content is being prepared.</p>
@@ -398,15 +413,7 @@ export function JourneyCourseNavigator({
                   </p>
                 ))}
               </section>
-              <div className="journey-lesson-images">
-                {[{ image: lessonImage, label: lessonImageLabel }, ...(active.unit.media?.additionalImages ?? [])].map((image) => (
-                  <figure key={image.image}
-                    className={`assessment-lesson-image${active.unit.media?.type === "video" || active.unit.media?.additionalImages?.length ? " contain" : ""}`}
-                  >
-                    <img src={image.image} alt={image.label} loading="lazy" />
-                  </figure>
-                ))}
-              </div>
+              {!wrapLessonImage ? lessonArtwork : null}
             </div>
 
             {active.unit.companionMomentPosition === "after-teaching" ? (

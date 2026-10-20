@@ -20823,3 +20823,31 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .dydd-journey-walkthrough .journey-section-toggle > small { grid-column: 2; grid-row: 2; }
 .dydd-journey-walkthrough .journey-module-toggle::after,
 .dydd-journey-walkthrough .journey-section-toggle::after { grid-column: 3; grid-row: 1; }
+
+/* D.E.S.I.G.N owner-review pilot: stack on phones, wrap naturally on desktop. */
+.journey-wrap-pilot .readable-lesson-body {
+  display: flex;
+  flex-direction: column;
+}
+.journey-wrap-pilot .journey-lesson-images { order: 1; }
+@media (min-width: 981px) {
+  .dydd-journey-walkthrough .assessment-lesson-content.journey-wrap-pilot {
+    display: block;
+  }
+  .journey-wrap-pilot .readable-lesson-body {
+    display: flow-root;
+  }
+  .journey-wrap-pilot .journey-lesson-images {
+    float: right;
+    width: 36%;
+    margin: 0 0 20px 24px;
+  }
+  .journey-wrap-pilot .readable-lesson-body > p { margin-bottom: 16px; }
+  .journey-wrap-pilot .lesson-body-subheading { margin: 24px 0 12px; }
+  .journey-wrap-pilot .lesson-body-subheading:first-of-type { margin-top: 0; }
+  .journey-wrap-pilot .lesson-body-list {
+    display: flow-root;
+    margin: 0 0 20px;
+  }
+  .journey-wrap-pilot .lesson-body-list li + li { margin-top: 10px; }
+}

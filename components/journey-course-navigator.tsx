@@ -7,6 +7,7 @@ import {
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ReviewAwareLink } from "@/components/review-aware-link";
+import { JourneyLessonBody } from "@/components/journey-lesson-body";
 import { CompanionAudioCard } from "@/components/companion-audio-card";
 import type { CareStep } from "@/lib/journey/dydd-journey";
 import type {
@@ -393,20 +394,26 @@ export function JourneyCourseNavigator({
                 aria-label="Lesson body"
               >
                 <h3 className="lesson-body-subheading">{active.unit.title}</h3>
-                {active.unit.teachingBlocks.map((block) => (
+                {active.unit.contentStatus === "draft" ? (
+                  <p role="status">Lesson content is being prepared.</p>
+                ) : active.unit.lessonBody ? (
+                  <JourneyLessonBody blocks={active.unit.lessonBody} />
+                ) : active.unit.teachingBlocks.map((block) => (
                   <p key={block}>
                     {cleanTeachingBlock(block, Boolean(workbookExperience))}
                   </p>
                 ))}
               </section>
-              <figure
-                className={`assessment-lesson-image${active.unit.media?.type === "video" ? " contain" : ""}`}
-              >
-                <img src={lessonImage} alt={lessonImageLabel} loading="lazy" />
-                {active.unit.media ? (
-                  <figcaption>{active.unit.media.label}</figcaption>
-                ) : null}
-              </figure>
+              <div className="journey-lesson-images">
+                {[{ image: lessonImage, label: lessonImageLabel }, ...(active.unit.media?.additionalImages ?? [])].map((image) => (
+                  <figure key={image.image}
+                    className={`assessment-lesson-image${active.unit.media?.type === "video" || active.unit.media?.additionalImages?.length ? " contain" : ""}`}
+                  >
+                    <img src={image.image} alt={image.label} loading="lazy" />
+                    {active.unit.media ? <figcaption>{image.label}</figcaption> : null}
+                  </figure>
+                ))}
+              </div>
             </div>
 
             {active.unit.companionMomentPosition === "after-teaching" ? (
@@ -420,16 +427,16 @@ export function JourneyCourseNavigator({
             ) : null}
           </section>
 
-          {active.unit.type === "assessment-link" ||
+          {active.unit.contentStatus !== "draft" && (active.unit.type === "assessment-link" ||
           active.unit.type === "designid-reflection" ||
-          active.unit.slug.includes("spiritual-gifts-assessment") ? (
+          active.unit.slug.includes("spiritual-gifts-assessment")) ? (
             <aside className="trail-fieldkit-note">
               <div>
                 <p className="section-label">A connected trail</p>
                 <h2>
                   {active.unit.slug.includes("spiritual-gifts")
                     ? "Explore your Spiritual Gifts"
-                    : active.unit.type === "designid-reflection"
+                    : (active.unit.type === "designid-reflection" || active.unit.assessmentTarget === "designid")
                       ? "Bring your DesignID into the Journey"
                       : "Discover your connected assessments"}
                 </h2>
@@ -441,7 +448,7 @@ export function JourneyCourseNavigator({
               </div>
               <ReviewAwareLink
                 className="button primary"
-                href={`/trailheads?from=journey${active.unit.slug.includes("spiritual-gifts") ? "#spiritual-gifts" : active.unit.type === "designid-reflection" ? "#designid" : ""}`}
+                href={`/trailheads?from=journey${active.unit.slug.includes("spiritual-gifts") ? "#spiritual-gifts" : (active.unit.type === "designid-reflection" || active.unit.assessmentTarget === "designid") ? "#designid" : ""}`}
                 onClick={() => {
                   try {
                     localStorage.setItem(

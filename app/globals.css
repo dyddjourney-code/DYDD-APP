@@ -20795,3 +20795,16 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 .journey-closing-scripture p { margin: 0 0 12px; }
 .journey-closing-scripture cite { color: var(--green-dark); font-style: normal; font-weight: 700; }
+
+/* Journey authored lessons retain the standard text/art layout. */
+.journey-lesson-images { display: grid; gap: 18px; min-width: 0; align-content: start; }
+.journey-inline-book { width: min(100%, 220px); margin: 0; }
+.journey-inline-book img { display: block; width: 100%; height: auto; }
+.journey-lesson-images .assessment-lesson-image.contain img { aspect-ratio: auto; }
+/* Keep long module/section names readable in the narrow course index. */
+.dydd-journey-walkthrough .journey-module-toggle,
+.dydd-journey-walkthrough .journey-section-toggle { grid-template-columns: 34px minmax(0, 1fr) 14px; gap: 8px; }
+.dydd-journey-walkthrough .journey-module-toggle > small,
+.dydd-journey-walkthrough .journey-section-toggle > small { grid-column: 2; grid-row: 2; }
+.dydd-journey-walkthrough .journey-module-toggle::after,
+.dydd-journey-walkthrough .journey-section-toggle::after { grid-column: 3; grid-row: 1; }

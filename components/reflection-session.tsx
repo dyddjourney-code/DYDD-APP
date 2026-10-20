@@ -73,10 +73,12 @@ export function ReflectionSession({
   courseSlug,
   questions,
   children,
+  compactControls = false,
 }: {
   courseSlug: string;
   questions: ReflectionQuestion[];
   children: ReactNode;
+  compactControls?: boolean;
 }) {
   const [data, setData] = useState<ReflectionData>(empty),
     [selected, setSelected] = useState(""),
@@ -354,9 +356,14 @@ export function ReflectionSession({
     recordPosition,
     reload,
   };
-  return (
-    <Context.Provider value={session}>
-      <section className="reflection-round-bar" aria-label="Reflection rounds">
+  const controls = (
+    <section className="reflection-round-bar" aria-label="Reflection rounds">
+      {compactControls ? (
+        <p>
+          Your CARE reflections stay editable here and in Field Kit. Both places
+          use the same saved answers.
+        </p>
+      ) : (
         <div>
           <p className="section-label">Your private workbook</p>
           <h2>Reflections for this walk.</h2>
@@ -366,96 +373,109 @@ export function ReflectionSession({
             reflections stay intact and read-only.
           </p>
         </div>
-        {loading ? (
-          <p role="status">Loading your reflection history…</p>
-        ) : !data.signedIn ? (
-          <p>
-            <a
-              href={`/login?next=${encodeURIComponent(typeof window !== "undefined" ? window.location.pathname : "/field-kit")}`}
-            >
-              Sign in to save your reflections
-            </a>
-            . Preview answers are not saved.
-          </p>
-        ) : (
-          <div className="reflection-round-controls">
-            {data.rounds.length > 0 ? (
+      )}
+      {loading ? (
+        <p role="status">Loading your reflection history…</p>
+      ) : !data.signedIn ? (
+        <p>
+          <a
+            href={`/login?next=${encodeURIComponent(typeof window !== "undefined" ? window.location.pathname : "/field-kit")}`}
+          >
+            Sign in to save your reflections
+          </a>
+          . Preview answers are not saved.
+        </p>
+      ) : (
+        <div className="reflection-round-controls">
+          {data.rounds.length > 0 ? (
+            <label>
+              Reflection round
+              <select
+                disabled={Object.values(statuses).includes("Saving…")}
+                value={selected}
+                onChange={(e) => changeRound(e.target.value)}
+              >
+                {data.rounds.map((r, i) => (
+                  <option key={r.id} value={r.id}>
+                    {date(r.started_at)}
+                    {i === 0 ? " — current round" : " — previous round"}
+                    {r.source === "legacy" ? " (earlier saved work)" : ""}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <p>No saved rounds yet. Begin your first round to write here.</p>
+          )}
+          {data.canStart ? (
+            <>
               <label>
-                Reflection round
+                Connect a report (optional)
                 <select
-                  disabled={Object.values(statuses).includes("Saving…")}
-                  value={selected}
-                  onChange={(e) => changeRound(e.target.value)}
+                  value={report}
+                  onChange={(e) => setReport(e.target.value)}
                 >
-                  {data.rounds.map((r, i) => (
+                  <option value="">Course reflections only</option>
+                  {data.reports.map((r) => (
                     <option key={r.id} value={r.id}>
-                      {date(r.started_at)}
-                      {i === 0 ? " — current round" : " — previous round"}
-                      {r.source === "legacy" ? " (earlier saved work)" : ""}
+                      {r.label}
                     </option>
                   ))}
                 </select>
               </label>
-            ) : (
-              <p>No saved rounds yet. Begin your first round to write here.</p>
-            )}
-            {data.canStart ? (
-              <>
-                <label>
-                  Connect a report (optional)
-                  <select
-                    value={report}
-                    onChange={(e) => setReport(e.target.value)}
-                  >
-                    <option value="">Course reflections only</option>
-                    {data.reports.map((r) => (
-                      <option key={r.id} value={r.id}>
-                        {r.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <button
-                  className="button primary"
-                  type="button"
-                  onClick={newRound}
-                  disabled={
-                    creating || Object.values(statuses).includes("Saving…")
-                  }
-                >
-                  {creating
-                    ? "Beginning…"
-                    : data.rounds.length
-                      ? "Begin a new reflection round"
-                      : "Begin my reflections"}
-                </button>
-              </>
-            ) : (
-              <p>
-                Begin this trail at <ReviewAwareLink href="/trailheads">Trailheads</ReviewAwareLink>; its
-                completed report opens new reflection rounds.
-              </p>
-            )}
-            {round?.assessment_label ? (
-              <p>Connected report: {round.assessment_label}</p>
-            ) : null}
-            {readOnly ? (
-              <p>
-                You’re reading a previous round. Choose the current round to
-                continue writing, or begin a new one.
-              </p>
-            ) : null}
-          </div>
-        )}
-        {error ? (
-          <p className="form-message error" role="alert">
-            {error}{" "}
-            <button type="button" onClick={() => void reload()}>
-              Try loading again
-            </button>
-          </p>
-        ) : null}
-      </section>
+              <button
+                className="button primary"
+                type="button"
+                onClick={newRound}
+                disabled={
+                  creating || Object.values(statuses).includes("Saving…")
+                }
+              >
+                {creating
+                  ? "Beginning…"
+                  : data.rounds.length
+                    ? "Begin a new reflection round"
+                    : "Begin my reflections"}
+              </button>
+            </>
+          ) : (
+            <p>
+              Begin this trail at <ReviewAwareLink href="/trailheads">Trailheads</ReviewAwareLink>; its
+              completed report opens new reflection rounds.
+            </p>
+          )}
+          {round?.assessment_label ? (
+            <p>Connected report: {round.assessment_label}</p>
+          ) : null}
+          {readOnly ? (
+            <p>
+              You’re reading a previous round. Choose the current round to
+              continue writing, or begin a new one.
+            </p>
+          ) : null}
+        </div>
+      )}
+      {error ? (
+        <p className="form-message error" role="alert">
+          {error}{" "}
+          <button type="button" onClick={() => void reload()}>
+            Try loading again
+          </button>
+        </p>
+      ) : null}
+    </section>
+  );
+  return (
+    <Context.Provider value={session}>
+      {compactControls ? (
+        <details
+          className="journey-reflection-settings"
+          open={!loading && (!round || Boolean(error) || readOnly)}
+        >
+          <summary>Saved reflections &amp; history</summary>
+          {controls}
+        </details>
+      ) : controls}
       {children}
     </Context.Provider>
   );

@@ -60,7 +60,7 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
         title="How to walk the Journey"
       />
 
-      <ReflectionCourseShell courseSlug="discover-your-divine-design">
+      <ReflectionCourseShell courseSlug="discover-your-divine-design" compactControls>
         <JourneyCourseNavigator modules={dyddMainCourseOutline} />
 
         {params?.saved ? (

@@ -20358,6 +20358,10 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .fieldkit-report-history dl > div { display:flex; flex-wrap:wrap; gap:.4rem; margin:.3rem 0; }
 .fieldkit-report-history dt { font-weight:700; }.fieldkit-report-history dd{margin:0;overflow-wrap:anywhere;}
 .fieldkit-collection-footer { display:flex; flex-wrap:wrap; align-items:center; gap:1rem; border-top:1px solid #c7cbb7; margin-top:1.5rem; padding-top:1.25rem; }
+.journey-reflection-settings { margin: 1rem 0; color: #31553d; }
+.journey-reflection-settings > summary { cursor: pointer; font-weight: 700; padding: .65rem 0; }
+.journey-reflection-settings > summary:focus-visible { outline: 3px solid #748e65; outline-offset: 3px; }
+.journey-reflection-settings .reflection-round-bar { margin: .5rem 0 1rem; border-top-width: 1px; }
 .reflection-round-bar { background:#f6f2e7; border:1px solid #bdc5b1; border-top:5px solid #31553d; padding:1.5rem; border-radius:12px; margin:1.5rem 0; color:#243d2f; }
 .reflection-round-bar h2 { font-size:1.4rem; margin:.4rem 0; }.reflection-round-bar p{line-height:1.6;}
 .reflection-round-controls { display:flex; flex-wrap:wrap; gap:1rem; align-items:end; margin-top:1rem; }.reflection-round-controls > p { flex-basis:100%; margin:0; }

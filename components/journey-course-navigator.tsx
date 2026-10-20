@@ -200,7 +200,8 @@ export function JourneyCourseNavigator({
     return null;
   }
 
-  const setLesson = (item: FlatUnit) => {
+  const setLesson = async (item: FlatUnit) => {
+    if (savedPosition.flush && !await savedPosition.flush()) return;
     const sectionKey = `${item.module.slug}-${item.section}`;
     setActiveSlug(item.unit.slug);
     savedPosition.recordPosition?.(item.unit.slug);

@@ -69,7 +69,9 @@ export async function previewReflectionRequest(request: Request, p: ReviewSearch
     try {
         const saved = await load(p, b.courseSlug), ctx = await reportContext(p, b.courseSlug), now = new Date().toISOString();
         let result: unknown;
-        if (b.action === 'new-round' || b.action === 'sync-round') {
+        if (b.action === 'new-round' || b.action === 'sync-round' || b.action === 'ensure-round') {
+            if (b.action === 'ensure-round' && b.courseSlug !== 'discover-your-divine-design')
+                return reply({ error: 'Automatic setup is only available for the Journey.' }, 400);
             if (!ctx.canStart)
                 return reply({ error: 'Complete this trail’s report first.' }, 403);
             const report = b.action === 'sync-round' ? ctx.reports[0] : ctx.reports.find(r => r.id === b.assessmentSnapshotId);
@@ -77,7 +79,7 @@ export async function previewReflectionRequest(request: Request, p: ReviewSearch
                 return reply({ error: 'Choose a report from this preview.' }, 400);
             if (b.action === 'sync-round' && !report)
                 return reply({ error: 'No completed report found.' }, 400);
-            const existing = b.action === 'sync-round' ? saved.rounds.find(r => r.assessment_snapshot_id === report?.id) : null;
+            const existing = b.action === 'ensure-round' ? saved.rounds[0] : b.action === 'sync-round' ? saved.rounds.find(r => r.assessment_snapshot_id === report?.id) : null;
             const round: ReflectionRound = existing ?? { id: randomUUID(), course_slug: b.courseSlug, last_lesson_slug: null, questions: experience.questions, assessment_snapshot_id: report?.id ?? null, assessment_label: report?.label ?? null, source: 'owner-preview', started_at: now, updated_at: now };
             if (!existing)
                 saved.rounds.unshift(round);

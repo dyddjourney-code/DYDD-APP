@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { previewParams, previewReflectionRequest } from "@/lib/reflections/preview";
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -146,6 +147,25 @@ export async function POST(request: Request) {
     !getReflectionExperience(b.courseSlug)
   )
     return json({ error: "Unknown course." }, 400);
+  if (b.action === "ensure-round") {
+    if (b.courseSlug !== "discover-your-divine-design")
+      return json({ error: "Automatic setup is only available for the Journey." }, 400);
+    const ctx = await context(b.courseSlug, user);
+    const existing = await s.from("reflection_rounds").select("*")
+      .eq("user_id", user.id).eq("course_slug", b.courseSlug)
+      .order("started_at", { ascending: false }).order("id", { ascending: false }).limit(1).maybeSingle();
+    if (existing.error) return json({ error: "Could not open your workbook. Please try again." }, 500);
+    if (existing.data) return json({ round: existing.data });
+    // Stable first-round ID makes concurrent tabs/retries create one workbook, without schema changes.
+    const hash = createHash("sha256").update(`journey-first-round:${user.id}`).digest("hex");
+    const id = `${hash.slice(0,8)}-${hash.slice(8,12)}-4${hash.slice(13,16)}-a${hash.slice(17,20)}-${hash.slice(20,32)}`;
+    const created = await s.from("reflection_rounds").upsert({
+      id, user_id: user.id, course_slug: b.courseSlug, questions: ctx!.experience.questions,
+    }, { onConflict: "id", ignoreDuplicates: true });
+    if (created.error) return json({ error: "Could not open your workbook. Please try again." }, 500);
+    const opened = await s.from("reflection_rounds").select("*").eq("id", id).eq("user_id", user.id).single();
+    return opened.error ? json({ error: "Could not open your workbook. Please try again." }, 500) : json({ round: opened.data });
+  }
   if (b.action === "sync-round") {
     const ctx = await context(b.courseSlug, user);
     if (!ctx?.canStart)

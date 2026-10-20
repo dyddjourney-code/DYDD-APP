@@ -20,8 +20,10 @@ try {
  assert.equal(login.status,307);
  const cookies=login.headers.getSetCookie().map(x=>{const pair=x.split(';')[0],i=pair.indexOf('=');return {name:pair.slice(0,i),value:pair.slice(i+1),url:base};});assert(cookies.length);
  const cookie=cookies.map(x=>x.name+'='+x.value).join('; ');
- const start=await fetch(base+'/api/course-reflections',{method:'POST',headers:{Cookie:cookie,'Content-Type':'application/json'},body:JSON.stringify({courseSlug:slug,action:'new-round'})});
- assert.equal(start.status,201);const {round}=await start.json();const q=round.questions.find(q=>q.id==="child-of-god-response");assert(q);console.log("Testing inline Identity CARE reflection");
+ // No setup API/button: opening Journey must create the first workbook itself.
+ const load=(await import('../scripts/fruitlife-test-load.cjs')).default;
+ const q=load('lib/reflections/catalog.ts').getReflectionExperience(slug).questions.find(x=>x.id==='child-of-god-response');
+ assert(q);
  const errors=[];
  const answer='CARE sync verification '+crypto.randomUUID();
  for(const width of [1280,390,320]) {
@@ -32,18 +34,20 @@ try {
   const go = async path => { await page.close();page=await browser.newPage();page.on("pageerror",e=>errors.push(e.message));await page.setViewport({width,height:1000});await page.goto(base+path,{waitUntil:"networkidle2"}); };
   await go('/journey?lesson='+q.lessonSlug);
   await page.waitForSelector(`.journey-active-workbook [data-question="${q.id}"] textarea:not([disabled])`);
-  assert.equal(await page.$eval('.journey-reflection-settings',e=>e.open),false);
-  assert(!(await page.$eval('.journey-reflection-settings',e=>e.textContent)).includes('Your private workbook'));
-  await page.$eval(".journey-reflection-settings > summary",e=>e.click());
-  assert.equal(await page.$eval(".journey-reflection-settings",e=>e.open),true);
-  assert(await page.$(".journey-reflection-settings select"));
-  await page.$eval(".journey-reflection-settings > summary",e=>e.click());
+  assert.equal(await page.$('.journey-reflection-settings'),null);
+  assert.equal(await page.$('.reflection-round-bar'),null);
+  assert(!(await page.$eval('body',e=>e.textContent)).includes('Begin my reflections'));
+  const current = await fetch(base+'/api/course-reflections?courseSlug='+slug,{headers:{Cookie:cookie}}).then(r=>r.json());
+  assert.equal(current.rounds.length,1,'One automatically created workbook, not one per visit');
+  q.lessonSlug=current.rounds[0].questions.find(x=>x.id===q.id).lessonSlug;
+  const setup=await Promise.all([1,2].map(()=>fetch(base+'/api/course-reflections',{method:'POST',headers:{Cookie:cookie,'Content-Type':'application/json'},body:JSON.stringify({courseSlug:slug,action:'ensure-round'})}).then(r=>r.json())));
+  assert(setup.every(x=>x.round.id===current.rounds[0].id));
   const selector=`.journey-active-workbook [data-question="${q.id}"]`;
   const text=answer+' '+width;
   await page.$eval(selector+' textarea',(e,t)=>{const setter=Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set;setter.call(e,t);e.dispatchEvent(new Event('input',{bubbles:true}));},text);
   const saved=page.waitForResponse(r=>r.url().includes('/api/course-reflections') && r.request().method()==='POST' && r.request().postData()?.includes('"action":"save"'));
-  await page.$eval(selector+' button',e=>e.click());assert.equal((await saved).status(),200);
-  await page.waitForFunction(s=>document.querySelector(s+" [role=status]")?.textContent==="Saved to your account",{},selector);
+  assert.equal((await saved).status(),200);
+  await page.waitForFunction(s=>document.querySelector(s+" [role=status]")?.textContent==="Saved",{},selector);
   console.log("Inline saved "+width);
   await go('/field-kit/reflections/'+slug);
   console.log("Field Kit loaded "+width);
@@ -61,9 +65,60 @@ try {
   await go('/journey?lesson='+q.lessonSlug);
   await page.waitForFunction(({s,t})=>document.querySelector(s+' textarea')?.value===t,{}, {s:selector,t:edited});
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Journey overflow '+width);
+  if(width===1280) {
+    const immediate=edited+' immediate next';
+    await page.$eval(selector+' textarea',(e,t)=>{Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(e,t);e.dispatchEvent(new Event('input',{bubbles:true}));},immediate);
+    await page.$$eval('.journey-active-pagination button',buttons=>buttons.find(b=>b.textContent.startsWith('Next:')).click());
+    await page.waitForFunction(s=>!document.querySelector(s),{},selector);
+    const after=await fetch(base+'/api/course-reflections?courseSlug='+slug,{headers:{Cookie:cookie}}).then(r=>r.json());
+    assert.equal(after.entries.filter(e=>e.question_id===q.id).sort((a,b)=>b.revision-a.revision)[0].response,immediate);
+    console.log('PASS immediate Next flushes pending answer before leaving lesson');
+    await go('/journey?lesson='+q.lessonSlug);
+    await page.waitForSelector(selector+' textarea:not([disabled])');
+    await page.setRequestInterception(true);
+    const failSave=req=>req.url().includes('/api/course-reflections') && req.postData()?.includes('"action":"save"') ? req.respond({status:503,contentType:'application/json',body:JSON.stringify({error:'Could not save. Your draft is still here; please try again.'})}) : req.continue();
+    page.on('request',failSave);
+    const failed=immediate+' network failure draft';
+    await page.$eval(selector+' textarea',(e,t)=>{Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(e,t);e.dispatchEvent(new Event('input',{bubbles:true}));},failed);
+    await page.waitForFunction(s=>document.querySelector(s+' [role=status]')?.textContent.includes('Could not save'),{},selector);
+    await page.$$eval('.journey-active-pagination button',buttons=>buttons.find(b=>b.textContent.startsWith('Next:')).click());
+    await page.waitForFunction(s=>document.querySelector(s+' button')?.textContent.includes('Try saving again'),{},selector);
+    assert.equal(await page.$eval(selector+' textarea',e=>e.value),failed);
+    page.off('request',failSave);await page.setRequestInterception(false);
+    await page.$eval(selector+' button',e=>e.click());
+    await page.waitForFunction(s=>document.querySelector(s+' [role=status]')?.textContent==='Saved',{},selector);
+    console.log('PASS network failure retains draft and blocks lesson change; explicit retry saves');
+    let heldRequest;
+    const held=new Promise(resolve=>{heldRequest=resolve;});
+    await page.setRequestInterception(true);
+    const hold=req=>{if(req.postData()?.includes('"action":"save"'))heldRequest(req);else void req.continue();};
+    page.on('request',hold);
+    const inFlight=failed+' first in-flight edit';
+    await page.$eval(selector+' textarea',(e,t)=>{Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(e,t);e.dispatchEvent(new Event('input',{bubbles:true}));},inFlight);
+    const request=await held;
+    const finalValue=failed+' newer edit while saving';
+    await page.$eval(selector+' textarea',(e,t)=>{Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(e,t);e.dispatchEvent(new Event('input',{bubbles:true}));},finalValue);
+    page.off('request',hold);page.on('request',req=>void req.continue());await request.continue();
+    await page.waitForFunction(s=>document.querySelector(s+' [role=status]')?.textContent==='Saved',{},selector);
+    await page.setRequestInterception(false);page.removeAllListeners('request');
+    const latest=await fetch(base+'/api/course-reflections?courseSlug='+slug,{headers:{Cookie:cookie}}).then(r=>r.json());
+    const entry=latest.entries.filter(e=>e.question_id===q.id).sort((a,b)=>b.revision-a.revision)[0];
+    assert.equal(entry.response,finalValue);
+    const remote='Saved in another tab '+crypto.randomUUID();
+    const conflictSave=await fetch(base+'/api/course-reflections',{method:'POST',headers:{Cookie:cookie,'Content-Type':'application/json'},body:JSON.stringify({action:'save',courseSlug:slug,roundId:entry.round_id,questionId:q.id,response:remote,expectedRevision:entry.revision})});
+    assert.equal(conflictSave.status,200);
+    const localDraft='Keep my conflicting draft '+crypto.randomUUID();
+    await page.$eval(selector+' textarea',(e,t)=>{Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(e,t);e.dispatchEvent(new Event('input',{bubbles:true}));},localDraft);
+    await page.waitForFunction(s=>document.querySelector(s+' [role=status]')?.textContent.includes('another tab'),{},selector);
+    assert.equal(await page.$eval(selector+' textarea',e=>e.value),localDraft);
+    const protectedAnswer=await fetch(base+'/api/course-reflections?courseSlug='+slug,{headers:{Cookie:cookie}}).then(r=>r.json());
+    assert.equal(protectedAnswer.entries.filter(e=>e.question_id===q.id).sort((a,b)=>b.revision-a.revision)[0].response,remote);
+    console.log('PASS edits made during saving persist; stale tab cannot overwrite newer answer and keeps draft');
+
+  }
   await page.screenshot({path:`tmp/journey-sync-${base.startsWith('https')?'live':'local'}-${width}.png`,fullPage:false});
   await browser.close();browser=null;page=null;
-  console.log('PASS '+width+'px: inline CARE save → Field Kit exact answer → Field Kit edit → Journey reload; compact history; no overflow');
+  console.log('PASS '+width+'px: inline CARE save → Field Kit exact answer → Field Kit edit → Journey reload; no top setup; automatic round/save; no overflow');
  }
  assert.deepEqual(errors,[]);console.log('PASS no browser runtime errors');
 } catch(error) {

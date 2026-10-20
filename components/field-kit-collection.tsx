@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { isSandbox } from "@/lib/environment";
 import { trailDefinitions } from "@/lib/trails/catalog";
 import { withReviewQuery, type ReviewSearchParams } from "@/lib/review/heather";
 export type CollectedArtifact = {
@@ -168,6 +169,7 @@ export function FieldKitCollection({
               >
                 Review my reflections
               </Link>
+              {main && isSandbox() ? <Link className="button secondary" href={path(`/field-kit/reflections/${slug}?view=discussion#discussion-reminders`)}>My discussion reminders</Link> : null}
             </section>
           </div>
           <div className="fieldkit-collection-footer">

@@ -1,4 +1,6 @@
 "use client";
+import { isSandbox } from '@/lib/environment';
+import { careDiscussionIds, discussionCourse, type DiscussionReminder } from '@/lib/reflections/discussion-catalog';
 import { ReviewAwareLink } from "@/components/review-aware-link";
 import {
   createContext,
@@ -62,6 +64,13 @@ type Session = {
   readOnly: boolean;
   recordPosition: (lessonSlug: string) => void;
   reload: () => Promise<void>;
+  discussionEnabled: boolean;
+  reminderError: string;
+  reminders: DiscussionReminder[];
+  reminderDrafts: Record<string, { marked: boolean; note: string }>;
+  reminderStatuses: Record<string, string>;
+  setReminder: (id: string, marked: boolean, note: string) => void;
+  saveReminder: (id: string) => Promise<boolean>;
 };
 const Context = createContext<Session | null>(null);
 const empty: ReflectionData = {
@@ -90,6 +99,15 @@ export function ReflectionSession({
     [error, setError] = useState(""),
     [creating, setCreating] = useState(false),
     [report, setReport] = useState("");
+  const discussionEnabled = isSandbox() && courseSlug === discussionCourse;
+  const [reminderError, setReminderError] = useState('');
+  const [reminders, setReminders] = useState<DiscussionReminder[]>([]);
+  const [reminderDrafts, setReminderDrafts] = useState<Record<string, { marked: boolean; note: string }>>({});
+  const [reminderStatuses, setReminderStatuses] = useState<Record<string, string>>({});
+  const reminderRef = useRef(reminders); reminderRef.current = reminders;
+  const reminderDraftRef = useRef(reminderDrafts); reminderDraftRef.current = reminderDrafts;
+  const reminderTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+  const saveReminderRef = useRef<(id: string) => Promise<boolean>>(async () => false);
   const automatic = compactControls && courseSlug === "discover-your-divine-design";
   const dirty = useRef(false),
     busy = useRef(new Set<string>()),
@@ -109,7 +127,11 @@ export function ReflectionSession({
         map[e.question_id] = e;
     return map;
   }, [data.entries, selected]);
-  dirty.current = Object.entries(drafts).some(
+  const reminderDirty = () => Object.entries(reminderDraftRef.current).some(([id, value]) => {
+    const prior = reminderRef.current.find(r => r.round_id === selected && r.question_id === id);
+    return value.marked !== (prior?.marked ?? false) || value.note !== (prior?.note ?? '');
+  });
+  dirty.current = reminderDirty() || Object.entries(drafts).some(
     ([id, value]) => value !== (latest[id]?.response ?? ""),
   );
   const readOnly = Boolean(
@@ -148,6 +170,16 @@ export function ReflectionSession({
         );
         body = await fresh.json();
         if (!fresh.ok) throw Error(body.error);
+      }
+      if (discussionEnabled && body.signedIn) {
+        try {
+          const response = await reflectionFetch(`/api/course-reflections/discussion?courseSlug=${encodeURIComponent(courseSlug)}`, { cache: 'no-store' });
+          const saved = await response.json();
+          if (!response.ok) throw Error(saved.error);
+          reminderRef.current = saved.reminders;
+          setReminders(saved.reminders); setReminderError('');
+        } catch (e) { setReminderError(e instanceof Error ? e.message : 'Could not load discussion reminders.'); }
+        // An optional reminder outage must not prevent opening/saving the actual workbook.
       }
       setData(body);
       const requestedRound = automatic ? null : new URLSearchParams(window.location.search).get("round");
@@ -242,6 +274,8 @@ export function ReflectionSession({
       )
     )
       return;
+    for (const timer of Object.values(reminderTimers.current)) clearTimeout(timer);
+    setReminderDrafts({}); reminderDraftRef.current = {}; setReminderStatuses({});
     setDrafts({});
     setStatuses({});
     setSelected(id);
@@ -271,6 +305,8 @@ export function ReflectionSession({
       const b = await r.json();
       if (!r.ok) throw Error(b.error);
       setData((d) => ({ ...d, rounds: [b.round, ...d.rounds] }));
+      setReminderDrafts({}); reminderDraftRef.current = {}; setReminderStatuses({});
+      for (const timer of Object.values(reminderTimers.current)) clearTimeout(timer);
       setSelected(b.round.id);
       setRoundUrl(b.round.id);
       setDrafts({});
@@ -303,7 +339,7 @@ export function ReflectionSession({
         if (!r.ok) throw Error(b.error);
         const entries = [...entriesRef.current.filter(e => e.id !== b.entry.id), b.entry];
         entriesRef.current = entries;
-        dirty.current = Object.entries(draftRef.current).some(([id, text]) => {
+        dirty.current = reminderDirty() || Object.entries(draftRef.current).some(([id, text]) => {
           const saved = entries.filter(e => e.round_id === savingRound && e.question_id === id).sort((a,b) => b.revision-a.revision)[0];
           return text !== (saved?.response ?? "");
         });
@@ -319,14 +355,41 @@ export function ReflectionSession({
     return task;
   };
   saveRef.current = save;
+  const saveReminder = (id: string): Promise<boolean> => {
+    clearTimeout(reminderTimers.current[id]);
+    if (!round || readOnly || !discussionEnabled) return Promise.resolve(false);
+    const roundId = round.id;
+    const task = positionQueue.current.catch(() => {}).then(async () => {
+      const draft = reminderDraftRef.current[id];
+      if (!draft) return true;
+      const previous = reminderRef.current.find(r => r.round_id === roundId && r.question_id === id);
+      if (draft.marked === (previous?.marked ?? false) && draft.note === (previous?.note ?? '')) return true;
+      busy.current.add('reminder-' + id);
+      setReminderStatuses(s => ({ ...s, [id]: 'Saving…' }));
+      try {
+        const r = await reflectionFetch('/api/course-reflections/discussion', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ courseSlug, roundId, questionId: id, ...draft, expectedRevision: previous?.revision ?? 0 }) });
+        const b = await r.json();
+        if (!r.ok) throw Error(b.error);
+        const next = [...reminderRef.current.filter(v => !(v.round_id === roundId && v.question_id === id)), b.reminder];
+        reminderRef.current = next; setReminders(next);
+        setReminderStatuses(s => ({ ...s, [id]: reminderDraftRef.current[id]?.note === draft.note && reminderDraftRef.current[id]?.marked === draft.marked ? 'Saved' : 'Unsaved changes' }));
+        return true;
+      } catch (e) { setReminderStatuses(s => ({ ...s, [id]: e instanceof Error ? e.message : 'Could not save reminder. Please try again.' })); return false; }
+      finally { busy.current.delete('reminder-' + id); }
+    });
+    positionQueue.current = task.then(() => {});
+    return task;
+  };
+  saveReminderRef.current = saveReminder;
   const flush = async () => {
     const changed = questions.filter(q => Object.hasOwn(draftRef.current, q.id));
     let ok = true;
     for (const q of changed) if (!await saveRef.current(q)) ok = false;
+    for (const id of Object.keys(reminderDraftRef.current)) if (!await saveReminderRef.current(id)) ok = false;
     return ok;
   };
   flushRef.current = flush;
-  useEffect(() => () => { for (const timer of Object.values(timers.current)) clearTimeout(timer); }, []);
+  useEffect(() => () => { for (const timer of [...Object.values(timers.current), ...Object.values(reminderTimers.current)]) clearTimeout(timer); }, []);
   const recordPosition = (lessonSlug: string) => {
     if (!round || readOnly) return;
     const roundId = round.id;
@@ -358,6 +421,14 @@ export function ReflectionSession({
       .catch((e) => setError(e.message));
   };
   const session: Session = {
+    discussionEnabled, reminderError, reminders, reminderDrafts, reminderStatuses, saveReminder,
+    setReminder: (id, marked, note) => {
+      reminderDraftRef.current = { ...reminderDraftRef.current, [id]: { marked, note } };
+      setReminderDrafts(reminderDraftRef.current); dirty.current = true;
+      setReminderStatuses(s => ({ ...s, [id]: 'Unsaved changes' }));
+      clearTimeout(reminderTimers.current[id]);
+      reminderTimers.current[id] = setTimeout(() => { void saveReminderRef.current(id); }, 700);
+    },
     courseSlug,
     data,
     round,
@@ -602,6 +673,7 @@ export function ReflectionAnswer({
           ) : null}
         </>
       )}
+      <DiscussionControl questionId={q.id} />
       {previous.length ? (
         <details className="reflection-history">
           <summary>View previous dated reflections ({previous.length})</summary>
@@ -642,10 +714,33 @@ export function ReflectionAnswer({
     </section>
   );
 }
+function DiscussionControl({ questionId }: { questionId: string }) {
+  const s = useContext(Context);
+  const noteId = useId();
+  const [noteOpen, setNoteOpen] = useState(false);
+  if (!s?.discussionEnabled || !careDiscussionIds.has(questionId) || !s.round || s.loading) return null;
+  if (s.reminderError) return <div className="discussion-control"><small role="alert">{s.reminderError}</small><button type="button" onClick={() => void s.reload()}>Try loading reminders again</button></div>;
+  const saved = s.reminders.find(r => r.round_id === s.round!.id && r.question_id === questionId);
+  const current = s.reminderDrafts[questionId] ?? saved ?? { marked: false, note: '' };
+  const status = s.reminderStatuses[questionId];
+  return <div className="discussion-control">
+    <button type="button" className="discussion-mark" aria-pressed={current.marked} disabled={s.readOnly} onClick={() => { s.setReminder(questionId, !current.marked, current.note); }}>
+      <span aria-hidden="true">{current.marked ? '◆' : '◇'}</span> {current.marked ? 'Marked for discussion' : 'Bring to discussion'}
+    </button>
+    {current.marked ? <>
+      <small>Private reminder · Only you can see this.</small>
+      {!noteOpen && !current.note ? <button className="discussion-add-note" type="button" onClick={() => setNoteOpen(true)}>Add a note (optional)</button> : <label htmlFor={noteId}>Discussion note (optional)<textarea id={noteId} className="discussion-note" rows={2} maxLength={1000} value={current.note} disabled={s.readOnly} placeholder="What would you like to discuss?" onChange={e => s.setReminder(questionId, true, e.target.value)} onBlur={() => void s.saveReminder(questionId)} /></label>}
+    </> : null}
+    {status ? <small role="status">{status}</small> : null}
+    {status && !['Saved', 'Saving…', 'Unsaved changes'].includes(status) ? <button type="button" onClick={() => void s.saveReminder(questionId)}>Try saving reminder again</button> : null}
+  </div>;
+}
 export function ReflectionWorkbook() {
   const [editing, setEditing] = useState(false);
   const [moduleFilter, setModuleFilter] = useState("");
   const [answerFilter, setAnswerFilter] = useState("all");
+  const [discussionOnly, setDiscussionOnly] = useState(false);
+  useEffect(() => { if (new URLSearchParams(window.location.search).get('view') === 'discussion') setDiscussionOnly(true); }, []);
   const [exportScope, setExportScope] = useState("round");
   const [exportStatus, setExportStatus] = useState("");
   const [exporting, setExporting] = useState(false);
@@ -735,8 +830,10 @@ export function ReflectionWorkbook() {
   };
   const modules = [...new Set(s.questions.map((q) => q.moduleTitle))];
   const hasAnswer = (q: ReflectionQuestion) => answered.has(q.id);
+  const isMarked = (id: string) => s.reminderDrafts[id]?.marked ?? s.reminders.find(r => r.round_id === s.round?.id && r.question_id === id)?.marked ?? false;
   const visibleQuestions = s.questions.filter(
     (q) =>
+      (!discussionOnly || isMarked(q.id)) &&
       (!moduleFilter || q.moduleTitle === moduleFilter) &&
       (answerFilter === "all" ||
         hasAnswer(q) === (answerFilter === "answered")),
@@ -752,6 +849,12 @@ export function ReflectionWorkbook() {
   };
   return (
     <div className="reflection-workbook" ref={workbook}>
+      {s.discussionEnabled ? <section className="discussion-view" id="discussion-reminders" aria-label="My discussion reminders">
+        <h2>My discussion reminders</h2>
+        <p>Private reminders for your next conversation. Nothing is shared.</p>
+        <button type="button" className="button secondary" aria-pressed={discussionOnly} onClick={() => { setDiscussionOnly(v => !v); setModuleFilter(''); setAnswerFilter('all'); }}>{discussionOnly ? 'Show all reflections' : `View discussion reminders (${s.questions.filter(q => isMarked(q.id)).length})`}</button>
+      </section> : null}
+      {!discussionOnly ? <>
       <div className="reflection-workbook-toolbar">
         <div>
           <p className="section-label">Explore your workbook</p>
@@ -885,6 +988,7 @@ export function ReflectionWorkbook() {
           </button>
         </div>
       </div>
+      </> : null}
       <p className="reflection-filter-count" role="status">
         {visibleQuestions.length} of {s.questions.length} reflections ·{" "}
         {modules.length} modules
@@ -900,6 +1004,7 @@ export function ReflectionWorkbook() {
           const lessons = [...new Set(allQuestions.map((q) => q.lessonSlug))];
           return (
             <details
+              open={discussionOnly ? true : undefined}
               className={`reflection-module${title === "Niche" ? " reflection-module-niche" : ""}`}
               key={title}
               hidden={!questions.length}
@@ -935,6 +1040,7 @@ export function ReflectionWorkbook() {
                   );
                   return (
                     <details
+                      open={discussionOnly ? true : undefined}
                       className="reflection-lesson"
                       key={lessonSlug}
                       hidden={!visible.length}
@@ -985,8 +1091,7 @@ export function ReflectionWorkbook() {
       </div>
       {!visibleQuestions.length ? (
         <p className="reflection-filter-empty">
-          No reflections match this view. Choose another module or show all
-          reflections.
+          {discussionOnly ? "No discussion reminders in this view yet. Mark any CARE reflection with Bring to discussion—even before you answer it." : "No reflections match this view. Choose another module or show all reflections."}
         </p>
       ) : null}
     </div>

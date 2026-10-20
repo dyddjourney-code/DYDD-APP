@@ -20776,3 +20776,13 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 @media (max-width: 1100px) { .designid-course-walkthrough { grid-template-columns: minmax(0, 1fr); } }
 .designid-lesson-artwork .assessment-lesson-image figcaption { padding: 8px 12px; font-size: .8rem; }
 .designid-lesson-artwork .assessment-lesson-image::after { pointer-events: none; }
+
+/* Private, sandbox-only Journey CARE reminders. */
+.discussion-control { display: flex; flex-direction: column; align-items: flex-start; gap: .55rem; margin-top: 1rem; padding-top: .8rem; border-top: 1px solid #d8ddd5; }
+.discussion-control .discussion-mark { background: transparent; border: 1px solid #b5c4b8; border-radius: 7px; padding: .5rem .75rem; color: #315244; font: inherit; cursor: pointer; min-height: 44px; }
+.discussion-control .discussion-mark[aria-pressed="true"] { background: #edf3ed; border-color: #557b61; }
+.discussion-control small { color: #536457; font-size: .82rem; }
+.discussion-control label { width: 100%; max-width: 100%; }
+.discussion-control .discussion-note { width: 100%; box-sizing: border-box; min-height: 80px; }
+.discussion-add-note { border: 0; background: transparent; text-decoration: underline; color: #315244; cursor: pointer; padding: .4rem 0; }
+.discussion-view { padding: 1rem 0; margin-bottom: 1rem; border-bottom: 1px solid #d8ddd5; }

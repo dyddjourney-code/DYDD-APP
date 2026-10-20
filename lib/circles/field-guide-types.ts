@@ -1,7 +1,7 @@
 export type GuideArticle = { title: string; paragraphs: string[] };
 export type GuideStep = {
   id: string; title: string; subtitle: string; essentials: GuideArticle[];
-  action: string; check: string; readings: GuideArticle[];
+  action: string; readings: GuideArticle[];
 };
 export type GuideQuestion = { question: string; followup: string; help: string };
 export type GuideResource = { id: string; title: string; description: string; blocks: GuideArticle[]; readings: GuideArticle[] };

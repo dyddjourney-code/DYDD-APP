@@ -52,26 +52,54 @@ try {
    await page.setViewport({width,height:1000});await page.goto(base+path,{waitUntil:'networkidle2'});await page.waitForSelector('.fg-path');
    assert.equal((await page.$$('.fg-path li')).length,6);await overflow();
    await click('.fg-path button','Begin with grace');
-   await page.$eval('.fg-review-check input',e=>{if(!e.checked)e.click();});
+   assert.equal((await page.$$('.fg-review-check, .circle-field-guide-workspace input[type=checkbox]')).length,0,'No review checkboxes');
    await click('.fg-step-controls button','Next:');
    assert.equal(await page.$eval('.fg-path button[aria-current]',e=>e.textContent.includes('See the whole journey')),true);
    assert.equal((await page.$$('.fg-journey-map li')).length,8);
    await page.reload({waitUntil:'networkidle2'});await page.waitForSelector('.fg-path');
    assert(await page.$eval('.fg-path button[aria-current]',e=>e.textContent.includes('See the whole journey')),'Step persists');
-   await click('.fg-path button','Begin with grace');assert(await page.$eval('.fg-review-check input',e=>e.checked),'Check persists');
-   assert.equal((await page.$$('.fg-readings details[open]')).length,0);
-   await page.$eval('.fg-readings summary',e=>e.click());assert((await page.$eval('.fg-readings details[open]',e=>e.innerText)).length>400);
+   await click('.fg-path button','Begin with grace');
+   assert.equal((await page.$$('.fg-reading-panel')).length,0);
+   await page.$eval('.fg-readings button',e=>e.click());
+   assert((await page.$eval('.fg-reading-panel',e=>e.innerText)).length>400);
+   const checkColumns=async(selector)=>{
+    const rects=await page.$eval(selector,e=>Array.from(e.children).map(x=>{const r=x.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,width:r.width};}));
+    assert.equal(rects.length,2);
+    if(width>800){assert(rects[1].x>=rects[0].right,'Reading is beside practical guidance');assert(Math.abs(rects[0].y-rects[1].y)<3,'Columns top aligned');assert(rects.every(r=>r.width>300),'Readable column widths');}
+    else{assert(rects[1].y>rects[0].y,'Phone uses one column');}
+   };
+   await checkColumns('.fg-step-content .fg-reading-layout');
+   await page.$eval('.fg-reading-panel',e=>{e.scrollTop=200;});
+   await page.$eval('.fg-close-reading',e=>e.click());
+   assert.equal((await page.$$('.fg-reading-panel')).length,0);
+   assert(await page.$eval('.fg-readings button',e=>e===document.activeElement),'Close returns focus');
+   // Check all launch reading titles and full content for stale book-location labels.
+   for(let i=0;i<allowed.body.content.steps.length;i++){
+    await page.$eval(`.fg-path li:nth-child(${i+1}) button`,e=>e.click());
+    const count=await page.$$eval('.fg-readings button',els=>els.length);
+    for(let j=0;j<count;j++){
+     await page.$eval(`.fg-readings button:nth-child(${j+1})`,e=>e.click());
+     assert(!/\b(?:chapter \d+|appendix [a-m])\b/i.test(await page.$eval('.fg-step-content',e=>e.innerText)),'Useful launch titles, no chapter/appendix references');
+    }
+   }
+   await click('.fg-path button','Begin with grace');await page.$eval('.fg-readings button',e=>e.click());
    await page.screenshot({path:`tmp/field-guide-${preview?'preview':'account'}-${width}.png`,fullPage:true});await overflow();
    await click('.fg-areas button','Session Guides');assert.equal((await page.$$('.fg-session-picker button')).length,8);
    await page.$eval('.fg-session-picker button:nth-child(7)',e=>e.click());assert.match(await page.$eval('.fg-session-content h3',e=>e.textContent),/Niche Preparation/);
    await page.$eval('.fg-session-picker button:nth-child(8)',e=>e.click());assert.match(await page.$eval('.fg-session-content h3',e=>e.textContent),/Commissioning/);
    await page.$eval('.fg-session-picker button:first-child',e=>e.click());assert.equal((await page.$$('.fg-mode-picker button')).length,2);
-   await click('.fg-mode-picker button','Leading now');assert.equal((await page.$$('.fg-live-flow li')).length,allowed.body.content.flow.length);
+   await page.$eval('.fg-readings button',e=>e.click());await checkColumns('.fg-session-content .fg-reading-layout');assert(!/\b(?:chapter \d+|appendix [a-m])\b/i.test(await page.$eval('.fg-session-content',e=>e.innerText)));
+   await click('.fg-mode-picker button','Leading now');await checkColumns('.fg-live-layout');assert.equal((await page.$$('.fg-live-flow li')).length,allowed.body.content.flow.length);
    await page.$eval('.fg-discuss summary',e=>e.click());assert(await page.$('.fg-discuss details[open]'));await overflow();
    await page.screenshot({path:`tmp/field-guide-live-${preview?'preview':'account'}-${width}.png`,fullPage:true});
    await click('.fg-areas button','Leader Toolkit');assert.equal((await page.$$('.fg-tools>details')).length,allowed.body.content.resources.length);
-   await page.$eval('.fg-tools>details summary',e=>e.click());await overflow();
-   console.log(`PASS ${preview?'Jordan preview':'real account'} ${width}px: pathway, review persistence, full readings, 8 distinct sessions, Prepare/Leading now, questions, tools, no overflow`);
+   await page.$eval('.fg-tools>details summary',e=>e.click());
+   await page.$eval('.fg-tools>details[open] .fg-readings button',e=>e.click());
+   assert.match(await page.$eval('.fg-tools>details[open] .fg-reading-panel',e=>e.innerText),/Facilitation — full guidance/);
+   await checkColumns('.fg-tools>details[open] .fg-reading-layout');
+   assert(!/\b(?:chapter \d+|appendix [a-m])\b/i.test(await page.$eval('.fg-tools',e=>e.innerText)));
+   await page.screenshot({path:`tmp/field-guide-toolkit-${preview?'preview':'account'}-${width}.png`,fullPage:true});await overflow();
+   console.log(`PASS ${preview?'Jordan preview':'real account'} ${width}px: pathway, remembered place, no checkboxes, descriptive full readings, responsive columns, 8 distinct sessions, Prepare/Leading now, tools, no overflow`);
   }
   // Read failure must show an actionable retry, not an empty guide.
   await page.setRequestInterception(true);let fail=true;

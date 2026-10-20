@@ -1,0 +1,10 @@
+{
+  "voice": "Dydi / Sarah",
+  "model": "eleven_multilingual_v2",
+  "statements": 19,
+  "duration_seconds": 85.79504166666666,
+  "inserted_pause_seconds": 1,
+  "verified_one_second_gaps": 18,
+  "audio_path": "/audio/companions/course-moments/dydd-journey-handiwork-dydi.wav",
+  "scope": "Sandbox only. Module 3 / Section 3.1 / Lesson 2. User-provided lesson and image; no generated introduction or closing."
+}

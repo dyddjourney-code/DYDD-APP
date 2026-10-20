@@ -20786,3 +20786,12 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .discussion-control .discussion-note { width: 100%; box-sizing: border-box; min-height: 80px; }
 .discussion-add-note { border: 0; background: transparent; text-decoration: underline; color: #315244; cursor: pointer; padding: .4rem 0; }
 .discussion-view { padding: 1rem 0; margin-bottom: 1rem; border-bottom: 1px solid #d8ddd5; }
+
+.journey-closing-scripture {
+  margin: 20px 0 0;
+  padding: 18px 20px;
+  border-left: 3px solid var(--green-dark);
+  background: rgba(234, 240, 226, 0.44);
+}
+.journey-closing-scripture p { margin: 0 0 12px; }
+.journey-closing-scripture cite { color: var(--green-dark); font-style: normal; font-weight: 700; }

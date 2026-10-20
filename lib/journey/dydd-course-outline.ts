@@ -30,6 +30,8 @@ export type DyddCourseUnit = {
     type: "image" | "video";
   };
   companionMoment?: CompanionMoment;
+  companionMomentPosition?: "before-teaching" | "after-teaching";
+  closingScripture?: { text: string; reference: string };
   practice?: {
     prompt: string;
     title: string;
@@ -261,13 +263,95 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         section: "Identity Overview",
         title: "Handiwork",
         typeLabel: "Teaching lesson",
-        duration: "6-9 min",
-        lessonMainIdea: "Teach Handiwork with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
-        anchorScripture: "Ephesians 2:10",
+        duration: "3–5 min",
+        lessonMainIdea: "Who you are in Christ comes before what you do for Him.",
+        anchorScripture: "Psalm 139:13–14",
+        focus: ["Treasure beyond Measure"],
+        media: {
+          image: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/47ff95a7-b7ae-4aef-b6e5-55b83079f7e8/milky-way-with-silhouette-of-a-standing-happy-gir-2026-01-06-09-08-16-utc.jpg?format=500w",
+          label: "A silhouette beneath the Milky Way",
+          type: "image",
+        },
         teachingBlocks: [
-          "This lesson introduces Handiwork as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+          "Who you are in Christ comes before what you do for Him. Before your life ever had any titles, it was beautiful to Him. Identity is not discovered by looking inward, it is received by looking upward.",
+          "Take a moment of silence and listen to what Dydi has to share about your identity. Press play, close your eyes, and really take in what you hear.",
         ],
+        companionMomentPosition: "after-teaching",
+        companionMoment: {
+          audioSrc: "/audio/companions/course-moments/dydd-journey-handiwork-dydi.wav",
+          duration: "1 min 26 sec",
+          kicker: "Listen and receive",
+          title: "Treasure beyond Measure",
+          speakers: [{
+            image: "/brand/characters/full-body/dydi-full-body.png",
+            imageAlt: "Dydi, your DYDD guide",
+            name: "Dydi",
+            role: "DYDD guide",
+          }],
+          transcript: [
+            {
+                        "text": "You are not worthless, you are valuable."
+            },
+            {
+                        "text": "You are not accidental, you are purposely made."
+            },
+            {
+                        "text": "You are not a mistake, you are intended."
+            },
+            {
+                        "text": "You are not a captive, you are delivered."
+            },
+            {
+                        "text": "You are not condemned, you are forgiven."
+            },
+            {
+                        "text": "You are not broken, you are healed."
+            },
+            {
+                        "text": "You are not lost, you are found."
+            },
+            {
+                        "text": "You are not vulnerable, you are safe."
+            },
+            {
+                        "text": "You are not isolated, you are family."
+            },
+            {
+                        "text": "You are not separated, you are together whole."
+            },
+            {
+                        "text": "You are not defeated, you are victorious."
+            },
+            {
+                        "text": "You are not dead, you are born again."
+            },
+            {
+                        "text": "You are not your old self, you are a new creation."
+            },
+            {
+                        "text": "You are not an orphan, you are a child of God."
+            },
+            {
+                        "text": "You are not a stranger, you are a cherished family member."
+            },
+            {
+                        "text": "You are not disqualified, you are inheritance worthy."
+            },
+            {
+                        "text": "You are not an outsider, you are a member of the royal priesthood."
+            },
+            {
+                        "text": "You are not excluded, you have a place in the kingdom."
+            },
+            {
+                        "text": "You are not unloved, you are loved."
+            }
+],
+        },
+        closingScripture: {
+          text: "For you created my inmost being; you knit me together in my mother’s womb. I praise you because I am fearfully and wonderfully made; your works are wonderful, I know that full well.",
+          reference: "Psalm 139:13–14",
+        },
       },
       {
         row: 16,

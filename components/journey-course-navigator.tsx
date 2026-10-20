@@ -383,7 +383,9 @@ export function JourneyCourseNavigator({
               ))}
             </div>
 
-            <CompanionAudioCard moment={active.unit.companionMoment} />
+            {active.unit.companionMomentPosition !== "after-teaching" ? (
+              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} />
+            ) : null}
 
             <div className="assessment-lesson-content with-image">
               <section
@@ -406,6 +408,16 @@ export function JourneyCourseNavigator({
                 ) : null}
               </figure>
             </div>
+
+            {active.unit.companionMomentPosition === "after-teaching" ? (
+              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} />
+            ) : null}
+            {active.unit.closingScripture ? (
+              <blockquote className="journey-closing-scripture">
+                <p>“{active.unit.closingScripture.text}”</p>
+                <cite>{active.unit.closingScripture.reference}</cite>
+              </blockquote>
+            ) : null}
           </section>
 
           {active.unit.type === "assessment-link" ||

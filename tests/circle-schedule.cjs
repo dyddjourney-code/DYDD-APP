@@ -3,7 +3,9 @@ const assert = require("node:assert/strict"),
 const m = load("lib/circles/plan.ts");
 let p = { ...m.blankCirclePlan(), name: "QA Circle", startDate: "2026-11-03" };
 assert.equal(m.validatePlan(p, true), null);
-assert.equal(m.circleCurriculum.length, 70);
+assert.equal(m.circleCurriculum.length, 71);
+assert.equal(m.circleCurriculum.find(l => l.slug === "identity-assessment-time-designid")?.moduleSlug, "identity");
+assert.equal(p.assignments["identity-assessment-time-designid"], 2);
 assert.equal(p.meetingCount, 8);
 assert.equal(m.meetingLessons(p, 7).every(l => l.moduleSlug === "niche" && !l.slug.includes("congratulations")), true);
 assert.deepEqual(m.meetingLessons(p, 8).map(l => l.slug), ["niche-congratulations-75", "niche-prayer-76", "niche-whats-next-77"]);

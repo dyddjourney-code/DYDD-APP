@@ -20842,6 +20842,11 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
     width: 36%;
     margin: 0 0 20px 24px;
   }
+  /* Let lines use the image's former space, including on wide desktops. */
+  .journey-wrap-pilot .readable-lesson-body > p,
+  .journey-wrap-pilot .lesson-body-list {
+    max-width: none;
+  }
   .journey-wrap-pilot .readable-lesson-body > p { margin-bottom: 16px; }
   .journey-wrap-pilot .lesson-body-subheading { margin: 24px 0 12px; }
   .journey-wrap-pilot .lesson-body-subheading:first-of-type { margin-top: 0; }

@@ -63,6 +63,9 @@ try {
    await page.$eval('.fg-readings button',e=>e.click());
    assert((await page.$eval('.fg-reading-panel',e=>e.innerText)).length>400);
    const checkColumns=async(selector)=>{
+    // The companion is intentionally sticky. Compare natural column origins at
+    // page top, not a mixture of a scrolled main column and pinned companion.
+    if(width>800){await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));}
     const rects=await page.$eval(selector,e=>Array.from(e.children).map(x=>{const r=x.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,width:r.width};}));
     assert.equal(rects.length,2);
     if(width>800){assert(rects[1].x>=rects[0].right,'Reading is beside practical guidance');assert(Math.abs(rects[0].y-rects[1].y)<3,'Columns top aligned');assert(rects.every(r=>r.width>300),'Readable column widths');}
@@ -125,9 +128,46 @@ try {
    await page.$eval('.fg-discuss summary',e=>e.click());
    await overflow();
    await page.screenshot({path:`tmp/session-two-live-${preview?'preview':'account'}-${width}.png`,fullPage:true});
-   await page.$eval('.fg-session-picker button:nth-child(3)',e=>e.click());
-   assert.equal((await page.$$('.fg-mode-picker')).length,0,'Session 3 remains quick-reference');
-   assert.equal((await page.$$('.fg-rollout-note')).length,1);
+   const guideKeys=['expertise','story','desire','spiritual-gifts','niche-preparation','declarations-commissioning'];
+   for(let n=0;n<guideKeys.length;n++){
+    const guide=allowed.body.content.sessions[guideKeys[n]];
+    await page.$eval(`.fg-session-picker button:nth-child(${n+3})`,e=>e.click());
+    assert.equal((await page.$$('.fg-mode-picker button')).length,2,'Every session has full Prepare/Leading now');
+    assert.equal((await page.$$('.fg-rollout-note')).length,0,'No quick-reference fallback');
+    assert.equal((await page.$$('.fg-reading-panel')).length,0,'New session clears prior reading');
+    assert.equal((await page.$$('.fg-readings button')).length,guide.readings.length);
+    const prepareText=await page.$eval('.fg-main-guidance',e=>e.innerText);
+    assert(prepareText.includes(guide.prepare.at(-1).paragraphs.at(-1)),'Complete session-specific preparation');
+    for(let j=0;j<guide.readings.length;j++){
+     await page.$eval(`.fg-readings button:nth-child(${j+1})`,e=>e.click());
+     const text=await page.$eval('.fg-reading-panel',e=>e.innerText);
+     assert(text.includes(guide.readings[j].paragraphs[0]),'Correct full reading start');
+     assert(text.includes(guide.readings[j].paragraphs.at(-1)),'Full reading final paragraph');
+     assert(!/\b(?:chapter \d+|appendix [a-m])\b/i.test(text),'Descriptive titles and references');
+     await checkColumns('.fg-session-content .fg-reading-layout');await overflow();
+    }
+    if([0,1,3,5].includes(n))await page.screenshot({path:`tmp/full-session-${n+3}-prepare-${preview?'preview':'account'}-${width}.png`,fullPage:true});
+    await page.$eval('.fg-close-reading',e=>e.click());
+    assert(await page.$eval('.fg-readings button:last-child',e=>e===document.activeElement),'Close restores focus');
+    await click('.fg-mode-picker button','Leading now');await checkColumns('.fg-live-layout');
+    assert.match(await page.$eval('.fg-anchor',e=>e.innerText),new RegExp(guide.anchor.title.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')));
+    assert.equal((await page.$$('.fg-live-flow li')).length,guide.flow.length);
+    assert.equal((await page.$$('.fg-discuss details')).length,guide.questions.length);
+    for(let j=0;j<guide.questions.length;j++){
+     await page.$eval(`.fg-discuss details:nth-of-type(${j+1}) summary`,e=>e.click());
+     const text=await page.$eval(`.fg-discuss details:nth-of-type(${j+1})`,e=>e.innerText);
+     assert(text.includes(guide.questions[j].followup)&&text.includes(guide.questions[j].help),'Full question support');
+    }
+    await click('.fg-live-help>details>summary','Help in the moment');
+    let text=await page.$eval('.fg-live-help',e=>e.innerText);
+    assert(text.includes(guide.help.at(-1).paragraphs.at(-1)),'Complete situation support');
+    await click('.fg-live-help>details>summary',guide.followThroughTitle);
+    text=await page.$eval('.fg-live-help',e=>e.innerText);
+    assert(text.includes(guide.followThrough.at(-1).paragraphs.at(-1)),'Complete follow-through');
+    await overflow();
+    if([1,3,4,5].includes(n))await page.screenshot({path:`tmp/full-session-${n+3}-live-${preview?'preview':'account'}-${width}.png`,fullPage:true});
+    console.log(`PASS full Session ${n+3} ${preview?'preview':'account'} ${width}px: all ${guide.readings.length} readings, preparation, questions, help, follow-through, layout, focus and session isolation`);
+   }
    await page.$eval('.fg-session-picker button:first-child',e=>e.click());
    assert.match(await page.$eval('.fg-main-guidance',e=>e.innerText),/Ephesians 2:8–10/,'Session 1 stays unchanged');
    console.log(`PASS Session 2 ${preview?'preview':'account'} ${width}px: all readings, session isolation, Prepare/Leading now, flow/questions/help/Expertise, responsive layout and focus`);
@@ -138,6 +178,16 @@ try {
    await checkColumns('.fg-tools>details[open] .fg-reading-layout');
    assert(!/\b(?:chapter \d+|appendix [a-m])\b/i.test(await page.$eval('.fg-tools',e=>e.innerText)));
    await page.screenshot({path:`tmp/field-guide-toolkit-${preview?'preview':'account'}-${width}.png`,fullPage:true});await overflow();
+   for(let n=6;n<allowed.body.content.resources.length;n++){
+    const resource=allowed.body.content.resources[n];
+    await page.$eval(`.fg-tools>details:nth-of-type(${n+1})>summary`,e=>e.click());
+    for(let j=0;j<resource.readings.length;j++){
+     await page.$eval(`.fg-tools>details:nth-of-type(${n+1}) .fg-readings button:nth-child(${j+1})`,e=>e.click());
+     const text=await page.$eval(`.fg-tools>details:nth-of-type(${n+1}) .fg-reading-panel`,e=>e.innerText);
+     assert(text.includes(resource.readings[j].paragraphs.at(-1)),'Full contextual toolkit reading');
+     await overflow();
+    }
+   }
    console.log(`PASS ${preview?'Jordan preview':'real account'} ${width}px: pathway, remembered place, no checkboxes, descriptive full readings, responsive columns, 8 distinct sessions, Prepare/Leading now, tools, no overflow`);
   }
   // Read failure must show an actionable retry, not an empty guide.

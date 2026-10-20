@@ -16,5 +16,6 @@ export type FieldGuideContent = {
   flow: { title: string; minutes: number; detail: string }[];
   resources: GuideResource[];
   sessionTwo: FullSessionGuide;
+  sessions: Record<"expertise" | "story" | "desire" | "spiritual-gifts" | "niche-preparation" | "declarations-commissioning", FullSessionGuide>;
   sessionOne: { prepare: GuideArticle[]; readings: GuideArticle[]; followThrough: GuideArticle[] };
 };

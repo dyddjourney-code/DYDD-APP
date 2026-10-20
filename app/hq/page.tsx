@@ -1,3 +1,4 @@
+import { isSandbox } from "@/lib/environment";
 import { BaseCampProfile } from "@/components/basecamp-profile";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -656,7 +657,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             </div>
           </section>
 
-          <BaseCampProfile initialName={displayName} preview={Boolean(reviewReport)} />
+          <BaseCampProfile initialName={displayName} preview={Boolean(reviewReport)} previewQuery={isSandbox() && newPreview ? reviewQuery(reviewParams) : ""} />
 
           <section className="fruitlife-basecamp-intro" aria-label="What you can do here">
             <article>
@@ -753,7 +754,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         </div>
       </section>
 
-      <BaseCampProfile initialName={displayName} preview={Boolean(reviewReport)} />
+      <BaseCampProfile initialName={displayName} preview={Boolean(reviewReport)} previewQuery={isSandbox() && newPreview ? reviewQuery(reviewParams) : ""} />
 
       <section className="basecamp-orientation-band" aria-label="DYDD Base Camp next step">
         <div className="basecamp-ranger-launch-card">

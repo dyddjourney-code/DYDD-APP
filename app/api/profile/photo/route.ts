@@ -1,6 +1,8 @@
+import { sandboxProfileRequest, sandboxProfileGet } from '@/lib/profile/sandbox-preview';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 export const dynamic = 'force-dynamic';
-export async function GET() {
+export async function GET(request: Request) {
+  if (sandboxProfileRequest(request)) return sandboxProfileGet(true);
   const headers = { 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff' };
   const db = await createSupabaseServerClient();
   const { data: { user } } = await db.auth.getUser();

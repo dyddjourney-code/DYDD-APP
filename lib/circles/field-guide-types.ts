@@ -5,9 +5,16 @@ export type GuideStep = {
 };
 export type GuideQuestion = { question: string; followup: string; help: string };
 export type GuideResource = { id: string; title: string; description: string; blocks: GuideArticle[]; readings: GuideArticle[] };
+export type FullSessionGuide = {
+  anchor: GuideArticle; prepare: GuideArticle[]; readings: GuideArticle[];
+  questions: GuideQuestion[]; help: GuideArticle[];
+  flow: { title: string; minutes: number; detail: string }[];
+  followThrough: GuideArticle[]; followThroughTitle: string; followThroughHint: string;
+};
 export type FieldGuideContent = {
   steps: GuideStep[]; questions: GuideQuestion[]; help: GuideArticle[];
   flow: { title: string; minutes: number; detail: string }[];
   resources: GuideResource[];
+  sessionTwo: FullSessionGuide;
   sessionOne: { prepare: GuideArticle[]; readings: GuideArticle[]; followThrough: GuideArticle[] };
 };

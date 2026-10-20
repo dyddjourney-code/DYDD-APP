@@ -92,6 +92,45 @@ try {
    await click('.fg-mode-picker button','Leading now');await checkColumns('.fg-live-layout');assert.equal((await page.$$('.fg-live-flow li')).length,allowed.body.content.flow.length);
    await page.$eval('.fg-discuss summary',e=>e.click());assert(await page.$('.fg-discuss details[open]'));await overflow();
    await page.screenshot({path:`tmp/field-guide-live-${preview?'preview':'account'}-${width}.png`,fullPage:true});
+   // Session 2 must use its own complete content, not Session 1 copy or a quick-reference fallback.
+   await page.$eval('.fg-session-picker button:nth-child(2)',e=>e.click());
+   assert.match(await page.$eval('.fg-session-content h3',e=>e.textContent),/Identity and DesignID/);
+   assert.equal((await page.$$('.fg-mode-picker button')).length,2);
+   assert.equal((await page.$$('.fg-rollout-note')).length,0);
+   assert.equal((await page.$$('.fg-reading-panel')).length,0,'Session switch clears prior reading');
+   assert.equal((await page.$$('.fg-readings button')).length,allowed.body.content.sessionTwo.readings.length);
+   assert.match(await page.$eval('.fg-main-guidance',e=>e.innerText),/whole-number points, never percentages/);
+   for(let j=0;j<allowed.body.content.sessionTwo.readings.length;j++){
+    await page.$eval(`.fg-readings button:nth-child(${j+1})`,e=>e.click());
+    const article=allowed.body.content.sessionTwo.readings[j];
+    const text=await page.$eval('.fg-reading-panel',e=>e.innerText);
+    assert(text.includes(article.paragraphs.at(-1)),'Complete reading, including its final paragraph');
+    assert(!/\b(?:chapter \d+|appendix [a-m])\b/i.test(text),'No book-location labels in Session 2');
+    await checkColumns('.fg-session-content .fg-reading-layout');
+    await overflow();
+   }
+   await page.screenshot({path:`tmp/session-two-prepare-${preview?'preview':'account'}-${width}.png`,fullPage:true});
+   await page.$eval('.fg-close-reading',e=>e.click());
+   assert(await page.$eval('.fg-readings button:last-child',e=>e===document.activeElement),'Session 2 close restores focus');
+   await click('.fg-mode-picker button','Leading now');
+   await checkColumns('.fg-live-layout');
+   assert.match(await page.$eval('.fg-anchor',e=>e.innerText),/Belonging in Christ/);
+   assert.equal((await page.$$('.fg-live-flow li')).length,allowed.body.content.sessionTwo.flow.length);
+   assert.equal((await page.$$('.fg-discuss details')).length,allowed.body.content.sessionTwo.questions.length);
+   assert.equal(allowed.body.content.sessionTwo.flow.reduce((sum,x)=>sum+x.minutes,0),90);
+   await click('.fg-live-help>details>summary','Help in the moment');
+   assert.match(await page.$eval('.fg-live-help>details[open]',e=>e.innerText),/does not have a report/);
+   await click('.fg-live-help>details>summary','Close well and prepare for Expertise');
+   assert.match(await page.$eval('.fg-live-help',e=>e.innerText),/assigned Expertise lessons/);
+   await page.$eval('.fg-discuss summary',e=>e.click());
+   await overflow();
+   await page.screenshot({path:`tmp/session-two-live-${preview?'preview':'account'}-${width}.png`,fullPage:true});
+   await page.$eval('.fg-session-picker button:nth-child(3)',e=>e.click());
+   assert.equal((await page.$$('.fg-mode-picker')).length,0,'Session 3 remains quick-reference');
+   assert.equal((await page.$$('.fg-rollout-note')).length,1);
+   await page.$eval('.fg-session-picker button:first-child',e=>e.click());
+   assert.match(await page.$eval('.fg-main-guidance',e=>e.innerText),/Ephesians 2:8–10/,'Session 1 stays unchanged');
+   console.log(`PASS Session 2 ${preview?'preview':'account'} ${width}px: all readings, session isolation, Prepare/Leading now, flow/questions/help/Expertise, responsive layout and focus`);
    await click('.fg-areas button','Leader Toolkit');assert.equal((await page.$$('.fg-tools>details')).length,allowed.body.content.resources.length);
    await page.$eval('.fg-tools>details summary',e=>e.click());
    await page.$eval('.fg-tools>details[open] .fg-readings button',e=>e.click());

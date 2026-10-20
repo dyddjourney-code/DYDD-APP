@@ -1,0 +1,25 @@
+Session 2: Identity and DesignID — digital Field Guide source map
+Source: projects/dydd-source-library/extracted_text/DYDD__Books__Leaders__Playbook.docx.txt
+Original: source/DYDD Agent Load/DYDD Books/LeadersPlaybook.docx
+Line references below are inclusive in the extracted source.
+
+Full readings:
+- Identity and DesignID — full session guidance: 226–271 (complete, unchanged).
+- Identity — teaching outline: 887–897 (complete, unchanged).
+- Understanding DesignID and its assessment format: 508–528. Theology and measurement teaching retained; legacy standalone purchase/QR/group-code instructions replaced with current Journey access guidance.
+- Interpreting DesignID together: 529–555. All four reflections, capacity, shadow, learning/contribution and facilitator teaching retained. Slide-dependent wording adapted into direct guidance. Unprovided slides, matrix, handouts and score spreadsheet are explicitly not represented as attached resources. Group score collection replaced by voluntary sharing and existing privacy boundaries.
+- Identity — discussion questions: 976–980. Source calls this Session 3; reconciled to the current app's Session 2. Questions preserved verbatim.
+- Facilitation — full guidance: 446–506 (complete, unchanged; shared existing resource).
+
+Digital adaptations (not additional participant workbook questions):
+- Prepare essentials; 90-minute example flow; optional question follow-ups; situation-specific help; closing and Expertise follow-through.
+- Scripture: Galatians 3:26 and 1 Corinthians 12:27 from session guidance; 2 Corinthians 5:17 from teaching outline.
+- Score display described as integer points, never percentages; no scoring logic changed.
+- No report access, assessment routes, pricing, saved schedules, private sharing or database policies changed.
+- Full Identity, outline, facilitation readings and all original questions were checked against the extracted source; all pre-existing JSON content was compared with the previous commit and is unchanged.
+- Full reading length: 4,316 words across six readings.
+- Sessions 1 and 3–8 retain their existing materials; only Sessions 1 and 2 show Full guide.
+- Session 2 teaching-slide PDF remains pending supply by John.
+
+Verification:
+Build and existing Circle browser/access suite expanded to cover Session 2 in account and Jordan preview at 1280, 390, 320 widths: full readings including final paragraphs; responsive columns/stacking; close/focus; own flow/questions/help/follow-through; switching sessions; preservation of Session 1 and Session 3 fallback. Sandbox-only release and exact project/commit/alias verification.

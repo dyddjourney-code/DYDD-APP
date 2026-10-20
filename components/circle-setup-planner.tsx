@@ -14,7 +14,7 @@ import {
   type SavedCircle,
 } from "@/lib/circles/plan";
 import { CircleScheduleEditor } from "./circle-schedule-editor";
-import { facilitatorPlaybookStages } from "@/lib/journey/facilitator-playbook";
+import { CircleFieldGuide } from "@/components/circle-field-guide";
 const stages = ["Circle details", "Meeting schedule", "People", "Review"];
 export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (plan: CirclePlan, tab: string, samples: boolean) => ReactNode }) {
   const params = useSearchParams();
@@ -29,7 +29,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
     [selected, setSelected] = useState<SavedCircle | null>(null);
   const [newId, setNewId] = useState(""),
     [workspace, setWorkspace] = useState(false),
-    [tab, setTab] = useState("Progress");
+    [tab, setTab] = useState(params.get("fieldGuide") === "1" ? "Field Guide" : "Progress");
   const [showSetup, setShowSetup] = useState(true);
   const [samples, setSamples] = useState(true);
   const [participant, setParticipant] = useState({ name: "", email: "" });
@@ -409,59 +409,10 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
                 </>
               )}
               {tab === "People" && people}
-              {tab === "Field Guide" && (
-                <div className="circle-guide-by-meeting">
-                  {Array.from({ length: plan.meetingCount }, (_, i) => {
-                    const lessons = meetingLessons(plan, i + 1),
-                      modules = [...new Set(lessons.map((l) => l.moduleSlug))];
-                    const guides = facilitatorPlaybookStages.filter((g) =>
-                      modules.some(
-                        (m) =>
-                          m === g.slug ||
-                          (["welcome-and-orientation", "what-is-dydd"].includes(
-                            m,
-                          ) &&
-                            g.slug === "welcome"),
-                      ),
-                    );
-                    return (
-                      <details key={i}>
-                        <summary>
-                          Meeting {i + 1} · {dates[i] || "Date to be set"}
-                          <small>
-                            {[
-                              ...new Set(lessons.map((l) => l.moduleTitle)),
-                            ].join(" · ") || "Discussion / catch-up"}
-                          </small>
-                        </summary>
-                        {guides.map((g) => (
-                          <section key={g.slug}>
-                            <h3>{g.title}</h3>
-                            <h4>Lead the conversation</h4>
-                            <ul>
-                              {g.inTheMoment.map((s) => (
-                                <li key={s}>{s}</li>
-                              ))}
-                            </ul>
-                            <h4>Prepare next</h4>
-                            <ul>
-                              {g.prepareNext.map((s) => (
-                                <li key={s}>{s}</li>
-                              ))}
-                            </ul>
-                          </section>
-                        ))}
-                        {!guides.length && (
-                          <p>
-                            Make room to connect, reflect, and choose a next
-                            step together.
-                          </p>
-                        )}
-                      </details>
-                    );
-                  })}
-                </div>
+              {tab === "Field Guide" && selected?.status === "active" && (
+                <CircleFieldGuide key={selected.id} circleId={selected.id} plan={plan} onSchedule={() => setTab("Schedule")} />
               )}
+              {tab === "Field Guide" && selected?.status !== "active" && <p>The full Field Guide is available inside a started Circle.</p>}
               <div className="circle-action-row">
                 <button
                   type="button"

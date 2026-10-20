@@ -179,12 +179,12 @@ export const facilitatorPlaybookStages: FacilitatorPlaybookStage[] = [
   },
   {
     slug: "niche",
-    session: "Sessions 7-8",
-    title: "Niche, Declaration, and Commissioning",
+    session: "Session 7",
+    title: "Niche Preparation",
     inTheMoment: [
       "Help participants synthesize Identity, Expertise, Story, Desire, and Gifts into a working declaration.",
       "Treat the declaration as a faithful draft, not a contract.",
-      "Close with encouragement, prayer, next experiments, and a support rhythm.",
+      "Leave room to draft and refine; reserve sharing, commissioning, and next steps for Session 8.",
     ],
     prepareNext: [
       "Prepare commissioning language and next-step options.",
@@ -201,6 +201,23 @@ export const facilitatorPlaybookStages: FacilitatorPlaybookStage[] = [
       "Launching alumni groups",
       "Leadership implementation timeline",
     ],
+  },
+  {
+    slug: "commissioning",
+    session: "Session 8",
+    title: "Declarations, Commissioning, and Next Steps",
+    inTheMoment: [
+      "Invite voluntary sharing of a working declaration; affirm what you hear without evaluating someone’s calling.",
+      "Pray for one another and commission people into ordinary, faithful service.",
+      "Help each person choose one practical experiment and a relationship or rhythm for ongoing encouragement.",
+    ],
+    prepareNext: [
+      "Make room for mentoring, service experiments, and follow-up conversations.",
+      "Invite an ongoing alumni rhythm without treating the class ending as the end of discovery.",
+      "Keep personal declarations and reflections private unless participants choose to share.",
+    ],
+    emails: ["Commissioning encouragement and next-step reminder.", "Optional alumni gathering invitation."],
+    resources: ["Sample alumni gathering agenda", "Purpose conversation guide", "Launching alumni groups"],
   },
 ];
 

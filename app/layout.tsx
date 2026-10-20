@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AppChrome } from "@/components/app-chrome";
 import "./globals.css";
+import "./field-guide.css";
 
 export const metadata: Metadata = {
   title: "DYDD Online School",

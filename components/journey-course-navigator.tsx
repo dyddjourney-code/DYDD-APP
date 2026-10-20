@@ -194,7 +194,9 @@ export function JourneyCourseNavigator({
   const lessonImageLabel =
     active.unit.media?.label ?? `${active.module.title} Journey illustration`;
   const lessonFocus = active.unit.focus?.length
-    ? active.unit.focus
+    ? active.unit.focus.flatMap((item) =>
+        item.split(/[,;\n]+|(?<=\?)\s+(?=[A-Z])/).map((focus) => focus.trim()).filter(Boolean),
+      )
     : [lessonMainIdea];
 
   if (!active) {
@@ -367,14 +369,6 @@ export function JourneyCourseNavigator({
           </div>
         </header>
 
-        <section
-          className="journey-active-section-marker"
-          aria-label="Current section"
-        >
-          <span>{active.section}</span>
-          <strong>{active.module.summary}</strong>
-        </section>
-
         <div className="journey-active-body has-care">
           <section className="journey-teaching-card assessment-teaching-card">
             <p className="section-label">Lesson focus</p>
@@ -410,7 +404,6 @@ export function JourneyCourseNavigator({
                     className={`assessment-lesson-image${active.unit.media?.type === "video" || active.unit.media?.additionalImages?.length ? " contain" : ""}`}
                   >
                     <img src={image.image} alt={image.label} loading="lazy" />
-                    {active.unit.media ? <figcaption>{image.label}</figcaption> : null}
                   </figure>
                 ))}
               </div>

@@ -15272,8 +15272,23 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   line-height: 1.36;
 }
 
-.dydd-journey-walkthrough .journey-active-focus > span:only-child {
-  grid-column: 1 / -1;
+/* Journey focus labels are compact tags, not equal-size cards. */
+.dydd-journey-walkthrough .journey-active-focus {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dydd-journey-walkthrough .journey-active-focus > span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 0;
+  max-width: 100%;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 .assessment-lesson-content {

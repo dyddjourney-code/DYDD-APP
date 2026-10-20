@@ -427,7 +427,8 @@ export function JourneyCourseNavigator({
             ) : null}
           </section>
 
-          {active.unit.contentStatus !== "draft" && (active.unit.type === "assessment-link" ||
+          {/* Keep the overview in class; connected trails remain available at the assessment introductions. */}
+          {active.unit.slug !== "what-is-dydd-dydd-assessments-11" && active.unit.contentStatus !== "draft" && (active.unit.type === "assessment-link" ||
           active.unit.type === "designid-reflection" ||
           active.unit.slug.includes("spiritual-gifts-assessment")) ? (
             <aside className="trail-fieldkit-note">

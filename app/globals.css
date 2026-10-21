@@ -20899,3 +20899,36 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   color: #364b32;
   line-height: 1.75;
 }
+
+/* Who vs. Whose pilot only: every stage owns its prompt and response, in fixed CARE positions. */
+.journey-who-whose-care .journey-care-reference { margin: 0; max-width: none; line-height: 1.7; }
+.journey-who-whose-care .journey-care-response-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "connect act" "reflect explore"; gap: 16px; align-items: stretch; }
+.journey-care-response-cell { min-width: 0; border: 1px solid #c8d2c2; border-radius: 8px; overflow: hidden; background: #fcfcf7; }
+.journey-care-response-cell.connect { grid-area: connect; --care-color: var(--green-dark); }
+.journey-care-response-cell.act { grid-area: act; --care-color: #315d3c; }
+.journey-care-response-cell.reflect { grid-area: reflect; --care-color: #476b42; }
+.journey-care-response-cell.explore { grid-area: explore; --care-color: #739d5e; }
+.journey-care-response-cell > h4 { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0; padding: 14px 18px; background: var(--care-color); color: white; font-size: 1.05rem; }
+.journey-care-response-cell > h4 > span { font-size: 1.7rem; line-height: 1; font-weight: 900; color: white; }
+.journey-care-response-content { padding: 18px; min-width: 0; }
+.journey-care-response-content > p { margin: 0 0 20px; line-height: 1.7; }
+.journey-who-whose-care .reflection-answer { padding: 0; border: 0; background: none; min-width: 0; margin: 0; }
+.journey-who-whose-care .reflection-answer h3 { font-size: 1rem; line-height: 1.6; }
+.journey-who-whose-care .reflection-answer textarea { width: 100%; min-width: 0; box-sizing: border-box; }
+.journey-who-whose-care .discussion-mark { white-space: normal; text-align: left; }
+.journey-care-explore-question { font-weight: 700; }
+.journey-who-whose-prayer { padding: 22px; border-left: 3px solid #739d5e; background: #f4f3e9; border-radius: 6px; }
+.journey-who-whose-prayer h4 { margin: 0 0 12px; color: var(--green-dark); }
+.journey-who-whose-prayer p { margin: 0; max-width: none; line-height: 1.8; }
+@media (max-width: 600px) {
+  .journey-who-whose-care .journey-care-response-grid { gap: 8px; }
+  .journey-care-response-cell > h4 { padding: 12px 8px; gap: 6px; font-size: 1rem; }
+  .journey-care-response-content { padding: 12px 8px; overflow-wrap: anywhere; }
+  .journey-who-whose-care .reflection-answer textarea { padding: 8px; font-size: 16px; }
+  .journey-who-whose-care .discussion-mark { padding: 8px 0; font-size: .85rem; }
+  .journey-who-whose-care .reflection-answer h3 { font-size: .95rem; }
+}
+@media (max-width: 600px) {
+  .journey-who-whose-care { padding: 8px; }
+  .journey-care-response-cell > h4 { display: grid; gap: 4px; }
+}

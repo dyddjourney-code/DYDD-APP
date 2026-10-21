@@ -977,13 +977,90 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         workbookPages: "p7 - p8",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Who Vs. Whose with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+        lessonMainIdea: "Who you are may describe you. Whose you are defines you.",
         anchorScripture: "Ephesians 2:10",
         companionMoment: dyddJourneyCompanionMoments.identity,
-        teachingBlocks: [
-          "This lesson introduces Who Vs. Whose as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+        focus: ["Who", "Whose"],
+        media: {"image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/61335d73-5a9f-42ed-b64a-b334c4463126/elderly-hand-resting-on-bible-indoors-2026-01-09-10-57-28-utc.jpg?format=300w", "label": "A hand resting on an open Bible", "type": "image"},
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "Design starts with identity. Before we explore your gifts, personality, or purpose, we need to begin with something more foundational: who you belong to."
+          },
+          {
+            "type": "paragraph",
+            "text": "“Who am I?” is an important question. But in discovering your divine design, it finds its deepest meaning when grounded in another question: “Whose am I?”"
+          },
+          {
+            "type": "heading",
+            "text": "Who Are You?"
+          },
+          {
+            "type": "paragraph",
+            "text": "When you describe yourself, you might talk about:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "Your personality",
+              "Your experiences",
+              "Your talents",
+              "Your story",
+              "How others describe you"
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "These things matter. They help you recognize what makes you unique and how you engage with the world. Your experiences have shaped your perspective. Your talents influence what comes naturally. Your personality affects how you connect, contribute, and respond."
+          },
+          {
+            "type": "paragraph",
+            "text": "But none of these can carry the full weight of your identity. Your abilities can change. Your roles can shift. Other people’s opinions can be mistaken. Even your own understanding of yourself can be shaped by disappointment, comparison, or past mistakes. If these become the foundation of your identity, your sense of worth can rise and fall with how well life is going."
+          },
+          {
+            "type": "heading",
+            "text": "Whose You Are?"
+          },
+          {
+            "type": "paragraph",
+            "text": "For those who belong to Jesus, there is a deeper foundation:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "You are a child of God.",
+              "You are fully known.",
+              "You are deeply loved.",
+              "You are secure in Christ.",
+              "You belong to the One who created you."
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "“Whose you are” is about belonging before achievement. You do not have to discover your gifts, prove your usefulness, or figure out your purpose to become worthy of God’s love."
+          },
+          {
+            "type": "paragraph",
+            "text": "“See what great love the Father has lavished on us, that we should be called children of God! And that is what we are!” — 1 John 3:1 (NIV)"
+          },
+          {
+            "type": "paragraph",
+            "text": "Your relationship with God is not another item on the list of things that describe you. It is the foundation from which you begin to understand everything else."
+          },
+          {
+            "type": "heading",
+            "text": "Why This Matters for Your Design"
+          },
+          {
+            "type": "paragraph",
+            "text": "When you start with “who,” discovering your design can become a search for proof that you matter. You may compare your gifts with someone else’s, wish you had a different personality, or feel that your story disqualifies you. When you start with “whose,” you can approach discovery from a place of belonging. You are not trying to earn your place in God’s family. You are learning how to live as someone who already belongs to Him."
+          },
+          {
+            "type": "paragraph",
+            "text": "Who you are may describe you. Whose you are defines you."
+          }
         ],
+        teachingBlocks: [],
       },
       {
         row: 16,

@@ -7,6 +7,7 @@ import {
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ReviewAwareLink } from "@/components/review-aware-link";
+import { JourneyWhoWhoseCare } from "@/components/journey-who-whose-care";
 import { JourneyCareIntroduction } from "@/components/journey-care-introduction";
 import { JourneyLessonBody } from "@/components/journey-lesson-body";
 import { CompanionAudioCard } from "@/components/companion-audio-card";
@@ -180,6 +181,7 @@ export function JourneyCourseNavigator({
   const progress = flatUnits.length
     ? Math.round(((activeIndex + 1) / flatUnits.length) * 100)
     : 0;
+  const isWhoWhose = active.unit.slug === "identity-who-vs-whose-16";
   const isCareIntroduction = active.unit.slug === "what-is-dydd-how-to-c-a-r-e-10";
   const workbookExperience = active ? getWorkbookExperience(active) : null;
   const lessonMainIdea = cleanLessonMainIdea(
@@ -375,7 +377,7 @@ export function JourneyCourseNavigator({
           </div>
           <div className="journey-active-meta">
             <span>{active.unit.typeLabel}</span>
-            <span>{active.unit.duration}</span>
+            {!isWhoWhose ? <span>{active.unit.duration}</span> : null}
             {active.unit.bookPages ? (
               <span>Book {active.unit.bookPages}</span>
             ) : null}
@@ -395,7 +397,7 @@ export function JourneyCourseNavigator({
             </div>
 
             {active.unit.companionMomentPosition !== "after-teaching" ? (
-              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction} />
+              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction && !isWhoWhose} />
             ) : null}
 
             <div className={`assessment-lesson-content${isCareIntroduction ? " journey-care-introduction-layout" : " with-image"}${wrapLessonImage ? " journey-wrap-pilot" : ""}`}>
@@ -421,7 +423,7 @@ export function JourneyCourseNavigator({
             </div>
 
             {active.unit.companionMomentPosition === "after-teaching" ? (
-              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction} />
+              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction && !isWhoWhose} />
             ) : null}
             {active.unit.closingScripture ? (
               <blockquote className="journey-closing-scripture">
@@ -468,7 +470,7 @@ export function JourneyCourseNavigator({
             </aside>
           ) : null}
 
-          {workbookExperience ? (
+          {isWhoWhose ? <JourneyWhoWhoseCare /> : workbookExperience ? (
             <section
               className={`journey-active-workbook ${workbookExperience.kind}`}
             >

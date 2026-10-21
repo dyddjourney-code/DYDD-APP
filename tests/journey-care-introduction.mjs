@@ -61,7 +61,7 @@ try {
   assert((await page.$eval('.journey-active-workbook',e=>e.textContent)).includes('Bring to discussion'));
   assert.equal(await page.$('.journey-care-introduction'),null);
   assert.equal(await page.$('.journey-care-record'),null);
-  if(other.companionMoment) assert(await page.$('.companion-audio-speakers span'),'Other lessons with audio retain duration badges');
+  if(other.companionMoment && other.slug!=="identity-who-vs-whose-16") assert(await page.$('.companion-audio-speakers span'),'Other lessons with audio retain duration badges');
   console.log('PASS actual CARE lesson retains editable reflection and discussion controls: '+other.slug);
  }
  assert.deepEqual(errors,[]);console.log('PASS no browser runtime errors');

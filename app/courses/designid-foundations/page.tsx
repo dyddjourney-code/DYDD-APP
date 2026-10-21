@@ -2,7 +2,6 @@ import { designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import { getReflectionExperience } from "@/lib/reflections/catalog";
 import { ReflectionCourseShell } from "@/components/reflection-course-shell";
 import { requireTrailCourseAssessment } from "@/lib/trails/course-access";
-import Link from "next/link";
 import {
   buildDesignIdContext,
   getAssessmentSnapshotsForUser,
@@ -25,7 +24,6 @@ import {
   newReviewName,
   reviewQuery,
   type ReviewSearchParams,
-  withReviewQuery,
 } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { designIdLessonPresentation } from "@/lib/courses/designid-lesson-presentation";
@@ -103,16 +101,6 @@ export default async function DesignIdCoursePage({
 
   return (
     <main className="journey-shell designid-course-shell">
-      <nav className="course-nav" aria-label="Course navigation">
-        <Link href={withReviewQuery("/trailheads", reviewParams) + "#designid"}>
-          Back to Trailhead
-        </Link>
-        <Link href={withReviewQuery("/journey", reviewParams)}>
-          Return to My Journey
-        </Link>
-        <Link href="/">DYDD home</Link>
-      </nav>
-
       <header className="journey-hero designid-course-hero">
         <div>
           <h1>{designIdCourse.title}</h1>

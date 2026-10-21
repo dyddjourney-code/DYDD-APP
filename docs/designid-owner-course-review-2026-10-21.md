@@ -66,3 +66,20 @@ project ID, exact Git SHA and expectedCommitSha, stable sandbox alias, and uncha
 production deployment. Repeat focused browser proof against the stable sandbox
 alias. The final deployment receipt is `tmp/designid-header-receipt.json`; record
 post-release outcome outside Git to avoid a documentation-only deployment loop.
+
+
+## Course navigation preference — sandbox follow-up (2026-10-21)
+
+John requested no redundant top navigation row on the DesignID course. Removed
+Back to Trailhead, Return to My Journey and DYDD home from this course page; the
+existing sidebar handles site navigation, as it does for the Journey course.
+Removing the entire nav element also removes its bottom margin and mobile pill
+wrapping space, bringing the forest hero directly to the shared Journey shell
+padding. No new spacing override is needed. Keep the forest artwork, hero sizing,
+sidebar/mobile navigation, global gold sandbox bar, authorization, modules, lessons
+and private workbook unchanged. Standalone lesson navigation remains unchanged.
+
+Verified with typecheck/build, whitespace review and focused desktop/phone browser
+checks before and after sandbox-only publication. Evidence uses ignored
+`tmp/designid-nav-*` artifacts; deployment receipt confirms the exact pushed SHA,
+stable sandbox alias and unchanged production deployment.

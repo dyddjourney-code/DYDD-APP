@@ -7,6 +7,7 @@ import {
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ReviewAwareLink } from "@/components/review-aware-link";
+import { JourneyCareIntroduction } from "@/components/journey-care-introduction";
 import { JourneyLessonBody } from "@/components/journey-lesson-body";
 import { CompanionAudioCard } from "@/components/companion-audio-card";
 import type { CareStep } from "@/lib/journey/dydd-journey";
@@ -179,6 +180,7 @@ export function JourneyCourseNavigator({
   const progress = flatUnits.length
     ? Math.round(((activeIndex + 1) / flatUnits.length) * 100)
     : 0;
+  const isCareIntroduction = active.unit.slug === "what-is-dydd-how-to-c-a-r-e-10";
   const workbookExperience = active ? getWorkbookExperience(active) : null;
   const lessonMainIdea = cleanLessonMainIdea(
     active.unit,
@@ -396,15 +398,17 @@ export function JourneyCourseNavigator({
               <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} />
             ) : null}
 
-            <div className={`assessment-lesson-content with-image${wrapLessonImage ? " journey-wrap-pilot" : ""}`}>
+            <div className={`assessment-lesson-content${isCareIntroduction ? " journey-care-introduction-layout" : " with-image"}${wrapLessonImage ? " journey-wrap-pilot" : ""}`}>
               <section
                 className="lesson-source readable-lesson-body"
                 aria-label="Lesson body"
               >
-                {wrapLessonImage ? lessonArtwork : null}
+                {!isCareIntroduction && wrapLessonImage ? lessonArtwork : null}
                 <h3 className="lesson-body-subheading">{active.unit.title}</h3>
                 {active.unit.contentStatus === "draft" ? (
                   <p role="status">Lesson content is being prepared.</p>
+                ) : isCareIntroduction && active.unit.lessonBody ? (
+                  <JourneyCareIntroduction blocks={active.unit.lessonBody} />
                 ) : active.unit.lessonBody ? (
                   <JourneyLessonBody blocks={active.unit.lessonBody} />
                 ) : active.unit.teachingBlocks.map((block) => (
@@ -413,7 +417,7 @@ export function JourneyCourseNavigator({
                   </p>
                 ))}
               </section>
-              {!wrapLessonImage ? lessonArtwork : null}
+              {!isCareIntroduction && !wrapLessonImage ? lessonArtwork : null}
             </div>
 
             {active.unit.companionMomentPosition === "after-teaching" ? (

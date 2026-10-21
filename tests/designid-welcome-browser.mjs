@@ -19,7 +19,7 @@ try{
  await api(b,{action:'new-round'},201);
  for(const user of [a,b])for(const width of [1920,1280,768,390,320]){
   const p=await pageFor(user,width);await p.waitForSelector('.designid-lesson-reflections textarea:not([disabled])');
-  assert.deepEqual(await p.$$eval('.designid-welcome-snapshot dd',es=>es.map(e=>e.textContent)),user.pattern);assert.equal(await p.$$eval('.designid-welcome-snapshot dt',es=>es.length),3);
+  assert(await p.$eval('.journey-module-toggle strong',e=>e.getBoundingClientRect().width>=70),'Readable module name without single-letter column');assert.deepEqual(await p.$$eval('.designid-welcome-snapshot dd',es=>es.map(e=>e.textContent)),user.pattern);assert.equal(await p.$$eval('.designid-welcome-snapshot dt',es=>es.length),3);
   const text=await p.$eval('.designid-welcome-lesson',e=>e.textContent);assert(!text.includes('DO NOT RENDER'));assert(!text.includes('Open image full size'));assert(!text.includes('Shadow Awareness'));assert(!text.includes('Current growth watch'));
   assert((await p.$eval('.journey-active-meta',e=>e.textContent)).includes('3–5 minutes'));assert.deepEqual(await p.$$eval('.journey-active-focus span',es=>es.map(e=>e.textContent)),['Welcome','Overview']);assert.equal(await p.$$eval('.designid-lesson-reflections textarea',es=>es.length),1);assert.equal(await p.$eval('.designid-lesson-reflections h3',e=>e.textContent),load('lib/courses/designid-welcome.ts').designIdWelcome.reflection);
   await p.$eval('.designid-welcome-inline img',e=>e.scrollIntoView({block:'center',behavior:'instant'}));await p.waitForFunction(()=>[...document.querySelectorAll('.designid-welcome-body img')].every(i=>i.complete&&i.naturalWidth>0));assert.equal(await p.$$eval('.designid-welcome-inline img',es=>es.length),1);

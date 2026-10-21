@@ -20966,3 +20966,34 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   color: var(--green-dark);
 }
 .readable-lesson-body .journey-niche-closing p { margin: 0; max-width: none; font-weight: 600; line-height: 1.8; }
+
+/* Spreadsheet-authored Welcome only; neighboring DesignID/Journey lessons unchanged. */
+.designid-welcome-lesson .journey-active-meta { justify-content: flex-end; }
+.designid-welcome-lesson .journey-active-focus { display: flex; flex-wrap: wrap; gap: 8px; }
+.designid-welcome-lesson .journey-active-focus span { flex: 0 1 auto; padding: 7px 12px; }
+.designid-welcome-body { display: flow-root; border-top: 1px solid rgba(186, 153, 74, .32); padding-top: 22px; max-width: none; }
+.designid-welcome-body .designid-welcome-artwork { float: right; width: min(35%, 310px); margin: 0 0 20px 28px; }
+.designid-welcome-artwork img { display: block; width: 100%; height: auto; border-radius: 14px; }
+.readable-lesson-body.designid-welcome-body p:not(.section-label), .readable-lesson-body.designid-welcome-body ul, .readable-lesson-body.designid-welcome-body h3 { max-width: none; }
+.designid-welcome-body h3 { margin-top: 25px; line-height: 1.35; }
+.designid-welcome-body .lesson-scripture-callout { margin-left: 22px; border-left: 4px solid #243f27; }
+.designid-welcome-body .designid-welcome-inline { clear: both; margin: 20px 0 28px; }
+.designid-welcome-inline img { display: block; width: 100%; height: auto; border-radius: 12px; }
+.designid-welcome-snapshot { clear: both; padding: 20px; margin: 24px 0; border: 1px solid #ded9c5; border-radius: 16px; background: #f7f7ef; }
+.designid-welcome-snapshot h3 { margin-top: 0; }
+.designid-welcome-snapshot dl { display: grid; gap: 14px; margin: 0; }
+.designid-welcome-snapshot dt { font-size: .83rem; color: #5a6252; }
+.designid-welcome-snapshot dd { margin: 4px 0 0; font-weight: 700; color: #344b32; overflow-wrap: anywhere; }
+@media (max-width: 980px) {
+  .designid-welcome-body .designid-welcome-artwork { width: min(38%, 230px); margin-left: 18px; }
+}
+@media (max-width: 520px) {
+  .designid-welcome-body .designid-welcome-artwork { float: none; width: min(100%, 260px); margin: 0 auto 22px; }
+}
+
+@media (min-width: 981px) { .designid-welcome-lesson > header { grid-template-columns: minmax(0, 1fr) minmax(180px, .75fr); } }
+
+.readable-lesson-body.designid-welcome-body .designid-semantic-body > p:not(.section-label) { margin-bottom: 16px; }
+.designid-welcome-body .lesson-scripture-callout { display: flow-root; }
+
+@media (max-width: 1100px) { .designid-welcome-walkthrough .journey-course-index { position: static; max-height: none; } }

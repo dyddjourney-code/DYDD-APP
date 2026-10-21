@@ -14,6 +14,7 @@ import {
 import {
   buildWalkthroughPrompt,
   personalizeDesignIdHtml,
+  personalizeDesignIdWelcome,
 } from "@/lib/courses/personalization";
 import { normalizeEmail } from "@/lib/identity/email";
 import {
@@ -89,7 +90,7 @@ export default async function DesignIdCoursePage({
       const walkthrough = buildWalkthroughPrompt(lesson.title, studentContext);
 
       return {
-        bodyHtml: personalizeDesignIdHtml(lessonBody, studentContext),
+        bodyHtml: (lesson.slug === "welcome-to-designid" ? personalizeDesignIdWelcome : personalizeDesignIdHtml)(lessonBody, studentContext),
         images: presentation?.images ?? [],
         focus: lesson.focus,
         personalizedNotes: walkthrough.items,

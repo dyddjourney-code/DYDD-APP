@@ -1,4 +1,5 @@
 "use client";
+import { DesignIdWelcomeBody } from "@/components/designid-welcome-body";
 import type { ReflectionQuestion } from "@/lib/reflections/catalog";
 import {
   useReflectionPosition,
@@ -141,7 +142,7 @@ export function DesignIdCourseNavigator({
 
   return (
     <section
-      className="journey-course-walkthrough designid-course-walkthrough"
+      className={`journey-course-walkthrough designid-course-walkthrough ${active.lesson.slug === "welcome-to-designid" ? "designid-welcome-walkthrough" : ""}`}
       aria-label="DesignID course walkthrough"
     >
       <aside className="journey-course-index designid-course-index">
@@ -220,7 +221,7 @@ export function DesignIdCourseNavigator({
       </aside>
 
       <article
-        className="journey-active-lesson designid designid-active-lesson"
+        className={`journey-active-lesson designid designid-active-lesson ${active.lesson.slug === "welcome-to-designid" ? "designid-welcome-lesson" : ""}`}
         ref={activeLessonRef}
       >
         <header>
@@ -233,17 +234,18 @@ export function DesignIdCourseNavigator({
           </div>
           <div className="journey-active-meta">
             <span>DesignID</span>
-            <span>{active.module.title}</span>
+            <span>{active.lesson.slug === "welcome-to-designid" ? `Module ${active.moduleIndex + 1}` : active.module.title}</span>
+            {active.lesson.slug === "welcome-to-designid" ? <><span>Welcome</span><span>3–5 minutes</span></> : null}
           </div>
         </header>
 
-        <section
+        {active.lesson.slug !== "welcome-to-designid" ? <section
           className="journey-active-section-marker"
           aria-label="Current module"
         >
           <span>{active.module.title}</span>
 
-        </section>
+        </section> : null}
 
         <div className="journey-active-body has-care">
           <section className="journey-teaching-card designid-teaching-card">
@@ -256,7 +258,7 @@ export function DesignIdCourseNavigator({
 
             <CompanionAudioCard moment={active.lesson.companionMoment} />
 
-            <div className="assessment-lesson-content designid-lesson-content with-image">
+            {active.lesson.slug === "welcome-to-designid" ? <DesignIdWelcomeBody bodyHtml={active.lesson.bodyHtml} image={active.lesson.images[0]} /> : <div className="assessment-lesson-content designid-lesson-content with-image">
               <section className="lesson-source readable-lesson-body designid-clean-lesson" aria-label="Lesson body">
                 <h3 className="lesson-body-subheading">{active.lesson.title}</h3>
                 <div className="designid-semantic-body" dangerouslySetInnerHTML={{ __html: active.lesson.bodyHtml }} />
@@ -271,11 +273,11 @@ export function DesignIdCourseNavigator({
                   </figure>
                 ))}
               </aside>
-            </div>
-            <details className="designid-report-connection">
+            </div>}
+            {active.lesson.slug !== "welcome-to-designid" ? <details className="designid-report-connection">
               <summary>Connect this lesson to your report</summary>
               <ul>{active.lesson.personalizedNotes.map((item) => <li key={item}>{item}</li>)}</ul>
-            </details>
+            </details> : null}
             <section className="designid-lesson-reflections" aria-label="Lesson reflections">
               <p className="section-label">Reflect and apply</p>
 

@@ -46,7 +46,7 @@ if (fs.existsSync('tmp/journey-content-before.json')) {
   assert.equal(units.length, oldUnits.length + 1);
   assert.deepEqual(handiwork.companionMoment, oldUnits.find(u => u.slug === handiwork.slug).companionMoment);
   const current = load('lib/reflections/catalog.ts').reflectionExperiences;
-  const stable = exps => exps.map(e => ({slug:e.slug,questions:e.questions.map(({lessonTitle, ...q}) => q)}));
+  const stable = exps => exps.map(e => ({slug:e.slug,questions:e.questions.filter(q=>q.lessonSlug!=="welcome-to-designid").map(({lessonTitle, ...q}) => q)}));
   assert.deepEqual(stable(current.map(e=>({...e,questions:e.questions.filter(q=>q.id!=='whose-tomorrow')}))), stable(before.reflections));
 }
 console.log('PASS all 13 spreadsheet lessons: complete source text/focus/images, inline book/Gear, stable IDs and saved questions, preserved Dydi audio, authored DesignID assessment lesson in its stable slot.');

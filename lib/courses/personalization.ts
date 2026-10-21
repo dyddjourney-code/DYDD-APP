@@ -114,3 +114,13 @@ export function buildWalkthroughPrompt(
     ],
   };
 }
+
+/** Only saved canonical report values; absent fields are never inferred from scores. */
+export function personalizeDesignIdWelcome(html: string, context: StudentDesignContext | null) {
+  const values: Record<string, string> = {
+    "contact.designid__primary": context?.designId.primary || "Not available in your saved report.",
+    "contact.designid__secondary": context?.designId.secondary || "Not available in your saved report.",
+    "contact.designid__integrative_reflection": context?.designId.integrativeReflection || "Not available in your saved report.",
+  };
+  return html.replace(/\{\{\s*([^}]+?)\s*\}\}/g, (_, token: string) => escapeHtml(values[token.trim()] ?? "Not available in your saved report."));
+}

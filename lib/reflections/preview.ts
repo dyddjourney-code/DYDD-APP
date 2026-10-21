@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { reportBucket } from '@/lib/assessments/report-storage';
-import { getReflectionExperience, reflectionLessonExists, reflectionExperiences, withWhoWhoseExplore } from './catalog';
+import { getReflectionExperience, reflectionLessonExists, reflectionExperiences, withWhoWhoseExplore, withDesignIdWelcome } from './catalog';
 import type { ReflectionRound, ReflectionEntry, ReflectionData } from './types';
 import { getHeatherReviewReport, getNewReviewReport, isReviewRequest, type ReviewSearchParams } from '@/lib/review/heather';
 import { isOwnerPreviewRequest } from '@/lib/owner-preview';
@@ -29,7 +29,7 @@ async function load(p: ReviewSearchParams, slug: string): Promise<Saved> {
         throw Error('Could not load the saved preview workbook. Please try again.');
     }
     const saved: Saved = JSON.parse(await data.text());
-    if (saved.rounds[0]) saved.rounds[0].questions = withWhoWhoseExplore(slug, saved.rounds[0].questions);
+    if (saved.rounds[0]) saved.rounds[0].questions = withDesignIdWelcome(slug, withWhoWhoseExplore(slug, saved.rounds[0].questions));
     return saved;
 }
 export async function previewReflectionRounds(p: ReviewSearchParams) {

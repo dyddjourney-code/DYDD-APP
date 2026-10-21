@@ -1,3 +1,4 @@
+import { designIdWelcome } from "./designid-welcome";
 import { designIdLessonBodies } from "./designid-source-html";
 import type { CompanionMoment } from "./companion-moments";
 import { designIdCompanionMoments } from "./course-companion-moment-data";
@@ -36,11 +37,7 @@ export const designIdCourse = {
           sourceTitle: "Welcome to DesignID",
           summary:
             "Orients the learner to DesignID as a meaningful first step in the broader Discover Your Divine Design journey.",
-          focus: [
-            "DesignID is language for how God has shaped a person.",
-            "The class helps the learner understand results and begin applying them.",
-            "The journey starts with receiving the assessment as an invitation.",
-          ],
+          focus: designIdWelcome.focus,
           companionMoment: designIdCompanionMoments.welcome,
         },
         {

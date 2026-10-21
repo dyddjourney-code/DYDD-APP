@@ -1,3 +1,4 @@
+import { DesignIdWelcomeBody } from "@/components/designid-welcome-body";
 import { requireTrailCourseAssessment } from "@/lib/trails/course-access";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -12,6 +13,7 @@ import {
 import {
   buildWalkthroughPrompt,
   personalizeDesignIdHtml,
+  personalizeDesignIdWelcome,
 } from "@/lib/courses/personalization";
 import { normalizeEmail } from "@/lib/identity/email";
 import {
@@ -85,7 +87,7 @@ export default async function DesignIdLessonPage({
         isSignedIn: Boolean(user),
       };
   const walkthrough = buildWalkthroughPrompt(lesson.title, studentContext);
-  const personalizedBody = personalizeDesignIdHtml(
+  const personalizedBody = (lesson.slug === "welcome-to-designid" ? personalizeDesignIdWelcome : personalizeDesignIdHtml)(
     designIdLessonPresentation[lesson.slug]?.bodyHtml ?? lesson.bodyHtml,
     studentContext,
   );
@@ -127,7 +129,7 @@ export default async function DesignIdLessonPage({
             moment={"companionMoment" in lesson ? lesson.companionMoment : undefined}
           />
 
-          <div className="assessment-lesson-content designid-lesson-content with-image">
+          {lesson.slug === "welcome-to-designid" ? <DesignIdWelcomeBody bodyHtml={personalizedBody} image={designIdLessonPresentation[lesson.slug].images[0]} /> : <div className="assessment-lesson-content designid-lesson-content with-image">
             <section className="lesson-source readable-lesson-body" aria-label="Complete lesson body">
               <h2 className="lesson-body-subheading">{lesson.title}</h2>
               <div className="designid-semantic-body" dangerouslySetInnerHTML={{ __html: personalizedBody }} />
@@ -142,11 +144,11 @@ export default async function DesignIdLessonPage({
                 </figure>
               ))}
             </aside>
-          </div>
-          <details className="designid-report-connection">
+          </div>}
+          {lesson.slug !== "welcome-to-designid" ? <details className="designid-report-connection">
             <summary>Connect this lesson to your report</summary>
             <ul>{walkthrough.items.map(item => <li key={item}>{item}</li>)}</ul>
-          </details>
+          </details> : null}
           <section className="designid-lesson-reflections" aria-label="Lesson reflections">
             <p className="section-label">Reflect and apply</p>
             {getDesignIdReflectionPrompts(lesson.slug).map(question => <p key={question.id}>{question.prompt}</p>)}

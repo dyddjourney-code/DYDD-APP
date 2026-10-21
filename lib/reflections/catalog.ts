@@ -111,7 +111,7 @@ export const reflectionExperiences: ReflectionExperience[] = [
           lessonTitle: l.title,
           moduleTitle: m.title,
           prompt: prompt.prompt,
-          version: "2026-10-19",
+          version: l.slug === "welcome-to-designid" ? "2026-10-21" : "2026-10-19",
         })),
       ),
     ),
@@ -173,4 +173,13 @@ export function withWhoWhoseExplore(courseSlug: string, questions: ReflectionQue
   if (!explore) return questions;
   const anchor = questions.findIndex(q => q.id === "whose-before-who");
   return [...questions.slice(0, anchor + 1), explore, ...questions.slice(anchor + 1)];
+}
+
+/** Refresh only the current Welcome prompt; never remove old keys/entries or alter archived rounds. */
+export function withDesignIdWelcome(courseSlug: string, questions: ReflectionQuestion[]) {
+  if (courseSlug !== "designid-foundations") return questions;
+  const canonical = getReflectionExperience(courseSlug)!.questions.find(q => q.id === "welcome-to-designid-notice")!;
+  const old = questions.find(q => q.id === canonical.id);
+  if (old?.prompt === canonical.prompt && old.version === canonical.version) return questions;
+  return old ? questions.map(q => q.id === canonical.id ? canonical : q) : [...questions, canonical];
 }

@@ -198,7 +198,7 @@ export function JourneyCourseNavigator({
   const lessonImageLabel =
     active.unit.media?.label ?? `${active.module.title} Journey illustration`;
   // Owner-review pilot: no other lesson changes its reading layout.
-  const wrapLessonImage = active.unit.slug === "what-is-dydd-d-e-s-i-g-n-9";
+  const wrapLessonImage = active.unit.slug === "what-is-dydd-d-e-s-i-g-n-9" || isWhoWhose;
   const lessonArtwork = (
     <div className="journey-lesson-images">
       {[{ image: lessonImage, label: lessonImageLabel }, ...(active.unit.media?.additionalImages ?? [])].map((image) => (
@@ -363,7 +363,7 @@ export function JourneyCourseNavigator({
       </aside>
 
       <article
-        className={`journey-active-lesson ${typeClass[active.unit.type]}`}
+        className={`journey-active-lesson ${typeClass[active.unit.type]}${isWhoWhose ? " journey-who-whose-lesson" : ""}`}
         ref={activeLessonRef}
       >
         <header>
@@ -376,7 +376,7 @@ export function JourneyCourseNavigator({
             <p>{lessonMainIdea}</p>
           </div>
           <div className="journey-active-meta">
-            <span>{active.unit.typeLabel}</span>
+            {!isWhoWhose ? <span>{active.unit.typeLabel}</span> : null}
             {!isWhoWhose ? <span>{active.unit.duration}</span> : null}
             {active.unit.bookPages ? (
               <span>Book {active.unit.bookPages}</span>

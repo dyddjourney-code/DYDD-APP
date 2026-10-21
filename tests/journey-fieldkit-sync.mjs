@@ -10,6 +10,8 @@ const base=process.env.JOURNEY_TEST_BASE || 'http://localhost:3124';
 assert(base==='https://dydd-online-school-sandbox.vercel.app' || base.startsWith('http://localhost:'));
 const admin=createClient(cfg.project_url,cfg.service_role_key,{auth:{persistSession:false}});
 const slug='discover-your-divine-design';
+const questionId=process.env.JOURNEY_TEST_QUESTION_ID || 'child-of-god-response';
+assert(/^[a-z0-9-]+$/.test(questionId),'Use a stable reflection question ID');
 let userId,browser,page;
 try {
  const email=`journey-sync-${crypto.randomUUID()}@example.invalid`;
@@ -22,8 +24,17 @@ try {
  const cookie=cookies.map(x=>x.name+'='+x.value).join('; ');
  // No setup API/button: opening Journey must create the first workbook itself.
  const load=(await import('../scripts/fruitlife-test-load.cjs')).default;
- const q=load('lib/reflections/catalog.ts').getReflectionExperience(slug).questions.find(x=>x.id==='child-of-god-response');
- assert(q);
+ const q=load('lib/reflections/catalog.ts').getReflectionExperience(slug).questions.find(x=>x.id===questionId);
+ assert(q,`Reflection question ${questionId} is in the catalog`);
+ const eligible=load('lib/reflections/discussion-catalog.ts').careDiscussionIds;
+ assert(eligible.has(q.id),'Tested CARE prompt is discussion eligible');
+ if(q.id==='whose-tomorrow') {
+  assert.equal(q.prompt,'How might your life be different tomorrow if you focused on whose rather than who?');
+  const section=load('lib/journey/dydd-journey.ts').dyddJourney.stages.flatMap(s=>s.sections).find(s=>s.slug==='who-and-whose');
+  assert.equal(section.prompts.filter(p=>p.id===q.id).length,1,'One stable Explore prompt');
+  assert.equal(section.prompts.find(p=>p.id===q.id).careStep,'explore');
+ }
+ console.log('Testing reflection '+q.id+' at '+q.lessonSlug);
  const errors=[];
  const answer='CARE sync verification '+crypto.randomUUID();
  for(const width of [1280,390,320]) {
@@ -39,13 +50,17 @@ try {
   assert(!(await page.$eval('body',e=>e.textContent)).includes('Begin my reflections'));
   const current = await fetch(base+'/api/course-reflections?courseSlug='+slug,{headers:{Cookie:cookie}}).then(r=>r.json());
   assert.equal(current.rounds.length,1,'One automatically created workbook, not one per visit');
+  assert.equal(current.rounds[0].questions.filter(x=>x.id===q.id).length,1,'Round snapshots the stable prompt once');
+  assert.equal(current.rounds[0].questions.find(x=>x.id===q.id).prompt,q.prompt);
+  assert(await page.$(`.journey-active-workbook [data-question="${q.id}"] .discussion-mark`),'Journey discussion control');
+  if(q.id==='whose-tomorrow')assert(await page.$(`[data-care-stage="explore"] [data-question="${q.id}"] textarea`),'Explore has an editable answer');
   q.lessonSlug=current.rounds[0].questions.find(x=>x.id===q.id).lessonSlug;
   const setup=await Promise.all([1,2].map(()=>fetch(base+'/api/course-reflections',{method:'POST',headers:{Cookie:cookie,'Content-Type':'application/json'},body:JSON.stringify({courseSlug:slug,action:'ensure-round'})}).then(r=>r.json())));
   assert(setup.every(x=>x.round.id===current.rounds[0].id));
   const selector=`.journey-active-workbook [data-question="${q.id}"]`;
   const text=answer+' '+width;
-  await page.$eval(selector+' textarea',(e,t)=>{const setter=Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set;setter.call(e,t);e.dispatchEvent(new Event('input',{bubbles:true}));},text);
   const saved=page.waitForResponse(r=>r.url().includes('/api/course-reflections') && r.request().method()==='POST' && r.request().postData()?.includes('"action":"save"'));
+  await page.$eval(selector+' textarea',(e,t)=>{const setter=Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set;setter.call(e,t);e.dispatchEvent(new Event('input',{bubbles:true}));},text);
   assert.equal((await saved).status(),200);
   await page.waitForFunction(s=>document.querySelector(s+" [role=status]")?.textContent==="Saved",{},selector);
   console.log("Inline saved "+width);
@@ -61,6 +76,29 @@ try {
   const fieldSaved=page.waitForResponse(r=>r.url().includes('/api/course-reflections') && r.request().method()==='POST' && r.request().postData()?.includes('"action":"save"'));
   await page.$eval(article+' button',e=>e.click());assert.equal((await fieldSaved).status(),200);
   await page.waitForFunction(s=>document.querySelector(s+" [role=status]")?.textContent==="Saved to your account",{},article);
+  assert(await page.$(article+' .discussion-mark'),'Field Kit discussion control');
+  const history=await fetch(base+'/api/course-reflections?courseSlug='+slug,{headers:{Cookie:cookie}}).then(r=>r.json());
+  const revisions=history.entries.filter(e=>e.question_id===q.id).sort((a,b)=>b.revision-a.revision);
+  assert.equal(revisions[0].response,edited);
+  assert(revisions.some(e=>e.response===text),'Original inline answer remains in dated revision history');
+  const historyText=await page.$eval(article+' .reflection-history',e=>{e.open=true;return e.textContent;});
+  assert(historyText.includes(text),'Field Kit renders original answer in earlier edits');
+  for(const scope of ['round','course','all']) {
+   const query=new URLSearchParams({scope,courseSlug:slug,round:current.rounds[0].id});
+   const exported=await fetch(base+'/api/course-reflections/export?'+query,{headers:{Cookie:cookie}});
+   assert.equal(exported.status,200);
+   const exportText=await exported.text();
+   assert(exportText.includes('Question: '+q.prompt+'\nAnswer:\n'+edited),'Latest answer exports under exact prompt ('+scope+')');
+   assert(!exportText.includes('\n'+text+'\n'),'Exports exclude superseded revision ('+scope+')');
+  }
+  if(width===1280) {
+   const reminderResponse=await fetch(base+'/api/course-reflections/discussion',{method:'POST',headers:{Cookie:cookie,'Content-Type':'application/json'},body:JSON.stringify({courseSlug:slug,roundId:current.rounds[0].id,questionId:q.id,marked:true,note:'Synthetic Explore discussion eligibility',expectedRevision:0})});
+   assert.equal(reminderResponse.status,200);
+   const reminder=await reminderResponse.json();assert.equal(reminder.reminder.question_id,q.id);assert.equal(reminder.reminder.marked,true);
+   const reminders=await fetch(base+'/api/course-reflections/discussion?courseSlug='+slug,{headers:{Cookie:cookie}}).then(r=>r.json());
+   assert(reminders.reminders.some(r=>r.question_id===q.id && r.marked),'Reminder survives API reload');
+  }
+  console.log('PASS '+width+'px: exact prompt snapshots, append-only history/UI, round/course/all exports, discussion eligibility');
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Field Kit overflow '+width);
   await go('/journey?lesson='+q.lessonSlug);
   await page.waitForFunction(({s,t})=>document.querySelector(s+' textarea')?.value===t,{}, {s:selector,t:edited});
@@ -116,7 +154,7 @@ try {
     console.log('PASS edits made during saving persist; stale tab cannot overwrite newer answer and keeps draft');
 
   }
-  await page.screenshot({path:`tmp/journey-sync-${base.startsWith('https')?'live':'local'}-${width}.png`,fullPage:false});
+  await page.screenshot({path:`tmp/journey-sync-${q.id}-${base.startsWith('https')?'live':'local'}-${width}.png`,fullPage:false});
   await browser.close();browser=null;page=null;
   console.log('PASS '+width+'px: inline CARE save → Field Kit exact answer → Field Kit edit → Journey reload; no top setup; automatic round/save; no overflow');
  }
@@ -126,5 +164,13 @@ try {
  throw error;
 } finally {
  if(browser)await browser.close().catch(()=>{});
- if(userId){const r=await admin.auth.admin.deleteUser(userId);assert(!r.error,r.error?.message);console.log('Synthetic QA account removed; Jordan and existing learner answers untouched');}
+ if(userId){
+  try {
+   const removed=await admin.storage.from('assessment-report-pdfs').remove([`private-discussion-reminders/user-${userId}.json`,`private-discussion-reminders/user-${userId}.lock`]);
+   assert(!removed.error,removed.error?.message);
+  } finally {
+   const r=await admin.auth.admin.deleteUser(userId);assert(!r.error,r.error?.message);
+  }
+  console.log('Synthetic QA account and reminder objects removed; Jordan and existing learner answers untouched');
+ }
 }

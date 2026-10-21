@@ -20932,3 +20932,15 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .journey-who-whose-care { padding: 8px; }
   .journey-care-response-cell > h4 { display: grid; gap: 4px; }
 }
+
+/* Who vs. Whose prototype only: Bible passages remain visibly set apart. */
+.journey-who-whose-lesson .lesson-source .journey-closing-scripture {
+  margin: 24px 0 24px 20px;
+  padding: 18px 22px;
+  border-left: 4px solid #243f27;
+  background: #f1f5ef;
+  max-width: none;
+}
+.journey-who-whose-lesson .lesson-source .journey-closing-scripture p {
+  max-width: none;
+}

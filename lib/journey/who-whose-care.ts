@@ -26,7 +26,7 @@ export const whoWhoseCare = [
     "title": "Explore",
     "explanation": "Imagine how tomorrow changes when you focus on whose you are.",
     "question": "How might your life be different tomorrow if you focused on whose rather than who?",
-    "questionId": null
+    "questionId": "whose-tomorrow"
   }
 ] as const;
 export const whoWhosePrayer = "“Jesus, help me let go of the names I’ve given myself or that others have put on me. Show me how to see myself the way You do: as beloved, chosen, and made new. Help me walk in the truth of whose I am so I can live in the peace You offer. Jesus, quiet the voices that tell me I’m anything less than Yours. When I’m tempted to wear old labels or live from old wounds, remind me who I truly am in You. Help me to rest in Your love, to believe I am fully accepted, fully forgiven, and fully known. Shape my identity by Your truth, and teach me to live as Your beloved child today.”";

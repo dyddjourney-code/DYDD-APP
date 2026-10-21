@@ -165,3 +165,12 @@ export function reflectionLessonExists(courseSlug: string, lessonSlug: string) {
     false
   );
 }
+
+/** Add this pilot's new prompt only; never rewrite historical prompts or other courses. */
+export function withWhoWhoseExplore(courseSlug: string, questions: ReflectionQuestion[]) {
+  if (courseSlug !== "discover-your-divine-design" || questions.some(q => q.id === "whose-tomorrow")) return questions;
+  const explore = getReflectionExperience(courseSlug)?.questions.find(q => q.id === "whose-tomorrow");
+  if (!explore) return questions;
+  const anchor = questions.findIndex(q => q.id === "whose-before-who");
+  return [...questions.slice(0, anchor + 1), explore, ...questions.slice(anchor + 1)];
+}

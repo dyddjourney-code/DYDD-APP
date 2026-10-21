@@ -1,9 +1,11 @@
 import { createHash } from "node:crypto";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { previewParams, previewReflectionRequest } from "@/lib/reflections/preview";
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   getReflectionExperience,
+  withWhoWhoseExplore,
   reflectionLessonExists,
 } from "@/lib/reflections/catalog";
 import {
@@ -96,6 +98,22 @@ export async function GET(request: Request) {
       { error: "Could not load your reflection history. Try again." },
       500,
     );
+  // Existing active Journey workbooks predate Explore. Extend only their prompt
+  // metadata, preserving all answer IDs/revisions and archived walkthroughs.
+  if (rounds?.[0] && courseSlug === "discover-your-divine-design") {
+    const current = rounds[0];
+    const questions = withWhoWhoseExplore(courseSlug, current.questions);
+    if (questions !== current.questions) {
+      // Authenticated users cannot edit their prompt snapshots. The server adds
+      // only this canonical prompt to the already owner-filtered current round.
+      const extended = await createSupabaseAdminClient().from("reflection_rounds").update({ questions })
+        .eq("id", current.id).eq("user_id", user.id).eq("course_slug", courseSlug)
+        .eq("updated_at", current.updated_at).select("id").maybeSingle();
+      if (extended.error || !extended.data)
+        return json({ error: "Could not open the updated workbook. Please reload; your answers are unchanged." }, 503);
+      current.questions = questions;
+    }
+  }
   const entries: unknown[] = [];
   if (rounds?.length) {
     for (let from = 0; ; from += 1000) {

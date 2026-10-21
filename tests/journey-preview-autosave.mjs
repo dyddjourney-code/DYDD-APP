@@ -11,7 +11,7 @@ const base=process.env.JOURNEY_TEST_BASE || 'http://localhost:3124';
 assert(base==='https://dydd-online-school-sandbox.vercel.app' || base.startsWith('http://localhost:'));
 const query='review=new&key='+encodeURIComponent(cfg.review_token);
 const slug='discover-your-divine-design';
-const q=load('lib/reflections/catalog.ts').getReflectionExperience(slug).questions.find(q=>q.id==='child-of-god-response');
+const q=load('lib/reflections/catalog.ts').getReflectionExperience(slug).questions.find(q=>q.id===(process.env.JOURNEY_TEST_QUESTION_ID||'child-of-god-response'));
 const bucket=createClient(cfg.project_url,cfg.service_role_key).storage.from('assessment-report-pdfs');
 const path='preview-reflections/new/'+slug+'.json';
 async function read(){const r=await bucket.download(path,{cacheNonce:crypto.randomUUID()});if(r.error){assert(['400','404'].includes(String(r.error.statusCode)),r.error.message);return null;}return r.data.text();}

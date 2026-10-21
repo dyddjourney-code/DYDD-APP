@@ -12,7 +12,7 @@ export function JourneyWhoWhoseCare() {
         return item ? <section className={`journey-care-response-cell ${stage}`} key={stage} data-care-stage={stage} aria-labelledby={`who-whose-${stage}`}>
           <h4 id={`who-whose-${stage}`}><span aria-hidden="true">{item.title[0]}</span>{item.title}</h4>
           <div className="journey-care-response-content"><p>{item.explanation}</p>
-            {item.questionId ? <ReflectionAnswer questionId={item.questionId} /> : <p className="journey-care-explore-question">{item.question}</p>}
+            <ReflectionAnswer questionId={item.questionId} />
           </div>
         </section> : <div className={`journey-care-response-cell ${stage} reserved`} key={stage} aria-hidden="true" />;
       })}

@@ -427,6 +427,12 @@ export const dyddJourney: DyddJourney = {
               label: "Is your identity shaped more by who you think you are or by whose you are?",
               responseType: "long_text",
             },
+            {
+              id: "whose-tomorrow",
+              careStep: "explore",
+              label: "How might your life be different tomorrow if you focused on whose rather than who?",
+              responseType: "long_text",
+            },
           ],
         },
         {

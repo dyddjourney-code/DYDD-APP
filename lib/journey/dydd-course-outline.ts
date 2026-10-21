@@ -1040,8 +1040,9 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
             "text": "“Whose you are” is about belonging before achievement. You do not have to discover your gifts, prove your usefulness, or figure out your purpose to become worthy of God’s love."
           },
           {
-            "type": "paragraph",
-            "text": "“See what great love the Father has lavished on us, that we should be called children of God! And that is what we are!” — 1 John 3:1 (NIV)"
+            "type": "scripture",
+            "text": "See what great love the Father has lavished on us, that we should be called children of God! And that is what we are!",
+            "reference": "1 John 3:1 (NIV)"
           },
           {
             "type": "paragraph",

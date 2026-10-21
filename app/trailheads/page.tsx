@@ -1,3 +1,4 @@
+import { isDesignIdOwnerCoursePreview, designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import Link from "next/link";
 import { TrailDetails } from "@/components/trail-details";
 import { TrailPlacard } from "@/components/trail-placard";
@@ -40,7 +41,7 @@ type Props = {
   >;
 };
 export default async function TrailheadsPage({ searchParams }: Props) {
-  const params = await searchParams;
+  const params = designIdCourseReviewParams(await searchParams);
   const mini = params?.lane === "fruitlife";
   const supabase = await createSupabaseServerClient();
   const {
@@ -301,6 +302,11 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                           : trail.prerequisite}
                   </p>
                   <div className="trail-guide-route-actions">
+                    {trail.id === "designid" && isDesignIdOwnerCoursePreview(params) ? (
+                      <Link className="button secondary" href={courseHref}>
+                        Preview DesignID Course (Owner)
+                      </Link>
+                    ) : null}
                     {ready ? (
                       <TrailResumeLink
                         href={courseHref}

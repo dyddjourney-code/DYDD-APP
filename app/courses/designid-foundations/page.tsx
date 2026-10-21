@@ -1,3 +1,5 @@
+import { isDesignIdOwnerCoursePreview, designIdCourseReviewParams } from "@/lib/trails/course-preview";
+import { DesignIdOwnerPreviewNotice } from "@/components/designid-owner-preview-notice";
 import { getReflectionExperience } from "@/lib/reflections/catalog";
 import { ReflectionCourseShell } from "@/components/reflection-course-shell";
 import { requireTrailCourseAssessment } from "@/lib/trails/course-access";
@@ -41,7 +43,7 @@ type DesignIdCoursePageProps = {
 export default async function DesignIdCoursePage({
   searchParams,
 }: DesignIdCoursePageProps) {
-  const reviewParams = await searchParams;
+  const reviewParams = designIdCourseReviewParams(await searchParams);
   const reviewReport =
     (await getHeatherReviewReport(reviewParams)) ??
     (await getNewReviewReport(reviewParams));
@@ -105,6 +107,7 @@ export default async function DesignIdCoursePage({
 
   return (
     <main className="journey-shell designid-course-shell">
+      {isDesignIdOwnerCoursePreview(reviewParams) ? <DesignIdOwnerPreviewNotice /> : null}
       <nav className="course-nav" aria-label="Course navigation">
         <Link href={withReviewQuery("/trailheads", reviewParams) + "#designid"}>
           Back to Trailhead
@@ -173,7 +176,9 @@ export default async function DesignIdCoursePage({
               ? reviewContext
                 ? "You are previewing a saved DesignID pattern."
                 : "This course can now read the learner's DesignID pattern."
-              : "Sign in with the assessment email to personalize this course."}
+              : isDesignIdOwnerCoursePreview(reviewParams)
+                ? "Owner preview: no saved DesignID pattern is connected."
+                : "Sign in with the assessment email to personalize this course."}
           </h2>
         </div>
         {connected ? (
@@ -191,6 +196,8 @@ export default async function DesignIdCoursePage({
               <dd>{designId.integrativeReflection}</dd>
             </div>
           </dl>
+        ) : isDesignIdOwnerCoursePreview(reviewParams) ? (
+          <p>Teaching is available for review. Snapshot fields honestly show missing saved values.</p>
         ) : (
           <Link className="button secondary" href="/login">
             Sign in to connect records

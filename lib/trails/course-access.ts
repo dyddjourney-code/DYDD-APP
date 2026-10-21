@@ -1,3 +1,4 @@
+import { isDesignIdOwnerCoursePreview } from "./course-preview";
 import { redirect } from "next/navigation";
 import type { AssessmentSnapshotSummary } from "@/lib/assessments/student-context";
 import {
@@ -24,6 +25,7 @@ export async function requireTrailCourseAssessment({
 }) {
   const trail = trailDefinitions.find((t) => t.courseSlug === slug);
   if (!trail) return;
+  if (slug === "designid-foundations" && isDesignIdOwnerCoursePreview(params)) return;
   const mini = params?.lane === "fruitlife";
   const trailHref =
     withReviewQuery(`/trailheads${mini ? "?lane=fruitlife" : ""}`, params) +

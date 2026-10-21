@@ -41,3 +41,7 @@ Local final outcome: all ten account/viewport cases PASS, actual audio plays, or
 Existing sandbox Jordan review currently has no matching saved DesignID assessment (no Jordan participant record), so its DesignID review URL truthfully follows the existing Trailheads prerequisite gate. No example report was inserted into Jordan and no access bypass was added. A real signed-in sandbox learner with a saved assessment sees their own snapshot; this is explicitly verified with distinct isolated accounts. This data availability is not a fabricated-personalization fallback.
 
 Published screenshot review additionally caught the inherited single-letter module-name column at 1280px. The same Welcome-only wrapper now uses Journey-style two-row module/count placement, with an explicit >=70px module-heading width check; narrow headers reserve room for the existing mobile Menu control. This is cosmetic and leaves neighboring lessons unchanged.
+
+## Owner teaching review follow-up
+
+The missing-Jordan prerequisite limitation above is resolved for **sandbox owner teaching review only**, without creating assessment data. Existing private Owner Command Center → Trailheads → DesignID → Preview DesignID Course (Owner), or the existing Jordan entry, now opens the course and standalone lesson with honest missing values and an explicit preview notice. Ordinary learner/reflection prerequisites remain unchanged. See `docs/designid-owner-course-review-2026-10-21.md`.

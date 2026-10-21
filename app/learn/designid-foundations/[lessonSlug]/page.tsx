@@ -1,3 +1,5 @@
+import { isDesignIdOwnerCoursePreview, designIdCourseReviewParams } from "@/lib/trails/course-preview";
+import { DesignIdOwnerPreviewNotice } from "@/components/designid-owner-preview-notice";
 import { DesignIdWelcomeBody } from "@/components/designid-welcome-body";
 import { requireTrailCourseAssessment } from "@/lib/trails/course-access";
 import Link from "next/link";
@@ -59,7 +61,7 @@ export default async function DesignIdLessonPage({
   searchParams,
 }: LessonPageProps) {
   const { lessonSlug } = await params;
-  const reviewParams = await searchParams;
+  const reviewParams = designIdCourseReviewParams(await searchParams);
   const lesson = getDesignIdLesson(lessonSlug);
 
   if (!lesson) {
@@ -94,6 +96,7 @@ export default async function DesignIdLessonPage({
 
   return (
     <main className="lesson-shell lesson-shell-purple designid-lesson-shell">
+      {isDesignIdOwnerCoursePreview(reviewParams) ? <DesignIdOwnerPreviewNotice /> : null}
       <nav className="course-nav" aria-label="Lesson navigation">
         <Link href={withReviewQuery("/courses/designid-foundations", reviewParams)}>
           Course map

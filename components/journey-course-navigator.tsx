@@ -378,7 +378,7 @@ export function JourneyCourseNavigator({
           </div>
           <div className="journey-active-meta">
             {!usesApprovedLessonFormat ? <span>{active.unit.typeLabel}</span> : null}
-            {!usesApprovedLessonFormat ? <span>{active.unit.duration}</span> : null}
+            <span>{usesApprovedLessonFormat ? "3–5 minutes" : active.unit.duration}</span>
             {active.unit.bookPages ? (
               <span>Book {active.unit.bookPages}</span>
             ) : null}
@@ -407,13 +407,13 @@ export function JourneyCourseNavigator({
                 aria-label="Lesson body"
               >
                 {!isCareIntroduction && wrapLessonImage ? lessonArtwork : null}
-                <h3 className="lesson-body-subheading">{active.unit.title}</h3>
+                {!["identity-good-works-17", "identity-niche-18"].includes(active.unit.slug) ? <h3 className="lesson-body-subheading">{active.unit.title}</h3> : null}
                 {active.unit.contentStatus === "draft" ? (
                   <p role="status">Lesson content is being prepared.</p>
                 ) : isCareIntroduction && active.unit.lessonBody ? (
                   <JourneyCareIntroduction blocks={active.unit.lessonBody} />
                 ) : active.unit.lessonBody ? (
-                  <JourneyLessonBody blocks={active.unit.lessonBody} />
+                  <JourneyLessonBody blocks={active.unit.lessonBody} closingCallout={active.unit.slug === "identity-niche-18"} />
                 ) : active.unit.teachingBlocks.map((block) => (
                   <p key={block}>
                     {cleanTeachingBlock(block, Boolean(workbookExperience))}

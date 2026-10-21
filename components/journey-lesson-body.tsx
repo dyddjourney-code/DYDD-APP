@@ -2,8 +2,9 @@ import type { JourneyLessonBlock } from "@/lib/journey/dydd-course-outline";
 import { ReviewAwareLink } from "@/components/review-aware-link";
 
 /** Authored content only: explicit blocks, never HTML or spreadsheet instructions. */
-export function JourneyLessonBody({ blocks }: { blocks: JourneyLessonBlock[] }) {
-  return blocks.map((block, index) => {
+export function JourneyLessonBody({ blocks, closingCallout = false }: { blocks: JourneyLessonBlock[]; closingCallout?: boolean }) {
+  const teaching = closingCallout ? blocks.slice(0, -3) : blocks;
+  return <>{teaching.map((block, index) => {
     switch (block.type) {
       case "heading":
         return <h4 className="lesson-body-subheading" key={index}>{block.text}</h4>;
@@ -18,5 +19,5 @@ export function JourneyLessonBody({ blocks }: { blocks: JourneyLessonBlock[] }) 
       case "link":
         return <p key={index}><ReviewAwareLink href={block.href}>{block.text}</ReviewAwareLink></p>;
     }
-  });
+  })}{closingCallout ? <aside className="journey-niche-closing">{blocks.slice(-3).map((block, index) => block.type === "paragraph" ? <p key={index}>{block.text}</p> : null)}</aside> : null}</>;
 }

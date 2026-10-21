@@ -13,7 +13,7 @@ const unit=units.find(u=>u.slug==='what-is-dydd-how-to-c-a-r-e-10');
 const browser=await puppeteer.launch({args:chromium.args.filter(x=>x!=='--single-process'),executablePath:await chromium.executablePath(),headless:true});
 try {
  const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
- for(const width of [1280,768,390,320]){
+ for(const width of [1920,1280,768,390,320]){
   await page.setViewport({width,height:1000});
   await page.goto(`${base}/journey?lesson=${unit.slug}&${review}`,{waitUntil:'networkidle2'});
   await page.waitForSelector('.journey-care-introduction');
@@ -33,6 +33,18 @@ try {
   assert(await page.$eval('.journey-active-lesson audio',async e=>{await e.play();const playing=!e.paused;e.pause();return playing;}),'CARE Rhythm audio plays');
   const sequence=await page.$eval('.journey-care-introduction',e=>({intro:e.firstElementChild.getBoundingClientRect().top,visual:e.querySelector('.journey-care-demonstration').getBoundingClientRect().top,info:e.querySelector('.journey-care-information').getBoundingClientRect().top}));
   assert(audio.top<sequence.intro && sequence.intro<sequence.visual && sequence.visual<sequence.info);
+  const widths=await page.$eval('.journey-care-introduction',e=>{
+   const panel=e.querySelector('.journey-care-demonstration').getBoundingClientRect();
+   const intro=e.querySelector(':scope > p').getBoundingClientRect();
+   const info=e.querySelector('.journey-care-information');
+   const box=info.getBoundingClientRect(),text=info.querySelector('p').getBoundingClientRect(),style=getComputedStyle(info);
+   return {panel:panel.width,intro:intro.width,box:box.width,text:text.width,inner:box.width-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)-parseFloat(style.borderLeftWidth)-parseFloat(style.borderRightWidth),left:panel.left,introLeft:intro.left,boxLeft:box.left};
+  });
+  assert(Math.abs(widths.intro-widths.panel)<1,'Introduction spans full CARE panel width');
+  assert(Math.abs(widths.box-widths.panel)<1,'Information box spans full CARE panel width');
+  assert(Math.abs(widths.text-widths.inner)<1,'Information prose fills the box inside its padding');
+  assert(Math.abs(widths.left-widths.introLeft)<1 && Math.abs(widths.left-widths.boxLeft)<1,'Text areas align with CARE panel');
+  console.log('PASS full-width text areas '+JSON.stringify(widths));
   const colors=await page.$$eval('.journey-care-divider span',es=>es.map(e=>getComputedStyle(e).backgroundColor));
   assert.equal(new Set(colors).size,4,'Four green shades');
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No horizontal overflow');

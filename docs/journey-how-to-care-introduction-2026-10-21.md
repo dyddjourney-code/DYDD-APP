@@ -18,3 +18,9 @@ No other lesson data or CARE workbook renderer was changed. No schema, auth, dat
 - Re-run browser verification with `JOURNEY_TEST_BASE=https://dydd-online-school-sandbox.vercel.app` after explicit sandbox deployment. Screenshots are temporary local QA artifacts, not curriculum.
 
 Publication uses the existing `scripts/deploy-sandbox.mjs` after push; verify exact deployment SHA/project/READY and the stable sandbox alias. Production master remains `728e88b7681067c9e78b18aa023ba689c502602a`.
+
+## Full-width prose follow-up — October 21
+
+The global readable-lesson paragraph cap (`74ch`) still constrained the introductory paragraph and informational prose on wide desktops. A selector scoped to `.journey-care-introduction` removes only that cap; both areas now fill the available CARE panel width, with the information box retaining its internal padding. No wording, audio, focus, green-panel markup or other lesson styles changed.
+
+The actual Chromium regression now measures both text areas against the panel and the information box inner width at 1920/1280/768/390/320px. The new wide-desktop assertion fails against the prior published release and passes with the fix. Build, typecheck, authored-content fidelity and diff checks pass. Re-run the same five-width browser checks after the explicit sandbox release and verify its exact SHA and alias; production remains untouched.

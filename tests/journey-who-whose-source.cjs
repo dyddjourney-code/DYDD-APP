@@ -9,11 +9,11 @@ for(const line of cells[5].formattedValue.replace(/\r/g,'').split('\n').filter(B
 const {whoWhoseCare:stages,whoWhosePrayer:prayer}=load('lib/journey/who-whose-care.ts');
 assert.equal(norm(stages.map(x=>[x.title,x.explanation,x.question].join('\n')).join('\n')+' Prayer '+prayer),norm(cells[7].formattedValue));
 assert.deepEqual(stages.map(s=>s.questionId),['child-of-god-response','old-label-truth','whose-before-who','whose-tomorrow']);
-// Compile baseline in-place through the loader; compare all other source units and complete audio.
+// Compare untouched units/audio; rows16/17 are covered by the authorized Good Works/Niche source test.
 const ts=require('typescript');const baseline=cp.execFileSync('git',['show','2455cfb:lib/journey/dydd-course-outline.ts'],{encoding:'utf8'});
-const tempfile='lib/journey/.who-baseline.ts';fs.writeFileSync(tempfile,baseline);try{const before=load(tempfile).dyddMainCourseOutline.flatMap(m=>m.units);assert.deepEqual(units.filter(x=>x.row!==15),before.filter(x=>x.row!==15));assert.deepEqual(u.companionMoment,before.find(x=>x.row===15).companionMoment);}finally{fs.unlinkSync(tempfile);}
+const tempfile='lib/journey/.who-baseline.ts';fs.writeFileSync(tempfile,baseline);try{const before=load(tempfile).dyddMainCourseOutline.flatMap(m=>m.units);assert.deepEqual(units.filter(x=>![15,16,17].includes(x.row)),before.filter(x=>![15,16,17].includes(x.row)));assert.deepEqual(u.companionMoment,before.find(x=>x.row===15).companionMoment);}finally{fs.unlinkSync(tempfile);}
 const questions=load('lib/reflections/catalog.ts').getReflectionExperience('discover-your-divine-design').questions;
 for(const stage of stages)assert(questions.some(q=>q.id===stage.questionId&&q.prompt===stage.question&&q.lessonSlug===u.slug));
 assert.equal(u.lessonBody.filter(b=>b.type==='scripture').length,1);
 assert.equal(u.lessonBody.find(b=>b.type==='scripture').reference,'1 John 3:1 (NIV)');
-console.log('PASS current row15 body/focus/image/CARE/prayer exact; three preserved IDs plus cataloged Explore; other70 lessons/full audio unchanged');
+console.log('PASS current row15 body/focus/image/CARE/prayer exact; three preserved IDs plus cataloged Explore; other scoped lessons/full audio unchanged');

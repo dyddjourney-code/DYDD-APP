@@ -16006,17 +16006,12 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   place-items: center;
 }
 
-.designid-course-shell .polished-course-hero {
-  margin-bottom: 18px;
-}
-
-.designid-course-shell .course-hero h1 {
-  max-width: 13ch;
-  font-size: clamp(2.4rem, 5vw, 4.8rem);
-}
-
-.designid-course-shell .course-verse {
-  align-self: stretch;
+/* Journey geometry and typography with DesignID's own forest-path artwork. */
+.designid-course-hero {
+  background:
+    linear-gradient(102deg, rgba(251, 250, 244, 0.96) 0%, rgba(251, 250, 244, 0.82) 28%, rgba(251, 250, 244, 0.18) 52%, rgba(36, 63, 39, 0.06) 100%),
+    linear-gradient(0deg, rgba(36, 63, 39, 0.16), rgba(36, 63, 39, 0.02)),
+    url("/brand/designid-course-cartoon-hero.png") center / cover;
 }
 
 .designid-top-racetrack ol {

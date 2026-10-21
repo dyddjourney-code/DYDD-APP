@@ -21,7 +21,7 @@ export type DesignIdModule = {
 
 export const designIdCourse = {
   slug: "designid-foundations",
-  title: "DesignID Foundations",
+  title: "DesignID Course",
   source:
     "DesignIDCourseCode---40bef919-638d-4f9b-8a2a-0fb09597b63a.txt",
   description:

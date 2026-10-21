@@ -1,5 +1,4 @@
-import { isDesignIdOwnerCoursePreview, designIdCourseReviewParams } from "@/lib/trails/course-preview";
-import { DesignIdOwnerPreviewNotice } from "@/components/designid-owner-preview-notice";
+import { designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import { getReflectionExperience } from "@/lib/reflections/catalog";
 import { ReflectionCourseShell } from "@/components/reflection-course-shell";
 import { requireTrailCourseAssessment } from "@/lib/trails/course-access";
@@ -7,7 +6,6 @@ import Link from "next/link";
 import {
   buildDesignIdContext,
   getAssessmentSnapshotsForUser,
-  hasDesignIdData,
 } from "@/lib/assessments/student-context";
 import {
   designIdCourse,
@@ -32,7 +30,6 @@ import {
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { designIdLessonPresentation } from "@/lib/courses/designid-lesson-presentation";
 import { DesignIdCourseNavigator } from "@/components/designid-course-navigator";
-import { PageHelp } from "@/components/page-help";
 
 export const dynamic = "force-dynamic";
 
@@ -79,7 +76,6 @@ export default async function DesignIdCoursePage({
     displayName: user?.email ?? "Learner",
     isSignedIn: Boolean(user),
   };
-  const connected = hasDesignIdData(designId);
   const lessonsBySlug = new Map(
     designIdLessons.map((lesson) => [lesson.slug, lesson]),
   );
@@ -107,7 +103,6 @@ export default async function DesignIdCoursePage({
 
   return (
     <main className="journey-shell designid-course-shell">
-      {isDesignIdOwnerCoursePreview(reviewParams) ? <DesignIdOwnerPreviewNotice /> : null}
       <nav className="course-nav" aria-label="Course navigation">
         <Link href={withReviewQuery("/trailheads", reviewParams) + "#designid"}>
           Back to Trailhead
@@ -118,37 +113,12 @@ export default async function DesignIdCoursePage({
         <Link href="/">DYDD home</Link>
       </nav>
 
-      <header className="course-hero polished-course-hero">
+      <header className="journey-hero designid-course-hero">
         <div>
-          <img
-            className="course-logo"
-            src="/brand/dydd-logo.webp"
-            alt="Discover Your Divine Design"
-          />
-          <p className="eyebrow">DYDD class branch</p>
           <h1>{designIdCourse.title}</h1>
-          <p className="lede">{designIdCourse.description}</p>
-          <Link className="button primary" href="#designid-course-player">
-            Open course lessons
-          </Link>
+          <p className="lede">Identity</p>
         </div>
-        <aside className="course-verse">
-          <p>
-            “For we are God&apos;s handiwork, created in Christ Jesus to do good
-            works, which God prepared in advance for us to do.”
-          </p>
-          <span>Ephesians 2:10</span>
-        </aside>
       </header>
-
-      <PageHelp
-        items={[
-          "Use the course menu to move through one DesignID lesson at a time.",
-          "Open or close modules so the whole course stays easy to scan.",
-          "Connect assessment data with the same email so the course can reflect the learner's pattern.",
-        ]}
-        title="How to use this course"
-      />
 
       <section
         className="dydd-progress-racetrack journey-top-racetrack designid-top-racetrack"
@@ -163,46 +133,6 @@ export default async function DesignIdCoursePage({
             </li>
           ))}
         </ol>
-      </section>
-
-      <section
-        className="course-personalization"
-        aria-label="Personalization status"
-      >
-        <div>
-          <p className="section-label">Individual walkthrough</p>
-          <h2>
-            {connected
-              ? reviewContext
-                ? "You are previewing a saved DesignID pattern."
-                : "This course can now read the learner's DesignID pattern."
-              : isDesignIdOwnerCoursePreview(reviewParams)
-                ? "Owner preview: no saved DesignID pattern is connected."
-                : "Sign in with the assessment email to personalize this course."}
-          </h2>
-        </div>
-        {connected ? (
-          <dl>
-            <div>
-              <dt>Primary</dt>
-              <dd>{designId.primary}</dd>
-            </div>
-            <div>
-              <dt>Secondary</dt>
-              <dd>{designId.secondary}</dd>
-            </div>
-            <div>
-              <dt>Integrative</dt>
-              <dd>{designId.integrativeReflection}</dd>
-            </div>
-          </dl>
-        ) : isDesignIdOwnerCoursePreview(reviewParams) ? (
-          <p>Teaching is available for review. Snapshot fields honestly show missing saved values.</p>
-        ) : (
-          <Link className="button secondary" href="/login">
-            Sign in to connect records
-          </Link>
-        )}
       </section>
 
       <div id="designid-course-player">

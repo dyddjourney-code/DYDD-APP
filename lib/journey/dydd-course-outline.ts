@@ -1022,11 +1022,105 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         typeLabel: "Assessment step",
         section: "Identity Assessment",
         title: "Assessment Time: DesignID",
-        duration: "Coming soon",
-        lessonMainIdea: "DesignID assessment",
-        contentStatus: "draft",
+        duration: "15 min assessment + course",
+        lessonMainIdea: "Recognize God’s design through a tool for discovery, reflection, and faithful contribution.",
         assessmentTarget: "designid",
         focus: ["DesignID"],
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "God’s design is already reflected in the way you create, relate, think, and serve. An assessment can help you recognize those patterns and give you language to explore them."
+          },
+          {
+            "type": "paragraph",
+            "text": "An assessment is a tool for discovery—not a label that defines your identity or limits what God can do through you. Your identity is rooted in Christ. Your results provide a starting point for reflection, growth, and faithful contribution."
+          },
+          {
+            "type": "scripture",
+            "text": "For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.",
+            "reference": "Ephesians 2:10"
+          },
+          {
+            "type": "heading",
+            "text": "A lens for identity, grace, and contribution"
+          },
+          {
+            "type": "paragraph",
+            "text": "DesignID™ is a faith-integrated assessment that helps you explore how God’s design is expressed through your life. More than describing personality, it offers a lens for understanding how you naturally contribute within the Body of Christ."
+          },
+          {
+            "type": "paragraph",
+            "text": "DesignID begins with a biblical conviction: every person is made in the image of God. We each have opportunities to reflect His character through the ways we live, love, work, and serve."
+          },
+          {
+            "type": "paragraph",
+            "text": "Consider the DesignID wheel. At its center is God Himself—Father, Son, and Holy Spirit. Flowing outward are four divine reflections: Architect, Artisan, Shepherd, and Steward. These provide language for exploring different patterns of contribution."
+          },
+          {
+            "type": "paragraph",
+            "text": "Around the outside of the wheel are the Integrated Reflections. Each combines two reflections, helping you explore how they work together in the way you lead, build, relate, and contribute."
+          },
+          {
+            "type": "paragraph",
+            "text": "DesignID does not replace biblical truth, spiritual formation, or dependence on the Holy Spirit. It supports your discovery by helping you recognize your design and steward it more faithfully."
+          },
+          {
+            "type": "heading",
+            "text": "Your next step: discover your DesignID"
+          },
+          {
+            "type": "paragraph",
+            "text": "We will refer to your DesignID results throughout the rest of the DYDD Journey, especially in the next unit. Take time to complete this step before moving forward."
+          },
+          {
+            "type": "heading",
+            "text": "1. Take the assessment."
+          },
+          {
+            "type": "paragraph",
+            "text": "Select Open Connected Trail below to find DesignID and take your assessment. You can also find DesignID in Trailheads."
+          },
+          {
+            "type": "paragraph",
+            "text": "Allow about 15 minutes. Answer according to how you naturally respond—not how you think you should respond or who you wish you were. Your results are available immediately after completion."
+          },
+          {
+            "type": "paragraph",
+            "text": "Already completed DesignID? Use your saved results; you do not need to retake it just to continue this Journey."
+          },
+          {
+            "type": "heading",
+            "text": "2. Complete the DesignID course."
+          },
+          {
+            "type": "paragraph",
+            "text": "Walk through the DesignID course to understand your results, explore the reflections, and consider how your design shows up in everyday life. Give yourself time to reflect rather than simply reading your scores."
+          },
+          {
+            "type": "heading",
+            "text": "3. Return to this lesson."
+          },
+          {
+            "type": "paragraph",
+            "text": "Bring what you have discovered back into the Journey. Your saved results will provide a reference point for the lessons ahead."
+          },
+          {
+            "type": "paragraph",
+            "text": "Before continuing, consider:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "What feels familiar in your results?",
+              "What surprised you or needs further reflection?",
+              "Where do you recognize opportunities to serve others through your design?"
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "Complete your DesignID assessment before continuing to the next lesson."
+          }
+        ],
         teachingBlocks: [],
       },
       {

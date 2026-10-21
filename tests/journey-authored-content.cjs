@@ -22,7 +22,9 @@ for (let row = 2; row <= 14; row++) {
 const identity = outline.find(m => m.slug === 'identity');
 const newUnit = identity.units.find(u => u.slug === 'identity-assessment-time-designid');
 assert.equal(newUnit.row, 18);assert.equal(newUnit.title, source.values[17][3]);
-assert.equal(newUnit.section, 'Identity Assessment');assert.equal(newUnit.contentStatus, 'draft');assert.deepEqual(newUnit.teachingBlocks, []);
+assert.equal(newUnit.section, 'Identity Assessment');assert.equal(newUnit.contentStatus, undefined);assert(newUnit.lessonBody.length > 0);assert.deepEqual(newUnit.teachingBlocks, []);
+assert(newUnit.lessonBody.some(b => b.type === 'paragraph' && b.text.includes('Select Open Connected Trail below')));
+assert(newUnit.lessonBody.some(b => b.type === 'list' && b.items.length === 3));
 assert.equal(identity.units[identity.units.indexOf(newUnit) + 1].slug, 'identity-the-designid-lens-what-is-in-the-report-19');
 assert.equal(new Set(units.map(u => u.slug)).size, units.length);
 const resources = units.find(u => u.row === 5);
@@ -47,4 +49,4 @@ if (fs.existsSync('tmp/journey-content-before.json')) {
   const stable = exps => exps.map(e => ({slug:e.slug,questions:e.questions.map(({lessonTitle, ...q}) => q)}));
   assert.deepEqual(stable(current), stable(before.reflections));
 }
-console.log('PASS all 13 spreadsheet lessons: complete source text/focus/images, inline book/Gear, stable IDs and saved questions, preserved Dydi audio, one new unwritten DesignID slot.');
+console.log('PASS all 13 spreadsheet lessons: complete source text/focus/images, inline book/Gear, stable IDs and saved questions, preserved Dydi audio, authored DesignID assessment lesson in its stable slot.');

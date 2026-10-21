@@ -133,7 +133,7 @@ export default async function DesignIdLessonPage({
             moment={"companionMoment" in lesson ? lesson.companionMoment : undefined}
           />
 
-          {lesson.slug === "welcome-to-designid" ? <DesignIdWelcomeBody bodyHtml={personalizedBody} image={designIdLessonPresentation[lesson.slug].images[0]} /> : designIdAuthoredLessons[lesson.slug] ? <DesignIdAuthoredBody bodyHtml={personalizedBody} images={designIdLessonPresentation[lesson.slug].images} /> : <div className="assessment-lesson-content designid-lesson-content with-image">
+          {lesson.slug === "welcome-to-designid" ? <DesignIdWelcomeBody bodyHtml={personalizedBody} image={designIdLessonPresentation[lesson.slug].images[0]} /> : designIdAuthoredLessons[lesson.slug] ? <DesignIdAuthoredBody bodyHtml={personalizedBody} images={designIdLessonPresentation[lesson.slug].images} compactIntro={["your-design-profile", "reflection-capacity"].includes(lesson.slug)} /> : <div className="assessment-lesson-content designid-lesson-content with-image">
             <section className="lesson-source readable-lesson-body" aria-label="Complete lesson body">
               <h2 className="lesson-body-subheading">{lesson.title}</h2>
               <div className="designid-semantic-body" dangerouslySetInnerHTML={{ __html: personalizedBody }} />

@@ -20962,10 +20962,20 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 .readable-lesson-body .journey-niche-closing p { margin: 0; max-width: none; font-weight: 600; line-height: 1.8; }
 
+/* All DesignID focus labels use Welcome's compact, intrinsic sizing, not shared cards. */
+.designid-active-lesson .journey-active-focus { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px; }
+.designid-active-lesson .journey-active-focus > span {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 1 auto;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  padding: 7px 12px;
+  overflow-wrap: anywhere;
+}
 /* Spreadsheet-authored Welcome only; neighboring DesignID/Journey lessons unchanged. */
 .designid-welcome-lesson .journey-active-meta { justify-content: flex-end; }
-.designid-welcome-lesson .journey-active-focus { display: flex; flex-wrap: wrap; gap: 8px; }
-.designid-welcome-lesson .journey-active-focus span { flex: 0 1 auto; padding: 7px 12px; }
 .designid-welcome-body { display: flow-root; border-top: 1px solid rgba(186, 153, 74, .32); padding-top: 22px; max-width: none; }
 .designid-welcome-body .designid-welcome-artwork { float: right; width: min(35%, 310px); margin: 0 0 20px 28px; }
 .designid-welcome-artwork img { display: block; width: 100%; height: auto; border-radius: 14px; }
@@ -21024,4 +21034,18 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .designid-capacity-band { padding: 16px; }
   .designid-live-snapshot th, .designid-live-snapshot td { padding: 10px 5px; font-size: .82rem; }
   .designid-live-snapshot thead th { font-size: .75rem; letter-spacing: normal; white-space: nowrap; }
+}
+
+/* Profile/Capacity have one-sentence intros: the artwork must not create a hero gap.
+   Other authored lessons keep their existing larger teaching illustrations. */
+.designid-authored-body.designid-compact-intro .designid-authored-artwork {
+  float: right;
+  width: 96px;
+  max-width: 30%;
+  margin: 0 0 0 20px;
+}
+.designid-compact-intro .designid-authored-artwork img { max-height: 96px; object-fit: contain; }
+@media (max-width: 767px) {
+  .designid-authored-body.designid-compact-intro .designid-authored-artwork { width: 64px; margin-left: 12px; }
+  .designid-compact-intro .designid-authored-artwork img { max-height: 64px; }
 }

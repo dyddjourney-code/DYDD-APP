@@ -435,6 +435,9 @@ export function buildDesignIdContext(report: StudentAssessmentReport) {
       "Primary_Summary",
       "Primary",
     ]),
+    primaryIntro: readFirstValue(designId, ["Primary_Text", "Primary_Summary"]),
+    secondaryIntro: readFirstValue(designId, ["Secondary_Text", "Secondary_Summary"]),
+    spiritualStrength: readFirstValue(designId, ["Spiritual_Strength"]),
     primaryScripture: readFirstValue(designId, ["Primary_Scripture"]),
     reflectionShadow: readFirstValue(designId, [
       "Reflection_Shadow",

@@ -1,3 +1,5 @@
+import { designIdAuthoredLessons } from "@/lib/courses/designid-authored-lessons";
+import { personalizeDesignIdAuthored } from "@/lib/courses/designid-authored-personalization";
 import { designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import { getReflectionExperience } from "@/lib/reflections/catalog";
 import { ReflectionCourseShell } from "@/components/reflection-course-shell";
@@ -86,7 +88,8 @@ export default async function DesignIdCoursePage({
       const walkthrough = buildWalkthroughPrompt(lesson.title, studentContext);
 
       return {
-        bodyHtml: (lesson.slug === "welcome-to-designid" ? personalizeDesignIdWelcome : personalizeDesignIdHtml)(lessonBody, studentContext),
+        authored: Boolean(designIdAuthoredLessons[lesson.slug]),
+        bodyHtml: (designIdAuthoredLessons[lesson.slug] ? personalizeDesignIdAuthored : lesson.slug === "welcome-to-designid" ? personalizeDesignIdWelcome : personalizeDesignIdHtml)(lessonBody, studentContext),
         images: presentation?.images ?? [],
         focus: lesson.focus,
         personalizedNotes: walkthrough.items,

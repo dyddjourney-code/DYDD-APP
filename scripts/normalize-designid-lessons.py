@@ -83,3 +83,6 @@ text = presentation_path.read_text()
 start = text.index('  "welcome-to-designid": {')
 end = text.index('  "biblical-foundation":', start)
 presentation_path.write_text('import { designIdWelcome } from "./designid-welcome";\n' + text[:start] + '  "welcome-to-designid": designIdWelcome,\n' + text[end:])
+
+# Keep current spreadsheet-authored lessons when regenerating the legacy baseline.
+presentation_path.write_text('import { designIdAuthoredLessons } from "./designid-authored-lessons";\n' + presentation_path.read_text().rsplit("};", 1)[0].rstrip().removesuffix(",") + ",\n  ...designIdAuthoredLessons,\n};\n")

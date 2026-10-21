@@ -1,4 +1,5 @@
 "use client";
+import { DesignIdAuthoredBody } from "@/components/designid-authored-body";
 import { DesignIdWelcomeBody } from "@/components/designid-welcome-body";
 import type { ReflectionQuestion } from "@/lib/reflections/catalog";
 import {
@@ -11,6 +12,7 @@ import type { CompanionMoment } from "@/lib/courses/companion-moments";
 import { CompanionAudioCard } from "@/components/companion-audio-card";
 
 type DesignIdLessonView = {
+  authored?: boolean;
   bodyHtml: string;
   images: readonly { src: string; alt: string }[];
   companionMoment?: CompanionMoment;
@@ -142,7 +144,7 @@ export function DesignIdCourseNavigator({
 
   return (
     <section
-      className={`journey-course-walkthrough designid-course-walkthrough ${active.lesson.slug === "welcome-to-designid" ? "designid-welcome-walkthrough" : ""}`}
+      className={`journey-course-walkthrough designid-course-walkthrough ${active.lesson.slug === "welcome-to-designid" || active.lesson.authored ? "designid-welcome-walkthrough" : ""}`}
       aria-label="DesignID course walkthrough"
     >
       <aside className="journey-course-index designid-course-index">
@@ -258,7 +260,7 @@ export function DesignIdCourseNavigator({
 
             <CompanionAudioCard moment={active.lesson.companionMoment} />
 
-            {active.lesson.slug === "welcome-to-designid" ? <DesignIdWelcomeBody bodyHtml={active.lesson.bodyHtml} image={active.lesson.images[0]} /> : <div className="assessment-lesson-content designid-lesson-content with-image">
+            {active.lesson.slug === "welcome-to-designid" ? <DesignIdWelcomeBody bodyHtml={active.lesson.bodyHtml} image={active.lesson.images[0]} /> : active.lesson.authored ? <DesignIdAuthoredBody bodyHtml={active.lesson.bodyHtml} images={active.lesson.images} /> : <div className="assessment-lesson-content designid-lesson-content with-image">
               <section className="lesson-source readable-lesson-body designid-clean-lesson" aria-label="Lesson body">
                 <h3 className="lesson-body-subheading">{active.lesson.title}</h3>
                 <div className="designid-semantic-body" dangerouslySetInnerHTML={{ __html: active.lesson.bodyHtml }} />
@@ -274,11 +276,11 @@ export function DesignIdCourseNavigator({
                 ))}
               </aside>
             </div>}
-            {active.lesson.slug !== "welcome-to-designid" ? <details className="designid-report-connection">
+            {active.lesson.slug !== "welcome-to-designid" && !active.lesson.authored ? <details className="designid-report-connection">
               <summary>Connect this lesson to your report</summary>
               <ul>{active.lesson.personalizedNotes.map((item) => <li key={item}>{item}</li>)}</ul>
             </details> : null}
-            <section className="designid-lesson-reflections" aria-label="Lesson reflections">
+            {reflectionQuestions.some(q => q.lessonSlug === active.lesson.slug) ? <section className="designid-lesson-reflections" aria-label="Lesson reflections">
               <p className="section-label">Reflect and apply</p>
 
             {reflectionQuestions
@@ -286,7 +288,7 @@ export function DesignIdCourseNavigator({
               .map((q) => (
                 <ReflectionAnswer key={q.id} questionId={q.id} />
               ))}
-            </section>
+            </section> : null}
           </section>
         </div>
 

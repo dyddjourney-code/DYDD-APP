@@ -1,3 +1,4 @@
+import { designIdAuthoredLessons } from "@/lib/courses/designid-authored-lessons";
 import { getDesignIdReflectionPrompts } from "@/lib/courses/designid-reflection-prompts";
 import { dyddJourney } from "@/lib/journey/dydd-journey";
 import { learningCourses } from "@/lib/courses/course-catalog";
@@ -111,7 +112,7 @@ export const reflectionExperiences: ReflectionExperience[] = [
           lessonTitle: l.title,
           moduleTitle: m.title,
           prompt: prompt.prompt,
-          version: l.slug === "welcome-to-designid" ? "2026-10-21" : "2026-10-19",
+          version: l.slug === "welcome-to-designid" || designIdAuthoredLessons[l.slug] ? "2026-10-21" : "2026-10-19",
         })),
       ),
     ),
@@ -175,11 +176,15 @@ export function withWhoWhoseExplore(courseSlug: string, questions: ReflectionQue
   return [...questions.slice(0, anchor + 1), explore, ...questions.slice(anchor + 1)];
 }
 
-/** Refresh only the current Welcome prompt; never remove old keys/entries or alter archived rounds. */
+/** Refresh approved current DesignID prompt metadata, retaining retired keys and historic entries. */
 export function withDesignIdWelcome(courseSlug: string, questions: ReflectionQuestion[]) {
   if (courseSlug !== "designid-foundations") return questions;
-  const canonical = getReflectionExperience(courseSlug)!.questions.find(q => q.id === "welcome-to-designid-notice")!;
-  const old = questions.find(q => q.id === canonical.id);
-  if (old?.prompt === canonical.prompt && old.version === canonical.version) return questions;
-  return old ? questions.map(q => q.id === canonical.id ? canonical : q) : [...questions, canonical];
+  const approved = getReflectionExperience(courseSlug)!.questions.filter(q => q.lessonSlug === "welcome-to-designid" || designIdAuthoredLessons[q.lessonSlug]);
+  let result = questions;
+  for (const canonical of approved) {
+    const old = result.find(q => q.id === canonical.id);
+    if (old?.prompt === canonical.prompt && old.version === canonical.version) continue;
+    result = old ? result.map(q => q.id === canonical.id ? canonical : q) : [...result, canonical];
+  }
+  return result;
 }

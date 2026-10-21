@@ -1,3 +1,6 @@
+import { DesignIdAuthoredBody } from "@/components/designid-authored-body";
+import { designIdAuthoredLessons } from "@/lib/courses/designid-authored-lessons";
+import { personalizeDesignIdAuthored } from "@/lib/courses/designid-authored-personalization";
 import { designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import { DesignIdWelcomeBody } from "@/components/designid-welcome-body";
 import { requireTrailCourseAssessment } from "@/lib/trails/course-access";
@@ -88,7 +91,7 @@ export default async function DesignIdLessonPage({
         isSignedIn: Boolean(user),
       };
   const walkthrough = buildWalkthroughPrompt(lesson.title, studentContext);
-  const personalizedBody = (lesson.slug === "welcome-to-designid" ? personalizeDesignIdWelcome : personalizeDesignIdHtml)(
+  const personalizedBody = (designIdAuthoredLessons[lesson.slug] ? personalizeDesignIdAuthored : lesson.slug === "welcome-to-designid" ? personalizeDesignIdWelcome : personalizeDesignIdHtml)(
     designIdLessonPresentation[lesson.slug]?.bodyHtml ?? lesson.bodyHtml,
     studentContext,
   );
@@ -130,7 +133,7 @@ export default async function DesignIdLessonPage({
             moment={"companionMoment" in lesson ? lesson.companionMoment : undefined}
           />
 
-          {lesson.slug === "welcome-to-designid" ? <DesignIdWelcomeBody bodyHtml={personalizedBody} image={designIdLessonPresentation[lesson.slug].images[0]} /> : <div className="assessment-lesson-content designid-lesson-content with-image">
+          {lesson.slug === "welcome-to-designid" ? <DesignIdWelcomeBody bodyHtml={personalizedBody} image={designIdLessonPresentation[lesson.slug].images[0]} /> : designIdAuthoredLessons[lesson.slug] ? <DesignIdAuthoredBody bodyHtml={personalizedBody} images={designIdLessonPresentation[lesson.slug].images} /> : <div className="assessment-lesson-content designid-lesson-content with-image">
             <section className="lesson-source readable-lesson-body" aria-label="Complete lesson body">
               <h2 className="lesson-body-subheading">{lesson.title}</h2>
               <div className="designid-semantic-body" dangerouslySetInnerHTML={{ __html: personalizedBody }} />
@@ -146,15 +149,15 @@ export default async function DesignIdLessonPage({
               ))}
             </aside>
           </div>}
-          {lesson.slug !== "welcome-to-designid" ? <details className="designid-report-connection">
+          {lesson.slug !== "welcome-to-designid" && !designIdAuthoredLessons[lesson.slug] ? <details className="designid-report-connection">
             <summary>Connect this lesson to your report</summary>
             <ul>{walkthrough.items.map(item => <li key={item}>{item}</li>)}</ul>
           </details> : null}
-          <section className="designid-lesson-reflections" aria-label="Lesson reflections">
+          {getDesignIdReflectionPrompts(lesson.slug).length ? <section className="designid-lesson-reflections" aria-label="Lesson reflections">
             <p className="section-label">Reflect and apply</p>
             {getDesignIdReflectionPrompts(lesson.slug).map(question => <p key={question.id}>{question.prompt}</p>)}
             <Link className="button secondary" href={withReviewQuery(`/courses/designid-foundations`, reviewParams) + (withReviewQuery("", reviewParams).includes("?") ? "&" : "?") + `lesson=${lesson.slug}#designid-course-player`}>Open this lesson to save your reflections</Link>
-          </section>
+          </section> : null}
 
           <footer className="lesson-pagination" aria-label="Lesson pagination">
             {previousLesson ? (

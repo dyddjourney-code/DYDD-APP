@@ -1,3 +1,4 @@
+import { designIdAuthoredLessons } from "./designid-authored-lessons";
 import { designIdWelcome } from "./designid-welcome";
 import { designIdLessonBodies } from "./designid-source-html";
 import type { CompanionMoment } from "./companion-moments";
@@ -19,7 +20,7 @@ export type DesignIdModule = {
   lessons: DesignIdLesson[];
 };
 
-export const designIdCourse = {
+const legacyDesignIdCourse = {
   slug: "designid-foundations",
   title: "DesignID Course",
   source:
@@ -203,6 +204,8 @@ export const designIdCourse = {
     },
   ],
 } as const;
+
+export const designIdCourse = { ...legacyDesignIdCourse, modules: legacyDesignIdCourse.modules.map(module => ({ ...module, lessons: module.lessons.map(lesson => ({ ...lesson, focus: designIdAuthoredLessons[lesson.slug]?.focus ?? lesson.focus })) })) };
 
 export const designIdLessons = designIdCourse.modules.flatMap((module) =>
   module.lessons.map((lesson) => ({

@@ -1,3 +1,4 @@
+import { designIdAuthoredLessons } from "./designid-authored-lessons";
 import { designIdWelcome } from "./designid-welcome";
 import { designIdLessonBodies } from "./designid-source-html";
 const clean = (text: string) =>
@@ -19,6 +20,7 @@ const lessonPrompts: Record<string, string> = {
 };
 export function getDesignIdReflectionPrompts(lessonSlug: string) {
   if (lessonSlug === "welcome-to-designid") return [{ id: "welcome-to-designid-notice", prompt: designIdWelcome.reflection }];
+  if (designIdAuthoredLessons[lessonSlug]) return designIdAuthoredLessons[lessonSlug].reflections;
   const source =
     designIdLessonBodies[lessonSlug as keyof typeof designIdLessonBodies] ?? "";
   const prompts = Array.from(

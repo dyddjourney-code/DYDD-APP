@@ -1,4 +1,5 @@
 import { isSandbox } from "@/lib/environment";
+import { OnTheHorizon } from "@/components/on-the-horizon";
 import { BaseCampProfile } from "@/components/basecamp-profile";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -772,6 +773,8 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       </section>
 
       <DydPassportBook badges={passportBadges} firstName={welcomeName} />
+
+      <OnTheHorizon />
 
       <section className="basecamp-account-layout basecamp-account-layout-single" aria-label="Base Camp account overview">
         <article className="basecamp-account-card profile">

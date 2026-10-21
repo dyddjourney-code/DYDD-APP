@@ -182,6 +182,7 @@ export function JourneyCourseNavigator({
     ? Math.round(((activeIndex + 1) / flatUnits.length) * 100)
     : 0;
   const isWhoWhose = active.unit.slug === "identity-who-vs-whose-16";
+  const usesApprovedLessonFormat = isWhoWhose || ["identity-good-works-17", "identity-niche-18"].includes(active.unit.slug);
   const isCareIntroduction = active.unit.slug === "what-is-dydd-how-to-c-a-r-e-10";
   const workbookExperience = active ? getWorkbookExperience(active) : null;
   const lessonMainIdea = cleanLessonMainIdea(
@@ -197,8 +198,8 @@ export function JourneyCourseNavigator({
   const lessonImage = active.unit.media?.image ?? chapterArtwork;
   const lessonImageLabel =
     active.unit.media?.label ?? `${active.module.title} Journey illustration`;
-  // Owner-review pilot: no other lesson changes its reading layout.
-  const wrapLessonImage = active.unit.slug === "what-is-dydd-d-e-s-i-g-n-9" || isWhoWhose;
+  // Approved forward format, opt-in only; older lesson cleanup remains deferred.
+  const wrapLessonImage = active.unit.slug === "what-is-dydd-d-e-s-i-g-n-9" || usesApprovedLessonFormat;
   const lessonArtwork = (
     <div className="journey-lesson-images">
       {[{ image: lessonImage, label: lessonImageLabel }, ...(active.unit.media?.additionalImages ?? [])].map((image) => (
@@ -260,7 +261,7 @@ export function JourneyCourseNavigator({
 
   return (
     <section
-      className={`journey-course-walkthrough dydd-journey-walkthrough${isWhoWhose ? " journey-who-whose-walkthrough" : ""}`}
+      className={`journey-course-walkthrough dydd-journey-walkthrough${usesApprovedLessonFormat ? " journey-who-whose-walkthrough" : ""}`}
       aria-label="Guided course walkthrough"
     >
       <aside className="journey-course-index">
@@ -341,7 +342,7 @@ export function JourneyCourseNavigator({
                                       }
                                       type="button"
                                     >
-                                      {unit.slug !== "identity-who-vs-whose-16" ? <span className={typeClass[unit.type]}>
+                                      {!["identity-who-vs-whose-16", "identity-good-works-17", "identity-niche-18"].includes(unit.slug) ? <span className={typeClass[unit.type]}>
                                         {unit.typeLabel}
                                       </span> : null}
                                       <strong>{unit.title}</strong>
@@ -363,7 +364,7 @@ export function JourneyCourseNavigator({
       </aside>
 
       <article
-        className={`journey-active-lesson ${typeClass[active.unit.type]}${isWhoWhose ? " journey-who-whose-lesson" : ""}`}
+        className={`journey-active-lesson ${typeClass[active.unit.type]}${usesApprovedLessonFormat ? " journey-who-whose-lesson" : ""}`}
         ref={activeLessonRef}
       >
         <header>
@@ -376,8 +377,8 @@ export function JourneyCourseNavigator({
             <p>{lessonMainIdea}</p>
           </div>
           <div className="journey-active-meta">
-            {!isWhoWhose ? <span>{active.unit.typeLabel}</span> : null}
-            {!isWhoWhose ? <span>{active.unit.duration}</span> : null}
+            {!usesApprovedLessonFormat ? <span>{active.unit.typeLabel}</span> : null}
+            {!usesApprovedLessonFormat ? <span>{active.unit.duration}</span> : null}
             {active.unit.bookPages ? (
               <span>Book {active.unit.bookPages}</span>
             ) : null}
@@ -397,7 +398,7 @@ export function JourneyCourseNavigator({
             </div>
 
             {active.unit.companionMomentPosition !== "after-teaching" ? (
-              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction && !isWhoWhose} />
+              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction && !usesApprovedLessonFormat} />
             ) : null}
 
             <div className={`assessment-lesson-content${isCareIntroduction ? " journey-care-introduction-layout" : " with-image"}${wrapLessonImage ? " journey-wrap-pilot" : ""}`}>
@@ -423,7 +424,7 @@ export function JourneyCourseNavigator({
             </div>
 
             {active.unit.companionMomentPosition === "after-teaching" ? (
-              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction && !isWhoWhose} />
+              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction && !usesApprovedLessonFormat} />
             ) : null}
             {active.unit.closingScripture ? (
               <blockquote className="journey-closing-scripture">

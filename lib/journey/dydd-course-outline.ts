@@ -1071,12 +1071,63 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         title: "Good Works",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Good Works with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+        lessonMainIdea: "Purposeful, not passive. Devoted, not driven.",
         anchorScripture: "Ephesians 2:10",
-        teachingBlocks: [
-          "This lesson introduces Good Works as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+        focus: ["Good Works Force"],
+        media: {"image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/75649fd9-ec07-44c3-bb09-dd7525a017a2/young-plant-2026-01-06-10-42-38-utc.jpg?format=500w", "label": "A young plant growing in soil", "type": "image"},
+        lessonBody: [
+          {
+            "type": "heading",
+            "text": "Good Works: Joining the Good Works Force"
+          },
+          {
+            "type": "paragraph",
+            "text": "Purposeful, not passive."
+          },
+          {
+            "type": "paragraph",
+            "text": "Devoted, not driven."
+          },
+          {
+            "type": "scripture",
+            "text": "For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.",
+            "reference": "Ephesians 2:10"
+          },
+          {
+            "type": "paragraph",
+            "text": "Your identity in Christ is not something you earn through good works. It is the foundation from which you do them. You don’t work to become His, you serve because you already belong to Him."
+          },
+          {
+            "type": "paragraph",
+            "text": "God invites you into what we’re calling the Good Works Force: His people putting their God-given design into action to love others, meet needs, and make His goodness visible. This isn’t a workforce competing for recognition or earning God’s approval. It’s a people serving together, with different designs and a shared Kingdom purpose."
+          },
+          {
+            "type": "paragraph",
+            "text": "Your part will often take shape through:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "Expertise — what you’ve developed",
+              "Story — what you’ve experienced",
+              "Desire — what you’re drawn toward",
+              "Gifts — what God empowers"
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "God can work through your skills, redeem your experiences, direct your desires, and empower your gifts. Your contribution may look different from someone else’s, and that is part of the beauty of His design."
+          },
+          {
+            "type": "paragraph",
+            "text": "The question is not, “How do I do more?” It is, “What good is God inviting me to do with the life and design He has given me?” You don’t have to do everyone’s work. You are invited to faithfully take your part in the Good Works Force."
+          },
+          {
+            "type": "paragraph",
+            "text": "Purpose is not performance. It is faithful expression."
+          }
         ],
+        teachingBlocks: [],
       },
       {
         row: 17,
@@ -1086,12 +1137,49 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         title: "Niche",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Niche with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+        lessonMainIdea: "Not doing more. Doing what fits.",
         anchorScripture: "Ephesians 2:10",
-        teachingBlocks: [
-          "This lesson introduces Niche as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+        focus: ["Doing What fits"],
+        media: {"image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/fffc22e1-ffe8-48b5-9642-b68bc7bcbfd0/closeup-image-of-two-people-playing-and-building-r-2024-12-05-18-40-10-utc.jpg?format=500w", "label": "Two people fitting puzzle pieces together", "type": "image"},
+        lessonBody: [
+          {
+            "type": "heading",
+            "text": "NICHE"
+          },
+          {
+            "type": "paragraph",
+            "text": "Not doing more. Doing what fits."
+          },
+          {
+            "type": "paragraph",
+            "text": "Think of your God-given design as a puzzle piece. Its shape is not a flaw to correct or something to squeeze into someone else’s space. Your particular mix of skills, story, passions, and gifts shapes how you can contribute to the bigger picture of what God is doing. Your niche is where that design meets an opportunity to love, serve, and bring good to others. It is your particular contribution within the Good Works Force."
+          },
+          {
+            "type": "paragraph",
+            "text": "Jesus draws our attention to people who are hungry, overlooked, sick, or forgotten. Discovering your niche isn’t simply finding what makes you feel fulfilled. It is recognizing where what God has formed in you can become a meaningful gift to someone else."
+          },
+          {
+            "type": "paragraph",
+            "text": "That fit doesn’t mean everything will be easy or comfortable. God may stretch you as you grow into it. And you don’t need to find one perfect role before you begin. Your design can find expression in different relationships, places, and seasons."
+          },
+          {
+            "type": "paragraph",
+            "text": "So instead of asking, “Where can I do more?” begin asking, “Where do I see a need that connects with how God has shaped me?” You can explore that connection one faithful step at a time."
+          },
+          {
+            "type": "paragraph",
+            "text": "Not an identity you chase."
+          },
+          {
+            "type": "paragraph",
+            "text": "Not a fit you force."
+          },
+          {
+            "type": "paragraph",
+            "text": "A contribution you grow into"
+          }
         ],
+        teachingBlocks: [],
       },
       {
         row: 18,

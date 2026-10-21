@@ -395,7 +395,7 @@ export function JourneyCourseNavigator({
             </div>
 
             {active.unit.companionMomentPosition !== "after-teaching" ? (
-              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} />
+              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction} />
             ) : null}
 
             <div className={`assessment-lesson-content${isCareIntroduction ? " journey-care-introduction-layout" : " with-image"}${wrapLessonImage ? " journey-wrap-pilot" : ""}`}>
@@ -421,7 +421,7 @@ export function JourneyCourseNavigator({
             </div>
 
             {active.unit.companionMomentPosition === "after-teaching" ? (
-              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} />
+              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction} />
             ) : null}
             {active.unit.closingScripture ? (
               <blockquote className="journey-closing-scripture">

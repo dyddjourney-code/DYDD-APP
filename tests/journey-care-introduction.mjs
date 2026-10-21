@@ -26,6 +26,10 @@ try {
   assert.deepEqual(await page.$$eval('.journey-active-focus span',es=>es.map(e=>e.textContent)),unit.focus);
   assert.equal(await page.$('.journey-lesson-images'),null,'No right-side image');
   assert.equal((await page.$$('.journey-care-information')).length,1,'One beige information box');
+  assert.equal((await page.$$('.journey-care-record')).length,1,'One read-only personal record callout');
+  const record=await page.$eval('.journey-care-record',e=>e.textContent);
+  for(const phrase of ['private workbook','not posted to a group','over time','write your niche','Field Kit','earlier walkthroughs','text file']) assert(record.includes(phrase),'Truthful record copy: '+phrase);
+  assert.equal(await page.$('.companion-audio-speakers span'),null,'Duration badge omitted only here');
   assert.equal(await page.$('.journey-active-lesson textarea, .journey-active-lesson input, .journey-active-workbook'),null,'No questions or inputs');
   assert(!/Bring to discussion|Submit reflection/.test(content));
   const audio=await page.$eval('.journey-active-lesson audio',e=>({src:e.currentSrc||e.src,state:e.readyState,error:e.error?.code,top:e.getBoundingClientRect().top}));
@@ -56,6 +60,8 @@ try {
   await page.waitForSelector('.journey-active-workbook textarea');
   assert((await page.$eval('.journey-active-workbook',e=>e.textContent)).includes('Bring to discussion'));
   assert.equal(await page.$('.journey-care-introduction'),null);
+  assert.equal(await page.$('.journey-care-record'),null);
+  if(other.companionMoment) assert(await page.$('.companion-audio-speakers span'),'Other lessons with audio retain duration badges');
   console.log('PASS actual CARE lesson retains editable reflection and discussion controls: '+other.slug);
  }
  assert.deepEqual(errors,[]);console.log('PASS no browser runtime errors');

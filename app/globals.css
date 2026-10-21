@@ -20870,3 +20870,32 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .journey-care-information.reflection-answer { margin: 0; }
 @media (max-width: 1100px) { .journey-care-introduction .journey-care-process { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .journey-care-introduction .journey-care-process { grid-template-columns: minmax(0, 1fr); } }
+
+/* Read-only preview of the personal reflection record, only in How to CARE. */
+.journey-care-introduction .journey-care-record {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: clamp(22px, 3vw, 34px);
+  border: 1px solid #cad8c4;
+  border-left: 5px solid #456640;
+  border-radius: 6px 18px 18px 6px;
+  background: #edf2e8;
+  box-shadow: 0 8px 24px rgba(49, 74, 43, .05);
+}
+.journey-care-introduction .journey-care-record .section-label {
+  margin: 0;
+  color: #456640;
+  font-size: .72rem;
+  letter-spacing: .13em;
+}
+.journey-care-introduction .journey-care-record h4 {
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  line-height: 1.35;
+  text-wrap: balance;
+}
+.journey-care-introduction .journey-care-record p:not(.section-label) {
+  margin: 0;
+  color: #364b32;
+  line-height: 1.75;
+}

@@ -24,3 +24,14 @@ Publication uses the existing `scripts/deploy-sandbox.mjs` after push; verify ex
 The global readable-lesson paragraph cap (`74ch`) still constrained the introductory paragraph and informational prose on wide desktops. A selector scoped to `.journey-care-introduction` removes only that cap; both areas now fill the available CARE panel width, with the information box retaining its internal padding. No wording, audio, focus, green-panel markup or other lesson styles changed.
 
 The actual Chromium regression now measures both text areas against the panel and the information box inner width at 1920/1280/768/390/320px. The new wide-desktop assertion fails against the prior published release and passes with the fix. Build, typecheck, authored-content fidelity and diff checks pass. Re-run the same five-width browser checks after the explicit sandbox release and verify its exact SHA and alias; production remains untouched.
+
+
+## Personal record callout and audio badge follow-up — October 21
+
+Only this lesson suppresses the companion audio duration badge through an opt-in `showDuration` prop; the original audio source, controls, speakers and transcript stay intact. Every other audio card defaults to showing its duration.
+
+A separate, read-only sage/green callout follows the original beige compass explanation. It introduces later CARE reflections, private workbook saving (not group posting), the growing record used to discover divine design/write a niche, and Field Kit review/earlier walkthroughs/text download. It adds no entry, submit, discussion or navigation controls. Full-width authored paragraphs and the original green/beige panels are unchanged.
+
+Capability evidence: `reflection-session.tsx` shares the same saved answers in Journey/Field Kit, exposes dated history and actual Download text; `course-reflections` API scopes reads/writes by authenticated user and the reflection tables have owner-only RLS; entries append revisions. Export emits saved latest answers and original questions, not unsaved drafts or automatic growth analysis. Owner-review preview saves to an isolated preview workbook, not a personal learner account. No absolute confidentiality, automatic analysis or PDF export is promised. Sandbox email remains disabled; copy promises text download only.
+
+Verification: build/typecheck/authored-content/catalog/text-export/environment-isolation/discussion-access; exact-route actual Chromium desktop1920/1280/tablet768/phone390/320 verifies one additional informational callout, no duration badge here, loaded/playable original audio, no answer/activity controls, original full-width text/four green panels/beige box, no overflow/runtime errors, and other CARE lessons retain their reflection/discussion controls and duration badges. Published save/review/history/text-download/access checks and exact deployment receipt recorded in release notes below.

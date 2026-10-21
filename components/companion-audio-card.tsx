@@ -2,9 +2,10 @@ import type { CompanionMoment } from "@/lib/courses/companion-moments";
 
 type CompanionAudioCardProps = {
   moment?: CompanionMoment;
+  showDuration?: boolean;
 };
 
-export function CompanionAudioCard({ moment }: CompanionAudioCardProps) {
+export function CompanionAudioCard({ moment, showDuration = true }: CompanionAudioCardProps) {
   if (!moment) {
     return null;
   }
@@ -26,7 +27,7 @@ export function CompanionAudioCard({ moment }: CompanionAudioCardProps) {
         <h3>{moment.title}</h3>
         <p className="companion-audio-speakers">
           {moment.speakers.map((speaker) => `${speaker.name}, ${speaker.role}`).join(" + ")}
-          <span>{moment.duration}</span>
+          {showDuration ? <span>{moment.duration}</span> : null}
         </p>
         <audio controls preload="metadata" src={moment.audioSrc}>
           <a href={moment.audioSrc}>Play companion audio</a>

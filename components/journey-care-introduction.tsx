@@ -29,6 +29,21 @@ export function JourneyCareIntroduction({ blocks }: { blocks: JourneyLessonBlock
       <aside className="reflection-answer journey-care-information" aria-label="Using the CARE process">
         <JourneyLessonBody blocks={blocks.slice(definitionsIndex + 1)} />
       </aside>
+      <aside className="journey-care-record" aria-labelledby="journey-care-record-title">
+        <p className="section-label">Your growing personal record</p>
+        <h4 id="journey-care-record-title">Small reflections. A clearer picture of your design.</h4>
+        <p>
+          In later lessons, CARE includes space for your own reflections. Your answers
+          are saved in your private workbook as you go—not posted to a group—so you
+          can return to them and see how your understanding develops over time.
+        </p>
+        <p>
+          These reflections become a growing personal record to help you discover
+          your divine design and write your niche at the end of the course. In your
+          Field Kit, you can review your saved answers and earlier walkthroughs,
+          revisit your reflections, and download them as a text file to keep.
+        </p>
+      </aside>
     </div>
   );
 }

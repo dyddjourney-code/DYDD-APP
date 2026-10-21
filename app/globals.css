@@ -20944,3 +20944,11 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .journey-who-whose-lesson .lesson-source .journey-closing-scripture p {
   max-width: none;
 }
+
+/* This lesson's tablet prototype must not leave the index floating over CARE. */
+@media (max-width: 980px) {
+  .journey-who-whose-walkthrough .journey-course-index {
+    position: static;
+    max-height: none;
+  }
+}

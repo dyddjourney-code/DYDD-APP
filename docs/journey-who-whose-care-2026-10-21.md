@@ -32,7 +32,7 @@ Browser-control service start timed out; actual Chromium/Puppeteer QA uses insta
 
 ## October 21 refinement / intended template policy
 
-This sandbox-only prototype removes the irrelevant Teaching lesson pill while retaining book/workbook references. The original top-right artwork floats within the lesson body above 980px; actual DOM Range text-line geometry is checked below the image, not only outer container widths. Only this lesson opts into the existing D.E.S.I.G.N wrap pilot; no course-wide rollout.
+This sandbox-only prototype removes the irrelevant Teaching lesson pill from the lesson header and its course-index row while retaining book/workbook references. Screenshot inspection also caught the existing tablet index remaining sticky over CARE at 768px; this lesson alone uses a non-sticky index through 980px. The original top-right artwork floats within the lesson body above 980px; actual DOM Range text-line geometry is checked below the image, not only outer container widths. Only this lesson opts into the existing D.E.S.I.G.N wrap pilot; no course-wide rollout.
 
 The source contains one full quoted Scripture passage, 1 John 3:1 (NIV). It is now an explicit Scripture block, with unchanged words/reference, 20px indentation and a 4px dark-green (#243f27) left bar. Ordinary quoted questions (“Who am I?” / “Whose am I?”), explanatory prose, and the full prayer are not misclassified as Bible passages. Intended future template policy: explicitly classify every authored Bible passage and render a clear indented green-bar callout; do not infer Scripture from quotation marks. Preserve source wording/references. Apply only after the prototype is reviewed.
 

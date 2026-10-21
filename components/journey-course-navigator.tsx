@@ -260,7 +260,7 @@ export function JourneyCourseNavigator({
 
   return (
     <section
-      className="journey-course-walkthrough dydd-journey-walkthrough"
+      className={`journey-course-walkthrough dydd-journey-walkthrough${isWhoWhose ? " journey-who-whose-walkthrough" : ""}`}
       aria-label="Guided course walkthrough"
     >
       <aside className="journey-course-index">
@@ -341,9 +341,9 @@ export function JourneyCourseNavigator({
                                       }
                                       type="button"
                                     >
-                                      <span className={typeClass[unit.type]}>
+                                      {unit.slug !== "identity-who-vs-whose-16" ? <span className={typeClass[unit.type]}>
                                         {unit.typeLabel}
-                                      </span>
+                                      </span> : null}
                                       <strong>{unit.title}</strong>
                                     </button>
                                   </li>

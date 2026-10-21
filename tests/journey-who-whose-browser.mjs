@@ -21,6 +21,8 @@ for(const width of [1920,1280,768,390,320]){
  console.log('Wrap geometry '+width+' '+JSON.stringify(geometry));
  }
  assert.equal(await page.$eval('.journey-active-meta',e=>e.textContent.includes('Teaching lesson')),false);
+ assert.equal(await page.$eval('.journey-course-index button.active',e=>e.textContent.includes('Teaching lesson')),false);
+ if(width<=980)assert.equal(await page.$eval('.journey-course-index',e=>getComputedStyle(e).position),'static','Tablet index cannot overlap the lesson');
  const scriptures=await page.$$eval('.lesson-source blockquote',es=>es.map(e=>({text:e.textContent,left:parseFloat(getComputedStyle(e).marginLeft),border:getComputedStyle(e).borderLeftColor,width:getComputedStyle(e).borderLeftWidth})));
  assert.equal(scriptures.length,1);assert(scriptures[0].text.includes('1 John 3:1 (NIV)'));assert.equal(scriptures[0].border,'rgb(36, 63, 39)');assert.equal(scriptures[0].width,'4px');assert(scriptures[0].left>=20);
  assert.equal((await page.$$('.journey-care-response-grid textarea:not(.discussion-note)')).length,4);assert(await page.$('[data-care-stage="explore"] textarea'));

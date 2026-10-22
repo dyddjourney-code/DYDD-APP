@@ -7,7 +7,7 @@ import {
   getReflectionExperience,
   withWhoWhoseExplore,
   withDesignIdWelcome,
-  withDesignIdLens, withIdentityBelievers, withDesignReflectionsLove,
+  withDesignIdLens, withIdentityBelievers, withDesignReflectionsLove, withOneAnother,
   reflectionLessonExists,
 } from "@/lib/reflections/catalog";
 import {
@@ -104,7 +104,7 @@ export async function GET(request: Request) {
   // DesignID Lens / course prompts), preserving every old answer key/revision and archive.
   if (rounds?.[0] && ["discover-your-divine-design", "designid-foundations"].includes(courseSlug)) {
     const current = rounds[0];
-    const questions = withDesignReflectionsLove(courseSlug, withIdentityBelievers(courseSlug, withDesignIdLens(courseSlug, withDesignIdWelcome(courseSlug, withWhoWhoseExplore(courseSlug, current.questions)))));
+    const questions = withOneAnother(courseSlug, withDesignReflectionsLove(courseSlug, withIdentityBelievers(courseSlug, withDesignIdLens(courseSlug, withDesignIdWelcome(courseSlug, withWhoWhoseExplore(courseSlug, current.questions))))));
     if (questions !== current.questions) {
       // Authenticated users cannot edit their prompt snapshots. The server adds
       // only approved prompt metadata to the already owner-filtered current round.

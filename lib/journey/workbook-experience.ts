@@ -1,3 +1,4 @@
+import { oneAnotherCare } from "@/lib/journey/one-another-care";
 import { designReflectionsLoveCare } from "@/lib/journey/design-reflections-love-care";
 import { identityBelieversCare } from "@/lib/journey/identity-believers-care";
 import { dyddJourney } from "@/lib/journey/dydd-journey";
@@ -225,6 +226,12 @@ export function getWorkbookExperience(
   active: FlatUnit,
 ): WorkbookExperience | null {
   const { module, unit } = active;
+  if (unit.slug === "identity-love-your-neighbor-as-yourself-22") return null;
+  if (unit.slug === "identity-reflections-and-one-anothering-23") return {
+    kind: "care", title: unit.title, purpose: "",
+    care: Object.fromEntries(oneAnotherCare.map(item => [item.stage, item.explanation])) as JourneyCarePerspective,
+    prompts: oneAnotherCare.flatMap(item => "questionId" in item ? [{ id: item.questionId, careStep: item.stage, label: item.question, responseType: "long_text" as const }] : []),
+  };
   if (unit.slug === "identity-identity-among-believers-20") return {
     kind: "care", title: "Your Identity Among Believers", purpose: "",
     care: Object.fromEntries(identityBelieversCare.map(item => [item.stage, item.explanation])) as JourneyCarePerspective,

@@ -1489,12 +1489,28 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         workbookPages: "p25 - p26",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Love your neighbor as yourself with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
-        anchorScripture: "Ephesians 2:10",
-        teachingBlocks: [
-          "This lesson introduces Love your neighbor as yourself as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+        lessonMainIdea: "",
+        focus: ["You Are Worth Loving"],
+        media: {"image":"https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/05b25f49-a299-4ab4-9476-838b7bae1473/smiling-woman-enjoying-nature-and-forest-sunshine-2026-09-25-08-46-31-utc.jpg?format=2500w","label":"Receiving God’s love and loving yourself","type":"image"},
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "Jesus tells us to “love your neighbor as yourself,” it’s not just about being kind to others; it’s a reminder that you can’t pour out what you haven’t first received. Loving yourself isn’t selfish; it’s survival, and it’s the only way to truly love your neighbor."
+          },
+          {
+            "type": "paragraph",
+            "text": "Do you love yourself? Can you say it? “I love myself.” Are you able to tell others that you love yourself? If you ever want to find a way to break the ice in a conversation in a strange way, walk up to someone new next time you are out or at church and just tell them, “I really love me some me.” As funny as that sounds, based on Mark 12, you are letting them know that you are capable of loving them."
+          },
+          {
+            "type": "paragraph",
+            "text": "This is incredibly powerful. Loving yourself means seeing God’s perspective. How often do we put consequences, obstacles, or false perceptions above the knowledge that God loves us?"
+          },
+          {
+            "type": "paragraph",
+            "text": "God loves you. There is no denying it. He loved you before you ever loved Him back. This includes all your blemishes, wrinkles, and scars. If you can know, truly know, that God loves you and you can surrender to being His purposeful creation, the blemishes, wrinkles, and scars, fade away. Loving yourself, the uniquely created person God designed, frees you to love others with untethered and reckless abandon. It is this type of love that will actually change your neighbors, and it is sorely missed in the fellowship of believers today."
+          }
         ],
+        teachingBlocks: [],
       },
       {
         row: 23,
@@ -1506,12 +1522,40 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         workbookPages: "p27 - p30",
         typeLabel: "DesignID reflection",
         duration: "10-15 min",
-        lessonMainIdea: "Use DesignID as a mirror inside Identity, helping the learner connect assessment language to faithful love and service.",
-        anchorScripture: "Ephesians 2:10",
-        teachingBlocks: [
-          "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
-          "Placed inside Identity, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course.",
+        lessonMainIdea: "",
+        focus: ["Love One Another"],
+        media: {"image":"https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/c1f8f611-a5f0-438a-a31e-1f72fe74d2a7/relaxed-family-sitting-grass-mountain-slope-at-sum-2026-01-05-23-35-52-utc.jpg?format=500w","label":"A family together in creation","type":"image"},
+        lessonBody: [
+          {
+            "type": "heading",
+            "text": "Called to “One Another”"
+          },
+          {
+            "type": "paragraph",
+            "text": "As Christians, we are family. When we pursue harmony, mutual respect, and peace with each other, we reflect God’s character and His love. The fact that God created us all uniquely means that this unity will take work. We are called to work, love, and serve with those who are different and unfamiliar. This can create anxiety, and a multitude of miscommunications. It can lead to hurts and disagreements, or even outright conflict. All of this is not just okay but part of God’s design."
+          },
+          {
+            "type": "paragraph",
+            "text": "He knew that we would start our campaign as an eternal citizen in heaven, here on earth. He knew that we would grow and be refined simply because others were not like us. It is His design that we are to love in unity, being one body with many parts. Let’s face it, some of those we work with are as different as the night is from the day. Isn’t that wonderful! What an opportunity to love."
+          },
+          {
+            "type": "paragraph",
+            "text": "The world is watching to see if we will accept each other and love despite our differences and hang-ups, because they want to know that we will love them in the same way. What a shame it is that the Body of Christ, His bride, is so fragmented today. We have to learn to obey His commands associated with the phrase “one another.”"
+          },
+          {
+            "type": "paragraph",
+            "text": "In the New Testament, Jesus and the apostles tell us to feel, say, or do something to one another numerous times."
+          },
+          {
+            "type": "paragraph",
+            "text": "Consider what it means to “one another” through your reflection. In what ways has God uniquely designed you to support and strengthen other believers?"
+          },
+          {
+            "type": "paragraph",
+            "text": "It is important that you can “one another” for all four of your reflections. Even in the areas where you have less energy or natural capacity, the call remains the same. Every believer is invited to live out the “one another” commands of Scripture. You may simply need to lean on God’s strength more deeply in those areas, for in your weakness, He is strong."
+          }
         ],
+        teachingBlocks: [],
       },
       {
         row: 24,

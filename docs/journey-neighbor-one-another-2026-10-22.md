@@ -1,0 +1,26 @@
+# Identity: Love Your Neighbor / One Anothering — sandbox only
+
+Baseline `50ddea232b86615a4cd2dae50ee0ab81809a91c1` retains the completed FruitLife360 vineyard release. Only main Journey spreadsheet rows22–23 are implemented. Row24 **Niche Preparation: Identity**, every other lesson, all original companion audio and the deferred mobile chart treatment remain unchanged.
+
+## Current read-only authoring source
+
+`content/journey/neighbor-one-another-source-2026-10-22.json` records current workbook metadata, stable sheetId0/current tab **DYDD Journey Course**, rich A1:Z1 and A22:Z23. Headers AModule/BSection/CLesson/DLessonTitle/ELessonFocus/FContent/GImageURL/HCARE. Sparse parent cells retained. Formatted values, hyperlink URLs, rich runs and cell metadata preserved; no spreadsheet writes.
+
+- Row22 / stable `identity-love-your-neighbor-as-yourself-22` / lesson5: **Love your neighbor as yourself**, focus **You Are Worth Loving**. All four current teaching paragraphs, from “Jesus tells us…” through “…fellowship of believers today.” Current Squarespace smiling-woman forest/sunshine photograph (actual rich hyperlink). H22 explicitly instructs **“no Care, remove what is on this lesson”**. Renderer and workbook resolver return no CARE, no generic prompt, no response fields or discussion controls. Existing historical answer records and archived snapshots are not deleted; current saved workbook metadata is never filtered destructively.
+- Row23 / stable `identity-reflections-and-one-anothering-23` / lesson6: **Reflections and One Anothering**, focus **Love One Another**. Exact current heading **Called to “One Another”**, six current teaching paragraphs, family-on-mountain-slope source image (actual rich hyperlink). Current H23 contains the user-approved authored CARE. Exact headings, explanations and questions retained including Architect/Artisan/Shepherd/Steward terminology. Connect/Act/Reflect each has one saved answer. Explore **Grow beyond your familiar way** is Scripture-reading instruction only (Romans12:10, Galatians6:2, 1Thessalonians5:11); no invented fourth question or prayer.
+
+## Presentation and history
+
+Approved Who vs Whose forward layout: floating right-hand image inside teaching at desktop, full-width uncapped prose below, narrow-screen image behavior retained, compact focus pills, no redundant duplicate teaching title, tablet index non-sticky. No added translation suffixes; source contains references rather than quoted verse blocks. Original duration metadata retained. CARE stage heading, explanation and field stay together in source order, two columns desktop, one column phone; full stage names and no acronym cards. Shared actual save/retry/private-reminder directions retained. No generic assessment introduction/connected trail callout added to row23.
+
+Original row23 `…-designid-connect` and `…-designid-reflect` keys preserved; new `…-designid-act` is canonical in Journey/FieldKit/history/export/private reminders. `withOneAnother` refreshes only current-round metadata and is idempotent/nonmutating; retired keys remain in existing snapshots. Entries/revisions/archived rounds are never rewritten. No database schema, auth, scoring, reports, email, production or unrelated chart changes.
+
+## Checks and release contract
+
+`npm run typecheck`; `npm run build`; `node tests/journey-neighbor-source.cjs`; catalog/export/environment/discussion-access regressions. Scoped source test verifies exact current teaching/focus/images/CARE, explicit row22 noCARE, source-only three questions, stable keys/current-only upgrade/history retention and byte-equivalent neighboring outline units including row24. Legacy `journey-authored-content.cjs` baseline comparison already predates the prior row19 image; its first failure is unrelated row19 artwork; use scoped current-baseline acceptance rather than rewriting older authoring history.
+
+`node tests/journey-neighbor-browser.mjs`: actual1920/1280/768/390/320 widths on both lessons, exact source/focus/image loaded, prose geometry, no page overflow, row22 noCARE, row23 three editable controls/four ordered stages/no invented Explore input, private mark controls, established owner recovery/sidebar→Trailheads→Journey and runtime errors. Screenshots and measurements retained in untracked `tmp/neighbor-*`.
+
+`JOURNEY_TEST_QUESTION_ID=identity-reflections-and-one-anothering-23-designid-act node tests/journey-fieldkit-sync.mjs`: isolated real sandbox-auth/database autosave, immediateNext, reopen, FieldKit edit/history/text-export/private-reminder eligibility; transport-failure/retry and concurrent-edit behavior. Synthetic fixtures removed in finally. Existing Connect/Reflect remain stable; archived entries are not touched.
+
+Publish pushed `sandbox` only using `node scripts/deploy-sandbox.mjs`; exact READY/project/GitSHA/expectedSHA/stablealias and unchanged productionmaster/alias verified by `tmp/neighbor-release-proof.mjs` into `tmp/neighbor-release-proof.json`. Repeat browser and real persistence against `JOURNEY_TEST_BASE=https://dydd-online-school-sandbox.vercel.app`. Public review entry `/sandbox-review`; target links `/journey?lesson=identity-love-your-neighbor-as-yourself-22` and `/journey?lesson=identity-reflections-and-one-anothering-23`. Parent owns visible Telegram delivery; no child external messages.

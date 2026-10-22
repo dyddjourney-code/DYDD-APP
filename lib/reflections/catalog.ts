@@ -227,3 +227,16 @@ export function withDesignReflectionsLove(courseSlug: string, questions: Reflect
   }
   return result;
 }
+
+/** Current authored lesson metadata only; answers, revisions, and archived rounds stay intact. */
+export function withOneAnother(courseSlug: string, questions: ReflectionQuestion[]) {
+  if (courseSlug !== "discover-your-divine-design") return questions;
+  const approved = getReflectionExperience(courseSlug)!.questions.filter(q => q.lessonSlug === "identity-reflections-and-one-anothering-23");
+  let result = questions;
+  for (const canonical of approved) {
+    const old = result.find(q => q.id === canonical.id);
+    if (old?.prompt === canonical.prompt) continue;
+    result = old ? result.map(q => q.id === canonical.id ? canonical : q) : [...result, canonical];
+  }
+  return result;
+}

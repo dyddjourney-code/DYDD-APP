@@ -1,4 +1,5 @@
 "use client";
+import { JourneyOneAnotherCare } from "@/components/journey-one-another-care";
 import { JourneyCareDirections } from "@/components/journey-care-directions";
 import {
   useReflectionPosition,
@@ -188,7 +189,9 @@ export function JourneyCourseNavigator({
   const isDesignIdLens = active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19";
   const isDesignReflectionsLove = active.unit.slug === "identity-the-design-reflections-and-love-21";
   const isWhoWhose = active.unit.slug === "identity-who-vs-whose-16";
-  const usesApprovedLessonFormat = isDesignReflectionsLove || isWhoWhose || ["identity-good-works-17", "identity-niche-18", "identity-identity-among-believers-20"].includes(active.unit.slug);
+  const isOneAnother = active.unit.slug === "identity-reflections-and-one-anothering-23";
+  const isNeighbor = active.unit.slug === "identity-love-your-neighbor-as-yourself-22";
+  const usesApprovedLessonFormat = isOneAnother || isNeighbor || isDesignReflectionsLove || isWhoWhose || ["identity-good-works-17", "identity-niche-18", "identity-identity-among-believers-20"].includes(active.unit.slug);
   const isCareIntroduction = active.unit.slug === "what-is-dydd-how-to-c-a-r-e-10";
   const workbookExperience = active ? getWorkbookExperience(active) : null;
   const lessonMainIdea = cleanLessonMainIdea(
@@ -370,7 +373,7 @@ export function JourneyCourseNavigator({
       </aside>
 
       <article
-        className={`journey-active-lesson ${typeClass[active.unit.type]}${usesApprovedLessonFormat ? " journey-who-whose-lesson" : ""}${isDesignReflectionsLove ? " journey-design-love-lesson" : ""}${active.unit.slug === "identity-identity-among-believers-20" ? " journey-identity-believers-lesson" : ""}`}
+        className={`journey-active-lesson ${typeClass[active.unit.type]}${usesApprovedLessonFormat ? " journey-who-whose-lesson" : ""}${isOneAnother || isNeighbor ? " journey-neighbor-lesson" : ""}${isDesignReflectionsLove ? " journey-design-love-lesson" : ""}${active.unit.slug === "identity-identity-among-believers-20" ? " journey-identity-believers-lesson" : ""}`}
         ref={activeLessonRef}
       >
         <header>
@@ -380,11 +383,11 @@ export function JourneyCourseNavigator({
               .{active.sectionIndex + 1} / Lesson {active.unitIndex + 1}
             </p>
             <h2>{active.unit.title}</h2>
-            {!isDesignReflectionsLove ? <p>{lessonMainIdea}</p> : null}
+            {!isDesignReflectionsLove && !isOneAnother && !isNeighbor ? <p>{lessonMainIdea}</p> : null}
           </div>
           <div className="journey-active-meta">
             {!usesApprovedLessonFormat ? <span>{active.unit.typeLabel}</span> : null}
-            <span>{usesApprovedLessonFormat && !isDesignReflectionsLove && active.unit.slug !== "identity-identity-among-believers-20" ? "3–5 minutes" : active.unit.duration}</span>
+            <span>{usesApprovedLessonFormat && !isDesignReflectionsLove && !isOneAnother && !isNeighbor && active.unit.slug !== "identity-identity-among-believers-20" ? "3–5 minutes" : active.unit.duration}</span>
             {active.unit.bookPages ? (
               <span>Book {active.unit.bookPages}</span>
             ) : null}
@@ -423,7 +426,7 @@ export function JourneyCourseNavigator({
                 aria-label="Lesson body"
               >
                 {!isCareIntroduction && wrapLessonImage ? lessonArtwork : null}
-                {!["identity-good-works-17", "identity-niche-18", "identity-the-design-reflections-and-love-21"].includes(active.unit.slug) ? <h3 className="lesson-body-subheading">{active.unit.title}</h3> : null}
+                {!isOneAnother && !isNeighbor && !["identity-good-works-17", "identity-niche-18", "identity-the-design-reflections-and-love-21"].includes(active.unit.slug) ? <h3 className="lesson-body-subheading">{active.unit.title}</h3> : null}
                 {active.unit.contentStatus === "draft" ? (
                   <p role="status">Lesson content is being prepared.</p>
                 ) : isCareIntroduction && active.unit.lessonBody ? (
@@ -451,7 +454,7 @@ export function JourneyCourseNavigator({
           </section>
 
           {/* Keep the overview in class; connected trails remain available at the assessment introductions. */}
-          {!isDesignIdLens && !isDesignReflectionsLove && active.unit.slug !== "what-is-dydd-dydd-assessments-11" && active.unit.contentStatus !== "draft" && (active.unit.type === "assessment-link" ||
+          {!isDesignIdLens && !isDesignReflectionsLove && !isOneAnother && active.unit.slug !== "what-is-dydd-dydd-assessments-11" && active.unit.contentStatus !== "draft" && (active.unit.type === "assessment-link" ||
           active.unit.type === "designid-reflection" ||
           active.unit.slug.includes("spiritual-gifts-assessment")) ? (
             <aside className="trail-fieldkit-note">
@@ -487,7 +490,7 @@ export function JourneyCourseNavigator({
             </aside>
           ) : null}
 
-          {active.unit.slug === "identity-identity-among-believers-20" ? <JourneyIdentityBelieversCare /> : isWhoWhose ? <JourneyWhoWhoseCare /> : workbookExperience ? (
+          {isOneAnother ? <JourneyOneAnotherCare /> : active.unit.slug === "identity-identity-among-believers-20" ? <JourneyIdentityBelieversCare /> : isWhoWhose ? <JourneyWhoWhoseCare /> : workbookExperience ? (
             <section
               className={`journey-active-workbook ${workbookExperience.kind}${(isDesignIdLens || isDesignReflectionsLove) ? " journey-who-whose-care journey-designid-lens-care" : ""}`}
             >

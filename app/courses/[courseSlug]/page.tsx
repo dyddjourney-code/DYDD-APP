@@ -83,6 +83,10 @@ export default async function LearningCoursePage({
   const course = getLearningCourse(courseSlug);
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
   const isSpiritualGifts = course?.slug === "spiritual-gifts-service";
+  const isFruitLife = course?.slug === "fruitlife-360-formation";
+  const hasIllustratedHeader = isSpiritualGifts || isFruitLife;
+  const headerClass = isFruitLife ? "fruitlife-course" : "spiritual-gifts-course";
+  const trackClass = isFruitLife ? "fruitlife-top-racetrack" : "spiritual-gifts-top-racetrack";
   const fruitLifeReviewQuery = reviewQuery(reviewParams);
   const courseQuery = fruitLifeLane
     ? `?lane=fruitlife${fruitLifeReviewQuery ? `&${fruitLifeReviewQuery.slice(1)}` : ""}`
@@ -123,7 +127,7 @@ export default async function LearningCoursePage({
 
   return (
     <main
-      className={`course-shell course-shell-${course.accent}${isSpiritualGifts ? " journey-shell spiritual-gifts-course-shell" : ""}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}
+      className={`course-shell course-shell-${course.accent}${hasIllustratedHeader ? ` journey-shell ${headerClass}-shell` : ""}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}
     >
       {fruitLifeLane ? (
         <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} />
@@ -138,17 +142,17 @@ export default async function LearningCoursePage({
           Return to My Journey
         </a>
       </nav>
-      {isSpiritualGifts ? (
+      {hasIllustratedHeader ? (
         <>
-          <header className="journey-hero spiritual-gifts-course-hero">
+          <header className={`journey-hero ${headerClass}-hero`}>
             <div>
               <h1>{course.title}</h1>
               <p className="lede">{course.tagline}</p>
             </div>
           </header>
           <nav
-            className="dydd-progress-racetrack journey-top-racetrack spiritual-gifts-top-racetrack"
-            aria-label="Spiritual Gifts module navigation"
+            className={`dydd-progress-racetrack journey-top-racetrack ${trackClass}`}
+            aria-label={`${course.title} module navigation`}
           >
             <ol>
               {course.modules.map((module, index) => (

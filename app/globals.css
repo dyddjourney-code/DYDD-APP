@@ -21123,7 +21123,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   grid-template-columns: repeat(6, minmax(116px, 1fr));
 }
 
-.spiritual-gifts-top-racetrack li a {
+:is(.spiritual-gifts-top-racetrack, .fruitlife-top-racetrack) li a {
   display: grid;
   justify-items: center;
   align-content: start;
@@ -21135,17 +21135,17 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   text-decoration: none;
 }
 
-.spiritual-gifts-top-racetrack li a:hover strong {
+:is(.spiritual-gifts-top-racetrack, .fruitlife-top-racetrack) li a:hover strong {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
-.spiritual-gifts-top-racetrack li a:focus-visible {
+:is(.spiritual-gifts-top-racetrack, .fruitlife-top-racetrack) li a:focus-visible {
   outline: 2px solid var(--green-dark);
   outline-offset: -2px;
 }
 
-.spiritual-gifts-top-racetrack li a:active {
+:is(.spiritual-gifts-top-racetrack, .fruitlife-top-racetrack) li a:active {
   transform: translateY(1px);
 }
 
@@ -21237,4 +21237,25 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .journey-care-response-grid,
   .journey-care-process,
   .journey-care-entry-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* FruitLife360 follows the same illustrated class header and linear module trail. */
+.fruitlife-course-hero {
+  grid-template-columns: minmax(0, 1fr);
+  background:
+    linear-gradient(102deg, rgba(251, 250, 244, 0.96) 0%, rgba(251, 250, 244, 0.82) 28%, rgba(251, 250, 244, 0.18) 52%, rgba(36, 63, 39, 0.06) 100%),
+    linear-gradient(0deg, rgba(36, 63, 39, 0.16), rgba(36, 63, 39, 0.02)),
+    url("/brand/fruitlife360-vineyard-cartoon-hero.webp") center / cover;
+}
+.fruitlife-top-racetrack ol {
+  grid-template-columns: repeat(5, minmax(116px, 1fr));
+}
+
+.fruitlife-course-hero > div { max-width: 520px; }
+.fruitlife-course-hero h1 {
+  font-size: clamp(1.8rem, 4.3vw, 3.5rem);
+  overflow-wrap: normal;
+}
+@media (max-width: 600px) {
+  .fruitlife-course-hero { background-position: center, center, right center; }
 }

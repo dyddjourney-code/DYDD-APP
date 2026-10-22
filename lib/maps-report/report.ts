@@ -209,7 +209,7 @@ function reflectionProfile(designIdSnapshot: MapsAssessmentSnapshot) {
 }
 
 // Shared teaching is in content.ts; only these participant lenses vary by scores.
-export const mapsShortFormVersion = "2026-10-22-short-form-v1";
+export const mapsShortFormVersion = "2026-10-22-short-form-v2";
 
 const reflectionContribution: Record<Reflection, string> = {
   Architect: "Frame direction.",
@@ -254,6 +254,7 @@ export const mapsShortFormDefinition = {
     repeatedAbcMovement: false,
     abcBodyPixels: 12,
     abcLineHeight: 1.35,
+    focusSpacingPixels: { top: 16, bottom: 12, definitionVertical: 10, scoreRowVertical: 4, termMarginTop: 12 },
     preserveVisuals: ["cover circle", "phase-opening pages", "charts"],
     preserveTeaching: ["definition", "biblical", "capacity", "scripture", "scriptureSummary"],
   },
@@ -709,18 +710,18 @@ export function buildMapsRoadmapHtml({
     .maps-resource-cta p, .maps-resource-cta h3 { color:#fffaf0; }
     .maps-resource-cta a { color:#fffaf0; font-weight:950; }
     .maps-resource-cta img { background:#fff; display:block; height:118px; padding:7px; width:118px; }
-    .maps-subcategory-page { padding-bottom:20px; }
-    .maps-subcategory-page .maps-definition-block { padding:12px; }
+    .maps-subcategory-page { padding-top:16px; padding-bottom:12px; }
+    .maps-subcategory-page .maps-definition-block { padding:10px 12px; }
     .maps-subcategory-page .maps-definition-block p, .maps-subcategory-page .maps-definition-block dd {font-size:11px;line-height:1.35;}
     .maps-subcategory-page .maps-lens-card {padding:10px;}
-    .maps-subcategory-page .maps-lens-card > p {font-size:11px;line-height:1.35;margin-bottom:9px;}
+    .maps-subcategory-page .maps-lens-card > p {font-size:11px;line-height:1.35;margin-bottom:7px;}
     .maps-subcategory-page .maps-mini-grid {gap:6px;}
     .maps-subcategory-page .maps-mini-grid div {padding:7px;}
     .maps-subcategory-page .maps-mini-grid p {font-size:10px;line-height:1.32;}
     .maps-subcategory-page .maps-data-card {padding:10px;}
-    .maps-subcategory-page .maps-capacity-row, .maps-subcategory-page .maps-pd-row {padding:5px 0;}
+    .maps-subcategory-page .maps-capacity-row, .maps-subcategory-page .maps-pd-row {padding:4px 0;}
     .maps-subcategory-page .maps-capacity-row small, .maps-subcategory-page .maps-pd-row small {font-size:10px;line-height:1.3;}
-    .maps-subcategory-page .maps-term-grid {gap:10px;margin-top:14px;}
+    .maps-subcategory-page .maps-term-grid {gap:10px;margin-top:12px;}
     .maps-subcategory-page .maps-term-card {padding:10px;gap:8px;grid-template-columns:1fr;align-content:start;}
     .maps-subcategory-page .maps-term-index {height:24px;width:24px;font-size:14px;}
     .maps-subcategory-page .maps-term-card h4 {font-size:16px;margin:0 0 10px;}

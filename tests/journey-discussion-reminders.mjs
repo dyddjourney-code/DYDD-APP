@@ -13,7 +13,7 @@ const admin=createClient(cfg.project_url,cfg.service_role_key,{auth:{persistSess
 const bucket=admin.storage.from('assessment-report-pdfs');
 const slug='discover-your-divine-design';
 const catalog=load('lib/reflections/catalog.ts').getReflectionExperience(slug).questions;
-const q=catalog.find(q=>q.id==='child-of-god-response');
+const q=catalog.find(q=>q.id===(process.env.JOURNEY_TEST_QUESTION_ID||'child-of-god-response'));assert(q);
 const eligible=load('lib/reflections/discussion-catalog.ts').careDiscussionIds;
 const excluded=catalog.find(q=>!eligible.has(q.id));assert(excluded);
 let userId,browser,previewBackup,previewAfter;
@@ -35,7 +35,7 @@ try {
   const context=await browser.createBrowserContext();if(!preview)await context.setCookie(...cookies);
   const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
   const selector=preview?'[data-question="'+q.id+'"]': '[data-question="'+q.id+'"]';
-  const go=async path=>page.goto(base+path+(path.includes('?')?query:query.replace(/^&/,'?')),{waitUntil:'networkidle2'});
+  const go=async path=>{if(!preview){await page.deleteCookie({name:'dydd_sandbox_review',url:base});await page.setCookie(...cookies);}await page.goto(base+path+(path.includes('?')?query:query.replace(/^&/,'?')),{waitUntil:'domcontentloaded'});};
   for(const width of [1280,390,320]) {
    await page.setViewport({width,height:1000});
    await go('/journey?lesson='+q.lessonSlug);

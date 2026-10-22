@@ -69,6 +69,27 @@ function defaultDesignIdExperience(
     return null;
   }
 
+  if (unit.slug === "identity-the-designid-lens-what-is-in-the-report-19") {
+    return {
+      kind: "designid",
+      title: "Unpack Your Reflections",
+      purpose: "",
+      marker: { alt: "DesignID", image: "/brand/tools/badge-icons/designid-icon.png", label: "DesignID reflection" },
+      care: {
+        connect: "Look at your Snapshot as a mirror, not a box. Notice what feels familiar and what surprises you.",
+        act: "Choose one strength reflected in your results and look for an opportunity to use it intentionally this week.",
+        reflect: "Think back to a specific situation or relationship that was difficult or misunderstood. Look with curiosity and grace, not regret.",
+        explore: "Consider a current relationship or responsibility at home, work, church, or in your community.",
+      },
+      prompts: [
+        { id: `${unit.slug}-designid-connect`, careStep: "connect", label: "Which part of your results best describes how you naturally respond, connect, or contribute? Share one everyday example.", responseType: "long_text" },
+        { id: `${unit.slug}-designid-act`, careStep: "act", label: "Where will you practice this strength, whom could it serve, and what will you watch for as you use it?", responseType: "long_text" },
+        { id: `${unit.slug}-designid-reflect`, careStep: "reflect", label: "What does your design help you understand about your response then? Knowing this now, what might you have done differently?", responseType: "long_text" },
+        { id: `${unit.slug}-designid-explore`, careStep: "explore", label: "How could understanding your design help you communicate, collaborate, or serve better there? What is one adjustment you could try?", responseType: "long_text" },
+      ],
+    };
+  }
+
   return {
     care: {
       connect:

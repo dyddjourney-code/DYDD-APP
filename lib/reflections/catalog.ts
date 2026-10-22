@@ -188,3 +188,16 @@ export function withDesignIdWelcome(courseSlug: string, questions: ReflectionQue
   }
   return result;
 }
+
+/** Upgrade only the current Lens snapshot. Entries retain their original prompt and revisions. */
+export function withDesignIdLens(courseSlug: string, questions: ReflectionQuestion[]) {
+  if (courseSlug !== "discover-your-divine-design") return questions;
+  const approved = getReflectionExperience(courseSlug)!.questions.filter(q => q.lessonSlug === "identity-the-designid-lens-what-is-in-the-report-19");
+  let result = questions;
+  for (const canonical of approved) {
+    const old = result.find(q => q.id === canonical.id);
+    if (old?.prompt === canonical.prompt) continue;
+    result = old ? result.map(q => q.id === canonical.id ? canonical : q) : [...result, canonical];
+  }
+  return result;
+}

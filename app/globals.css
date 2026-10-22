@@ -21097,3 +21097,16 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .designid-ecosystem-table td p { margin: 0 0 12px; }
 .designid-ecosystem-table td p:last-child { margin-bottom: 0; }
 @media (max-width: 767px) { .designid-ecosystem-table th:first-child { width: 30%; } }
+
+/* Actual Lens CARE: compact right-hand assessment marker at every width. */
+.journey-care-reference { max-width: none; line-height: 1.7; }
+.journey-designid-lens-care .journey-care-heading { grid-template-columns: minmax(0, 1fr) auto; }
+.journey-designid-lens-care .journey-care-marker { width: 68px; justify-self: end; }
+@media (max-width: 600px) {
+  .journey-designid-lens-care .journey-care-response-grid { grid-template-columns: 1fr; grid-template-areas: "connect" "act" "reflect" "explore"; }
+  .journey-designid-lens-care .journey-care-marker { width: 54px; padding: 5px; }
+}
+
+@media (max-width: 980px) {
+  .journey-designid-lens-walkthrough .journey-course-index { position: static; max-height: none; }
+}

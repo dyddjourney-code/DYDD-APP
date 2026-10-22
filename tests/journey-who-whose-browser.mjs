@@ -30,7 +30,7 @@ for(const width of [1920,1280,768,390,320]){
  const positions=await page.$$eval('[data-care-stage]',es=>es.map(e=>{const r=e.getBoundingClientRect(),h=e.querySelector('h4');return{stage:e.dataset.careStage,x:r.x,y:r.y,w:r.width,font:parseFloat(getComputedStyle(e.querySelector('p')).fontSize),color:getComputedStyle(h).backgroundColor,white:getComputedStyle(h).color}}));
  assert.deepEqual(positions.map(p=>p.stage),['connect','act','reflect','explore']);assert.equal(positions[0].y,positions[1].y);assert.equal(positions[2].y,positions[3].y);assert(positions[0].x<positions[1].x&&positions[2].x<positions[3].x);assert(positions[2].y>positions[0].y);assert.equal(new Set(positions.map(p=>p.color)).size,4);assert(positions.every(p=>p.white==='rgb(255, 255, 255)'&&p.font>=14));
  for(const line of cells[7].formattedValue.replace(/\r/g,'').split('\n').map(s=>s.trim()).filter(Boolean))assert(text.includes(line),'Exact CARE/prayer line: '+line.slice(0,50));
- assert(text.includes('It does not post or automatically share with your Circle.'));assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No horizontal overflow '+width);
+ assert(text.includes('It does not post or send anything to your class or Circle.'));assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No horizontal overflow '+width);
  for(const stage of ['connect','act','reflect','explore'])assert(await page.$(`[data-care-stage="${stage}"] .discussion-mark`));
  await page.$eval('.lesson-source',e=>e.scrollIntoView({block:'start',behavior:'instant'}));
  await page.screenshot({path:`tmp/who-whose-refined-${base.startsWith('https')?'published':'local'}-teaching-${width}.png`,fullPage:true});

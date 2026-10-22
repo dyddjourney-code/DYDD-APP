@@ -42,7 +42,7 @@ try {
   page=await browser.newPage();await page.setCookie(...cookies);page.on("pageerror",e=>errors.push(e.message));page.on("dialog",d=>{console.log("Unexpected navigation dialog: "+d.type());void d.accept();});
   console.log("Starting "+width+"px");
   await page.setViewport({width,height:1000});
-  const go = async path => { await page.close();page=await browser.newPage();page.on("pageerror",e=>errors.push(e.message));await page.setViewport({width,height:1000});await page.goto(base+path,{waitUntil:"networkidle2"}); };
+  const go = async path => { await page.close();page=await browser.newPage();page.on("pageerror",e=>errors.push(e.message));await page.setViewport({width,height:1000});await page.setRequestInterception(true);page.on('request',r=>{const u=new URL(r.url());if(u.origin===base&&(u.pathname==='/base-camp'||u.pathname==='/sandbox-review'||u.searchParams.has('review')))return r.abort();return r.continue();});await page.deleteCookie({name:'dydd_sandbox_review',url:base});await page.goto(base+path,{waitUntil:"domcontentloaded"});await page.setRequestInterception(false);page.removeAllListeners('request'); };
   await go('/journey?lesson='+q.lessonSlug);
   await page.waitForSelector(`.journey-active-workbook [data-question="${q.id}"] textarea:not([disabled])`);
   assert.equal(await page.$('.journey-reflection-settings'),null);

@@ -725,10 +725,10 @@ function DiscussionControl({ questionId }: { questionId: string }) {
   const status = s.reminderStatuses[questionId];
   return <div className="discussion-control">
     <button type="button" className="discussion-mark" aria-pressed={current.marked} disabled={s.readOnly} onClick={() => { s.setReminder(questionId, !current.marked, current.note); }}>
-      <span aria-hidden="true">{current.marked ? '◆' : '◇'}</span> {current.marked ? 'Marked for discussion' : 'Bring to discussion'}
+      <span aria-hidden="true">{current.marked ? '◆' : '◇'}</span> {current.marked ? 'Marked for Class' : 'Take to Class'}
     </button>
     {current.marked ? <>
-      <small>Private reminder · Only you can see this.</small>
+      <small>Private reminder · Not posted or sent to your class.</small>
       {!noteOpen && !current.note ? <button className="discussion-add-note" type="button" onClick={() => setNoteOpen(true)}>Add a note (optional)</button> : <label htmlFor={noteId}>Discussion note (optional)<textarea id={noteId} className="discussion-note" rows={2} maxLength={1000} value={current.note} disabled={s.readOnly} placeholder="What would you like to discuss?" onChange={e => s.setReminder(questionId, true, e.target.value)} onBlur={() => void s.saveReminder(questionId)} /></label>}
     </> : null}
     {status ? <small role="status">{status}</small> : null}
@@ -1091,7 +1091,7 @@ export function ReflectionWorkbook() {
       </div>
       {!visibleQuestions.length ? (
         <p className="reflection-filter-empty">
-          {discussionOnly ? "No discussion reminders in this view yet. Mark any CARE reflection with Bring to discussion—even before you answer it." : "No reflections match this view. Choose another module or show all reflections."}
+          {discussionOnly ? "No discussion reminders in this view yet. Mark any CARE reflection with Take to Class—even before you answer it." : "No reflections match this view. Choose another module or show all reflections."}
         </p>
       ) : null}
     </div>

@@ -31,7 +31,7 @@ try {
   for(const phrase of ['private workbook','not posted to a group','over time','write your niche','Field Kit','earlier walkthroughs','text file']) assert(record.includes(phrase),'Truthful record copy: '+phrase);
   assert.equal(await page.$('.companion-audio-speakers span'),null,'Duration badge omitted only here');
   assert.equal(await page.$('.journey-active-lesson textarea, .journey-active-lesson input, .journey-active-workbook'),null,'No questions or inputs');
-  assert(!/Bring to discussion|Submit reflection/.test(content));
+  assert(!/Bring to discussion|Take to Class|Submit reflection/.test(content));
   const audio=await page.$eval('.journey-active-lesson audio',e=>({src:e.currentSrc||e.src,state:e.readyState,error:e.error?.code,top:e.getBoundingClientRect().top}));
   assert(audio.src.endsWith(unit.companionMoment.audioSrc));assert(!audio.error);assert(audio.state>=1,'Audio metadata available');
   assert(await page.$eval('.journey-active-lesson audio',async e=>{await e.play();const playing=!e.paused;e.pause();return playing;}),'CARE Rhythm audio plays');
@@ -58,7 +58,7 @@ try {
  for(const other of units.filter(u=>u.workbookSection && u.type==='normal').slice(0,3)){
   await page.goto(`${base}/journey?lesson=${other.slug}&${review}`,{waitUntil:'networkidle2'});
   await page.waitForSelector('.journey-active-workbook textarea');
-  assert((await page.$eval('.journey-active-workbook',e=>e.textContent)).includes('Bring to discussion'));
+  assert((await page.$eval('.journey-active-workbook',e=>e.textContent)).includes('Take to Class'));
   assert.equal(await page.$('.journey-care-introduction'),null);
   assert.equal(await page.$('.journey-care-record'),null);
   if(other.companionMoment && other.slug!=="identity-who-vs-whose-16") assert(await page.$('.companion-audio-speakers span'),'Other lessons with audio retain duration badges');

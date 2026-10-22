@@ -7,6 +7,7 @@ import {
   getReflectionExperience,
   withWhoWhoseExplore,
   withDesignIdWelcome,
+  withDesignIdLens,
   reflectionLessonExists,
 } from "@/lib/reflections/catalog";
 import {
@@ -100,10 +101,10 @@ export async function GET(request: Request) {
       500,
     );
   // Refresh only approved current-workbook prompt metadata (Journey Explore /
-  // DesignID Welcome), preserving every old answer key/revision and archive.
+  // DesignID Lens / course prompts), preserving every old answer key/revision and archive.
   if (rounds?.[0] && ["discover-your-divine-design", "designid-foundations"].includes(courseSlug)) {
     const current = rounds[0];
-    const questions = withDesignIdWelcome(courseSlug, withWhoWhoseExplore(courseSlug, current.questions));
+    const questions = withDesignIdLens(courseSlug, withDesignIdWelcome(courseSlug, withWhoWhoseExplore(courseSlug, current.questions)));
     if (questions !== current.questions) {
       // Authenticated users cannot edit their prompt snapshots. The server adds
       // only approved prompt metadata to the already owner-filtered current round.

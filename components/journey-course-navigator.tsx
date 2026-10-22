@@ -1,4 +1,5 @@
 "use client";
+import { JourneyCareDirections } from "@/components/journey-care-directions";
 import {
   useReflectionPosition,
   ReflectionAnswer,
@@ -261,7 +262,7 @@ export function JourneyCourseNavigator({
 
   return (
     <section
-      className={`journey-course-walkthrough dydd-journey-walkthrough${usesApprovedLessonFormat ? " journey-who-whose-walkthrough" : ""}`}
+      className={`journey-course-walkthrough dydd-journey-walkthrough${usesApprovedLessonFormat ? " journey-who-whose-walkthrough" : ""}${active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? " journey-designid-lens-walkthrough" : ""}`}
       aria-label="Guided course walkthrough"
     >
       <aside className="journey-course-index">
@@ -473,9 +474,9 @@ export function JourneyCourseNavigator({
 
           {isWhoWhose ? <JourneyWhoWhoseCare /> : workbookExperience ? (
             <section
-              className={`journey-active-workbook ${workbookExperience.kind}`}
+              className={`journey-active-workbook ${workbookExperience.kind}${active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? " journey-who-whose-care journey-designid-lens-care" : ""}`}
             >
-              <div
+              {active.unit.slug !== "identity-the-designid-lens-what-is-in-the-report-19" ? <div
                 className="journey-care-divider"
                 aria-label="CARE workbook section"
               >
@@ -483,7 +484,7 @@ export function JourneyCourseNavigator({
                 <span>A</span>
                 <span>R</span>
                 <span>E</span>
-              </div>
+              </div> : null}
               <div className="journey-care-heading">
                 <div>
                   <p className="section-label">
@@ -510,6 +511,17 @@ export function JourneyCourseNavigator({
                 ) : null}
               </div>
 
+              {workbookExperience.kind !== "pathfinder" ? <JourneyCareDirections /> : null}
+              {active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? (
+                <div className="journey-care-response-grid">
+                  {careOrder.map(stage => <section className={`journey-care-response-cell ${stage}`} key={stage} data-care-stage={stage}>
+                    <h4>{careLabels[stage]}</h4>
+                    <div className="journey-care-response-content"><p>{workbookExperience.care[stage]}</p>
+                      {workbookExperience.prompts.filter(p => p.careStep === stage).map(p => <ReflectionAnswer key={p.id} questionId={p.id} />)}
+                    </div>
+                  </section>)}
+                </div>
+              ) : <>
               <div className="journey-care-process">
                 {careOrder
                   .filter((careStep) => workbookExperience.care[careStep])
@@ -529,6 +541,8 @@ export function JourneyCourseNavigator({
                   </div>
                 ))}
               </div>
+
+              </>}
 
               {showNicheBuilder ? <ReflectionNicheBuilder /> : null}
             </section>

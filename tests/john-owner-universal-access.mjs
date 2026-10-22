@@ -20,25 +20,30 @@ async function storage(path){const r=await bucket.download(path,{cacheNonce:cryp
 const preserved={};for(const path of ['sandbox-profiles/jordan.json','preview-reflections/new/discover-your-divine-design.json','private-discussion-reminders/preview-new.json'])preserved[path]=await storage(path);
 function monitor(p){p.on('pageerror',e=>errors.push(e.message));p.on('request',r=>{if(r.method()==='POST')posts.push(new URL(r.url()).pathname)});}
 const go=(p,path)=>p.goto(base+path,{waitUntil:'domcontentloaded',timeout:60000});
+async function activate(p,selector,path){
+ await p.waitForSelector(selector,{visible:true});
+ await p.$eval(selector,e=>e.click());
+ await p.waitForFunction(expected=>location.pathname===expected,{timeout:60000},path);
+}
 try{
  for(const entry of ['owner','new']){
   const ctx=await browser.createBrowserContext(),p=await ctx.newPage();monitor(p);await p.setViewport({width:1280,height:1000});await go(p,'/');await p.waitForSelector('form button');await p.waitForSelector('a[href="/owner"]');
-  await Promise.all([p.waitForNavigation({waitUntil:'domcontentloaded'}),p.click(entry==='owner'?'a[href="/owner"]':'form button')]);
+  await activate(p,entry==='owner'?'a[href="/owner"]':'form button',entry==='owner'?'/command-center':'/hq');
   assert.equal(new URL(p.url()).pathname,entry==='owner'?'/command-center':'/hq');
-  await Promise.all([p.waitForNavigation({waitUntil:'domcontentloaded'}),p.click('a[href="/base-camp"]')]);
+  await activate(p,'a[href="/base-camp"]','/hq');
   assert.equal(new URL(p.url()).pathname,'/hq');await p.waitForSelector('main');assert((await p.$eval('main',e=>e.textContent)).includes('John'));assert(!(await p.$eval('main',e=>e.textContent)).includes('Jordan Preview'));
   await p.waitForSelector('#your-profile');await p.waitForFunction(()=>document.querySelector('#your-profile')?.textContent.includes('John'));
-  await go(p,'/ranger-station');await Promise.all([p.waitForNavigation({waitUntil:'domcontentloaded'}),p.click('a[href="/trailheads"]')]);assert.equal(new URL(p.url()).pathname,'/trailheads');
+  await go(p,'/ranger-station');await activate(p,'a[href="/trailheads"]','/trailheads');assert.equal(new URL(p.url()).pathname,'/trailheads');
   for(const slug of routes){
    await p.waitForSelector(`a[href^="/courses/${slug}"]`,{visible:true});const action=await p.$(`a[href^="/courses/${slug}"]`);assert(action,'visible connected course action '+slug);
-   await Promise.all([p.waitForNavigation({waitUntil:'domcontentloaded'}),p.$eval(`a[href^="/courses/${slug}"]`,e=>e.click())]);assert.equal(new URL(p.url()).pathname,'/courses/'+slug);assert(!(await p.$eval('main',e=>e.textContent)).includes('Jordan Preview'));
+   await activate(p,`a[href^="/courses/${slug}"]`,'/courses/'+slug);assert.equal(new URL(p.url()).pathname,'/courses/'+slug);await p.waitForSelector('main');assert(!(await p.$eval('main',e=>e.textContent)).includes('Jordan Preview'));
    await p.waitForSelector(slug==='designid-foundations'?'.designid-welcome-body':'.course-shell');
    const first=slug==='designid-foundations'?'welcome-to-designid':catalog.getLearningCourse(slug).modules[0].lessons[0].slug;
    await go(p,`/learn/${slug}/${first}`);await p.waitForSelector('main');assert.equal(new URL(p.url()).pathname,`/learn/${slug}/${first}`);
    await go(p,'/trailheads');
    console.log('PASS '+entry+' actual Trailheads action/course/standalone/plain-link continuity '+slug);
   }
-  await p.waitForSelector('.trail-main-route a[href^="/journey"]');const journey=await p.$('.trail-main-route a[href^="/journey"]');assert(journey);await Promise.all([p.waitForNavigation({waitUntil:'domcontentloaded'}),p.$eval('.trail-main-route a[href^="/journey"]',e=>e.click())]);assert.equal(new URL(p.url()).pathname,'/journey');
+  await p.waitForSelector('.trail-main-route a[href^="/journey"]');const journey=await p.$('.trail-main-route a[href^="/journey"]');assert(journey);await activate(p,'.trail-main-route a[href^="/journey"]','/journey');assert.equal(new URL(p.url()).pathname,'/journey');
   await go(p,'/journey?lesson='+lesson);await p.waitForSelector('.journey-designid-snapshot');
   await p.waitForFunction(()=>document.querySelector('.journey-designid-donut img')?.naturalWidth>0,{timeout:45000});
   const labels=await p.$$eval('.journey-designid-labels dd',es=>es.map(e=>e.textContent));assert.equal(labels.length,4);assert(labels.every(v=>v&&!v.includes('Not available')));
@@ -59,7 +64,7 @@ try{
   await ctx.close();
  }
  const old=await browser.createBrowserContext(),p=await old.newPage();monitor(p);await go(p,'/journey');assert(!(await old.cookies()).some(c=>c.name==='dydd_sandbox_review'));
- await Promise.all([p.waitForNavigation({waitUntil:'domcontentloaded'}),p.click('a[href="/sandbox-review"]')]);assert.equal(new URL(p.url()).pathname,'/trailheads');for(const slug of routes)assert(await p.waitForSelector(`a[href^="/courses/${slug}"]`));await old.close();console.log('PASS existing tokenless gold-banner recovery → connected ALL course actions');
+ await activate(p,'a[href="/sandbox-review"]','/trailheads');assert.equal(new URL(p.url()).pathname,'/trailheads');for(const slug of routes)assert(await p.waitForSelector(`a[href^="/courses/${slug}"]`));await old.close();console.log('PASS existing tokenless gold-banner recovery → connected ALL course actions');
  const anon=await browser.createBrowserContext(),a=await anon.newPage();for(const slug of routes){await go(a,'/courses/'+slug);await a.waitForFunction(()=>location.pathname==='/login');assert.equal(new URL(a.url()).pathname,'/login');await go(a,'/courses/'+slug+'?review=new&key=wrong');await a.waitForFunction(()=>location.pathname==='/login');assert.equal(new URL(a.url()).pathname,'/login');}await anon.close();
  const email='owner-boundary-'+crypto.randomUUID()+'@example.invalid';const created=await admin.auth.admin.createUser({email,password:crypto.randomBytes(24).toString('base64url'),email_confirm:true});assert(!created.error);userId=created.data.user.id;
  const link=await admin.auth.admin.generateLink({type:'magiclink',email});assert(!link.error);const signed=await fetch(base+'/auth/confirm',{method:'POST',body:new URLSearchParams({token_hash:link.data.properties.hashed_token,next:'/trailheads'}),redirect:'manual'});assert.equal(signed.status,307);

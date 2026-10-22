@@ -15759,7 +15759,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .journey-care-process {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -20895,14 +20895,14 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   line-height: 1.75;
 }
 
-/* Who vs. Whose pilot only: every stage owns its prompt and response, in fixed CARE positions. */
+/* Shared CARE: available stages pack in authored Connect / Act / Reflect / Explore order. */
 .journey-who-whose-care .journey-care-reference { margin: 0; max-width: none; line-height: 1.7; }
-.journey-who-whose-care .journey-care-response-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: "connect act" "reflect explore"; gap: 16px; align-items: stretch; }
+.journey-care-response-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: stretch; }
 .journey-care-response-cell { min-width: 0; border: 1px solid #c8d2c2; border-radius: 8px; overflow: hidden; background: #fcfcf7; }
-.journey-care-response-cell.connect { grid-area: connect; --care-color: var(--green-dark); }
-.journey-care-response-cell.act { grid-area: act; --care-color: #315d3c; }
-.journey-care-response-cell.reflect { grid-area: reflect; --care-color: #476b42; }
-.journey-care-response-cell.explore { grid-area: explore; --care-color: #739d5e; }
+.journey-care-response-cell.connect { --care-color: var(--green-dark); }
+.journey-care-response-cell.act { --care-color: #315d3c; }
+.journey-care-response-cell.reflect { --care-color: #476b42; }
+.journey-care-response-cell.explore { --care-color: #739d5e; }
 .journey-care-response-cell > h4 { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 0; padding: 14px 18px; background: var(--care-color); color: white; font-size: 1.05rem; }
 .journey-care-response-cell > h4 > span { font-size: 1.7rem; line-height: 1; font-weight: 900; color: white; }
 .journey-care-response-content { padding: 18px; min-width: 0; }
@@ -21103,7 +21103,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .journey-designid-lens-care .journey-care-heading { grid-template-columns: minmax(0, 1fr) auto; }
 .journey-designid-lens-care .journey-care-marker { width: 68px; justify-self: end; }
 @media (max-width: 600px) {
-  .journey-designid-lens-care .journey-care-response-grid { grid-template-columns: 1fr; grid-template-areas: "connect" "act" "reflect" "explore"; }
+  .journey-designid-lens-care .journey-care-response-grid { grid-template-columns: 1fr; }
   .journey-designid-lens-care .journey-care-marker { width: 54px; padding: 5px; }
 }
 
@@ -21206,7 +21206,6 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 @media (max-width: 600px) {
   .journey-identity-believers-care .journey-care-response-grid {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "connect" "act" "reflect" "explore";
   }
 }
 .journey-identity-believers-lesson .lesson-source > p,
@@ -21225,4 +21224,17 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 @media (min-width: 981px) {
  .journey-authored-table { min-width: 0; }
  .journey-authored-table th, .journey-authored-table td { padding: 12px 8px; }
+}
+
+/* Existing DesignID palette (also used by spiritual-gift-reflections). */
+.journey-design-love-lesson .journey-authored-table tr[data-reflection="architect"] { --reflection-color: #d4a451; --reflection-tint: rgba(212, 164, 81, .13); }
+.journey-design-love-lesson .journey-authored-table tr[data-reflection="artisan"] { --reflection-color: #647c9b; --reflection-tint: rgba(100, 124, 155, .13); }
+.journey-design-love-lesson .journey-authored-table tr[data-reflection="shepherd"] { --reflection-color: #739d5e; --reflection-tint: rgba(115, 157, 94, .14); }
+.journey-design-love-lesson .journey-authored-table tr[data-reflection="steward"] { --reflection-color: #5a496b; --reflection-tint: rgba(90, 73, 107, .12); }
+.journey-design-love-lesson .journey-authored-table tbody tr > * { background: var(--reflection-tint); color: #28332b; }
+.journey-design-love-lesson .journey-authored-table tbody th { border-left: 5px solid var(--reflection-color); }
+@media (max-width: 600px) {
+  .journey-care-response-grid,
+  .journey-care-process,
+  .journey-care-entry-grid { grid-template-columns: minmax(0, 1fr); }
 }

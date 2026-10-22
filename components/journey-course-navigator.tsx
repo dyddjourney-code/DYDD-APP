@@ -529,7 +529,7 @@ export function JourneyCourseNavigator({
               {workbookExperience.kind !== "pathfinder" ? <JourneyCareDirections /> : null}
               {isDesignIdLens || isDesignReflectionsLove ? (
                 <div className="journey-care-response-grid">
-                  {careOrder.filter(stage => !isDesignReflectionsLove || workbookExperience.prompts.some(p => p.careStep === stage)).map(stage => <section className={`journey-care-response-cell ${stage}`} key={stage} data-care-stage={stage}>
+                  {careOrder.filter(stage => workbookExperience.care[stage] || workbookExperience.prompts.some(p => p.careStep === stage)).map(stage => <section className={`journey-care-response-cell ${stage}`} key={stage} data-care-stage={stage}>
                     <h4>{careLabels[stage]}</h4>
                     <div className="journey-care-response-content">{workbookExperience.care[stage] ? <p>{workbookExperience.care[stage]}</p> : null}
                       {workbookExperience.prompts.filter(p => p.careStep === stage).map(p => <ReflectionAnswer key={p.id} questionId={p.id} />)}

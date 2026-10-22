@@ -2,7 +2,7 @@ import { JourneyCareDirections } from "@/components/journey-care-directions";
 import { ReflectionAnswer } from "@/components/reflection-session";
 import { whoWhoseCare, whoWhosePrayer } from "@/lib/journey/who-whose-care";
 
-/** Lesson-scoped pilot. Explicit cells reserve CARE positions even when a stage is absent. */
+/** Available stages flow in CARE order without missing-stage placeholders. */
 export function JourneyWhoWhoseCare() {
   return <section className="journey-active-workbook care journey-who-whose-care" aria-label="Who vs. Whose CARE reflection">
     <div className="journey-care-heading"><div><p className="section-label">CARE reflection</p><h3>Who Are You and Whose Are You?</h3></div></div>
@@ -15,7 +15,7 @@ export function JourneyWhoWhoseCare() {
           <div className="journey-care-response-content"><p>{item.explanation}</p>
             <ReflectionAnswer questionId={item.questionId} />
           </div>
-        </section> : <div className={`journey-care-response-cell ${stage} reserved`} key={stage} aria-hidden="true" />;
+        </section> : null;
       })}
     </div>
     <aside className="journey-who-whose-prayer"><h4>Prayer</h4><p>{whoWhosePrayer}</p></aside>

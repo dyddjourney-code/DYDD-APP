@@ -39,21 +39,18 @@ const designPdAxes = [
   {
     axisKey: "plan",
     label: "Plan",
-    oppositeNeed: "narrow the possible futures into one faithful next step",
     scoreKeys: ["Plan_Score", "planScore"],
     tendencyKeys: ["Plan_Tendency", "planTendency"],
   },
   {
     axisKey: "decide",
     label: "Decide",
-    oppositeNeed: "test conviction with timing, evidence, counsel, cost, and fit",
     scoreKeys: ["Decide_Score", "decideScore"],
     tendencyKeys: ["Decide_Tendency", "decideTendency"],
   },
   {
     axisKey: "do",
     label: "Do",
-    oppositeNeed: "add visible accountability, collaboration points, and a finish line",
     scoreKeys: ["Do_Score", "doScore"],
     tendencyKeys: ["Do_Tendency", "doTendency"],
   },
@@ -211,63 +208,96 @@ function reflectionProfile(designIdSnapshot: MapsAssessmentSnapshot) {
     .sort((a, b) => b.score - a.score);
 }
 
-function reflectionNarrative(reflection: Reflection, subcategory: string) {
-  const copy: Record<Reflection, string> = {
-    Architect:
-      "frames direction, sees what the work could become, and helps turn purpose into a path",
-    Artisan:
-      "gives language, shape, beauty, adaptation, and fit to what is emerging",
-    Shepherd:
-      "protects people, belonging, care, trust, and relational meaning inside the work",
-    Steward:
-      "guards responsibility, follow-through, order, maintenance, and sustainable completion",
-  };
+// Shared teaching is in content.ts; only these participant lenses vary by scores.
+export const mapsShortFormVersion = "2026-10-22-short-form-v1";
 
-  return `${reflection} in ${subcategory} ${copy[reflection]}.`;
-}
+const reflectionContribution: Record<Reflection, string> = {
+  Architect: "Frame direction.",
+  Artisan: "Shape message and fit.",
+  Shepherd: "Care for people and meaning.",
+  Steward: "Organize follow-through.",
+};
 
 function capacitySupport(reflection: Reflection, band: string) {
-  if (band === "Abundant") {
-    return `${reflection} is a major carrying capacity here. Use it intentionally, but keep it from taking over the whole process.`;
-  }
-
-  if (band === "Steady") {
-    return `${reflection} can contribute reliably here with normal support, clear scope, and a visible next step.`;
-  }
-
-  if (band === "Limited") {
-    return `${reflection} can help in a focused way, but it needs boundaries, partnership, or a smaller assignment.`;
-  }
-
-  return `${reflection} is likely depleted here. Do not make this the unsupported carrying lane; reduce demand, add tools, or share ownership.`;
+  const contribution = reflectionContribution[reflection];
+  if (band === "Abundant") return `${contribution} Lead your share; include others.`;
+  if (band === "Steady") return `${contribution} Use clear scope.`;
+  if (band === "Limited") return `${contribution} Keep it small; partner up.`;
+  return `${contribution} Share the load; use tools.`;
 }
+
+const movementCopy = {
+  Plan: {
+    positive: ["Imagine the outcome.", "Choose one direction from the possibilities.", "Possibilities can outgrow the next step."],
+    negative: ["Find a practical starting point.", "Make room for a fresh possibility before acting.", "An early solution can narrow the vision."],
+    balanced: ["Connect possibility with practical steps.", "Choose vision or detail as this task needs.", "Avoid reopening a workable plan."],
+  },
+  Decide: {
+    positive: ["Notice conviction and people’s needs.", "Test the choice with evidence and counsel.", "Conviction can outrun the evidence."],
+    negative: ["Weigh evidence and clear criteria.", "Include people’s experience and inner conviction.", "Analysis can miss the human cost."],
+    balanced: ["Bring conviction and evidence together.", "Use both people’s needs and clear criteria.", "Set a decision time; avoid endless weighing."],
+  },
+  Do: {
+    positive: ["Take ownership and start independently.", "Add a check-in partner and a clear finish line.", "Independent work can hide a need for help."],
+    negative: ["Build momentum through shared effort.", "Name your own next action and decision space.", "Waiting for agreement can delay action."],
+    balanced: ["Move between independent and shared work.", "Choose an owner and useful collaboration points.", "Keep handoffs explicit as roles change."],
+  },
+} as const;
+
+export const mapsShortFormDefinition = {
+  version: mapsShortFormVersion,
+  sections: mapsPhases,
+  layout: {
+    focusPages: 12,
+    documentPages: 18,
+    reflectionSpace: false,
+    repeatedAbcMovement: false,
+    abcBodyPixels: 12,
+    abcLineHeight: 1.35,
+    preserveVisuals: ["cover circle", "phase-opening pages", "charts"],
+    preserveTeaching: ["definition", "biblical", "capacity", "scripture", "scriptureSummary"],
+  },
+  personalization: {
+    reflectionBands: { Abundant: ">=40", Steady: ">=25", Limited: ">=10", Drained: "<10" },
+    reflectionContribution,
+    movementCopy,
+    scorePolicy: "Read each participant's latest DesignID and DesignPD; never rewrite scores. Rank all four reflections; respect ties and all bands. PD side comes from stored tendency; unsigned magnitude <=5 balanced, 6-15 moderate, >=16 strong. Missing tendencies never imply an opposite-side need.",
+    teachingPolicy: "ABC definitions, Biblical lenses, design capacities and scripture remain shared authored teaching, not score-dependent rewrites.",
+  },
+};
 
 function designPdAxis(
   designPdSnapshot: MapsAssessmentSnapshot,
   axis: (typeof designPdAxes)[number],
 ) {
-  const axisTendencies = designPdSnapshot.scores?.axisTendencies;
-  const axisObject =
-    typeof axisTendencies === "object" && axisTendencies !== null && !Array.isArray(axisTendencies)
-      ? (axisTendencies as Record<string, unknown>)[axis.axisKey]
-      : null;
-  const axisObjectTendency =
-    typeof axisObject === "object" && axisObject !== null && !Array.isArray(axisObject)
-      ? compactValue((axisObject as Record<string, unknown>).tendency)
-      : compactValue(axisObject);
-  const axisObjectScore =
-    typeof axisObject === "object" && axisObject !== null && !Array.isArray(axisObject)
-      ? compactValue((axisObject as Record<string, unknown>).score)
-      : "";
-
+  const axisTendencies = scoreObject(designPdSnapshot, "axisTendencies");
+  const value = axisTendencies[axis.axisKey] ?? axisTendencies[axis.label];
+  const object = typeof value === "object" && value !== null ? value as Record<string, unknown> : {};
+  const score = compactValue(object.score) ||
+    firstSnapshotValue(designPdSnapshot, axis.scoreKeys) ||
+    compactValue(scoreObject(designPdSnapshot, "axisScores")[axis.axisKey]);
+  const rawTendency = compactValue(object.tendency) || compactValue(value) ||
+    firstSnapshotValue(designPdSnapshot, axis.tendencyKeys);
+  const tendency = titleize(rawTendency || "Not available");
+  const normalized = tendency.toLowerCase();
+  const numeric = score === "" ? NaN : Number(score.replace(/%$/, ""));
+  // Stored axis scores are unsigned percentage-point magnitudes; side comes from tendency.
+  const side = /balanced/.test(normalized) ? "balanced" :
+    /dreamer|feel it|solo/.test(normalized) ? "positive" :
+    /doer|think it|together/.test(normalized) ? "negative" : null;
+  const intensity = Number.isFinite(numeric) ?
+    Math.abs(numeric) <= 5 ? "Balanced" : Math.abs(numeric) >= 16 ? "Strong" : "Moderate" :
+    /strong/.test(normalized) ? "Strong" : /moderate/.test(normalized) ? "Moderate" : "Balanced";
+  const effectiveSide = side === null ? null : intensity === "Balanced" ? "balanced" : side;
+  const copy = effectiveSide ? movementCopy[axis.label as keyof typeof movementCopy][effectiveSide] :
+    ["Your movement pattern is not available.", "Review your DesignPD result before choosing support.", "Do not assume an opposite-side need."];
   return {
     label: axis.label,
-    need: axis.oppositeNeed,
-    score:
-      axisObjectScore ||
-      firstSnapshotValue(designPdSnapshot, axis.scoreKeys) ||
-      firstSnapshotValue(designPdSnapshot, [`${axis.label}_Score`]),
-    tendency: titleize(axisObjectTendency || firstSnapshotValue(designPdSnapshot, axis.tendencyKeys) || "Balanced"),
+    tendency,
+    score,
+    strength: copy[0],
+    need: `${intensity === "Strong" && effectiveSide && effectiveSide !== "balanced" ? "Support: " : ""}${copy[1]}`,
+    gap: copy[2],
   };
 }
 
@@ -281,43 +311,27 @@ function subcategoryLane(subcategory: string) {
   return "Do";
 }
 
-function laneRead(lane: string) {
-  if (lane === "Plan") {
-    return "begin with imagination, meaning, and possibility, then narrow the frame before movement becomes too wide";
-  }
-
-  if (lane === "Decide") {
-    return "turn insight into wise choice by adding criteria, evidence, counsel, and timing";
-  }
-
-  return "move into visible action with ownership, pacing, support, and a clear finish line";
-}
-
 function subcategoryRead(subcategory: MapsSubcategory, designIdSnapshot: MapsAssessmentSnapshot) {
   const profile = reflectionProfile(designIdSnapshot);
-  const topThree = profile.slice(0, 3);
-  const primary = profile.find((item) => item.label === subcategory.primaryReflection) ?? profile[0];
-  const lowest = [...profile].sort((a, b) => a.score - b.score)[0];
-  const lane = subcategoryLane(subcategory.name);
-
+  const highest = profile[0];
+  const primary = profile.find((item) => item.label === subcategory.primaryReflection)!;
+  const lowest = profile[profile.length - 1];
+  const tied = profile.filter((item) => item.score === highest.score);
+  const usable = highest.band === "Abundant" || highest.band === "Steady";
   return {
-    gap:
-      lowest.band === "Drained"
-        ? `${lowest.label} is the capacity to protect. If ${subcategory.name} requires heavy ${lowest.label.toLowerCase()} load, the report should recommend support, automation, a template, or shared ownership.`
-        : `${lowest.label} is the lowest current capacity, so keep the demand focused and do not let it become an invisible carrying load.`,
-    interpretation: `${subcategory.name} asks this person to ${subcategory.demandQuestion.replace(/\?$/, "").toLowerCase()}. Their strongest current capacities are ${topThree.map((item) => `${item.label} ${item.score} (${item.band})`).join(", ")}. The key MAPS capacity for this page is ${primary.label}, which means the page should help them ${reflectionNarrative(primary.label, subcategory.name).replace(`${primary.label} in ${subcategory.name} `, "")}.`,
-    lane,
-    support:
-      "Use a simple support pattern: one sentence, one audience or person served, one visible fruit, one next action, and one support mechanism.",
-    strength: `${topThree.map((item) => `${item.label} ${item.score}`).join(", ")} gives this person enough current capacity to engage ${subcategory.name} through vision, adaptation, and relational awareness before asking low-capacity areas to carry the page.`,
+    gap: lowest.band === "Abundant" || lowest.band === "Steady"
+      ? `${lowest.label} ${lowest.score}: capacity available; pace the load.`
+      : `${lowest.label} ${lowest.score} (${lowest.band}): ${lowest.band === "Drained" ? "share the load" : "keep demand small"}.`,
+    interpretation: `${primary.label} ${primary.score} (${primary.band}) supports ${subcategory.name.toLowerCase()}. ${capacitySupport(primary.label, primary.band)}`,
+    lane: subcategoryLane(subcategory.name),
+    support: primary.band === "Drained" || primary.band === "Limited"
+      ? `${primary.label}: share ownership and use a template.`
+      : `Name the next ${primary.label} contribution.`,
+    strength: `${highest.label} ${highest.score}${tied.length > 1 ? ` (+${tied.length - 1} tied)` : ""}: ${usable ? reflectionContribution[highest.label] : "start small; add support."}`,
   };
 }
 
-function htmlList(items: string[]) {
-  return `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
-}
-
-function renderTermCards(subcategory: MapsSubcategory, lane: string) {
+function renderTermCards(subcategory: MapsSubcategory) {
   return subcategory.terms
     .map(
       (term, index) => `<article class="maps-term-card" style="--term-number:'${String.fromCharCode(65 + index)}'">
@@ -329,7 +343,6 @@ function renderTermCards(subcategory: MapsSubcategory, lane: string) {
             <div><dt>Biblical lens</dt><dd>${escapeHtml(term.biblical)}</dd></div>
             <div><dt>Design capacity</dt><dd>${escapeHtml(term.capacity)}</dd></div>
             <div><dt>${escapeHtml(term.scripture)}</dt><dd>${escapeHtml(term.scriptureSummary)}</dd></div>
-            <div><dt>${escapeHtml(lane)} movement</dt><dd>Use ${escapeHtml(term.name)} to ${escapeHtml(laneRead(lane))}.</dd></div>
           </dl>
         </div>
       </article>`,
@@ -452,6 +465,7 @@ function renderSubcategoryPage(
 ) {
   const read = subcategoryRead(subcategory, designIdSnapshot);
   const pdProfile = designPdProfile(designPdSnapshot);
+  const movement = pdProfile.find(axis => axis.label === read.lane)!;
   const capacityRows = reflectionProfile(designIdSnapshot)
     .map(
       (item) => `<div class="maps-capacity-row">
@@ -504,34 +518,26 @@ function renderSubcategoryPage(
       </article>
       <article class="maps-lens-card">
         <h3>Plan / Decide / Do Lens</h3>
-        <p>This page sits primarily in the <strong>${escapeHtml(read.lane)}</strong> lane. The report should help the person ${escapeHtml(laneRead(read.lane))}.</p>
+        <p>Begin in <strong>${escapeHtml(read.lane)}</strong>: ${escapeHtml(movement.tendency)}${movement.score ? ` (${escapeHtml(movement.score)})` : ""}.</p>
         <div class="maps-mini-grid">
-          <div><h4>Strength</h4><p>Their DesignPD pattern shows how they naturally move when this page becomes real work.</p></div>
-          <div><h4>Need</h4><p>Give the opposite-side support before this page becomes overload or delay.</p></div>
-          <div><h4>Gap</h4><p>Watch for the page staying inspiring but not operational, or becoming operational without enough support.</p></div>
+          <div><h4>Strength</h4><p>${escapeHtml(movement.strength)}</p></div>
+          <div><h4>Need</h4><p>${escapeHtml(movement.need)}</p></div>
+          <div><h4>Gap</h4><p>${escapeHtml(movement.gap)}</p></div>
         </div>
       </article>
     </div>
     <div class="maps-data-grid">
       <article class="maps-data-card">
-        <h3>Core Capacity Need</h3>
+        <h3>Your Reflection Capacities</h3>
         ${capacityRows}
       </article>
       <article class="maps-data-card">
-        <h3>Movement Tendencies</h3>
+        <h3>Your Plan / Decide / Do</h3>
         ${pdRows}
       </article>
     </div>
     <div class="maps-term-grid">
-      ${renderTermCards(subcategory, read.lane)}
-    </div>
-    <div class="maps-reflection-box">
-      <h3>Reflection Space</h3>
-      ${htmlList([
-        `What is one way ${subcategory.name} is already present in the project?`,
-        `Where does this page reveal a strength, gap, or support need?`,
-        "What is the next faithful action?",
-      ])}
+      ${renderTermCards(subcategory)}
     </div>
   </section>`;
 }
@@ -697,25 +703,40 @@ export function buildMapsRoadmapHtml({
     .maps-term-card h4 { color:var(--dark); font-size:12px; letter-spacing:0; margin:0 0 4px; text-transform:none; }
     .maps-term-card dl { display:grid; gap:3px; }
     .maps-term-card dd { font-size:6.55px; line-height:1.02; margin:1px 0 0; }
-    .maps-reflection-box { background:linear-gradient(135deg,#f7f9f5,#fffdf8); border:1px dashed var(--phase-color); bottom:14px; left:22px; min-height:34px; padding:5px 8px; position:absolute; right:22px; }
-    .maps-reflection-box h3 { font-size:12px; margin-bottom:3px; }
-    .maps-reflection-box ul { display:grid; gap:5px; grid-template-columns:repeat(3,minmax(0,1fr)); margin:0; padding-left:14px; }
-    .maps-reflection-box li { font-size:7.8px; line-height:1.05; }
     .maps-resource-section { border-top:1px solid var(--line); padding:28px 34px; }
     .maps-resource-section h2 { margin-bottom:10px; }
     .maps-resource-cta { align-items:center; background:linear-gradient(135deg,var(--dark),var(--green)); color:#fffaf0; display:grid; gap:18px; grid-template-columns:minmax(0,1fr) 118px; margin-top:14px; padding:18px; }
     .maps-resource-cta p, .maps-resource-cta h3 { color:#fffaf0; }
     .maps-resource-cta a { color:#fffaf0; font-weight:950; }
     .maps-resource-cta img { background:#fff; display:block; height:118px; padding:7px; width:118px; }
+    .maps-subcategory-page { padding-bottom:20px; }
+    .maps-subcategory-page .maps-definition-block { padding:12px; }
+    .maps-subcategory-page .maps-definition-block p, .maps-subcategory-page .maps-definition-block dd {font-size:11px;line-height:1.35;}
+    .maps-subcategory-page .maps-lens-card {padding:10px;}
+    .maps-subcategory-page .maps-lens-card > p {font-size:11px;line-height:1.35;margin-bottom:9px;}
+    .maps-subcategory-page .maps-mini-grid {gap:6px;}
+    .maps-subcategory-page .maps-mini-grid div {padding:7px;}
+    .maps-subcategory-page .maps-mini-grid p {font-size:10px;line-height:1.32;}
+    .maps-subcategory-page .maps-data-card {padding:10px;}
+    .maps-subcategory-page .maps-capacity-row, .maps-subcategory-page .maps-pd-row {padding:5px 0;}
+    .maps-subcategory-page .maps-capacity-row small, .maps-subcategory-page .maps-pd-row small {font-size:10px;line-height:1.3;}
+    .maps-subcategory-page .maps-term-grid {gap:10px;margin-top:14px;}
+    .maps-subcategory-page .maps-term-card {padding:10px;gap:8px;grid-template-columns:1fr;align-content:start;}
+    .maps-subcategory-page .maps-term-index {height:24px;width:24px;font-size:14px;}
+    .maps-subcategory-page .maps-term-card h4 {font-size:16px;margin:0 0 10px;}
+    .maps-subcategory-page .maps-term-card dl {gap:10px;}
+    .maps-subcategory-page .maps-term-card dt {font-size:10px;line-height:1.2;}
+    .maps-subcategory-page .maps-term-card dd {font-size:12px;line-height:1.35;margin:3px 0 0;}
+
     @page { size: Letter; margin: 0.24in; }
     @media print {
       body { background:white; padding:0; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
       main { border:0; box-shadow:none; max-width:none; }
       .maps-cover { break-after:page; }
       .maps-subcategory-page, .maps-phase-divider { break-after:page; }
-      .maps-lens-card, .maps-data-card, .maps-term-card, .maps-reflection-box { break-inside:avoid; }
+      .maps-lens-card, .maps-data-card, .maps-term-card { break-inside:avoid; }
     }
-    @media (max-width:760px) { body { padding:12px; } .maps-cover, .maps-cover-meta, .maps-profile-grid, .maps-definition-block, .maps-lens-grid, .maps-data-grid, .maps-term-grid, .maps-reflection-box ul, .maps-resource-cta { grid-template-columns:1fr; } .maps-cover-logo { justify-self:start; } }
+    @media (max-width:760px) { body { padding:12px; } .maps-cover, .maps-cover-meta, .maps-profile-grid, .maps-definition-block, .maps-lens-grid, .maps-data-grid, .maps-term-grid, .maps-resource-cta { grid-template-columns:1fr; } .maps-cover-logo { justify-self:start; } }
   </style>
 </head>
 <body>

@@ -6,6 +6,7 @@ import {
   cleanMapsFilename,
   hasMapsReportInputs,
   latestMapsSnapshot,
+  mapsShortFormVersion,
   participantFromSnapshots,
   type MapsAssessmentParticipant,
   type MapsAssessmentSnapshot,
@@ -165,6 +166,7 @@ async function pdfResponse({
       "Cache-Control": "no-store",
       "Content-Disposition": `attachment; filename="${filename}"`,
       "Content-Type": "application/pdf",
+      "X-MAPS-Version": mapsShortFormVersion,
     },
   });
 }
@@ -197,6 +199,7 @@ export async function GET(request: NextRequest) {
       headers: {
         "Cache-Control": "no-store",
         "Content-Type": "text/html; charset=utf-8",
+        "X-MAPS-Version": mapsShortFormVersion,
       },
     });
   }

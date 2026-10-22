@@ -2429,7 +2429,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                     <div className="maps-person-report-panel">
                       <div>
                         <strong>MAPS Personal Roadmap</strong>
-                        <small>Available from this person&apos;s current DesignID and DesignPD snapshots.</small>
+                        <small>Short-form roadmap personalized from this person&apos;s current DesignID and DesignPD snapshots.</small>
                       </div>
                       <div>
                         <Link

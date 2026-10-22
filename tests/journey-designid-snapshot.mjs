@@ -64,10 +64,10 @@ try{
  }
  // Established public owner recovery → sidebar Trailheads → Journey, no invented report or new account.
  const ctx=await browser.createBrowserContext(),p=await ctx.newPage();await p.setViewport({width:1280,height:1000});p.on('pageerror',e=>errors.push(e.message));
- await p.goto(base+'/sandbox-review',{waitUntil:'domcontentloaded',timeout:60000});await p.waitForSelector('aside a[href^="/trailheads"]');
+ await p.goto(base+'/sandbox-review',{waitUntil:'domcontentloaded',timeout:60000});await p.waitForSelector('.designid-welcome-body',{visible:true});await p.waitForSelector('aside a[href^="/trailheads"]',{visible:true});await p.evaluate(()=>document.fonts.ready);
  const trail=await p.$('aside a[href^="/trailheads"]');await Promise.all([p.waitForNavigation({waitUntil:'domcontentloaded'}),trail.click()]);
- await p.waitForSelector('a[href^="/journey"]');const journey=await p.$('a[href^="/journey"]');await Promise.all([p.waitForNavigation({waitUntil:'domcontentloaded'}),journey.click()]);
- assert.equal(new URL(p.url()).pathname,'/journey');await p.goto(base+'/journey?lesson='+lesson,{waitUntil:'domcontentloaded'});await p.waitForSelector('.journey-designid-return');assert.equal(await p.$('.journey-designid-donut'),null);assert((await p.$eval('.journey-designid-snapshot',e=>e.textContent)).includes('No saved DesignID report'));
+ await p.waitForSelector('.trail-main-route a[href^="/journey"]',{visible:true});await p.evaluate(()=>document.fonts.ready);const journey=await p.$('.trail-main-route a[href^="/journey"]');await Promise.all([p.waitForNavigation({waitUntil:'domcontentloaded'}),journey.click()]);
+ await p.waitForSelector('.dydd-journey-walkthrough',{visible:true});assert.equal(new URL(p.url()).pathname,'/journey');await p.goto(base+'/journey?lesson='+lesson,{waitUntil:'domcontentloaded'});await p.waitForSelector('.journey-designid-return');assert.equal(await p.$('.journey-designid-donut'),null);assert((await p.$eval('.journey-designid-snapshot',e=>e.textContent)).includes('No saved DesignID report'));
  for(const width of [1280,390,320]){await p.setViewport({width,height:1000});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));}await ctx.close();
  assert.deepEqual(errors,[]);console.log('PASS honest absent-report states; established owner recovery/sidebar Trailheads → Journey/lesson access; no fake owner report; zero runtime errors');
 }finally{

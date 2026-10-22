@@ -28,3 +28,7 @@ Official chart/table contract inspected read-only from retained official PDF tem
 Publish only pushed `sandbox` via `node scripts/deploy-sandbox.mjs`. Exact READY/project/SHA/stable alias and unchanged production receipt required. Evidence under untracked `tmp/unpack-*`.
 
 Public review recovery: https://dydd-online-school-sandbox.vercel.app/sandbox-review then sidebar Trailheads → Journey → target lesson. Direct lesson: https://dydd-online-school-sandbox.vercel.app/journey?lesson=identity-the-designid-lens-what-is-in-the-report-19 . Established Jordan preview has no saved DesignID assessment; it truthfully shows the no-report state. Real signed-in learners see only their own connected report.
+
+## Release / harness readiness
+
+Application commit `08b2de9f04735c5d1a91c5f4479169b0560725cc`, deployment `dpl_Es9iuz5QJ3G1jKnDDREpRZykQ2zQ`, READY on the exact sandbox project/alias. The subsequent verification-only change waits for visible Welcome/sidebar and hydrated Trailheads main Journey CTA before real clicks; DOMContentLoaded alone exposed a transient unclickable element on the published site. No application code changed, so the verified application deployment is reused. Published signed-in reports, all five widths, CARE database saves and missing/incomplete states passed before this owner-harness correction; corrected real owner navigation also passed separately. Final combined published suite is recorded under `tmp/unpack-published-test-pass.log`.

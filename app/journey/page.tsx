@@ -419,7 +419,7 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
                         </div>
                         <div>
                           <p className="section-label">
-                            Jordan's facilitator playbook
+                            John's facilitator playbook
                           </p>
                           <h3>
                             {playbookStage.session}: {playbookStage.title}

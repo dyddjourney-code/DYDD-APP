@@ -6,6 +6,7 @@ import { reportBucket } from '@/lib/assessments/report-storage';
 import { getReflectionExperience, reflectionLessonExists, reflectionExperiences, withWhoWhoseExplore, withDesignIdWelcome, withDesignIdLens } from './catalog';
 import type { ReflectionRound, ReflectionEntry, ReflectionData } from './types';
 import { getHeatherReviewReport, getNewReviewReport, isReviewRequest, type ReviewSearchParams } from '@/lib/review/heather';
+import { isOwnerCoursePreview } from '@/lib/trails/course-preview';
 import { isOwnerPreviewRequest } from '@/lib/owner-preview';
 import { trailDefinitions, isTrailAssessmentComplete } from '@/lib/trails/catalog';
 import { reflectionExportText } from './export';
@@ -39,7 +40,7 @@ async function reportContext(p: ReviewSearchParams, slug: string) {
     const report = p.review === 'heather' ? await getHeatherReviewReport(p) : await getNewReviewReport(p);
     const trail = trailDefinitions.find(t => t.courseSlug === slug);
     const reports = (report?.all ?? []).filter(s => s.assessment_type === trail?.assessmentType && isTrailAssessmentComplete(s.assessment_type, [s])).map(s => ({ id: s.id, completedAt: s.source_submitted_at ?? s.created_at, label: `${getReflectionExperience(slug)!.title} — ${s.source_submitted_at ?? s.created_at}` }));
-    return { reports, canStart: !trail || reports.length > 0 };
+    return { reports, canStart: isOwnerCoursePreview(p) || !trail || reports.length > 0 };
 }
 export async function previewReflectionData(p: ReviewSearchParams, slug: string): Promise<ReflectionData> {
     const saved = await load(p, slug), ctx = await reportContext(p, slug);

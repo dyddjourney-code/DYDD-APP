@@ -1,3 +1,4 @@
+import { designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import { ReflectionCourseShell } from "@/components/reflection-course-shell";
 import { redirect } from "next/navigation";
 import { requireTrailCourseAssessment } from "@/lib/trails/course-access";
@@ -78,7 +79,7 @@ export default async function LearningCoursePage({
   searchParams,
 }: LearningCoursePageProps) {
   const { courseSlug } = await params;
-  const reviewParams = await searchParams;
+  const reviewParams = designIdCourseReviewParams(await searchParams);
   const course = getLearningCourse(courseSlug);
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
   const isSpiritualGifts = course?.slug === "spiritual-gifts-service";

@@ -19,7 +19,7 @@ export function sandboxProfileRequest(request: Request) {
 async function load(): Promise<Saved> {
   const { data, error } = await createSupabaseAdminClient().storage.from(reportBucket).download(path, { cacheNonce: randomUUID() }, { cache: 'no-store' });
   if (error) {
-    if (String(error.statusCode) === '404' || String(error.statusCode) === '400' && /not found/i.test(error.message)) return { profile: { ...emptyProfile, display_name: 'Jordan Preview' }, photo: null };
+    if (String(error.statusCode) === '404' || String(error.statusCode) === '400' && /not found/i.test(error.message)) return { profile: { ...emptyProfile, display_name: 'John' }, photo: null };
     throw Error('Your sandbox profile could not be loaded. Please try again.');
   }
   return JSON.parse(await data.text());

@@ -1,3 +1,4 @@
+import { designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import { ReflectionCourseShell } from "@/components/reflection-course-shell";
 import { ReflectionAnswer } from "@/components/reflection-session";
 import { redirect } from "next/navigation";
@@ -110,7 +111,7 @@ export default async function LearningLessonPage({
   searchParams,
 }: LearningLessonPageProps) {
   const { courseSlug, lessonSlug } = await params;
-  const reviewParams = await searchParams;
+  const reviewParams = designIdCourseReviewParams(await searchParams);
   const match = getLearningLesson(courseSlug, lessonSlug);
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
   const fruitLifeReviewQuery = reviewQuery(reviewParams);

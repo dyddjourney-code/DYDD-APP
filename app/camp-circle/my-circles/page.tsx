@@ -7,6 +7,6 @@ export const dynamic = "force-dynamic";
 export default async function MyCirclesPage({ searchParams }: { searchParams?: Promise<ReviewSearchParams> }) {
   const params = await searchParams;
   const profile = isSandbox() && isNewReviewRequest(params)
-    ? <BaseCampProfile initialName="Jordan Preview" preview previewQuery={reviewQuery(params)} readOnly /> : null;
+    ? <BaseCampProfile initialName="John" preview previewQuery={reviewQuery(params)} readOnly /> : null;
   return <MyCirclesWorkspace profilePreview={profile} />;
 }

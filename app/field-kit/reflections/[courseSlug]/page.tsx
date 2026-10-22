@@ -61,7 +61,7 @@ export default async function ReflectionWorkbookPage({
           </p>
         </div>
       </header>
-      {preview ? <p className="notice">Owner preview · {preview.review === "heather" ? "Heather" : "Jordan"} workbook. Your preview reflections are saved here separately from learner accounts. No additional sign-in is needed.</p> : null}
+      {preview ? <p className="notice">Owner preview · {preview.review === "heather" ? "Heather" : "John"} workbook. Your preview reflections are saved here separately from learner accounts. No additional sign-in is needed.</p> : null}
       <ReflectionCourseShell courseSlug={courseSlug}>
         <ReflectionWorkbook />
       </ReflectionCourseShell>

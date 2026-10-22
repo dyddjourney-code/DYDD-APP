@@ -1,4 +1,4 @@
-import { isDesignIdOwnerCoursePreview, designIdCourseReviewParams } from "@/lib/trails/course-preview";
+import { isOwnerCoursePreview, designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import Link from "next/link";
 import { TrailDetails } from "@/components/trail-details";
 import { TrailPlacard } from "@/components/trail-placard";
@@ -165,7 +165,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                   assessments as you go.
                 </p>
                 <TrailResumeLink
-                  href="/journey"
+                  href={path("/journey")}
                   progressKey="dydd-journey-position"
                   startLabel="Start the Journey"
                   continueLabel="Continue My Journey"
@@ -302,9 +302,9 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                           : trail.prerequisite}
                   </p>
                   <div className="trail-guide-route-actions">
-                    {trail.id === "designid" && isDesignIdOwnerCoursePreview(params) ? (
+                    {isOwnerCoursePreview(params) ? (
                       <Link className="button secondary" href={courseHref}>
-                        Preview DesignID Course (Owner)
+                        Preview {trail.name} Course (Owner)
                       </Link>
                     ) : null}
                     {ready ? (

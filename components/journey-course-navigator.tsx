@@ -205,7 +205,7 @@ export function JourneyCourseNavigator({
       {[{ image: lessonImage, label: lessonImageLabel }, ...(active.unit.media?.additionalImages ?? [])].map((image) => (
         <figure
           key={image.image}
-          className={`assessment-lesson-image${active.unit.media?.type === "video" || active.unit.media?.additionalImages?.length ? " contain" : ""}`}
+          className={`assessment-lesson-image${active.unit.media?.type === "video" || active.unit.media?.additionalImages?.length || active.unit.slug === "identity-assessment-time-designid" ? " contain" : ""}`}
         >
           <img src={image.image} alt={image.label} loading="lazy" />
         </figure>

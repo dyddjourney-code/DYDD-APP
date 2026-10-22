@@ -1,7 +1,7 @@
 # Journey image and CARE heading cleanup — sandbox only
 
 Baseline `581716d3a390e242010001275000621150d4db84`; retain the complete final DesignID module release.
-Only application changes: add media to Journey `identity-assessment-time-designid` (Module3/Section3.2/Lesson1), and remove the decorative one-letter spans from Who vs. Whose's four green headers. Full Connect / Act / Reflect / Explore words, explanations, questions, answer keys, prayer and persistence remain unchanged. No shared/global CARE styling or DesignID Lens implementation changes.
+Only application changes: use existing contain-image treatment for this assessment only (five-width screenshot inspection caught inherited mobile 16:10 cropping of the circular chart); add media to Journey `identity-assessment-time-designid` (Module3/Section3.2/Lesson1), and remove the decorative one-letter spans from Who vs. Whose's four green headers. Full Connect / Act / Reflect / Explore words, explanations, questions, answer keys, prayer and persistence remain unchanged. No shared/global CARE styling or DesignID Lens implementation changes.
 
 ## Current read-only source
 

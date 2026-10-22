@@ -11,7 +11,7 @@ for(const width of [1920,1280,768,390,320]){
  const text=await page.$eval('.journey-active-lesson',e=>e.textContent);assert(text.includes('Module 3 / Section 3.1 / Lesson 3'));
  for(const block of unit.lessonBody)for(const str of block.type==='list'?block.items:[block.text,...(block.type==='scripture'?[block.reference]:[])])assert(text.includes(str));
  assert.deepEqual(await page.$$eval('.journey-active-focus span',es=>es.map(e=>e.textContent)),['Who','Whose']);
- assert.equal(await page.$('.companion-audio-speakers span'),null);assert.equal(await page.$('.journey-active-meta span:nth-child(1)').then(e=>e.evaluate(e=>e.textContent)),'Book p12 - p17');
+ assert.equal(await page.$('.companion-audio-speakers span'),null);assert((await page.$eval('.journey-active-meta',e=>e.textContent)).includes('Book '+unit.bookPages));
  const audio=await page.$eval('audio',async e=>{await e.play();const data={src:e.currentSrc,playing:!e.paused,error:e.error?.code};e.pause();return data});assert(audio.src.endsWith(unit.companionMoment.audioSrc));assert(audio.playing);assert(!audio.error);
  const image=await page.$eval('.journey-lesson-images img',e=>({src:e.currentSrc,loaded:e.complete&&e.naturalWidth>0,left:e.getBoundingClientRect().left}));assert.equal(image.src,cells[6].hyperlink);assert(image.loaded);
  if(width>=1280){

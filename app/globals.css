@@ -21174,3 +21174,28 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .journey-designid-snapshot .designid-shadow-table th:first-child { width: 26px; padding-left: 2px; padding-right: 2px; }
   .journey-shadow-scroll-hint { display: block; font-size: .85rem; color: #58644d; }
 }
+
+/* Targeted DesignID Lens correction; no other lesson is changed. */
+.journey-designid-intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(120px, 220px); align-items: center; gap: 24px; }
+.journey-designid-intro p { max-width: none; line-height: 1.75; }
+.journey-designid-intro .journey-lesson-images { width: 100%; min-width: 0; }
+.journey-designid-intro .assessment-lesson-image { margin: 0; }
+.journey-designid-labels { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0; }
+.journey-designid-labels > div { padding: 4px 16px; border-left: 1px solid #dcded4; }
+.journey-designid-labels > div:first-child { padding-left: 0; border-left: 0; }
+.journey-designid-score-layout { display: grid; grid-template-columns: minmax(140px,.75fr) minmax(0,1.25fr); gap: 24px; align-items: center; margin: 24px 0; }
+.journey-designid-capacity h4 { margin: 0 0 16px; }
+.journey-designid-capacities { grid-template-columns: 1fr; gap: 10px; margin: 0; }
+.journey-designid-capacities > div { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 14px; border-bottom: 1px solid #e5e6de; padding-bottom: 8px; }
+.journey-designid-capacities dd { margin: 0; }
+.journey-designid-score-layout .journey-designid-donut { margin: 0; }
+@media(max-width:600px) {
+ .journey-designid-intro { grid-template-columns: minmax(0,1fr); gap: 12px; }
+ .journey-designid-intro .journey-lesson-images { max-width: 170px; justify-self: center; }
+ .journey-designid-labels { grid-template-columns: minmax(0,1fr); font-size: 1rem; }
+ .journey-designid-labels > div { padding: 10px 0; border-left: 0; border-top: 1px solid #dcded4; }
+ .journey-designid-labels > div:first-child { border-top: 0; }
+ .journey-designid-labels dt { font-size: .85rem; }
+ .journey-designid-score-layout { grid-template-columns: minmax(0,1fr); gap: 20px; }
+ .journey-designid-capacities { grid-template-columns: minmax(0,1fr); }
+}

@@ -184,6 +184,7 @@ export function JourneyCourseNavigator({
   const progress = flatUnits.length
     ? Math.round(((activeIndex + 1) / flatUnits.length) * 100)
     : 0;
+  const isDesignIdLens = active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19";
   const isWhoWhose = active.unit.slug === "identity-who-vs-whose-16";
   const usesApprovedLessonFormat = isWhoWhose || ["identity-good-works-17", "identity-niche-18"].includes(active.unit.slug);
   const isCareIntroduction = active.unit.slug === "what-is-dydd-how-to-c-a-r-e-10";
@@ -393,26 +394,28 @@ export function JourneyCourseNavigator({
 
         <div className="journey-active-body has-care">
           <section className="journey-teaching-card assessment-teaching-card">
-            {active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? (
-              <div className="journey-designid-return">
-                <h3>Welcome back to the Journey</h3>
-                <p>In the DesignID course, you explored your primary and secondary reflections, how they come together in your integrative reflection, and the shadow patterns to notice under pressure. You also discovered how your capacity can feel natural, steady, stretched, or draining.</p>
-                <p>Now bring those discoveries into everyday life. Review your personal snapshot below as a mirror, not a box, then use CARE to connect what you learned with one faithful next step.</p>
-                <div dangerouslySetInnerHTML={{ __html: designIdSnapshotHtml }} />
-              </div>
-            ) : null}
             <p className="section-label">Lesson focus</p>
             <div className="journey-active-focus" aria-label="Lesson focus">
-              {lessonFocus.map((item) => (
+              {(isDesignIdLens ? ["DesignID results"] : lessonFocus).map((item) => (
                 <span key={item}>{item}</span>
               ))}
             </div>
+
+            {active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? (
+              <div className="journey-designid-return">
+                <div className="journey-designid-intro"><div><h3>Welcome back to the Journey</h3>
+                <p>In the DesignID course, you explored your primary and secondary reflections, how they come together in your integrative reflection, and the shadow patterns to notice under pressure. You also discovered how your capacity can feel natural, steady, stretched, or draining.</p>
+                <p>Now bring those discoveries into everyday life. Review your personal snapshot below as a mirror, not a box, then use CARE to connect what you learned with one faithful next step.</p>
+                </div>{lessonArtwork}</div>
+                <div dangerouslySetInnerHTML={{ __html: designIdSnapshotHtml }} />
+              </div>
+            ) : null}
 
             {active.unit.companionMomentPosition !== "after-teaching" ? (
               <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction && !usesApprovedLessonFormat} />
             ) : null}
 
-            <div className={`assessment-lesson-content${isCareIntroduction ? " journey-care-introduction-layout" : " with-image"}${wrapLessonImage ? " journey-wrap-pilot" : ""}`}>
+            {!isDesignIdLens ? <div className={`assessment-lesson-content${isCareIntroduction ? " journey-care-introduction-layout" : " with-image"}${wrapLessonImage ? " journey-wrap-pilot" : ""}`}>
               <section
                 className="lesson-source readable-lesson-body"
                 aria-label="Lesson body"
@@ -432,7 +435,7 @@ export function JourneyCourseNavigator({
                 ))}
               </section>
               {!isCareIntroduction && !wrapLessonImage ? lessonArtwork : null}
-            </div>
+            </div> : null}
 
             {active.unit.companionMomentPosition === "after-teaching" ? (
               <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction && !usesApprovedLessonFormat} />
@@ -446,7 +449,7 @@ export function JourneyCourseNavigator({
           </section>
 
           {/* Keep the overview in class; connected trails remain available at the assessment introductions. */}
-          {active.unit.slug !== "what-is-dydd-dydd-assessments-11" && active.unit.contentStatus !== "draft" && (active.unit.type === "assessment-link" ||
+          {!isDesignIdLens && active.unit.slug !== "what-is-dydd-dydd-assessments-11" && active.unit.contentStatus !== "draft" && (active.unit.type === "assessment-link" ||
           active.unit.type === "designid-reflection" ||
           active.unit.slug.includes("spiritual-gifts-assessment")) ? (
             <aside className="trail-fieldkit-note">

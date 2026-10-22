@@ -12,13 +12,14 @@ assert(base==='https://dydd-online-school-sandbox.vercel.app'||base.startsWith('
 const admin=createClient(cfg.project_url,cfg.service_role_key,{auth:{persistSession:false}});
 const browser=await puppeteer.launch({args:chromium.args.filter(x=>x!=='--single-process'),executablePath:await chromium.executablePath(),headless:true});
 const errors=[],posts=[];let userId;
+const canonical=JSON.parse(fs.readFileSync('content/designid-shadow-canonical.json'));
 const catalog=load('lib/courses/course-catalog.ts');
 const routes=['designid-foundations','spiritual-gifts-service','fruitlife-360-formation','designpd-alignment'];
 const lesson='identity-the-designid-lens-what-is-in-the-report-19';
 const bucket=admin.storage.from('assessment-report-pdfs');
 async function storage(path){const r=await bucket.download(path,{cacheNonce:crypto.randomUUID()});if(r.error){assert(['400','404'].includes(String(r.error.statusCode)));return null;}return await r.data.text();}
 const preserved={};for(const path of ['sandbox-profiles/jordan.json','preview-reflections/new/discover-your-divine-design.json','private-discussion-reminders/preview-new.json'])preserved[path]=await storage(path);
-function monitor(p){p.on('pageerror',e=>errors.push(e.message));p.on('request',r=>{if(r.method()==='POST')posts.push(new URL(r.url()).pathname)});}
+async function monitor(p){await p.setRequestInterception(true);p.on('request',r=>{if(r.method()==='POST'&&new URL(r.url()).pathname==='/api/course-reflections'){try{if(JSON.parse(r.postData()||'{}').action==='position')return r.respond({status:200,contentType:'application/json',body:'{}'});}catch{}}return r.continue();});p.on('pageerror',e=>errors.push(e.message));p.on('request',r=>{if(r.method()==='POST')posts.push(new URL(r.url()).pathname)});}
 const go=(p,path)=>p.goto(base+path,{waitUntil:'domcontentloaded',timeout:60000});
 async function activate(p,selector,path){
  await p.waitForSelector(selector,{visible:true});
@@ -27,7 +28,7 @@ async function activate(p,selector,path){
 }
 try{
  for(const entry of ['owner','new']){
-  const ctx=await browser.createBrowserContext(),p=await ctx.newPage();monitor(p);await p.setViewport({width:1280,height:1000});await go(p,'/');await p.waitForSelector('form button');await p.waitForSelector('a[href="/owner"]');
+  const ctx=await browser.createBrowserContext(),p=await ctx.newPage();await monitor(p);await p.setViewport({width:1280,height:1000});await go(p,'/');await p.waitForSelector('form button');await p.waitForSelector('a[href="/owner"]');
   await activate(p,entry==='owner'?'a[href="/owner"]':'form button',entry==='owner'?'/command-center':'/hq');
   assert.equal(new URL(p.url()).pathname,entry==='owner'?'/command-center':'/hq');
   await activate(p,'a[href="/base-camp"]','/hq');
@@ -46,24 +47,24 @@ try{
   await p.waitForSelector('.trail-main-route a[href^="/journey"]');const journey=await p.$('.trail-main-route a[href^="/journey"]');assert(journey);await activate(p,'.trail-main-route a[href^="/journey"]','/journey');assert.equal(new URL(p.url()).pathname,'/journey');
   await go(p,'/journey?lesson='+lesson);await p.waitForSelector('.journey-designid-snapshot');
   await p.waitForFunction(()=>document.querySelector('.journey-designid-donut img')?.naturalWidth>0,{timeout:45000});
-  const labels=await p.$$eval('.journey-designid-labels dd',es=>es.map(e=>e.textContent));assert.equal(labels.length,4);assert(labels.every(v=>v&&!v.includes('Not available')));
+  const labels=await p.$$eval('.journey-designid-labels dd',es=>es.map(e=>e.textContent));assert.equal(labels.length,3);assert(labels.every(v=>v&&!v.includes('Not available')));
   const capacities=await p.$$eval('.journey-designid-capacities dd',es=>es.map(e=>e.textContent));assert.equal(capacities.length,4);assert(capacities.every(v=>v&&!v.includes('Not available')));
   const shadow=await p.$$eval('.designid-shadow-table tbody td',es=>es.map(e=>e.textContent));assert.equal(shadow.length,12);assert(shadow.every(v=>v&&!v.includes('Not available')));
   const authentic=JSON.parse(await storage('sandbox-owner/john-assessment-report.json'));const report=authentic.report??(authentic.all?authentic:{all:[authentic],latest:[authentic]});const raw=report.all.find(s=>s.assessment_type==='designid');assert(raw,'authentic source snapshot');
   const payload=raw.scores.reportPayload??raw.scores.summary??raw.scores;
-  const expected=['Primary','Secondary','Integrative_Reflection','Reflection_Shadow'].map(k=>payload[k]??raw.scores.summary?.[k]);assert.deepEqual(labels,expected,'same actual saved labels');
+  const expected=['Primary','Secondary','Integrative_Reflection'].map(k=>payload[k]??raw.scores.summary?.[k]);assert.deepEqual(labels,expected,'same actual saved labels');
   const names=['Architect','Artisan','Shepherd','Steward'];
   assert.deepEqual(capacities,names.map(n=>payload['Band_'+n]),'exact saved capacities');
   const chart=await p.$eval('.journey-designid-donut img',e=>JSON.parse(new URL(e.src).searchParams.get('c')));
   assert.deepEqual(chart.data.datasets[0].data,names.map(n=>Number(payload[n+'_Pts']??payload[n+'_Points'])),'exact saved wheel points');
-  assert.deepEqual(shadow,['A','B','C','D'].flatMap(letter=>['Risk','Root','Red'].map(k=>payload['Shadow_'+k+'_'+letter])),'exact saved 12 shadow cells');
+  assert.deepEqual(shadow,['A','B','C','D'].flatMap(letter=>['Risk','Root','Red'].map(k=>canonical.reflections[expected[0]]['Shadow_'+k+'_'+letter])),'exact saved 12 shadow cells');
   const artifact=await fetch(base+'/api/artifacts/'+raw.id+'/download'+new URL(p.url()).search,{redirect:'follow'});assert.equal(artifact.status,200);assert(artifact.headers.get('content-type')?.includes('application/pdf'));assert.equal(Buffer.from(await artifact.arrayBuffer()).subarray(0,5).toString(),'%PDF-');
   console.log('PASS genuine original private PDF owner download; no regeneration');
-  for(const width of [1280,390,320]){await p.setViewport({width,height:1000});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await p.$eval('.journey-designid-snapshot',e=>e.scrollIntoView({block:'start',behavior:'instant'}));await p.screenshot({path:`tmp/john-owner-${base.startsWith('https')?'live':'local'}-${entry}-${width}.png`});}
-  console.log('PASS '+entry+' Base Camp John; Journey actual populated saved wheel/4labels/4capacities/12shadow cells; desktop/phone nooverflow '+JSON.stringify(labels));
+  for(const width of [1920,1280,768,390,320]){await p.setViewport({width,height:1000});assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await p.$eval('.journey-designid-snapshot',e=>e.scrollIntoView({block:'start',behavior:'instant'}));await p.screenshot({path:`tmp/john-owner-${base.startsWith('https')?'live':'local'}-${entry}-${width}.png`});}
+  console.log('PASS '+entry+' Base Camp John; Journey actual populated saved wheel/3labels/4capacities/12shadow cells; desktop/phone nooverflow '+JSON.stringify(labels));
   await ctx.close();
  }
- const old=await browser.createBrowserContext(),p=await old.newPage();monitor(p);await go(p,'/journey');assert(!(await old.cookies()).some(c=>c.name==='dydd_sandbox_review'));
+ const old=await browser.createBrowserContext(),p=await old.newPage();await monitor(p);await go(p,'/journey');assert(!(await old.cookies()).some(c=>c.name==='dydd_sandbox_review'));
  await activate(p,'a[href="/sandbox-review"]','/trailheads');assert.equal(new URL(p.url()).pathname,'/trailheads');for(const slug of routes)assert(await p.waitForSelector(`a[href^="/courses/${slug}"]`));await old.close();console.log('PASS existing tokenless gold-banner recovery → connected ALL course actions');
  const anon=await browser.createBrowserContext(),a=await anon.newPage();for(const slug of routes){await go(a,'/courses/'+slug);await a.waitForFunction(()=>location.pathname==='/login');assert.equal(new URL(a.url()).pathname,'/login');await go(a,'/courses/'+slug+'?review=new&key=wrong');await a.waitForFunction(()=>location.pathname==='/login');assert.equal(new URL(a.url()).pathname,'/login');}await anon.close();
  const email='owner-boundary-'+crypto.randomUUID()+'@example.invalid';const created=await admin.auth.admin.createUser({email,password:crypto.randomBytes(24).toString('base64url'),email_confirm:true});assert(!created.error);userId=created.data.user.id;

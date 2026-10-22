@@ -15,6 +15,10 @@ export const laterPathfinderIds: Record<string, string[]> = {
   'niche-supported-by-72': ['gifts-declaration'],
 };
 export const pathfinderAliases = Object.entries(laterPathfinderIds).map(([slug, ids]) => ({ legacy: `${slug}-pathfinder-line`, canonical: ids[0] }));
+export function retiredPathfinderCanonical(id: string) {
+  return pathfinderAliases.find(alias => alias.legacy === id)?.canonical;
+}
+
 
 /** Additive current-round recovery only. Never rewrite a legacy entry or an archive,
  * never overwrite any canonical revision (including an intentional blank answer). */

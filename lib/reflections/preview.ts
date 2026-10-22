@@ -1,4 +1,4 @@
-import { missingPathfinderEntries } from '@/lib/journey/pathfinder';
+import { missingPathfinderEntries, retiredPathfinderCanonical } from '@/lib/journey/pathfinder';
 import 'server-only';
 import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
@@ -110,6 +110,8 @@ export async function previewReflectionRequest(request: Request, p: ReviewSearch
                 result = { ok: true };
             }
             else if (b.action === 'save') {
+                if (b.courseSlug === 'discover-your-divine-design' && retiredPathfinderCanonical(b.questionId))
+                    return reply({error: 'This Pathfinder piece now has one shared answer. Your earlier answer is preserved for history. Copy any draft and reopen the Pathfinder lesson to continue.'}, 409);
                 const q = round.questions.find(q => q.id === b.questionId);
                 if (!q || typeof b.response !== 'string' || b.response.length > 8000 || !Number.isSafeInteger(b.expectedRevision) || b.expectedRevision < 0)
                     return reply({ error: 'Invalid reflection details.' }, 400);

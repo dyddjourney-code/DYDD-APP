@@ -1,4 +1,4 @@
-import { missingPathfinderEntries } from '@/lib/journey/pathfinder';
+import { missingPathfinderEntries, retiredPathfinderCanonical } from '@/lib/journey/pathfinder';
 import type { ReflectionEntry } from '@/lib/reflections/types';
 import { createHash } from "node:crypto";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -308,6 +308,8 @@ export async function POST(request: Request) {
       },
       400,
     );
+  if (b.courseSlug === "discover-your-divine-design" && retiredPathfinderCanonical(b.questionId))
+    return json({error: "This Pathfinder piece now has one shared answer. Your earlier answer is preserved for history. Copy any draft and reopen the Pathfinder lesson to continue."}, 409);
   const { data: round } = await s
     .from("reflection_rounds")
     .select("id,started_at,assessment_snapshot_id")

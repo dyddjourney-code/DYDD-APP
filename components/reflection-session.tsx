@@ -1,4 +1,5 @@
 "use client";
+import { retiredPathfinderCanonical } from "@/lib/journey/pathfinder";
 import { isSandbox } from '@/lib/environment';
 import { careDiscussionIds, discussionCourse, type DiscussionReminder } from '@/lib/reflections/discussion-catalog';
 import { ReviewAwareLink } from "@/components/review-aware-link";
@@ -592,6 +593,7 @@ export function ReflectionAnswer({
   if (!s) return null;
   const q = s.questions.find((q) => q.id === questionId);
   if (!q) return null;
+  const retiredCanonical = s.courseSlug === "discover-your-divine-design" ? retiredPathfinderCanonical(q.id) : undefined;
   const entries = s.data.entries
     .filter((e) => e.round_id === s.round?.id && e.question_id === q.id)
     .sort((a, b) => b.revision - a.revision);
@@ -613,17 +615,18 @@ export function ReflectionAnswer({
   return (
     <section className="reflection-answer" data-question={q.id}>
       {showQuestion ? <h3>{q.prompt}</h3> : null}
+      {retiredCanonical && !s.readOnly ? <p className="reflection-retired-pathfinder">This earlier answer is preserved for history. <ReviewAwareLink href={`/journey?lesson=${s.questions.find(q => q.id === retiredCanonical)?.lessonSlug ?? "niche-pathfinder-preparing-your-niche-declaration-68"}`}>Edit the shared Pathfinder answer</ReviewAwareLink>.</p> : null}
       {s.error ? <p role="alert">{s.error} <button type="button" onClick={() => void s.reload()}>Try again</button></p> : null}
       {!s.loading && !s.data.signedIn ? <p><a href={`/login?next=${encodeURIComponent("/journey")}`}>Sign in to save your reflections</a></p> : null}
       {s.loading ? (
         <p>Loading answer…</p>
-      ) : s.readOnly || (reading && !editingHere) ? (
+      ) : s.readOnly || Boolean(retiredCanonical) || (reading && !editingHere) ? (
         <>
           <p className="reflection-read-answer">
             <ReflectionText text={value || "Not answered in this round."} />
           </p>
           {current ? <small>Saved {date(current.saved_at)}</small> : null}
-          {!s.readOnly && s.round ? (
+          {!s.readOnly && !retiredCanonical && s.round ? (
             <button
               className="button secondary"
               type="button"

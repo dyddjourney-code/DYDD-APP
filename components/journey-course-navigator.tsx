@@ -21,6 +21,7 @@ import type {
 
 type JourneyCourseNavigatorProps = {
   modules: DyddCourseModule[];
+  designIdSnapshotHtml: string;
 };
 
 type SectionGroup = {
@@ -130,6 +131,7 @@ function flattenModules(modules: DyddCourseModule[]) {
 
 export function JourneyCourseNavigator({
   modules,
+  designIdSnapshotHtml,
 }: JourneyCourseNavigatorProps) {
   const moduleSections = useMemo(
     () =>
@@ -391,6 +393,14 @@ export function JourneyCourseNavigator({
 
         <div className="journey-active-body has-care">
           <section className="journey-teaching-card assessment-teaching-card">
+            {active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? (
+              <div className="journey-designid-return">
+                <h3>Welcome back to the Journey</h3>
+                <p>In the DesignID course, you explored your primary and secondary reflections, how they come together in your integrative reflection, and the shadow patterns to notice under pressure. You also discovered how your capacity can feel natural, steady, stretched, or draining.</p>
+                <p>Now bring those discoveries into everyday life. Review your personal snapshot below as a mirror, not a box, then use CARE to connect what you learned with one faithful next step.</p>
+                <div dangerouslySetInnerHTML={{ __html: designIdSnapshotHtml }} />
+              </div>
+            ) : null}
             <p className="section-label">Lesson focus</p>
             <div className="journey-active-focus" aria-label="Lesson focus">
               {lessonFocus.map((item) => (
@@ -415,7 +425,7 @@ export function JourneyCourseNavigator({
                   <JourneyCareIntroduction blocks={active.unit.lessonBody} />
                 ) : active.unit.lessonBody ? (
                   <JourneyLessonBody blocks={active.unit.lessonBody} closingCallout={active.unit.slug === "identity-niche-18"} />
-                ) : active.unit.teachingBlocks.map((block) => (
+                ) : active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? null : active.unit.teachingBlocks.map((block) => (
                   <p key={block}>
                     {cleanTeachingBlock(block, Boolean(workbookExperience))}
                   </p>

@@ -21148,3 +21148,29 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .spiritual-gifts-top-racetrack li a:active {
   transform: translateY(1px);
 }
+
+/* Journey return from DesignID: a read-only view of the learner's saved report. */
+.journey-designid-return { margin-bottom: 28px; }
+.journey-designid-return > p { max-width: none; line-height: 1.75; }
+.journey-designid-snapshot { margin-top: 24px; padding: clamp(14px, 3vw, 28px); border: 1px solid #dcded4; border-radius: 16px; background: #fbfbf5; min-width: 0; }
+.journey-designid-labels, .journey-designid-capacities { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; padding: 0; margin: 20px 0; }
+.journey-designid-snapshot dt { font-size: .85rem; color: #58644d; }
+.journey-designid-snapshot dd { margin: 5px 0 0; font-weight: 700; overflow-wrap: anywhere; }
+.journey-designid-donut { margin: 24px auto; text-align: center; }
+.journey-designid-donut img { display: block; width: min(100%, 440px); height: auto; margin: auto; }
+.journey-designid-donut figcaption { font-size: .85rem; line-height: 1.7; }
+.journey-designid-snapshot .designid-shadow-table { table-layout: fixed; width: 100%; border-collapse: collapse; font-size: .9rem; }
+.journey-designid-snapshot .designid-shadow-table th, .journey-designid-snapshot .designid-shadow-table td { padding: 12px 8px; text-align: left; vertical-align: top; border-bottom: 1px solid #dcded4; overflow-wrap: anywhere; }
+.journey-designid-snapshot .designid-shadow-table thead { background: #edf0e5; }
+.journey-designid-snapshot .designid-shadow-table th:first-child { width: 24px; padding-left: 2px; padding-right: 2px; }
+.journey-shadow-scroll { max-width: 100%; overflow-x: auto; }
+.journey-shadow-scroll-hint { display: none; }
+.journey-shadow-scroll:focus-visible { outline: 2px solid #647c52; outline-offset: 4px; }
+@media(max-width:600px) {
+  .journey-designid-labels, .journey-designid-capacities { grid-template-columns: minmax(0,1fr); gap: 12px; }
+  .journey-designid-lens-walkthrough .journey-active-lesson { padding: 14px; }
+  .journey-designid-snapshot .designid-shadow-table { min-width: 480px; font-size: .9rem; }
+  .journey-designid-snapshot .designid-shadow-table td, .journey-designid-snapshot .designid-shadow-table th { padding: 12px 8px; }
+  .journey-designid-snapshot .designid-shadow-table th:first-child { width: 26px; padding-left: 2px; padding-right: 2px; }
+  .journey-shadow-scroll-hint { display: block; font-size: .85rem; color: #58644d; }
+}

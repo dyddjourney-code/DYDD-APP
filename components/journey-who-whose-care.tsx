@@ -10,7 +10,7 @@ export function JourneyWhoWhoseCare() {
       {(["connect", "act", "reflect", "explore"] as const).map(stage => {
         const item = whoWhoseCare.find(item => item.stage === stage);
         return item ? <section className={`journey-care-response-cell ${stage}`} key={stage} data-care-stage={stage} aria-labelledby={`who-whose-${stage}`}>
-          <h4 id={`who-whose-${stage}`}><span aria-hidden="true">{item.title[0]}</span>{item.title}</h4>
+          <h4 id={`who-whose-${stage}`}>{item.title}</h4>
           <div className="journey-care-response-content"><p>{item.explanation}</p>
             <ReflectionAnswer questionId={item.questionId} />
           </div>

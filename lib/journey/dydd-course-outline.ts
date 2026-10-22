@@ -1192,6 +1192,7 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         lessonMainIdea: "Recognize God’s design through a tool for discovery, reflection, and faithful contribution.",
         assessmentTarget: "designid",
         focus: ["DesignID"],
+        media: {"image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/a3412b55-fabf-4ec5-9721-7348edea38dd/DYDD_piegraph+final.png?format=2500w", "label": "DesignID wheel: divine and integrated reflections", "type": "image"},
         lessonBody: [
           {
             "type": "paragraph",

@@ -81,6 +81,7 @@ export default async function LearningCoursePage({
   const reviewParams = await searchParams;
   const course = getLearningCourse(courseSlug);
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
+  const isSpiritualGifts = course?.slug === "spiritual-gifts-service";
   const fruitLifeReviewQuery = reviewQuery(reviewParams);
   const courseQuery = fruitLifeLane
     ? `?lane=fruitlife${fruitLifeReviewQuery ? `&${fruitLifeReviewQuery.slice(1)}` : ""}`
@@ -121,7 +122,7 @@ export default async function LearningCoursePage({
 
   return (
     <main
-      className={`course-shell course-shell-${course.accent}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}
+      className={`course-shell course-shell-${course.accent}${isSpiritualGifts ? " journey-shell spiritual-gifts-course-shell" : ""}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}
     >
       {fruitLifeLane ? (
         <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} />
@@ -136,9 +137,36 @@ export default async function LearningCoursePage({
           Return to My Journey
         </a>
       </nav>
-      <header className="mini-course-logo-intro">
-        <img src={course.logo} alt={`${course.title} logo`} />
-      </header>
+      {isSpiritualGifts ? (
+        <>
+          <header className="journey-hero spiritual-gifts-course-hero">
+            <div>
+              <h1>{course.title}</h1>
+              <p className="lede">{course.tagline}</p>
+            </div>
+          </header>
+          <nav
+            className="dydd-progress-racetrack journey-top-racetrack spiritual-gifts-top-racetrack"
+            aria-label="Spiritual Gifts module navigation"
+          >
+            <ol>
+              {course.modules.map((module, index) => (
+                <li key={module.slug}>
+                  <a href={`/courses/${course.slug}${courseQuery}${courseQuery ? "&" : "?"}lesson=${encodeURIComponent(module.lessons[0].slug)}#${course.slug}-course-player`}>
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <strong>{module.title.replace(/^Module\s+\d+:\s*/i, "")}</strong>
+                    <small>{module.lessons.length} {module.lessons.length === 1 ? "lesson" : "lessons"}</small>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </>
+      ) : (
+        <header className="mini-course-logo-intro">
+          <img src={course.logo} alt={`${course.title} logo`} />
+        </header>
+      )}
 
       {insights.rows.length ? (
         <section

@@ -2,7 +2,7 @@ import type { JourneyLessonBlock } from "@/lib/journey/dydd-course-outline";
 import { ReviewAwareLink } from "@/components/review-aware-link";
 
 /** Authored content only: explicit blocks, never HTML or spreadsheet instructions. */
-export function JourneyLessonBody({ blocks, closingCallout = false }: { blocks: JourneyLessonBlock[]; closingCallout?: boolean }) {
+export function JourneyLessonBody({ blocks, closingCallout = false, identityPathfinder = false }: { blocks: JourneyLessonBlock[]; closingCallout?: boolean; identityPathfinder?: boolean }) {
   const teaching = closingCallout ? blocks.slice(0, -3) : blocks;
   return <>{teaching.map((block, index) => {
     switch (block.type) {
@@ -11,6 +11,7 @@ export function JourneyLessonBody({ blocks, closingCallout = false }: { blocks: 
       case "heading":
         return <h4 className="lesson-body-subheading" key={index}>{block.text}</h4>;
       case "paragraph":
+        if (identityPathfinder && /^● (Ephesians|1 Peter|Romans) /.test(block.text)) return <blockquote className="journey-closing-scripture" key={index}><p>{block.text.replace(/^● /, "")}</p></blockquote>;
         return <p key={index}>{block.text}</p>;
       case "list":
         return <ul className="lesson-body-list" key={index}>{block.items.map((item) => <li key={item}>{item}</li>)}</ul>;

@@ -40,7 +40,7 @@ for (const [moduleIndex, module] of dyddMainCourseOutline.entries()) {
           lessonSlug: unit.slug,
           lessonTitle: unit.title,
           moduleTitle: module.title,
-          prompt: prompt.label,
+          prompt: experience?.kind === "pathfinder" && prompt.helper ? `${prompt.label}\n${prompt.helper}` : prompt.label,
           version: questionVersion,
         });
     }
@@ -232,6 +232,19 @@ export function withDesignReflectionsLove(courseSlug: string, questions: Reflect
 export function withOneAnother(courseSlug: string, questions: ReflectionQuestion[]) {
   if (courseSlug !== "discover-your-divine-design") return questions;
   const approved = getReflectionExperience(courseSlug)!.questions.filter(q => q.lessonSlug === "identity-reflections-and-one-anothering-23");
+  let result = questions;
+  for (const canonical of approved) {
+    const old = result.find(q => q.id === canonical.id);
+    if (old?.prompt === canonical.prompt) continue;
+    result = old ? result.map(q => q.id === canonical.id ? canonical : q) : [...result, canonical];
+  }
+  return result;
+}
+
+/** Refresh current Pathfinder metadata without removing retired questions or answers. */
+export function withPathfinder(courseSlug: string, questions: ReflectionQuestion[]) {
+  if (courseSlug !== "discover-your-divine-design") return questions;
+  const approved = getReflectionExperience(courseSlug)!.questions.filter(q => ["identity-declaration", "identity-service-reflections", "identity-love-for-others"].includes(q.id) || q.lessonSlug.startsWith("niche-"));
   let result = questions;
   for (const canonical of approved) {
     const old = result.find(q => q.id === canonical.id);

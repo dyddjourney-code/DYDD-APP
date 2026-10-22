@@ -1568,12 +1568,56 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         workbookPages: "p31 - p32",
         typeLabel: "Pathfinder / niche",
         duration: "12-20 min",
-        lessonMainIdea: "Shape the Identity chapter into one useful line for the learner's developing niche declaration.",
-        anchorScripture: "Ephesians 2:10",
-        teachingBlocks: [
-          "This Pathfinder moment turns the Identity chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
-          "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration.",
+        lessonMainIdea: "Your identity is the foundation of your calling.",
+        focus: ["Identity "],
+        media: {"image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/418f123c-15e8-4a72-83c6-8e590c46f670/woman-sits-in-nature-in-thoughtful-pose-2026-09-22-10-54-13-utc.jpg?format=2500w", "label": "A woman sitting in nature in a thoughtful pose", "type": "image"},
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "Before you begin writing your Niche Declaration, spend a few moments reflecting on the truth of who you are in Christ. Your identity is the foundation of your calling. It is not shaped by your past, your mistakes, or your circumstances, but by the One who created you, redeemed you, and calls you His own."
+          },
+          {
+            "type": "paragraph",
+            "text": "Use this space to declare your identity in your own words. Let Scripture guide you as you write statements that reflect who God says you are."
+          },
+          {
+            "type": "paragraph",
+            "text": "You might reflect on verses such as:"
+          },
+          {
+            "type": "paragraph",
+            "text": "● Ephesians 2:10: “For we are God’s handiwork…”"
+          },
+          {
+            "type": "paragraph",
+            "text": "● 1 Peter 2:9: “…a chosen people…God’s special possession…”"
+          },
+          {
+            "type": "paragraph",
+            "text": "● Romans 8:16: “The Spirit himself testifies…that we are God’s children.”"
+          },
+          {
+            "type": "paragraph",
+            "text": "Take your time. Write honestly. Let this be an act of worship. You might write observations such as:"
+          },
+          {
+            "type": "paragraph",
+            "text": "● “I am a beloved child of God, created on purpose and for a purpose.”"
+          },
+          {
+            "type": "paragraph",
+            "text": "● “I am chosen, redeemed, equipped, and sent as His workmanship.”"
+          },
+          {
+            "type": "paragraph",
+            "text": "● “I am accepted, forgiven, and empowered by His Spirit.”"
+          },
+          {
+            "type": "paragraph",
+            "text": "● “I am His workmanship, created for good works…”"
+          }
         ],
+        teachingBlocks: [],
       },
     ],
   },

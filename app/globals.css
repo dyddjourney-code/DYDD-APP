@@ -21264,3 +21264,33 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .journey-neighbor-lesson .lesson-source > p,
 .journey-neighbor-lesson .lesson-source > ul { max-width: none; }
 @media (min-width: 601px) { .journey-one-another-care .journey-care-response-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Pathfinder: a warm, continuous route, distinct from the green CARE practice. */
+.journey-active-lesson.pathfinder > header h2 { color: #873b1f; }
+.journey-active-lesson.pathfinder .journey-active-workbook.pathfinder {
+  background: #fff9f1;
+  border: 1px solid #d9b397;
+  border-top: 4px solid #a6502b;
+  padding: clamp(18px, 3vw, 32px);
+}
+.journey-active-workbook.pathfinder .journey-care-divider { display: none; }
+.journey-active-workbook.pathfinder .section-label,
+.journey-active-workbook.pathfinder .journey-care-heading h3 { color: #873b1f; }
+.journey-pathfinder-waypoints { display: grid; gap: 0; min-width: 0; }
+.journey-pathfinder-saving { color: #6f5546; font-size: .9rem; margin: 0 0 24px; max-width: none; }
+.journey-pathfinder-waypoint { position: relative; display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 16px; padding-bottom: 32px; min-width: 0; }
+.journey-pathfinder-waypoint:last-child { padding-bottom: 0; }
+.journey-pathfinder-waypoint:not(:last-child)::before { content: ''; position: absolute; top: 34px; bottom: 0; left: 17px; width: 2px; background: #dfb493; }
+.journey-pathfinder-number { position: relative; display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid #a6502b; border-radius: 50%; background: #a6502b; color: #fff9f1; font-size: .8rem; font-weight: 750; font-variant-numeric: tabular-nums; }
+.journey-pathfinder-waypoint h4 { color: #873b1f; font-size: clamp(1.08rem, 1.7vw, 1.3rem); margin: 3px 0 8px; line-height: 1.4; }
+.journey-pathfinder-waypoint p { max-width: none; margin: 0 0 14px; color: #59483c; }
+.journey-pathfinder-waypoint .reflection-answer { background: transparent; padding: 0; border: 0; min-width: 0; }
+.journey-pathfinder-waypoint textarea { background: #fffdf9; border-color: #c5a58d; min-height: 150px; }
+.journey-pathfinder-waypoint textarea:focus { outline-color: #a6502b; border-color: #a6502b; }
+.journey-active-lesson.pathfinder .journey-teaching-card .lesson-source > p { max-width: none; }
+@media (max-width: 600px) {
+  .journey-pathfinder-waypoint { grid-template-columns: 27px minmax(0,1fr); gap: 10px; padding-bottom: 25px; }
+  .journey-pathfinder-number { width: 27px; height: 27px; font-size: .7rem; }
+  .journey-pathfinder-waypoint:not(:last-child)::before { left: 12px; top: 26px; }
+  .journey-active-lesson.pathfinder .journey-active-workbook.pathfinder { padding: 16px 12px; }
+}

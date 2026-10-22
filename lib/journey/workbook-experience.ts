@@ -1,3 +1,4 @@
+import { identityPathfinderPrompts, laterPathfinderIds } from './pathfinder';
 import { oneAnotherCare } from "@/lib/journey/one-another-care";
 import { designReflectionsLoveCare } from "@/lib/journey/design-reflections-love-care";
 import { identityBelieversCare } from "@/lib/journey/identity-believers-care";
@@ -241,6 +242,11 @@ export function getWorkbookExperience(
   const stage = dyddJourney.stages.find((item) => item.slug === stageSlug);
 
   if (unit.type === "pathfinder") {
+    if (unit.row === 24) return { ...defaultPathfinderExperience(unit), title: "Niche Pathfinder", purpose: "", prompts: identityPathfinderPrompts };
+    if (module.slug === "niche" && laterPathfinderIds[unit.slug]) {
+      const prompts = [...identityPathfinderPrompts, ...dyddJourney.stages.flatMap(s => s.pathfinder?.prompts ?? [])];
+      return { ...defaultPathfinderExperience(unit), title: unit.title, prompts: laterPathfinderIds[unit.slug].map(id => prompts.find(p => p.id === id)!) };
+    }
     if (stage?.pathfinder && module.slug !== "niche") {
       return {
         care: {

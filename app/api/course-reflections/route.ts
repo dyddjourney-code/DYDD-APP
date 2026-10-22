@@ -1,3 +1,5 @@
+import { missingPathfinderEntries } from '@/lib/journey/pathfinder';
+import type { ReflectionEntry } from '@/lib/reflections/types';
 import { createHash } from "node:crypto";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { previewParams, previewReflectionRequest } from "@/lib/reflections/preview";
@@ -7,7 +9,7 @@ import {
   getReflectionExperience,
   withWhoWhoseExplore,
   withDesignIdWelcome,
-  withDesignIdLens, withIdentityBelievers, withDesignReflectionsLove, withOneAnother,
+  withDesignIdLens, withIdentityBelievers, withDesignReflectionsLove, withOneAnother, withPathfinder,
   reflectionLessonExists,
 } from "@/lib/reflections/catalog";
 import {
@@ -104,7 +106,7 @@ export async function GET(request: Request) {
   // DesignID Lens / course prompts), preserving every old answer key/revision and archive.
   if (rounds?.[0] && ["discover-your-divine-design", "designid-foundations"].includes(courseSlug)) {
     const current = rounds[0];
-    const questions = withOneAnother(courseSlug, withDesignReflectionsLove(courseSlug, withIdentityBelievers(courseSlug, withDesignIdLens(courseSlug, withDesignIdWelcome(courseSlug, withWhoWhoseExplore(courseSlug, current.questions))))));
+    const questions = withPathfinder(courseSlug, withOneAnother(courseSlug, withDesignReflectionsLove(courseSlug, withIdentityBelievers(courseSlug, withDesignIdLens(courseSlug, withDesignIdWelcome(courseSlug, withWhoWhoseExplore(courseSlug, current.questions)))))));
     if (questions !== current.questions) {
       // Authenticated users cannot edit their prompt snapshots. The server adds
       // only approved prompt metadata to the already owner-filtered current round.
@@ -135,6 +137,25 @@ export async function GET(request: Request) {
         return json({ error: "Could not load your answers. Try again." }, 500);
       entries.push(...page.data);
       if (page.data.length < 1000) break;
+    }
+  }
+  if (courseSlug === "discover-your-divine-design" && rounds?.[0]) {
+    const round = rounds[0];
+    for (const recovered of missingPathfinderEntries(round.id, entries as ReflectionEntry[])) {
+      const question = round.questions.find((q: {id: string}) => q.id === recovered.question_id);
+      if (!question) continue;
+      const {id: _id, ...entry} = recovered;
+      const inserted = await createSupabaseAdminClient().from("reflection_entries").upsert({ ...entry, user_id: user.id, prompt: question.prompt, question_version: question.version, lesson_slug: question.lessonSlug, lesson_title: question.lessonTitle }, { onConflict: "round_id,question_id,revision", ignoreDuplicates: true }).select("id,round_id,question_id,prompt,question_version,lesson_slug,lesson_title,response,revision,saved_at");
+      if (inserted.error) return json({error: "Could not recover your Pathfinder answer. Please reload; your original answer is unchanged."}, 503);
+      if (inserted.data.length) entries.push(...inserted.data);
+      else {
+        // A concurrent canonical save/recovery won. Return its real revisions,
+        // rather than briefly presenting an empty answer with revision zero.
+        const winner = await s.from("reflection_entries").select("id,round_id,question_id,prompt,question_version,lesson_slug,lesson_title,response,revision,saved_at")
+          .eq("user_id", user.id).eq("round_id", round.id).eq("question_id", recovered.question_id);
+        if (winner.error) return json({error: "Your Pathfinder answer was saved in another tab. Please reload to see it."}, 503);
+        entries.push(...winner.data);
+      }
     }
   }
   return json({

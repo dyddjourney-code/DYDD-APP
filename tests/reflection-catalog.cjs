@@ -25,7 +25,7 @@ for (const [moduleIndex, module] of dyddMainCourseOutline.entries())
     });
     for (const p of workbook?.prompts ?? [])
       assert(
-        journey.questions.find((q) => q.id === p.id && q.prompt === p.label),
+        journey.questions.find((q) => q.id === p.id && q.prompt === (workbook.kind === "pathfinder" && p.helper ? `${p.label}\n${p.helper}` : p.label)),
         `Missing Journey workbook question ${p.id}`,
       );
     if (unit.reflectionPrompt)

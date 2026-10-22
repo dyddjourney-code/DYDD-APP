@@ -192,6 +192,8 @@ export function JourneyCourseNavigator({
   const isOneAnother = active.unit.slug === "identity-reflections-and-one-anothering-23";
   const isNeighbor = active.unit.slug === "identity-love-your-neighbor-as-yourself-22";
   const usesApprovedLessonFormat = isOneAnother || isNeighbor || isDesignReflectionsLove || isWhoWhose || ["identity-good-works-17", "identity-niche-18", "identity-identity-among-believers-20"].includes(active.unit.slug);
+  const isIdentityPathfinder = active.unit.row === 24;
+  const isPathfinder = active.unit.type === "pathfinder";
   const isCareIntroduction = active.unit.slug === "what-is-dydd-how-to-c-a-r-e-10";
   const workbookExperience = active ? getWorkbookExperience(active) : null;
   const lessonMainIdea = cleanLessonMainIdea(
@@ -208,7 +210,7 @@ export function JourneyCourseNavigator({
   const lessonImageLabel =
     active.unit.media?.label ?? `${active.module.title} Journey illustration`;
   // Approved forward format, opt-in only; older lesson cleanup remains deferred.
-  const wrapLessonImage = active.unit.slug === "what-is-dydd-d-e-s-i-g-n-9" || usesApprovedLessonFormat;
+  const wrapLessonImage = active.unit.slug === "what-is-dydd-d-e-s-i-g-n-9" || usesApprovedLessonFormat || isIdentityPathfinder;
   const lessonArtwork = (
     <div className="journey-lesson-images">
       {[{ image: lessonImage, label: lessonImageLabel }, ...(active.unit.media?.additionalImages ?? [])].map((image) => (
@@ -270,7 +272,7 @@ export function JourneyCourseNavigator({
 
   return (
     <section
-      className={`journey-course-walkthrough dydd-journey-walkthrough${usesApprovedLessonFormat ? " journey-who-whose-walkthrough" : ""}${active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? " journey-designid-lens-walkthrough" : ""}`}
+      className={`journey-course-walkthrough dydd-journey-walkthrough${usesApprovedLessonFormat || isPathfinder ? " journey-who-whose-walkthrough" : ""}${active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? " journey-designid-lens-walkthrough" : ""}`}
       aria-label="Guided course walkthrough"
     >
       <aside className="journey-course-index">
@@ -373,7 +375,7 @@ export function JourneyCourseNavigator({
       </aside>
 
       <article
-        className={`journey-active-lesson ${typeClass[active.unit.type]}${usesApprovedLessonFormat ? " journey-who-whose-lesson" : ""}${isOneAnother || isNeighbor ? " journey-neighbor-lesson" : ""}${isDesignReflectionsLove ? " journey-design-love-lesson" : ""}${active.unit.slug === "identity-identity-among-believers-20" ? " journey-identity-believers-lesson" : ""}`}
+        className={`journey-active-lesson ${typeClass[active.unit.type]}${usesApprovedLessonFormat || isIdentityPathfinder ? " journey-who-whose-lesson" : ""}${isOneAnother || isNeighbor ? " journey-neighbor-lesson" : ""}${isDesignReflectionsLove ? " journey-design-love-lesson" : ""}${active.unit.slug === "identity-identity-among-believers-20" ? " journey-identity-believers-lesson" : ""}`}
         ref={activeLessonRef}
       >
         <header>
@@ -383,7 +385,7 @@ export function JourneyCourseNavigator({
               .{active.sectionIndex + 1} / Lesson {active.unitIndex + 1}
             </p>
             <h2>{active.unit.title}</h2>
-            {!isDesignReflectionsLove && !isOneAnother && !isNeighbor ? <p>{lessonMainIdea}</p> : null}
+            {!isPathfinder && !isDesignReflectionsLove && !isOneAnother && !isNeighbor ? <p>{lessonMainIdea}</p> : null}
           </div>
           <div className="journey-active-meta">
             {!usesApprovedLessonFormat ? <span>{active.unit.typeLabel}</span> : null}
@@ -426,13 +428,13 @@ export function JourneyCourseNavigator({
                 aria-label="Lesson body"
               >
                 {!isCareIntroduction && wrapLessonImage ? lessonArtwork : null}
-                {!isOneAnother && !isNeighbor && !["identity-good-works-17", "identity-niche-18", "identity-the-design-reflections-and-love-21"].includes(active.unit.slug) ? <h3 className="lesson-body-subheading">{active.unit.title}</h3> : null}
+                {!isPathfinder && !isOneAnother && !isNeighbor && !["identity-good-works-17", "identity-niche-18", "identity-the-design-reflections-and-love-21"].includes(active.unit.slug) ? <h3 className="lesson-body-subheading">{active.unit.title}</h3> : null}
                 {active.unit.contentStatus === "draft" ? (
                   <p role="status">Lesson content is being prepared.</p>
                 ) : isCareIntroduction && active.unit.lessonBody ? (
                   <JourneyCareIntroduction blocks={active.unit.lessonBody} />
                 ) : active.unit.lessonBody ? (
-                  <JourneyLessonBody blocks={active.unit.lessonBody} closingCallout={active.unit.slug === "identity-niche-18"} />
+                  <JourneyLessonBody blocks={active.unit.lessonBody} identityPathfinder={isIdentityPathfinder} closingCallout={active.unit.slug === "identity-niche-18"} />
                 ) : active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? null : active.unit.teachingBlocks.map((block) => (
                   <p key={block}>
                     {cleanTeachingBlock(block, Boolean(workbookExperience))}
@@ -494,7 +496,7 @@ export function JourneyCourseNavigator({
             <section
               className={`journey-active-workbook ${workbookExperience.kind}${(isDesignIdLens || isDesignReflectionsLove) ? " journey-who-whose-care journey-designid-lens-care" : ""}`}
             >
-              {!isDesignIdLens && !isDesignReflectionsLove ? <div
+              {!isPathfinder && !isDesignIdLens && !isDesignReflectionsLove ? <div
                 className="journey-care-divider"
                 aria-label="CARE workbook section"
               >
@@ -507,7 +509,7 @@ export function JourneyCourseNavigator({
                 <div>
                   <p className="section-label">
                     {workbookExperience.kind === "pathfinder"
-                      ? "Pathfinder CARE"
+                      ? "PATHFINDER"
                       : workbookExperience.kind === "designid"
                         ? "DesignID CARE reflection"
                         : "Workbook CARE reflection"}
@@ -530,7 +532,13 @@ export function JourneyCourseNavigator({
               </div>
 
               {workbookExperience.kind !== "pathfinder" ? <JourneyCareDirections /> : null}
-              {isDesignIdLens || isDesignReflectionsLove ? (
+              {isPathfinder ? <div className="journey-pathfinder-waypoints">
+                <p className="journey-pathfinder-saving">Your words save after a pause and before Next. {isIdentityPathfinder ? "These same pieces are ready to edit in section 8.2 and your Field Kit." : "Review your saved pieces in your Field Kit."}</p>
+                {workbookExperience.prompts.map((prompt, index) => <section className="journey-pathfinder-waypoint" key={prompt.id}>
+                  <span className="journey-pathfinder-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                  <div><h4>{prompt.label}</h4>{prompt.helper ? <p>{prompt.helper}</p> : null}<ReflectionAnswer questionId={prompt.id} showQuestion={false} /></div>
+                </section>)}
+              </div> : isDesignIdLens || isDesignReflectionsLove ? (
                 <div className="journey-care-response-grid">
                   {careOrder.filter(stage => workbookExperience.care[stage] || workbookExperience.prompts.some(p => p.careStep === stage)).map(stage => <section className={`journey-care-response-cell ${stage}`} key={stage} data-care-stage={stage}>
                     <h4>{careLabels[stage]}</h4>
@@ -567,7 +575,7 @@ export function JourneyCourseNavigator({
           ) : null}
         </div>
 
-        {active.unit.notes ? (
+        {active.unit.notes && !isPathfinder ? (
           <p className="journey-active-note">{active.unit.notes}</p>
         ) : null}
 

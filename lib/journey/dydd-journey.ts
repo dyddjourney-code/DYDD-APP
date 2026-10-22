@@ -1,3 +1,4 @@
+import { identityPathfinderPrompts } from './pathfinder';
 export type CareStep = "connect" | "act" | "reflect" | "explore";
 
 export type JourneyPrompt = {
@@ -539,19 +540,7 @@ export const dyddJourney: DyddJourney = {
         title: "Pathfinder: Identity Line",
         body:
           "At the end of Identity, Pathfinder captures the first line of the eventual Niche Declaration: I believe God created me...",
-        prompts: [
-          {
-            id: "identity-declaration",
-            label: "I believe God created me...",
-            responseType: "declaration",
-          },
-          {
-            id: "identity-service-reflections",
-            careStep: "explore",
-            label: "What have you learned about your divine reflections that you might use for serving God?",
-            responseType: "long_text",
-          },
-        ],
+        prompts: identityPathfinderPrompts,
       },
       prompts: [],
     },

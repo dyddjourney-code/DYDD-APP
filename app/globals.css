@@ -21070,3 +21070,24 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .designid-authored-body.designid-capacity-intro .designid-authored-artwork { margin-right: 16px; }
   .designid-capacity-intro .designid-live-capacity { clear: both; }
 }
+
+/* Source-authored DesignID lessons 4–6: semantic tables; canonical colors are accents, not body text. */
+.designid-authored-body .designid-authored-table { clear: both; display: table; width: 100%; table-layout: fixed; border-collapse: collapse; margin: 24px 0; font-size: .94rem; }
+.designid-authored-table caption { text-align: left; color: var(--green-dark); font-weight: 700; font-size: 1.18rem; line-height: 1.35; margin-bottom: 14px; }
+.designid-authored-table th, .designid-authored-table td { text-align: left; vertical-align: top; padding: 14px 12px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.designid-authored-table thead { background: #f0f2e9; }
+.designid-authored-table tbody th { border-left: 6px solid var(--reflection-color, transparent); }
+.designid-integrative-table th:first-child { width: 24%; }
+.designid-integrative-table th:nth-child(2) { width: 27%; }
+.designid-reflection-table th:first-child { width: 24%; }
+.designid-reflection-table tbody tr { background: color-mix(in srgb, var(--reflection-color) 8%, white); }
+.designid-shadow-results { clear: both; }
+@media (max-width: 767px) {
+  .designid-authored-body .designid-authored-table { font-size: .82rem; }
+  .designid-authored-table th, .designid-authored-table td { padding: 10px 4px; }
+  .designid-authored-table tbody th { border-left-width: 4px; }
+  .designid-integrative-table th:first-child { width: 35%; }
+  .designid-integrative-table th:nth-child(2) { width: 30%; }
+  .designid-reflection-table th:first-child { width: 35%; }
+  .designid-authored-table thead th { font-size: .75rem; line-height: 1.4; }
+}

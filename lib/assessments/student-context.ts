@@ -413,8 +413,20 @@ function readFirstValue(
 
 export function buildDesignIdContext(report: StudentAssessmentReport) {
   const designId = getLatestSnapshot(report, "designid");
+  // Native reports retain the exact rendered matrix in reportPayload; imported
+  // reports may carry these fields in the existing canonical sections/root.
+  const savedPayload = designId?.scores?.reportPayload;
+  const shadowValue = (key: string) => readFirstValue(designId, [key]) || (
+    savedPayload && typeof savedPayload === "object" && !Array.isArray(savedPayload)
+      ? compactValue((savedPayload as Record<string, unknown>)[key]) : ""
+  );
 
   return {
+    ...Object.fromEntries(["A", "B", "C", "D"].flatMap(letter =>
+      ["Risk", "Root", "Red"].map(field => [
+        `shadow${field}${letter}`, shadowValue(`Shadow_${field}_${letter}`),
+      ]),
+    )),
     architectBand: readFirstValue(designId, ["Band_Architect"]),
     architectPts: readFirstValue(designId, ["Architect_Pts"]),
     artisanBand: readFirstValue(designId, ["Band_Artisan"]),

@@ -1,4 +1,4 @@
-// Current read-only DesignID Course rows 3–8. See committed rich-grid snapshot and release documentation.
+// Current read-only DesignID Course rows 3–11. See committed rich-grid snapshot and release documentation.
 export const designIdAuthoredLessons: Record<string, { sourceRow: number; title: string; focus: string[]; bodyHtml: string; images: { src: string; alt: string }[]; reflections: { id: string; prompt: string }[] }> = {
   "biblical-foundation": {
     "sourceRow": 3,
@@ -111,6 +111,68 @@ export const designIdAuthoredLessons: Record<string, { sourceRow: number; title:
       {
         "id": "reflection-capacity",
         "prompt": "Where does your current capacity invite you to set a boundary, receive help, or make room for rest?"
+      }
+    ]
+  },
+  "integrative-reflections": {
+    "sourceRow": 9,
+    "title": "Integrative Reflections",
+    "focus": [
+      "Integrated"
+    ],
+    "bodyHtml": "<p>Real Life Happens in the Intersections. Where two reflections meet, a fuller picture of your design begins to emerge.</p>\n<p>Every person reflects the four divine designs in some capacity — Architect, Artisan, Shepherd, and Steward — but few operate purely within one. Real life, leadership, and discipleship happen in the intersections between them. Integrative Reflections reveal the six blended reflections, the spaces where two reflections meet, creating unique character, insight, and calling.</p>\n<blockquote class=\"lesson-scripture-callout\"><p>“There are different kinds of service, but the same Lord. There are different kinds of working, but in all of them and in everyone it is the same God at work.” 1 Corinthians 12:5–6</p></blockquote>\n<p>Your Integrative Reflection helps describe how your strongest reflections work together. It is not a box or a label. It is a lens for seeing how grace may combine within you to shape your contribution, relationships, leadership, and calling.</p>\n<p>Each Integrative Reflection brings two design reflections together. The blend helps reveal how your design may express insight, leadership, compassion, structure, creativity, and faithfulness in a more complete way.</p>\n<table class=\"designid-authored-table designid-integrative-table\"><caption>The Six Integrated Reflections</caption><thead><tr><th scope=\"col\">Integrative Reflection</th><th scope=\"col\">Blend</th><th scope=\"col\">Description</th></tr></thead><tbody><tr style=\"--reflection-color:#9c9076\"><th scope=\"row\">Visionary</th><td>Architect + Artisan</td><td>Innovation joined with wisdom, building what is both new and true.</td></tr><tr style=\"--reflection-color:#6b8d7d\"><th scope=\"row\">Interpreter</th><td>Artisan + Shepherd</td><td>Compassionate communication that brings understanding and healing.</td></tr><tr style=\"--reflection-color:#5f6283\"><th scope=\"row\">Craftsman</th><td>Artisan + Steward</td><td>Enduring excellence that refines and sustains what lasts.</td></tr><tr style=\"--reflection-color:#97765e\"><th scope=\"row\">Overseer</th><td>Steward + Architect</td><td>Responsible creation that guards purpose with diligence.</td></tr><tr style=\"--reflection-color:#677365\"><th scope=\"row\">Guardian</th><td>Shepherd + Steward</td><td>Relational stability and protection that preserves what matters.</td></tr><tr style=\"--reflection-color:#a3a158\"><th scope=\"row\">Innovator</th><td>Architect + Shepherd</td><td>Empathetic initiative that moves people and ideas forward.</td></tr></tbody></table>",
+    "images": [
+      {
+        "src": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/a3412b55-fabf-4ec5-9721-7348edea38dd/DYDD_piegraph+final.png?format=2500w",
+        "alt": "Integrative Reflections"
+      }
+    ],
+    "reflections": [
+      {
+        "id": "integrative-reflections-respond",
+        "prompt": "How might this blended reflection help you serve others with greater clarity, humility, and purpose?"
+      }
+    ]
+  },
+  "learning-and-contribution": {
+    "sourceRow": 10,
+    "title": "Learning and Contribution",
+    "focus": [
+      "How I learn",
+      "How I contribute"
+    ],
+    "bodyHtml": "<p>Discover how your reflection naturally learns, grows, and gives life to others.</p>\n<p>Learning is a sacred part of discipleship, and understanding how you learn is just as important as what you learn. In the DesignID framework, each reflection carries a unique way that truth is best received, practiced, and lived. When you recognize your natural learning patterns, you position yourself to grow with greater clarity, joy, and endurance. Scripture reminds us that growth is intentional formation.</p>\n<blockquote class=\"lesson-scripture-callout\"><p>“Let the wise listen and add to their learning” (Proverbs 1:5), and “grow in the grace and knowledge of our Lord and Savior Jesus Christ” (2 Peter 3:18).</p></blockquote>\n<table class=\"designid-authored-table designid-reflection-table\"><caption>How You Naturally Learn</caption><thead><tr><th scope=\"col\">Reflection</th><th scope=\"col\">Learning</th></tr></thead><tbody><tr style=\"--reflection-color:#d4a451\"><th scope=\"row\">Architect</th><td>Learns best by building something tangible from new ideas, teaching concepts to others, and connecting learning directly to purpose, movement, and outcomes. Reflection often happens after action, refining insight through experience.</td></tr><tr style=\"--reflection-color:#647c9b\"><th scope=\"row\">Artisan</th><td>Learns through clarity, creativity, and thoughtful refinement. Artisans often process deeply by expressing ideas, reflecting on meaning, and improving understanding through careful insight and communication.</td></tr><tr style=\"--reflection-color:#739d5e\"><th scope=\"row\">Shepherd</th><td>Learns best through conversation, listening, relationships, and shared experiences. Shepherds often grow through harmony, dialogue, encouragement, and meaningful connection with others.</td></tr><tr style=\"--reflection-color:#5a496b\"><th scope=\"row\">Steward</th><td>Learns through structure, clear steps, practical processes, and consistent application. Stewards often gain confidence when expectations are organized and outcomes are measurable.</td></tr></tbody></table>\n<p>The Body of Christ becomes vibrant and complete when every believer contributes through the grace God has already placed within them. The Body of Christ is not limited to a building, a denomination, or a Sunday gathering; it is any place where believers come together in Jesus’ name. God designed His people to function like a living body, with every part contributing something essential to the whole (1 Corinthians 12).</p>\n<p>Your DesignID reflection helps you recognize how God’s grace moves through you and where you naturally give life to others. Serving is not about trying harder, it is about aligning with the grace already flowing through you.</p>\n<table class=\"designid-authored-table designid-reflection-table\"><caption>Contribution to the Body</caption><thead><tr><th scope=\"col\">Reflection</th><th scope=\"col\">Contribution</th></tr></thead><tbody><tr style=\"--reflection-color:#d4a451\"><th scope=\"row\">Architect</th><td>Architects often contribute by initiating new works that align with God’s mission. They inspire confidence through direction and clarity, mobilizing others by turning vision into tangible action and sustainable momentum.</td></tr><tr style=\"--reflection-color:#647c9b\"><th scope=\"row\">Artisan</th><td>Artisans contribute clarity, wisdom, and beauty that help the Body understand what God is doing. They refine communication, strengthen insight, and bring thoughtful understanding that helps others grow in truth.</td></tr><tr style=\"--reflection-color:#739d5e\"><th scope=\"row\">Shepherd</th><td>Shepherds strengthen the Body through presence, empathy, encouragement, and love. They help people feel known, valued, and connected, often creating unity and healing through relationships.</td></tr><tr style=\"--reflection-color:#5a496b\"><th scope=\"row\">Steward</th><td>Stewards contribute stability, reliability, and faithful structure. They help sustain healthy systems, organize what matters, and provide consistency that strengthens long-term ministry and trust.</td></tr></tbody></table>",
+    "images": [
+      {
+        "src": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/ab079d99-1045-490b-ae19-880ce271bb09/group-of-friends-during-trip-navigating-with-map-a-2026-01-05-23-13-46-utc.jpg?format=500w",
+        "alt": "Learning and Contribution"
+      }
+    ],
+    "reflections": [
+      {
+        "id": "learning-and-contribution-respond",
+        "prompt": "How might embracing your natural design help you grow with greater joy, clarity, and faithfulness?"
+      }
+    ]
+  },
+  "shadow-reflections": {
+    "sourceRow": 11,
+    "title": "Shadow Reflections",
+    "focus": [
+      "Shadow",
+      "Re-Alignment"
+    ],
+    "bodyHtml": "<p>When grace disconnects from surrender, strength can slowly distort into strain.</p>\n<h3>What Are Shadow Reflections?</h3>\n<p>Shadow reflections are summarized by saying they are Grace trying to work alone. Every divine reflection carries a potential for shadow. The same grace that empowers can also distort when detached from its source. The shadow is not sin itself, but the strain that occurs when you are out of alignment. In other words, the shadow is grace trying to work alone.</p>\n<blockquote class=\"lesson-scripture-callout\"><p>“My grace is sufficient for you, for my power is made perfect in weakness.” 2 Corinthians 12:9</p></blockquote>\n<p>Shadow Reflections invite awareness, not shame. The path of redemption is not to reject the shadow, but to return it to its purpose, allowing grace to transform distortion into depth.</p>\n<h3>Your Potential Shadow Reflection</h3>\n{{ authored.shadow_matrix }}\n<p>Understanding your shadow is not about condemnation. It is about recognizing where fear, striving, or self-reliance may quietly pull you away from grace-filled alignment. Shadow Reflections are invitations back to humility, surrender, dependence, and healthy partnership within the Body of Christ.</p>\n<h3>Grace Was Never Meant to Flow Alone</h3>\n<p>When Shadow Reflections go unchecked, they quietly reshape our strengths into struggles; courage becomes control, discernment turns to criticism, compassion slips into exhaustion, and diligence hardens into pride. Left alone, these distortions isolate us from truth and from others, slowly dimming the reflection of Christ within us.</p>\n<blockquote class=\"lesson-scripture-callout\"><p>“But if we walk in the light, as He is in the light, we have fellowship with one another, and the blood of Jesus, His Son, purifies us from all sin.” 1 John 1:7</p></blockquote>\n<blockquote class=\"lesson-scripture-callout\"><p>“As iron sharpens iron, so one person sharpens another.” Proverbs 27:17</p></blockquote>\n<p>Within fellowship, reflection becomes restoration. We are reminded of who we are, whose we are, and how grace was never meant to work in isolation.</p>",
+    "images": [
+      {
+        "src": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/393a9b33-f266-440d-bf2d-9329699c7be1/envato-labs-ai-8eb25ca0-a193-466f-b86a-2c88d7028dd2.jpg?format=300w",
+        "alt": "Shadow Reflections"
+      }
+    ],
+    "reflections": [
+      {
+        "id": "shadow-reflections-notice",
+        "prompt": "What signs help you recognize when you are moving from surrender into striving?"
       }
     ]
   }

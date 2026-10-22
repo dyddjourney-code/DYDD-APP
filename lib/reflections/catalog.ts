@@ -112,7 +112,7 @@ export const reflectionExperiences: ReflectionExperience[] = [
           lessonTitle: l.title,
           moduleTitle: m.title,
           prompt: prompt.prompt,
-          version: l.slug === "welcome-to-designid" || designIdAuthoredLessons[l.slug] ? "2026-10-21" : "2026-10-19",
+          version: (designIdAuthoredLessons[l.slug]?.sourceRow ?? 0) >= 9 ? "2026-10-22" : l.slug === "welcome-to-designid" || designIdAuthoredLessons[l.slug] ? "2026-10-21" : "2026-10-19",
         })),
       ),
     ),

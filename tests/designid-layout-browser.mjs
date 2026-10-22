@@ -40,5 +40,5 @@ try{
   evidence.push({slug:lesson.slug,width,focus,intro});console.log('PASS '+tag+' '+lesson.slug+' '+width+(intro?' '+JSON.stringify(intro):''));
  }
  for(const slug of compact){await page.goto(base+'/learn/designid-foundations/'+slug,{waitUntil:'domcontentloaded'});await page.waitForSelector('.designid-compact-intro,.designid-capacity-intro');assert.equal(await page.$eval('.designid-authored-artwork',e=>getComputedStyle(e).float),slug==='reflection-capacity'?'left':'right');}
- assert.deepEqual(errors,[]);fs.writeFileSync(`tmp/designid-layout-${tag}-measurements.json`,JSON.stringify(evidence,null,2)+'\n');console.log(`PASS ${evidence.length} course/width cases; 7 authored lessons + 6 later lessons; standalone compact bodies; no writes/runtime errors`);
+ assert.deepEqual(errors,[]);fs.writeFileSync(`tmp/designid-layout-${tag}-measurements.json`,JSON.stringify(evidence,null,2)+'\n');console.log(`PASS ${evidence.length} course/width cases; 10 spreadsheet-authored lessons + 3 later lessons; standalone compact bodies; no writes/runtime errors`);
 }finally{await browser.close();}

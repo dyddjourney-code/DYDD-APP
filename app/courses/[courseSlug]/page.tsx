@@ -84,9 +84,10 @@ export default async function LearningCoursePage({
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
   const isSpiritualGifts = course?.slug === "spiritual-gifts-service";
   const isFruitLife = course?.slug === "fruitlife-360-formation";
-  const hasIllustratedHeader = isSpiritualGifts || isFruitLife;
-  const headerClass = isFruitLife ? "fruitlife-course" : "spiritual-gifts-course";
-  const trackClass = isFruitLife ? "fruitlife-top-racetrack" : "spiritual-gifts-top-racetrack";
+  const isDesignPd = course?.slug === "designpd-alignment";
+  const hasIllustratedHeader = isSpiritualGifts || isFruitLife || isDesignPd;
+  const headerClass = isDesignPd ? "designpd-course" : isFruitLife ? "fruitlife-course" : "spiritual-gifts-course";
+  const trackClass = isDesignPd ? "designpd-top-racetrack" : isFruitLife ? "fruitlife-top-racetrack" : "spiritual-gifts-top-racetrack";
   const fruitLifeReviewQuery = reviewQuery(reviewParams);
   const courseQuery = fruitLifeLane
     ? `?lane=fruitlife${fruitLifeReviewQuery ? `&${fruitLifeReviewQuery.slice(1)}` : ""}`

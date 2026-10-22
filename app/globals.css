@@ -21123,7 +21123,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   grid-template-columns: repeat(6, minmax(116px, 1fr));
 }
 
-:is(.spiritual-gifts-top-racetrack, .fruitlife-top-racetrack) li a {
+:is(.spiritual-gifts-top-racetrack, .fruitlife-top-racetrack, .designpd-top-racetrack) li a {
   display: grid;
   justify-items: center;
   align-content: start;
@@ -21135,17 +21135,17 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   text-decoration: none;
 }
 
-:is(.spiritual-gifts-top-racetrack, .fruitlife-top-racetrack) li a:hover strong {
+:is(.spiritual-gifts-top-racetrack, .fruitlife-top-racetrack, .designpd-top-racetrack) li a:hover strong {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
-:is(.spiritual-gifts-top-racetrack, .fruitlife-top-racetrack) li a:focus-visible {
+:is(.spiritual-gifts-top-racetrack, .fruitlife-top-racetrack, .designpd-top-racetrack) li a:focus-visible {
   outline: 2px solid var(--green-dark);
   outline-offset: -2px;
 }
 
-:is(.spiritual-gifts-top-racetrack, .fruitlife-top-racetrack) li a:active {
+:is(.spiritual-gifts-top-racetrack, .fruitlife-top-racetrack, .designpd-top-racetrack) li a:active {
   transform: translateY(1px);
 }
 
@@ -21293,4 +21293,74 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .journey-pathfinder-number { width: 27px; height: 27px; font-size: .7rem; }
   .journey-pathfinder-waypoint:not(:last-child)::before { left: 12px; top: 26px; }
   .journey-active-lesson.pathfinder .journey-active-workbook.pathfinder { padding: 16px 12px; }
+}
+
+/* DesignPD: John's supplied illustration, same shared class header + module rail. */
+.designpd-course-hero {
+  grid-template-columns: minmax(0, 1fr);
+  background:
+    linear-gradient(102deg, rgba(251, 250, 244, 0.96) 0%, rgba(251, 250, 244, 0.82) 28%, rgba(251, 250, 244, 0.18) 52%, rgba(36, 63, 39, 0.06) 100%),
+    linear-gradient(0deg, rgba(36, 63, 39, 0.16), rgba(36, 63, 39, 0.02)),
+    url("/brand/designpd-course-cartoon-hero.jpg") center / cover;
+}
+.designpd-top-racetrack ol { grid-template-columns: repeat(8, minmax(116px, 1fr)); }
+
+/* Text comparisons only: one complete row/type at a time on phones. The same
+   authored DOM stays a table at >=768px; score tables/wheels are not selected. */
+@media (max-width: 767px) {
+  .mobile-comparison-table,
+  .designid-authored-body .mobile-comparison-table,
+  .journey-designid-snapshot .mobile-comparison-table {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+  .mobile-comparison-table caption { display: block; width: 100%; }
+  .mobile-comparison-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .mobile-comparison-table tbody { display: grid; gap: 16px; width: 100%; }
+  .mobile-comparison-table tbody tr {
+    display: block;
+    min-width: 0;
+    border: 1px solid var(--line, #dcded4);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .mobile-comparison-table tbody tr > :is(th, td),
+  .journey-designid-snapshot .mobile-comparison-table tbody tr > :is(th, td) {
+    display: block;
+    width: auto;
+    padding: 12px 14px;
+    border: 0;
+    text-align: left;
+    overflow-wrap: anywhere;
+    font-size: 1rem;
+  }
+  .mobile-comparison-table tbody tr > :is(th, td):first-child,
+  .journey-designid-snapshot .mobile-comparison-table tbody tr > :is(th, td):first-child { width: auto; padding: 12px 14px; }
+  .mobile-comparison-table tbody tr > th {
+    font-weight: 750;
+    border-left: 5px solid var(--reflection-color, #647c52);
+    background: var(--reflection-tint, #edf0e5);
+  }
+  .mobile-comparison-table tbody td + td { border-top: 1px solid var(--line, #dcded4); }
+  .mobile-comparison-table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 5px;
+    font-size: .8rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--green-dark);
+  }
+  .journey-designid-snapshot:has(.mobile-comparison-table) .journey-shadow-scroll-hint { display: none; }
 }

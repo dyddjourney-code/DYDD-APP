@@ -21220,7 +21220,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .journey-authored-table caption { text-align: left; font-weight: 700; padding-bottom: 12px; }
 .journey-authored-table th, .journey-authored-table td { padding: 14px 12px; text-align: left; vertical-align: top; border: 1px solid #dcded4; overflow-wrap: anywhere; }
 .journey-authored-table thead, .journey-authored-table tbody th { background: #edf0e5; }
-.journey-authored-table th:first-child { width: 13%; }
+.journey-authored-table th:first-child { width: 110px; }
 
 @media (min-width: 981px) {
  .journey-authored-table { min-width: 0; }

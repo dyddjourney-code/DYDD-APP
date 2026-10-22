@@ -21091,3 +21091,9 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .designid-reflection-table th:first-child { width: 35%; }
   .designid-authored-table thead th { font-size: .75rem; line-height: 1.4; }
 }
+
+/* Final Module 3 ecosystem: six authored rows with readable, content-sized labels. */
+.designid-ecosystem-table th:first-child { width: 25%; }
+.designid-ecosystem-table td p { margin: 0 0 12px; }
+.designid-ecosystem-table td p:last-child { margin-bottom: 0; }
+@media (max-width: 767px) { .designid-ecosystem-table th:first-child { width: 30%; } }

@@ -1,4 +1,4 @@
-// Current read-only DesignID Course rows 3–11. See committed rich-grid snapshot and release documentation.
+// Current read-only DesignID Course rows 3–14. See committed rich-grid snapshots and release documentation.
 export const designIdAuthoredLessons: Record<string, { sourceRow: number; title: string; focus: string[]; bodyHtml: string; images: { src: string; alt: string }[]; reflections: { id: string; prompt: string }[] }> = {
   "biblical-foundation": {
     "sourceRow": 3,
@@ -173,6 +173,61 @@ export const designIdAuthoredLessons: Record<string, { sourceRow: number; title:
       {
         "id": "shadow-reflections-notice",
         "prompt": "What signs help you recognize when you are moving from surrender into striving?"
+      }
+    ]
+  },
+  "beautiful-journey": {
+    "sourceRow": 12,
+    "title": "You've Begun a Beautiful Journey",
+    "focus": [
+      "Application"
+    ],
+    "bodyHtml": "<p>You’ve taken the DesignID assessment, explored the foundations of your divine design, and learned how grace moves uniquely through your life. That alone is significant. Many people go years, even decades without ever discovering the story God has written into their identity. You are already ahead of that curve.</p>\n<blockquote class=\"lesson-scripture-callout\"><p>“We are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” Ephesians 2:10</p></blockquote>\n<p>DesignID helps you see that handiwork with fresh eyes. It reveals the grace-shaped patterns God wove into your life long before you ever noticed them. Now the real beauty begins: living it.</p>\n<h3>The Beauty Begins in the Living</h3>\n<p>DesignID isn’t just information, it’s invitation. When you understand how God designed you, you begin to move through life with clarity, confidence, and spiritual alignment. You begin to see patterns. You begin to make decisions differently. You begin to experience grace in motion.</p>\n<h3>Apply What You’ve Discovered</h3>\n<ul>\n<li>Strengthen Your Relationships: By knowing how you naturally give and receive love, structure, clarity, and compassion.</li>\n<li>Grow in Spiritual Formation: By noticing where God’s grace flows abundantly and where He invites dependence.</li>\n<li>Lead and Serve With Greater Confidence: Through awareness of how God wired you to contribute to the Body of Christ.</li>\n<li>Discern Calling With Clarity: As your design shines light on what gives life, what drains life, and where God’s voice feels most aligned.</li>\n<li>Develop Healthier Rhythms: By honoring your capacity and building a sustainable pace of life and ministry.</li>\n<li>Improve Communication and Teamwork: As you learn to value and collaborate with designs different from your own.</li>\n<li>Simple Application Avenues: Where Your Design Can Make an Immediate Impact</li>\n</ul>\n<p>DesignID opens a new level of understanding, not just about yourself, but about God’s work in you. Your design is not meant to be admired; it is meant to be applied. And when you apply it, you will see fruit.</p>",
+    "images": [
+      {
+        "src": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/7aaf70b2-d96f-4d2e-a538-8df1c1530a29/a-lonely-traveler-with-a-backpack-on-the-backgroun-2026-01-06-10-16-20-utc.jpg?format=500w",
+        "alt": "You've Begun a Beautiful Journey"
+      }
+    ],
+    "reflections": [
+      {
+        "id": "beautiful-journey-respond",
+        "prompt": "What is one simple step you can take to apply your design rather than simply admire it?"
+      }
+    ]
+  },
+  "exploring-the-dydd-ecosystem": {
+    "sourceRow": 13,
+    "title": "Exploring the DYDD Ecosystem",
+    "focus": [
+      "Part of the Journey"
+    ],
+    "bodyHtml": "<p>Your Design Was Never Meant to Stop at Discovery. Discover Your Divine Design is more than a single assessment. It is a connected ecosystem of tools, teaching, reflection, and formation designed to help believers live with clarity, purpose, and faithful action.</p>\n<h3>The Full Journey</h3>\n<p>The Discover Your Divine Design journey is an integrated process that helps you explore the fullness of who God created you to be. DesignID provides measurable insight, but DYDD provides the spiritual formation pathway. Together, they help connect identity, growth, calling, and faithful action.</p>\n<table class=\"designid-authored-table designid-ecosystem-table\"><caption>How DesignID Fits Within DYDD</caption><thead><tr><th scope=\"col\">DYDD Journey</th><th scope=\"col\">How DesignID Fits</th></tr></thead><tbody>\n<tr><th scope=\"row\">Identity</th><td><p>This chapter connects directly to your DesignID results. It explains how the four reflections carry the image of God within you and why your grace patterns matter. A central focus is learning that it is whose you are, not simply who you are.</p></td></tr>\n<tr><th scope=\"row\">Expertise</th><td><p>The natural and developed skills that come from your design begin to make sense. DesignID helps identify where your strengths have already appeared throughout your history.</p></td></tr>\n<tr><th scope=\"row\">Story</th><td><p>Your experiences, family, culture, triumphs, and wounds shape how grace flows in you. DesignID gives language to help interpret those patterns through the lens of redemption.</p></td></tr>\n<tr><th scope=\"row\">Desire</th><td><p>Where passion and energy align with your design, calling becomes visible. Your reflection capacities play a major role in understanding what brings life, purpose, and sustainable energy.</p></td></tr>\n<tr><th scope=\"row\">Gifts</th><td><p>Spiritual gifts become clearer when seen through the lens of design and grace flow. Your reflections and Integrative Reflection often correlate with specific ministries, relational roles, and service expressions.</p><p>Understanding how God empowers you through His gifts, and how those gifts connect with your design and capacity, opens powerful insight into faithful service and calling.</p></td></tr>\n<tr><th scope=\"row\">Niche</th><td><p>Your Niche is your personal calling space, where your design, desire, gifts, and life story converge. This is the “why” behind everything. The journey culminates with the creation of your own personal ministry declaration.</p></td></tr>\n</tbody></table><h3>Continue the Journey</h3><p>Explore assessments, books, courses, workshops, and additional tools designed to help you continue growing in clarity, purpose, and faithful action.</p>",
+    "images": [
+      {
+        "src": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/62e375ae-3e4a-48a5-b1bf-16933b5510c8/back-side-of-young-traveler-see-the-map-in-the-dee-2024-10-18-09-26-30-utc.jpg?format=2500w",
+        "alt": "Exploring the DYDD Ecosystem"
+      }
+    ],
+    "reflections": []
+  },
+  "call-to-arms": {
+    "sourceRow": 14,
+    "title": "Call To Arms",
+    "focus": [
+      "On Purpose - For Purpose"
+    ],
+    "bodyHtml": "<p>Congratulations. You have taken meaningful steps toward seeing yourself through scripture, grace, and divine design.</p>\n<h3>This Is Not a Small Thing</h3>\n<p>You’ve invested in understanding yourself through the lens of scripture, grace, and divine design. That is not a small thing. Most people live reactively, shaped by circumstance rather than calling. You are choosing a different path: a path of clarity, alignment, and intentional purpose.</p>\n<blockquote class=\"lesson-scripture-callout\"><p>“For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” Ephesians 2:10</p></blockquote>\n<h3>On Purpose — For Purpose Is the Heart of the Journey</h3>\n<p>On Purpose means your identity is not random, accidental, or self-made. You were created intentionally by God, shaped by grace, and formed with divine care.</p>\n<p>For Purpose means your life is meant to participate in the good works God has prepared. Your design is not only something to understand; it is something to live, steward, and offer.</p>\n<p>DesignID was created to help you see yourself inside this verse, not as a spectator, but as God’s handiwork in motion.</p>\n<h3>The Place Where Your Calling Becomes Clear</h3>\n<p>In DYDD, Niche is the culmination of your journey, the discovery of the unique place where your Identity, Expertise, Story, Desire, and Gifts all converge. Your Niche is your calling space, the intersection where God’s purpose for your life becomes clear and concrete. This is where flourishing happens. This is where fruit multiplies. This is where joy, service, and obedience meet. Completing the full DYDD journey will help you name this Niche so you can step into it with confidence and conviction.</p>\n<h3>A Prayer of Encouragement &amp; Calling</h3>\n<p>Father, thank You for the person reading these words. Thank You for the design You have woven into them — beautiful, intentional, and full of purpose.</p>\n<p>As they move forward, let Your grace flow abundantly in their strengths and gently in their limitations. Guide them in understanding the story You are writing through their life. Reveal the desires You have planted within them. Awaken the gifts You placed in them.</p>\n<p>Lead them toward their Niche, their place of calling, contribution, and kingdom impact. Strengthen them with courage, clarity, and compassion.</p>\n<p>May their life become a living testimony of Your design in motion.</p>\n<p>In Jesus’ name, Amen.</p>",
+    "images": [
+      {
+        "src": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b37ddeee-7a30-4587-a927-d53f9145df7d/stairs-in-the-forest-in-the-bright-sun-2024-10-17-22-11-28-utc.jpg?format=500w",
+        "alt": "Call To Arms"
+      }
+    ],
+    "reflections": [
+      {
+        "id": "call-to-arms",
+        "prompt": "What is one faithful step you will take with what God has revealed through your DesignID?"
       }
     ]
   }

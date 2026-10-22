@@ -1,0 +1,2273 @@
+{
+  "spreadsheetId": "1GTyYUL883YogJ9n46WyUyhQBZpQuU9nCrMtRlbfP1l4",
+  "properties": {
+    "title": "DYDD Journey Course Content",
+    "locale": "en_US",
+    "autoRecalc": "ON_CHANGE",
+    "timeZone": "America/New_York",
+    "defaultFormat": {
+      "backgroundColor": {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      "padding": {
+        "top": 2,
+        "right": 3,
+        "bottom": 2,
+        "left": 3
+      },
+      "verticalAlignment": "BOTTOM",
+      "wrapStrategy": "OVERFLOW_CELL",
+      "textFormat": {
+        "foregroundColor": {},
+        "fontFamily": "arial,sans,sans-serif",
+        "fontSize": 10,
+        "bold": false,
+        "italic": false,
+        "strikethrough": false,
+        "underline": false,
+        "foregroundColorStyle": {
+          "rgbColor": {}
+        }
+      },
+      "backgroundColorStyle": {
+        "rgbColor": {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      }
+    },
+    "spreadsheetTheme": {
+      "primaryFontFamily": "Arial",
+      "themeColors": [
+        {
+          "colorType": "TEXT",
+          "color": {
+            "rgbColor": {}
+          }
+        },
+        {
+          "colorType": "BACKGROUND",
+          "color": {
+            "rgbColor": {
+              "red": 1,
+              "green": 1,
+              "blue": 1
+            }
+          }
+        },
+        {
+          "colorType": "ACCENT1",
+          "color": {
+            "rgbColor": {
+              "red": 0.25882354,
+              "green": 0.52156866,
+              "blue": 0.95686275
+            }
+          }
+        },
+        {
+          "colorType": "ACCENT2",
+          "color": {
+            "rgbColor": {
+              "red": 0.91764706,
+              "green": 0.2627451,
+              "blue": 0.20784314
+            }
+          }
+        },
+        {
+          "colorType": "ACCENT3",
+          "color": {
+            "rgbColor": {
+              "red": 0.9843137,
+              "green": 0.7372549,
+              "blue": 0.015686275
+            }
+          }
+        },
+        {
+          "colorType": "ACCENT4",
+          "color": {
+            "rgbColor": {
+              "red": 0.20392157,
+              "green": 0.65882355,
+              "blue": 0.3254902
+            }
+          }
+        },
+        {
+          "colorType": "ACCENT5",
+          "color": {
+            "rgbColor": {
+              "red": 1,
+              "green": 0.42745098,
+              "blue": 0.003921569
+            }
+          }
+        },
+        {
+          "colorType": "ACCENT6",
+          "color": {
+            "rgbColor": {
+              "red": 0.27450982,
+              "green": 0.7411765,
+              "blue": 0.7764706
+            }
+          }
+        },
+        {
+          "colorType": "LINK",
+          "color": {
+            "rgbColor": {
+              "red": 0.06666667,
+              "green": 0.33333334,
+              "blue": 0.8
+            }
+          }
+        }
+      ]
+    }
+  },
+  "sheets": [
+    {
+      "properties": {
+        "sheetId": 271274217,
+        "title": "DesignID Course",
+        "index": 1,
+        "sheetType": "GRID",
+        "gridProperties": {
+          "rowCount": 1000,
+          "columnCount": 25
+        }
+      },
+      "data": [
+        {
+          "rowData": [
+            {
+              "values": [
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Module"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Module"
+                  },
+                  "formattedValue": "Module",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Lesson"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Lesson"
+                  },
+                  "formattedValue": "Lesson",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Lesson Title"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Lesson Title"
+                  },
+                  "formattedValue": "Lesson Title",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Lesson Focus"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Lesson Focus"
+                  },
+                  "formattedValue": "Lesson Focus",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Content"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Content"
+                  },
+                  "formattedValue": "Content",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Image URL"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Image URL"
+                  },
+                  "formattedValue": "Image URL",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Reflection"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Reflection"
+                  },
+                  "formattedValue": "Reflection",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 11,
+                      "bold": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 11,
+                      "bold": true,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "rowMetadata": [
+            {
+              "pixelSize": 21
+            }
+          ],
+          "columnMetadata": [
+            {
+              "pixelSize": 67
+            },
+            {
+              "pixelSize": 61
+            },
+            {
+              "pixelSize": 161
+            },
+            {
+              "pixelSize": 127
+            },
+            {
+              "pixelSize": 871
+            },
+            {
+              "pixelSize": 292
+            },
+            {
+              "pixelSize": 243
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            }
+          ]
+        },
+        {
+          "startRow": 11,
+          "rowData": [
+            {
+              "values": [
+                {
+                  "userEnteredValue": {
+                    "numberValue": 3
+                  },
+                  "effectiveValue": {
+                    "numberValue": 3
+                  },
+                  "formattedValue": "3",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "RIGHT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "numberValue": 1
+                  },
+                  "effectiveValue": {
+                    "numberValue": 1
+                  },
+                  "formattedValue": "1",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "RIGHT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "You've Begun a Beautiful Journey"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "You've Begun a Beautiful Journey"
+                  },
+                  "formattedValue": "You've Begun a Beautiful Journey",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Application"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Application"
+                  },
+                  "formattedValue": "Application",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "You've Begun a Beautiful Journey\r\nYou’ve taken the DesignID assessment, explored the foundations of your divine design, and learned how grace moves uniquely through your life. That alone is significant. Many people go years, even decades without ever discovering the story God has written into their identity. You are already ahead of that curve.\r\n“We are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” Ephesians 2:10\r\nDesignID helps you see that handiwork with fresh eyes. It reveals the grace-shaped patterns God wove into your life long before you ever noticed them. Now the real beauty begins: living it.\r\nThe Beauty Begins in the Living\r\nDesignID isn’t just information, it’s invitation. When you understand how God designed you, you begin to move through life with clarity, confidence, and spiritual alignment. You begin to see patterns. You begin to make decisions differently. You begin to experience grace in motion.\r\nApply What You’ve Discovered\r\n•\tStrengthen Your Relationships: By knowing how you naturally give and receive love, structure, clarity, and compassion.\r\n•\tGrow in Spiritual Formation: By noticing where God’s grace flows abundantly and where He invites dependence.\r\n•\tLead and Serve With Greater Confidence: Through awareness of how God wired you to contribute to the Body of Christ.\r\n•\tDiscern Calling With Clarity: As your design shines light on what gives life, what drains life, and where God’s voice feels most aligned.\r\n•\tDevelop Healthier Rhythms: By honoring your capacity and building a sustainable pace of life and ministry.\r\n•\tImprove Communication and Teamwork: As you learn to value and collaborate with designs different from your own.\r\n•\tSimple Application Avenues: Where Your Design Can Make an Immediate Impact\r\nDesignID opens a new level of understanding, not just about yourself, but about God’s work in you. Your design is not meant to be admired; it is meant to be applied. And when you apply it, you will see fruit.\r"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "You've Begun a Beautiful Journey\r\nYou’ve taken the DesignID assessment, explored the foundations of your divine design, and learned how grace moves uniquely through your life. That alone is significant. Many people go years, even decades without ever discovering the story God has written into their identity. You are already ahead of that curve.\r\n“We are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” Ephesians 2:10\r\nDesignID helps you see that handiwork with fresh eyes. It reveals the grace-shaped patterns God wove into your life long before you ever noticed them. Now the real beauty begins: living it.\r\nThe Beauty Begins in the Living\r\nDesignID isn’t just information, it’s invitation. When you understand how God designed you, you begin to move through life with clarity, confidence, and spiritual alignment. You begin to see patterns. You begin to make decisions differently. You begin to experience grace in motion.\r\nApply What You’ve Discovered\r\n•\tStrengthen Your Relationships: By knowing how you naturally give and receive love, structure, clarity, and compassion.\r\n•\tGrow in Spiritual Formation: By noticing where God’s grace flows abundantly and where He invites dependence.\r\n•\tLead and Serve With Greater Confidence: Through awareness of how God wired you to contribute to the Body of Christ.\r\n•\tDiscern Calling With Clarity: As your design shines light on what gives life, what drains life, and where God’s voice feels most aligned.\r\n•\tDevelop Healthier Rhythms: By honoring your capacity and building a sustainable pace of life and ministry.\r\n•\tImprove Communication and Teamwork: As you learn to value and collaborate with designs different from your own.\r\n•\tSimple Application Avenues: Where Your Design Can Make an Immediate Impact\r\nDesignID opens a new level of understanding, not just about yourself, but about God’s work in you. Your design is not meant to be admired; it is meant to be applied. And when you apply it, you will see fruit.\r"
+                  },
+                  "formattedValue": "You've Begun a Beautiful Journey\r\nYou’ve taken the DesignID assessment, explored the foundations of your divine design, and learned how grace moves uniquely through your life. That alone is significant. Many people go years, even decades without ever discovering the story God has written into their identity. You are already ahead of that curve.\r\n“We are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” Ephesians 2:10\r\nDesignID helps you see that handiwork with fresh eyes. It reveals the grace-shaped patterns God wove into your life long before you ever noticed them. Now the real beauty begins: living it.\r\nThe Beauty Begins in the Living\r\nDesignID isn’t just information, it’s invitation. When you understand how God designed you, you begin to move through life with clarity, confidence, and spiritual alignment. You begin to see patterns. You begin to make decisions differently. You begin to experience grace in motion.\r\nApply What You’ve Discovered\r\n•\tStrengthen Your Relationships: By knowing how you naturally give and receive love, structure, clarity, and compassion.\r\n•\tGrow in Spiritual Formation: By noticing where God’s grace flows abundantly and where He invites dependence.\r\n•\tLead and Serve With Greater Confidence: Through awareness of how God wired you to contribute to the Body of Christ.\r\n•\tDiscern Calling With Clarity: As your design shines light on what gives life, what drains life, and where God’s voice feels most aligned.\r\n•\tDevelop Healthier Rhythms: By honoring your capacity and building a sustainable pace of life and ministry.\r\n•\tImprove Communication and Teamwork: As you learn to value and collaborate with designs different from your own.\r\n•\tSimple Application Avenues: Where Your Design Can Make an Immediate Impact\r\nDesignID opens a new level of understanding, not just about yourself, but about God’s work in you. Your design is not meant to be admired; it is meant to be applied. And when you apply it, you will see fruit.\r",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/7aaf70b2-d96f-4d2e-a538-8df1c1530a29/a-lonely-traveler-with-a-backpack-on-the-backgroun-2026-01-06-10-16-20-utc.jpg?format=500w"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/7aaf70b2-d96f-4d2e-a538-8df1c1530a29/a-lonely-traveler-with-a-backpack-on-the-backgroun-2026-01-06-10-16-20-utc.jpg?format=500w"
+                  },
+                  "formattedValue": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/7aaf70b2-d96f-4d2e-a538-8df1c1530a29/a-lonely-traveler-with-a-backpack-on-the-backgroun-2026-01-06-10-16-20-utc.jpg?format=500w",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "link": {
+                        "uri": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/7aaf70b2-d96f-4d2e-a538-8df1c1530a29/a-lonely-traveler-with-a-backpack-on-the-backgroun-2026-01-06-10-16-20-utc.jpg?format=500w"
+                      }
+                    },
+                    "hyperlinkDisplayType": "LINKED"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {
+                        "red": 0.06666667,
+                        "green": 0.33333334,
+                        "blue": 0.8
+                      },
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {
+                          "red": 0.06666667,
+                          "green": 0.33333334,
+                          "blue": 0.8
+                        }
+                      },
+                      "link": {
+                        "uri": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/7aaf70b2-d96f-4d2e-a538-8df1c1530a29/a-lonely-traveler-with-a-backpack-on-the-backgroun-2026-01-06-10-16-20-utc.jpg?format=500w"
+                      }
+                    },
+                    "hyperlinkDisplayType": "LINKED",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  },
+                  "hyperlink": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/7aaf70b2-d96f-4d2e-a538-8df1c1530a29/a-lonely-traveler-with-a-backpack-on-the-backgroun-2026-01-06-10-16-20-utc.jpg?format=500w"
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "What is one simple step you can take to apply your design rather than simply admire it?"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "What is one simple step you can take to apply your design rather than simply admire it?"
+                  },
+                  "formattedValue": "What is one simple step you can take to apply your design rather than simply admire it?",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "values": [
+                {
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "numberValue": 2
+                  },
+                  "effectiveValue": {
+                    "numberValue": 2
+                  },
+                  "formattedValue": "2",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "RIGHT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Exploring the DYDD Ecosystem"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Exploring the DYDD Ecosystem"
+                  },
+                  "formattedValue": "Exploring the DYDD Ecosystem",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Part of the Journey"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Part of the Journey"
+                  },
+                  "formattedValue": "Part of the Journey",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Exploring the DYDD Ecosystem\r\nYour Design Was Never Meant to Stop at Discovery. Discover Your Divine Design is more than a single assessment. It is a connected ecosystem of tools, teaching, reflection, and formation designed to help believers live with clarity, purpose, and faithful action.\r\nThe Full Journey\r\nThe Discover Your Divine Design journey is an integrated process that helps you explore the fullness of who God created you to be. DesignID provides measurable insight, but DYDD provides the spiritual formation pathway. Together, they help connect identity, growth, calling, and faithful action.\r\n*Build note: Create a 2 by 6 table with headers for the how DesignId fits within DYDD content\r\nHow DesignID Fits Within DYDD\r\nIdentity\r\nThis chapter connects directly to your DesignID results. It explains how the four reflections carry the image of God within you and why your grace patterns matter. A central focus is learning that it is whose you are, not simply who you are.\r\nExpertise\r\nThe natural and developed skills that come from your design begin to make sense. DesignID helps identify where your strengths have already appeared throughout your history.\r\nStory\r\nYour experiences, family, culture, triumphs, and wounds shape how grace flows in you. DesignID gives language to help interpret those patterns through the lens of redemption.\r\nDesire\r\nWhere passion and energy align with your design, calling becomes visible. Your reflection capacities play a major role in understanding what brings life, purpose, and sustainable energy.\r\nGifts\r\nSpiritual gifts become clearer when seen through the lens of design and grace flow. Your reflections and Integrative Reflection often correlate with specific ministries, relational roles, and service expressions.\r\nUnderstanding how God empowers you through His gifts, and how those gifts connect with your design and capacity, opens powerful insight into faithful service and calling.\r\nNiche\r\nYour Niche is your personal calling space, where your design, desire, gifts, and life story converge. This is the “why” behind everything. The journey culminates with the creation of your own personal ministry declaration.\r\nContinue the Journey\r\nExplore assessments, books, courses, workshops, and additional tools designed to help you continue growing in clarity, purpose, and faithful action.\r"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Exploring the DYDD Ecosystem\r\nYour Design Was Never Meant to Stop at Discovery. Discover Your Divine Design is more than a single assessment. It is a connected ecosystem of tools, teaching, reflection, and formation designed to help believers live with clarity, purpose, and faithful action.\r\nThe Full Journey\r\nThe Discover Your Divine Design journey is an integrated process that helps you explore the fullness of who God created you to be. DesignID provides measurable insight, but DYDD provides the spiritual formation pathway. Together, they help connect identity, growth, calling, and faithful action.\r\n*Build note: Create a 2 by 6 table with headers for the how DesignId fits within DYDD content\r\nHow DesignID Fits Within DYDD\r\nIdentity\r\nThis chapter connects directly to your DesignID results. It explains how the four reflections carry the image of God within you and why your grace patterns matter. A central focus is learning that it is whose you are, not simply who you are.\r\nExpertise\r\nThe natural and developed skills that come from your design begin to make sense. DesignID helps identify where your strengths have already appeared throughout your history.\r\nStory\r\nYour experiences, family, culture, triumphs, and wounds shape how grace flows in you. DesignID gives language to help interpret those patterns through the lens of redemption.\r\nDesire\r\nWhere passion and energy align with your design, calling becomes visible. Your reflection capacities play a major role in understanding what brings life, purpose, and sustainable energy.\r\nGifts\r\nSpiritual gifts become clearer when seen through the lens of design and grace flow. Your reflections and Integrative Reflection often correlate with specific ministries, relational roles, and service expressions.\r\nUnderstanding how God empowers you through His gifts, and how those gifts connect with your design and capacity, opens powerful insight into faithful service and calling.\r\nNiche\r\nYour Niche is your personal calling space, where your design, desire, gifts, and life story converge. This is the “why” behind everything. The journey culminates with the creation of your own personal ministry declaration.\r\nContinue the Journey\r\nExplore assessments, books, courses, workshops, and additional tools designed to help you continue growing in clarity, purpose, and faithful action.\r"
+                  },
+                  "formattedValue": "Exploring the DYDD Ecosystem\r\nYour Design Was Never Meant to Stop at Discovery. Discover Your Divine Design is more than a single assessment. It is a connected ecosystem of tools, teaching, reflection, and formation designed to help believers live with clarity, purpose, and faithful action.\r\nThe Full Journey\r\nThe Discover Your Divine Design journey is an integrated process that helps you explore the fullness of who God created you to be. DesignID provides measurable insight, but DYDD provides the spiritual formation pathway. Together, they help connect identity, growth, calling, and faithful action.\r\n*Build note: Create a 2 by 6 table with headers for the how DesignId fits within DYDD content\r\nHow DesignID Fits Within DYDD\r\nIdentity\r\nThis chapter connects directly to your DesignID results. It explains how the four reflections carry the image of God within you and why your grace patterns matter. A central focus is learning that it is whose you are, not simply who you are.\r\nExpertise\r\nThe natural and developed skills that come from your design begin to make sense. DesignID helps identify where your strengths have already appeared throughout your history.\r\nStory\r\nYour experiences, family, culture, triumphs, and wounds shape how grace flows in you. DesignID gives language to help interpret those patterns through the lens of redemption.\r\nDesire\r\nWhere passion and energy align with your design, calling becomes visible. Your reflection capacities play a major role in understanding what brings life, purpose, and sustainable energy.\r\nGifts\r\nSpiritual gifts become clearer when seen through the lens of design and grace flow. Your reflections and Integrative Reflection often correlate with specific ministries, relational roles, and service expressions.\r\nUnderstanding how God empowers you through His gifts, and how those gifts connect with your design and capacity, opens powerful insight into faithful service and calling.\r\nNiche\r\nYour Niche is your personal calling space, where your design, desire, gifts, and life story converge. This is the “why” behind everything. The journey culminates with the creation of your own personal ministry declaration.\r\nContinue the Journey\r\nExplore assessments, books, courses, workshops, and additional tools designed to help you continue growing in clarity, purpose, and faithful action.\r",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/62e375ae-3e4a-48a5-b1bf-16933b5510c8/back-side-of-young-traveler-see-the-map-in-the-dee-2024-10-18-09-26-30-utc.jpg?format=2500w"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/62e375ae-3e4a-48a5-b1bf-16933b5510c8/back-side-of-young-traveler-see-the-map-in-the-dee-2024-10-18-09-26-30-utc.jpg?format=2500w"
+                  },
+                  "formattedValue": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/62e375ae-3e4a-48a5-b1bf-16933b5510c8/back-side-of-young-traveler-see-the-map-in-the-dee-2024-10-18-09-26-30-utc.jpg?format=2500w",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "link": {
+                        "uri": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/62e375ae-3e4a-48a5-b1bf-16933b5510c8/back-side-of-young-traveler-see-the-map-in-the-dee-2024-10-18-09-26-30-utc.jpg?format=2500w"
+                      }
+                    },
+                    "hyperlinkDisplayType": "LINKED"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {
+                        "red": 0.06666667,
+                        "green": 0.33333334,
+                        "blue": 0.8
+                      },
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {
+                          "red": 0.06666667,
+                          "green": 0.33333334,
+                          "blue": 0.8
+                        }
+                      },
+                      "link": {
+                        "uri": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/62e375ae-3e4a-48a5-b1bf-16933b5510c8/back-side-of-young-traveler-see-the-map-in-the-dee-2024-10-18-09-26-30-utc.jpg?format=2500w"
+                      }
+                    },
+                    "hyperlinkDisplayType": "LINKED",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  },
+                  "hyperlink": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/62e375ae-3e4a-48a5-b1bf-16933b5510c8/back-side-of-young-traveler-see-the-map-in-the-dee-2024-10-18-09-26-30-utc.jpg?format=2500w"
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "no reflection for this lesson"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "no reflection for this lesson"
+                  },
+                  "formattedValue": "no reflection for this lesson",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "values": [
+                {
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "numberValue": 3
+                  },
+                  "effectiveValue": {
+                    "numberValue": 3
+                  },
+                  "formattedValue": "3",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "RIGHT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Call To Arms"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Call To Arms"
+                  },
+                  "formattedValue": "Call To Arms",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "On Purpose - For Purpose"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "On Purpose - For Purpose"
+                  },
+                  "formattedValue": "On Purpose - For Purpose",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Call To Arms\r\nCongratulations. You have taken meaningful steps toward seeing yourself through scripture, grace, and divine design.\r\nThis Is Not a Small Thing\r\nYou’ve invested in understanding yourself through the lens of scripture, grace, and divine design. That is not a small thing. Most people live reactively, shaped by circumstance rather than calling. You are choosing a different path: a path of clarity, alignment, and intentional purpose.\r\n“For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” Ephesians 2:10\r\nOn Purpose — For Purpose Is the Heart of the Journey\r\nOn Purpose means your identity is not random, accidental, or self-made. You were created intentionally by God, shaped by grace, and formed with divine care.\r\nFor Purpose means your life is meant to participate in the good works God has prepared. Your design is not only something to understand; it is something to live, steward, and offer.\r\nDesignID was created to help you see yourself inside this verse, not as a spectator, but as God’s handiwork in motion.\r\nThe Place Where Your Calling Becomes Clear\r\nIn DYDD, Niche is the culmination of your journey, the discovery of the unique place where your Identity, Expertise, Story, Desire, and Gifts all converge. Your Niche is your calling space, the intersection where God’s purpose for your life becomes clear and concrete. This is where flourishing happens. This is where fruit multiplies. This is where joy, service, and obedience meet. Completing the full DYDD journey will help you name this Niche so you can step into it with confidence and conviction.\r\nA Prayer of Encouragement & Calling\r\nFather, thank You for the person reading these words. Thank You for the design You have woven into them — beautiful, intentional, and full of purpose.\r\nAs they move forward, let Your grace flow abundantly in their strengths and gently in their limitations. Guide them in understanding the story You are writing through their life. Reveal the desires You have planted within them. Awaken the gifts You placed in them.\r\nLead them toward their Niche, their place of calling, contribution, and kingdom impact. Strengthen them with courage, clarity, and compassion.\r\nMay their life become a living testimony of Your design in motion. \r\nIn Jesus’ name, Amen.\r"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Call To Arms\r\nCongratulations. You have taken meaningful steps toward seeing yourself through scripture, grace, and divine design.\r\nThis Is Not a Small Thing\r\nYou’ve invested in understanding yourself through the lens of scripture, grace, and divine design. That is not a small thing. Most people live reactively, shaped by circumstance rather than calling. You are choosing a different path: a path of clarity, alignment, and intentional purpose.\r\n“For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” Ephesians 2:10\r\nOn Purpose — For Purpose Is the Heart of the Journey\r\nOn Purpose means your identity is not random, accidental, or self-made. You were created intentionally by God, shaped by grace, and formed with divine care.\r\nFor Purpose means your life is meant to participate in the good works God has prepared. Your design is not only something to understand; it is something to live, steward, and offer.\r\nDesignID was created to help you see yourself inside this verse, not as a spectator, but as God’s handiwork in motion.\r\nThe Place Where Your Calling Becomes Clear\r\nIn DYDD, Niche is the culmination of your journey, the discovery of the unique place where your Identity, Expertise, Story, Desire, and Gifts all converge. Your Niche is your calling space, the intersection where God’s purpose for your life becomes clear and concrete. This is where flourishing happens. This is where fruit multiplies. This is where joy, service, and obedience meet. Completing the full DYDD journey will help you name this Niche so you can step into it with confidence and conviction.\r\nA Prayer of Encouragement & Calling\r\nFather, thank You for the person reading these words. Thank You for the design You have woven into them — beautiful, intentional, and full of purpose.\r\nAs they move forward, let Your grace flow abundantly in their strengths and gently in their limitations. Guide them in understanding the story You are writing through their life. Reveal the desires You have planted within them. Awaken the gifts You placed in them.\r\nLead them toward their Niche, their place of calling, contribution, and kingdom impact. Strengthen them with courage, clarity, and compassion.\r\nMay their life become a living testimony of Your design in motion. \r\nIn Jesus’ name, Amen.\r"
+                  },
+                  "formattedValue": "Call To Arms\r\nCongratulations. You have taken meaningful steps toward seeing yourself through scripture, grace, and divine design.\r\nThis Is Not a Small Thing\r\nYou’ve invested in understanding yourself through the lens of scripture, grace, and divine design. That is not a small thing. Most people live reactively, shaped by circumstance rather than calling. You are choosing a different path: a path of clarity, alignment, and intentional purpose.\r\n“For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” Ephesians 2:10\r\nOn Purpose — For Purpose Is the Heart of the Journey\r\nOn Purpose means your identity is not random, accidental, or self-made. You were created intentionally by God, shaped by grace, and formed with divine care.\r\nFor Purpose means your life is meant to participate in the good works God has prepared. Your design is not only something to understand; it is something to live, steward, and offer.\r\nDesignID was created to help you see yourself inside this verse, not as a spectator, but as God’s handiwork in motion.\r\nThe Place Where Your Calling Becomes Clear\r\nIn DYDD, Niche is the culmination of your journey, the discovery of the unique place where your Identity, Expertise, Story, Desire, and Gifts all converge. Your Niche is your calling space, the intersection where God’s purpose for your life becomes clear and concrete. This is where flourishing happens. This is where fruit multiplies. This is where joy, service, and obedience meet. Completing the full DYDD journey will help you name this Niche so you can step into it with confidence and conviction.\r\nA Prayer of Encouragement & Calling\r\nFather, thank You for the person reading these words. Thank You for the design You have woven into them — beautiful, intentional, and full of purpose.\r\nAs they move forward, let Your grace flow abundantly in their strengths and gently in their limitations. Guide them in understanding the story You are writing through their life. Reveal the desires You have planted within them. Awaken the gifts You placed in them.\r\nLead them toward their Niche, their place of calling, contribution, and kingdom impact. Strengthen them with courage, clarity, and compassion.\r\nMay their life become a living testimony of Your design in motion. \r\nIn Jesus’ name, Amen.\r",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b37ddeee-7a30-4587-a927-d53f9145df7d/stairs-in-the-forest-in-the-bright-sun-2024-10-17-22-11-28-utc.jpg?format=500w"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b37ddeee-7a30-4587-a927-d53f9145df7d/stairs-in-the-forest-in-the-bright-sun-2024-10-17-22-11-28-utc.jpg?format=500w"
+                  },
+                  "formattedValue": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b37ddeee-7a30-4587-a927-d53f9145df7d/stairs-in-the-forest-in-the-bright-sun-2024-10-17-22-11-28-utc.jpg?format=500w",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "link": {
+                        "uri": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b37ddeee-7a30-4587-a927-d53f9145df7d/stairs-in-the-forest-in-the-bright-sun-2024-10-17-22-11-28-utc.jpg?format=500w"
+                      }
+                    },
+                    "hyperlinkDisplayType": "LINKED"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {
+                        "red": 0.06666667,
+                        "green": 0.33333334,
+                        "blue": 0.8
+                      },
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {
+                          "red": 0.06666667,
+                          "green": 0.33333334,
+                          "blue": 0.8
+                        }
+                      },
+                      "link": {
+                        "uri": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b37ddeee-7a30-4587-a927-d53f9145df7d/stairs-in-the-forest-in-the-bright-sun-2024-10-17-22-11-28-utc.jpg?format=500w"
+                      }
+                    },
+                    "hyperlinkDisplayType": "LINKED",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  },
+                  "hyperlink": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b37ddeee-7a30-4587-a927-d53f9145df7d/stairs-in-the-forest-in-the-bright-sun-2024-10-17-22-11-28-utc.jpg?format=500w"
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "What is one faithful step you will take with what God has revealed through your DesignID?"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "What is one faithful step you will take with what God has revealed through your DesignID?"
+                  },
+                  "formattedValue": "What is one faithful step you will take with what God has revealed through your DesignID?",
+                  "userEnteredFormat": {
+                    "wrapStrategy": "WRAP"
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 10,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "rowMetadata": [
+            {
+              "pixelSize": 21
+            },
+            {
+              "pixelSize": 21
+            },
+            {
+              "pixelSize": 21
+            }
+          ],
+          "columnMetadata": [
+            {
+              "pixelSize": 67
+            },
+            {
+              "pixelSize": 61
+            },
+            {
+              "pixelSize": 161
+            },
+            {
+              "pixelSize": 127
+            },
+            {
+              "pixelSize": 871
+            },
+            {
+              "pixelSize": 292
+            },
+            {
+              "pixelSize": 243
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1GTyYUL883YogJ9n46WyUyhQBZpQuU9nCrMtRlbfP1l4/edit",
+  "commentsViewMode": "COMMENTS_VIEW_MODE_OMITTED"
+}

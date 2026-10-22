@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),cp=require('node:child_process'),load=require('../scripts/fruitlife-test-load.cjs');
 const raw=require('../content/designid-foundations/authored-through-row8-2026-10-21.json'),rows=raw.sheets[0].data[0].rowData;
 const {designIdAuthoredLessons:lessons}=load('lib/courses/designid-authored-lessons.ts'),{getDesignIdReflectionPrompts:prompts}=load('lib/courses/designid-reflection-prompts.ts');
-assert.deepEqual(rows[0].values.map(c=>c.formattedValue),['Module','Lesson','Lesson Title','Lesson Focus','Content','Image URL','Reflection']);assert.equal(rows[1].values[2].formattedValue,'Welcome to DesignID');assert.equal(rows[8].values[4]?.formattedValue,undefined);assert.equal(Object.keys(lessons).length,9);
+assert.deepEqual(rows[0].values.map(c=>c.formattedValue),['Module','Lesson','Lesson Title','Lesson Focus','Content','Image URL','Reflection']);assert.equal(rows[1].values[2].formattedValue,'Welcome to DesignID');assert.equal(rows[8].values[4]?.formattedValue,undefined);assert.equal(Object.keys(lessons).length,12);
 const clean=s=>s.replace(/<[^>]*>/g,' ').replace(/&amp;/g,'&').replace(/&#x27;|&#39;/g,"'").replace(/&quot;/g,'"').replace(/\s+/g,' ').trim();
 for(const [slug,lesson] of Object.entries(lessons).filter(([,l])=>l.sourceRow<=8)){
  const c=rows[lesson.sourceRow-1].values;assert.equal(lesson.title,c[2].formattedValue);assert.equal(lesson.images[0].src,c[5].hyperlink);assert.deepEqual(lesson.focus,c[3].formattedValue.split(',').map(s=>s.trim()));assert(!/build note|design note/i.test(lesson.bodyHtml));

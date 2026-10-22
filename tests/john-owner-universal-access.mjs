@@ -32,7 +32,7 @@ try{
   await activate(p,entry==='owner'?'a[href="/owner"]':'form button',entry==='owner'?'/command-center':'/hq');
   assert.equal(new URL(p.url()).pathname,entry==='owner'?'/command-center':'/hq');
   await activate(p,'a[href="/base-camp"]','/hq');
-  assert.equal(new URL(p.url()).pathname,'/hq');await p.waitForSelector('main');assert((await p.$eval('main',e=>e.textContent)).includes('John'));assert(!(await p.$eval('main',e=>e.textContent)).includes('Jordan Preview'));
+  assert.equal(new URL(p.url()).pathname,'/hq');await p.waitForSelector('#your-profile');await p.waitForSelector('main');assert((await p.$eval('main',e=>e.textContent)).includes('John'));assert(!(await p.$eval('main',e=>e.textContent)).includes('Jordan Preview'));
   await p.waitForSelector('#your-profile');await p.waitForFunction(()=>document.querySelector('#your-profile')?.textContent.includes('John'));
   await go(p,'/ranger-station');await activate(p,'a[href="/trailheads"]','/trailheads');assert.equal(new URL(p.url()).pathname,'/trailheads');
   for(const slug of routes){

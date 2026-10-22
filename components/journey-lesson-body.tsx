@@ -6,6 +6,8 @@ export function JourneyLessonBody({ blocks, closingCallout = false }: { blocks: 
   const teaching = closingCallout ? blocks.slice(0, -3) : blocks;
   return <>{teaching.map((block, index) => {
     switch (block.type) {
+      case "table":
+        return <div key={index} className="journey-authored-table-scroll" role="region" aria-label={block.label} tabIndex={0}><table className="journey-authored-table"><caption>{block.label}</caption><thead><tr>{block.headers.map(header => <th scope="col" key={header}>{header}</th>)}</tr></thead><tbody>{block.rows.map((row, rowIndex) => <tr key={rowIndex}>{row.map((cell, cellIndex) => cellIndex === 0 ? <th scope="row" key={cellIndex}>{cell}</th> : <td key={cellIndex}>{cell}</td>)}</tr>)}</tbody></table></div>;
       case "heading":
         return <h4 className="lesson-body-subheading" key={index}>{block.text}</h4>;
       case "paragraph":

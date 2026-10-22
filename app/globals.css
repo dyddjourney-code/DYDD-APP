@@ -21199,3 +21199,30 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
  .journey-designid-score-layout { grid-template-columns: minmax(0,1fr); gap: 20px; }
  .journey-designid-capacities { grid-template-columns: minmax(0,1fr); }
 }
+
+/* Authored Identity among believers only: retain each stage with its response. */
+.journey-identity-believers-care .journey-care-response-content > p,
+.journey-identity-believers-care .reflection-answer h3 { white-space: pre-line; }
+@media (max-width: 600px) {
+  .journey-identity-believers-care .journey-care-response-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "connect" "act" "reflect" "explore";
+  }
+}
+.journey-identity-believers-lesson .lesson-source > p,
+.journey-identity-believers-lesson .lesson-source > ul { max-width: none; }
+
+/* Authored row21 only. The complete semantic chart scrolls inside its own region. */
+.journey-design-love-lesson .lesson-source > p { max-width: none; }
+.journey-authored-table-scroll { clear: both; max-width: 100%; min-width: 0; overflow-x: auto; margin: 24px 0; }
+.journey-authored-table-scroll:focus-visible { outline: 2px solid #647c52; outline-offset: 3px; }
+.journey-authored-table { width: 100%; min-width: 780px; table-layout: fixed; border-collapse: collapse; font-size: .94rem; line-height: 1.6; }
+.journey-authored-table caption { text-align: left; font-weight: 700; padding-bottom: 12px; }
+.journey-authored-table th, .journey-authored-table td { padding: 14px 12px; text-align: left; vertical-align: top; border: 1px solid #dcded4; overflow-wrap: anywhere; }
+.journey-authored-table thead, .journey-authored-table tbody th { background: #edf0e5; }
+.journey-authored-table th:first-child { width: 13%; }
+
+@media (min-width: 981px) {
+ .journey-authored-table { min-width: 0; }
+ .journey-authored-table th, .journey-authored-table td { padding: 12px 8px; }
+}

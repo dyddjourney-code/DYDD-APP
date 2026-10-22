@@ -1,3 +1,5 @@
+import { designReflectionsLoveCare } from "@/lib/journey/design-reflections-love-care";
+import { identityBelieversCare } from "@/lib/journey/identity-believers-care";
 import { dyddJourney } from "@/lib/journey/dydd-journey";
 import type {
   JourneyCarePerspective,
@@ -89,6 +91,13 @@ function defaultDesignIdExperience(
       ],
     };
   }
+
+  if (unit.slug === "identity-the-design-reflections-and-love-21") return {
+    kind: "designid", title: unit.title, purpose: "", sourceRef: `Workbook ${unit.workbookPages}`,
+    marker: { alt: "DesignID", image: "/brand/tools/badge-icons/designid-icon.png", label: "DesignID reflection" },
+    care: { connect: "", act: "", reflect: "", explore: "" },
+    prompts: designReflectionsLoveCare.map(item => ({ id: item.questionId, careStep: item.stage, label: item.prompt, responseType: "long_text" })),
+  };
 
   return {
     care: {
@@ -216,6 +225,11 @@ export function getWorkbookExperience(
   active: FlatUnit,
 ): WorkbookExperience | null {
   const { module, unit } = active;
+  if (unit.slug === "identity-identity-among-believers-20") return {
+    kind: "care", title: "Your Identity Among Believers", purpose: "",
+    care: Object.fromEntries(identityBelieversCare.map(item => [item.stage, item.explanation])) as JourneyCarePerspective,
+    prompts: identityBelieversCare.map(item => ({ id: item.questionId, careStep: item.stage, label: item.question, responseType: "long_text" })),
+  };
   const stageSlug = moduleToStageSlug(module);
   const stage = dyddJourney.stages.find((item) => item.slug === stageSlug);
 

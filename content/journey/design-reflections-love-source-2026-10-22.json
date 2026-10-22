@@ -1,0 +1,317 @@
+{
+  "source": {
+    "path": "/home/openclaw/.openclaw/workspace/media/inbound/openclaw-staged-2207dd47-1011-4d2c-a911-02d1b3f94812/input-The_Design_Reflections_and_Love---dd83af75-2ec1-4a85-8d15-b90b59b8de2b.docx",
+    "sha256": "f5c647e0c35b4653705b74e3d9bcce782357d4662a4e2a53f804e7c7231f7155",
+    "method": "ZIP word/document.xml direct body children, in source order; no Word formatting rewrite",
+    "imageRepresentation": "Image URL in document body paragraph 1; no embedded image relationship"
+  },
+  "target": {
+    "courseSlug": "discover-your-divine-design",
+    "module": "Identity",
+    "section": "Identity Assessment",
+    "row": 21,
+    "stableLessonId": "identity-the-design-reflections-and-love-21",
+    "title": "The Design Reflections and Love",
+    "nextPlaceholder": {
+      "row": 22,
+      "stableLessonId": "identity-love-your-neighbor-as-yourself-22",
+      "title": "Love your neighbor as yourself"
+    }
+  },
+  "orderedBlocks": [
+    {
+      "bodyIndex": 0,
+      "type": "paragraph",
+      "text": "Lesson focus: Designed To Love"
+    },
+    {
+      "bodyIndex": 1,
+      "type": "paragraph",
+      "text": "Lesson Image: https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/d9c32b17-5849-4ddb-a3f0-039b4eddf3e4/hands-reaching-for-a-heart-on-a-wooden-table-2026-01-05-06-26-34-utc.jpg?format=300w"
+    },
+    {
+      "bodyIndex": 2,
+      "type": "paragraph",
+      "text": "Consider what you just learned from Deuteronomy and Mark regarding how to love the Lord with your heart, mind, soul, and strength. Each of us approaches these areas in a unique way. As we will learn later in the chapter on Story, our experiences have a great impact on our capacity and ability to love. Within the chapter on Expertise, we will explore how different talents and skills were developed. Some of them were shaped through the hard knocks of life, while others emerged from deep-seated passion."
+    },
+    {
+      "bodyIndex": 3,
+      "type": "paragraph",
+      "text": "Let’s take a few moments and consider the reflections lens as it relates to this greatest command, to love the Lord your God with all your heart, soul, mind, and strength."
+    },
+    {
+      "bodyIndex": 4,
+      "type": "paragraph",
+      "text": "As a lens, DesignID helps us understand our capacities and what fulfills us. This includes how we choose to spend our time, the efforts we make in different parts of our life, and how we mentally and emotionally approach situations and people. There is a strong correlation between the four reflections of DesignID and the way we live out the greatest commandment."
+    },
+    {
+      "bodyIndex": 5,
+      "type": "table",
+      "rows": [
+        [
+          {
+            "paragraphs": [
+              "Reflection"
+            ],
+            "text": "Reflection"
+          },
+          {
+            "paragraphs": [
+              "Heart"
+            ],
+            "text": "Heart"
+          },
+          {
+            "paragraphs": [
+              "Soul"
+            ],
+            "text": "Soul"
+          },
+          {
+            "paragraphs": [
+              "Strength"
+            ],
+            "text": "Strength"
+          },
+          {
+            "paragraphs": [
+              "Mind"
+            ],
+            "text": "Mind"
+          }
+        ],
+        [
+          {
+            "paragraphs": [
+              "Architect "
+            ],
+            "text": "Architect "
+          },
+          {
+            "paragraphs": [
+              "Leads with courage and conviction; pursues purpose that honors God."
+            ],
+            "text": "Leads with courage and conviction; pursues purpose that honors God."
+          },
+          {
+            "paragraphs": [
+              "Obeys from a place of trust and devotion, surrendering outcomes to God."
+            ],
+            "text": "Obeys from a place of trust and devotion, surrendering outcomes to God."
+          },
+          {
+            "paragraphs": [
+              "Brings energy and action, serving with boldness and perseverance."
+            ],
+            "text": "Brings energy and action, serving with boldness and perseverance."
+          },
+          {
+            "paragraphs": [
+              "Thinks strategically and acts with vision guided by faith."
+            ],
+            "text": "Thinks strategically and acts with vision guided by faith."
+          }
+        ],
+        [
+          {
+            "paragraphs": [
+              "Artisan"
+            ],
+            "text": "Artisan"
+          },
+          {
+            "paragraphs": [
+              "Expresses love through beauty, order, and understanding."
+            ],
+            "text": "Expresses love through beauty, order, and understanding."
+          },
+          {
+            "paragraphs": [
+              "Aligns actions and intentions with truth and wisdom."
+            ],
+            "text": "Aligns actions and intentions with truth and wisdom."
+          },
+          {
+            "paragraphs": [
+              "Creates and refines with excellence, honoring God through design and detail."
+            ],
+            "text": "Creates and refines with excellence, honoring God through design and detail."
+          },
+          {
+            "paragraphs": [
+              "Reflects deeply, seeing patterns of grace and communicating truth clearly."
+            ],
+            "text": "Reflects deeply, seeing patterns of grace and communicating truth clearly."
+          }
+        ],
+        [
+          {
+            "paragraphs": [
+              "Shepherd"
+            ],
+            "text": "Shepherd"
+          },
+          {
+            "paragraphs": [
+              "Loves through presence, empathy, and relational care."
+            ],
+            "text": "Loves through presence, empathy, and relational care."
+          },
+          {
+            "paragraphs": [
+              "Chooses surrender and humility, nurturing others from a heart of service."
+            ],
+            "text": "Chooses surrender and humility, nurturing others from a heart of service."
+          },
+          {
+            "paragraphs": [
+              "Serves with endurance and gentleness, offering consistent support."
+            ],
+            "text": "Serves with endurance and gentleness, offering consistent support."
+          },
+          {
+            "paragraphs": [
+              "Thinks relationally, seeking unity and emotional understanding."
+            ],
+            "text": "Thinks relationally, seeking unity and emotional understanding."
+          }
+        ],
+        [
+          {
+            "paragraphs": [
+              "Steward"
+            ],
+            "text": "Steward"
+          },
+          {
+            "paragraphs": [
+              "Loves by protecting, providing, and remaining steadfast."
+            ],
+            "text": "Loves by protecting, providing, and remaining steadfast."
+          },
+          {
+            "paragraphs": [
+              "Devotes self to integrity and responsibility as acts of worship."
+            ],
+            "text": "Devotes self to integrity and responsibility as acts of worship."
+          },
+          {
+            "paragraphs": [
+              "Works diligently, ensuring faithfulness in action and stewardship of resources."
+            ],
+            "text": "Works diligently, ensuring faithfulness in action and stewardship of resources."
+          },
+          {
+            "paragraphs": [
+              "Considers carefully what is right and just, maintaining peace through structure."
+            ],
+            "text": "Considers carefully what is right and just, maintaining peace through structure."
+          }
+        ]
+      ]
+    },
+    {
+      "bodyIndex": 6,
+      "type": "paragraph",
+      "text": ""
+    },
+    {
+      "bodyIndex": 7,
+      "type": "paragraph",
+      "text": "Care"
+    },
+    {
+      "bodyIndex": 8,
+      "type": "paragraph",
+      "text": "Connect"
+    },
+    {
+      "bodyIndex": 9,
+      "type": "paragraph",
+      "text": "For your primary and secondary reflection, record the words within the Heart, Soul, Mind, and Strength columns that stand out most to you. Why"
+    },
+    {
+      "bodyIndex": 10,
+      "type": "paragraph",
+      "text": "Reflect"
+    },
+    {
+      "bodyIndex": 11,
+      "type": "paragraph",
+      "text": "How does connecting your design reflection to they ways we reflect God impact your approach to loving God?"
+    }
+  ],
+  "lessonFocus": "Designed To Love",
+  "imageUrl": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/d9c32b17-5849-4ddb-a3f0-039b4eddf3e4/hands-reaching-for-a-heart-on-a-wooden-table-2026-01-05-06-26-34-utc.jpg?format=300w",
+  "teachingParagraphs": [
+    "Consider what you just learned from Deuteronomy and Mark regarding how to love the Lord with your heart, mind, soul, and strength. Each of us approaches these areas in a unique way. As we will learn later in the chapter on Story, our experiences have a great impact on our capacity and ability to love. Within the chapter on Expertise, we will explore how different talents and skills were developed. Some of them were shaped through the hard knocks of life, while others emerged from deep-seated passion.",
+    "Let’s take a few moments and consider the reflections lens as it relates to this greatest command, to love the Lord your God with all your heart, soul, mind, and strength.",
+    "As a lens, DesignID helps us understand our capacities and what fulfills us. This includes how we choose to spend our time, the efforts we make in different parts of our life, and how we mentally and emotionally approach situations and people. There is a strong correlation between the four reflections of DesignID and the way we live out the greatest commandment."
+  ],
+  "chart": {
+    "headers": [
+      "Reflection",
+      "Heart",
+      "Soul",
+      "Strength",
+      "Mind"
+    ],
+    "rows": [
+      [
+        "Architect ",
+        "Leads with courage and conviction; pursues purpose that honors God.",
+        "Obeys from a place of trust and devotion, surrendering outcomes to God.",
+        "Brings energy and action, serving with boldness and perseverance.",
+        "Thinks strategically and acts with vision guided by faith."
+      ],
+      [
+        "Artisan",
+        "Expresses love through beauty, order, and understanding.",
+        "Aligns actions and intentions with truth and wisdom.",
+        "Creates and refines with excellence, honoring God through design and detail.",
+        "Reflects deeply, seeing patterns of grace and communicating truth clearly."
+      ],
+      [
+        "Shepherd",
+        "Loves through presence, empathy, and relational care.",
+        "Chooses surrender and humility, nurturing others from a heart of service.",
+        "Serves with endurance and gentleness, offering consistent support.",
+        "Thinks relationally, seeking unity and emotional understanding."
+      ],
+      [
+        "Steward",
+        "Loves by protecting, providing, and remaining steadfast.",
+        "Devotes self to integrity and responsibility as acts of worship.",
+        "Works diligently, ensuring faithfulness in action and stewardship of resources.",
+        "Considers carefully what is right and just, maintaining peace through structure."
+      ]
+    ],
+    "note": "Preserve source column order Heart, Soul, Strength, Mind (prompt separately says Heart, Soul, Mind, and Strength). Architect raw label has trailing space, retained."
+  },
+  "care": {
+    "sourceHeading": "Care",
+    "stages": [
+      {
+        "stage": "connect",
+        "heading": "Connect",
+        "prompt": "For your primary and secondary reflection, record the words within the Heart, Soul, Mind, and Strength columns that stand out most to you. Why",
+        "questionId": "identity-the-design-reflections-and-love-21-designid-connect"
+      },
+      {
+        "stage": "reflect",
+        "heading": "Reflect",
+        "prompt": "How does connecting your design reflection to they ways we reflect God impact your approach to loving God?",
+        "questionId": "identity-the-design-reflections-and-love-21-designid-reflect"
+      }
+    ],
+    "absentStages": [
+      "act",
+      "explore"
+    ],
+    "wordingNotes": [
+      "Connect ends in Why with no terminal punctuation.",
+      "Reflect contains authored typo they ways.",
+      "Do not silently correct source wording."
+    ]
+  }
+}

@@ -11,6 +11,7 @@ export type DyddCourseUnitType =
   | "completion";
 export type JourneyLessonBlock =
   | { type: "paragraph" | "heading"; text: string }
+  | { type: "table"; headers: string[]; rows: string[][]; label: string }
   | { type: "list"; items: string[] }
   | { type: "scripture"; text: string; reference: string }
   | { type: "image"; src: string; alt: string }
@@ -1293,6 +1294,11 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
       {
         row: 19,
         slug: "identity-the-designid-lens-what-is-in-the-report-19",
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/74f7b500-1ecc-4b6c-a597-567f00de5aae/image-gen+%2810%29.jpg?format=300w",
+          "label": "The DesignID Lens",
+          "type": "image"
+        },
         type: "designid-reflection",
         section: "Identity Assessment",
         title: "The DesignID Lens: What is in the report?",
@@ -1320,12 +1326,81 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         workbookPages: "p19 - p21",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Identity among believers with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
-        anchorScripture: "Ephesians 2:10",
-        teachingBlocks: [
-          "This lesson introduces Identity among believers as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+        lessonMainIdea: "Identity doesn’t exist in isolation. God didn’t just design you for personal discovery; He designed you for connection, belonging, and purpose within the Body of Christ.",
+        focus: ["Heart, Mind, Soul, Strength"],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b539874a-d535-451b-a72b-5cd5730534cf/diverse-group-of-people-community-togetherness-con-2023-11-27-05-29-24-utc.webp?format=500w",
+          "label": "Identity among believers",
+          "type": "image"
+        },
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "Identity doesn’t exist in isolation. God didn’t just design you for personal discovery; He designed you for connection, belonging, and purpose within the Body of Christ."
+          },
+          {
+            "type": "paragraph",
+            "text": "Jesus, referring to the commandment from Deuteronomy 6, tells us that we are to love God with our hearts, our souls, our minds, and our strengths. If God, who is perfect and without sin, has decided to love you, even before you repented, why do we struggle so much to love what He created? I am referring to you, of course."
+          },
+          {
+            "type": "scripture",
+            "text": "One of the teachers of the law came and heard them debating. Noticing that Jesus had given them a good answer, he asked him, “Of all the commandments, which is the most important?” “The most important one,” answered Jesus, “is this: ‘Hear, O Israel: The Lord our God, the Lord is one.  Love the Lord your God with all your heart and with all your soul and with all your mind and with all your strength.’ The second is this: ‘Love your neighbor as yourself.’ There is no commandment greater than these.”",
+            "reference": "Mark 12:28–31"
+          },
+          {
+            "type": "paragraph",
+            "text": "When Jesus was pointing out what the greatest two commands were, He did not say admire, like, be fond of, or adore. He said love. Every other way fails in comparison. The Greek word for love in these verses is agape. Agape means to love someone by choice as an act of your will. It is intentional and actionable. Agape is unconditional, not looking for reciprocation."
+          },
+          {
+            "type": "paragraph",
+            "text": "We are commanded to love, period. There is no “so that” with agape love. Often, we love so that …"
+          },
+          {
+            "type": "list",
+            "items": [
+              "Others change.",
+              "Someone repents.",
+              "A person or group gets saved."
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "First Peter 4:8 says, “Above all, love each other deeply, because love covers over a multitude of sins.” We are not intended to love so that something happens, but simply to love with all our heart, mind, soul, and strength."
+          },
+          {
+            "type": "heading",
+            "text": "Heart"
+          },
+          {
+            "type": "paragraph",
+            "text": "Your “heart” is your passions and desires. “For where your treasure is, there your heart will be also” (Matthew 6:21). Loving God with your heart also means loving Him with and through your emotions. We don’t love only within fair weather but also in the tempest."
+          },
+          {
+            "type": "heading",
+            "text": "Soul"
+          },
+          {
+            "type": "paragraph",
+            "text": "Your soul is what Jesus purchased on the cross. Our soul is of the highest value, and nothing can be measured against it. Matthew 16:26 says, “What good will it be for someone to gain the whole world, yet forfeit their soul? Or what can anyone give in exchange for their soul?” Your soul is the eternal part of you that will go on forever. Another way to think about your soul is as your will. The good news is that God gave us free will so when we love with our soul, we are choosing to love or deciding to love with our whole being."
+          },
+          {
+            "type": "heading",
+            "text": "Mind"
+          },
+          {
+            "type": "paragraph",
+            "text": "Your mind is your intellect, your cunning, and even your daydreaming. We use our minds to make choices or weigh decisions. It is from our minds that we reason out our need for God and choose to surrender. Your mind is a cognitive and practical approach to loving God. This does not mean that it is not highly creative and intuitive as well. It is with your mind that you build knowledge of God through study and experiences."
+          },
+          {
+            "type": "heading",
+            "text": "Strength"
+          },
+          {
+            "type": "paragraph",
+            "text": "Loving God with your strength is letting Him have your time, your sweat, your abilities, and your possessions. When we surrender our strengths, we no longer must count on ourselves. Our strength is finite but His is infinite. Philippians 4:13 says, “I can do all this through him who gives me strength.” God’s infinite strength is available to us when we need it. “That is why, for Christ’s sake, I delight in weaknesses, in insults, in hardships, in persecutions, in difficulties. For when I am weak, then I am strong” (2 Corinthians 12:10)."
+          }
         ],
+        teachingBlocks: [],
       },
       {
         row: 21,
@@ -1337,12 +1412,71 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         workbookPages: "p22 - p24",
         typeLabel: "DesignID reflection",
         duration: "10-15 min",
-        lessonMainIdea: "Use DesignID as a mirror inside Identity, helping the learner connect assessment language to faithful love and service.",
-        anchorScripture: "Ephesians 2:10",
-        teachingBlocks: [
-          "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
-          "Placed inside Identity, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course.",
+        lessonMainIdea: "Consider what you just learned from Deuteronomy and Mark regarding how to love the Lord with your heart, mind, soul, and strength. Each of us approaches these areas in a unique way. As we will learn later in the chapter on Story, our experiences have a great impact on our capacity and ability to love. Within the chapter on Expertise, we will explore how different talents and skills were developed. Some of them were shaped through the hard knocks of life, while others emerged from deep-seated passion.",
+        focus: [
+          "Designed To Love"
         ],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/d9c32b17-5849-4ddb-a3f0-039b4eddf3e4/hands-reaching-for-a-heart-on-a-wooden-table-2026-01-05-06-26-34-utc.jpg?format=300w",
+          "label": "Hands reaching toward a heart on a wooden table",
+          "type": "image"
+        },
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "Consider what you just learned from Deuteronomy and Mark regarding how to love the Lord with your heart, mind, soul, and strength. Each of us approaches these areas in a unique way. As we will learn later in the chapter on Story, our experiences have a great impact on our capacity and ability to love. Within the chapter on Expertise, we will explore how different talents and skills were developed. Some of them were shaped through the hard knocks of life, while others emerged from deep-seated passion."
+          },
+          {
+            "type": "paragraph",
+            "text": "Let’s take a few moments and consider the reflections lens as it relates to this greatest command, to love the Lord your God with all your heart, soul, mind, and strength."
+          },
+          {
+            "type": "paragraph",
+            "text": "As a lens, DesignID helps us understand our capacities and what fulfills us. This includes how we choose to spend our time, the efforts we make in different parts of our life, and how we mentally and emotionally approach situations and people. There is a strong correlation between the four reflections of DesignID and the way we live out the greatest commandment."
+          },
+          {
+            "type": "table",
+            "headers": [
+              "Reflection",
+              "Heart",
+              "Soul",
+              "Strength",
+              "Mind"
+            ],
+            "rows": [
+              [
+                "Architect ",
+                "Leads with courage and conviction; pursues purpose that honors God.",
+                "Obeys from a place of trust and devotion, surrendering outcomes to God.",
+                "Brings energy and action, serving with boldness and perseverance.",
+                "Thinks strategically and acts with vision guided by faith."
+              ],
+              [
+                "Artisan",
+                "Expresses love through beauty, order, and understanding.",
+                "Aligns actions and intentions with truth and wisdom.",
+                "Creates and refines with excellence, honoring God through design and detail.",
+                "Reflects deeply, seeing patterns of grace and communicating truth clearly."
+              ],
+              [
+                "Shepherd",
+                "Loves through presence, empathy, and relational care.",
+                "Chooses surrender and humility, nurturing others from a heart of service.",
+                "Serves with endurance and gentleness, offering consistent support.",
+                "Thinks relationally, seeking unity and emotional understanding."
+              ],
+              [
+                "Steward",
+                "Loves by protecting, providing, and remaining steadfast.",
+                "Devotes self to integrity and responsibility as acts of worship.",
+                "Works diligently, ensuring faithfulness in action and stewardship of resources.",
+                "Considers carefully what is right and just, maintaining peace through structure."
+              ]
+            ],
+            "label": "Design reflections and loving God"
+          }
+        ],
+        teachingBlocks: [],
       },
       {
         row: 22,

@@ -8,6 +8,7 @@ import {
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ReviewAwareLink } from "@/components/review-aware-link";
+import { JourneyIdentityBelieversCare } from "@/components/journey-identity-believers-care";
 import { JourneyWhoWhoseCare } from "@/components/journey-who-whose-care";
 import { JourneyCareIntroduction } from "@/components/journey-care-introduction";
 import { JourneyLessonBody } from "@/components/journey-lesson-body";
@@ -185,8 +186,9 @@ export function JourneyCourseNavigator({
     ? Math.round(((activeIndex + 1) / flatUnits.length) * 100)
     : 0;
   const isDesignIdLens = active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19";
+  const isDesignReflectionsLove = active.unit.slug === "identity-the-design-reflections-and-love-21";
   const isWhoWhose = active.unit.slug === "identity-who-vs-whose-16";
-  const usesApprovedLessonFormat = isWhoWhose || ["identity-good-works-17", "identity-niche-18"].includes(active.unit.slug);
+  const usesApprovedLessonFormat = isDesignReflectionsLove || isWhoWhose || ["identity-good-works-17", "identity-niche-18", "identity-identity-among-believers-20"].includes(active.unit.slug);
   const isCareIntroduction = active.unit.slug === "what-is-dydd-how-to-c-a-r-e-10";
   const workbookExperience = active ? getWorkbookExperience(active) : null;
   const lessonMainIdea = cleanLessonMainIdea(
@@ -368,7 +370,7 @@ export function JourneyCourseNavigator({
       </aside>
 
       <article
-        className={`journey-active-lesson ${typeClass[active.unit.type]}${usesApprovedLessonFormat ? " journey-who-whose-lesson" : ""}`}
+        className={`journey-active-lesson ${typeClass[active.unit.type]}${usesApprovedLessonFormat ? " journey-who-whose-lesson" : ""}${isDesignReflectionsLove ? " journey-design-love-lesson" : ""}${active.unit.slug === "identity-identity-among-believers-20" ? " journey-identity-believers-lesson" : ""}`}
         ref={activeLessonRef}
       >
         <header>
@@ -378,11 +380,11 @@ export function JourneyCourseNavigator({
               .{active.sectionIndex + 1} / Lesson {active.unitIndex + 1}
             </p>
             <h2>{active.unit.title}</h2>
-            <p>{lessonMainIdea}</p>
+            {!isDesignReflectionsLove ? <p>{lessonMainIdea}</p> : null}
           </div>
           <div className="journey-active-meta">
             {!usesApprovedLessonFormat ? <span>{active.unit.typeLabel}</span> : null}
-            <span>{usesApprovedLessonFormat ? "3–5 minutes" : active.unit.duration}</span>
+            <span>{usesApprovedLessonFormat && !isDesignReflectionsLove && active.unit.slug !== "identity-identity-among-believers-20" ? "3–5 minutes" : active.unit.duration}</span>
             {active.unit.bookPages ? (
               <span>Book {active.unit.bookPages}</span>
             ) : null}
@@ -401,7 +403,7 @@ export function JourneyCourseNavigator({
               ))}
             </div>
 
-            {active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? (
+            {isDesignIdLens ? (
               <div className="journey-designid-return">
                 <div className="journey-designid-intro"><div><h3>Welcome back to the Journey</h3>
                 <p>In the DesignID course, you explored your primary and secondary reflections, how they come together in your integrative reflection, and the shadow patterns to notice under pressure. You also discovered how your capacity can feel natural, steady, stretched, or draining.</p>
@@ -421,7 +423,7 @@ export function JourneyCourseNavigator({
                 aria-label="Lesson body"
               >
                 {!isCareIntroduction && wrapLessonImage ? lessonArtwork : null}
-                {!["identity-good-works-17", "identity-niche-18"].includes(active.unit.slug) ? <h3 className="lesson-body-subheading">{active.unit.title}</h3> : null}
+                {!["identity-good-works-17", "identity-niche-18", "identity-the-design-reflections-and-love-21"].includes(active.unit.slug) ? <h3 className="lesson-body-subheading">{active.unit.title}</h3> : null}
                 {active.unit.contentStatus === "draft" ? (
                   <p role="status">Lesson content is being prepared.</p>
                 ) : isCareIntroduction && active.unit.lessonBody ? (
@@ -449,7 +451,7 @@ export function JourneyCourseNavigator({
           </section>
 
           {/* Keep the overview in class; connected trails remain available at the assessment introductions. */}
-          {!isDesignIdLens && active.unit.slug !== "what-is-dydd-dydd-assessments-11" && active.unit.contentStatus !== "draft" && (active.unit.type === "assessment-link" ||
+          {!isDesignIdLens && !isDesignReflectionsLove && active.unit.slug !== "what-is-dydd-dydd-assessments-11" && active.unit.contentStatus !== "draft" && (active.unit.type === "assessment-link" ||
           active.unit.type === "designid-reflection" ||
           active.unit.slug.includes("spiritual-gifts-assessment")) ? (
             <aside className="trail-fieldkit-note">
@@ -485,11 +487,11 @@ export function JourneyCourseNavigator({
             </aside>
           ) : null}
 
-          {isWhoWhose ? <JourneyWhoWhoseCare /> : workbookExperience ? (
+          {active.unit.slug === "identity-identity-among-believers-20" ? <JourneyIdentityBelieversCare /> : isWhoWhose ? <JourneyWhoWhoseCare /> : workbookExperience ? (
             <section
-              className={`journey-active-workbook ${workbookExperience.kind}${active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? " journey-who-whose-care journey-designid-lens-care" : ""}`}
+              className={`journey-active-workbook ${workbookExperience.kind}${(isDesignIdLens || isDesignReflectionsLove) ? " journey-who-whose-care journey-designid-lens-care" : ""}`}
             >
-              {active.unit.slug !== "identity-the-designid-lens-what-is-in-the-report-19" ? <div
+              {!isDesignIdLens && !isDesignReflectionsLove ? <div
                 className="journey-care-divider"
                 aria-label="CARE workbook section"
               >
@@ -525,11 +527,11 @@ export function JourneyCourseNavigator({
               </div>
 
               {workbookExperience.kind !== "pathfinder" ? <JourneyCareDirections /> : null}
-              {active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? (
+              {isDesignIdLens || isDesignReflectionsLove ? (
                 <div className="journey-care-response-grid">
-                  {careOrder.map(stage => <section className={`journey-care-response-cell ${stage}`} key={stage} data-care-stage={stage}>
+                  {careOrder.filter(stage => !isDesignReflectionsLove || workbookExperience.prompts.some(p => p.careStep === stage)).map(stage => <section className={`journey-care-response-cell ${stage}`} key={stage} data-care-stage={stage}>
                     <h4>{careLabels[stage]}</h4>
-                    <div className="journey-care-response-content"><p>{workbookExperience.care[stage]}</p>
+                    <div className="journey-care-response-content">{workbookExperience.care[stage] ? <p>{workbookExperience.care[stage]}</p> : null}
                       {workbookExperience.prompts.filter(p => p.careStep === stage).map(p => <ReflectionAnswer key={p.id} questionId={p.id} />)}
                     </div>
                   </section>)}

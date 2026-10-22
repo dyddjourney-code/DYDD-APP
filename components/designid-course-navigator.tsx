@@ -260,7 +260,7 @@ export function DesignIdCourseNavigator({
 
             <CompanionAudioCard moment={active.lesson.companionMoment} />
 
-            {active.lesson.slug === "welcome-to-designid" ? <DesignIdWelcomeBody bodyHtml={active.lesson.bodyHtml} image={active.lesson.images[0]} /> : active.lesson.authored ? <DesignIdAuthoredBody bodyHtml={active.lesson.bodyHtml} images={active.lesson.images} compactIntro={["your-design-profile", "reflection-capacity"].includes(active.lesson.slug)} /> : <div className="assessment-lesson-content designid-lesson-content with-image">
+            {active.lesson.slug === "welcome-to-designid" ? <DesignIdWelcomeBody bodyHtml={active.lesson.bodyHtml} image={active.lesson.images[0]} /> : active.lesson.authored ? <DesignIdAuthoredBody bodyHtml={active.lesson.bodyHtml} images={active.lesson.images} compactIntro={active.lesson.slug === "your-design-profile"} capacityIntro={active.lesson.slug === "reflection-capacity"} /> : <div className="assessment-lesson-content designid-lesson-content with-image">
               <section className="lesson-source readable-lesson-body designid-clean-lesson" aria-label="Lesson body">
                 <h3 className="lesson-body-subheading">{active.lesson.title}</h3>
                 <div className="designid-semantic-body" dangerouslySetInnerHTML={{ __html: active.lesson.bodyHtml }} />

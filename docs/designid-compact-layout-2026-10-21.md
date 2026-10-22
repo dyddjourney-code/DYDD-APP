@@ -63,3 +63,28 @@ Evidence: `tmp/designid-layout-before-{slug}-{width}.png`,
 `tmp/designid-layout-{local|published}.log`,
 `tmp/designid-layout-authored-{local|published}.log`, and
 `tmp/designid-layout-receipt.json`.
+
+## October 22 capacity-only override
+
+John requested the normal-size original Reflection Capacity image **left** of the
+intro and compact status-only saved capacity list. Profile retains its small
+right image. The explicit `capacityIntro` presentation flag is applied only to
+`reflection-capacity` in both routes. Artwork uses the original normal desktop
+width `min(33%, 285px)` and retains that proportional left wrap on phones; the
+four-row status list clears below it on phones for readable missing-report text.
+No numeric scores or invented report data were added. All four original Risk
+labels are semantically bold and each capacity state has a subtly distinct green
+tint. Authored wording, report reader/bindings, audio, reflection IDs/persistence,
+Integrative Reflections and production remain untouched.
+
+Updated read-only layout coverage includes 768px and capacity-specific image,
+Risk and tint assertions; release evidence is `tmp/capacity-*` plus existing
+`tmp/designid-layout-*` and `tmp/designid-authored-*` screenshots/logs. Run the
+same documented build/typecheck/source/catalog/export/isolation checks and exact
+sandbox receipt verification. No source reimport is needed for this presentation-
+only change; existing rich source parity verifies unchanged teaching wording.
+
+Browser harness geometry now explicitly awaits `document.fonts.ready` and two
+animation frames after lesson readiness, to avoid measuring an unsettled first
+render. This changes verification only, not application UX. The layout harness
+supports `DESIGNID_LAYOUT_FROM=<slug>` to resume bounded follow-up coverage.

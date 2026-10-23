@@ -68,9 +68,11 @@ async function pageFor(cookies=[],width=1280){
   return {context,page};
 }
 async function open(page,path='/waypoints'){
-  const response=await page.goto(base+path,{waitUntil:'networkidle0',timeout:90000});
+  const response=await page.goto(base+path,{waitUntil:'domcontentloaded',timeout:90000});
   assert.equal(response.status(),200,`${path} responds200`);
   await page.waitForSelector('.waypoint-display-card .waypoint-scripture-passage blockquote',{timeout:30000});
+  await page.waitForFunction(()=>getComputedStyle(document.querySelector('.waypoint-scripture-passage')).borderLeftWidth==='3px');
+  await page.waitForFunction(()=>{const cards=[...document.querySelectorAll('.waypoint-result-card')];return cards.length>0&&cards.every(el=>Object.keys(el).some(key=>key.startsWith('__reactProps$')));},{timeout:30000});
   const html=await response.text();
   assert(!html.includes('"reflections":')&&!html.includes('\\"reflections\\":'),'no four-variant map in HTML/RSC payload');
   return html;
@@ -164,6 +166,9 @@ try {
   assert.deepEqual(pageErrors,[],'no browser runtime errors');assert.deepEqual(browserWrites,[],'viewing never attempts a write');
   assert.deepEqual(await protectedState(),before,'no participant linking, saved snapshot, note, workbook, reflection or subscription mutation');
   console.log(`PASS ${assertions} rendered-card checks, 4 Primary+missing+unrecognized, latest report/foreign ownership/no side effects; target=${base}`);
+} catch(error) {
+  console.error('Browser runtime errors:',JSON.stringify(pageErrors));
+  throw error;
 } finally {
   if(browser)await browser.close();
   for(const client of sessions){try{ok(await client.auth.signOut({scope:'global'}));}catch(e){cleanupErrors.push('session revocation: '+e.message);}}

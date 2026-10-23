@@ -10,7 +10,8 @@ try {
  const page=await browser.newPage();page.on('pageerror',e=>errors.push(e.message));
  for(const width of [1280,768,390,320]){
   await page.setViewport({width,height:1100});
-  const response=await page.goto(base+'/waypoints',{waitUntil:'networkidle0',timeout:90000});assert.equal(response.status(),200);
+  const response=await page.goto(base+'/waypoints',{waitUntil:'domcontentloaded',timeout:90000});assert.equal(response.status(),200);
+  await page.waitForFunction(()=>document.querySelector('.waypoint-scripture-passage') && getComputedStyle(document.querySelector('.waypoint-scripture-passage')).borderLeftWidth==='3px');
   const geometry=await page.evaluate(()=>{
    const card=document.querySelector('.waypoint-display-card');
    const rect=selector=>{const r=card.querySelector(selector).getBoundingClientRect();return {top:r.top,bottom:r.bottom,left:r.left,right:r.right};};

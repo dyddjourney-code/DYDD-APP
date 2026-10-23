@@ -55,3 +55,11 @@ Integrated local acceptance **PASS** on October 23, 2026:
 The source baseline is pinned to pre-release commit `208b36c7d9c5bb6182f088b0f1f5341d9c068d8d`, not compared to changed content itself after commit.
 
 Published sandbox verification uses the same live/visual scripts with `WAYPOINT_TEST_BASE=https://dydd-online-school-sandbox.vercel.app`. Its exact deployment/SHA and results are retained in workspace `outputs/waypoints-big-run-release-proof.json` after execution. No production promotion, cron execution, release-email queue seeding or customer notification is part of acceptance.
+
+## Published sandbox acceptance
+
+The READY `b62a360c51bc040071a0ea4ec805422e21fff7d6` deployment was independently verified against its exact project, SHA and stable alias. Published acceptance passes all **46** real authenticated/archive checks and all four responsive widths. All test fixtures and sessions are cleaned and their removal verified. Published desktop/phone screenshots were inspected and show the correct reading order and complete Scripture.
+
+The first hosted runs exposed a test-harness readiness issue: network-idle navigation waited past the page's useful readiness; switching to DOM readiness alone then clicked server-rendered archive buttons before React attached handlers. The application itself rendered HTTP 200, correct saved Primary and complete Scripture. The harness now waits for stylesheet readiness **and hydrated React archive controls** before actual selection; successful state changes remain mandatory. An independent clean-browser diagnostic confirms hydration and interactive previous-week selection with no runtime/request errors. No application code was changed to resolve this harness issue.
+
+Follow-up changes are test/documentation only. Exact final deployment, captured acceptance logs, fixture-cleanup counts and production-preservation proof remain in the workspace release receipt.

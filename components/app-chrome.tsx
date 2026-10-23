@@ -30,7 +30,7 @@ function AppChromeFrame({ children }: AppChromeProps) {
         <div className="app-frame-content">
           {children}
           <footer className="app-footer" aria-label="App support links">
-            <span>Contact</span>
+            <Link href="/contact">Contact</Link>
             <Link href="/privacy">Privacy Policy</Link>
             <Link href="/terms">Terms of Service</Link>
           </footer>

@@ -1,0 +1,12 @@
+.shell { max-width: 1180px; margin: 0 auto; padding: 48px 24px; }
+.layout { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 56px; align-items: start; }
+.layout header { max-width: 45ch; } .layout h1 { font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; letter-spacing: -.03em; } .layout p { line-height: 1.7; }
+.form { min-width: 0; display: grid; gap: 18px; padding: 28px; border: 1px solid #d8ded7; border-radius: 18px; background: #fff; }
+.form h2 { margin: 0 0 8px; font-size: 1.35rem; } .form label { display: grid; gap: 8px; font-weight: 600; }
+.form input, .form textarea, .queue select { box-sizing: border-box; width: 100%; min-width: 0; border: 1px solid #9ba99a; border-radius: 7px; padding: 12px; background: #fff; color: #24342a; font: inherit; }
+.form textarea { resize: vertical; } .form input:focus-visible, .form textarea:focus-visible, .queue select:focus-visible { outline: 3px solid #739d5e; outline-offset: 2px; }
+.form button { min-height: 44px; justify-self: start; } .form button:active { transform: scale(.98); } .hint { margin: -12px 0 0; font-size: .875rem; color: #506052; } .error { color: #923c32; margin: 0; } .reference { overflow-wrap: anywhere; }
+.trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.queue { max-width: 1000px; margin: 0 auto; padding: 32px 24px; } .toolbar { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; margin: 24px 0; } .toolbar label { display: grid; gap: 8px; }
+.request { border-top: 1px solid #cbd5c9; padding: 24px 0; overflow-wrap: anywhere; } .request h2 { margin: 8px 0; font-size: 1.3rem; } .message { white-space: pre-wrap; line-height: 1.6; } .request label { display: grid; gap: 8px; max-width: 240px; } .request button { margin-top: 12px; min-height: 44px; }
+@media (max-width: 767px) { .shell, .queue { padding: 28px 16px; } .layout { grid-template-columns: minmax(0, 1fr); gap: 28px; } .form { padding: 20px 16px; } }

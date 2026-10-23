@@ -211,59 +211,7 @@ function reflectionProfile(designIdSnapshot: MapsAssessmentSnapshot) {
 }
 
 // Shared teaching is in content.ts; only these participant lenses vary by scores.
-export const mapsShortFormVersion = "2026-10-23-personalized-v3";
-
-const reflectionContribution: Record<Reflection, string> = {
-  Architect: "Frame direction.",
-  Artisan: "Shape message and fit.",
-  Shepherd: "Care for people and meaning.",
-  Steward: "Organize follow-through.",
-};
-
-function capacitySupport(_reflection: Reflection, band: string) {
-  if (band === "Abundant") return "Lead; leave room for others.";
-  if (band === "Steady") return "Use clear scope.";
-  if (band === "Limited") return "Small scope; partner up.";
-  if (band === "Drained") return "Share ownership; use tools.";
-  return "Review missing capacity before choosing support.";
-}
-
-const movementCopy = {
-  Plan: {
-    positive: ["Imagine the outcome.", "Choose one direction from the possibilities.", "Possibilities can outgrow the next step."],
-    negative: ["Find a practical starting point.", "Make room for a fresh possibility before acting.", "An early solution can narrow the vision."],
-    balanced: ["Connect possibility with practical steps.", "Choose vision or detail as this task needs.", "Avoid reopening a workable plan."],
-  },
-  Decide: {
-    positive: ["Notice conviction and people’s needs.", "Test the choice with evidence and counsel.", "Conviction can outrun the evidence."],
-    negative: ["Weigh evidence and clear criteria.", "Include people’s experience and inner conviction.", "Analysis can miss the human cost."],
-    balanced: ["Bring conviction and evidence together.", "Use both people’s needs and clear criteria.", "Set a decision time; avoid endless weighing."],
-  },
-  Do: {
-    positive: ["Take ownership and start independently.", "Add a check-in partner and a clear finish line.", "Independent work can hide a need for help."],
-    negative: ["Build momentum through shared effort.", "Name your own next action and decision space.", "Waiting for agreement can delay action."],
-    balanced: ["Move between independent and shared work.", "Choose an owner and useful collaboration points.", "Keep handoffs explicit as roles change."],
-  },
-} as const;
-
-
-const movementSidebar = {
-  Plan: {
-    positive: ["Pause briefly to choose one direction.", "Schedule a direction check before each new idea."],
-    negative: ["Try one fresh possibility.", "Require a possibility check before committing."],
-    balanced: "Choose vision or detail to fit the task.",
-  },
-  Decide: {
-    positive: ["Check evidence before choosing.", "Build evidence and counsel into every major choice."],
-    negative: ["Ask how the choice affects people.", "Invite affected people before final decisions."],
-    balanced: "Use conviction and evidence; set a decision time.",
-  },
-  Do: {
-    positive: ["Use a check-in when work gets complex.", "Schedule partner check-ins and a finish line."],
-    negative: ["Name your own next action.", "Assign individual ownership before work begins."],
-    balanced: "Choose an owner and useful collaboration points.",
-  },
-} as const;
+export const mapsShortFormVersion = "2026-10-23-contextual-v4";
 
 export function designPdAxis(
   designPdSnapshot: MapsAssessmentSnapshot,
@@ -288,18 +236,12 @@ export function designPdAxis(
     Math.abs(numeric) <= 5 ? "Balanced" : Math.abs(numeric) >= 16 ? "Strong" : "Moderate" :
     /strong/.test(normalized) ? "Strong" : /moderate/.test(normalized) ? "Moderate" : "Balanced";
   const effectiveSide = side === null ? null : intensity === "Balanced" ? "balanced" : side;
-  const copy = effectiveSide ? movementCopy[axis.label as keyof typeof movementCopy][effectiveSide] :
-    ["Your movement pattern is not available.", "Review your DesignPD result before choosing support.", "Do not assume an opposite-side need."];
   return {
     label: axis.label,
     tendency,
     score,
-    sidebar: effectiveSide === null ? "Review your DesignPD result before choosing support." : effectiveSide === "balanced" ? movementSidebar[axis.label as keyof typeof movementSidebar].balanced : movementSidebar[axis.label as keyof typeof movementSidebar][effectiveSide][intensity === "Strong" ? 1 : 0],
     side: effectiveSide,
     intensity,
-    strength: `${copy[0]}${intensity === "Strong" && effectiveSide && effectiveSide !== "balanced" ? " A strong default; pause to check fit." : intensity === "Moderate" && effectiveSide ? " A preference you can flex." : ""}`,
-    need: `${intensity === "Strong" && effectiveSide && effectiveSide !== "balanced" ? "Support: " : ""}${copy[1]}${intensity === "Strong" && effectiveSide && effectiveSide !== "balanced" ? " Build this into the workflow." : intensity === "Moderate" && effectiveSide ? " Use a brief check when needed." : ""}`,
-    gap: `${copy[2]}${intensity === "Strong" && effectiveSide && effectiveSide !== "balanced" ? " Check at each milestone." : intensity === "Moderate" && effectiveSide ? " Watch when pressure rises." : ""}`,
   };
 }
 
@@ -312,37 +254,6 @@ function subcategoryLane(subcategory: string) {
   if (["Insight", "Development", "Proof", "Organization"].includes(subcategory)) return "Decide";
   return "Do";
 }
-
-// Page-specific contributions: Architect, Artisan, Shepherd, Steward. Shared teaching stays untouched.
-export const mapsReflectionTasks: Record<string, Record<Reflection, string>> = {
-  Purpose: { Architect: "clarify direction", Artisan: "express the calling", Shepherd: "connect the why to people", Steward: "define signs of fruit" },
-  Culture: { Architect: "frame shared values", Artisan: "shape an inviting atmosphere", Shepherd: "build belonging and trust", Steward: "protect agreed practices" },
-  Motivation: { Architect: "connect energy to direction", Artisan: "renew meaningful expression", Shepherd: "notice care and growth", Steward: "pace sustainable commitments" },
-  Assessment: { Architect: "frame the real question", Artisan: "discern and clarify what is true", Shepherd: "hear lived experience", Steward: "check the facts" },
-  Insight: { Architect: "connect patterns to direction", Artisan: "shape and refine meaning", Shepherd: "test how meaning lands", Steward: "check practical fit" },
-  Development: { Architect: "choose a path through constraints", Artisan: "refine the next version", Shepherd: "support people through change", Steward: "test risk and resources" },
-  Proof: { Architect: "define what evidence matters", Artisan: "make evidence understandable", Shepherd: "hear the people affected", Steward: "verify observable results" },
-  Organization: { Architect: "align roles with direction", Artisan: "make handoffs clear", Shepherd: "agree responsibilities together", Steward: "assign ownership and accountability" },
-  Reliability: { Architect: "keep commitments aligned", Artisan: "adjust an unworkable routine", Shepherd: "notice strain and ask for help", Steward: "sustain dependable follow-through" },
-  Energy: { Architect: "initiate the next faithful step", Artisan: "make the starting point tangible", Shepherd: "invite willing participation", Steward: "prepare time and resources" },
-  Momentum: { Architect: "advance and multiply traction", Artisan: "adapt what is gaining traction", Shepherd: "keep people engaged", Steward: "maintain a repeatable rhythm" },
-  Outcomes: { Architect: "connect completion to intended fruit", Artisan: "refine the final delivery", Shepherd: "confirm people were served", Steward: "deliver and close the loop" },
-};
-
-export const mapsMovementTasks: Record<string, [string, string, string]> = {
-  Purpose: ["name the why", "check the next direction against intended fruit", "activity replacing calling"],
-  Culture: ["agree a shared tone", "ask who does not yet feel safe to contribute", "agreement without trust"],
-  Motivation: ["name what gives life", "check energy before adding commitments", "enthusiasm hiding depletion"],
-  Assessment: ["frame an honest question", "test one assumption with an observation", "a preferred explanation replacing facts"],
-  Insight: ["shape a useful interpretation", "test the meaning with someone affected", "refinement without clarity"],
-  Development: ["choose one improvement", "trial the change against a real constraint", "improvement without a workable path"],
-  Proof: ["name visible evidence", "agree one verifiable measure", "confidence without evidence"],
-  Organization: ["name an accountable owner", "confirm each handoff and decision right", "busy roles without ownership"],
-  Reliability: ["set a repeatable commitment", "check load and recovery before promising", "a promise without a sustainable rhythm"],
-  Energy: ["start one concrete action", "confirm time and resources for the first step", "activation without a finish line"],
-  Momentum: ["advance what is working", "review traction before expanding", "more activity without progress"],
-  Outcomes: ["deliver the intended fruit", "agree acceptance and closure with the recipient", "motion without completion"],
-};
 
 export const mapsIndicatorReflections: Record<string, Reflection[]> = {
   Purpose: ["Shepherd", "Architect"],
@@ -360,35 +271,134 @@ export function mapsIndicatorScore(subcategory: MapsSubcategory, snapshot: MapsA
   return identities.reduce((sum, label) => sum + profile.find(p => p.label === label)!.score, 0) / identities.length;
 }
 
+// Only the approved mapped capacities interpret this page. Rank never determines a gap.
+// Each task names the three authored terms and a usable, page-specific support.
+export const mapsCapacityContexts: Record<string, Record<string, [string, string]>> = {
+  Purpose: {
+    Shepherd: ["connect Calling to people served, agree Direction and name Kingdom Impact", "ask one person served to help state the Calling and intended Kingdom Impact"],
+    Architect: ["turn Calling into Direction toward Kingdom Impact", "write a one-sentence Calling, one next Direction and one sign of Kingdom Impact"],
+  },
+  Culture: { Shepherd: ["invite Belonging, build Trust and seek Unity", "invite a quieter voice, keep one trust-building promise and agree one shared practice for Unity"] },
+  Motivation: { Shepherd: ["offer Care, encourage Growth and keep the work Life-giving", "name one act of Care, one Growth step and one Life-giving boundary"] },
+  Assessment: { Artisan: ["Discern what is true, Understand its meaning and Clarify the question", "record one observation, test its meaning with someone affected and write the question plainly"] },
+  Insight: { Artisan: ["Shape the idea, Refine its meaning and Adjust what does not fit", "sketch the idea, review it with one person and adjust one unclear part"] },
+  Development: {
+    Artisan: ["Improve the work, Strengthen what is weak and Elevate its usefulness", "make a small prototype, test whether it improves usefulness and revise its weak point after feedback"],
+    Architect: ["choose a direction to Improve, Strengthen and Elevate the work", "choose one improvement, name its constraint and set a review point before expanding it"],
+  },
+  Proof: { Steward: ["make results Observable, Measurable and Verified", "capture one visible result, choose its measure and ask a second person to verify the evidence"] },
+  Organization: { Steward: ["define Clear Roles, agree Ownership and clarify Responsibility", "use a one-page role map with ordered handoffs, named owners and a check-in date"] },
+  Reliability: { Steward: ["keep commitments Consistent, Dependable and Sustainable", "use a recurring checklist, agree a sustainable promise and arrange a dependable backup"] },
+  Energy: { Architect: ["take Initiative, Activate a first step and Move Forward", "choose one first action, name the risk and book a short starting block"] },
+  Momentum: { Architect: ["Build on what works, Advance one step and Multiply useful results", "track one sign of progress, remove one obstacle and repeat a step that works before expanding"] },
+  Outcomes: {
+    Architect: ["define what to Complete, what to Deliver and what marks Closure", "define done, name the recipient and agree what counts as closure"],
+    Steward: ["Complete the final tasks, Deliver the work and confirm Closure", "use a closeout checklist, confirm receipt and hand over any continuing responsibility"],
+  },
+};
+
 export function mapsReflectionLens(subcategory: MapsSubcategory, designIdSnapshot: MapsAssessmentSnapshot) {
   const profile = reflectionProfile(designIdSnapshot);
-  const tasks = mapsReflectionTasks[subcategory.name];
   const identities = indicatorReflections(subcategory);
+  // Mapping order, not score order, also keeps exact ties together without arbitrary winners.
+  const required = identities.map(label => profile.find(item => item.label === label)!);
+  const context = mapsCapacityContexts[subcategory.name];
   const score = mapsIndicatorScore(subcategory, designIdSnapshot);
-  const describe = (item: typeof profile[number]) => {
-    const action = tasks[item.label];
-    if (!item.available) return `${item.label}: capacity to ${action} not available`;
-    if (item.band === "Abundant") return `${item.label} (${item.band}): lead to ${action}`;
-    if (item.band === "Steady") return `${item.label} (${item.band}): scoped capacity to ${action}`;
-    if (item.band === "Limited") return `${item.label} (${item.band}): small steps to ${action}`;
-    return `${item.label} (${item.band}): shared help to ${action}`;
-  };
-  const required = profile.filter(item => identities.includes(item.label));
+  const available = required.filter(item => item.available && item.score >= 25);
+  const low = required.filter(item => item.available && item.score < 25);
+  const missing = required.filter(item => !item.available);
+  const strength = available.length ? available.map(item => `${item.label} (${item.band}): ${item.band === "Abundant" ? "ample capacity" : "capacity available"} to ${context[item.label][0]}`).join("; ") + "." :
+    "No mapped capacity is currently confirmed Steady or Abundant. Start with supported participation; this does not establish poor performance.";
+  const gap = [
+    ...low.map(item => `${item.label} (${item.band}): ${item.band === "Limited" ? "less reserve" : "little reserve"} to ${context[item.label][0]}; ${item.band === "Limited" ? "keep the attempt small and supported" : "share responsibility rather than carrying it alone"}`),
+    ...missing.map(item => `${item.label}: capacity unavailable; review the result before inferring a gap`),
+  ].join("; ") || "No lower-capacity flag in the mapped reflections. A lower rank than another reflection is not a deficit; confirm actual results in practice";
   const support = required.map(item => {
-    const action = tasks[item.label];
-    if (!item.available) return `${item.label}: review missing capacity before assigning support`;
-    if (item.band === "Abundant") return `${item.label}: lead to ${action}; invite shared ownership`;
-    if (item.band === "Steady") return `${item.label}: ${action} within clear scope`;
-    if (item.band === "Limited") return `${item.label}: partner on a small trial to ${action}`;
-    return `${item.label}: share ownership to ${action}; use a tool`;
+    if (!item.available) return `${item.label}: review the missing score before assigning support`;
+    const lead = item.band === "Abundant" ? "Lead and invite others: " : item.band === "Steady" ? "For a manageable next step, " : item.band === "Limited" ? "With a partner, " : "With a co-owner, ";
+    return `${item.label}: ${lead}${context[item.label][1]}`;
   }).join("; ") + ".";
   return {
-    interpretation: required.some(item => !item.available) ? "MAPS indicator unavailable: one or more required reflection scores are missing." : `${identities.join(" + ")}: ${score} (${capacityBand(score)}${identities.length > 1 ? "; average" : ""}). ${identities.length > 1 ? "Blended indicator, not an independent measurement. Read both capacities." : "A capacity indicator, not a measurement of performance."}`,
-    strength: profile.slice(0, 2).map(describe).join("; ") + ".",
-    gap: profile.slice(2).map(item => item.available && item.score >= 25 ? `${item.label} (${item.band}): capacity available to ${tasks[item.label]}; pace it` : describe(item)).join("; ") + ".",
+    interpretation: required.some(item => !item.available) ? "MAPS indicator unavailable: one or more required reflection scores are missing." : `${identities.join(" + ")}: ${score} (${capacityBand(score)}${identities.length > 1 ? "; average" : ""}). ${identities.length > 1 ? "Read both capacities separately; this average is not an independent measurement." : "A capacity indicator, not a measurement of performance."}`,
+    strength,
+    gap: gap + ".",
     support,
     lane: subcategoryLane(subcategory.name),
   };
+}
+
+// Three task-specific reads per page. These are preference-aware work suggestions,
+// not additional assessment findings. The relevant PD axis supplies side and intensity.
+export const mapsMovementContexts: Record<string, Record<"positive" | "negative" | "balanced", [string, string, string]>> = {
+  Purpose: {
+    positive: ["Picture how the Calling could serve people and create Kingdom Impact.", "Choose one Direction and ask a person served whether it fits the Calling.", "A compelling future can hide an unclear next Direction."],
+    negative: ["Turn the Calling into a practical next Direction.", "Consider the wider Kingdom Impact before settling on the easiest step.", "An efficient next step may not serve the original Calling."],
+    balanced: ["Connect the Calling's larger purpose with its next Direction.", "Name the intended Kingdom Impact and one step toward it.", "Reopening the why can delay a Direction ready to test."],
+  },
+  Culture: {
+    positive: ["Imagine a shared culture of Belonging, Trust and Unity.", "Ask a quieter person what would make participation safer; agree one shared practice.", "A warm vision of Unity can conceal a broken promise or an excluded voice."],
+    negative: ["Make Belonging tangible through invitations and trust-building routines.", "Ask whose experience the current routine misses before making it the group norm.", "Efficient group habits can look like Unity while people do not feel they belong."],
+    balanced: ["Link the desired atmosphere with habits that build Belonging and Trust.", "Invite each voice and agree one practice that supports Unity.", "Agreement on a practice is not proof that Trust has grown."],
+  },
+  Motivation: {
+    positive: ["Imagine Growth that gives Care a meaningful expression.", "Ask what care is sustainable this week and which contribution brings life-giving purpose.", "An inspiring growth possibility can mask depleted care capacity."],
+    negative: ["Translate Care into one helpful act and one Growth step.", "Ask why the contribution matters before adding it to the routine.", "A full care schedule can crowd out personal Growth and life-giving purpose."],
+    balanced: ["Connect meaningful care with a realistic Growth step.", "Choose a sustainable act of Care and name its life-giving purpose.", "Trying to meet every need can drain the energy needed for Growth."],
+  },
+  Assessment: {
+    positive: ["Discern possible explanations and imagine how context changes what you Understand.", "Test one explanation against an observation, then Clarify the question in one sentence.", "An interesting explanation can be mistaken for an observed fact."],
+    negative: ["Discern what a concrete observation shows and Understand its practical context.", "Consider a second interpretation, then Clarify what the observation can actually establish.", "A quick practical diagnosis can cut discernment short."],
+    balanced: ["Discern what you notice and Understand it before choosing an explanation.", "Separate observation from inference, then Clarify the question you will test.", "Collecting more observations can postpone a question clear enough to test."],
+  },
+  Insight: {
+    positive: ["Shape an idea around what matters to the people affected.", "Refine the idea against evidence with a reviewer, then Adjust the part that does not fit.", "A meaningful impression still needs refinement before an adjustment is justified."],
+    negative: ["Refine an idea by checking its assumptions and the reasons behind it.", "Ask how the idea lands with someone affected, then Adjust its shape before applying it.", "A tidy explanation can still need adjustment to serve its audience."],
+    balanced: ["Shape an idea with both evidence and lived meaning.", "Refine the explanation with a reviewer and Adjust one unclear part.", "Endless refinement can delay a useful adjustment."],
+  },
+  Development: {
+    positive: ["Notice what would Improve the work and Elevate its usefulness for people.", "Test one improvement against a real constraint and Strengthen the weak point it reveals.", "Enthusiasm for a creative idea can conceal an unworkable change."],
+    negative: ["Compare options and constraints to choose what to Improve and Strengthen.", "Let a user try the change and describe whether it Elevates their experience.", "Analysis can delay a small improvement that would strengthen the work."],
+    balanced: ["Combine possibility with evidence to Improve and Strengthen the work.", "Trial one improvement and use feedback to Elevate its usefulness.", "Weighing every improvement can delay a useful small experiment."],
+  },
+  Proof: {
+    positive: ["Notice which Observable result would matter to the people served.", "Choose a Measurable indicator and have its evidence independently Verified.", "Confidence in a meaningful result is not verification."],
+    negative: ["Define Observable evidence and a Measurable test before drawing a conclusion.", "Ask the people affected whether the Verified result reflects what matters to them.", "An accurate measure can still miss the human result it was meant to represent."],
+    balanced: ["Connect meaningful results with Observable and Measurable evidence.", "Agree a measure and a second-person check so the claim is Verified.", "Debating the perfect measure can delay collecting usable evidence."],
+  },
+  Organization: {
+    positive: ["Notice which Clear Roles fit people's commitments and strengths.", "Confirm Ownership of each handoff and the Responsibility each person accepts.", "A felt agreement can leave a handoff without an accountable owner."],
+    negative: ["Define Clear Roles and Ownership through explicit task and handoff criteria.", "Ask whether each owner can carry the Responsibility and workload before finalizing the role.", "A tidy role map can ignore the people expected to carry it."],
+    balanced: ["Bring people's commitments and Clear Roles into the same role map.", "Name Ownership of each handoff, the agreed Responsibility and review date.", "Negotiating every detail can delay assigning a needed owner."],
+  },
+  Reliability: {
+    positive: ["Own a Consistent routine that makes your promise Dependable.", "Check load and recovery with a partner and arrange a backup to keep the promise Sustainable.", "Quietly carrying the routine alone can hide a missed handoff."],
+    negative: ["Build a Consistent, Dependable rhythm through shared effort.", "Name your own promise and check load and recovery so it remains Sustainable.", "Shared responsibility can blur who must act when a commitment is missed."],
+    balanced: ["Combine personal ownership and shared support for a Consistent, Dependable routine.", "Name the owner, due date and backup, then check that the workload is Sustainable.", "Switching between solo and shared work can leave a routine unowned."],
+  },
+  Energy: {
+    positive: ["Use Initiative to Activate one independent step and Move Forward.", "Tell a check-in partner what you will start, when and what help you may need.", "Starting alone can outrun available time or leave a risk unseen."],
+    negative: ["Use shared Initiative to Activate a first step and Move Forward together.", "Name the first action you can own without waiting for the whole group.", "Waiting for everyone can consume the energy needed to start."],
+    balanced: ["Use personal Initiative and useful collaboration to Activate a step and Move Forward.", "Choose a first action, its owner and one useful collaboration point.", "Unclear ownership can stall a start even when enthusiasm is high."],
+  },
+  Momentum: {
+    positive: ["Build on a working step and Advance it through personal follow-through.", "Review traction with a partner and Multiply only what is producing useful results.", "Working faster alone can multiply an approach that is not producing progress."],
+    negative: ["Build on a working step and Advance it through shared encouragement.", "Own one repeatable next step and show its result before the group chooses to Multiply it.", "Group activity can grow while individual next steps remain unclear."],
+    balanced: ["Build on what works and Advance it through independent effort and shared learning.", "Name the owner, repeat a step that works and review its results before you Multiply it.", "Frequent changes of ownership can interrupt a rhythm that is working."],
+  },
+  Outcomes: {
+    positive: ["Take ownership of the final tasks and Deliver the work you committed to Complete.", "Ask the recipient to confirm delivery and agree the final handoff needed for Closure.", "Calling work finished alone can leave acceptance or continuing ownership unresolved."],
+    negative: ["Bring people together to Complete the last tasks and confirm what you will Deliver.", "Own a final delivery task and confirm acceptance so Closure does not wait on the group.", "Waiting for shared approval can leave the last task unfinished."],
+    balanced: ["Connect what you personally Complete with shared confirmation of what you Deliver.", "Agree acceptance, close the last task and confirm the handoff that marks Closure.", "A handoff between solo and shared work can leave closure incomplete."],
+  },
+};
+
+export function mapsMovementLens(subcategory: MapsSubcategory, designPdSnapshot: MapsAssessmentSnapshot) {
+  const lane = subcategoryLane(subcategory.name);
+  const axis = designPdProfile(designPdSnapshot).find(item => item.label === lane)!;
+  if (!axis.side) return { ...axis, strength: "Your movement pattern is not available.", need: "Review your DesignPD result before choosing support.", gap: "Do not infer a preference or an opposite-side need from missing data." };
+  const [strength, need, gap] = mapsMovementContexts[subcategory.name][axis.side as "positive" | "negative" | "balanced"];
+  const frequency = axis.side === "balanced" ? "" : axis.intensity === "Strong" ? " Make this a scheduled check for this task." : " Use a brief check when this task becomes difficult.";
+  return { ...axis, strength, need: need + frequency, gap };
 }
 
 const subcategoryRead = mapsReflectionLens;
@@ -409,14 +419,13 @@ export const mapsShortFormDefinition = {
   },
   personalization: {
     reflectionBands: { Abundant: ">=40", Steady: ">=25", Limited: ">=10", Drained: "<10" },
-    reflectionContribution,
-    reflectionTasks: mapsReflectionTasks,
-    movementTasks: mapsMovementTasks,
+    capacityContexts: mapsCapacityContexts,
+    movementContexts: mapsMovementContexts,
+    reflectionPolicy: "Interpret only this page\'s mapped reflection(s), each at its actual band. Steady/Abundant are available capacity; Limited/Drained call for support, not a performance diagnosis. No global rank-based Strength/Gap. Preserve both blend partners and ties. Support names a concrete page/term task.",
+    movementPolicy: "Use the relevant Plan/Decide/Do axis in task-specific prose once at the top. Strong preferences receive scheduled checks; moderate preferences brief checks as needed; balanced and missing results do not invent polarity. Bottom panels show scores/bands/tendencies only, without duplicate guidance.",
     indicatorReflections: mapsIndicatorReflections,
     indicatorPolicy: "0–60 scale. Purpose = mean Shepherd + Architect; Development = mean Artisan + Architect; Outcomes = mean Architect + Steward. Other nine retain their single reflection. Blended MAPS indicators, not independent measurements. Read individual capacities alongside averages.",
-    movementCopy,
-    movementSidebar,
-    scorePolicy: "Read each participant's latest DesignID and DesignPD; never rewrite scores. Rank all four reflections; respect ties and all bands. PD side comes from stored tendency; unsigned magnitude <=5 balanced, 6-15 moderate, >=16 strong. Missing tendencies never imply an opposite-side need.",
+    scorePolicy: "Read each participant's latest DesignID and DesignPD; never rewrite scores. Use approved page mappings, never global rank to label strength or gap; respect ties and actual bands. PD side comes from stored tendency; unsigned magnitude <=5 balanced, 6-15 moderate, >=16 strong. Missing tendencies never imply an opposite-side need.",
     teachingPolicy: "ABC definitions, Biblical lenses, design capacities and scripture remain shared authored teaching, not score-dependent rewrites.",
   },
 };
@@ -555,15 +564,13 @@ function renderSubcategoryPage(
 ) {
   const read = subcategoryRead(subcategory, designIdSnapshot);
   const pdProfile = designPdProfile(designPdSnapshot);
-  const movement = pdProfile.find(axis => axis.label === read.lane)!;
-  const context = mapsMovementTasks[subcategory.name];
+  const movement = mapsMovementLens(subcategory, designPdSnapshot);
   const capacityRows = reflectionProfile(designIdSnapshot)
     .map(
       (item) => `<div class="maps-capacity-row">
         <span><i style="background:${item.color}"></i>${escapeHtml(item.label)}</span>
         <strong>${item.score}</strong>
         <em>${escapeHtml(item.band)}</em>
-        <small>${escapeHtml(capacitySupport(item.label, item.band))}</small>
       </div>`,
     )
     .join("");
@@ -572,7 +579,6 @@ function renderSubcategoryPage(
       (axis) => `<div class="maps-pd-row">
         <span>${escapeHtml(axis.label)}</span>
         <strong>${escapeHtml(axis.tendency)}${axis.score ? ` (${escapeHtml(axis.score)})` : ""}</strong>
-        <small>${escapeHtml(axis.sidebar)}</small>
       </div>`,
     )
     .join("");
@@ -611,9 +617,9 @@ function renderSubcategoryPage(
         <h3>Plan / Decide / Do Lens</h3>
         <p>${escapeHtml(subcategory.name)} starts in <strong>${escapeHtml(read.lane)}</strong> — ${escapeHtml(movement.tendency)}${movement.score ? ` (${escapeHtml(movement.score)})` : ""}.</p>
         <div class="maps-mini-grid">
-          <div><h4>Strength</h4><p>${escapeHtml(movement.strength)} ${escapeHtml(movement.side ? `Use it to ${context[0]}.` : `For this page, first ${context[0]}; choose support after reviewing your result.`)}</p></div>
-          <div><h4>Need</h4><p>${escapeHtml(movement.need)} Then ${escapeHtml(context[1])}.</p></div>
-          <div><h4>Gap</h4><p>${escapeHtml(movement.gap)} Watch for ${escapeHtml(context[2])}.</p></div>
+          <div><h4>Strength</h4><p>${escapeHtml(movement.strength)}</p></div>
+          <div><h4>Need</h4><p>${escapeHtml(movement.need)}</p></div>
+          <div><h4>Gap</h4><p>${escapeHtml(movement.gap)}</p></div>
         </div>
       </article>
     </div>
@@ -834,7 +840,7 @@ export function buildMapsRoadmapHtml({
     .maps-resource-section > p {font-size:12px;line-height:1.5;}
     .maps-resource-section a {color:var(--green);}
     .maps-subcategory-page .maps-mini-grid {grid-template-columns:1fr;gap:3px;}
-    .maps-subcategory-page .maps-mini-grid > div {display:grid;grid-template-columns:48px minmax(0,1fr);gap:5px;padding:5px 6px;align-items:start;}
+    .maps-subcategory-page .maps-mini-grid > div {display:grid;grid-template-columns:56px minmax(0,1fr);gap:5px;padding:5px 6px;align-items:start;}
     .maps-subcategory-page .maps-mini-grid h4 {font-size:9px;line-height:1.3;margin:0;}
     .maps-subcategory-page .maps-mini-grid p {font-size:10px;line-height:1.25;}
     .maps-subcategory-page .maps-term-card {position:relative;}

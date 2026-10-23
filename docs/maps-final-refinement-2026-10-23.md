@@ -1,5 +1,7 @@
 # MAPS Personal Roadmap final refinement — 2026-10-23
 
+> Historical release. Its narrative rules are superseded by [the universal contextual correction](maps-contextual-correction-2026-10-23.md); approved indicator mappings and source teaching remain intact.
+
 ## Authority and source
 
 John explicitly authorized this stable `master` release and the one native MAPS definition update. This is not promotion of sandbox/Pathfinder work. Shared teaching source remains `lib/maps-report/content.ts`, unchanged from the preceding `d42ba498` release/workbook-aligned 36-term content. The new indicator blends and generated interpretation are approved MAPS presentation rules, not changes to DesignID scoring or independently validated measurements.

@@ -69,110 +69,103 @@ const john=idSnapshot([29,35,33,3]);
 for(const [name,expected] of Object.entries({Purpose:31,Development:32,Outcomes:16}))
   check('John synthetic shape '+name,()=>assert.equal(mapsIndicatorScore(categories.find(s=>s.name===name),john),expected));
 
-// Every page must actually use its helper's personal lens, not a generic highest/lowest block.
-for(const score of boundaries) {
-  const id=idSnapshot([score,score,score,score]);
-  const request=input(id),before=JSON.stringify(request),pages=focusPages(build(request));
-  check('all focus pages rendered and immutable '+score,()=>{assert.equal(Object.keys(pages).length,12);assert.equal(JSON.stringify(request),before)});
-  for(const sub of categories) check(`${sub.name}: lens output wired at ${score}`,()=>{
-    const lens=mapsReflectionLens(sub,id),html=card(pages[sub.name],'Reflection Capacity Lens');
-    for(const field of ['strength','gap','support']) {
-      assert.equal(typeof lens[field],'string');assert(lens[field].trim());
-      assert.equal(mini(html,field[0].toUpperCase()+field.slice(1)),escape(lens[field]));
-    }
-    for(const identity of identities) assert(pages[sub.name].includes(identity));
-    assert(pages[sub.name].includes('<em>'+expectedBand(score)+'</em>'));
-    for(const term of sub.terms) for(const key of ['name','definition','biblical','capacity','scripture','scriptureSummary'])
-      assert(pages[sub.name].includes(escape(term[key])),`${sub.name}: authored ${term.name}.${key} missing`);
-    for(const key of ['definition','demandQuestion','capacityNeed','applicationUse'])
-      assert(pages[sub.name].includes(escape(sub[key])),`${sub.name}: authored ${key} missing`);
+// Independently specified mapped relationships, not implementation dictionaries.
+const mappedFor=sub=>blended[sub.name] || [primaries[sub.name]];
+const actualBands = [0,9,10,24,25,39,40,60];
+for(const sub of categories) {
+ const mapped=mappedFor(sub);
+ for(const score of actualBands) {
+  const snap=idSnapshot([score,score,score,score]), before=JSON.stringify(snap);
+  const lens=mapsReflectionLens(sub,snap);
+  check(sub.name+' actual mapped capacity '+score,()=>{
+   for(const name of mapped) {
+    assert((score>=25?lens.strength:lens.gap).includes(name+' ('+expectedBand(score)+')'));
+    assert(lens.support.includes(name+':'));
+   }
+   for(const name of identities.filter(n=>!mapped.includes(n))) for(const field of ['strength','gap','support'])
+    assert(!lens[field].includes(name),sub.name+' wrongly interprets unmapped '+name+' in '+field);
+   if(score>=25)assert(lens.gap.startsWith('No lower-capacity flag'),sub.name+' labels available capacity a gap');
+   else assert(lens.strength.startsWith('No mapped capacity'),sub.name+' labels low capacity a strength');
+   assert.equal(JSON.stringify(snap),before);
   });
+ }
+ // Changing every irrelevant reflection/rank must not change this page's interpretation.
+ check(sub.name+' independent of global rank',()=>{
+  const first=identities.map(n=>mapped.includes(n)?29:0), second=identities.map(n=>mapped.includes(n)?29:60);
+  assert.deepEqual(mapsReflectionLens(sub,idSnapshot(first)),mapsReflectionLens(sub,idSnapshot(second)));
+ });
+ for(const identity of mapped) {
+  const supportAt=n=>mapsReflectionLens(sub,idSnapshot(identities.map(x=>x===identity?n:30))).support;
+  for(const [a,b] of [[9,10],[24,25],[39,40]])check(sub.name+' '+identity+' support boundary '+a+'/'+b,()=>assert.notEqual(supportAt(a),supportAt(b)));
+ }
 }
-
-// Probe each reflection independently, with stable peers: rank alone cannot substitute for capacity.
-for(const sub of categories) for(let i=0;i<4;i++) {
-  const seen=new Map();
-  for(const score of boundaries) {
-    const values=[27,28,29,30];values[i]=score;
-    const snap=idSnapshot(values),before=JSON.stringify(snap),lens=mapsReflectionLens(sub,snap);
-    check(`${sub.name}: ${identities[i]} ${score} personal lens`,()=>{
-      assert.equal(JSON.stringify(snap),before,'reflection lens mutated input');
-      for(const field of ['strength','gap','support']) assert.equal(typeof lens[field],'string');
-      assert((lens.strength+' '+lens.gap).includes(identities[i]+' ('+expectedBand(score)+')'),`${sub.name}: ${identities[i]} ${score} not given its true band in strength/gap`);
-      seen.set(score,JSON.stringify([lens.strength,lens.gap,lens.support]));
-    });
-  }
-  check(`${sub.name}: every ${identities[i]} band changes its lens`,()=>{
-    for(const [a,b] of [[9,10],[24,25],[39,40]]) assert.notEqual(seen.get(a),seen.get(b),`${identities[i]} crossing ${a}/${b} did not change ${sub.name}'s reflection lens`);
-  });
-}
-for(const field of ['strength','gap','support']) check('page-specific '+field,()=>{
-  const texts=categories.map(sub=>mapsReflectionLens(sub,john)[field]);
-  assert.equal(new Set(texts).size,12,field+' still repeated across category pages');
+// Editorial anchors are taken from the approved source concepts, not generated strings.
+const termAnchors={Purpose:['Calling','Direction','Kingdom Impact'],Culture:['Belonging','Trust','Unity'],Motivation:['Care','Growth','Life-giving'],Assessment:['Discern','Understand','Clarify'],Insight:['Shape','Refine','Adjust'],Development:['Improve','Strengthen','Elevate'],Proof:['Observable','Measurable','Verified'],Organization:['Clear Roles','Ownership','Responsibility'],Reliability:['Consistent','Dependable','Sustainable'],Energy:['Initiative','Activate','Move Forward'],Momentum:['Build','Advance','Multiply'],Outcomes:['Complete','Deliver','Closure']};
+const johnPages=focusPages(build(input(john)));
+for(const sub of categories)check(sub.name+' useful mapped-term guidance and exact teaching',()=>{
+ const lens=mapsReflectionLens(sub,john),html=johnPages[sub.name];
+ const prose=[lens.strength,lens.gap,lens.support].join(' ').toLowerCase();
+ for(const term of termAnchors[sub.name])assert(prose.includes(term.toLowerCase()),sub.name+' missing contextual '+term);
+ for(const field of ['strength','gap','support'])assert.equal(mini(card(html,'Reflection Capacity Lens'),field[0].toUpperCase()+field.slice(1)),escape(lens[field]));
+ for(const key of ['definition','demandQuestion','capacityNeed','applicationUse'])assert(html.includes(escape(sub[key])),sub.name+' authored '+key);
+ for(const term of sub.terms)for(const key of ['name','definition','biblical','capacity','scripture','scriptureSummary'])assert(html.includes(escape(term[key])),sub.name+' '+term.name+'.'+key);
+ const data=html.slice(html.indexOf('<div class="maps-data-grid">'),html.indexOf('<div class="maps-term-grid">'));
+ assert(!data.includes('<small>'),'bottom score cards must not duplicate interpretive advice');
+ assert(!html.includes('Use clear scope.'));assert(!html.includes('Share ownership; use tools.'));
 });
-
-// PD score magnitudes are unsigned; the stored tendency, not numeric sign, selects polarity.
-const pdCases=[
-  {side:'positive',labels:['Strong Dreamer','Strong Feel It','Strong Solo'], strengths:['Imagine the outcome.','Notice conviction and people’s needs.','Take ownership and start independently.'], needs:['Choose one direction from the possibilities.','Test the choice with evidence and counsel.','Add a check-in partner and a clear finish line.']},
-  {side:'negative',labels:['Strong Doer','Strong Think It','Strong Together'], strengths:['Find a practical starting point.','Weigh evidence and clear criteria.','Build momentum through shared effort.'], needs:['Make room for a fresh possibility before acting.','Include people’s experience and inner conviction.','Name your own next action and decision space.']},
-];
-const balancedStrengths=['Connect possibility with practical steps.','Bring conviction and evidence together.','Move between independent and shared work.'];
-const balancedNeeds=['Choose vision or detail as this task needs.','Use both people’s needs and clear criteria.','Choose an owner and useful collaboration points.'];
-const laneFor=name=>['Purpose','Culture','Motivation','Assessment'].includes(name)?0:['Insight','Development','Proof','Organization'].includes(name)?1:2;
-for(const test of pdCases) for(const score of [0,5,6,15,16,60]) {
-  const pd=pdSnapshot(test.labels,score),before=JSON.stringify(pd),pages=focusPages(build(input(john,pd)));
-  for(const sub of categories) check(`${sub.name}: PD ${test.side} ${score}`,()=>{
-    const lane=laneFor(sub.name),html=card(pages[sub.name],'Plan / Decide / Do Lens');
-    assert(mini(html,'Strength').startsWith(escape(score<=5?balancedStrengths[lane]:test.strengths[lane]+(score>=16?' A strong default; pause to check fit.':' A preference you can flex.'))));
-    assert(mini(html,'Need').startsWith(escape(score<=5?balancedNeeds[lane]:(score>=16?'Support: ':'')+test.needs[lane]+(score>=16?' Build this into the workflow.':' Use a brief check when needed.'))));
-  });
-  assert.equal(JSON.stringify(pd),before,'PD interpretation mutated input');
-}
-for(const score of [0,5,6,15,16,60]) {
-  const pages=focusPages(build(input(john,pdSnapshot(['Balanced','Balanced','Balanced'],score))));
-  for(const sub of categories) check(`${sub.name}: explicit PD balanced ${score}`,()=>{
-    const html=card(pages[sub.name],'Plan / Decide / Do Lens');
-    assert(mini(html,'Strength').startsWith(escape(balancedStrengths[laneFor(sub.name)])));
-    assert(!mini(html,'Need').startsWith('Support: '));
-  });
-}
-for(const pd of [snapshot({}),snapshot({axisScores:{plan:60,decide:60,do:60}})]) {
-  const pages=focusPages(build(input(john,pd)));
-  for(const sub of categories) check(sub.name+': missing tendency does not infer polarity',()=>{
-    const html=card(pages[sub.name],'Plan / Decide / Do Lens');
-    assert(mini(html,'Need').startsWith('Review your DesignPD result before choosing support.'));
-    assert(mini(html,'Gap').startsWith('Do not assume an opposite-side need.'));
-  });
-}
-for(const values of [[25,25,25,25],[0,0,0,0],[60,60,60,60],[40,40,10,10]]) check('ties remain deterministic and immutable '+values.join('/'),()=>{
-  const snap=idSnapshot(values),before=JSON.stringify(snap);
-  for(const sub of categories) assert.deepEqual(mapsReflectionLens(sub,snap),mapsReflectionLens(sub,structuredClone(snap)));
-  assert.equal(JSON.stringify(snap),before);
+check('John actual capacity interpretation',()=>{
+ const lens=name=>mapsReflectionLens(categories.find(x=>x.name===name),john);
+ assert(lens('Culture').strength.includes('Shepherd (Steady)'));
+ assert(lens('Culture').gap.startsWith('No lower-capacity flag'));
+ for(const name of ['Proof','Organization','Reliability']) {assert(lens(name).gap.includes('Steward (Drained)'));assert(!lens(name).strength.includes('Artisan'));}
+ for(const name of ['Purpose','Development'])assert(lens(name).strength.includes('Architect (Steady)'));
+ assert(lens('Outcomes').strength.includes('Architect (Steady)'));assert(lens('Outcomes').gap.includes('Steward (Drained)'));
+ assert(lens('Culture').support.includes('quieter voice'));assert(lens('Culture').support.includes('promise'));
+ assert(lens('Proof').support.includes('visible result'));assert(lens('Proof').support.includes('second person'));
 });
-// A support recommendation also needs to distinguish each relevant capacity band.
-// Keep other contributors abundant so a change cannot be attributed to rank or a peer.
-const supportBandFailures=[];
-for(const sub of categories) for(const identity of blended[sub.name] || [primaries[sub.name]]) {
-  const supportAt=score=>{const values=[60,60,60,60];values[identities.indexOf(identity)]=score;return mapsReflectionLens(sub,idSnapshot(values)).support;};
-  for(const [a,b] of [[9,10],[24,25],[39,40]]) {
-    checks++;
-    if(supportAt(a)===supportAt(b)) supportBandFailures.push(`${sub.name}/${identity}: support unchanged across ${a}/${b}`);
-  }
-}
-assert.deepEqual(supportBandFailures,[], 'Relevant reflection support must react across all capacity-band boundaries');
-console.log(`PASS MAPS refinement: ${checks} independent checks; 12 category scores, 4 reflection identities x 8 boundary values, three blend anchors, category-specific lenses and exact authored teaching, both PD polarities at all six boundaries, balanced/missing/ties, immutable in-memory fixtures.`);
-// Exhaust all 4^4 band combinations; all four identities remain represented on every page.
+for(const values of [[25,25,25,25],[0,0,0,0],[60,60,60,60],[40,40,10,10]])check('ties not split by arbitrary rank '+values,()=>{
+ for(const sub of categories){const lens=mapsReflectionLens(sub,idSnapshot(values));for(const name of mappedFor(sub)){const n=values[identities.indexOf(name)];assert((n>=25?lens.strength:lens.gap).includes(name+' ('+expectedBand(n)+')'));}}
+});
+// Exhaust 4^4 actual-band combinations for all 12 pages, including split blends.
 let matrix=0;
 for(const a of [0,15,30,45])for(const b of [0,15,30,45])for(const c of [0,15,30,45])for(const d of [0,15,30,45])for(const sub of categories){
- const lens=mapsReflectionLens(sub,idSnapshot([a,b,c,d]));const text=[lens.interpretation,lens.strength,lens.gap,lens.support].join(' ');
- assert(!/undefined|NaN/.test(text));for(const id of identities)assert(text.includes(id));matrix++;
+ const values=[a,b,c,d],lens=mapsReflectionLens(sub,idSnapshot(values));
+ assert(!/undefined|NaN/.test(JSON.stringify(lens)));
+ for(const name of mappedFor(sub)){const n=values[identities.indexOf(name)];assert((n>=25?lens.strength:lens.gap).includes(name+' ('+expectedBand(n)+')'));}
+ matrix++;
 }
+const polarityCases=[['Strong Dreamer','Strong Feel It','Strong Solo'],['Strong Doer','Strong Think It','Strong Together']];
 const axisSpecs=[{axisKey:'plan',label:'Plan',scoreKeys:['Plan_Score'],tendencyKeys:['Plan_Tendency']},{axisKey:'decide',label:'Decide',scoreKeys:['Decide_Score'],tendencyKeys:['Decide_Tendency']},{axisKey:'do',label:'Do',scoreKeys:['Do_Score'],tendencyKeys:['Do_Tendency']}];
-for(const polarity of pdCases)for(let i=0;i<3;i++){
- const read=score=>report.designPdAxis(pdSnapshot(polarity.labels,score),axisSpecs[i]);
- for(const key of ['strength','need','gap','sidebar'])assert.notEqual(read(6)[key],read(16)[key],axisSpecs[i].label+' '+polarity.side+' '+key+' intensity not distinct');
- assert.equal(read(5).side,'balanced');assert.equal(read(6).intensity,'Moderate');assert.equal(read(15).intensity,'Moderate');assert.equal(read(16).intensity,'Strong');
+for(const labels of polarityCases)for(const magnitude of [0,5,6,15,16,60]){
+ const pd=pdSnapshot(labels,magnitude),before=JSON.stringify(pd);
+ for(const sub of categories)check(sub.name+' PD polarity/intensity '+labels[0]+'/'+magnitude,()=>{
+  const lens=report.mapsMovementLens(sub,pd),page=focusPages(build(input(john,pd)))[sub.name];
+  assert.equal(lens.side,magnitude<=5?'balanced':labels===polarityCases[0]?'positive':'negative');
+  assert.equal(lens.intensity,magnitude<=5?'Balanced':magnitude<16?'Moderate':'Strong');
+  assert.equal(mini(card(page,'Plan / Decide / Do Lens'),'Need'),escape(lens.need));
+  assert.equal(lens.need.includes('scheduled check'),magnitude>=16);
+  assert.equal(lens.need.includes('brief check'),magnitude>5&&magnitude<16);
+  assert.equal(JSON.stringify(pd),before);
+ });
 }
-const missingLens=mapsReflectionLens(categories[0],snapshot({}));assert(missingLens.interpretation.includes('unavailable'));assert(missingLens.support.includes('review missing capacity'));
-const labels=build(input(john)).match(/<div class="maps-phase-subcategory-strip">[\s\S]*?<\/div>/g);assert.equal(labels.length,4);for(const label of labels)assert.equal((label.match(/<em>\(/g)||[]).length,3);
-console.log(`PASS additional: ${matrix} category/band-matrix combinations, all six PD sidebar polarities/intensity pairs, missing reflection data and all 12 opening-page labels.`);
+// Editorial QA found five movement contexts drifting to older/general terms.
+// Each polarity must explicitly connect to all three approved authored concepts.
+for(const labels of [...polarityCases,['Balanced','Balanced','Balanced']])for(const sub of categories)check(sub.name+' PD all three authored concepts '+labels[0],()=>{
+ const lens=report.mapsMovementLens(sub,pdSnapshot(labels,20)),prose=[lens.strength,lens.need,lens.gap].join(' ').toLowerCase();
+ for(const term of termAnchors[sub.name])assert(prose.includes(term.toLowerCase()),sub.name+' PD missing '+term);
+});
+for(const labels of [...polarityCases,['Balanced','Balanced','Balanced']]) {
+ const lenses=categories.map(sub=>report.mapsMovementLens(sub,pdSnapshot(labels,20)));
+ for(const field of ['strength','need','gap'])check('PD task-specific '+labels[0]+'/'+field,()=>assert.equal(new Set(lenses.map(x=>x[field])).size,12));
+}
+for(const pd of [snapshot({}),snapshot({axisScores:{plan:60,decide:60,do:60}})])for(const sub of categories)check(sub.name+' missing PD safe',()=>{
+ const lens=report.mapsMovementLens(sub,pd);assert.equal(lens.side,null);assert(lens.need.startsWith('Review your DesignPD result'));assert(lens.gap.includes('missing data'));
+});
+for(const sub of categories)check(sub.name+' missing mapped capacity',()=>{
+ const lens=mapsReflectionLens(sub,snapshot({}));assert(lens.interpretation.includes('unavailable'));assert(lens.support.includes('missing score'));assert(!lens.strength.includes('Drained'));
+});
+for(const labels of polarityCases)for(const [i,axis]of axisSpecs.entries())for(const score of [0,5,6,15,16,60])check('stored unsigned axis '+axis.label+'/'+score,()=>{
+ const read=report.designPdAxis(pdSnapshot(labels,score),axis);assert.equal(read.side,score<=5?'balanced':labels===polarityCases[0]?'positive':'negative');
+});
+check('overall input and source immutability',()=>{const value=input(john,pdSnapshot(polarityCases[1],20)),before=JSON.stringify(value);build(value);assert.equal(JSON.stringify(value),before)});
+console.log(`PASS MAPS contextual correction: ${checks} independent checks + ${matrix} category/band combinations. Mapped-only bands, rank independence, ties, split blends, 36 source concepts, all authored teaching, task-specific PD polarity/intensity/missing, score-only bottom panels, immutable fixtures.`);

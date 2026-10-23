@@ -198,10 +198,12 @@ export function cleanMapsFilename(value: string) {
 function reflectionProfile(designIdSnapshot: MapsAssessmentSnapshot) {
   return reflectionFields
     .map((field) => {
+      const available = firstSnapshotValue(designIdSnapshot, field.keys) !== "";
       const score = numericSnapshotValue(designIdSnapshot, field.keys);
       return {
         ...field,
-        band: capacityBand(score),
+        band: available ? capacityBand(score) : "Not available",
+        available,
         score,
       };
     })
@@ -209,7 +211,7 @@ function reflectionProfile(designIdSnapshot: MapsAssessmentSnapshot) {
 }
 
 // Shared teaching is in content.ts; only these participant lenses vary by scores.
-export const mapsShortFormVersion = "2026-10-22-short-form-v2";
+export const mapsShortFormVersion = "2026-10-23-personalized-v3";
 
 const reflectionContribution: Record<Reflection, string> = {
   Architect: "Frame direction.",
@@ -218,12 +220,12 @@ const reflectionContribution: Record<Reflection, string> = {
   Steward: "Organize follow-through.",
 };
 
-function capacitySupport(reflection: Reflection, band: string) {
-  const contribution = reflectionContribution[reflection];
-  if (band === "Abundant") return `${contribution} Lead your share; include others.`;
-  if (band === "Steady") return `${contribution} Use clear scope.`;
-  if (band === "Limited") return `${contribution} Keep it small; partner up.`;
-  return `${contribution} Share the load; use tools.`;
+function capacitySupport(_reflection: Reflection, band: string) {
+  if (band === "Abundant") return "Lead; leave room for others.";
+  if (band === "Steady") return "Use clear scope.";
+  if (band === "Limited") return "Small scope; partner up.";
+  if (band === "Drained") return "Share ownership; use tools.";
+  return "Review missing capacity before choosing support.";
 }
 
 const movementCopy = {
@@ -244,30 +246,26 @@ const movementCopy = {
   },
 } as const;
 
-export const mapsShortFormDefinition = {
-  version: mapsShortFormVersion,
-  sections: mapsPhases,
-  layout: {
-    focusPages: 12,
-    documentPages: 18,
-    reflectionSpace: false,
-    repeatedAbcMovement: false,
-    abcBodyPixels: 12,
-    abcLineHeight: 1.35,
-    focusSpacingPixels: { top: 16, bottom: 12, definitionVertical: 10, scoreRowVertical: 4, termMarginTop: 12 },
-    preserveVisuals: ["cover circle", "phase-opening pages", "charts"],
-    preserveTeaching: ["definition", "biblical", "capacity", "scripture", "scriptureSummary"],
-  },
-  personalization: {
-    reflectionBands: { Abundant: ">=40", Steady: ">=25", Limited: ">=10", Drained: "<10" },
-    reflectionContribution,
-    movementCopy,
-    scorePolicy: "Read each participant's latest DesignID and DesignPD; never rewrite scores. Rank all four reflections; respect ties and all bands. PD side comes from stored tendency; unsigned magnitude <=5 balanced, 6-15 moderate, >=16 strong. Missing tendencies never imply an opposite-side need.",
-    teachingPolicy: "ABC definitions, Biblical lenses, design capacities and scripture remain shared authored teaching, not score-dependent rewrites.",
-  },
-};
 
-function designPdAxis(
+const movementSidebar = {
+  Plan: {
+    positive: ["Pause briefly to choose one direction.", "Schedule a direction check before each new idea."],
+    negative: ["Try one fresh possibility.", "Require a possibility check before committing."],
+    balanced: "Choose vision or detail to fit the task.",
+  },
+  Decide: {
+    positive: ["Check evidence before choosing.", "Build evidence and counsel into every major choice."],
+    negative: ["Ask how the choice affects people.", "Invite affected people before final decisions."],
+    balanced: "Use conviction and evidence; set a decision time.",
+  },
+  Do: {
+    positive: ["Use a check-in when work gets complex.", "Schedule partner check-ins and a finish line."],
+    negative: ["Name your own next action.", "Assign individual ownership before work begins."],
+    balanced: "Choose an owner and useful collaboration points.",
+  },
+} as const;
+
+export function designPdAxis(
   designPdSnapshot: MapsAssessmentSnapshot,
   axis: (typeof designPdAxes)[number],
 ) {
@@ -296,9 +294,12 @@ function designPdAxis(
     label: axis.label,
     tendency,
     score,
-    strength: copy[0],
-    need: `${intensity === "Strong" && effectiveSide && effectiveSide !== "balanced" ? "Support: " : ""}${copy[1]}`,
-    gap: copy[2],
+    sidebar: effectiveSide === null ? "Review your DesignPD result before choosing support." : effectiveSide === "balanced" ? movementSidebar[axis.label as keyof typeof movementSidebar].balanced : movementSidebar[axis.label as keyof typeof movementSidebar][effectiveSide][intensity === "Strong" ? 1 : 0],
+    side: effectiveSide,
+    intensity,
+    strength: `${copy[0]}${intensity === "Strong" && effectiveSide && effectiveSide !== "balanced" ? " A strong default; pause to check fit." : intensity === "Moderate" && effectiveSide ? " A preference you can flex." : ""}`,
+    need: `${intensity === "Strong" && effectiveSide && effectiveSide !== "balanced" ? "Support: " : ""}${copy[1]}${intensity === "Strong" && effectiveSide && effectiveSide !== "balanced" ? " Build this into the workflow." : intensity === "Moderate" && effectiveSide ? " Use a brief check when needed." : ""}`,
+    gap: `${copy[2]}${intensity === "Strong" && effectiveSide && effectiveSide !== "balanced" ? " Check at each milestone." : intensity === "Moderate" && effectiveSide ? " Watch when pressure rises." : ""}`,
   };
 }
 
@@ -312,25 +313,114 @@ function subcategoryLane(subcategory: string) {
   return "Do";
 }
 
-function subcategoryRead(subcategory: MapsSubcategory, designIdSnapshot: MapsAssessmentSnapshot) {
+// Page-specific contributions: Architect, Artisan, Shepherd, Steward. Shared teaching stays untouched.
+export const mapsReflectionTasks: Record<string, Record<Reflection, string>> = {
+  Purpose: { Architect: "clarify direction", Artisan: "express the calling", Shepherd: "connect the why to people", Steward: "define signs of fruit" },
+  Culture: { Architect: "frame shared values", Artisan: "shape an inviting atmosphere", Shepherd: "build belonging and trust", Steward: "protect agreed practices" },
+  Motivation: { Architect: "connect energy to direction", Artisan: "renew meaningful expression", Shepherd: "notice care and growth", Steward: "pace sustainable commitments" },
+  Assessment: { Architect: "frame the real question", Artisan: "discern and clarify what is true", Shepherd: "hear lived experience", Steward: "check the facts" },
+  Insight: { Architect: "connect patterns to direction", Artisan: "shape and refine meaning", Shepherd: "test how meaning lands", Steward: "check practical fit" },
+  Development: { Architect: "choose a path through constraints", Artisan: "refine the next version", Shepherd: "support people through change", Steward: "test risk and resources" },
+  Proof: { Architect: "define what evidence matters", Artisan: "make evidence understandable", Shepherd: "hear the people affected", Steward: "verify observable results" },
+  Organization: { Architect: "align roles with direction", Artisan: "make handoffs clear", Shepherd: "agree responsibilities together", Steward: "assign ownership and accountability" },
+  Reliability: { Architect: "keep commitments aligned", Artisan: "adjust an unworkable routine", Shepherd: "notice strain and ask for help", Steward: "sustain dependable follow-through" },
+  Energy: { Architect: "initiate the next faithful step", Artisan: "make the starting point tangible", Shepherd: "invite willing participation", Steward: "prepare time and resources" },
+  Momentum: { Architect: "advance and multiply traction", Artisan: "adapt what is gaining traction", Shepherd: "keep people engaged", Steward: "maintain a repeatable rhythm" },
+  Outcomes: { Architect: "connect completion to intended fruit", Artisan: "refine the final delivery", Shepherd: "confirm people were served", Steward: "deliver and close the loop" },
+};
+
+export const mapsMovementTasks: Record<string, [string, string, string]> = {
+  Purpose: ["name the why", "check the next direction against intended fruit", "activity replacing calling"],
+  Culture: ["agree a shared tone", "ask who does not yet feel safe to contribute", "agreement without trust"],
+  Motivation: ["name what gives life", "check energy before adding commitments", "enthusiasm hiding depletion"],
+  Assessment: ["frame an honest question", "test one assumption with an observation", "a preferred explanation replacing facts"],
+  Insight: ["shape a useful interpretation", "test the meaning with someone affected", "refinement without clarity"],
+  Development: ["choose one improvement", "trial the change against a real constraint", "improvement without a workable path"],
+  Proof: ["name visible evidence", "agree one verifiable measure", "confidence without evidence"],
+  Organization: ["name an accountable owner", "confirm each handoff and decision right", "busy roles without ownership"],
+  Reliability: ["set a repeatable commitment", "check load and recovery before promising", "a promise without a sustainable rhythm"],
+  Energy: ["start one concrete action", "confirm time and resources for the first step", "activation without a finish line"],
+  Momentum: ["advance what is working", "review traction before expanding", "more activity without progress"],
+  Outcomes: ["deliver the intended fruit", "agree acceptance and closure with the recipient", "motion without completion"],
+};
+
+export const mapsIndicatorReflections: Record<string, Reflection[]> = {
+  Purpose: ["Shepherd", "Architect"],
+  Development: ["Artisan", "Architect"],
+  Outcomes: ["Architect", "Steward"],
+};
+
+function indicatorReflections(subcategory: MapsSubcategory) {
+  return mapsIndicatorReflections[subcategory.name] ?? [subcategory.primaryReflection];
+}
+
+export function mapsIndicatorScore(subcategory: MapsSubcategory, snapshot: MapsAssessmentSnapshot) {
+  const profile = reflectionProfile(snapshot);
+  const identities = indicatorReflections(subcategory);
+  return identities.reduce((sum, label) => sum + profile.find(p => p.label === label)!.score, 0) / identities.length;
+}
+
+export function mapsReflectionLens(subcategory: MapsSubcategory, designIdSnapshot: MapsAssessmentSnapshot) {
   const profile = reflectionProfile(designIdSnapshot);
-  const highest = profile[0];
-  const primary = profile.find((item) => item.label === subcategory.primaryReflection)!;
-  const lowest = profile[profile.length - 1];
-  const tied = profile.filter((item) => item.score === highest.score);
-  const usable = highest.band === "Abundant" || highest.band === "Steady";
+  const tasks = mapsReflectionTasks[subcategory.name];
+  const identities = indicatorReflections(subcategory);
+  const score = mapsIndicatorScore(subcategory, designIdSnapshot);
+  const describe = (item: typeof profile[number]) => {
+    const action = tasks[item.label];
+    if (!item.available) return `${item.label}: capacity to ${action} not available`;
+    if (item.band === "Abundant") return `${item.label} (${item.band}): lead to ${action}`;
+    if (item.band === "Steady") return `${item.label} (${item.band}): scoped capacity to ${action}`;
+    if (item.band === "Limited") return `${item.label} (${item.band}): small steps to ${action}`;
+    return `${item.label} (${item.band}): shared help to ${action}`;
+  };
+  const required = profile.filter(item => identities.includes(item.label));
+  const support = required.map(item => {
+    const action = tasks[item.label];
+    if (!item.available) return `${item.label}: review missing capacity before assigning support`;
+    if (item.band === "Abundant") return `${item.label}: lead to ${action}; invite shared ownership`;
+    if (item.band === "Steady") return `${item.label}: ${action} within clear scope`;
+    if (item.band === "Limited") return `${item.label}: partner on a small trial to ${action}`;
+    return `${item.label}: share ownership to ${action}; use a tool`;
+  }).join("; ") + ".";
   return {
-    gap: lowest.band === "Abundant" || lowest.band === "Steady"
-      ? `${lowest.label} ${lowest.score}: capacity available; pace the load.`
-      : `${lowest.label} ${lowest.score} (${lowest.band}): ${lowest.band === "Drained" ? "share the load" : "keep demand small"}.`,
-    interpretation: `${primary.label} ${primary.score} (${primary.band}) supports ${subcategory.name.toLowerCase()}. ${capacitySupport(primary.label, primary.band)}`,
+    interpretation: required.some(item => !item.available) ? "MAPS indicator unavailable: one or more required reflection scores are missing." : `${identities.join(" + ")}: ${score} (${capacityBand(score)}${identities.length > 1 ? "; average" : ""}). ${identities.length > 1 ? "Blended indicator, not an independent measurement. Read both capacities." : "A capacity indicator, not a measurement of performance."}`,
+    strength: profile.slice(0, 2).map(describe).join("; ") + ".",
+    gap: profile.slice(2).map(item => item.available && item.score >= 25 ? `${item.label} (${item.band}): capacity available to ${tasks[item.label]}; pace it` : describe(item)).join("; ") + ".",
+    support,
     lane: subcategoryLane(subcategory.name),
-    support: primary.band === "Drained" || primary.band === "Limited"
-      ? `${primary.label}: share ownership and use a template.`
-      : `Name the next ${primary.label} contribution.`,
-    strength: `${highest.label} ${highest.score}${tied.length > 1 ? ` (+${tied.length - 1} tied)` : ""}: ${usable ? reflectionContribution[highest.label] : "start small; add support."}`,
   };
 }
+
+const subcategoryRead = mapsReflectionLens;
+
+export const mapsShortFormDefinition = {
+  version: mapsShortFormVersion,
+  sections: mapsPhases,
+  layout: {
+    focusPages: 12,
+    documentPages: 18,
+    reflectionSpace: false,
+    repeatedAbcMovement: false,
+    abcBodyPixels: 12,
+    abcLineHeight: 1.35,
+    focusSpacingPixels: { top: 16, bottom: 12, definitionVertical: 10, scoreRowVertical: 4, termMarginTop: 12 },
+    preserveVisuals: ["cover circle", "phase colors", "0–60 chart scale"],
+    preserveTeaching: ["definition", "biblical", "capacity", "scripture", "scriptureSummary"],
+  },
+  personalization: {
+    reflectionBands: { Abundant: ">=40", Steady: ">=25", Limited: ">=10", Drained: "<10" },
+    reflectionContribution,
+    reflectionTasks: mapsReflectionTasks,
+    movementTasks: mapsMovementTasks,
+    indicatorReflections: mapsIndicatorReflections,
+    indicatorPolicy: "0–60 scale. Purpose = mean Shepherd + Architect; Development = mean Artisan + Architect; Outcomes = mean Architect + Steward. Other nine retain their single reflection. Blended MAPS indicators, not independent measurements. Read individual capacities alongside averages.",
+    movementCopy,
+    movementSidebar,
+    scorePolicy: "Read each participant's latest DesignID and DesignPD; never rewrite scores. Rank all four reflections; respect ties and all bands. PD side comes from stored tendency; unsigned magnitude <=5 balanced, 6-15 moderate, >=16 strong. Missing tendencies never imply an opposite-side need.",
+    teachingPolicy: "ABC definitions, Biblical lenses, design capacities and scripture remain shared authored teaching, not score-dependent rewrites.",
+  },
+};
+
 
 function renderTermCards(subcategory: MapsSubcategory) {
   return subcategory.terms
@@ -371,7 +461,6 @@ function renderMapsWheel({
   const cx = 250;
   const cy = 250;
   const profile = reflectionProfile(designIdSnapshot);
-  const profileByLabel = Object.fromEntries(profile.map((item) => [item.label, item]));
   const pdProfile = designPdProfile(designPdSnapshot);
   const allSubcategories = mapsPhases.flatMap((phase) =>
     phase.subcategories.map((subcategory) => ({
@@ -380,7 +469,7 @@ function renderMapsWheel({
     })),
   );
   const overlayPoints = allSubcategories.map((item, index) => {
-    const score = profileByLabel[item.subcategory.primaryReflection]?.score ?? 0;
+    const score = mapsIndicatorScore(item.subcategory, designIdSnapshot);
     return polarPoint(cx, cy, scoreRadius(score), index * 30 + 15);
   });
   const overlayPolygon = overlayPoints.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
@@ -467,6 +556,7 @@ function renderSubcategoryPage(
   const read = subcategoryRead(subcategory, designIdSnapshot);
   const pdProfile = designPdProfile(designPdSnapshot);
   const movement = pdProfile.find(axis => axis.label === read.lane)!;
+  const context = mapsMovementTasks[subcategory.name];
   const capacityRows = reflectionProfile(designIdSnapshot)
     .map(
       (item) => `<div class="maps-capacity-row">
@@ -482,7 +572,7 @@ function renderSubcategoryPage(
       (axis) => `<div class="maps-pd-row">
         <span>${escapeHtml(axis.label)}</span>
         <strong>${escapeHtml(axis.tendency)}${axis.score ? ` (${escapeHtml(axis.score)})` : ""}</strong>
-        <small>${escapeHtml(axis.need)}</small>
+        <small>${escapeHtml(axis.sidebar)}</small>
       </div>`,
     )
     .join("");
@@ -519,11 +609,11 @@ function renderSubcategoryPage(
       </article>
       <article class="maps-lens-card">
         <h3>Plan / Decide / Do Lens</h3>
-        <p>Begin in <strong>${escapeHtml(read.lane)}</strong>: ${escapeHtml(movement.tendency)}${movement.score ? ` (${escapeHtml(movement.score)})` : ""}.</p>
+        <p>${escapeHtml(subcategory.name)} starts in <strong>${escapeHtml(read.lane)}</strong> — ${escapeHtml(movement.tendency)}${movement.score ? ` (${escapeHtml(movement.score)})` : ""}.</p>
         <div class="maps-mini-grid">
-          <div><h4>Strength</h4><p>${escapeHtml(movement.strength)}</p></div>
-          <div><h4>Need</h4><p>${escapeHtml(movement.need)}</p></div>
-          <div><h4>Gap</h4><p>${escapeHtml(movement.gap)}</p></div>
+          <div><h4>Strength</h4><p>${escapeHtml(movement.strength)} ${escapeHtml(movement.side ? `Use it to ${context[0]}.` : `For this page, first ${context[0]}; choose support after reviewing your result.`)}</p></div>
+          <div><h4>Need</h4><p>${escapeHtml(movement.need)} Then ${escapeHtml(context[1])}.</p></div>
+          <div><h4>Gap</h4><p>${escapeHtml(movement.gap)} Watch for ${escapeHtml(context[2])}.</p></div>
         </div>
       </article>
     </div>
@@ -579,8 +669,9 @@ export function buildMapsRoadmapHtml({
             <h2>${escapeHtml(phase.name)}</h2>
             <span>${escapeHtml(phase.intro)}</span>
             <div class="maps-phase-subcategory-strip">
-              ${phase.subcategories.map((subcategory) => `<strong>${escapeHtml(subcategory.name)}</strong>`).join("")}
+              ${phase.subcategories.map((subcategory) => `<strong>${escapeHtml(subcategory.name)} <em>(${escapeHtml(indicatorReflections(subcategory).join(" + "))})</em></strong>`).join("")}
             </div>
+            <small class="maps-indicator-note">Paired reflections use their average. These are blended MAPS indicators, not independent measurements; the chart stays on a 0–60 scale.</small>
           </div>
           <div class="maps-phase-wheel">
             ${renderMapsWheel({
@@ -729,6 +820,29 @@ export function buildMapsRoadmapHtml({
     .maps-subcategory-page .maps-term-card dt {font-size:10px;line-height:1.2;}
     .maps-subcategory-page .maps-term-card dd {font-size:12px;line-height:1.35;margin:3px 0 0;}
 
+    .maps-phase-subcategory-strip em {font-style:normal;font-weight:400;}
+    .maps-phase-copy .maps-indicator-note {grid-column:1 / -1;color:var(--muted);font-size:10px;line-height:1.35;max-width:660px;}
+    .maps-definition-block {gap:0;grid-template-columns:minmax(0,1fr) minmax(0,3fr);}
+    .maps-definition-block > div {padding-right:12px;}
+    .maps-definition-block dl {gap:0;}
+    .maps-definition-block dl > div {border-left:1px solid color-mix(in srgb,var(--phase-color) 16%,transparent);padding:0 12px;}
+    .maps-definition-block h3 {font-size:10px;letter-spacing:.06em;text-transform:uppercase;}
+    .maps-resource-section {padding:34px;min-height:550px;}
+    .maps-next-step {margin:24px 0;border-top:1px solid var(--line);padding-top:18px;}
+    .maps-next-step h3 {font-size:15px;}
+    .maps-next-step p {font-size:12px;line-height:1.5;max-width:620px;}
+    .maps-resource-section > p {font-size:12px;line-height:1.5;}
+    .maps-resource-section a {color:var(--green);}
+    .maps-subcategory-page .maps-mini-grid {grid-template-columns:1fr;gap:3px;}
+    .maps-subcategory-page .maps-mini-grid > div {display:grid;grid-template-columns:48px minmax(0,1fr);gap:5px;padding:5px 6px;align-items:start;}
+    .maps-subcategory-page .maps-mini-grid h4 {font-size:9px;line-height:1.3;margin:0;}
+    .maps-subcategory-page .maps-mini-grid p {font-size:10px;line-height:1.25;}
+    .maps-subcategory-page .maps-term-card {position:relative;}
+    .maps-subcategory-page .maps-term-index {position:absolute;top:10px;right:10px;}
+    .maps-subcategory-page .maps-term-card h4 {padding-right:28px;}
+    .maps-subcategory-page .maps-lens-card h3, .maps-subcategory-page .maps-data-card h3 {font-size:14px;margin-bottom:6px;}
+    .maps-subcategory-page .maps-term-card dl {gap:8px;}
+    .maps-subcategory-page .maps-term-card h4 {margin-bottom:8px;}
     @page { size: Letter; margin: 0.24in; }
     @media print {
       body { background:white; padding:0; print-color-adjust:exact; -webkit-print-color-adjust:exact; }
@@ -764,15 +878,12 @@ export function buildMapsRoadmapHtml({
     </section>
     ${phasePages}
     <section class="maps-resource-section">
-      <h2>Continue the MAPS Walk</h2>
-      <p>This roadmap is most useful when it becomes a coaching conversation, class lab, or project rhythm. Use it to name the next faithful action, the support needed, and the specific part of the project that should move now.</p>
-      <div class="maps-resource-cta">
-        <div>
-          <h3>Resources, Courses, and Next Steps</h3>
-          <p>Visit <a href="${resourcesUrl}">${resourcesUrl}</a> for Discover Your Divine Design resources.</p>
-        </div>
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(resourcesUrl)}" alt="QR code for DYDD resources" />
-      </div>
+      <h2>Your Next Faithful Step</h2>
+      <p>Choose one part of your current project. Use the capacity indicators as a conversation starter, not a verdict about your ability.</p>
+      <div class="maps-next-step"><h3>1. Name the work</h3><p>Which MAPS word needs attention now? Use its project demand question to name one concrete outcome.</p></div>
+      <div class="maps-next-step"><h3>2. Match the support</h3><p>Use your Reflection Capacity and Plan / Decide / Do lenses to choose a partner, tool, or boundary that makes this step sustainable.</p></div>
+      <div class="maps-next-step"><h3>3. Make one commitment</h3><p>Name the next action, who owns it, and when you will review the result. Return to the roadmap as the work changes.</p></div>
+      <p>Continue with DYDD resources: <a href="${resourcesUrl}">${resourcesUrl}</a></p>
     </section>
   </main>
 </body>

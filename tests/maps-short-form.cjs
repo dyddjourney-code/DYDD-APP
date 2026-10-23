@@ -18,8 +18,8 @@ for(const h of html){assert.equal((h.match(/<section class="maps-subcategory-pag
 for(const band of ['Abundant','Steady','Limited','Drained'])assert(html[0].includes(`<em>${band}</em>`));
 assert(html[0].includes('Choose one direction from the possibilities.'));assert(!html[1].includes('Choose one direction from the possibilities.'));assert(html[1].includes('Make room for a fresh possibility before acting.'));
 assert(html[1].includes('Include people’s experience and inner conviction.'));assert(html[1].includes('Name your own next action and decision space.'));
-assert(html[2].includes('Choose vision or detail as this task needs.'));assert(html[2].includes('Architect 25 (+3 tied)'));assert(!html[2].includes('Support:'));
-assert(html[3].includes('start small; add support.'));assert(html[4].includes('capacity available'));
+assert(html[2].includes('Choose vision or detail as this task needs.'));assert(html[2].includes('Architect (Steady)'));assert(!html[2].includes('Support:'));
+assert(html[3].includes('shared help to'));assert(html[4].includes('capacity available'));
 assert(html[0].includes('Support: Choose one direction'));assert(!html[4].includes('Support: Choose one direction'));
 // Real derived snapshot shape, imported capitalized shape, zero magnitudes and missing data.
 const derived=input([40,30,20,10],['Balanced','Balanced','Balanced']);derived.designPdSnapshot=snap({axisTendencies:{plan:'Strong_Doer',decide:'Strong_Think_It',do:'Strong_Together'},axisScores:{plan:18,decide:20,do:25}});assert(build(derived).includes('Support: Make room for a fresh possibility'));

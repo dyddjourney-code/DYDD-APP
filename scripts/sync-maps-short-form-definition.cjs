@@ -6,11 +6,12 @@ const {mapsShortFormDefinition:short,mapsShortFormVersion:version}=load('lib/map
 (async()=>{
  const c=JSON.parse(fs.readFileSync('/home/openclaw/.openclaw/secrets/dydd-online-school-supabase.json'));
  if(c.ref!=='laojrzlqbkmirzcbcnyw'||!c.project_url.includes(c.ref))throw Error('Not the authorized production school database.');
- const out=path.resolve('tmp/maps-short-form');fs.mkdirSync(out,{recursive:true});
+ const out=path.resolve(process.argv.find(a=>a.startsWith('--output='))?.slice(9)||'tmp/maps-short-form');fs.mkdirSync(out,{recursive:true});
  const headers={apikey:c.service_role_key,Authorization:'Bearer '+c.service_role_key,'Content-Type':'application/json'};
  const endpoint=c.project_url+'/rest/v1/native_assessment_definitions';
  async function read(){const r=await fetch(endpoint+'?assessment_type=eq.maps_personal_roadmap&select=*',{headers});if(!r.ok)throw Error('Read '+r.status);const rows=await r.json();if(rows.length!==1)throw Error('Expected exactly one MAPS definition');return rows[0]}
- const before=await read(),stamp=new Date().toISOString().replace(/[:.]/g,'-'),backup=path.join(out,`native-definition-backup-${stamp}.json`);
+ const before=await read();if(before.id!=='3ddd19d4-cec9-4fb1-9861-86cc71e7886b')throw Error('Not the authorized MAPS definition row');
+ const stamp=new Date().toISOString().replace(/[:.]/g,'-'),backup=path.join(out,`native-definition-backup-${stamp}.json`);
  fs.writeFileSync(backup,JSON.stringify(before,null,2),{mode:0o600});
  const next={...before.definition,short_form:{...short,sections:undefined},authored_sections:short.sections};
  const patch={version,definition:next,updated_at:new Date().toISOString()};

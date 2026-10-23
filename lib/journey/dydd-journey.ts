@@ -692,16 +692,18 @@ export const dyddJourney: DyddJourney = {
       pathfinder: {
         title: "Pathfinder: Expertise Line",
         body:
-          "At the end of Expertise, Pathfinder captures the talents, skills, competencies, and matured wisdom that may support the eventual niche.",
+          "Review your reflections and name what God is developing in you to bless others. These are working pieces of your niche declaration, not a finished statement.",
         prompts: [
           {
             id: "expertise-talents-skills",
-            label: "Talents and skills: what comes easily or what have you developed?",
+            label: "Talents and skills",
+            helper: "What comes naturally to you, and what skills have you developed through learning and practice? Which could you use to serve others?",
             responseType: "long_text",
           },
           {
             id: "expertise-declaration",
-            label: "Competency and expertise: what have you mastered through experience?",
+            label: "Competency and expertise",
+            helper: "Where have your knowledge, skills, and abilities become reliable? Where has experience deepened them into wisdom, insight, or intuition you can use to bless others?",
             responseType: "declaration",
           },
         ],

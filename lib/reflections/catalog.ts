@@ -245,7 +245,7 @@ export function withOneAnother(courseSlug: string, questions: ReflectionQuestion
 /** Refresh current Pathfinder metadata without removing retired questions or answers. */
 export function withPathfinder(courseSlug: string, questions: ReflectionQuestion[]) {
   if (courseSlug !== "discover-your-divine-design") return questions;
-  const approved = getReflectionExperience(courseSlug)!.questions.filter(q => ["identity-declaration", "identity-service-reflections", "identity-love-for-others"].includes(q.id) || q.lessonSlug.startsWith("niche-"));
+  const approved = getReflectionExperience(courseSlug)!.questions.filter(q => ["identity-declaration", "identity-service-reflections", "identity-love-for-others", "expertise-talents-skills", "expertise-declaration"].includes(q.id) || q.lessonSlug.startsWith("niche-"));
   let result = questions;
   for (const canonical of approved) {
     const old = result.find(q => q.id === canonical.id);

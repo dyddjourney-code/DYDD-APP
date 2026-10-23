@@ -208,6 +208,7 @@ export function JourneyCourseNavigator({
   const isNeighbor = active.unit.slug === "identity-love-your-neighbor-as-yourself-22";
   const usesApprovedLessonFormat = isAppliedCapacity || Boolean(expertiseLesson) || isOneAnother || isNeighbor || isDesignReflectionsLove || isWhoWhose || ["identity-good-works-17", "identity-niche-18", "identity-identity-among-believers-20"].includes(active.unit.slug);
   const isIdentityPathfinder = active.unit.row === 24;
+  const isExpertisePathfinder = active.unit.slug === "expertise-niche-preparation-expertise-33";
   const isPathfinder = active.unit.type === "pathfinder";
   const isCareIntroduction = active.unit.slug === "what-is-dydd-how-to-c-a-r-e-10";
   const workbookExperience = active ? getWorkbookExperience(active) : null;
@@ -225,7 +226,7 @@ export function JourneyCourseNavigator({
   const lessonImageLabel =
     active.unit.media?.label ?? `${active.module.title} Journey illustration`;
   // Approved forward format, opt-in only; older lesson cleanup remains deferred.
-  const wrapLessonImage = active.unit.slug === "what-is-dydd-d-e-s-i-g-n-9" || usesApprovedLessonFormat || isIdentityPathfinder;
+  const wrapLessonImage = active.unit.slug === "what-is-dydd-d-e-s-i-g-n-9" || usesApprovedLessonFormat || isIdentityPathfinder || isExpertisePathfinder;
   const lessonArtwork = (
     <div className="journey-lesson-images">
       {[{ image: lessonImage, label: lessonImageLabel }, ...(active.unit.media?.additionalImages ?? [])].map((image) => (
@@ -390,7 +391,7 @@ export function JourneyCourseNavigator({
       </aside>
 
       <article
-        className={`journey-active-lesson ${typeClass[active.unit.type]}${usesApprovedLessonFormat || isIdentityPathfinder ? " journey-who-whose-lesson" : ""}${isOneAnother || isNeighbor ? " journey-neighbor-lesson" : ""}${expertiseLesson ? " journey-expertise-lesson" : ""}${isAppliedCapacity ? " journey-applied-capacity-lesson" : ""}${isDesignReflectionsLove ? " journey-design-love-lesson" : ""}${active.unit.slug === "identity-identity-among-believers-20" ? " journey-identity-believers-lesson" : ""}`}
+        className={`journey-active-lesson ${typeClass[active.unit.type]}${usesApprovedLessonFormat || isIdentityPathfinder || isExpertisePathfinder ? " journey-who-whose-lesson" : ""}${isOneAnother || isNeighbor ? " journey-neighbor-lesson" : ""}${expertiseLesson ? " journey-expertise-lesson" : ""}${isAppliedCapacity ? " journey-applied-capacity-lesson" : ""}${isDesignReflectionsLove ? " journey-design-love-lesson" : ""}${active.unit.slug === "identity-identity-among-believers-20" ? " journey-identity-believers-lesson" : ""}`}
         ref={activeLessonRef}
       >
         <header>
@@ -551,7 +552,7 @@ export function JourneyCourseNavigator({
 
               {workbookExperience.kind !== "pathfinder" ? <JourneyCareDirections /> : null}
               {isPathfinder ? <div className="journey-pathfinder-waypoints">
-                <p className="journey-pathfinder-saving">Your words save after a pause and before Next. {isIdentityPathfinder ? "These same pieces are ready to edit in section 8.2 and your Field Kit." : "Review your saved pieces in your Field Kit."}</p>
+                <p className="journey-pathfinder-saving">Your words save after a pause and before Next. {isIdentityPathfinder || isExpertisePathfinder ? "These same pieces are ready to edit in section 8.2 and your Field Kit." : "Review your saved pieces in your Field Kit."}</p>
                 {workbookExperience.prompts.map((prompt, index) => <section className="journey-pathfinder-waypoint" key={prompt.id}>
                   <span className="journey-pathfinder-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                   <div><h4>{prompt.label}</h4>{prompt.helper ? <p>{prompt.helper}</p> : null}<ReflectionAnswer questionId={prompt.id} showQuestion={false} /></div>
@@ -588,6 +589,7 @@ export function JourneyCourseNavigator({
 
               </>}
 
+              {isExpertisePathfinder ? <p className="journey-pathfinder-closing">Keep the words that best express what you can offer today and what God is still developing. You can return to these pieces as your niche declaration takes shape.</p> : null}
               {showNicheBuilder ? <ReflectionNicheBuilder /> : null}
             </section>
           ) : null}

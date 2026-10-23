@@ -16,6 +16,7 @@ const url=new URL(base);
 assert((['localhost','127.0.0.1'].includes(url.hostname)&&url.protocol==='http:')||base==='https://dydd-online-school-sandbox.vercel.app','only localhost or authorized sandbox deployment');
 const admin=createClient(cfg.project_url,cfg.service_role_key,{auth:{persistSession:false,autoRefreshToken:false}});
 const model=load('lib/waypoints/waypoint-data.ts');
+const {formatWaypointScripture}=load('lib/waypoints/scripture-format.ts');
 const types=['Architect','Artisan','Shepherd','Steward'];
 const users=[],participantIds=[],snapshotIds=[],sessions=[],pageErrors=[],browserWrites=[],cleanupErrors=[];
 let browser,assertions=0;
@@ -93,8 +94,8 @@ async function verifySelected(page,w,primary){
     passageCount:card.querySelectorAll('.waypoint-scripture-passage').length,
   }));
   assert.equal(actual.id,w.id);assert.equal(actual.date,w.date);assert.equal(actual.title,w.title);assert.deepEqual(actual.body,w.body,'original full devotional body');
-  assert.equal(actual.reference,w.scripture);assert.equal(normal(actual.passage),normal(w.scriptureText),'complete passage, no truncation');
-  assert(actual.translation.includes(w.scripture)&&actual.translation.includes('NIV'),'reference and NIV directly label passage');
+  assert.equal(actual.reference,w.scripture);assert.equal(normal(actual.passage),normal(formatWaypointScripture(w.scriptureText)),'complete quoted passage, no truncation');
+  assert.equal(actual.translation,w.scripture,'reference only; full NIV attribution remains beneath');
   assert.equal(normal(actual.attribution),normal(w.scriptureAttribution));
   assert.equal(actual.reflection,types.includes(primary)?w.reflections[primary]:w.reflection,`only saved ${primary||'generic'} reflection`);
   assert(actual.order,'passage placed after devotional body and before For your design');assert.equal(actual.passageCount,1);

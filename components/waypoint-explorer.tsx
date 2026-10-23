@@ -1,5 +1,6 @@
 "use client";
 
+import { formatWaypointScripture } from "@/lib/waypoints/scripture-format";
 import type { FormEvent } from "react";
 import { useMemo, useState } from "react";
 
@@ -207,8 +208,8 @@ export function WaypointExplorer({
         </div>
 
         <section className="waypoint-scripture-passage" aria-label="Scripture passage">
-          <h3>{selectedWaypoint.scripture} <span>({selectedWaypoint.scriptureTranslation})</span></h3>
-          <blockquote>{selectedWaypoint.scriptureText}</blockquote>
+          <h3>{selectedWaypoint.scripture}</h3>
+          <blockquote>{formatWaypointScripture(selectedWaypoint.scriptureText)}</blockquote>
           <p className="waypoint-scripture-attribution">{selectedWaypoint.scriptureAttribution}</p>
         </section>
 

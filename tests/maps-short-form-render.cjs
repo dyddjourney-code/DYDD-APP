@@ -12,9 +12,9 @@ const chromium=require('@sparticuz/chromium').default,puppeteer=require('puppete
   await p.setContent(build(input),{waitUntil:'load',timeout:45000});
   const metrics=await p.$$eval('.maps-subcategory-page',els=>els.map(e=>({name:e.querySelector('h2').textContent,overflow:e.scrollWidth>e.clientWidth,font:getComputedStyle(e.querySelector('.maps-term-card dd')).fontSize})));assert.equal(metrics.length,12);assert(metrics.every(m=>!m.overflow&&m.font==='12px'));
   const filename=path.join(out,name+'.pdf');const pdf=await p.pdf({path:filename,format:'letter',margin:{bottom:'0.25in',left:'0.25in',right:'0.25in',top:'0.25in'},preferCSSPageSize:true,printBackground:true});assert.equal(Buffer.from(pdf).subarray(0,5).toString(),'%PDF-');
-  const info=execFileSync('pdfinfo',[filename],{encoding:'utf8'});assert(/Pages:\s+18\b/.test(info),name+': unexpected pagination');
-  const text=execFileSync('pdftotext',['-layout',filename,'-'],{encoding:'utf8'});assert(!text.includes('Reflection Space'));for(const t of tendencies)assert(text.includes(t));assert.equal(text.split('\f').filter(x=>x.trim()).length,18);
-  console.log(`PASS PDF ${name}: 18 pages, 12 focus pages, no horizontal overflow, 12px ABC, tendency labels preserved.`);
+  const info=execFileSync('pdfinfo',[filename],{encoding:'utf8'});assert(/Pages:\s+17\b/.test(info),name+': unexpected pagination');
+  const text=execFileSync('pdftotext',['-layout',filename,'-'],{encoding:'utf8'});assert(!text.includes('Reflection Space'));assert(!text.includes('Your Next Faithful Step'));assert(/\bOutcomes\b/.test(text.split('\f').filter(x=>x.trim()).at(-1)));for(const t of tendencies)assert(text.includes(t));assert.equal(text.split('\f').filter(x=>x.trim()).length,17);
+  console.log(`PASS PDF ${name}: 17 pages ending at Outcomes, 12 focus pages, no horizontal overflow, 12px ABC, tendency labels preserved.`);
  }
  }finally{await browser.close()}
 })().catch(e=>{console.error(e);process.exitCode=1});

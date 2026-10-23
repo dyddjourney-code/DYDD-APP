@@ -883,14 +883,6 @@ export function buildMapsRoadmapHtml({
       <div class="maps-cover-visual">${coverWheel}</div>
     </section>
     ${phasePages}
-    <section class="maps-resource-section">
-      <h2>Your Next Faithful Step</h2>
-      <p>Choose one part of your current project. Use the capacity indicators as a conversation starter, not a verdict about your ability.</p>
-      <div class="maps-next-step"><h3>1. Name the work</h3><p>Which MAPS word needs attention now? Use its project demand question to name one concrete outcome.</p></div>
-      <div class="maps-next-step"><h3>2. Match the support</h3><p>Use your Reflection Capacity and Plan / Decide / Do lenses to choose a partner, tool, or boundary that makes this step sustainable.</p></div>
-      <div class="maps-next-step"><h3>3. Make one commitment</h3><p>Name the next action, who owns it, and when you will review the result. Return to the roadmap as the work changes.</p></div>
-      <p>Continue with DYDD resources: <a href="${resourcesUrl}">${resourcesUrl}</a></p>
-    </section>
   </main>
 </body>
 </html>`;

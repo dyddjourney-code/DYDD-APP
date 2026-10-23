@@ -1,3 +1,4 @@
+import { expertiseLessons } from "./expertise-lessons";
 import { identityPathfinderPrompts, laterPathfinderIds } from './pathfinder';
 import { oneAnotherCare } from "@/lib/journey/one-another-care";
 import { designReflectionsLoveCare } from "@/lib/journey/design-reflections-love-care";
@@ -227,6 +228,12 @@ export function getWorkbookExperience(
   active: FlatUnit,
 ): WorkbookExperience | null {
   const { module, unit } = active;
+  const expertise = expertiseLessons[unit.slug];
+  if (expertise) return {
+    kind: "care", title: expertise.careTitle, purpose: expertise.careIntro,
+    care: Object.fromEntries(expertise.care.map(item => [item.stage, item.explanation])) as JourneyCarePerspective,
+    prompts: expertise.care.map(item => ({ id: item.questionId, careStep: item.stage, label: item.prompt, responseType: "long_text" })),
+  };
   if (unit.slug === "identity-love-your-neighbor-as-yourself-22") return null;
   if (unit.slug === "identity-reflections-and-one-anothering-23") return {
     kind: "care", title: unit.title, purpose: "",

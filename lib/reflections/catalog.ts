@@ -1,3 +1,4 @@
+import { expertiseLessons } from "@/lib/journey/expertise-lessons";
 import { designIdAuthoredLessons } from "@/lib/courses/designid-authored-lessons";
 import { getDesignIdReflectionPrompts } from "@/lib/courses/designid-reflection-prompts";
 import { dyddJourney } from "@/lib/journey/dydd-journey";
@@ -245,6 +246,19 @@ export function withOneAnother(courseSlug: string, questions: ReflectionQuestion
 export function withPathfinder(courseSlug: string, questions: ReflectionQuestion[]) {
   if (courseSlug !== "discover-your-divine-design") return questions;
   const approved = getReflectionExperience(courseSlug)!.questions.filter(q => ["identity-declaration", "identity-service-reflections", "identity-love-for-others"].includes(q.id) || q.lessonSlug.startsWith("niche-"));
+  let result = questions;
+  for (const canonical of approved) {
+    const old = result.find(q => q.id === canonical.id);
+    if (old?.prompt === canonical.prompt) continue;
+    result = old ? result.map(q => q.id === canonical.id ? canonical : q) : [...result, canonical];
+  }
+  return result;
+}
+
+/** Refresh current Expertise prompts only. Entries, revisions and archived rounds remain untouched. */
+export function withExpertise(courseSlug: string, questions: ReflectionQuestion[]) {
+  if (courseSlug !== "discover-your-divine-design") return questions;
+  const approved = getReflectionExperience(courseSlug)!.questions.filter(q => expertiseLessons[q.lessonSlug]?.care.some(item => item.questionId === q.id));
   let result = questions;
   for (const canonical of approved) {
     const old = result.find(q => q.id === canonical.id);

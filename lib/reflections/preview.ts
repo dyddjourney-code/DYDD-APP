@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { reportBucket } from '@/lib/assessments/report-storage';
-import { getReflectionExperience, reflectionLessonExists, reflectionExperiences, withWhoWhoseExplore, withDesignIdWelcome, withDesignIdLens, withIdentityBelievers, withDesignReflectionsLove, withOneAnother, withPathfinder } from './catalog';
+import { getReflectionExperience, reflectionLessonExists, reflectionExperiences, withWhoWhoseExplore, withDesignIdWelcome, withDesignIdLens, withIdentityBelievers, withDesignReflectionsLove, withOneAnother, withPathfinder, withExpertise } from './catalog';
 import type { ReflectionRound, ReflectionEntry, ReflectionData } from './types';
 import { getHeatherReviewReport, getNewReviewReport, isReviewRequest, type ReviewSearchParams } from '@/lib/review/heather';
 import { isOwnerCoursePreview } from '@/lib/trails/course-preview';
@@ -31,7 +31,7 @@ async function load(p: ReviewSearchParams, slug: string): Promise<Saved> {
         throw Error('Could not load the saved preview workbook. Please try again.');
     }
     const saved: Saved = JSON.parse(await data.text());
-    if (saved.rounds[0]) saved.rounds[0].questions = withPathfinder(slug, withOneAnother(slug, withDesignReflectionsLove(slug, withIdentityBelievers(slug, withDesignIdLens(slug, withDesignIdWelcome(slug, withWhoWhoseExplore(slug, saved.rounds[0].questions)))))));
+    if (saved.rounds[0]) saved.rounds[0].questions = withExpertise(slug, withPathfinder(slug, withOneAnother(slug, withDesignReflectionsLove(slug, withIdentityBelievers(slug, withDesignIdLens(slug, withDesignIdWelcome(slug, withWhoWhoseExplore(slug, saved.rounds[0].questions))))))));
     if (slug === 'discover-your-divine-design' && saved.rounds[0]) {
       const round = saved.rounds[0];
       for (const recovered of missingPathfinderEntries(round.id, saved.entries)) {

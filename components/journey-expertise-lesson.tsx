@@ -27,8 +27,8 @@ export function JourneyExpertiseCare({ lesson, reflectionNames }: { lesson: Expe
     <JourneyCareDirections />
     {identityExpertise ? <>
       <div className="journey-expertise-matrix" aria-label="Reflection talent, competency, and expertise continuum">
-        <table><caption>The Reflections: Talent – Competency – Expertise</caption><thead><tr>{identityExpertiseMatrix.headers.map(h => <th scope="col" key={h}>{h}</th>)}</tr></thead><tbody>{identityExpertiseMatrix.rows.map(row => <tr key={row[0]}><th scope="row">{row[0]}</th>{row.slice(1).map(cell => <td key={cell}>{cell}</td>)}</tr>)}</tbody></table>
-        <div className="journey-expertise-matrix-cards">{identityExpertiseMatrix.rows.map(row => <section key={row[0]}><h4>{row[0]}</h4><dl>{row.slice(1).map((cell,i) => <div key={cell}><dt>{identityExpertiseMatrix.headers[i+1]}</dt><dd>{cell}</dd></div>)}</dl></section>)}</div>
+        <table><caption>The Reflections: Talent – Competency – Expertise</caption><thead><tr>{identityExpertiseMatrix.headers.map(h => <th scope="col" key={h}>{h}</th>)}</tr></thead><tbody>{identityExpertiseMatrix.rows.map(row => <tr key={row[0]} data-reflection={row[0].toLowerCase()}><th scope="row">{row[0]}</th>{row.slice(1).map(cell => <td key={cell}>{cell}</td>)}</tr>)}</tbody></table>
+        <div className="journey-expertise-matrix-cards">{identityExpertiseMatrix.rows.map(row => <section key={row[0]} data-reflection={row[0].toLowerCase()}><h4>{row[0]}</h4><dl>{row.slice(1).map((cell,i) => <div key={cell}><dt>{identityExpertiseMatrix.headers[i+1]}</dt><dd>{cell}</dd></div>)}</dl></section>)}</div>
       </div>
       <section className="journey-identity-expertise-reflect" data-care-stage="reflect"><h4>Reflect</h4><p id="identity-expertise-reflect-prompt">{identityExpertiseReflectQuestion}</p>
         <div className="journey-care-response-grid">{lesson.care.map((item,i) => {

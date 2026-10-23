@@ -183,6 +183,11 @@ export function JourneyCourseNavigator({
     0,
     flatUnits.findIndex((item) => item.unit.slug === activeSlug),
   );
+  // Forward-only authoring rule: keep previously approved lessons unchanged.
+  const connectedTrailBoundary = flatUnits.findIndex(
+    (item) => item.unit.slug === "expertise-connecting-identity-and-expertise-32",
+  );
+  const beforeConnectedTrailBoundary = connectedTrailBoundary >= 0 && activeIndex < connectedTrailBoundary;
   const active = flatUnits[activeIndex] ?? flatUnits[0];
   const previous = activeIndex > 0 ? flatUnits[activeIndex - 1] : null;
   const next =
@@ -463,7 +468,7 @@ export function JourneyCourseNavigator({
           </section>
 
           {/* Keep the overview in class; connected trails remain available at the assessment introductions. */}
-          {!isDesignIdLens && !isDesignReflectionsLove && !isOneAnother && active.unit.slug !== "what-is-dydd-dydd-assessments-11" && active.unit.contentStatus !== "draft" && (active.unit.type === "assessment-link" ||
+          {beforeConnectedTrailBoundary && !isDesignIdLens && !isDesignReflectionsLove && !isOneAnother && active.unit.slug !== "what-is-dydd-dydd-assessments-11" && active.unit.contentStatus !== "draft" && (active.unit.type === "assessment-link" ||
           active.unit.type === "designid-reflection" ||
           active.unit.slug.includes("spiritual-gifts-assessment")) ? (
             <aside className="trail-fieldkit-note">

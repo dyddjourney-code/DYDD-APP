@@ -444,8 +444,8 @@ export const expertiseLessons: Record<string, ExpertiseLesson> = {
   ],
   "media": {
     "type": "image",
-    "image": "/brand/badges/expertise-badge.png",
-    "label": "Expertise Journey illustration"
+    "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/30f6dead-70b1-4bb6-979d-11254343f01d/multi-cultural-team-in-workshop-assembling-hand-bu-2024-10-19-10-23-09-utc.jpg?format=2500w",
+    "label": "A multicultural team collaborating in a workshop"
   },
   "lessonMainIdea": "Connecting Identity & Expertise",
   "teachingBlocks": [],

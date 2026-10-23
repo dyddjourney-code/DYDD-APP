@@ -21398,3 +21398,13 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
  .journey-expertise-matrix-cards dt { font-weight: 700; margin-bottom: .3rem; }
  .journey-expertise-matrix-cards dd { margin: 0; }
 }
+
+/* Exact approved DesignID reflection palette; labels remain dark for contrast. */
+.journey-expertise-matrix [data-reflection="architect"] { --reflection-color: #d4a451; --reflection-tint: rgba(212, 164, 81, .13); }
+.journey-expertise-matrix [data-reflection="artisan"] { --reflection-color: #647c9b; --reflection-tint: rgba(100, 124, 155, .13); }
+.journey-expertise-matrix [data-reflection="shepherd"] { --reflection-color: #739d5e; --reflection-tint: rgba(115, 157, 94, .14); }
+.journey-expertise-matrix [data-reflection="steward"] { --reflection-color: #5a496b; --reflection-tint: rgba(90, 73, 107, .12); }
+.journey-expertise-matrix tbody tr > *,
+.journey-expertise-matrix-cards section[data-reflection] { background: var(--reflection-tint); color: #28332b; }
+.journey-expertise-matrix tbody th,
+.journey-expertise-matrix-cards section[data-reflection] { border-left: 5px solid var(--reflection-color); }

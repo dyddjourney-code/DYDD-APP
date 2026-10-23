@@ -9,6 +9,10 @@ export type Waypoint = {
   reflection: string;
   releaseAt: string;
   scripture: string;
+  scriptureText: string;
+  scriptureTranslation: string;
+  scriptureAttribution: string;
+  reflections: Record<"Architect" | "Artisan" | "Shepherd" | "Steward", string>;
   tags: string[];
   title: string;
 };
@@ -40,3 +44,13 @@ const releasedWaypoints = getReleasedWaypoints();
 
 export const currentWaypoint = releasedWaypoints[0] ?? waypointArchive[0];
 export const previousWaypoint = releasedWaypoints[1] ?? waypointArchive[1];
+
+export function personalizeWaypoint(waypoint: Waypoint, savedPrimary: string) {
+  const primary = savedPrimary.trim();
+  const reflection = Object.prototype.hasOwnProperty.call(waypoint.reflections, primary)
+    ? waypoint.reflections[primary as keyof Waypoint["reflections"]]
+    : waypoint.reflection;
+  // Send only the selected reflection to the browser, including archive entries.
+  const { reflections: _variants, ...visible } = waypoint;
+  return { ...visible, reflection };
+}

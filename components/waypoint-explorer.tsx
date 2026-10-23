@@ -9,6 +9,9 @@ type Waypoint = {
   date: string;
   category: string;
   scripture: string;
+  scriptureText: string;
+  scriptureTranslation: string;
+  scriptureAttribution: string;
   tags: string[];
   excerpt: string;
   body: string[];
@@ -177,7 +180,7 @@ export function WaypointExplorer({
 
   return (
     <>
-      <article className="waypoint-display-card">
+      <article className="waypoint-display-card" data-waypoint-id={selectedWaypoint.id}>
         <div className="waypoint-card-topline">
           <span>
             {selectedWaypoint.id === currentId
@@ -202,6 +205,12 @@ export function WaypointExplorer({
             <p key={paragraph}>{paragraph}</p>
           ))}
         </div>
+
+        <section className="waypoint-scripture-passage" aria-label="Scripture passage">
+          <h3>{selectedWaypoint.scripture} <span>({selectedWaypoint.scriptureTranslation})</span></h3>
+          <blockquote>{selectedWaypoint.scriptureText}</blockquote>
+          <p className="waypoint-scripture-attribution">{selectedWaypoint.scriptureAttribution}</p>
+        </section>
 
         <div className="waypoint-lower-row">
           <div className="waypoint-reflection-box">
@@ -357,6 +366,7 @@ export function WaypointExplorer({
                       ? "waypoint-result-card is-selected"
                       : "waypoint-result-card"
                   }
+                  data-waypoint-id={waypoint.id}
                   key={waypoint.id}
                   onClick={() => selectWaypoint(waypoint.id)}
                   type="button"

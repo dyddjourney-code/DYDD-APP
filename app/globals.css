@@ -21466,3 +21466,17 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .reflection-report-link select { width: 100%; max-width: 100%; min-width: 0; padding: .8rem; border: 1px solid #abb7a5; border-radius: 6px; background: #fffdf7; color: #243d2f; font: inherit; }
 .reflection-workbook-settings { margin: 1.5rem 0; padding-top: 1rem; border-top: 1px solid #cdd2bf; min-width: 0; }
 .reflection-workbook-settings .reflection-round-bar { border-top-width: 1px; margin-top: .75rem; }
+
+/* Full Scripture follows the devotional and precedes personal application. */
+.waypoint-scripture-passage { margin: 1.5rem 0; padding: 1.25rem; border-left: 3px solid #739D5E; background: #f4f7f1; border-radius: 0 12px 12px 0; }
+.waypoint-scripture-passage h3 { margin: 0 0 .7rem; font-size: 1rem; }
+.waypoint-scripture-passage blockquote { margin: 0; color: #263d32; font-size: 1.1rem; line-height: 1.75; white-space: pre-line; overflow-wrap: anywhere; }
+.waypoint-display-card p.waypoint-scripture-attribution { margin: 1rem 0 0; font-size: .75rem; line-height: 1.5; color: #526057; }
+
+/* Keep reading order visual as well as semantic: devotion, Scripture, application. */
+.waypoint-display-card { grid-template-columns: minmax(0, 1fr); }
+.waypoint-display-card .waypoint-lower-row { grid-column: 1; grid-row: auto; grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr); }
+.waypoint-scripture-passage blockquote { max-width: 74ch; }
+@media (max-width: 760px) {
+  .waypoint-display-card .waypoint-lower-row { grid-template-columns: minmax(0, 1fr); }
+}

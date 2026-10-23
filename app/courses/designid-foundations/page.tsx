@@ -127,7 +127,7 @@ export default async function DesignIdCoursePage({
       </section>
 
       <div id="designid-course-player">
-        <ReflectionCourseShell courseSlug="designid-foundations">
+        <ReflectionCourseShell courseSlug="designid-foundations" inlineEntry>
           <DesignIdCourseNavigator
             reflectionQuestions={
               getReflectionExperience("designid-foundations")!.questions

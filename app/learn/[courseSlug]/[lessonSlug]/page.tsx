@@ -264,8 +264,8 @@ export default async function LearningLessonPage({
             ) : null}
           </div>
 
-          <ReflectionCourseShell courseSlug={course.slug}>
-            <ReflectionAnswer questionId={lesson.slug} />
+          <ReflectionCourseShell courseSlug={course.slug} inlineEntry>
+            <ReflectionAnswer questionId={lesson.slug} entryPoint />
           </ReflectionCourseShell>
 
           <footer className="lesson-pagination" aria-label="Lesson pagination">

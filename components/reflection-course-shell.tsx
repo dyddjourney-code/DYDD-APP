@@ -5,10 +5,12 @@ export function ReflectionCourseShell({
   courseSlug,
   children,
   compactControls = false,
+  inlineEntry = false,
 }: {
   courseSlug: string;
   children: ReactNode;
   compactControls?: boolean;
+  inlineEntry?: boolean;
 }) {
   const experience = getReflectionExperience(courseSlug);
   return experience ? (
@@ -17,6 +19,7 @@ export function ReflectionCourseShell({
       courseSlug={courseSlug}
       questions={experience.questions}
       compactControls={compactControls}
+      inlineEntry={inlineEntry}
     >
       {children}
     </ReflectionSession>

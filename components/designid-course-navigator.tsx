@@ -285,8 +285,8 @@ export function DesignIdCourseNavigator({
 
             {reflectionQuestions
               .filter((q) => q.lessonSlug === active.lesson.slug)
-              .map((q) => (
-                <ReflectionAnswer key={q.id} questionId={q.id} />
+              .map((q, index) => (
+                <ReflectionAnswer key={q.id} questionId={q.id} entryPoint={index === 0} />
               ))}
             </section> : null}
           </section>

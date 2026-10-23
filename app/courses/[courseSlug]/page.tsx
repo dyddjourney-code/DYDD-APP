@@ -197,7 +197,7 @@ export default async function LearningCoursePage({
       ) : null}
 
       <div id={`${course.slug}-course-player`}>
-        <ReflectionCourseShell courseSlug={course.slug}>
+        <ReflectionCourseShell courseSlug={course.slug} inlineEntry>
           <AssessmentCourseNavigator
             accent={course.accent}
             assessmentLabel={course.title}

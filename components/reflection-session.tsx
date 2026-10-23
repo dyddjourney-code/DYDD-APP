@@ -50,6 +50,8 @@ function ReflectionText({ text }: { text: string }) {
   );
 }
 type Session = {
+  inlineEntry: boolean;
+  setup: ReactNode;
   courseSlug: string;
   data: ReflectionData;
   round: ReflectionRound | null;
@@ -86,11 +88,13 @@ export function ReflectionSession({
   questions,
   children,
   compactControls = false,
+  inlineEntry = false,
 }: {
   courseSlug: string;
   questions: ReflectionQuestion[];
   children: ReactNode;
   compactControls?: boolean;
+  inlineEntry?: boolean;
 }) {
   const [data, setData] = useState<ReflectionData>(empty),
     [selected, setSelected] = useState(""),
@@ -100,6 +104,8 @@ export function ReflectionSession({
     [error, setError] = useState(""),
     [creating, setCreating] = useState(false),
     [report, setReport] = useState("");
+  const assessmentEntry = ["designid-foundations", "spiritual-gifts-service", "fruitlife-360-formation", "designpd-alignment"].includes(courseSlug);
+  const contextualEntry = inlineEntry && assessmentEntry;
   const discussionEnabled = isSandbox() && courseSlug === discussionCourse;
   const [reminderError, setReminderError] = useState('');
   const [reminders, setReminders] = useState<DiscussionReminder[]>([]);
@@ -421,7 +427,37 @@ export function ReflectionSession({
       })
       .catch((e) => setError(e.message));
   };
+  const reportSelector = (
+    <details className="reflection-report-link">
+      <summary>Link these reflections to a report (optional)</summary>
+      <p>This labels this set of reflections; your lesson content stays the same.</p>
+      <label>
+        Report
+        <select value={report} onChange={(e) => setReport(e.target.value)} disabled={creating}>
+          <option value="">Course reflections only</option>
+          {data.reports.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
+        </select>
+      </label>
+    </details>
+  );
+  const setup = (
+    <div className="reflection-entry-setup">
+      <h3>Your private reflections</h3>
+      <p>Save what you notice as you work through this course.</p>
+      {loading ? <p role="status">Loading your reflections…</p> : !data.signedIn ? (
+        <p><ReviewAwareLink href={`/login?next=${encodeURIComponent(`/courses/${courseSlug}`)}`}>Sign in to save your reflections</ReviewAwareLink></p>
+      ) : data.canStart ? <>
+        <button className="button primary" type="button" onClick={() => void newRound()} disabled={creating}>
+          {creating ? "Beginning…" : "Begin my reflections"}
+        </button>
+        {reportSelector}
+      </> : <p>Begin this trail at <ReviewAwareLink href="/trailheads">Trailheads</ReviewAwareLink>; its completed report opens your reflections.</p>}
+      {error ? <p role="alert">{error} <button type="button" onClick={() => void reload()}>Try loading again</button></p> : null}
+    </div>
+  );
   const session: Session = {
+    inlineEntry: contextualEntry,
+    setup,
     discussionEnabled, reminderError, reminders, reminderDrafts, reminderStatuses, saveReminder,
     setReminder: (id, marked, note) => {
       reminderDraftRef.current = { ...reminderDraftRef.current, [id]: { marked, note } };
@@ -463,7 +499,7 @@ export function ReflectionSession({
   };
   const controls = (
     <section className="reflection-round-bar" aria-label="Reflection rounds">
-      {compactControls ? (
+      {assessmentEntry ? null : compactControls ? (
         <p>
           Your CARE reflections stay editable here and in Field Kit. Both places
           use the same saved answers.
@@ -514,7 +550,7 @@ export function ReflectionSession({
           )}
           {data.canStart ? (
             <>
-              <label>
+              {assessmentEntry ? reportSelector : <label>
                 Connect a report (optional)
                 <select
                   value={report}
@@ -527,9 +563,9 @@ export function ReflectionSession({
                     </option>
                   ))}
                 </select>
-              </label>
+              </label>}
               <button
-                className="button primary"
+                className={assessmentEntry ? "button secondary" : "button primary"}
                 type="button"
                 onClick={newRound}
                 disabled={
@@ -539,7 +575,7 @@ export function ReflectionSession({
                 {creating
                   ? "Beginning…"
                   : data.rounds.length
-                    ? "Begin a new reflection round"
+                    ? assessmentEntry ? "Start a fresh set of reflections" : "Begin a new reflection round"
                     : "Begin my reflections"}
               </button>
             </>
@@ -572,8 +608,15 @@ export function ReflectionSession({
   );
   return (
     <Context.Provider value={session}>
-      {automatic ? null : controls}
+      {automatic || contextualEntry ? null : assessmentEntry ? (
+        data.rounds.length ? <details className="reflection-workbook-settings"><summary>Previous reflections and fresh sets</summary>{controls}</details> : setup
+      ) : controls}
       {children}
+      {contextualEntry && data.rounds.length > 0 ? <details className="reflection-workbook-settings">
+        <summary>Reflection workbook · Previous reflections and fresh sets</summary>
+        <p><ReviewAwareLink href={`/field-kit/reflections/${courseSlug}`}>Open my reflection workbook</ReviewAwareLink></p>
+        {controls}
+      </details> : null}
     </Context.Provider>
   );
 }
@@ -581,10 +624,12 @@ export function ReflectionAnswer({
   questionId,
   showQuestion = true,
   reading = false,
+  entryPoint = false,
 }: {
   questionId: string;
   showQuestion?: boolean;
   reading?: boolean;
+  entryPoint?: boolean;
 }) {
   const inputId = useId();
   const [editingHere, setEditingHere] = useState(false);
@@ -616,6 +661,7 @@ export function ReflectionAnswer({
     <section className="reflection-answer" data-question={q.id}>
       {showQuestion ? <h3>{q.prompt}</h3> : null}
       {retiredCanonical && !s.readOnly ? <p className="reflection-retired-pathfinder">This earlier answer is preserved for history. <ReviewAwareLink href={`/journey?lesson=${s.questions.find(q => q.id === retiredCanonical)?.lessonSlug ?? "niche-pathfinder-preparing-your-niche-declaration-68"}`}>Edit the shared Pathfinder answer</ReviewAwareLink>.</p> : null}
+      {s.inlineEntry && !s.round ? (entryPoint ? s.setup : <p>Begin your reflections at the first reflection in this lesson.</p>) : <>
       {s.error ? <p role="alert">{s.error} <button type="button" onClick={() => void s.reload()}>Try again</button></p> : null}
       {!s.loading && !s.data.signedIn ? <p><a href={`/login?next=${encodeURIComponent("/journey")}`}>Sign in to save your reflections</a></p> : null}
       {s.loading ? (
@@ -676,6 +722,7 @@ export function ReflectionAnswer({
           ) : null}
         </>
       )}
+      </>}
       <DiscussionControl questionId={q.id} />
       {previous.length ? (
         <details className="reflection-history">

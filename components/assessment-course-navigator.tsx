@@ -360,7 +360,7 @@ export function AssessmentCourseNavigator({
             </div>
 
             {active.lesson.reflectionPrompt ? (
-              <ReflectionAnswer questionId={active.lesson.slug} />
+              <ReflectionAnswer questionId={active.lesson.slug} entryPoint />
             ) : null}
           </section>
         </div>

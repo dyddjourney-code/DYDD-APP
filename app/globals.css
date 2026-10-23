@@ -21454,3 +21454,15 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .capacity-personal-grid .capacity-time { font-size: 1rem; }
   .capacity-personal-grid p { font-size: .88rem; }
 }
+
+/* Assessment entry is local to the first reflection; Journey retains its workbook UX. */
+.reflection-entry-setup { min-width: 0; }
+.reflection-entry-setup h3 { margin: 0 0 .5rem; }
+.reflection-entry-setup p { line-height: 1.6; }
+.reflection-entry-setup .button { white-space: normal; }
+.reflection-report-link { margin-top: 1rem; min-width: 0; flex-basis: 100%; }
+.reflection-report-link summary, .reflection-workbook-settings > summary { cursor: pointer; font-weight: 600; line-height: 1.6; }
+.reflection-report-link label { display: grid; gap: .5rem; max-width: 100%; }
+.reflection-report-link select { width: 100%; max-width: 100%; min-width: 0; padding: .8rem; border: 1px solid #abb7a5; border-radius: 6px; background: #fffdf7; color: #243d2f; font: inherit; }
+.reflection-workbook-settings { margin: 1.5rem 0; padding-top: 1rem; border-top: 1px solid #cdd2bf; min-width: 0; }
+.reflection-workbook-settings .reflection-round-bar { border-top-width: 1px; margin-top: .75rem; }

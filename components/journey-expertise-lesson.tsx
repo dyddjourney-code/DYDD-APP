@@ -5,7 +5,7 @@ import type { JourneyLessonBlock } from "@/lib/journey/dydd-course-outline";
 
 // Preserve the complete authored quote/citation, including original punctuation and book names.
 // Split only actual Scripture citations; ordinary quotation marks remain ordinary prose.
-const verse = /“[^”]+”[.,]?\s*(?:\((?:Philippians|Ephesians|1? ?Peter|Proverbs|Luke|Acts|Colossians|Hebrews|Exodus)\s+\d+:\d+\)|(?:Philippians|Ephesians|1? ?Peter|Proverbs|Luke|Acts|Colossians|Hebrews|Exodus)\s+\d+:\d+)[.]?/g;
+const verse = /(?:Psalm 46:10 says, |Ephesians 2:10: )“[^”]+”[.]?|“[^”]+”[.,]?\s*(?:\((?:Psalm|John|Philippians|Ephesians|1? ?Peter|Proverbs|Luke|Acts|Colossians|Hebrews|Exodus)\s+\d+:\d+\)|(?:Psalm|John|Philippians|Ephesians|1? ?Peter|Proverbs|Luke|Acts|Colossians|Hebrews|Exodus)\s+\d+:\d+)[.]?/g;
 function AuthoredCopy({ text }: { text: string }) {
   const parts = []; let from = 0;
   for (const match of text.matchAll(verse)) {

@@ -1,6 +1,6 @@
 import type { JourneyLessonBlock } from "./dydd-course-outline";
 
-// Authored main Journey source rows25–28. Stable app IDs intentionally retain legacy row suffixes.
+// Authored main Journey source rows25–29. Stable app IDs intentionally retain legacy row suffixes.
 export type ExpertiseLesson = { sourceRow: number; title: string; focus: string[]; media: {type: "image"; image: string; label: string}; lessonMainIdea: string; teachingBlocks: string[]; lessonBody: JourneyLessonBlock[]; careTitle: string; careIntro: string; care: {stage: "connect" | "act" | "reflect" | "explore"; title: string; explanation: string; prompt: string; questionId: string}[]; prayer: string | null };
 export const expertiseLessons: Record<string, ExpertiseLesson> = {
   "expertise-the-journey-to-expertise-26": {
@@ -358,5 +358,79 @@ export const expertiseLessons: Record<string, ExpertiseLesson> = {
       }
     ],
     "prayer": "“Father, thank you for the slow, faithful work You are doing in me. Root me like an oak by streams of water, steady through storms and seasons. Free me from chasing shortcuts; teach me to value perseverance, practice, and humble learning. Use my experiences, the ordinary and the hard, to form wisdom that serves others and honors You. Fill me with Your Spirit, sharpen my skill, and align my motives with Your kingdom. May my growing competence mature into Christ-shaped expertise that gives shade and shelter to many. In Jesus’s name, amen.”"
-  }
+  },
+  "expertise-being-vs-doing-30": {
+  "sourceRow": 29,
+  "title": "Being Vs. Doing",
+  "focus": [
+    "You are a Human Being!",
+    "Relationship before Results"
+  ],
+  "media": {
+    "type": "image",
+    "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/92e29ef7-205e-4b16-8c4b-f0f59f8624db/symmetrical-staircases-with-two-different-colors-2024-09-17-14-08-19-utc.jpg?format=2500w",
+    "label": "Two staircases in contrasting colors"
+  },
+  "lessonMainIdea": "You are a Human Being!, Relationship before Results",
+  "teachingBlocks": [],
+  "lessonBody": [
+    {
+      "type": "paragraph",
+      "text": "We are not human doings, we are human beings!"
+    },
+    {
+      "type": "paragraph",
+      "text": "Let’s be honest, we live in a world where “doing” gets all the applause. We make to-do lists just to cross things off and feel productive (and yes, we’ve all written something down we already did just to check it off, no judgment here). But here’s the twist. In God’s eyes, your worth isn’t measured by how many boxes you tick or how many gold stars you collect. Before you rush to do more, God invites you to be, to rest in who you are as His beloved, not just what you can accomplish. So take a deep breath, put down the checklist (it’ll still be there later), and let’s talk about why being is so important."
+    },
+    {
+      "type": "paragraph",
+      "text": "Psalm 46:10 says, “Be still, and know that I am God.” It is important that we learn to stop striving at times and learn to simply rest in our identity in Christ, recognizing His sovereignty and presence. The phrase “be still” in Hebrew can be defined as letting go, releasing, or stopping. In this context, it can be considered a declarative command to STOP. Psalm 46 speaks of turbulent times with war and earthquakes. This command asks us to trust that He is God and to let go of our anxieties and fears. The second part of the verse, “know that I am God,” invites us to lean not on our own understanding and accept His authority and care for all things in our lives."
+    },
+    {
+      "type": "paragraph",
+      "text": "At the heart of it all lies the truth of Ephesians 2:10: “For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” This verse holds the perfect balance between being and doing. We are His handiwork—that’s our being, our identity rooted in Christ, formed by His love and redeemed by His grace. And we are created to do good works—that’s our doing, the natural outflow of who we are in Him."
+    },
+    {
+      "type": "paragraph",
+      "text": "Notice the order: We are before we do. The doing comes after the being, not the other way around. God doesn’t call us to create our worth through what we accomplish; He calls us to express His workmanship through what we do. Our works are not a means of earning His favor but a reflection of it. It is the living evidence that His Spirit is at work within us."
+    },
+    {
+      "type": "paragraph",
+      "text": "When being precedes doing, our actions become worship instead of striving. We begin to see our labor, creativity, and expertise not as self-made achievements but as divine assignments. Whether you’re teaching, leading, serving, building, healing, or creating, every good work finds meaning when it flows from your being, your relationship with Jesus."
+    }
+  ],
+  "careTitle": "Being Vs. Doing",
+  "careIntro": "The world constantly praises productivity, yet Jesus invites us first to presence. Before you plan, perform, or pursue the next task, He calls you to sit with Him—not to earn His approval, but to remember who you already are: beloved, chosen, and enough.",
+  "care": [
+    {
+      "stage": "connect",
+      "title": "Connect",
+      "explanation": "",
+      "prompt": "What is one area of your life where you have potentially tied your value to performance?",
+      "questionId": "busy-taking-stage"
+    },
+    {
+      "stage": "act",
+      "title": "Act",
+      "explanation": "",
+      "prompt": "This week, begin each workday or ministry task by pausing for thirty seconds to pray, “Lord, help me do this with You, not for You.” Write out eh first prayer that comes to mind..",
+      "questionId": "expertise-being-vs-doing-30-care-act"
+    },
+    {
+      "stage": "reflect",
+      "title": "Reflect",
+      "explanation": "Busyness often disguises itself as purpose, but being with Jesus realigns what truly matters. The disciples were recognized not by credentials but because they had been with Him. You too are known by His presence, not your productivity.",
+      "prompt": "What can you surrender to Jesus?",
+      "questionId": "expertise-being-vs-doing-30-care-reflect"
+    },
+    {
+      "stage": "explore",
+      "title": "Explore",
+      "explanation": "Being anchors doing, but it also fuels discovery. When you rest in Christ, your actions begin to flow from love, not striving. This is where creativity, wisdom, and purpose take shape. “Remain in me, as I also remain in you. No branch can bear fruit by itself; it must remain in the vine” (John 15:4).",
+      "prompt": "Choose one daily rhythm this week that helps you remain present with Jesus. It should be something small yet sacred that reminds you your doing is meant to flow from being.",
+      "questionId": "being-rhythm"
+    }
+  ],
+  "prayer": "“Jesus, still my striving and quiet my need to prove. Teach me to rest in who You are and who You’ve made me to be. Let my being in Your presence anchor everything I do. When I rush, remind me to return and sit with You. When I work, let it be from a heart already loved. Shape my doing into worship and my expertise into grace. Amen.”"
+}
 };

@@ -32,3 +32,13 @@ export function journeyDesignIdSnapshot(assessmentReport: StudentAssessmentRepor
     .replace(/<tr><td>/g, () => `<tr><th scope="row">${["A", "B", "C", "D"][shadowRow++]}</th><td>`);
   return `<section class="journey-designid-snapshot" aria-label="Your DesignID Snapshot"><h3>Your DesignID Snapshot</h3><dl class="journey-designid-labels">${[["Primary","primary"],["Secondary","secondary"],["Integrative","integrativeReflection"]].map(([label,key])=>`<div><dt>${label}</dt><dd>${value(key)}</dd></div>`).join("")}</dl><div class="journey-designid-score-layout"><section class="journey-designid-capacity"><h4>DesignID Capacity</h4><dl class="journey-designid-capacities" aria-label="Your reflection capacities">${names.map(name=>`<div><dt>${name}</dt><dd>${value(name.toLowerCase()+"Band")}</dd></div>`).join("")}</dl></section>${chart ? `<figure class="journey-designid-donut"><img src="${escape(chart)}" alt="Your saved DesignID reflection scores: ${escape(names.map((name,i)=>name+" "+(points[i]||"not available")).join(", "))}" /><figcaption>${names.map(name=>`${name}: <strong>${value(name.toLowerCase()+"Pts")}</strong>`).join(" · ")}</figcaption></figure>` : '<p role="status">The scored wheel is not available in your saved report.</p>'}</div><h3>Your shadow reflections</h3><p class="journey-shadow-scroll-hint">Scroll across the chart to read every column.</p><div class="journey-shadow-scroll" role="region" aria-label="Your shadow reflection chart" tabindex="0">${mobileComparisonTables(shadow)}</div></section>`;
 }
+
+/** Names only, from the same saved-report projection; never substitute a demo profile. */
+export function journeyReflectionNames(report: StudentAssessmentReport) {
+  const snapshot = getLatestSnapshot(report, "designid");
+  if (!snapshot) return { primary: "", secondary: "" };
+  const payload = snapshot.scores.reportPayload;
+  const scores = payload && typeof payload === "object" && !Array.isArray(payload) ? {...payload, ...snapshot.scores} : snapshot.scores;
+  const context = buildDesignIdContext({...report, latest: report.latest.map(row => row.id === snapshot.id ? {...snapshot, scores} : row)});
+  return {primary: context.primary || "", secondary: context.secondary || ""};
+}

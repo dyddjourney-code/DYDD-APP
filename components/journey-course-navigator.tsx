@@ -26,6 +26,7 @@ import type {
 type JourneyCourseNavigatorProps = {
   modules: DyddCourseModule[];
   designIdSnapshotHtml: string;
+  reflectionNames: {primary: string; secondary: string};
 };
 
 type SectionGroup = {
@@ -136,6 +137,7 @@ function flattenModules(modules: DyddCourseModule[]) {
 export function JourneyCourseNavigator({
   modules,
   designIdSnapshotHtml,
+  reflectionNames,
 }: JourneyCourseNavigatorProps) {
   const moduleSections = useMemo(
     () =>
@@ -497,7 +499,7 @@ export function JourneyCourseNavigator({
             </aside>
           ) : null}
 
-          {expertiseLesson ? <JourneyExpertiseCare lesson={expertiseLesson} /> : isOneAnother ? <JourneyOneAnotherCare /> : active.unit.slug === "identity-identity-among-believers-20" ? <JourneyIdentityBelieversCare /> : isWhoWhose ? <JourneyWhoWhoseCare /> : workbookExperience ? (
+          {expertiseLesson ? <JourneyExpertiseCare lesson={expertiseLesson} reflectionNames={reflectionNames} /> : isOneAnother ? <JourneyOneAnotherCare /> : active.unit.slug === "identity-identity-among-believers-20" ? <JourneyIdentityBelieversCare /> : isWhoWhose ? <JourneyWhoWhoseCare /> : workbookExperience ? (
             <section
               className={`journey-active-workbook ${workbookExperience.kind}${(isDesignIdLens || isDesignReflectionsLove) ? " journey-who-whose-care journey-designid-lens-care" : ""}`}
             >

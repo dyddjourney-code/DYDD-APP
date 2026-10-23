@@ -432,5 +432,91 @@ export const expertiseLessons: Record<string, ExpertiseLesson> = {
     }
   ],
   "prayer": "“Jesus, still my striving and quiet my need to prove. Teach me to rest in who You are and who You’ve made me to be. Let my being in Your presence anchor everything I do. When I rush, remind me to return and sit with You. When I work, let it be from a heart already loved. Shape my doing into worship and my expertise into grace. Amen.”"
+},
+  "expertise-connecting-identity-and-expertise-32": {
+  "sourceRow": 31,
+  "title": "Connecting Identity & Expertise",
+  "focus": [
+    "Identity",
+    "Talent",
+    "Competency",
+    "Expertise"
+  ],
+  "media": {
+    "type": "image",
+    "image": "/brand/badges/expertise-badge.png",
+    "label": "Expertise Journey illustration"
+  },
+  "lessonMainIdea": "Connecting Identity & Expertise",
+  "teachingBlocks": [],
+  "lessonBody": [
+    {
+      "type": "paragraph",
+      "text": "As we’ve explored, identity is the foundation of everything; it’s who you are in Christ before you lift a finger or check a single box. You are God’s beloved, redeemed, intentionally designed child. Your worth is not something you earn; it’s something you receive. It is not who you are but whose you are."
+    },
+    {
+      "type": "paragraph",
+      "text": "But God doesn’t stop at just being, He invites you into becoming. That’s where expertise comes in. Expertise is the tangible expression of your identity worked out over time. It’s the combination of your God-given talents, your life experiences, your practiced skills, and your growing wisdom. It’s what happens when the raw material of who you are gets shaped, refined, and multiplied to bless others."
+    },
+    {
+      "type": "paragraph",
+      "text": "Identity and expertise are like the roots and branches of a great oak tree. Without roots, the branches can’t stand; without branches, the roots never reach their full purpose. You were made to be deeply rooted in your identity so that what you do flows naturally from who you are. And here’s the best part: God’s not asking for instant perfection. He’s inviting you into a slow, faithful process of becoming, through trial, triumph, learning, failing, and trying again."
+    }
+  ],
+  "careTitle": "Connecting Identity & Expertise",
+  "careIntro": "Your identity is the root; expertise is its growing expression. Use the matrix below to notice how talent develops into competency and expertise in your primary and secondary reflections, then choose a faithful next step for each.",
+  "care": [
+    {
+      "stage": "reflect",
+      "title": "Primary",
+      "explanation": "",
+      "prompt": "Primary reflection: Where do you currently see talent, competency, and expertise expressed in your primary and secondary reflections, and what is one next step that would help each grow?",
+      "questionId": "expertise-connecting-identity-and-expertise-32-designid-connect"
+    },
+    {
+      "stage": "reflect",
+      "title": "Secondary",
+      "explanation": "",
+      "prompt": "Secondary reflection: Where do you currently see talent, competency, and expertise expressed in your primary and secondary reflections, and what is one next step that would help each grow?",
+      "questionId": "expertise-connecting-identity-and-expertise-32-designid-reflect"
+    }
+  ],
+  "prayer": null
 }
 };
+
+export const identityExpertiseMatrix = {
+  "headers": [
+    "Reflection",
+    "Talent (Innate Design Energy)",
+    "Competency (Developed Skill)",
+    "Expertise (Mature Expression)"
+  ],
+  "rows": [
+    [
+      "Architect",
+      "Initiative, vision, and drive to start or fix",
+      "Strategic execution, systems creation, leading momentum",
+      "Faith-anchored innovation; building what lasts through wisdom and courage"
+    ],
+    [
+      "Artisan",
+      "Creative insight, sense of beauty and order",
+      "Design thinking, refinement, clarity of process",
+      "Mastery of integration; excellence that reveals divine wisdom"
+    ],
+    [
+      "Shepherd",
+      "Empathy, care, and relational attunement",
+      "Communication, mediation, restorative guidance",
+      "Transformational presence; cultivating growth and belonging in others"
+    ],
+    [
+      "Steward",
+      "Reliability, structure, and integrity",
+      "Organization, accountability, process management",
+      "Faithful leadership; sustaining systems and people with enduring peace"
+    ]
+  ]
+};
+export const identityExpertiseReflectQuestion = "Where do you currently see talent, competency, and expertise expressed in your primary and secondary reflections, and what is one next step that would help each grow?";

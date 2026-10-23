@@ -21377,3 +21377,24 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 .journey-expertise-care .journey-closing-scripture p { margin: 0; line-height: 1.7; }
 @media (min-width: 601px) { .journey-expertise-care .journey-care-response-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Connecting Identity & Expertise: complete desktop matrix, readable phone cards. */
+.journey-expertise-matrix { margin: 1.5rem 0; min-width: 0; }
+.journey-expertise-matrix table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: .95rem; }
+.journey-expertise-matrix caption { text-align: left; font-weight: 700; margin-bottom: .75rem; }
+.journey-expertise-matrix th, .journey-expertise-matrix td { text-align: left; vertical-align: top; padding: .85rem; border: 1px solid #cbd3c3; overflow-wrap: anywhere; }
+.journey-expertise-matrix thead th { background: #e9eddf; }
+.journey-expertise-matrix th:first-child { width: 21%; }
+.journey-expertise-matrix-cards { display: none; }
+.journey-identity-expertise-reflect > h4 { font-size: 1.25rem; margin-bottom: .75rem; }
+.journey-identity-expertise-reflect > p { max-width: none; }
+.journey-identity-expertise-reflect h5 { font-size: 1.08rem; margin: 0 0 1rem; color: #243f27; }
+@media (max-width: 700px) {
+ .journey-expertise-matrix table { display: none; }
+ .journey-expertise-matrix-cards { display: grid; gap: 1rem; }
+ .journey-expertise-matrix-cards section { padding: 1rem; border: 1px solid #cbd3c3; border-radius: .75rem; background: #f7f8f1; }
+ .journey-expertise-matrix-cards h4 { margin: 0 0 .75rem; }
+ .journey-expertise-matrix-cards dl { margin: 0; display: grid; gap: .85rem; }
+ .journey-expertise-matrix-cards dt { font-weight: 700; margin-bottom: .3rem; }
+ .journey-expertise-matrix-cards dd { margin: 0; }
+}

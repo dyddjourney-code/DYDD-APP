@@ -18,7 +18,6 @@ export function JourneyAppliedCapacity({ scores }: { scores: AppliedCapacityScor
       <p>We start with the rule of eights: 8 hours of sleep, 8 hours of work, and 8 hours for the rest of life. That is an ideal, and many of you may never have experienced that balance. Feel free to adapt the model to your circumstances.</p>
       <p>You may discover that you spend much more time on activities outside your DesignID capacity. These estimates do not measure your capability or set hard limits. They can help you notice when you lose interest, become fatigued, or find yourself pushing through—and when your work feels fulfilling.</p>
       <p className="capacity-formula">16 hours × your reflection’s raw score ÷ 100</p>
-      <p>The four scores share a 100-point total; each reflection’s capacity range is 0–60. The model uses your saved raw scores without rescaling them.</p>
     </section>
     <section className="capacity-personal" aria-label="Your estimated daily capacity"><h3>Your estimated daily capacity</h3>
       <p>These estimates cover 16 waking hours across work and home. Each is rounded to the nearest 15 minutes, so the displayed times may not add up to exactly 16 hours.</p>
@@ -26,7 +25,7 @@ export function JourneyAppliedCapacity({ scores }: { scores: AppliedCapacityScor
       <div className="capacity-personal-grid">{capacityReflections.map(reflection => {
         const score = scores[reflection.name] ?? null;
         return <section data-capacity-reflection={reflection.name} key={reflection.name} style={{ "--reflection-color": reflection.color, "--reflection-tint": reflection.tint } as CSSProperties}>
-          <h4>{reflection.name}</h4>{score === null ? <p className="capacity-unavailable">Score, category, and time unavailable in your saved report.</p> : <><p className="capacity-category">{capacityCategory(score)}</p><p className="capacity-time">{formatCapacityMinutes(capacityMinutes(score))}</p><p className="capacity-raw-score">Saved score: {score} / 100</p></>}
+          <h4>{reflection.name}</h4>{score === null ? <p className="capacity-unavailable">Score, category, and time unavailable in your saved report.</p> : <><p className="capacity-category">{capacityCategory(score)}</p><p className="capacity-time">{formatCapacityMinutes(capacityMinutes(score))}</p></>}
         </section>;
       })}</div>
     </section>

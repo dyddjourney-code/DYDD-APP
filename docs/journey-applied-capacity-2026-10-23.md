@@ -45,3 +45,7 @@ Only branch `sandbox`, project `dydd-online-school-sandbox`, sandbox DB `atemrsh
 Review entry: https://dydd-online-school-sandbox.vercel.app/sandbox-review
 
 Lesson: https://dydd-online-school-sandbox.vercel.app/journey?lesson=expertise-applied-capacity-31
+
+## Follow-up display correction — October 23, 2026
+
+Removed the extra score-total/range explanation below the formula and the saved raw-score line from all four personalized cards. Populated cards now contain only the reflection name, capacity category, and calculated hours/minutes. Missing-report unavailable states remain explicit. The formula, internal raw scores, calculation/rounding, report selection, image, staircase, enrichment, and every neighboring lesson remain unchanged. Browser checks assert explanation/score-line absence and formula retention; actual saved-profile checks assert each populated card's complete three-field content. Released only on sandbox using the release flow above.

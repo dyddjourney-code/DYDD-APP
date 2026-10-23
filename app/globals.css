@@ -21473,10 +21473,43 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .waypoint-scripture-passage blockquote { margin: 0; color: #263d32; font-size: 1.1rem; line-height: 1.75; white-space: pre-line; overflow-wrap: anywhere; }
 .waypoint-display-card p.waypoint-scripture-attribution { margin: 1rem 0 0; font-size: .75rem; line-height: 1.5; color: #526057; }
 
-/* Keep reading order visual as well as semantic: devotion, Scripture, application. */
+/* Center the reading column; subscription belongs to the shortcuts below it. */
 .waypoint-display-card { grid-template-columns: minmax(0, 1fr); }
-.waypoint-display-card .waypoint-lower-row { grid-column: 1; grid-row: auto; grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr); }
-.waypoint-scripture-passage blockquote { max-width: 74ch; }
-@media (max-width: 760px) {
-  .waypoint-display-card .waypoint-lower-row { grid-template-columns: minmax(0, 1fr); }
+.waypoint-display-card > * { width: 100%; max-width: 84ch; margin-inline: auto; min-width: 0; box-sizing: border-box; }
+.waypoint-display-card .waypoint-lower-row { grid-column: 1; grid-row: auto; grid-template-columns: minmax(0, 1fr); }
+.waypoint-scripture-passage blockquote { max-width: none; }
+
+/* One compact, top-aligned navigation/subscription row, independent of reading length. */
+.waypoint-quick-actions { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(300px, 1.3fr); align-items: stretch; }
+.waypoint-quick-actions > * { min-width: 0; }
+.waypoint-quick-actions .waypoint-current-button,
+.waypoint-quick-actions .waypoint-last-week-card,
+.waypoint-quick-actions .waypoint-subscribe-card,
+.waypoint-quick-actions .waypoint-subscribed-card {
+  display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
+  gap: 4px; margin: 0; padding: 14px 16px;
+  border: 1px solid rgba(36, 63, 39, 0.16); border-radius: 8px;
+  box-shadow: none;
+}
+.waypoint-quick-actions .waypoint-subscribe-card,
+.waypoint-quick-actions .waypoint-subscribed-card { background: rgba(255, 255, 255, 0.82); }
+.waypoint-quick-actions strong { line-height: 1.4; }
+.waypoint-quick-actions small { font-size: .78rem; line-height: 1.4; color: var(--muted); }
+.waypoint-quick-actions .waypoint-action-label,
+.waypoint-quick-actions .waypoint-subscribed-card > strong {
+  margin: 0; color: rgba(36, 63, 39, 0.74); font-size: .78rem; font-weight: 950; line-height: normal; text-transform: uppercase;
+}
+.waypoint-quick-actions .waypoint-email-label {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+.waypoint-quick-actions .waypoint-subscribe-card div { grid-template-columns: minmax(0, 1fr) auto; gap: 6px; }
+.waypoint-quick-actions .waypoint-subscribe-card input { padding: 9px 10px; color: #526057; font-size: .86rem; }
+.waypoint-quick-actions .waypoint-subscribe-card .button { padding: 9px 12px; font-size: .82rem; }
+.waypoint-quick-actions .waypoint-subscribe-message.error { color: #9f3a2f; }
+@media (max-width: 900px) {
+  .waypoint-quick-actions { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 360px) {
+  .waypoint-quick-actions .waypoint-subscribe-card div { grid-template-columns: minmax(0, 1fr); }
 }

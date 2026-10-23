@@ -1,4 +1,4 @@
-import { journeyDesignIdSnapshot, journeyReflectionNames } from "@/lib/journey/designid-snapshot";
+import { journeyDesignIdSnapshot, journeyReflectionNames, journeyCapacityScores } from "@/lib/journey/designid-snapshot";
 import { getAssessmentSnapshotsForUser } from "@/lib/assessments/student-context";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { normalizeEmail } from "@/lib/identity/email";
@@ -72,7 +72,7 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
       />
 
       <ReflectionCourseShell courseSlug="discover-your-divine-design" compactControls>
-        <JourneyCourseNavigator modules={dyddMainCourseOutline} designIdSnapshotHtml={designIdSnapshotHtml} reflectionNames={journeyReflectionNames(assessmentReport)} />
+        <JourneyCourseNavigator modules={dyddMainCourseOutline} designIdSnapshotHtml={designIdSnapshotHtml} reflectionNames={journeyReflectionNames(assessmentReport)} capacityScores={journeyCapacityScores(assessmentReport)} />
 
         {params?.saved ? (
           <p className="journey-save-notice">

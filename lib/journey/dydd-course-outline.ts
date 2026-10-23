@@ -1697,12 +1697,9 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         title: "Applied Capacity",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Applied Capacity with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
-        anchorScripture: "Colossians 3:23",
-        teachingBlocks: [
-          "This lesson introduces Applied Capacity as part of the Expertise movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
-        ],
+        lessonMainIdea: "Use capacity as a grace-filled lens for fulfillment and time.",
+        focus: ["Capacity", "Fulfillment", "Time"],
+        teachingBlocks: [],
       },
       {
         row: 32,

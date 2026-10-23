@@ -21408,3 +21408,49 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 .journey-expertise-matrix-cards section[data-reflection] { background: var(--reflection-tint); color: #28332b; }
 .journey-expertise-matrix tbody th,
 .journey-expertise-matrix-cards section[data-reflection] { border-left: 5px solid var(--reflection-color); }
+
+/* Applied Capacity only: keep the bulb comparison whole and the capacity steps ascending. */
+.journey-applied-capacity { display: grid; gap: 28px; color: #28332B; min-width: 0; }
+.journey-applied-capacity p, .journey-applied-capacity dd { max-width: none; line-height: 1.7; }
+.journey-applied-capacity p { margin: 0 0 14px; }
+.journey-applied-capacity h3 { font-size: clamp(1.15rem, 2vw, 1.45rem); line-height: 1.35; margin: 0 0 14px; }
+.journey-applied-capacity h4 { margin: 0 0 8px; font-size: 1.05rem; line-height: 1.4; }
+.capacity-introduction { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 38%); gap: 24px; align-items: start; }
+.capacity-bulbs { margin: 0; min-width: 0; }
+.capacity-bulbs img { display: block; width: 100%; height: auto; border-radius: 12px; object-fit: contain; }
+.capacity-bulbs figcaption { margin-top: 8px; font-size: .9rem; line-height: 1.5; color: #445447; }
+.journey-applied-capacity .capacity-staircase { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); list-style: none; padding: 0; margin: 0; gap: 10px; align-items: end; }
+.capacity-staircase li { min-width: 0; padding: 18px 12px; border: 1px solid #A8B99B; border-bottom: 4px solid #547445; border-radius: 8px 8px 0 0; background: #F0F5EC; margin-top: calc((3 - var(--step)) * 42px); min-height: calc(158px + var(--step) * 42px); }
+.capacity-staircase h4 span { display: block; font-size: .9rem; font-weight: 500; }
+.capacity-staircase p { font-size: .94rem; margin: 0; }
+.journey-applied-capacity .capacity-formula { padding: 16px 18px; background: #F0F5EC; border-left: 4px solid #547445; font-weight: 650; }
+.capacity-personal-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.capacity-personal-grid > section { min-width: 0; padding: 20px; border-radius: 10px; border: 1px solid #DCE2D7; border-left: 5px solid var(--reflection-color); background: var(--reflection-tint); color: #28332B; }
+.capacity-personal-grid h4 { font-size: 1.1rem; }
+.capacity-personal-grid .capacity-category { margin-bottom: 4px; font-weight: 600; }
+.capacity-personal-grid .capacity-time { font-size: clamp(1.05rem, 2vw, 1.5rem); line-height: 1.4; font-weight: 650; margin-bottom: 10px; font-variant-numeric: tabular-nums; }
+.capacity-personal-grid .capacity-raw-score { margin: 0; font-size: .85rem; }
+.capacity-calendar { border-top: 1px solid #DCE2D7; padding-top: 24px; }
+.capacity-calendar-key { display: grid; gap: 12px; margin: 18px 0; }
+.capacity-calendar-key > div { padding: 6px 0 6px 14px; border-left: 5px solid; }
+.capacity-calendar-key dt { font-weight: 650; }
+.capacity-calendar-key dd { margin: 0; }
+@media (max-width: 900px) {
+  .capacity-introduction { grid-template-columns: 1fr; }
+  .capacity-bulbs { width: min(100%, 420px); }
+  .journey-applied-capacity .capacity-staircase { grid-template-columns: 1fr; gap: 10px; }
+  .capacity-staircase li { margin-top: 0; margin-left: calc(var(--step) * 7%); min-height: 0; padding: 14px; }
+  .capacity-staircase h4 span { display: inline; }
+  /* Reverse physical placement only: DOM/screen-reader progression remains Drained → Abundant. */
+  .capacity-staircase li:nth-child(1) { grid-row: 4; }
+  .capacity-staircase li:nth-child(2) { grid-row: 3; }
+  .capacity-staircase li:nth-child(3) { grid-row: 2; }
+  .capacity-staircase li:nth-child(4) { grid-row: 1; }
+}
+@media (max-width: 450px) {
+  .capacity-personal-grid { gap: 8px; }
+  .capacity-personal-grid > section { padding: 12px 8px; border-left-width: 4px; }
+  .capacity-personal-grid h4 { font-size: .96rem; }
+  .capacity-personal-grid .capacity-time { font-size: 1rem; }
+  .capacity-personal-grid p { font-size: .88rem; }
+}

@@ -1,3 +1,4 @@
+import { capacityReflections, capacityScore, type AppliedCapacityScores } from "@/lib/journey/applied-capacity";
 import { mobileComparisonTables } from "@/lib/courses/mobile-comparison-tables";
 import { buildDesignIdContext, getLatestSnapshot, type StudentAssessmentReport } from "@/lib/assessments/student-context";
 import { personalizeDesignIdAuthored } from "@/lib/courses/designid-authored-personalization";
@@ -41,4 +42,10 @@ export function journeyReflectionNames(report: StudentAssessmentReport) {
   const scores = payload && typeof payload === "object" && !Array.isArray(payload) ? {...payload, ...snapshot.scores} : snapshot.scores;
   const context = buildDesignIdContext({...report, latest: report.latest.map(row => row.id === snapshot.id ? {...snapshot, scores} : row)});
   return {primary: context.primary || "", secondary: context.secondary || ""};
+}
+
+/** Existing canonical extraction includes historical reportPayload-only saved records. */
+export function journeyCapacityScores(report: StudentAssessmentReport): AppliedCapacityScores {
+  const context = buildDesignIdContext(report);
+  return Object.fromEntries(capacityReflections.map(reflection => [reflection.name, capacityScore(context[reflection.key])]));
 }

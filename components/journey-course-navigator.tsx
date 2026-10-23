@@ -1,4 +1,6 @@
 "use client";
+import { JourneyAppliedCapacity } from "@/components/journey-applied-capacity";
+import { appliedCapacitySlug, type AppliedCapacityScores } from "@/lib/journey/applied-capacity";
 import { expertiseLessons } from "@/lib/journey/expertise-lessons";
 import { JourneyExpertiseCare, JourneyExpertiseBody } from "@/components/journey-expertise-lesson";
 import { JourneyOneAnotherCare } from "@/components/journey-one-another-care";
@@ -26,6 +28,7 @@ import type {
 type JourneyCourseNavigatorProps = {
   modules: DyddCourseModule[];
   designIdSnapshotHtml: string;
+  capacityScores: AppliedCapacityScores;
   reflectionNames: {primary: string; secondary: string};
 };
 
@@ -138,6 +141,7 @@ export function JourneyCourseNavigator({
   modules,
   designIdSnapshotHtml,
   reflectionNames,
+  capacityScores,
 }: JourneyCourseNavigatorProps) {
   const moduleSections = useMemo(
     () =>
@@ -195,13 +199,14 @@ export function JourneyCourseNavigator({
   const progress = flatUnits.length
     ? Math.round(((activeIndex + 1) / flatUnits.length) * 100)
     : 0;
+  const isAppliedCapacity = active.unit.slug === appliedCapacitySlug;
   const isDesignIdLens = active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19";
   const isDesignReflectionsLove = active.unit.slug === "identity-the-design-reflections-and-love-21";
   const isWhoWhose = active.unit.slug === "identity-who-vs-whose-16";
   const expertiseLesson = expertiseLessons[active.unit.slug];
   const isOneAnother = active.unit.slug === "identity-reflections-and-one-anothering-23";
   const isNeighbor = active.unit.slug === "identity-love-your-neighbor-as-yourself-22";
-  const usesApprovedLessonFormat = Boolean(expertiseLesson) || isOneAnother || isNeighbor || isDesignReflectionsLove || isWhoWhose || ["identity-good-works-17", "identity-niche-18", "identity-identity-among-believers-20"].includes(active.unit.slug);
+  const usesApprovedLessonFormat = isAppliedCapacity || Boolean(expertiseLesson) || isOneAnother || isNeighbor || isDesignReflectionsLove || isWhoWhose || ["identity-good-works-17", "identity-niche-18", "identity-identity-among-believers-20"].includes(active.unit.slug);
   const isIdentityPathfinder = active.unit.row === 24;
   const isPathfinder = active.unit.type === "pathfinder";
   const isCareIntroduction = active.unit.slug === "what-is-dydd-how-to-c-a-r-e-10";
@@ -385,7 +390,7 @@ export function JourneyCourseNavigator({
       </aside>
 
       <article
-        className={`journey-active-lesson ${typeClass[active.unit.type]}${usesApprovedLessonFormat || isIdentityPathfinder ? " journey-who-whose-lesson" : ""}${isOneAnother || isNeighbor ? " journey-neighbor-lesson" : ""}${expertiseLesson ? " journey-expertise-lesson" : ""}${isDesignReflectionsLove ? " journey-design-love-lesson" : ""}${active.unit.slug === "identity-identity-among-believers-20" ? " journey-identity-believers-lesson" : ""}`}
+        className={`journey-active-lesson ${typeClass[active.unit.type]}${usesApprovedLessonFormat || isIdentityPathfinder ? " journey-who-whose-lesson" : ""}${isOneAnother || isNeighbor ? " journey-neighbor-lesson" : ""}${expertiseLesson ? " journey-expertise-lesson" : ""}${isAppliedCapacity ? " journey-applied-capacity-lesson" : ""}${isDesignReflectionsLove ? " journey-design-love-lesson" : ""}${active.unit.slug === "identity-identity-among-believers-20" ? " journey-identity-believers-lesson" : ""}`}
         ref={activeLessonRef}
       >
         <header>
@@ -395,7 +400,7 @@ export function JourneyCourseNavigator({
               .{active.sectionIndex + 1} / Lesson {active.unitIndex + 1}
             </p>
             <h2>{active.unit.title}</h2>
-            {!isPathfinder && !isDesignReflectionsLove && !expertiseLesson && !isOneAnother && !isNeighbor ? <p>{lessonMainIdea}</p> : null}
+            {!isAppliedCapacity && !isPathfinder && !isDesignReflectionsLove && !expertiseLesson && !isOneAnother && !isNeighbor ? <p>{lessonMainIdea}</p> : null}
           </div>
           <div className="journey-active-meta">
             {!usesApprovedLessonFormat ? <span>{active.unit.typeLabel}</span> : null}
@@ -432,7 +437,8 @@ export function JourneyCourseNavigator({
               <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction && !usesApprovedLessonFormat} />
             ) : null}
 
-            {!isDesignIdLens ? <div className={`assessment-lesson-content${isCareIntroduction ? " journey-care-introduction-layout" : " with-image"}${wrapLessonImage ? " journey-wrap-pilot" : ""}`}>
+            {isAppliedCapacity ? <JourneyAppliedCapacity scores={capacityScores} /> : null}
+            {!isAppliedCapacity && !isDesignIdLens ? <div className={`assessment-lesson-content${isCareIntroduction ? " journey-care-introduction-layout" : " with-image"}${wrapLessonImage ? " journey-wrap-pilot" : ""}`}>
               <section
                 className="lesson-source readable-lesson-body"
                 aria-label="Lesson body"
@@ -504,7 +510,7 @@ export function JourneyCourseNavigator({
             </aside>
           ) : null}
 
-          {expertiseLesson ? <JourneyExpertiseCare lesson={expertiseLesson} reflectionNames={reflectionNames} /> : isOneAnother ? <JourneyOneAnotherCare /> : active.unit.slug === "identity-identity-among-believers-20" ? <JourneyIdentityBelieversCare /> : isWhoWhose ? <JourneyWhoWhoseCare /> : workbookExperience ? (
+          {isAppliedCapacity ? null : expertiseLesson ? <JourneyExpertiseCare lesson={expertiseLesson} reflectionNames={reflectionNames} /> : isOneAnother ? <JourneyOneAnotherCare /> : active.unit.slug === "identity-identity-among-believers-20" ? <JourneyIdentityBelieversCare /> : isWhoWhose ? <JourneyWhoWhoseCare /> : workbookExperience ? (
             <section
               className={`journey-active-workbook ${workbookExperience.kind}${(isDesignIdLens || isDesignReflectionsLove) ? " journey-who-whose-care journey-designid-lens-care" : ""}`}
             >

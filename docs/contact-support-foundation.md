@@ -1,6 +1,6 @@
 # Contact support foundation
 
-- Migration: `supabase/migrations/20261023204446_contact_support_intake.sql` (not applied by implementing agent).
+- Migration: `supabase/migrations/20261023204446_contact_support_intake.sql` (applied by parent build agent to isolated sandbox only; production untouched).
 - Public page: `/contact`. POST `/api/contact`, same-origin JSON `{name,email,subject,message,website?}`. Successful durable save: 201 `{received:true,reference:uuid}`. Honeypot returns generic 201 without writing. Validation 400, cross-origin or missing Origin 403, rate limit 429, unavailable storage 503. No email or forwarding.
 - Admin page: `/admin/support`. GET `/api/admin/support?status=new|in_progress|resolved&page=0`, 25 rows with `hasMore`. PATCH same endpoint `{id,status,revision}`; optimistic revision check returns 409 for stale edits. Every route requires live Supabase `getUser()` plus existing `isDyddAdminEmail`; preview cookies/queries do not grant access.
 - Tables are service-role only, RLS enabled, no anon/authenticated grants or policies. All access is server mediated. Never add public select policies for support messages.

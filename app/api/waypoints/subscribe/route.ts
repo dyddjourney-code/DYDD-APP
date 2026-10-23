@@ -1,4 +1,3 @@
-import { createHash, randomBytes } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -12,10 +11,6 @@ function normalizeEmail(email: string) {
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function hashToken(token: string) {
-  return createHash("sha256").update(token).digest("hex");
 }
 
 export async function POST(request: NextRequest) {
@@ -37,7 +32,6 @@ export async function POST(request: NextRequest) {
     data: { user },
   } = await serverClient.auth.getUser();
   const supabase = createSupabaseAdminClient();
-  const unsubscribeToken = randomBytes(32).toString("hex");
 
   const { error } = await supabase.from("dydd_waypoint_subscriptions").upsert(
     {
@@ -52,7 +46,6 @@ export async function POST(request: NextRequest) {
       },
       source: payload.source ?? "fireside_waypoints",
       status: "active",
-      unsubscribe_token_hash: hashToken(unsubscribeToken),
       user_id: user?.id ?? null,
     },
     { onConflict: "email" },

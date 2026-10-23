@@ -1,0 +1,22 @@
+const assert=require('node:assert/strict');
+const load=require('../scripts/fruitlife-test-load.cjs');
+let rows=[],events=[],suppressed=false,storageFailure=false,calls=0,mode='ok';const requests=[];
+const db={rpc:async(name,args)=>{if(storageFailure)return {error:{message:'offline'}};if(name==='dydd_accept_email_message'){const row=rows.find(r=>r.id===args.message_key);if(!row.provider_id)Object.assign(row,{provider_id:args.email_id,status:'accepted'});}return {data:true}},from(table){let action='select',values,filters=[];const q={select(){return q},upsert(v){action='upsert';values=v;return q},update(v){action='update';values=v;return q},eq(k,v){filters.push([k,v]);return q},is(k,v){filters.push([k,v]);return q},order(){return q},single(){return Promise.resolve(run(true))},maybeSingle(){return Promise.resolve(run(true))},then(a,b){return Promise.resolve(run(false)).then(a,b)}};function run(single){if(storageFailure)return {error:{message:'offline'}};let data=table==='dydd_email_messages'?rows:table==='dydd_email_events'?events:table==='dydd_email_suppressions'?(suppressed?[{email:'qa@example.com'}]:[]):[];if(action==='upsert'){if(!rows.some(r=>r.idempotency_key===values.idempotency_key))rows.push({id:'qa-id',created_at:new Date().toISOString(),status:'pending',provider_id:null,...values});return {data:null,error:null};}data=data.filter(r=>filters.every(([k,v])=>r[k]===v));if(action==='update')data.forEach(r=>Object.assign(r,values));return {data:single?data[0]??null:data,error:null};}return q;}};
+const {sendResendEmail}=load('lib/email/resend.ts',{'@/lib/supabase/admin':{createSupabaseAdminClient:()=>db}});
+process.env.DYDD_RESEND_API_KEY='fake-key-never-transmitted';process.env.DYDD_EMAIL_FROM='DYDD <reports@mail.discoverdivine.design>';process.env.DYDD_APP_URL='https://school.example.com';delete process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT;
+global.fetch=async(url,opts)=>{assert.equal(url,'https://api.resend.com/emails');calls++;requests.push(opts);if(mode==='timeout')throw Error('timeout');if(mode==='500')return {ok:false,status:500,json:async()=>({})};if(mode==='persist-fail'){storageFailure=true;}return {ok:true,status:200,json:async()=>({id:'provider-qa'})};};
+const input={to:'qa@example.com',subject:'QA',html:'<html><body><p>Report</p></body></html>',text:'Report',idempotencyKey:'qa-stable'};
+(async()=>{
+ mode='timeout';assert.equal((await sendResendEmail(input)).sent,false);assert.equal(rows.length,1);
+ mode='500';assert.equal((await sendResendEmail(input)).sent,false);
+ mode='ok';assert.equal((await sendResendEmail(input)).sent,true);assert.equal(rows[0].status,'accepted');
+ assert(requests.every(r=>r.headers['Idempotency-Key']==='qa-stable'));assert(requests.every(r=>r.body===requests[0].body));const body=JSON.parse(requests[0].body);assert.equal(body.from,'Discover Your Divine Design <reports@mail.discoverdivine.design>');assert(!('reply_to' in body));assert(body.html.includes('unmonitored'));assert(body.html.includes('https://school.example.com/contact'));assert(body.text.includes('Contact form'));
+ rows[0].status='delivered';assert.equal((await sendResendEmail(input)).sent,true);assert.equal(calls,3);assert.equal(rows[0].status,'delivered');
+ assert.equal((await sendResendEmail({...input,subject:'Changed'})).sent,false);assert.equal(calls,3);
+ rows[0].provider_id=null;rows[0].created_at=new Date(Date.now()-24*3600000).toISOString();assert.equal((await sendResendEmail(input)).sent,false);assert.equal(calls,3);assert.equal(rows[0].status,'review');
+ suppressed=true;assert.equal((await sendResendEmail({...input,idempotencyKey:'other'})).skipped,true);assert.equal(calls,3);suppressed=false;
+ storageFailure=true;assert.equal((await sendResendEmail(input)).sent,false);assert.equal(calls,3);storageFailure=false;
+ rows=[];mode='persist-fail';assert.equal((await sendResendEmail(input)).sent,false);assert.equal(calls,4);storageFailure=false;mode='ok';assert.equal((await sendResendEmail(input)).sent,true);assert.equal(calls,5);assert.equal(requests[3].headers['Idempotency-Key'],requests[4].headers['Idempotency-Key']);
+ process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT='sandbox';assert.equal((await sendResendEmail(input)).skipped,true);assert.equal(calls,5);
+ console.log('PASS transport timeout, provider 500, persistence failure, stable retry payload/key, accepted vs delivered, duplicate prevention, payload conflict, expiry reconciliation, suppression, storage fail-closed, preserved From/help/no Reply-To, sandbox no network');
+})().catch(e=>{console.error(e);process.exitCode=1});

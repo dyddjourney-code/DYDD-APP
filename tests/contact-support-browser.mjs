@@ -1,10 +1,12 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 const base = process.env.CONTACT_BASE || 'http://localhost:3000';
 assert(['localhost','127.0.0.1'].includes(new URL(base).hostname), 'Only local browser verification is authorized');
 const browser = await puppeteer.launch({ args: chromium.args, executablePath: await chromium.executablePath(), headless: true });
 try {
+ fs.mkdirSync('tmp',{recursive:true});
  const page = await browser.newPage();
  const problems=[];page.on('pageerror',e=>problems.push(e.message));
  for (const width of [360,390,768,1280]) {
@@ -14,6 +16,7 @@ try {
   assert.match(response.headers()['cache-control'],/no-store/);
   await page.waitForSelector('form input[name="name"]');
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`No overflow at ${width}`);
+  if([390,1280].includes(width))await page.screenshot({path:`tmp/contact-${width}.png`,fullPage:true});
   assert.equal(await page.$$eval('label',labels=>labels.filter(l=>l.control&&!l.closest('[aria-hidden="true"]')).length),4);
  }
  await page.setRequestInterception(true);let fail=true;
@@ -23,7 +26,7 @@ try {
  assert.equal(await page.$eval('[name="message"]',e=>e.value),'Please help me open this course.');
  fail=false;await page.click('form button');await page.waitForSelector('[role="status"]');
  assert((await page.$eval('main',e=>e.textContent)).includes('No confirmation email has been sent.'));
- await page.setRequestInterception(false);
+ page.removeAllListeners('request');await page.setRequestInterception(false);
  const denied=await page.goto(`${base}/admin/support?review=owner&key=not-a-login`,{waitUntil:'networkidle2'});
  assert(page.url().includes('/login'),'Preview query cannot grant support access');
  assert.equal(problems.length,0,problems.join('\n'));

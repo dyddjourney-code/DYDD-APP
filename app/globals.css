@@ -21513,3 +21513,167 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 @media (max-width: 360px) {
   .waypoint-quick-actions .waypoint-subscribe-card div { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Sandbox-wide phone artwork: complete illustrations, followed by readable copy.
+   Desktop artwork/composition remains governed by the existing rules above. */
+.relief-map-canvas { min-width: 0; }
+.relief-map-stage { min-width: 0; container-type: inline-size; }
+.relief-map-toolbar, .relief-map-dialog-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.relief-map-toolbar p { margin: 0; font-size: .9rem; }
+.relief-map-toolbar .button, .relief-map-dialog-toolbar .button { min-height: 44px; flex-shrink: 0; }
+.relief-marker-number { display: none; }
+.relief-map-places { display: none; }
+.relief-map-dialog { position: fixed; inset: 0; width: 100%; max-width: none; height: 100dvh; max-height: none; margin: 0; padding: 16px; border: 0; background: #f5f4ea; color: #243f27; overflow-y: auto; box-sizing: border-box; }
+.relief-map-dialog::backdrop { background: rgba(24, 38, 27, .7); }
+.relief-map-dialog h2 { margin: 0; font-size: 1.15rem; }
+.relief-map-dialog .relief-map-stage { min-width: 0; width: min(100%, calc(65dvh * 1672 / 941)); margin-inline: auto; }
+.relief-map-expanded-hint, .relief-map-selection { margin: 8px 0 12px; font-size: .9rem; line-height: 1.5; }
+.relief-map-dialog .relief-map-places { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.relief-map-places button { display: flex; align-items: center; gap: 7px; min-width: 0; min-height: 44px; padding: 8px; font: inherit; font-size: .86rem; text-align: left; line-height: 1.3; border: 1px solid #b8c3b0; border-radius: 6px; background: #fffdf5; color: #243f27; cursor: pointer; }
+.relief-map-places button[aria-pressed="true"] { background: #e1eadb; border-color: #476b42; font-weight: 700; }
+.relief-map-places button span { display: grid; place-items: center; flex: 0 0 22px; height: 22px; border-radius: 50%; background: #243f27; color: #fffdf5; font-size: .75rem; }
+.relief-map-marker:focus-visible, .relief-map-places button:focus-visible { outline: 3px solid #b18d3c; outline-offset: 2px; }
+@media (max-width: 980px) {
+  .assessment-lesson-content.with-image > .assessment-lesson-image,
+  .assessment-lesson-content.with-image > .journey-lesson-images,
+  .assessment-lesson-content.with-image > .designid-lesson-artwork { grid-row: 1; }
+  .journey-wrap-pilot .journey-lesson-images { order: -1; }
+  .designid-welcome-body .designid-welcome-artwork,
+  .designid-authored-body .designid-authored-artwork { float: none; width: min(100%, 420px); margin: 0 auto 24px; }
+  .journey-designid-intro, .capacity-introduction { grid-template-columns: minmax(0, 1fr); }
+  .journey-designid-intro > .journey-lesson-images, .capacity-introduction > .capacity-bulbs { grid-row: 1; }
+  .dydd-journey-walkthrough .journey-teaching-card { display: flex; flex-direction: column; }
+  .dydd-journey-walkthrough .journey-teaching-card > .companion-audio-card { order: 1; }
+  .dydd-journey-walkthrough .journey-teaching-card > :is(.assessment-lesson-content, .journey-designid-return, .journey-applied-capacity) { order: 2; }
+  .dydd-journey-walkthrough .journey-teaching-card > .journey-closing-scripture { order: 3; }
+  .assessment-lesson-image img { aspect-ratio: auto; width: 100%; height: auto; object-fit: contain; }
+}
+@media (max-width: 980px) {
+  .journey-hero { --phone-art: url('/brand/dydd-journey-road-cartoon-hero.png'); --phone-art-ratio: 1913 / 822; }
+  .designid-course-hero { --phone-art: url('/brand/designid-course-cartoon-hero.png'); --phone-art-ratio: 1913 / 659; }
+  .spiritual-gifts-course-hero { --phone-art: url('/brand/spiritual-gifts-course-cartoon-hero.webp'); --phone-art-ratio: 1920 / 711; }
+  .fruitlife-course-hero { --phone-art: url('/brand/fruitlife360-vineyard-cartoon-hero.webp'); --phone-art-ratio: 2145 / 733; }
+  .designpd-course-hero { --phone-art: url('/brand/designpd-course-cartoon-hero.jpg'); --phone-art-ratio: 1280 / 493; }
+  .trailheads-hero { --phone-art: url('/brand/dydd-courses-forest-banner.webp'); --phone-art-ratio: 1600 / 650; }
+  .fieldkit-hero { --phone-art: url('/brand/dydd-fieldkit-jungle-banner.png'); --phone-art-ratio: 1672 / 941; }
+  .gear-hero { --phone-art: url('/brand/dydd-gear-mountain-banner.png'); --phone-art-ratio: 1672 / 941; }
+  .fireside-page-hero { --phone-art: url('/brand/dydd-fireside-campfire-banner.png'); --phone-art-ratio: 1742 / 903; }
+  .camp-circle-hero, .command-center-hero { --phone-art: url('/brand/dydd-camp-circle-campfire-banner.png'); --phone-art-ratio: 1884 / 835; }
+  .expedition-page-hero { --phone-art: url('/brand/expedition-team-climb-cartoon-header.png'); --phone-art-ratio: 2073 / 758; }
+  .design-map-hero { --phone-art: url('/brand/dydd-park-map-concept.png'); --phone-art-ratio: 1672 / 941; }
+  .spiritual-gifts-mini-hero { --phone-art: url('/brand/spiritual-gifts-miniapp-banner.png'); --phone-art-ratio: 1672 / 941; }
+  .portal-hero { --phone-art: url('/brand/dydd-cabin-hut-only.png'); --phone-art-ratio: 1457 / 542; }
+  :is(.journey-hero, .trailhead-renewal .trailheads-hero, .fieldkit-hero, .gear-hero, .fireside-page-hero, .camp-circle-hero, .command-center-hero, .design-map-hero, .spiritual-gifts-mini-hero, .portal-hero) {
+    display: flex; flex-direction: column; align-items: stretch; gap: 0; min-height: 0; padding: 0; background: #f7f6ee; color: #243f27; overflow: hidden;
+  }
+  :is(.journey-hero, .trailheads-hero, .fieldkit-hero, .gear-hero, .fireside-page-hero, .camp-circle-hero, .command-center-hero, .design-map-hero, .spiritual-gifts-mini-hero, .portal-hero)::before {
+    content: ''; display: block; position: static; flex: 0 0 auto; width: 100%; aspect-ratio: var(--phone-art-ratio); background: var(--phone-art) center / contain no-repeat; pointer-events: none;
+  }
+  .portal-hero::after { display: none; }
+  :is(.journey-hero, .trailheads-hero, .fieldkit-hero, .gear-hero, .fireside-page-hero, .camp-circle-hero, .command-center-hero, .design-map-hero, .spiritual-gifts-mini-hero, .portal-hero) > :not(.page-help) { margin: 0; padding: 16px; max-width: none; min-width: 0; }
+  :is(.journey-hero, .trailheads-hero, .fieldkit-hero, .gear-hero, .fireside-page-hero, .camp-circle-hero, .command-center-hero, .design-map-hero, .spiritual-gifts-mini-hero, .portal-hero) :is(h1, .lede, .eyebrow, .section-label, p) { color: #243f27; max-width: none; }
+  :is(.journey-hero, .trailheads-hero, .fieldkit-hero, .gear-hero, .fireside-page-hero, .camp-circle-hero, .command-center-hero, .design-map-hero, .portal-hero) h1 { font-size: clamp(1.65rem, 6.5vw, 2.3rem); line-height: 1.15; overflow-wrap: anywhere; }
+  :is(.journey-hero, .trailheads-hero, .fieldkit-hero, .gear-hero, .fireside-page-hero, .camp-circle-hero) .lede { font-size: 1rem; line-height: 1.55; }
+  .ranger-station-header-image img, .fireside-image-header img, .live-fireside-header img,
+  .reflection-notebook-hero .reflection-notebook-art, .expedition-header-art img { height: auto; min-height: 0; max-height: none; aspect-ratio: auto; object-fit: contain; }
+  .basecamp-hero { display: flex; flex-direction: column; min-height: 0; background: #203721; }
+  .basecamp-hero::before { display: none; }
+  .basecamp-scene { position: relative; inset: auto; order: -1; width: 100%; }
+  .basecamp-scene img { display: block; position: static; inset: auto; width: 100%; height: auto; object-fit: contain; }
+  .basecamp-copy { min-height: 0; padding: 20px; }
+  .relief-map-stage-scroll { overflow: visible; }
+  .relief-map-stage { min-width: 0; width: 100%; }
+  .relief-map-marker, .relief-map-marker.marker-ranger-station { display: grid; place-items: center; width: 26px; min-width: 26px; height: 26px; padding: 0; font-size: 12px; background: #243f27; color: #fffdf5; }
+  .relief-map-marker.trail { background: #faf5df; color: #243f27; }
+  .relief-marker-number { display: block; }
+  .relief-marker-label, .relief-map-marker::before { display: none; }
+  .relief-map-places, .relief-map-dialog .relief-map-places { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
+  .relief-map-toolbar { align-items: flex-start; }
+  .relief-map-toolbar p { line-height: 1.4; }
+  .relief-map-toolbar .button { padding: 10px; font-size: .85rem; }
+}
+
+/* Map hit targets remain numbered whenever the canvas itself is narrow,
+   including landscape dialogs and the desktop split-panel layout. */
+@container (max-width: 700px) {
+  .relief-map-marker, .relief-map-marker.marker-ranger-station { display: grid; place-items: center; width: 26px; min-width: 26px; height: 26px; padding: 0; font-size: 12px; background: #243f27; color: #fffdf5; }
+  .relief-map-marker.trail { background: #faf5df; color: #243f27; }
+  .relief-marker-number { display: block; }
+  .relief-marker-label, .relief-map-marker::before { display: none; }
+}
+@media (orientation: landscape) and (max-height: 600px) {
+  .relief-map-dialog .relief-map-expanded-hint { display: none; }
+  .relief-map-dialog .relief-map-stage { width: min(100%, calc((100dvh - 110px) * 1672 / 941)); }
+}
+@media (max-width: 980px) {
+  .fireside-image-header, .live-fireside-header { min-height: 0; }
+  .fireside-image-header::after { display: none; }
+  .fireside-image-title { position: static; padding: 14px 16px; max-width: none; color: #243f27; background: #f7f6ee; text-shadow: none; }
+  .fireside-image-title span { font-size: 1.05rem; line-height: 1.45; }
+  .fireside-board-heading { flex-wrap: wrap; gap: 10px; }
+  .fireside-board-heading > span { white-space: normal; overflow-wrap: anywhere; }
+}
+@media (max-width: 980px) {
+  .command-center-layout, .command-center-insight-grid { grid-template-columns: minmax(0, 1fr); }
+  .command-center-layout > *, .command-center-insight-grid > *, .command-center-form > *, .command-center-filters > * { min-width: 0; }
+  .command-center-shell :is(input, select, textarea) { min-width: 0; max-width: 100%; width: 100%; }
+}
+@media (max-width: 767px) {
+  .command-center-insight-card { grid-template-columns: minmax(0, 1fr); }
+  .command-center-bar-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 30px; gap: 6px; }
+}
+.relief-map-canvas > .relief-map-places { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
+@media (max-width: 767px) {
+  .relief-map-canvas > .relief-map-places { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container (max-width: 400px) {
+  .relief-map-marker.marker-base-camp { translate: 24px 0; }
+}
+@media (max-width: 980px) {
+  .designid-authored-body.designid-compact-intro .designid-authored-artwork { float: none; width: 96px; max-width: 100%; margin: 0 auto 20px; }
+  .designid-authored-body.designid-capacity-intro .designid-authored-artwork { float: none; width: min(100%, 420px); max-width: 100%; margin: 0 auto 24px; }
+}
+@media (max-width: 980px) {
+  .command-center-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .command-center-filters { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 980px) {
+  :is(.command-center-hero, .design-map-hero) p:not(.section-label),
+  .command-center-hero-card :is(span, small, strong), .design-map-status-card :is(span, small, strong) { color: #243f27; }
+  .command-center-hero-card { min-height: 0; background: #e9edde; }
+  .design-map-status-card { background: #e9edde; }
+  .expedition-page-hero::before { display: none; }
+  .expedition-page-hero > .expedition-header-art { order: -1; min-height: 0; padding: 0; border: 0; }
+}
+@media (max-width: 980px) {
+  .assessment-lesson-content.with-image,
+  .designid-course-walkthrough .designid-lesson-content.with-image,
+  .dydd-journey-walkthrough .assessment-lesson-content.with-image { grid-template-columns: minmax(0, 1fr); }
+}
+/* The legacy Command Center's fixed filter tracks also exceed a narrow desktop
+   panel. Respond to panel width without changing its desktop two-column layout. */
+.command-center-panel { min-width: 0; container-type: inline-size; }
+.command-center-form { grid-template-columns: minmax(0, 1fr); }
+.command-center-form > *, .command-center-filters > * { min-width: 0; }
+.command-center-shell :is(input, select, textarea) { min-width: 0; max-width: 100%; }
+@container (max-width: 960px) {
+  .command-center-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container (max-width: 400px) {
+  .command-center-filters { grid-template-columns: minmax(0, 1fr); }
+}
+@media (orientation: landscape) and (max-height: 600px) {
+  .relief-map-dialog[open] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(200px, 29%); grid-template-rows: auto minmax(0, 1fr) auto; gap: 8px; overflow: hidden; }
+  .relief-map-dialog-toolbar { grid-column: 1 / -1; margin: 0; }
+  .relief-map-dialog .relief-map-stage-scroll { grid-column: 1; grid-row: 2; align-self: center; }
+  .relief-map-dialog .relief-map-stage { width: min(100%, calc((100dvh - 140px) * 1672 / 941)); }
+  .relief-map-dialog .relief-map-selection { grid-column: 1; grid-row: 3; margin: 0; }
+  .relief-map-dialog .relief-map-places { grid-column: 2; grid-row: 2 / 4; grid-template-columns: minmax(0, 1fr); margin: 0; align-content: start; overflow-y: auto; min-height: 0; }
+}
+@media (max-width: 980px) {
+  .expedition-header-art img { grid-column: 1; grid-row: 1; }
+  .expedition-header-art figcaption { grid-area: auto; grid-row: 2; background: #e9edde; color: #243f27; }
+  .expedition-header-art figcaption span { color: #243f27; }
+}

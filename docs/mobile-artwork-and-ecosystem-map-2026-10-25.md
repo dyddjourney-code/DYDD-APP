@@ -91,3 +91,14 @@ after publication and in the release handoff; `tmp/mobile-artwork-*-*-qa.json` i
 - The original Command Center had fixed form/filter minimums overflowing even
   inside its1280px desktop two-column shell. Panel-width container queries wrap
   those controls without changing the desktop two-column shell or course layouts.
+
+### Navigation-readiness and recovery
+
+The verifier aborts opportunistic Next RSC/router prefetch requests only. They are
+not the hard navigation or actual workbook/profile API reads being tested, and
+can keep desktop pages continuously busy. This prevents false network-idle
+navigation timeouts without altering application auth, navigation or saving.
+Progress JSON is checkpointed during long runs. `MOBILE_TEST_SECTION=standalone`
+can resume the28 direct-lesson checks after a test-server lifetime interruption.
+Keep long-lived local test servers on an explicit adequate runtime; final testing
+uses the clean production build, not only the development server.

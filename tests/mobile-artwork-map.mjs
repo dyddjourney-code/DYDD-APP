@@ -16,10 +16,11 @@ const lessonCases=[...journey.map(l=>({path:'/journey?lesson='+l.slug,title:l.ti
 const representatives=lessonCases.filter((x,i)=>i%15===0||/welcome-to-designid|reflection-capacity|your-design-profile|applied-capacity|the-designid-lens|who-vs-whose|the-d-e-s-i-g-n/.test(x.path));
 const b=await puppeteer.launch({args:chromium.args.filter(x=>x!=='--single-process'),executablePath:await chromium.executablePath(),headless:true});
 const evidence=[],errors=[],blockedWrites=[];
+const checkpoint=stage=>fs.writeFileSync(`tmp/mobile-artwork-${tag}-${section}-progress.json`,JSON.stringify({stage,checks:evidence.length,errors,evidence},null,2));
 try {
  const p=await b.newPage(); p.setDefaultTimeout(30000);p.setDefaultNavigationTimeout(90000);p.on('pageerror',e=>errors.push(e.message));
  // Read-only layout run: never mutate owner/customer answers, position, support or profile.
- await p.setRequestInterception(true);p.on('request',r=>{if(!['GET','HEAD','OPTIONS'].includes(r.method())&&new URL(r.url()).pathname.startsWith('/api/')){blockedWrites.push(new URL(r.url()).pathname);return r.respond({status:409,contentType:'application/json',body:JSON.stringify({error:'Read-only layout verification'})});}return r.continue()});
+ await p.setRequestInterception(true);p.on('request',r=>{if(new URL(r.url()).searchParams.has('_rsc')||r.headers()['next-router-prefetch']==='1'||r.headers()['purpose']==='prefetch')return r.abort();if(!['GET','HEAD','OPTIONS'].includes(r.method())&&new URL(r.url()).pathname.startsWith('/api/')){blockedWrites.push(new URL(r.url()).pathname);return r.respond({status:409,contentType:'application/json',body:JSON.stringify({error:'Read-only layout verification'})});}return r.continue()});
  await p.goto(base+'/sandbox-review',{waitUntil:'networkidle2'});await p.waitForSelector('.trail-main-route');
  const visit=async(path)=>{const url=new URL(base+path);if(path.startsWith('/spiritual-gifts?lane=')){url.searchParams.set('review','new');url.searchParams.set('key',cfg.review_token);}await p.goto(url.href,{waitUntil:'networkidle2'});await p.waitForFunction(()=>document.readyState==='complete');await p.evaluate(()=>document.fonts.ready);};
  const overflow=async(label)=>assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Horizontal page overflow '+label);
@@ -35,7 +36,7 @@ try {
    evidence.push({kind:'header',path,width,...geo});
    if([390,1280].includes(width))await element.screenshot({path:`tmp/mobile-artwork-${tag}-header-${path.replaceAll('/','_')||'portal'}-${width}.png`});
   }
-  console.log('PASS headers',width,headers.length);
+  checkpoint('headers-'+width);console.log('PASS headers',width,headers.length);
  }
  const inspectLesson=async(item,width,screenshot=false)=>{
   await visit(item.path);await p.waitForFunction(title=>document.querySelector('.journey-active-lesson h2,.assessment-active-lesson h2,.designid-active-lesson h2')?.textContent===title,{},item.title);const active=await p.$('.journey-active-lesson,.assessment-active-lesson,.designid-active-lesson');assert(active,'Course player missing '+item.path+' '+new URL(p.url()).pathname);await overflow(item.path+'/'+width);
@@ -56,12 +57,12 @@ try {
  };
  if(['all','lessons'].includes(section)){
  await p.setViewport({width:390,height:950,isMobile:true,hasTouch:true});
- for(let i=Number(process.env.MOBILE_LESSON_START||0);i<lessonCases.length;i++){await inspectLesson(lessonCases[i],390,i%20===0);if(i%20===0)console.log('PASS lesson audit',i+1,'/',lessonCases.length);}
+ for(let i=Number(process.env.MOBILE_LESSON_START||0);i<lessonCases.length;i++){await inspectLesson(lessonCases[i],390,i%20===0);if(i%20===0){checkpoint('lesson-'+(i+1));console.log('PASS lesson audit',i+1,'/',lessonCases.length);}}
 
- for(const width of [320,430,844,1280]){await p.setViewport({width,height:width===844?390:950,isMobile:width<=980,hasTouch:width<=980});for(const item of representatives)await inspectLesson(item,width,width===320||width===1280);console.log('PASS representative lessons',width,representatives.length);}
- // Standalone routes share the same artwork ordering rules.
- for(const width of [320,390,430,1280]){await p.setViewport({width,height:950,isMobile:width<=980,hasTouch:width<=980});for(const path of ['/learn/designid-foundations/welcome-to-designid','/learn/designid-foundations/integrative-reflections',...courses.map(c=>'/learn/'+c.slug+'/'+c.modules[0].lessons[0].slug)]){await visit(path);await overflow(path+'/'+width);const pair=await p.evaluate(()=>{const a=document.querySelector('.assessment-lesson-content > .assessment-lesson-image,.designid-authored-artwork,.designid-welcome-artwork'),t=document.querySelector('.assessment-lesson-content > .lesson-source,.designid-semantic-body');return a&&t?{a:a.getBoundingClientRect().bottom,t:t.getBoundingClientRect().top}:null});if(width<768&&pair)assert(pair.a<=pair.t+2,'Standalone artwork order '+path);evidence.push({kind:'standalone',width,path});}}
+ for(const width of [320,430,844,1280]){await p.setViewport({width,height:width===844?390:950,isMobile:width<=980,hasTouch:width<=980});for(const item of representatives)await inspectLesson(item,width,width===320||width===1280);checkpoint('representatives-'+width);console.log('PASS representative lessons',width,representatives.length);}
  }
+ // Standalone routes share the same artwork ordering rules; this section can resume independently.
+ if(['all','lessons','standalone'].includes(section)) for(const width of [320,390,430,1280]){await p.setViewport({width,height:950,isMobile:width<=980,hasTouch:width<=980});for(const path of ['/learn/designid-foundations/welcome-to-designid','/learn/designid-foundations/integrative-reflections',...courses.map(c=>'/learn/'+c.slug+'/'+c.modules[0].lessons[0].slug)]){await visit(path);await overflow(path+'/'+width);const pair=await p.evaluate(()=>{const a=document.querySelector('.assessment-lesson-content > .assessment-lesson-image,.designid-authored-artwork,.designid-welcome-artwork'),t=document.querySelector('.assessment-lesson-content > .lesson-source,.designid-semantic-body');return a&&t?{a:a.getBoundingClientRect().bottom,t:t.getBoundingClientRect().top}:null});if(width<768&&pair)assert(pair.a<=pair.t+2,'Standalone artwork order '+path);evidence.push({kind:'standalone',width,path});}}
  if(['all','map'].includes(section)) for(const [width,height] of [[320,950],[390,950],[430,950],[844,390],[1280,950]]){
   await p.setViewport({width,height,isMobile:width<=980,hasTouch:width<=980});await visit('/ranger-station');await p.waitForSelector('.relief-map-toolbar button');await p.waitForFunction(()=>Object.keys(document.querySelector('.relief-map-toolbar button')).some(k=>k.startsWith('__reactProps')));await overflow('map/'+width);
   assert(await p.$eval('.relief-map-stage-scroll',e=>e.scrollWidth<=e.clientWidth+1),'No inline map horizontal scrolling '+width);
@@ -74,7 +75,7 @@ try {
   for(let n=0;n<20;n++){await p.keyboard.press('Tab');assert(await p.evaluate(()=>document.querySelector('dialog').contains(document.activeElement)),'Modal focus trapped');}
   await p.$eval('dialog',e=>e.scrollTop=0);await p.screenshot({path:`tmp/mobile-artwork-${tag}-expanded-map-${width}.png`});await p.keyboard.press('Escape');await p.waitForFunction(()=>!document.querySelector('dialog[open]'));assert.equal(await p.evaluate(()=>document.activeElement?.textContent),'Expand map');assert.equal(await p.$eval('.relief-map-panel h3',e=>e.textContent),'DesignID Trail');
   await p.$eval('.relief-map-toolbar',e=>e.scrollIntoView({block:'center',behavior:'instant'}));await p.click('.relief-map-toolbar button');await p.waitForSelector('dialog[open]');await p.click('dialog .relief-map-dialog-toolbar button');await p.waitForFunction(()=>!document.querySelector('dialog[open]'));assert.equal(await p.evaluate(()=>document.activeElement?.textContent),'Expand map');
-  await p.$eval('.relief-map-workbench',e=>e.scrollIntoView({block:'start'}));await p.screenshot({path:`tmp/mobile-artwork-${tag}-map-${width}.png`});evidence.push({kind:'map',width,height,...mapgeo});console.log('PASS map interactions/Escape/close/focus/no-scroll',width,height);
+  await p.$eval('.relief-map-workbench',e=>e.scrollIntoView({block:'start'}));await p.screenshot({path:`tmp/mobile-artwork-${tag}-map-${width}.png`});evidence.push({kind:'map',width,height,...mapgeo});checkpoint('map-'+width);console.log('PASS map interactions/Escape/close/focus/no-scroll',width,height);
  }
  assert.deepEqual(errors,[],'No browser runtime errors');const result={status:'PASS',base,courseFamilies:7,lessons:lessonCases.length,lessonAuditStart:Number(process.env.MOBILE_LESSON_START||0),fullLessonAuditCount:['all','lessons'].includes(section)?Math.max(0,lessonCases.length-Number(process.env.MOBILE_LESSON_START||0)):0,headerSurfaces:headers.length,representatives:representatives.length,checks:evidence.length,blockedWrites:[...new Set(blockedWrites)],errors,evidence};fs.writeFileSync(`tmp/mobile-artwork-${tag}-${section}-qa.json`,JSON.stringify(result,null,2));console.log('PASS complete',JSON.stringify({...result,evidence:undefined}));
 } finally {await b.close()}

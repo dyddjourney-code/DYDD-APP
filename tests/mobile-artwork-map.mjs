@@ -53,7 +53,7 @@ try {
   });
   if(width<=980){for(const pair of result.pairs)assert(pair.artBottom<=pair.bodyY+2,'Image before teaching '+item.path+' '+width+' '+JSON.stringify(pair));if(result.audioBottom)for(const image of result.images)assert(result.audioBottom<=image.top+2,'Audio before image '+item.path+' '+width+' '+JSON.stringify(result));}
   evidence.push({kind:'lesson',path:item.path,width,...result});
-  if(screenshot){await active.evaluate(e=>e.scrollIntoView({block:'start'}));await p.screenshot({path:`tmp/mobile-artwork-${tag}-lesson-${lessonCases.indexOf(item)}-${width}.png`,fullPage:false});}
+  if(screenshot){await active.evaluate(e=>e.scrollIntoView({block:'start',behavior:'instant'}));await p.screenshot({path:`tmp/mobile-artwork-${tag}-lesson-${lessonCases.indexOf(item)}-${width}.png`,fullPage:false});}
  };
  if(['all','lessons'].includes(section)){
  await p.setViewport({width:390,height:950,isMobile:true,hasTouch:true});
@@ -75,7 +75,7 @@ try {
   for(let n=0;n<20;n++){await p.keyboard.press('Tab');assert(await p.evaluate(()=>document.querySelector('dialog').contains(document.activeElement)),'Modal focus trapped');}
   await p.$eval('dialog',e=>e.scrollTop=0);await p.screenshot({path:`tmp/mobile-artwork-${tag}-expanded-map-${width}.png`});await p.keyboard.press('Escape');await p.waitForFunction(()=>!document.querySelector('dialog[open]'));assert.equal(await p.evaluate(()=>document.activeElement?.textContent),'Expand map');assert.equal(await p.$eval('.relief-map-panel h3',e=>e.textContent),'DesignID Trail');
   await p.$eval('.relief-map-toolbar',e=>e.scrollIntoView({block:'center',behavior:'instant'}));await p.click('.relief-map-toolbar button');await p.waitForSelector('dialog[open]');await p.click('dialog .relief-map-dialog-toolbar button');await p.waitForFunction(()=>!document.querySelector('dialog[open]'));assert.equal(await p.evaluate(()=>document.activeElement?.textContent),'Expand map');
-  await p.$eval('.relief-map-workbench',e=>e.scrollIntoView({block:'start'}));await p.screenshot({path:`tmp/mobile-artwork-${tag}-map-${width}.png`});evidence.push({kind:'map',width,height,...mapgeo});checkpoint('map-'+width);console.log('PASS map interactions/Escape/close/focus/no-scroll',width,height);
+  await p.$eval('.relief-map-workbench',e=>e.scrollIntoView({block:'start',behavior:'instant'}));await p.screenshot({path:`tmp/mobile-artwork-${tag}-map-${width}.png`});evidence.push({kind:'map',width,height,...mapgeo});checkpoint('map-'+width);console.log('PASS map interactions/Escape/close/focus/no-scroll',width,height);
  }
  assert.deepEqual(errors,[],'No browser runtime errors');const result={status:'PASS',base,courseFamilies:7,lessons:lessonCases.length,lessonAuditStart:Number(process.env.MOBILE_LESSON_START||0),fullLessonAuditCount:['all','lessons'].includes(section)?Math.max(0,lessonCases.length-Number(process.env.MOBILE_LESSON_START||0)):0,headerSurfaces:headers.length,representatives:representatives.length,checks:evidence.length,blockedWrites:[...new Set(blockedWrites)],errors,evidence};fs.writeFileSync(`tmp/mobile-artwork-${tag}-${section}-qa.json`,JSON.stringify(result,null,2));console.log('PASS complete',JSON.stringify({...result,evidence:undefined}));
 } finally {await b.close()}

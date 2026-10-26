@@ -21750,9 +21750,9 @@ body:has(.mobile-nav-drawer[open]) { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .mobile-nav-drawer[open] { animation: none; } }
 
 /* Live Fireside, not Circles: native artwork and companion copy, at every width. */
-.fireside-image-header.live-fireside-header { display: flex; flex-direction: column; min-height: 0; padding: 0; background: #f7f6ee; }
+.fireside-image-header.live-fireside-header { display: flex; flex-direction: column; min-height: 0; margin-bottom: 18px; padding: 0; background: #f7f6ee; }
 .live-fireside-header::after, .live-fireside-header::before { display: none; }
 .fireside-image-header.live-fireside-header img { display: block; position: static; inset: auto; width: 100%; height: auto; min-height: 0; max-height: none; aspect-ratio: auto; object-fit: contain; opacity: 1; filter: none; }
 .live-header-copy { position: static; width: 100%; padding: 16px 20px; background: #f7f6ee; color: #243f27; text-shadow: none; }
-.live-header-copy p { margin: 0 0 6px; color: inherit; font-size: .9rem; font-weight: 800; }
+.live-header-copy p { max-width: none; margin: 0 0 6px; color: inherit; font-size: .9rem; font-weight: 800; }
 .live-header-copy span { display: block; position: static; max-width: none; color: inherit; font-size: clamp(1.05rem, 2vw, 1.4rem); line-height: 1.45; }

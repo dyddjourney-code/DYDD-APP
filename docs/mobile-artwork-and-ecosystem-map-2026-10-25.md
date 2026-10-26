@@ -32,18 +32,30 @@ form/filter widths were also repaired after browser-measured overflow.
 
 ## Ecosystem map
 
-The map canvas always fits its available width. Narrow canvases use numbered
-markers with all 12 full-name, at-least-44px place controls below. Numbers retain
-accessible place names; selection is exposed by `aria-pressed`. The existing
-selected-place text, artwork, bullets, links, trails and active animations remain.
-Edge markers are kept inside the canvas; the closely positioned Base Camp marker
-is offset on very narrow canvases to avoid covering Ranger Station.
+The map canvas always fits its available width. **October 26 correction:**
+John rejected the added numbered markers and duplicate numbered place lists.
+All 12 original word labels remain directly on the artwork, with original place
+content, selected-place details, links, trails and active animations preserved.
+Small canvases use compact high-contrast word labels; the clustered Trailheads,
+Base Camp and main Journey labels are separated without changing their meaning.
+Phone map panels remove nested side padding and use the full viewport width.
+No map or page horizontal scrolling is needed.
 
-Expand map opens a viewport-filling, labelled native modal dialog with map-only
-selection controls. Landscape gets a height-fitted map with independently scrollable place controls beside it, so focusing a place does not scroll the map out of view. Close and Escape return
-focus to Expand map; tab/shift-tab stay inside the modal, background interaction
-is inert, body scrolling is restored, and the chosen place survives closing.
-The expanded map does not navigate away or change orientation automatically.
+Expand map opens a viewport-filling labelled native modal dialog. Portrait gives
+a short sideways-phone prompt; rotating the open dialog keeps its selection and
+fits the complete labelled map into the landscape viewport. The landscape map
+uses all height available beneath a compact toolbar, with no duplicate control
+column. The selected name/title remains announced to assistive technology.
+Close and Escape restore focus to Expand map, tab/shift-tab remain inside the
+modal, background interaction is inert, and body scrolling is restored.
+
+Base Camp phone artwork is full-viewport-width and complete, with no added text
+on the artwork. A single full-width “On Purpose, For Purpose” bar follows it,
+then the compact personalized welcome. All changes are limited to <=980px;
+desktop Base Camp is unchanged. The global mobile menu closes in the destination
+click event, including the current destination, without cancelling navigation.
+Its destination list scrolls within the available viewport height in landscape,
+so every item remains reachable.
 
 ## Repeatable verification
 
@@ -63,9 +75,21 @@ The inventory covers 145 lessons across seven course families (Journey71,
 DesignID13, DesignPD23, Spiritual Gifts12, Design Pathways5, FruitLife36019 and
 Discover Your Divine Design2), primary artwork/audio/prose geometry, standalone
 routes, header surfaces, 320/390/430px phones, 844×390 landscape and 1280px desktop.
-The map suite also checks every place, edge-marker visibility, all relevant hit
-sizes, selected-panel updates, modal open/close/Escape, focus trap/restoration,
-preserved selection and absence of horizontal scrolling.
+The October 26 correction suite (`tests/mobile-corrections.mjs`) is also used by
+the map section of `tests/mobile-artwork-map.mjs`. It checks
+320/390/430px portrait, 844×390 landscape and 1280/1920px desktop; full-width
+hero/image/bar/welcome geometry; all 13 actual mobile destinations and same-page
+selection; the immediate click-event close state; all 12 named map touch controls;
+expanded view, rotation, Escape/close and modal keyboard focus. It blocks non-GET
+API writes and does not modify owner/customer records. Run locally or published:
+
+```sh
+node tests/mobile-corrections.mjs
+COURSE_TEST_BASE=https://dydd-online-school-sandbox.vercel.app node tests/mobile-corrections.mjs
+```
+
+The previous lesson/header suites remain available for course artwork regression;
+none of their lesson/header CSS or markup was changed in the correction.
 
 Preservation checks: build/typecheck, environment isolation, reflection catalog,
 reflection export and Journey discussion access. There are no new dependencies.
@@ -102,3 +126,22 @@ Progress JSON is checkpointed during long runs. `MOBILE_TEST_SECTION=standalone`
 can resume the28 direct-lesson checks after a test-server lifetime interruption.
 Keep long-lived local test servers on an explicit adequate runtime; final testing
 uses the clean production build, not only the development server.
+
+### October 26 correction validation
+
+- Production build and TypeScript passed. Environment-isolation, reflection
+  catalog/export and Journey discussion-access checks passed; no API/schema,
+  source curriculum, assessment, account or save behavior was changed.
+- Actual read-only Chromium/touch checks passed at 320/390/430px portrait,
+  844×390 landscape and 1280/1920px desktop. Every mobile menu destination,
+  same-page selection, all 12 named map controls, expanded-map fit, rotation,
+  selection retention, Escape/Close and focus restoration were exercised.
+- All 22 illustrated header surfaces passed at five widths (110 cases).
+  Exact previous-release stylesheet comparison passed 20 desktop compositions
+  at 1280/1920px: Base Camp, Ranger header and eight course variants.
+- Independent read-only source review found no blocking issues. The exact final
+  deployment/SHA/alias and unchanged-production evidence is recorded with the
+  release receipt in `tmp/mobile-corrections-release-proof.json`; published
+  six-width interaction evidence is `tmp/mobile-corrections-published.json`.
+- Physical iOS/Safari was not exercised; browser evidence is Chromium mobile/
+  touch emulation and actual viewport rotation, not a physical-device claim.

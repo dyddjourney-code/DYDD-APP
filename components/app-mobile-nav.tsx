@@ -1,3 +1,5 @@
+"use client";
+
 import { ReviewAwareLink } from "@/components/review-aware-link";
 
 const mobileNavItems = [
@@ -23,7 +25,13 @@ export function AppMobileNav() {
         <span aria-hidden="true" />
         <strong>Menu</strong>
       </summary>
-      <nav aria-label="Mobile app navigation">
+      <nav aria-label="Mobile app navigation" onClick={(event) => {
+        // Close on selection, not pathname changes: current-page and hash links
+        // also count, and the link must keep its normal navigation behavior.
+        if ((event.target as Element).closest("a[href]")) {
+          event.currentTarget.closest("details")?.removeAttribute("open");
+        }
+      }}>
         {mobileNavItems.map((item) => (
           <ReviewAwareLink className={"child" in item && item.child ? "mobile-app-subnav-item" : undefined} href={item.href} key={item.href}>
             {item.label}

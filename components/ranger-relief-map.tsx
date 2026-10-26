@@ -388,7 +388,7 @@ export function RangerReliefMap() {
             <span className="fireside-stump stump-four" />
             <span className="fireside-teacher" />
           </div>
-          {mapPoints.map((point, index) => (
+          {mapPoints.map((point) => (
             <button
               className={`relief-map-marker ${point.type} marker-${point.id} ${activePoint.id === point.id ? "active" : ""}`}
               key={point.id}
@@ -397,19 +397,14 @@ export function RangerReliefMap() {
               aria-controls={expanded ? "expanded-map-selection" : "relief-map-details"}
               onClick={() => setActiveId(point.id)}
               onMouseEnter={() => setActiveId(point.id)}
-              style={{ left: `clamp(13px, ${point.left}, calc(100% - 13px))`, top: `clamp(13px, ${point.top}, calc(100% - 13px))` }}
+              style={{ left: point.left, top: `clamp(8%, ${point.top}, 92%)` }}
               type="button"
             >
-              <span className="relief-marker-number" aria-hidden="true">{index + 1}</span><span className="relief-marker-label">{point.label}</span>
+              <span className="relief-marker-label">{point.label}</span>
             </button>
           ))}
         </div>
       </div>
-  );
-  const placeControls = (
-    <div className="relief-map-places" aria-label="Choose a place on the map">
-      {mapPoints.map((point, index) => <button key={point.id} type="button" aria-pressed={activeId === point.id} onClick={() => setActiveId(point.id)}><span aria-hidden="true">{index + 1}</span>{point.label}</button>)}
-    </div>
   );
 
   return (
@@ -417,14 +412,12 @@ export function RangerReliefMap() {
       <div className="relief-map-canvas">
         <div className="relief-map-toolbar"><p>Choose a place or trail to explore.</p><button className="button secondary" ref={expandButtonRef} type="button" onClick={() => setExpanded(true)}>Expand map</button></div>
         {!expanded ? mapStage : null}
-        {placeControls}
       </div>
       {expanded ? <dialog ref={dialogRef} className="relief-map-dialog" aria-labelledby="expanded-map-title" onCancel={() => setExpanded(false)}>
         <div className="relief-map-dialog-toolbar"><h2 id="expanded-map-title">DYDD Ecosystem Map</h2><button className="button secondary" type="button" autoFocus onClick={() => setExpanded(false)}>Close map</button></div>
-        <p className="relief-map-expanded-hint">Turn your phone sideways for a wider view. Choose a numbered place below to highlight it.</p>
+        <p className="relief-map-expanded-hint">Turn your phone sideways for larger labels. Tap a named place or trail to explore.</p>
         {mapStage}
         <p id="expanded-map-selection" className="relief-map-selection" aria-live="polite">{activePoint.label} — {activePoint.title}</p>
-        {placeControls}
       </dialog> : null}
 
       <aside id="relief-map-details" className="relief-map-panel" aria-label="Selected map place">

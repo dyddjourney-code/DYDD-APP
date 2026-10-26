@@ -1,6 +1,7 @@
 "use client";
 
 import type { CSSProperties, ReactNode } from "react";
+import { CirclePageHeader } from "@/components/circle-page-header";
 import { type CirclePlan } from "@/lib/circles/plan";
 import { CircleSetupPlanner } from "@/components/circle-setup-planner";
 
@@ -487,5 +488,5 @@ export function CircleProgressDashboard({ plan, tab, samples }: { plan: CirclePl
 }
 
 export default function MyCirclesWorkspace({ profilePreview }: { profilePreview?: ReactNode }) {
-  return <main className="journey-shell hq-standalone-page camp-circle-page"><header className="standalone-hero camp-circle-hero"><div><p className="eyebrow">Together</p><h1>My Circles</h1><p className="lede">Your people, your next meeting, and your Journey together.</p></div></header>{profilePreview}<CircleSetupPlanner renderDashboard={(plan, tab, samples) => <CircleProgressDashboard plan={plan} tab={tab} samples={samples} />} /></main>;
+  return <main className="journey-shell hq-standalone-page camp-circle-page"><CirclePageHeader title="My Circles">Your people, your next meeting, and your Journey together.</CirclePageHeader>{profilePreview}<CircleSetupPlanner renderDashboard={(plan, tab, samples) => <CircleProgressDashboard plan={plan} tab={tab} samples={samples} />} /></main>;
 }

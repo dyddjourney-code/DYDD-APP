@@ -6,7 +6,6 @@ import { FieldKitLegacyLinks } from "@/components/field-kit-legacy-links";
 import { hasDesignPdCourseAccess } from "@/lib/designpd/access";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { PageHelp } from "@/components/page-help";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 import { FruitLifeCurrentAssessmentProcess } from "@/components/fruitlife-current-assessment-process";
@@ -436,17 +435,6 @@ export default async function FieldKitPage({
             earlier discoveries, see your growth over time, and bring what you
             learn into your Journey.
           </p>
-        </div>
-        <div className="fieldkit-help">
-          <PageHelp
-            title="Field Kit Help"
-            items={[
-              "Start assessments and their connected courses at Trailheads.",
-              "Each trail keeps all dated reports beside its course reflection history.",
-              "Begin a new reflection round to capture growth without replacing earlier answers.",
-              "Visit your Passport in Base Camp for journey stamps and progress.",
-            ]}
-          />
         </div>
       </header>
 

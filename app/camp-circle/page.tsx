@@ -1,3 +1,4 @@
+import { CirclePageHeader } from "@/components/circle-page-header";
 import { ReviewAwareLink } from "@/components/review-aware-link";
 
 export const dynamic = "force-dynamic";
@@ -11,18 +12,12 @@ const formats = [
 export default function CampCirclePage() {
   return (
     <main className="journey-shell hq-standalone-page camp-circle-page camp-circle-overview">
-      <header className="standalone-hero camp-circle-hero">
-        <div>
-          <p className="eyebrow">Together</p>
-          <h1>Camp Circles</h1>
-          <p className="lede">
-            A parallel leader workspace for people walking through DYDD together.
-            The course stays clean for the learner. The circle gives the host
-            progress, pacing, shared discussion, and the Field Guide beside the
-            Journey without crowding it.
-          </p>
-        </div>
-      </header>
+      <CirclePageHeader title="Camp Circles">
+        A parallel leader workspace for people walking through DYDD together.
+        The course stays clean for the learner. The circle gives the host
+        progress, pacing, shared discussion, and the Field Guide beside the
+        Journey without crowding it.
+      </CirclePageHeader>
 
       <section className="circle-overview-intro" aria-labelledby="circle-invitation">
         <h2 id="circle-invitation">Discover your design. Walk it out together.</h2>

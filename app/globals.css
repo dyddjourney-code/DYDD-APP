@@ -21690,3 +21690,39 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .relief-map-dialog .relief-map-stage { width: min(100%, calc((100dvh - 56px) * 1672 / 941)); }
   .relief-map-dialog .relief-map-selection { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 }
+
+/* Circles: keep the original artwork clear, with all copy immediately below it. */
+.camp-circle-page .camp-circle-hero {
+  display: block;
+  min-height: 0;
+  padding: 0;
+  background: #f7f6ee;
+  color: #243f27;
+}
+.camp-circle-page .camp-circle-hero::before { display: none; }
+.camp-circle-page .camp-circle-hero .circle-header-art {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  object-fit: contain;
+}
+.camp-circle-page .camp-circle-hero .circle-header-copy {
+  margin: 0;
+  padding: clamp(16px, 2.5vw, 28px);
+}
+.camp-circle-page .camp-circle-hero :is(h1, .eyebrow, .lede) { color: #243f27; }
+.camp-circle-page .camp-circle-hero h1 {
+  max-width: none;
+  margin: 0 0 12px;
+  font-size: clamp(1.65rem, 3vw, 2.6rem);
+  line-height: 1.15;
+}
+.camp-circle-page .camp-circle-hero .lede {
+  max-width: 75ch;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.55;
+}

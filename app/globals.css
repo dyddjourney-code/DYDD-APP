@@ -21726,3 +21726,33 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   font-size: 1rem;
   line-height: 1.55;
 }
+
+/* Sandbox review: calm, grouped touch navigation; native modal focus/inertness. */
+.mobile-nav-trigger { display: flex; align-items: center; gap: 10px; min-height: 46px; margin-left: auto; padding: 9px 16px; border: 1px solid #c8cebc; border-radius: 999px; background: #fffdf5; color: #243f27; font: inherit; cursor: pointer; pointer-events: auto; box-shadow: 0 6px 20px #463a231a; }
+.mobile-nav-drawer { position: fixed; inset: 0 0 0 auto; width: min(320px, 90vw); max-width: none; height: 100dvh; max-height: 100dvh; margin: 0; padding: 0; border: 0; border-left: 1px solid #d8dccd; background: #fbf8ef; color: #243f27; box-shadow: -12px 0 40px #243f2726; overflow: hidden; pointer-events: auto; }
+.mobile-nav-drawer[open] { display: flex; flex-direction: column; animation: mobile-nav-enter 220ms cubic-bezier(.16, 1, .3, 1); }
+.mobile-nav-drawer::backdrop { background: #16291cb3; }
+.mobile-nav-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex: 0 0 auto; padding: max(16px, env(safe-area-inset-top)) 16px 14px 20px; border-bottom: 1px solid #d8dccd; }
+.mobile-nav-heading span { display: block; font-size: .68rem; font-weight: 600; line-height: 1.5; }
+.mobile-nav-heading h2 { margin: 4px 0 0; font-size: 1.1rem; line-height: 1.3; }
+.mobile-nav-close { display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 44px; padding: 0; border: 1px solid #d2d8c8; border-radius: 50%; background: #fffdf7; color: #243f27; cursor: pointer; }
+.mobile-app-nav .mobile-nav-drawer nav { display: block; flex: 1 1 auto; min-height: 0; max-height: none; width: 100%; max-width: none; margin: 0; padding: 8px 14px max(18px, env(safe-area-inset-bottom)); border: 0; border-radius: 0; background: transparent; box-shadow: none; overflow-y: auto; overscroll-behavior: contain; }
+.mobile-nav-group + .mobile-nav-group { border-top: 1px solid #e2e4d8; margin-top: 5px; padding-top: 5px; }
+.mobile-app-nav .mobile-nav-drawer nav a { display: flex; align-items: center; min-height: 44px; padding: 9px 12px; border: 0; border-radius: 5px; background: transparent; color: #243f27; font-size: .98rem; font-weight: 750; line-height: 1.35; text-decoration: none; }
+.mobile-nav-children { margin-left: 16px; padding-left: 8px; border-left: 1px solid #d0d8c5; }
+.mobile-app-nav .mobile-nav-drawer .mobile-nav-children a { font-size: .92rem; font-weight: 500; }
+.mobile-app-nav .mobile-nav-drawer nav a[aria-current="page"] { background: #e6ebdc; box-shadow: inset 3px 0 #9b7536; font-weight: 750; }
+.mobile-app-nav .mobile-nav-drawer nav a:hover { background: #edf0e4; }
+.mobile-app-nav :is(button, a):focus-visible { outline: 2px solid #355d39; outline-offset: -3px; }
+.mobile-app-nav :is(button, a):active { transform: scale(.98); }
+body:has(.mobile-nav-drawer[open]) { overflow: hidden; }
+@keyframes mobile-nav-enter { from { transform: translateX(100%); opacity: .6; } to { transform: translateX(0); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .mobile-nav-drawer[open] { animation: none; } }
+
+/* Live Fireside, not Circles: native artwork and companion copy, at every width. */
+.fireside-image-header.live-fireside-header { display: flex; flex-direction: column; min-height: 0; padding: 0; background: #f7f6ee; }
+.live-fireside-header::after, .live-fireside-header::before { display: none; }
+.fireside-image-header.live-fireside-header img { display: block; position: static; inset: auto; width: 100%; height: auto; min-height: 0; max-height: none; aspect-ratio: auto; object-fit: contain; opacity: 1; filter: none; }
+.live-header-copy { position: static; width: 100%; padding: 16px 20px; background: #f7f6ee; color: #243f27; text-shadow: none; }
+.live-header-copy p { margin: 0 0 6px; color: inherit; font-size: .9rem; font-weight: 800; }
+.live-header-copy span { display: block; position: static; max-width: none; color: inherit; font-size: clamp(1.05rem, 2vw, 1.4rem); line-height: 1.45; }

@@ -58,7 +58,7 @@ export default function LivePage() {
             alt="Illustrated Live Fireside gathering around a campfire"
             src="/brand/dydd-live-fireside-banner-concept.png"
           />
-          <div className="fireside-image-title live-title">
+          <div className="live-header-copy">
             <p>Live Fireside</p>
             <span>Gatherings, teaching, and conversations.</span>
           </div>

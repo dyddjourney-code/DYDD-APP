@@ -22,12 +22,19 @@ export function TrailDetailsDialog({ name, children }: Props) {
   return (
     <>
       <button ref={trigger} className="trail-details-trigger" type="button"
-        aria-haspopup="dialog" aria-label={`Review trail guide: ${name}`}
+        aria-haspopup="dialog" aria-label={`Explore this trail: ${name}`}
         onClick={() => { dialog.current?.showModal(); if (dialog.current) dialog.current.scrollTop = 0; setOpen(true); }}>
-        Review trail guide
+        <span className="trail-guide-label-desktop">Review trail guide</span><span className="trail-guide-label-mobile">Explore this trail</span>
       </button>
       <dialog ref={dialog} className="trail-details-dialog" aria-labelledby={titleId}
         onClose={() => { setOpen(false); trigger.current?.focus({ preventScroll: true }); }}
+        onKeyDown={(event) => {
+          if (event.key !== "Tab") return;
+          const controls = Array.from(dialog.current?.querySelectorAll<HTMLElement>('button, a[href], summary, [tabindex="0"]') ?? []).filter((element) => element.getClientRects().length > 0);
+          const first = controls[0], last = controls[controls.length - 1];
+          if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+        }}
         onClick={(event) => {
           if (event.target !== dialog.current) return;
           const rect = dialog.current.getBoundingClientRect();

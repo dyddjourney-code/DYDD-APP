@@ -79,35 +79,7 @@ export function FieldKitCollection({
       );
     const saved = rounds.filter((r) => r.course_slug === slug);
     const path = (href: string) => withReviewQuery(href, reviewParams);
-    return (
-      <div
-        className={`trail-placard fieldkit-collection${main ? " trail-placard-main" : ""}`}
-      >
-        <div className="trail-placard-top">
-          <span>DYDD · FIELD KIT</span>
-          <span>{number}</span>
-        </div>
-        <div className="trail-placard-body">
-          {main ? (
-            <img
-              className="trail-dydd-logo"
-              src="/brand/dydd-logo-trailheads.webp"
-              alt="Discover Your Divine Design"
-            />
-          ) : null}
-          {assessmentIcons[slug] ? (
-            <div className="fieldkit-collection-heading">
-              <h3>{name}</h3>
-              <img
-                className="fieldkit-collection-icon"
-                src={assessmentIcons[slug]}
-                alt=""
-                width={40}
-                height={40}
-              />
-            </div>
-          ) : <h3>{name}</h3>}
-          <p className="trail-description">{description}</p>
+    const collectionDetails = (<>
           <div className="fieldkit-collection-columns">
             <section aria-label={`${name} reports`}>
               <p className="section-label">Reports</p>
@@ -191,6 +163,45 @@ export function FieldKitCollection({
             )}
             {!main ? <Link href="/gear">Add feedback</Link> : null}
           </div>
+    </>);
+    return (
+      <div
+        className={`trail-placard fieldkit-collection${main ? " trail-placard-main" : ""}`}
+      >
+        <div className="trail-placard-top">
+          <span>DYDD · FIELD KIT</span>
+          <span>{number}</span>
+        </div>
+        <div className="trail-placard-body">
+          {main ? (
+            <img
+              className="trail-dydd-logo"
+              src="/brand/dydd-logo-trailheads.webp"
+              alt="Discover Your Divine Design"
+            />
+          ) : null}
+          {assessmentIcons[slug] ? (
+            <div className="fieldkit-collection-heading">
+              <h3>{name}</h3>
+              <img
+                className="fieldkit-collection-icon"
+                src={assessmentIcons[slug]}
+                alt=""
+                width={40}
+                height={40}
+              />
+            </div>
+          ) : <h3>{name}</h3>}
+          <p className="trail-description">{description}</p>
+          <div className="fieldkit-mobile-summary">
+            <p className="fieldkit-mobile-status">{main ? "Journey workbook" : reports.length ? `${reports.length} completed ${reports.length === 1 ? "report" : "reports"}` : "No completed report yet"} · {saved.length ? `${saved.length} reflection ${saved.length === 1 ? "round" : "rounds"}` : "No reflection rounds yet"}</p>
+            <Link className="button primary" href={path(`/field-kit/reflections/${slug}`)}>Review my reflections</Link>
+          </div>
+          <details className="fieldkit-mobile-details">
+            <summary>Reports, workbook &amp; course details</summary>
+            {collectionDetails}
+          </details>
+          <div className="fieldkit-desktop-details">{collectionDetails}</div>
         </div>
         <div className="trail-placard-foot" aria-hidden="true">
           <span />

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { TrailDetailsDialog } from "@/components/trail-details-dialog";
 import { designIdCourse } from "@/lib/courses/designid-foundations";
 import { designPdCourse } from "@/lib/courses/designpd-alignment";
@@ -53,7 +54,7 @@ const details = {
   },
 } as const;
 
-export function TrailDetails({ trailId }: { trailId: keyof typeof details }) {
+export function TrailDetails({ trailId, supplement }: { trailId: keyof typeof details; supplement?: ReactNode }) {
   const info = details[trailId];
   const courses = { designid: designIdCourse, designpd: designPdCourse, "spiritual-gifts": spiritualGiftsCourse, "fruitlife-360": fruitLife360Course };
   const modules = trailId === "journey"
@@ -73,6 +74,7 @@ export function TrailDetails({ trailId }: { trailId: keyof typeof details }) {
   return (
     <TrailDetailsDialog name={info.name}>
       <p className="trail-details-intro">{info.about}</p>
+      {supplement}
       <dl className="trail-details-stats">
         <div><dt>Course structure</dt><dd>{modules.length} modules · {lessonCount} {trailId === "journey" ? "lesson and workbook units" : "lessons"}</dd></div>
         <div><dt>Pace</dt><dd>Self-paced · return to your saved lesson</dd></div>

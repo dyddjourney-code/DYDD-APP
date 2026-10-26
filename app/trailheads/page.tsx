@@ -1,6 +1,5 @@
 import { isOwnerCoursePreview, designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import Link from "next/link";
-import { TrailDetails } from "@/components/trail-details";
 import { TrailPlacard } from "@/components/trail-placard";
 import { TrailResumeLink } from "@/components/trail-resume-link";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
@@ -158,7 +157,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                 bestFor="Anyone seeking clarity about their God-given design and purpose"
                 permit="Included"
                 main
-                details={<TrailDetails trailId="journey" />}
+                trailId="journey"
               >
                 <p className="trail-prerequisite">
                   No assessment needed to begin. Explore the connected
@@ -246,7 +245,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                   name={trail.name}
                   assessmentIcon={`/brand/tools/badge-icons/${trail.id}-icon.png`}
                   description={trail.description}
-                  details={<TrailDetails trailId={trail.id} />}
+                  trailId={trail.id}
                   rating={trail.rating}
                   ratingNote={trail.ratingNote}
                   terrain={trail.terrain}

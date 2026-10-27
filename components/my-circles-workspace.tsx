@@ -1,6 +1,7 @@
 "use client";
 
-import type { CSSProperties, ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { useSearchParams } from "next/navigation";
 import { CirclePageHeader } from "@/components/circle-page-header";
 import { type CirclePlan } from "@/lib/circles/plan";
 import { CircleSetupPlanner } from "@/components/circle-setup-planner";
@@ -15,6 +16,7 @@ type CircleMember = {
 };
 
 type DemoAssessmentMember = {
+  primary?: string | null;
   color: string;
   designId: {
     architect: number;
@@ -30,6 +32,8 @@ type DemoAssessmentMember = {
   gifts: string[];
   name: string;
 };
+
+type CircleAssessmentMember = Omit<DemoAssessmentMember, "designId" | "designPd"> & { id?: string; role?: string; designId: DemoAssessmentMember["designId"] | null; designPd: DemoAssessmentMember["designPd"] | null };
 
 type SampleCircle = {
   slug: string;
@@ -47,8 +51,8 @@ type SampleCircle = {
 
 const demoColors = ["#4a6239", "#8a5f2d", "#456073", "#735066", "#739d5e", "#b88a43", "#647c9b", "#5a496b", "#6f4d20", "#2f5c49"];
 const designIdMaxScore = 60;
-const designPdMaxAxisScore = 24;
-const designPdTickMarks = [-20, -15, -10, -5, 0, 5, 10, 15, 20];
+const designPdMaxAxisScore = 50;
+const designPdTickMarks = [-50, -25, 0, 25, 50];
 
 const thursdayGroupDemoAssessments: DemoAssessmentMember[] = [
   { name: "Jordan Reyes", color: demoColors[0], gifts: ["Teaching", "Leadership", "Wisdom", "Discernment", "Shepherding"], designId: { architect: 42, artisan: 19, shepherd: 48, steward: 27 }, designPd: { plan: -14, decide: 9, do: -6 } },
@@ -98,9 +102,9 @@ function signedDesignPdPosition(score: number) {
 }
 
 function designPdPoles(axis: keyof DemoAssessmentMember["designPd"]) {
-  if (axis === "plan") return ["Dreamer", "Doer"];
-  if (axis === "decide") return ["Feel It", "Think It"];
-  return ["Solo", "Together"];
+  if (axis === "plan") return ["Doer", "Dreamer"];
+  if (axis === "decide") return ["Think It", "Feel It"];
+  return ["Together", "Solo"];
 }
 
 function designPdLabel(axis: keyof DemoAssessmentMember["designPd"]) {
@@ -130,7 +134,6 @@ function designIdReflectionRows(members: DemoAssessmentMember[]) {
 
     return {
       average,
-      highCount: values.filter((value) => value >= 45).length,
       key,
       label,
     };
@@ -160,7 +163,7 @@ function primaryReflectionCounts(members: DemoAssessmentMember[]) {
 
   for (const member of members) {
     const entries = Object.entries(member.designId).sort((a, b) => b[1] - a[1]);
-    const primary = entries[0]?.[0];
+    const primary = member.primary || entries[0]?.[0];
     if (!primary) continue;
     const label = primary[0].toUpperCase() + primary.slice(1);
     rows.set(label, (rows.get(label) ?? 0) + 1);
@@ -246,17 +249,20 @@ function CircleDataDashboard({ circle }: { circle: SampleCircle }) {
     : <GroupDataDashboard members={demoAssessments} />;
 }
 
-function GroupDataDashboard({ members }: { members: DemoAssessmentMember[] }) {
-  const gifts = giftDistribution(members);
+function GroupDataDashboard({ members }: { members: CircleAssessmentMember[] }) {
+  const idMembers = members.filter(m => m.designId !== null) as DemoAssessmentMember[];
+  const pdMembers = members.filter(m => m.designPd !== null) as DemoAssessmentMember[];
+  const giftMembers = members.filter(m => m.gifts.length) as DemoAssessmentMember[];
+  const gifts = giftDistribution(giftMembers);
   const maxGiftCount = Math.max(...gifts.map((gift) => gift.count), 1);
-  const designIdRows = designIdReflectionRows(members);
-  const primaryRows = primaryReflectionCounts(members);
-  const designPdAxes = groupDesignPdAxes(members);
+  const designIdRows = idMembers.length ? designIdReflectionRows(idMembers) : [];
+  const primaryRows = primaryReflectionCounts(idMembers);
+  const designPdAxes = groupDesignPdAxes(pdMembers);
   const strongestDesignId = [...designIdRows].sort((a, b) => b.average - a.average)[0];
   const widestDesignPdAxis = [...designPdAxes].sort((a, b) => b.spread - a.spread)[0];
 
   return (
-    <section className="circle-data-dashboard" aria-label="Circle assessment data preview">
+    <section className="circle-data-dashboard" aria-label="Circle assessment data">
       <div className="group-interpretation-summary circle-data-summary">
         <article>
           <span>Spiritual Gifts read</span>
@@ -270,15 +276,15 @@ function GroupDataDashboard({ members }: { members: DemoAssessmentMember[] }) {
         </article>
         <article>
           <span>DesignPD widest spread</span>
-          <strong>{widestDesignPdAxis?.label ?? "Waiting for DesignPD"}</strong>
-          <small>{widestDesignPdAxis?.spread ?? 0} points from one side of the tendency line to the other.</small>
+          <strong>{pdMembers.length ? widestDesignPdAxis?.label : "Waiting for DesignPD"}</strong>
+          <small>{pdMembers.length ? `${pdMembers.length} saved profiles · ${widestDesignPdAxis?.spread ?? 0} percentage-point spread.` : "No completed DesignPD results shared yet."}</small>
         </article>
       </div>
 
       <div className="group-visual-grid circle-data-visual-grid">
         <article className="group-visual-card group-gifts-card">
           <span>Spiritual Gifts current #1 distribution</span>
-          <p>Demo view: each bar counts the person&apos;s current top gift and notes how often that gift appears anywhere in the top five.</p>
+          <p>{giftMembers.length} saved Spiritual Gifts profiles. Each bar counts the current top gift; top-five counts appear alongside.</p>
           <div className="group-horizontal-bars">
             {gifts.slice(0, 12).map((item) => (
               <div className="group-horizontal-bar-row" key={item.label}>
@@ -295,16 +301,16 @@ function GroupDataDashboard({ members }: { members: DemoAssessmentMember[] }) {
 
         <article className="group-visual-card group-designid-card">
           <span>DesignID group capacity bars</span>
-          <p>Demo view: average capacity across the four reflections, with high-capacity counts for quick teaching context.</p>
+          <p>Average raw saved reflection points. Current DesignID allocates 100 points across all four reflections (0–60 each), not four independent percentages. Historical runs retain their original score units.</p>
+          {!idMembers.length && <p>No completed DesignID results shared yet.</p>}
           <div className="group-designid-bars">
             {designIdRows.map((item) => (
               <div className={`group-designid-bar-row ${item.key}`} key={item.label}>
                 <div>
                   <strong>{item.label}</strong>
-                  <small>{item.highCount} people at 45+</small>
                 </div>
                 <div aria-hidden="true">
-                  <i style={{ width: `${Math.max((item.average / designIdMaxScore) * 100, item.average ? 8 : 0)}%` }} />
+                  <i style={{ width: `${Math.min(100, Math.max((item.average / designIdMaxScore) * 100, item.average ? 8 : 0))}%` }} />
                 </div>
                 <b>{item.average}</b>
               </div>
@@ -321,7 +327,7 @@ function GroupDataDashboard({ members }: { members: DemoAssessmentMember[] }) {
         </article>
       </div>
 
-      <DesignPdGroupHeatmap axes={designPdAxes} />
+      {pdMembers.length > 0 && <DesignPdGroupHeatmap axes={designPdAxes} />}
     </section>
   );
 }
@@ -330,7 +336,7 @@ function DesignPdGroupHeatmap({ axes }: { axes: ReturnType<typeof groupDesignPdA
   return (
     <article className="group-visual-card group-designpd-card">
       <span>DesignPD group tendency map</span>
-      <p>Demo view: each bubble is placed at its actual score. Only exact matching scores stack or move into an overflow box.</p>
+      <p>Each bubble uses a saved signed movement in percentage points (−50 to +50). Only exact matching scores stack or move into an overflow box.</p>
       <div className="group-designpd-heatmap">
         {axes.map((axis) => (
           <div className="group-designpd-axis" key={axis.axisKey}>
@@ -471,22 +477,43 @@ function CoupleDataDashboard({ members }: { members: DemoAssessmentMember[] }) {
   );
 }
 
-export function CircleProgressDashboard({ plan, tab, samples }: { plan: CirclePlan; tab: string; samples: boolean }) {
+export function CircleProgressDashboard({ plan, tab, samples, circleId }: { plan: CirclePlan; tab: string; samples: boolean; circleId?: string }) {
+  const params = useSearchParams();
+  const [data, setData] = useState<{ circleId: string; members: CircleAssessmentMember[] } | null>(null);
+  const [error, setError] = useState("");
+  const review = params.get("review"), key = params.get("key");
+  useEffect(() => {
+    let ignore = false;
+    setData(null); setError("");
+    if (!circleId || samples) return;
+    const query = new URLSearchParams({ circleId });
+    if (review) query.set("review", review);
+    if (key) query.set("key", key);
+    fetch("/api/circles/data?" + query, { cache: "no-store" }).then(async r => {
+      const body = await r.json();
+      if (!r.ok) throw Error(body.error || "Circle results could not be loaded.");
+      if (!ignore) setData({ circleId, members: body.members.map((m: CircleAssessmentMember, i: number) => ({ ...m, color: demoColors[i % demoColors.length] })) });
+    }).catch(e => { if (!ignore) setError(e.message); });
+    return () => { ignore = true; };
+  }, [circleId, samples, review, key, plan]);
   const count = Number(plan.expectedPeople);
   const source = plan.format === "Couple" ? jordanAveryDemoAssessments : thursdayGroupDemoAssessments;
-  const demo = Array.from({ length: count }, (_, i) => ({ ...source[i % source.length], name: i < source.length ? source[i].name : `Sample participant ${i + 1}`, color: demoColors[i % demoColors.length] }));
-  const names = ["You", ...plan.participants.map(p => p.name)];
-  const members: CircleMember[] = samples ? demo.map((p, i) => ({ name: p.name, role: i === 0 ? "Organizer · sample" : "Sample participant", progress: 0, current: "Not started", assessment: "Sample assessment", shared: "No activity yet" })) : names.map((name, i) => ({ name, role: i === 0 ? "Organizer" : "Listed · not invited", progress: 0, current: "Not started", assessment: "Not connected", shared: "No activity yet" }));
-  const circle: SampleCircle = { slug: "selected-circle", name: plan.name, format: plan.format, rhythm: plan.rhythm, nextMeeting: "", currentStage: "Not started", leaderNeed: "", accessWindow: "", seatUse: "", members, demoAssessments: samples ? demo : [] };
-  if (tab === "Data") return <section className="circle-data-panel" aria-label="Selected Circle data"><h3>Group design</h3><p className="circle-fine-print">{samples ? `Sample assessments · ${count} people. These are not participant results.` : "Assessment results will appear when participants connect and share them."}</p><CircleDataDashboard circle={circle} /></section>;
+  const demo = samples ? Array.from({ length: count }, (_, i) => ({ ...source[i % source.length], name: i < source.length ? source[i].name : `Sample participant ${i + 1}`, color: demoColors[i % demoColors.length] })) : [];
+  const actual = data && data.circleId === circleId ? data.members : [];
+  const assessments = samples ? demo : actual;
+  const members: CircleMember[] = samples ? demo.map((p, i) => ({ name: p.name, role: i === 0 ? "Organizer · sample" : "Sample participant", progress: 0, current: "Not started", assessment: "Fictional demo assessment", shared: "No activity yet" })) : actual.map(m => ({ name: m.name, role: m.role || "Accepted member", progress: 0, current: "Not connected", assessment: [m.gifts.length && "Spiritual Gifts", m.designId && "DesignID", m.designPd && "DesignPD"].filter(Boolean).join(" · ") || "No completed assessments", shared: "Saved assessments" }));
+  const hasAssessments = assessments.some(m => m.designId || m.designPd || m.gifts.length);
+  if (tab === "Data") return <section className="circle-data-panel" aria-label="Selected Circle data"><h3>Group design</h3><p className="circle-fine-print">{samples ? `FICTIONAL DEMO · ${count} sample people. These are not participant results.` : "Only the host and accepted members still listed in this Circle, using their own saved completed results. Listed or invited people are not assessment participants."}</p>{error && <p role="alert">{error}</p>}{!samples && !data && !error && <p>Loading saved Circle results…</p>}{hasAssessments ? <GroupDataDashboard members={assessments} /> : <div className="circle-data-empty"><strong>No saved assessment results yet</strong><p>No sample results are assigned to real people. Each assessment appears only after a genuine saved completion.</p></div>}</section>;
   return <section className="circle-compact-progress" aria-label="Selected Circle progress">
-    <div className="card-heading wide-heading"><h3>Racetrack</h3><span>{members.length} {samples ? "sample people" : "people listed"} / {count} planned</span></div>
-    <p className="circle-fine-print">{samples ? "Sample names · everyone starts at 0%. No participant activity is being simulated." : "No connected participant progress yet. Listed people have not been invited."}</p>
-    <div className="circle-racetrack">{members.map((member, i) => <div className="circle-racer" key={`${member.name}-${i}`}><span>{member.name}</span><div role="progressbar" aria-label={`${member.name} course progress`} aria-valuenow={0} aria-valuemin={0} aria-valuemax={100}><i style={{ left: "0%", background: demoColors[i % demoColors.length] }} /></div><small>0% · Not started</small></div>)}</div>
+    <div className="card-heading wide-heading"><h3>Journey Tracker</h3><span>{members.length} {samples ? "sample people" : "authorized people"} / {count} planned</span></div>
+    <p className="circle-fine-print">{samples ? "Fictional demo names · no real participant activity." : "The host and accepted members appear here. Course progress is not connected yet; no activity is inferred from the roster or assessments."}</p>
+    {error && <p role="alert">{error}</p>}
+    <div className="circle-racetrack">{members.map((member, i) => <div className="circle-racer" key={`${member.name}-${i}`}><span>{member.name}</span><small>{samples ? "Demo · no recorded progress" : "Course progress unavailable"}</small></div>)}</div>
     <details className="circle-roster-details"><summary>Participant details</summary><div className="people-progress-list">{members.map((member,i) => <article key={`${member.name}-${i}`}><strong>{member.name}</strong><span>{member.role}</span><small>{member.assessment}</small></article>)}</div></details>
+    {!samples && plan.participants.length > 0 && <details className="circle-roster-details"><summary>Planning roster ({plan.participants.length})</summary><p>These saved names are planning placeholders, not proof of invitation acceptance or completed assessments.</p>{plan.participants.map((p,i) => <p key={i}>{p.name}</p>)}</details>}
   </section>;
 }
 
 export default function MyCirclesWorkspace({ profilePreview }: { profilePreview?: ReactNode }) {
-  return <main className="journey-shell hq-standalone-page camp-circle-page"><CirclePageHeader title="My Circles">Your people, your next meeting, and your Journey together.</CirclePageHeader>{profilePreview}<CircleSetupPlanner renderDashboard={(plan, tab, samples) => <CircleProgressDashboard plan={plan} tab={tab} samples={samples} />} /></main>;
+  return <main className="journey-shell hq-standalone-page camp-circle-page"><CirclePageHeader title="My Circles">Your people, your next meeting, and your Journey together.</CirclePageHeader>{profilePreview}<CircleSetupPlanner renderDashboard={(plan, tab, samples, circleId) => <CircleProgressDashboard plan={plan} tab={tab} samples={samples} circleId={circleId} />} /></main>;
 }

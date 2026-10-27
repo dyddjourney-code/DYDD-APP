@@ -17,7 +17,7 @@ import { CircleScheduleEditor } from "./circle-schedule-editor";
 import { CircleMessages } from "@/components/circle-messages";
 import { CircleFieldGuide } from "@/components/circle-field-guide";
 const stages = ["Circle details", "Meeting schedule", "People", "Review"];
-export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (plan: CirclePlan, tab: string, samples: boolean) => ReactNode }) {
+export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (plan: CirclePlan, tab: string, samples: boolean, circleId?: string) => ReactNode }) {
   const params = useSearchParams();
   const query = new URLSearchParams();
   for (const key of ["review", "key"])
@@ -32,7 +32,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
     [workspace, setWorkspace] = useState(false),
     [tab, setTab] = useState(params.get("fieldGuide") === "1" ? "Field Guide" : "Progress");
   const [showSetup, setShowSetup] = useState(true);
-  const [samples, setSamples] = useState(true);
+  const [samples, setSamples] = useState(false);
   const [participant, setParticipant] = useState({ name: "", email: "" });
   const [notice, setNotice] = useState(""),
     [error, setError] = useState(""),
@@ -109,7 +109,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
   function open(circle: SavedCircle) {
     setShowSetup(true);
     setTab("Progress");
-    setSamples(true);
+    setSamples(false);
     rememberCircle(circle.id);
     setSelected(circle);
     setPlan(normalizePlan(circle.plan));
@@ -121,7 +121,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
   }
   function startNew() {
     setShowSetup(true);
-    setSamples(true);
+    setSamples(false);
     rememberCircle();
     setSelected(null);
     setNewId(crypto.randomUUID());
@@ -398,7 +398,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
                   </button>
                 ))}
               </div>
-              {(tab === "Progress" || tab === "Data") && <><label className="circle-sample-toggle"><input type="checkbox" checked={samples} onChange={e => setSamples(e.target.checked)} />Preview with sample people ({plan.expectedPeople})</label>{renderDashboard?.(plan, tab, samples)}</>}
+              {(tab === "Progress" || tab === "Data") && <>{params.get("review") && <label className="circle-sample-toggle"><input type="checkbox" checked={samples} onChange={e => setSamples(e.target.checked)} />Show explicitly fictional demo assessments ({plan.expectedPeople})</label>}{renderDashboard?.(plan, tab, Boolean(params.get("review")) && samples, selected?.id)}</>}
               <div className="circle-selected-summary"><strong>{plan.name}</strong><span>{Number(plan.expectedPeople)} planned · {plan.participants.length + 1} listed</span><span>Next: {dates.find(d => d >= new Date().toLocaleDateString("en-CA", {timeZone: plan.timezone})) || "No upcoming meeting"}{plan.time ? ` · ${plan.time}` : ""} · {plan.timezone}</span></div>
               {tab === "Schedule" && (
                 <>

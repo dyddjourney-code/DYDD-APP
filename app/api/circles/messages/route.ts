@@ -4,7 +4,7 @@ import {circleActor,circleQuery,sameOrigin} from '@/lib/circles/server';
 import {createSupabaseAdminClient} from '@/lib/supabase/admin';
 import {validatePlan} from '@/lib/circles/plan';
 import {circleMessageDrafts} from '@/lib/lifecycle/templates';
-import {appBase,enqueue,enqueueCampaignMembers,must,tokenHash} from '@/lib/lifecycle/store';
+import {appBase,must,tokenHash} from '@/lib/lifecycle/store';
 export const dynamic='force-dynamic';
 const reply=(body:unknown,status=200)=>NextResponse.json(body,{status,headers:{'Cache-Control':'private, no-store'}});
 async function owned(request:Request,id:string){const actor=await circleActor(request);if(!actor)throw Error('Sign in to manage Circle messages.');const circle=must(await circleQuery(actor).eq('id',id).maybeSingle()) as any;if(!circle)throw Error('This Circle is not available in your account.');return {actor,circle};}
@@ -57,6 +57,12 @@ export async function POST(request:Request){
   }
   throw Error('Choose a valid leader message action.');
  }
+ if(['exclude','skip','restore'].includes(b.action)){
+  if(!Number.isInteger(b.revision))throw Error('Reload the message before changing inclusion.');
+  const draft=must(await db.from('dydd_circle_message_drafts').select('id').eq('id',b.messageId).eq('campaign_id',campaign.id).maybeSingle());if(!draft)throw Error('Message is not in this Circle.');
+  const message=must(await db.rpc('dydd_set_circle_message_excluded',{message_id:b.messageId,actor_user:actor.userId,actor_scope:actor.previewScope,expected_revision:b.revision,exclude:b.action!=='restore'}));
+  return reply({message});
+ }
  if(b.action==='edit'||b.action==='approve'){
   if(typeof b.subject!=='string'||typeof b.body!=='string'||!Number.isInteger(b.revision))throw Error('Enter a subject and complete message.');
   const draft=must(await db.from('dydd_circle_message_drafts').select('id').eq('id',b.messageId).eq('campaign_id',campaign.id).single());if(!draft)throw Error('Message is not in this Circle.');
@@ -65,19 +71,16 @@ export async function POST(request:Request){
  }
  if(b.action==='finalize'){
   const result=must(await db.rpc('dydd_finalize_circle_campaign',{campaign_key:campaign.id,actor_user:actor.userId,actor_scope:actor.previewScope}));
-  if(actor.userId){const u=must(await db.auth.admin.getUserById(actor.userId)) as any;const email=u.user?.email;
-   if(email){const ds=must(await db.from('dydd_circle_message_drafts').select('*').eq('campaign_id',campaign.id).eq('kind','leader')) as any[];for(const d of ds)if(d.expires_at>new Date().toISOString()&&(d.scheduled_at>=new Date().toISOString()||d.message_key==='leader-launch'))await enqueue({event_key:`circle-leader:${campaign.id}:${d.id}`,template_id:d.template_id,category:d.category,user_id:actor.userId,email,circle_id:circle.id,campaign_id:campaign.id,draft_id:d.id,subject:d.subject,body:d.body,scheduled_at:new Date(Math.max(Date.now(),Date.parse(d.scheduled_at))).toISOString(),expires_at:d.expires_at,context:{kind:'leader'}});}
-  }
+  if(actor.userId){const u=must(await db.auth.admin.getUserById(actor.userId)) as any;if(u.user?.email)must(await db.rpc('dydd_queue_circle_leader_messages',{campaign_key:campaign.id,creator_user:actor.userId,creator_email:u.user.email}));}
   return reply(result);
  }
  if(b.action==='pause'||b.action==='resume'){
-  if(!['finalized','paused'].includes(campaign.status))throw Error('Finalize all reviewed messages before scheduling.');
-  must(await db.from('dydd_circle_campaigns').update({status:b.action==='pause'?'paused':'finalized'}).eq('id',campaign.id));if(b.action==='resume')await enqueueCampaignMembers(campaign.id);return reply({paused:b.action==='pause'});
+  return reply(must(await db.rpc('dydd_set_circle_campaign_paused',{campaign_key:campaign.id,actor_user:actor.userId,actor_scope:actor.previewScope,pause:b.action==='pause'})));
  }
  if(b.action==='invite'){
   if(!actor.userId)throw Error('Review mode cannot invite real recipients. Sign in as the Circle creator.');
   if(campaign.status!=='finalized')throw Error('Review every message and finalize the full schedule before sending invitations.');
-  const d=must(await db.from('dydd_circle_message_drafts').select('*').eq('campaign_id',campaign.id).eq('message_key','invitation').single()) as any;if(!d.approved_at)throw Error('Approve the invitation first.');
+  const d=must(await db.from('dydd_circle_message_drafts').select('*').eq('campaign_id',campaign.id).eq('message_key','invitation').single()) as any;if(d.excluded_at)throw Error('The invitation is excluded. Restore and approve it before inviting people.');if(!d.approved_at)throw Error('Approve the invitation first.');
   let queued=0;
   for(const person of circle.plan.participants){
    const token=randomBytes(32).toString('hex'),expires=d.expires_at;

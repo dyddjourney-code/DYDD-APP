@@ -31,14 +31,9 @@ export async function processLifecycleEvents(limit=50){
    for(const c of cs)await enqueueCampaignMembers(c.id,e.source_id);
   } else if(e.kind==='circle_finalized'){
    await enqueueCampaignMembers(e.source_id);
-   const campaign=must(await db.from('dydd_circle_campaigns').select('circle_id,status').eq('id',e.source_id).maybeSingle()) as any;
-   if(!campaign){must(await db.from('dydd_lifecycle_events').update({processed_at:iso(Date.now()),error_message:'Circle campaign removed; no communication remains.'}).eq('id',e.id));processed++;continue;}
-   const circle=must(await db.from('journey_circle_plans').select('user_id').eq('id',campaign.circle_id).maybeSingle()) as any;
-   if(!circle){must(await db.from('dydd_lifecycle_events').update({processed_at:iso(Date.now()),error_message:'Circle removed; no communication remains.'}).eq('id',e.id));processed++;continue;}
-   if(circle.user_id&&['finalized','paused'].includes(campaign.status)){
-    const leader=await userById(circle.user_id),ds=must(await db.from('dydd_circle_message_drafts').select('*').eq('campaign_id',e.source_id).eq('kind','leader')) as any[];
-    if(leader?.email)for(const d of ds)if(d.expires_at>iso(Date.now())&&(d.scheduled_at>=e.occurred_at||d.message_key==='leader-launch'))await enqueue({event_key:`circle-leader:${e.source_id}:${d.id}`,template_id:d.template_id,category:d.category,user_id:leader.id,email:leader.email,circle_id:campaign.circle_id,campaign_id:e.source_id,draft_id:d.id,subject:d.subject,body:d.body,scheduled_at:iso(Math.max(Date.now(),Date.parse(d.scheduled_at))),expires_at:d.expires_at,context:{kind:'leader'}});
-   }
+   const campaign=must(await db.from('dydd_circle_campaigns').select('circle_id').eq('id',e.source_id).maybeSingle()) as any;
+   const circle=campaign?must(await db.from('journey_circle_plans').select('user_id').eq('id',campaign.circle_id).maybeSingle()) as any:null;
+   if(circle?.user_id){const leader=await userById(circle.user_id);if(leader?.email)must(await db.rpc('dydd_queue_circle_leader_messages',{campaign_key:e.source_id,creator_user:leader.id,creator_email:leader.email}));}
   } else if(e.kind==='fruitlife_self_completed'&&e.email){
    const base=appBase(),subject='FruitLife360: your next step',text=`Your self reflection is saved. Some observer reflections are still pending. Your report follows the cycle’s existing completion rules.\n\nReview your private tracker to see whether any action is useful: ${base}/hq\n\nYou can review invitations or send a thoughtful reminder without revealing confidential responses.`;
    const key='fruitlife-status-'+e.source_id;
@@ -120,6 +115,8 @@ export async function lifecycleEligibility(job:any,now=Date.now()):Promise<{stop
   const [cr,ca,dr]=await Promise.all([db.from('journey_circle_plans').select('*').eq('id',job.circle_id).single(),db.from('dydd_circle_campaigns').select('*').eq('id',job.campaign_id).single(),job.draft_id?db.from('dydd_circle_message_drafts').select('*').eq('id',job.draft_id).single():Promise.resolve({data:null,error:null})]);
   const circle=must(cr) as any,campaign=must(ca) as any,draft=must(dr) as any;
   const announcement=job.context.announcementId?must(await db.from('dydd_circle_announcements').select('status,approved_at,campaign_id').eq('id',job.context.announcementId).maybeSingle()) as any:null;
+  if(draft?.excluded_at)return {stop:'Creator intentionally excluded this message.'};
+  if(draft&&job.context.draftRevision!==undefined&&job.context.draftRevision!==draft.revision)return {stop:'Message revision changed; re-finalization required.'};
   const approved=announcement?announcement.status==='published'&&announcement.approved_at&&announcement.campaign_id===campaign.id:draft?.approved_at;
   if(circle.status!=='active'||campaign.status==='superseded'||circle.revision!==campaign.circle_revision)return {stop:'Circle archived or schedule revision replaced.'};
   if(campaign.status==='paused')return {deferUntil:iso(now+3600000),reason:'This Circle communication is paused.'};

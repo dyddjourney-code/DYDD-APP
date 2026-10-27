@@ -21905,3 +21905,9 @@ body:has(.mobile-nav-drawer[open]) { overflow: hidden; }
 @media(max-width:600px){.email-workspace{margin:1rem 0;padding:1rem}.email-message-toggle{align-items:flex-start;flex-direction:column;gap:.6rem}.email-actions{align-items:stretch;flex-direction:column}.email-actions button,.email-actions a{width:100%;box-sizing:border-box}.email-message-editor{padding:.8rem}.email-message-editor textarea{font-size:16px}.email-summary{align-items:flex-start;flex-direction:column}}
 .email-preview{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.6;padding:.85rem;background:#f8faf6;border:1px solid #d8dfd2;border-radius:8px}
 .email-leader-messages{border-top:1px solid #d8dfd2;margin-top:2rem;padding-top:1rem}
+
+/* Circle message review: three quiet, keyboard-accessible section panels. */
+.email-message-section{min-width:0;border:1px solid #d8dfd2;border-radius:12px;background:#fff;padding:0 1rem}
+.email-workspace .email-message-section>summary{padding:1rem 0;line-height:1.6;color:#3e562e;overflow-wrap:anywhere}
+.email-message-section[open]>summary{border-bottom:1px solid #e0e5da;margin-bottom:.75rem}
+.email-message-section>.email-message{margin:.75rem 0}

@@ -29,8 +29,9 @@ try{
   await page.waitForFunction(()=>[...document.querySelectorAll('button')].some(b=>b.textContent.trim()==='Messages'));
   await page.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Messages').click());
   await page.waitForSelector('.email-message-toggle');
+  await page.$eval('.email-message-section',el=>{el.open=true;});
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`No page overflow at ${width}`);
-  const finalButton=await page.$eval('.email-workspace',el=>[...el.querySelectorAll('button')].find(b=>b.textContent.includes('Finalize all messages')).disabled);assert(finalButton);
+  const finalButton=await page.$eval('.email-workspace',el=>[...el.querySelectorAll('button')].find(b=>b.textContent.includes('Finalize included messages')).disabled);assert(finalButton);
   await page.click('.email-message-toggle');await page.waitForSelector('.email-message-editor textarea');
   assert(await page.$eval('.email-message-editor textarea',e=>e.getBoundingClientRect().right<=innerWidth),`Editor fits ${width}`);
   await page.$eval('.email-workspace',e=>e.scrollIntoView({block:'start'}));

@@ -29,8 +29,12 @@ async function readyPassport(page) {
  await page.waitForFunction(()=>{const b=document.querySelector('.passport-badge-button');if(!b)return false;const key=Object.keys(b).find(k=>k.startsWith('__reactProps$'));return key && typeof b[key]?.onClick==='function';});
 }
 async function clickBadge(page,title) {
+ if(await page.$('.passport-detail-sheet[open]')) {
+  await page.click('.passport-sheet-header button');
+  await page.waitForFunction(()=>!document.querySelector('.passport-detail-sheet').open);
+ }
  for(const b of await page.$$('.passport-badge-button'))if(await b.$eval('strong',e=>e.textContent)===title){await b.click();break;}
- await page.waitForFunction(t=>document.querySelector('.passport-badge-popover h3')?.textContent===t,{},title);
+ await page.waitForFunction(t=>document.querySelector(matchMedia('(max-width: 980px)').matches ? '.passport-detail-sheet[open] h3' : '.passport-badge-popover h3')?.textContent===t,{},title);
 }
 function designPayload(name='Artisan') {const order=[name,...['Architect','Artisan','Shepherd','Steward'].filter(n=>n!==name)];const result=engine.scoreDesignId(Object.fromEntries(intake.designIdQuestionBank.map(q=>[q.code,[3,2,0,0][order.indexOf(q.reflection)]])));return {...reporting.buildDesignIdReportPayload({participantName:'Passport QA',participantEmail:'passport-qa@example.invalid',result}),...engine.designIdScorePayload(result)};}
 try {

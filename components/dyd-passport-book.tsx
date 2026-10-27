@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { buildPassportBadges, type PassportBadge, type PassportBadgeState } from "@/lib/passport-badges";
 
 const badgeStatusLabel: Record<PassportBadgeState, string> = {
@@ -24,6 +24,46 @@ export function DydPassportBook({
     () => badges.find((badge) => badge.title === selectedTitle) ?? badges[0],
     [badges, selectedTitle],
   );
+  const detailId = useId();
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const [mobile, setMobile] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 980px)");
+    const update = () => {
+      setMobile(query.matches);
+      if (!query.matches) setDetailOpen(false);
+    };
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    if (!detailOpen) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialog.showModal();
+    return () => {
+      dialog.close();
+      document.body.style.overflow = previousOverflow;
+      triggerRef.current?.focus({ preventScroll: true });
+    };
+  }, [detailOpen]);
+
+  const renderDetailCopy = (badge: PassportBadge) => (
+    <>
+      <p>{badge.summary}</p>
+      <dl>
+        <div><dt>Earn it by</dt><dd>{badge.earnBy}</dd></div>
+        <div><dt>Connected to</dt><dd>{badge.connectedTo}</dd></div>
+      </dl>
+    </>
+  );
   const earnedCount = badges.filter((badge) => badge.state === "earned").length;
   const nextBadge = badges.find((badge) => badge.state === "next") ?? badges.find((badge) => badge.state === "ahead");
   const journeyBadges = badges.filter((badge) => badge.group !== "extension");
@@ -42,7 +82,15 @@ export function DydPassportBook({
     <button
       className={`passport-badge-button ${badge.state} ${selectedBadge?.title === badge.title ? "selected" : ""}`}
       key={badge.title}
-      onClick={() => setSelectedTitle(badge.title)}
+      onClick={(event) => {
+        setSelectedTitle(badge.title);
+        if (window.matchMedia("(max-width: 980px)").matches) {
+          triggerRef.current = event.currentTarget;
+          setDetailOpen(true);
+        }
+      }}
+      aria-haspopup={mobile ? "dialog" : undefined}
+      aria-controls={mobile ? detailId : undefined}
       onMouseEnter={() => setSelectedTitle(badge.title)}
       onFocus={() => setSelectedTitle(badge.title)}
       aria-pressed={selectedBadge?.title === badge.title}
@@ -85,6 +133,7 @@ export function DydPassportBook({
         </div>
 
         <div className="passport-badge-stack" aria-label="Possible and earned badges">
+          <p className="passport-mobile-hint">Tap any badge for its meaning and how to earn it.</p>
           <section aria-label="Main trail badges" className="passport-badge-group">
             <p className="section-label">Main trail</p>
             <h3>Discover Your Divine Design Journey Badges</h3>
@@ -129,21 +178,46 @@ export function DydPassportBook({
             <div>
               <span>{badgeStatusLabel[selectedBadge.state]}</span>
               <h3>{selectedBadge.title}</h3>
-              <p>{selectedBadge.summary}</p>
-              <dl>
-                <div>
-                  <dt>Earn it by</dt>
-                  <dd>{selectedBadge.earnBy}</dd>
-                </div>
-                <div>
-                  <dt>Connected to</dt>
-                  <dd>{selectedBadge.connectedTo}</dd>
-                </div>
-              </dl>
+              {renderDetailCopy(selectedBadge)}
             </div>
           </article>
         ) : null}
       </div>
+      {selectedBadge ? (
+        <dialog
+          ref={dialogRef}
+          id={detailId}
+          className="passport-detail-sheet"
+          aria-labelledby={`${detailId}-title`}
+          onKeyDown={(event) => {
+            if (event.key !== "Tab") return;
+            const stops = Array.from(event.currentTarget.querySelectorAll<HTMLElement>('button:not([disabled]), [href], [tabindex="0"]'));
+            const first = stops[0], last = stops[stops.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+              event.preventDefault();
+              last?.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+              event.preventDefault();
+              first?.focus();
+            }
+          }}
+          onCancel={(event) => { event.preventDefault(); setDetailOpen(false); }}
+          onClick={(event) => { if (event.target === event.currentTarget) setDetailOpen(false); }}
+        >
+          <header className="passport-sheet-header">
+            <div>
+              <span>{badgeStatusLabel[selectedBadge.state]} · Badge details</span>
+              <h3 id={`${detailId}-title`}>{selectedBadge.title}</h3>
+            </div>
+            <button type="button" autoFocus onClick={() => setDetailOpen(false)} aria-label="Close badge details">Close</button>
+          </header>
+          <div className="passport-sheet-body" tabIndex={0} role="region" aria-label="Badge meaning and requirements" key={selectedBadge.title}>
+            <img src={selectedBadge.image} alt="" />
+            <h4>Overview</h4>
+            {renderDetailCopy(selectedBadge)}
+          </div>
+        </dialog>
+      ) : null}
     </section>
   );
 }

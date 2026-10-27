@@ -12,7 +12,7 @@ const badgeStatusLabel: Record<PassportBadgeState, string> = {
 
 export function DydPassportBook({
   badges = buildPassportBadges({ completedAssessments: [] }),
-  firstName = "Traveler",
+  firstName: _firstName = "Traveler",
 }: {
   badges?: PassportBadge[];
   firstName?: string;
@@ -59,8 +59,7 @@ export function DydPassportBook({
     <section className="passport-book" id="passport" aria-label="DYDD Passport Book">
       <div className="passport-book-cover">
         <div>
-          <p className="section-label">DYDD Passport Book</p>
-          <h2>{firstName}&apos;s trail record.</h2>
+          <h2>DYDD Passport Book</h2>
           <p>
             Badges collect here as milestones are earned. Each marker shows what it means,
             how it is earned, and which part of the journey it belongs to.
@@ -118,8 +117,8 @@ export function DydPassportBook({
           </section>
           <section aria-label="Dig deeper trail badges" className="passport-badge-group passport-trail-section passport-deeper-trail">
             <p className="section-label">Dig deeper trails</p>
-            <h3>DesignPD</h3>
-            <p className="passport-trail-note">Complete DesignID first. DesignPD is an optional expansion with its own assessment and course.</p>
+            <h3>DesignPD · $15</h3>
+            <p className="passport-trail-note">Optional paid Dig Deeper trail. Complete DesignID first, then unlock a DesignPD report derived from your saved DesignID result and explore its course. No separate assessment.</p>
             <div className="passport-badge-grid">{deeperBadges.map(renderBadgeButton)}</div>
           </section>
         </div>
@@ -134,7 +133,7 @@ export function DydPassportBook({
               <dl>
                 <div>
                   <dt>Earn it by</dt>
-                  <dd>{selectedBadge.state === "locked" ? "Complete DesignID first, then unlock the DesignPD expansion." : selectedBadge.earnBy}</dd>
+                  <dd>{selectedBadge.earnBy}</dd>
                 </div>
                 <div>
                   <dt>Connected to</dt>

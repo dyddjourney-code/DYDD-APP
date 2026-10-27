@@ -1,3 +1,6 @@
+import { syncPassportAwards } from "@/lib/passport/state";
+import { previewPassportState } from "@/lib/passport/preview";
+import { savedAssessmentComplete, savedPrimary, completedLegacyFruitSnapshot } from "@/lib/passport/evidence";
 import { isSandbox } from "@/lib/environment";
 import { OnTheHorizon } from "@/components/on-the-horizon";
 import { BaseCampProfile } from "@/components/basecamp-profile";
@@ -598,18 +601,18 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     selectedFruitLifeSession?.id === activeFruitLifeSession?.id && reviewParams?.fruitlife_token
       ? reviewParams.fruitlife_token
       : fruitLifeTokenFromSession(activeFruitLifeSession);
-  const { data: completedEnrollments, error: passportProgressError } = user && !reviewReport
-    ? await supabase.from("enrollments").select("courses(slug)").eq("user_id", user.id).eq("status", "completed")
-    : { data: [], error: null };
-  if (passportProgressError) console.error("Passport course completion lookup failed", passportProgressError.code);
-  const completedCourses = (completedEnrollments ?? []).flatMap((enrollment) => {
-    const courses = enrollment.courses as { slug: string } | { slug: string }[] | null;
-    return (Array.isArray(courses) ? courses : courses ? [courses] : []).map((course) => course.slug);
-  });
+  const passportState = user && !reviewReport ? await syncPassportAwards(user).catch((error) => {
+    console.error("Passport lookup failed", error.message);
+    return null;
+  }) : null;
+  const previewChecklist = reviewReport && isSandbox() ? await previewPassportState(reviewParams ?? {}).catch(() => null) : null;
+  const verifiedSnapshots = assessmentReport.all.filter(snapshot => savedAssessmentComplete(snapshot, assessmentReport.all) || completedLegacyFruitSnapshot(snapshot));
+  const verifiedDesign = verifiedSnapshots.find(snapshot => snapshot.assessment_type === "designid");
   const passportBadges = buildPassportBadges({
-    completedCourses,
-    completedAssessments: assessmentReport.latest.map((snapshot) => snapshot.assessment_type),
-    primaryDesign: buildDesignIdContext(assessmentReport).primary,
+    completedCourses: passportState?.legacyCourses ?? [],
+    completedAssessments: verifiedSnapshots.map(snapshot => snapshot.assessment_type),
+    primaryDesign: verifiedDesign ? savedPrimary(verifiedDesign) : undefined,
+    earnedBadgeKeys: passportState?.awards.map(a => a.badge_key) ?? previewChecklist?.awards ?? [],
   });
 
   if (fruitLifeLane) {

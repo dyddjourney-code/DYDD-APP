@@ -1,4 +1,5 @@
 "use client";
+import { useCourseProgress, CourseCompletionControls } from "@/components/course-progress";
 import { DesignIdAuthoredBody } from "@/components/designid-authored-body";
 import { DesignIdWelcomeBody } from "@/components/designid-welcome-body";
 import type { ReflectionQuestion } from "@/lib/reflections/catalog";
@@ -64,6 +65,8 @@ export function DesignIdCourseNavigator({
 }: DesignIdCourseNavigatorProps) {
   const flatLessons = useMemo(() => flattenModules(modules), [modules]);
   const savedPosition = useReflectionPosition();
+  const checklistSlugs = useMemo(() => flatLessons.map(item => item.lesson.slug), [flatLessons]);
+  const checklist = useCourseProgress("designid-foundations", checklistSlugs);
   useEffect(() => {
     if (!savedPosition.roundId) return;
     const requested =
@@ -101,21 +104,21 @@ export function DesignIdCourseNavigator({
   const activeLessonRef = useRef<HTMLElement | null>(null);
   const activeIndex = Math.max(
     0,
-    flatLessons.findIndex((item) => item.lesson.slug === activeSlug),
+    flatLessons.findIndex((item) => item.lesson.slug === (checklist.canVisit(activeSlug) ? activeSlug : checklistSlugs.find(slug => !checklist.done(slug)) ?? checklistSlugs[0])),
   );
   const active = flatLessons[activeIndex] ?? flatLessons[0];
   const previous = activeIndex > 0 ? flatLessons[activeIndex - 1] : null;
   const next =
     activeIndex < flatLessons.length - 1 ? flatLessons[activeIndex + 1] : null;
-  const progress = flatLessons.length
-    ? Math.round(((activeIndex + 1) / flatLessons.length) * 100)
-    : 0;
+  const progress = checklist.percent;
 
   if (!active) {
     return null;
   }
 
-  const setLesson = (item: FlatDesignIdLesson) => {
+  const setLesson = async (item: FlatDesignIdLesson, completedAdvance = false) => {
+    if (!completedAdvance && !checklist.canVisit(item.lesson.slug)) return;
+    if (savedPosition.flush && !await savedPosition.flush()) return;
     setActiveSlug(item.lesson.slug);
     savedPosition.recordPosition?.(item.lesson.slug);
     try {
@@ -159,7 +162,7 @@ export function DesignIdCourseNavigator({
           <span style={{ width: `${progress}%` }} />
         </div>
         <p className="journey-course-progress-label">
-          Lesson {activeIndex + 1} of {flatLessons.length}
+          Lesson {activeIndex + 1} of {flatLessons.length} · {checklist.state?.completed.length ?? 0} completed
         </p>
 
         <div className="journey-module-accordion">
@@ -200,6 +203,7 @@ export function DesignIdCourseNavigator({
                                   ? "active"
                                   : ""
                               }
+                              disabled={!checklist.canVisit(lesson.slug) || checklist.busy}
                               onClick={() =>
                                 flatLesson ? setLesson(flatLesson) : undefined
                               }
@@ -208,7 +212,7 @@ export function DesignIdCourseNavigator({
                               <span className="designid">
                                 Lesson {lessonIndex + 1}
                               </span>
-                              <strong>{lesson.title}</strong>
+                              <strong>{lesson.title}</strong><small className="lesson-checklist-status">{checklist.done(lesson.slug) ? "✓ Completed" : checklist.canVisit(lesson.slug) ? "○ Not completed" : "🔒 Complete earlier lessons"}</small>
                             </button>
                           </li>
                         );
@@ -300,15 +304,8 @@ export function DesignIdCourseNavigator({
           ) : (
             <span>First lesson</span>
           )}
-          {next ? (
-            <button onClick={() => setLesson(next)} type="button">
-              Next: {next.lesson.title}
-            </button>
-          ) : (
-            <a href={withReview("/journey", reviewQuery)}>
-              Continue to DYDD Journey
-            </a>
-          )}
+          <CourseCompletionControls progress={checklist} lessonSlug={active.lesson.slug} nextTitle={next?.lesson.title} onNext={next ? () => { void setLesson(next, true); } : undefined} flush={savedPosition.flush} completionHref={withReview("/journey", reviewQuery)} />
+
         </footer>
       </article>
     </section>

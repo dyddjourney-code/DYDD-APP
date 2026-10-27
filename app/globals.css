@@ -21812,3 +21812,16 @@ body:has(.mobile-nav-drawer[open]) { overflow: hidden; }
   .trailhead-renewal .trail-details-content { padding:16px; font-size:16px; }
   .trailhead-renewal .trail-details-content h3 { padding:0; min-height:0; }
 }
+
+/* Durable lesson checklist: completion, never viewing position, drives progress. */
+.course-completion-controls { display:flex; flex-wrap:wrap; align-items:center; gap:12px; max-width:100%; }
+.course-completion-controls label { display:flex; align-items:center; gap:8px; font-size:.92rem; }
+.course-completion-controls input { width:20px; height:20px; accent-color:#476b42; flex-shrink:0; }
+.course-completion-controls button { white-space:normal; text-align:left; }
+.course-completion-controls p { flex-basis:100%; margin:0; }
+.lesson-checklist-status { display:block; font-size:.75rem; line-height:1.4; margin-top:4px; }
+.journey-course-index button:disabled { opacity:.62; cursor:not-allowed; }
+.niche-declaration-completion { padding:18px; border:1px solid #cbbd9f; border-radius:12px; margin-top:18px; background:#fffaf0; }
+.niche-declaration-completion button { min-height:44px; padding:10px 14px; max-width:100%; white-space:normal; }
+@media(max-width:600px) { .journey-active-pagination { flex-wrap:wrap; } .course-completion-controls { width:100%; } .course-completion-controls > button { width:100%; } }
+.passport-book { scroll-margin-top: 80px; }

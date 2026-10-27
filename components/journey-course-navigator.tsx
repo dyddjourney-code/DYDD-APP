@@ -1,4 +1,5 @@
 "use client";
+import { useCourseProgress, CourseCompletionControls, NicheDeclarationCompletion } from "@/components/course-progress";
 import { JourneyAppliedCapacity } from "@/components/journey-applied-capacity";
 import { appliedCapacitySlug, type AppliedCapacityScores } from "@/lib/journey/applied-capacity";
 import { expertiseLessons } from "@/lib/journey/expertise-lessons";
@@ -150,6 +151,8 @@ export function JourneyCourseNavigator({
   );
   const flatUnits = useMemo(() => flattenModules(modules), [modules]);
   const savedPosition = useReflectionPosition();
+  const checklistSlugs = useMemo(() => flatUnits.map(item => item.unit.slug), [flatUnits]);
+  const checklist = useCourseProgress("discover-your-divine-design", checklistSlugs);
   useEffect(() => {
     if (!savedPosition.roundId) return;
     const requested =
@@ -185,7 +188,7 @@ export function JourneyCourseNavigator({
   const activeLessonRef = useRef<HTMLElement | null>(null);
   const activeIndex = Math.max(
     0,
-    flatUnits.findIndex((item) => item.unit.slug === activeSlug),
+    flatUnits.findIndex((item) => item.unit.slug === (checklist.canVisit(activeSlug) ? activeSlug : checklistSlugs.find(slug => !checklist.done(slug)) ?? checklistSlugs[0])),
   );
   // Forward-only authoring rule: keep previously approved lessons unchanged.
   const connectedTrailBoundary = flatUnits.findIndex(
@@ -196,9 +199,7 @@ export function JourneyCourseNavigator({
   const previous = activeIndex > 0 ? flatUnits[activeIndex - 1] : null;
   const next =
     activeIndex < flatUnits.length - 1 ? flatUnits[activeIndex + 1] : null;
-  const progress = flatUnits.length
-    ? Math.round(((activeIndex + 1) / flatUnits.length) * 100)
-    : 0;
+  const progress = checklist.percent;
   const isAppliedCapacity = active.unit.slug === appliedCapacitySlug;
   const isDesignIdLens = active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19";
   const isDesignReflectionsLove = active.unit.slug === "identity-the-design-reflections-and-love-21";
@@ -249,7 +250,8 @@ export function JourneyCourseNavigator({
     return null;
   }
 
-  const setLesson = async (item: FlatUnit) => {
+  const setLesson = async (item: FlatUnit, completedAdvance = false) => {
+    if (!completedAdvance && !checklist.canVisit(item.unit.slug)) return;
     if (savedPosition.flush && !await savedPosition.flush()) return;
     const sectionKey = `${item.module.slug}-${item.section}`;
     setActiveSlug(item.unit.slug);
@@ -303,7 +305,7 @@ export function JourneyCourseNavigator({
           <span style={{ width: `${progress}%` }} />
         </div>
         <p className="journey-course-progress-label">
-          Lesson {activeIndex + 1} of {flatUnits.length}
+          Lesson {activeIndex + 1} of {flatUnits.length} · {checklist.state?.completed.length ?? 0} completed
         </p>
 
         <div className="journey-module-accordion">
@@ -362,6 +364,7 @@ export function JourneyCourseNavigator({
                                           ? "active"
                                           : ""
                                       }
+                                      disabled={!checklist.canVisit(unit.slug) || checklist.busy}
                                       onClick={() =>
                                         flatUnit
                                           ? setLesson(flatUnit)
@@ -372,7 +375,7 @@ export function JourneyCourseNavigator({
                                       {!["identity-who-vs-whose-16", "identity-good-works-17", "identity-niche-18"].includes(unit.slug) ? <span className={typeClass[unit.type]}>
                                         {unit.typeLabel}
                                       </span> : null}
-                                      <strong>{unit.title}</strong>
+                                      <strong>{unit.title}</strong><small className="lesson-checklist-status">{checklist.done(unit.slug) ? "✓ Completed" : checklist.canVisit(unit.slug) ? "○ Not completed" : "🔒 Complete earlier lessons"}</small>
                                     </button>
                                   </li>
                                 );
@@ -590,7 +593,7 @@ export function JourneyCourseNavigator({
               </>}
 
               {isExpertisePathfinder ? <p className="journey-pathfinder-closing">Keep the words that best express what you can offer today and what God is still developing. You can return to these pieces as your niche declaration takes shape.</p> : null}
-              {showNicheBuilder ? <ReflectionNicheBuilder /> : null}
+              {showNicheBuilder ? <><ReflectionNicheBuilder /><NicheDeclarationCompletion progress={checklist} flush={savedPosition.flush} /></> : null}
             </section>
           ) : null}
         </div>
@@ -607,13 +610,7 @@ export function JourneyCourseNavigator({
           ) : (
             <span>First lesson</span>
           )}
-          {next ? (
-            <button onClick={() => setLesson(next)} type="button">
-              Next: {next.unit.title}
-            </button>
-          ) : (
-            <span>Course complete</span>
-          )}
+          <CourseCompletionControls progress={checklist} lessonSlug={active.unit.slug} nextTitle={next?.unit.title} onNext={next ? () => { void setLesson(next, true); } : undefined} flush={savedPosition.flush} />
         </footer>
       </article>
     </section>

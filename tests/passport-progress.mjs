@@ -22,6 +22,16 @@ async function account(){const email=`passport-qa-${crypto.randomUUID()}@example
 async function request(user,body,course=journeySlug,extra={}){const r=await fetch(base+'/api/course-progress?courseSlug='+course,{method:body?'POST':'GET',headers:{...(user?{cookie:user.cookie}:{}),...(body?{'Content-Type':'application/json'}:{}),...extra},...(body?{body:JSON.stringify({courseSlug:course,...body})}:{})});return {status:r.status,body:await r.json()};}
 async function snapshot(user,type,scores,source='passport_isolated_qa'){const s=check(await db.from('assessment_snapshots').insert({user_id:user.id,assessment_type:type,source,scores,source_submitted_at:new Date().toISOString()}).select('id').single());snapshotIds.push(s.id);return s.id;}
 const engine=load('lib/designid/engine.ts'),intake=load('lib/designid/intake.ts'),reporting=load('lib/designid/report.ts');
+async function readyPassport(page) {
+ await page.waitForSelector('.passport-badge-button');
+ // Server markup arrives before React attaches handlers. Wait for the actual
+ // interactive component, then use a real pointer click, not HTMLElement.click.
+ await page.waitForFunction(()=>{const b=document.querySelector('.passport-badge-button');if(!b)return false;const key=Object.keys(b).find(k=>k.startsWith('__reactProps$'));return key && typeof b[key]?.onClick==='function';});
+}
+async function clickBadge(page,title) {
+ for(const b of await page.$$('.passport-badge-button'))if(await b.$eval('strong',e=>e.textContent)===title){await b.click();break;}
+ await page.waitForFunction(t=>document.querySelector('.passport-badge-popover h3')?.textContent===t,{},title);
+}
 function designPayload(name='Artisan') {const order=[name,...['Architect','Artisan','Shepherd','Steward'].filter(n=>n!==name)];const result=engine.scoreDesignId(Object.fromEntries(intake.designIdQuestionBank.map(q=>[q.code,[3,2,0,0][order.indexOf(q.reflection)]])));return {...reporting.buildDesignIdReportPayload({participantName:'Passport QA',participantEmail:'passport-qa@example.invalid',result}),...engine.designIdScorePayload(result)};}
 try {
  const a=await account(),b=await account();
@@ -46,7 +56,7 @@ try {
  for(const course of passportCurriculum.filter(c=>['designid-foundations','spiritual-gifts-service','fruitlife-360-formation','designpd-alignment'].includes(c.slug)))assert.equal((await request(a,{action:'complete-lesson',lessonSlug:course.lessons[0].slug},course.slug)).status,403,'Draft/incomplete report cannot authorize '+course.slug);
  record('draft DesignID, pending derived DesignPD, empty Gifts, self-only/incomplete FruitLife do not award');
  browser=await puppeteer.launch({args:chromium.args.filter(x=>x!=='--single-process'),executablePath:await chromium.executablePath(),headless:true});
- const context=await browser.createBrowserContext(),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.setViewport({width:390,height:1000});await page.setCookie(...a.cookies.map(c=>({name:c.name,value:c.value,url:base})));
+ const context=await browser.createBrowserContext(),page=await context.newPage(),errors=[];page.on('pageerror',e=>{errors.push(e.message);console.error('Browser runtime error:',e.message)});await page.setViewport({width:390,height:1000});await page.setCookie(...a.cookies.map(c=>({name:c.name,value:c.value,url:base})));
  await page.goto(base+'/journey?lesson='+journey.lessons.at(-1).slug,{waitUntil:'domcontentloaded'});
  await page.waitForSelector('.course-completion-controls button:not([disabled])');
  assert.equal(await page.$eval('.journey-active-lesson > header h2',e=>e.textContent),journey.lessons[0].title);
@@ -132,13 +142,12 @@ try {
  // Final lesson revisit and desktop/mobile Passport interactions.
  await page.goto(base+'/courses/designid-foundations?lesson='+idCourse.lessons.at(-1).slug,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>document.querySelector('.course-completion-controls')?.textContent.includes('All lessons complete'));
  for(const width of [1280,390,320]) {
-  await page.setViewport({width,height:1000});await page.goto(base+'/hq#passport',{waitUntil:'domcontentloaded'});await page.waitForSelector('.passport-book');
+  await page.setViewport({width,height:1000});await page.goto(base+'/hq#passport',{waitUntil:'domcontentloaded'});await page.waitForSelector('.passport-book');await readyPassport(page);
   assert.equal(await page.$eval('.passport-book-cover h2',e=>e.textContent),'DYDD Passport Book');
   assert(!await page.$eval('.passport-book-cover',e=>/trail record/.test(e.textContent)));
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No horizontal overflow '+width);
   for(const title of ['Niche Declared','Niche','DesignPD','DesignID Course','FruitLife360 Course']){
-   await page.$$eval('.passport-badge-button',(es,title)=>es.find(e=>e.querySelector('strong').textContent===title).click(),title);
-   await page.waitForFunction(t=>document.querySelector('.passport-badge-popover h3')?.textContent===t,{},title);
+   await clickBadge(page,title);
    const earn=await page.$eval('.passport-badge-popover dd',e=>e.textContent);
    if(title.endsWith('Course'))assert(/every lesson.*checklist/.test(earn));
    if(title==='DesignPD')assert(earn.includes('$15') && earn.includes('no separate DesignPD assessment'));
@@ -150,10 +159,9 @@ try {
  assert.deepEqual(errors,[]);record('zero browser runtime errors');
  const emptyContext=await browser.createBrowserContext(),fresh=await emptyContext.newPage();await fresh.setCookie(...b.cookies.map(c=>({name:c.name,value:c.value,url:base})));
  for(const width of [1280,390]) {
-  await fresh.setViewport({width,height:1000});await fresh.goto(base+'/hq#passport',{waitUntil:'domcontentloaded'});await fresh.waitForSelector('.passport-badge-button');
+  await fresh.setViewport({width,height:1000});await fresh.goto(base+'/hq#passport',{waitUntil:'domcontentloaded'});await readyPassport(fresh);
   for(const title of ['DesignPD','DesignID Course','Niche Declared']) {
-   await fresh.$$eval('.passport-badge-button',(es,t)=>es.find(e=>e.querySelector('strong').textContent===t).click(),title);
-   await fresh.waitForFunction(t=>{const b=[...document.querySelectorAll('.passport-badge-button')].find(e=>e.querySelector('strong').textContent===t);b.click();return document.querySelector('.passport-badge-popover h3')?.textContent===t},{},title);
+   await clickBadge(fresh,title);
    assert((await fresh.$eval('.passport-badge-popover dd',e=>e.textContent)).length>80);
    assert.equal(await fresh.$eval('.passport-count-stamp > span',e=>e.textContent),'0');
   }

@@ -32,6 +32,7 @@ type LearningCoursePageProps = {
   searchParams?: Promise<
     ReviewSearchParams & {
       lane?: string;
+      lesson?: string;
     }
   >;
 };
@@ -80,6 +81,10 @@ export default async function LearningCoursePage({
 }: LearningCoursePageProps) {
   const { courseSlug } = await params;
   const reviewParams = designIdCourseReviewParams(await searchParams);
+  // The catalog's retired two-lesson Journey is not the canonical 71-lesson trail.
+  if (courseSlug === "discover-your-divine-design") {
+    redirect(withReviewQuery(`/journey${reviewParams?.lesson ? `?lesson=${encodeURIComponent(reviewParams.lesson)}` : ""}`, reviewParams));
+  }
   const course = getLearningCourse(courseSlug);
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
   const isSpiritualGifts = course?.slug === "spiritual-gifts-service";

@@ -1,11 +1,11 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-type SendEmailInput = {
+export type SendEmailInput = {
   attachments?: Array<{content: string; filename: string}>;
   from?: string; idempotencyKey?: string; html: string; subject: string; text: string; to: string;
   headers?: Record<string,string>;
 };
-type SendEmailResult = {id?: string; message?: string; sent: boolean; skipped: boolean};
+export type SendEmailResult = {id?: string; message?: string; sent: boolean; skipped: boolean};
 export function assessmentEmailSender(value?: string) {
   // Preserve the configured verified address. No support@ Reply-To or forwarding.
   const configured = value ?? process.env.FRUITLIFE_EMAIL_FROM ?? process.env.DYDD_EMAIL_FROM ?? 'reports@mail.discoverdivine.design';

@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { isDyddAdminEmail } from "@/lib/admin-access";
-import { sendResendEmail } from "@/lib/email/resend";
+import { sendApplicationEmail as sendResendEmail } from "@/lib/lifecycle/application-mail";
 import {
   buildMapsRoadmapHtml,
   cleanMapsFilename,
@@ -229,6 +229,7 @@ async function sendMapsEmail({
   }
 
   return sendResendEmail({
+    templateId:"requested-maps-report",
     attachments: [
       {
         content: Buffer.from(pdf).toString("base64"),

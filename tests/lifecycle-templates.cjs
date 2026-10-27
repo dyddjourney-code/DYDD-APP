@@ -1,0 +1,18 @@
+const assert=require('node:assert/strict'),load=require('../scripts/fruitlife-test-load.cjs');
+const {blankCirclePlan,scheduledDates}=load('lib/circles/plan.ts');
+const {localInstant,circleMessageDrafts,renderLifecycle}=load('lib/lifecycle/templates.ts');
+assert.equal(localInstant('2026-10-25','19:00','America/New_York'),'2026-10-25T23:00:00.000Z');
+assert.equal(localInstant('2026-11-08','19:00','America/New_York'),'2026-11-09T00:00:00.000Z');
+assert.throws(()=>localInstant('2027-03-14','02:30','America/New_York'),/does not exist/);
+assert.equal(localInstant('2026-11-01','01:30','America/New_York'),'2026-11-01T05:30:00.000Z');
+const p={...blankCirclePlan(),name:'QA Circle',startDate:'2026-11-01',time:'19:00',location:'QA Room',meetingCount:3,breaks:[{start:'2026-11-08',end:'2026-11-21'}]};
+const dates=scheduledDates(p);assert.deepEqual(dates,['2026-11-01','2026-11-22','2026-11-29']);
+const rows=circleMessageDrafts(p,'https://sandbox.example',false,new Date('2026-10-27T12:00:00Z'));
+assert.equal(rows.filter(x=>x.template_id==='E02').length,3);
+const first=rows.find(x=>x.message_key==='preparation-2');assert.match(first.body,/we|Our next Circle/);assert.equal(first.scheduled_at,'2026-11-15T14:00:00.000Z');
+assert(!rows.some(x=>x.scheduled_at.startsWith('2026-11-07')&&x.template_id==='E02'));
+assert(rows.every(x=>Date.parse(x.expires_at)>Date.parse(x.scheduled_at)||x.template_id==='D02'),'all usable drafts have bounded freshness');
+assert(!rows.some(x=>/we discussed|you have not completed/i.test(x.body)));
+assert(rows.find(x=>x.template_id==='D03').body.includes('Planned pauses: 2026-11-08 through 2026-11-21'));
+assert.throws(()=>renderLifecycle('C02',{base:'https://example.com'}),/Missing email field/);
+console.log('PASS timezone/DST forward and backward, holiday gaps, resume preparation, due times, no invented recap or unfinished claim, required rendering values');

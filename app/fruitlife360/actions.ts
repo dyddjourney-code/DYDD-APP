@@ -10,7 +10,7 @@ import {
   consumeFruitLifeEntitlement,
   getActiveFruitLifeEntitlement,
 } from "@/lib/commerce/fruitlife-entitlements";
-import { sendResendEmail } from "@/lib/email/resend";
+import { sendApplicationEmail as sendResendEmail } from "@/lib/lifecycle/application-mail";
 import {
   fruitLifeFruits,
   fruitLifeInstrumentVersion,
@@ -400,6 +400,9 @@ async function recordAndSendInviteEmail({
   const result = await sendResendEmail({
     ...email,
     to: participantEmail,
+    templateId:"B04-self",
+    idempotencyKey:`fruitlife-self-${sessionId}`,
+    deliveryContext:{type:"fruitlife_self",sessionId},
   });
 
   await supabase.from("fruitlife_360_report_artifacts").insert({
@@ -425,7 +428,9 @@ async function recordAndSendObserverEmails({
   participantName,
   sessionId,
   supabase,
+  reminder=false,
 }: {
+  reminder?:boolean;
   observerLinks: Array<{ email: string; link: string; name: string; relationship: string }>;
   participantName: string;
   sessionId: string;
@@ -442,6 +447,9 @@ async function recordAndSendObserverEmails({
     const result = await sendResendEmail({
       ...email,
       to: observer.email,
+      templateId:reminder?"B03":"B02",
+      idempotencyKey:`fruitlife-observer-${sessionId}-${hashToken(observer.link)}${reminder?"-manual-"+new Date().toISOString().slice(0,10):""}`,
+      deliveryContext:{type:"fruitlife_observer",sessionId,observerEmail:observer.email,observerLink:observer.link},
     });
 
     if (!result.sent) failed = true;
@@ -836,6 +844,8 @@ export async function sendFruitLifeReminder(formData: FormData) {
           selfLink: metadata.selfLink,
         }),
         to: participantEmail,
+        templateId:"B04-self-reminder",
+        deliveryContext:{type:"fruitlife_self",sessionId},
       })
     : { message: "No participant email/self link available.", sent: false, skipped: true };
 
@@ -854,6 +864,7 @@ export async function sendFruitLifeReminder(formData: FormData) {
   });
 
   const observerResult = await recordAndSendObserverEmails({
+    reminder:true,
     observerLinks: pendingObserverLinks,
     participantName,
     sessionId,

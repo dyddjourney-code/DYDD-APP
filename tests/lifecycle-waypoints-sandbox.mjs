@@ -1,0 +1,30 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import crypto from 'node:crypto';import {createClient} from '@supabase/supabase-js';import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url),load=require('../scripts/fruitlife-test-load.cjs'),c=JSON.parse(fs.readFileSync('/home/openclaw/.openclaw/secrets/dydd-online-school-sandbox.json'));assert.equal(c.ref,'atemrshtshxoqnuevvqu');process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT='sandbox';
+const db=createClient(c.project_url,c.service_role_key,{auth:{persistSession:false}}),ok=r=>{assert(!r.error,r.error?.message);return r.data;},suffix=crypto.randomUUID(),email=`waypoint-lifecycle-${suffix}@example.test`;let user,waypoint,sub;
+const mocks={'server-only':{},'@/lib/supabase/admin':{createSupabaseAdminClient:()=>db},'@/lib/email/resend':{sendResendEmail:async()=>{throw Error('Provider forbidden');}},'@/lib/waypoints/user-context':{getSavedWaypointPrimary:async()=> 'Architect'}};
+const {runWaypointsWorker}=load('lib/lifecycle/waypoints-worker.ts',mocks);
+const base=process.env.LIFECYCLE_BASE||'http://localhost:3147';assert(['localhost','127.0.0.1','dydd-online-school-sandbox.vercel.app'].includes(new URL(base).hostname));
+try{
+ let response=await fetch(base+'/api/waypoints/subscribe',{method:'POST',headers:{origin:base,'content-type':'application/json'},body:JSON.stringify({email})});assert.equal(response.status,200,await response.clone().text());
+ assert.equal(ok(await db.from('dydd_waypoint_subscriptions').select('id').eq('email',email)).length,0,'request alone never subscribes');
+ let confirmation=ok(await db.from('dydd_waypoint_confirmations').select('*').eq('email',email).single());const request=ok(await db.from('dydd_lifecycle_jobs').select('*').eq('email',email).eq('template_id','G02').single()),token=request.body.match(/confirm\?token=([a-f0-9]{64})/)[1];assert(request.body.includes('24 hours'));
+ response=await fetch(base+'/api/waypoints/subscribe',{method:'POST',headers:{origin:base,'content-type':'application/json'},body:JSON.stringify({email})});assert.equal(response.status,200);assert.equal(ok(await db.from('dydd_waypoint_confirmations').select('id').eq('email',email)).length,1);
+ response=await fetch(base+'/api/waypoints/confirm',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({token})});assert.equal(response.status,200,await response.clone().text());
+ sub=ok(await db.from('dydd_waypoint_subscriptions').select('*').eq('email',email).single()).id;
+ ok(await db.from('dydd_waypoint_subscriptions').update({status:'unsubscribed'}).eq('id',sub));
+ response=await fetch(base+'/api/waypoints/confirm',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({token})});assert.equal(response.status,200);assert.equal(ok(await db.from('dydd_waypoint_subscriptions').select('status').eq('id',sub).single()).status,'unsubscribed');
+ console.log('PASS actual signup→durable confirmation email, no implicit subscription, request rate limit, explicit confirmation, used token cannot resubscribe after optout');
+ user=ok(await db.auth.admin.createUser({email,password:crypto.randomBytes(24).toString('hex'),email_confirm:true})).user;
+ ok(await db.from('dydd_waypoint_subscriptions').update({status:'active',user_id:user.id,confirmed_at:new Date(Date.now()-10*60000).toISOString()}).eq('id',sub));
+ const authored=JSON.parse(fs.readFileSync('lib/waypoints/waypoints.json')).find(w=>w.id==='called-before-you-feel-ready');
+ waypoint=ok(await db.from('dydd_waypoints').insert({slug:'qa-waypoint-'+suffix,title:authored.title,category:authored.category,status:'published',scripture_reference:authored.scripture,base_content:authored.body.join('\n\n'),base_reflection_prompt:authored.reflection,metadata:{scripture_text:authored.scriptureText,scripture_attribution:authored.scriptureAttribution,reflections:authored.reflections}}).select('id').single()).id;
+ const release=ok(await db.from('dydd_waypoint_releases').insert({waypoint_id:waypoint,release_at:new Date(Date.now()-60000).toISOString(),status:'scheduled',subscriber_channels:['email']}).select('id').single());
+ let run=await runWaypointsWorker();assert.equal(run.status,200,await run.clone().text());let output=await run.json();assert(output.sandbox);assert.equal(output.acceptedEmails,0);
+ let job=ok(await db.from('dydd_waypoint_delivery_jobs').select('*').eq('release_id',release.id).eq('subscription_id',sub).eq('delivery_channel','email').single());assert.equal(job.status,'sandbox_ready');assert(job.metadata.email_content.text.includes(authored.scriptureText));assert(job.metadata.email_content.text.includes(authored.reflections.Architect));assert(!job.metadata.email_content.text.includes(authored.reflections.Artisan));assert(job.metadata.email_content.text.includes('/waypoints'));
+ run=await runWaypointsWorker();assert.equal(run.status,200);assert.equal(ok(await db.from('dydd_waypoint_delivery_jobs').select('id').eq('release_id',release.id).eq('subscription_id',sub)).length,1);
+ console.log('PASS dedicated weekly release worker queues exactly once with full exact approved Scripture + verified-owner Primary reflection, actual read link, preserved tokens and sandbox no-provider guard');
+ const actual=JSON.parse(fs.readFileSync('lib/waypoints/waypoints.json')).filter(w=>Date.parse(w.releaseAt)>Date.now()),future=ok(await db.from('dydd_waypoints').select('slug,metadata').in('slug',actual.map(w=>w.id)));assert.equal(future.length,16);assert(future.every(w=>w.metadata.scripture_text&&w.metadata.reflections));
+ console.log('PASS all16 future authored weekly releases wired;19 historical archive records remain unbackfilled');
+}finally{
+ if(waypoint)await db.from('dydd_waypoints').delete().eq('id',waypoint);await db.from('dydd_lifecycle_jobs').delete().eq('email',email);await db.from('dydd_waypoint_confirmations').delete().eq('email',email);if(sub)await db.from('dydd_waypoint_subscriptions').delete().eq('id',sub);if(user)await db.auth.admin.deleteUser(user.id);console.log('Synthetic Waypoints/signup fixtures removed; no provider requests');
+}

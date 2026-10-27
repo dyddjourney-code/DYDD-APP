@@ -4,7 +4,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getReflectionExperience } from "@/lib/reflections/catalog";
 import { reflectionExportText } from "@/lib/reflections/export";
 import type { ReflectionEntry, ReflectionRound } from "@/lib/reflections/types";
-import { sendResendEmail } from "@/lib/email/resend";
+import { sendApplicationEmail as sendResendEmail } from "@/lib/lifecycle/application-mail";
 import { createHash } from "node:crypto";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -119,6 +119,8 @@ export async function POST(request: Request) {
   try {
     const sent = await sendResendEmail({
       to: result.user.email,
+      templateId:"requested-reflection-export",
+      deliveryContext:{type:"account_service",userId:result.user.id},
       subject: `Your DYDD reflections — ${result.title}`,
       text: result.text,
       html: `<p>Your saved reflections are included below and in the attached text file.</p><pre style="white-space:pre-wrap;font-family:inherit">${result.text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")}</pre>`,

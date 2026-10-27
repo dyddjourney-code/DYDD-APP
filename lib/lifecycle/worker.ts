@@ -5,7 +5,8 @@ import {getAssessmentSnapshotsForUser} from '@/lib/assessments/student-context';
 import {hasDesignPdCourseAccess} from '@/lib/designpd/access';
 import {scheduledDates} from '@/lib/circles/plan';
 import {passportCurriculum,courseCompleted,journeySlug} from '@/lib/passport/curriculum';
-import {savedAssessmentComplete} from '@/lib/passport/evidence';
+import {completedFruitSessionsForEmail} from '@/lib/passport/state';
+import {completedLegacyFruitSnapshot,savedAssessmentComplete} from '@/lib/passport/evidence';
 import {appBase,enqueue,enqueueCampaignMembers,must,tokenHash} from './store';
 import {renderLifecycle,lifecycleHtml,localParts,localInstant,type LifecycleTemplate} from './templates';
 const iso=(n:number)=>new Date(n).toISOString(),day=86400000;
@@ -30,8 +31,10 @@ export async function processLifecycleEvents(limit=50){
    for(const c of cs)await enqueueCampaignMembers(c.id,e.source_id);
   } else if(e.kind==='circle_finalized'){
    await enqueueCampaignMembers(e.source_id);
-   const campaign=must(await db.from('dydd_circle_campaigns').select('circle_id,status').eq('id',e.source_id).single()) as any;
-   const circle=must(await db.from('journey_circle_plans').select('user_id').eq('id',campaign.circle_id).single()) as any;
+   const campaign=must(await db.from('dydd_circle_campaigns').select('circle_id,status').eq('id',e.source_id).maybeSingle()) as any;
+   if(!campaign){must(await db.from('dydd_lifecycle_events').update({processed_at:iso(Date.now()),error_message:'Circle campaign removed; no communication remains.'}).eq('id',e.id));processed++;continue;}
+   const circle=must(await db.from('journey_circle_plans').select('user_id').eq('id',campaign.circle_id).maybeSingle()) as any;
+   if(!circle){must(await db.from('dydd_lifecycle_events').update({processed_at:iso(Date.now()),error_message:'Circle removed; no communication remains.'}).eq('id',e.id));processed++;continue;}
    if(circle.user_id&&['finalized','paused'].includes(campaign.status)){
     const leader=await userById(circle.user_id),ds=must(await db.from('dydd_circle_message_drafts').select('*').eq('campaign_id',e.source_id).eq('kind','leader')) as any[];
     if(leader?.email)for(const d of ds)if(d.expires_at>iso(Date.now())&&(d.scheduled_at>=e.occurred_at||d.message_key==='leader-launch'))await enqueue({event_key:`circle-leader:${e.source_id}:${d.id}`,template_id:d.template_id,category:d.category,user_id:leader.id,email:leader.email,circle_id:campaign.circle_id,campaign_id:e.source_id,draft_id:d.id,subject:d.subject,body:d.body,scheduled_at:iso(Math.max(Date.now(),Date.parse(d.scheduled_at))),expires_at:d.expires_at,context:{kind:'leader'}});
@@ -66,7 +69,7 @@ export async function processLifecycleEvents(limit=50){
     }
    } else if(e.kind==='report_ready'){
     const type=e.payload.assessmentType,slug=type==='designid'?'designid-foundations':type==='designpd'?'designpd-alignment':type==='spiritual_gifts'?'spiritual-gifts-service':'fruitlife-360-formation';
-    await queueTemplate('B05',`use-results:${e.source_id}`,user,t+3*day,t+6*day,{courseSlug:slug,snapshotId:e.source_id,assessmentType:type});
+    await queueTemplate('B05',`use-results:${e.source_id}`,user,t+3*day,t+6*day,{courseSlug:slug,snapshotId:e.source_id,assessmentType:type,fruitlifeSessionId:e.payload.fruitlifeSessionId||null});
    }
   }
   must(await db.from('dydd_lifecycle_events').update({processed_at:iso(Date.now()),error_message:null}).eq('id',e.id));processed++;
@@ -161,6 +164,17 @@ export async function lifecycleEligibility(job:any,now=Date.now()):Promise<{stop
   if(job.template_id!=='A04'&&relevant.length){const recent=must(await db.from('reflection_entries').select('id').eq('user_id',user.id).in('round_id',relevant.map(r=>r.id)).gte('saved_at',iso(now-days*day)).limit(1)) as any[];if(recent.length)return {stop:'Recent saved reflection activity; no inactivity invitation needed.'};}
  }
  if(job.template_id==='A04'&&progress.length)return {stop:'Learning already started.'};
+ if(['C01','B05'].includes(job.template_id)&&slug!==journeySlug){
+  const snapshots=await getAssessmentSnapshotsForUser(user.id,user.email),assessmentType=slug==='designid-foundations'?'designid':slug==='spiritual-gifts-service'?'spiritual_gifts':slug==='designpd-alignment'?'designpd':'fruit_360';
+  const ready=snapshots.all.some(s=>s.assessment_type===assessmentType&&(savedAssessmentComplete(s,snapshots.all)||completedLegacyFruitSnapshot(s)));
+  const fruitReady=assessmentType==='fruit_360'&&(await completedFruitSessionsForEmail(user.email)).length>0;
+  if(!ready&&!fruitReady)return {stop:'The matching assessment result/course access is no longer available.'};
+  if(assessmentType==='designpd'&&!hasDesignPdCourseAccess(user.email,snapshots.all))return {stop:'DesignPD course access is no longer available.'};
+  if(job.template_id==='B05'&&assessmentType!=='fruit_360'){
+   const source=snapshots.all.find(s=>s.id===job.context.snapshotId),pdf=source?.scores.pdfMonkey as Record<string,unknown>|undefined;
+   if(!source||!['ready','success'].includes(String(pdf?.status)))return {stop:'The triggering report is no longer ready.'};
+  }
+ }
  if(job.template_id==='C01'){
   const welcome=must(await db.from('dydd_lifecycle_jobs').select('id').eq('user_id',user.id).eq('template_id','A03').gte('scheduled_at',iso(now-2*day)).limit(1)) as any[];
   if(slug===journeySlug&&welcome.length)return {stop:'Account welcome already provides the same Journey start step.'};
@@ -184,7 +198,7 @@ export async function lifecycleEligibility(job:any,now=Date.now()):Promise<{stop
  if(job.template_id==='C04'){
   if(activeCircle)return {stop:'Optional recommendation suppressed during active Circle.'};
   const snapshots=await getAssessmentSnapshotsForUser(user.id,user.email);
-  if(snapshots.all.some(s=>s.assessment_type==='fruit_360'&&savedAssessmentComplete(s,snapshots.all)))return {stop:'FruitLife report already complete.'};
+  if(snapshots.all.some(s=>s.assessment_type==='fruit_360'&&completedLegacyFruitSnapshot(s))||(await completedFruitSessionsForEmail(user.email)).length)return {stop:'FruitLife report already complete.'};
   const sessions=must(await db.from('fruitlife_360_sessions').select('session_status').eq('participant_email',job.email).not('session_status','in','(archived,cancelled)')) as any[];
   if(sessions.length)return {stop:'FruitLife already underway or complete.'};
   const entitlements=must(await db.from('fruitlife_360_entitlements').select('id').eq('user_id',user.id).eq('status','active').is('consumed_at',null).limit(1)) as any[];

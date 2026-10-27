@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';import fs from 'node:fs';import crypto from 'node:crypto';import {createClient} from '@supabase/supabase-js';import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url),load=require('../scripts/fruitlife-test-load.cjs'),c=JSON.parse(fs.readFileSync('/home/openclaw/.openclaw/secrets/dydd-online-school-sandbox.json'));assert.equal(c.ref,'atemrshtshxoqnuevvqu');process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT='sandbox';
-const db=createClient(c.project_url,c.service_role_key,{auth:{persistSession:false}}),ok=r=>{assert(!r.error,r.error?.message);return r.data;},suffix=crypto.randomUUID(),email=`race-${suffix}@example.test`;let user,circle;const standalone=[];
+const db=createClient(c.project_url,c.service_role_key,{auth:{persistSession:false}}),ok=r=>{assert(!r.error,r.error?.message);return r.data;},suffix=crypto.randomUUID(),email=`race-${suffix}@example.test`;let user,circle,campaignId;const standalone=[];
 const mocks={'server-only':{},'@/lib/supabase/admin':{createSupabaseAdminClient:()=>db},'@/lib/email/resend':{sendResendEmail:async()=>{throw Error('No provider calls');}}};
 const {blankCirclePlan}=load('lib/circles/plan.ts',mocks),{circleMessageDrafts,localInstant}=load('lib/lifecycle/templates.ts',mocks),{enqueueCampaignMembers}=load('lib/lifecycle/store.ts',mocks),{lifecycleEligibility,processLifecycleEvents}=load('lib/lifecycle/worker.ts',mocks);
 const future=hours=>new Date(Date.now()+hours*3600000).toISOString();
@@ -8,6 +8,7 @@ try{
  user=ok(await db.auth.admin.createUser({email,password:crypto.randomBytes(24).toString('hex'),email_confirm:true})).user;
  const p={...blankCirclePlan(),name:'Race QA',startDate:'2027-01-07',time:'19:00',location:'QA Room',participants:[{name:'QA Member',email}],meetingCount:2};circle=crypto.randomUUID();ok(await db.from('journey_circle_plans').insert({id:circle,user_id:user.id,status:'active',plan:p}));
  const campaign=ok(await db.from('dydd_circle_campaigns').insert({circle_id:circle,circle_revision:1,plan_snapshot:p}).select().single());
+ campaignId=campaign.id;
  const drafts=ok(await db.from('dydd_circle_message_drafts').insert(circleMessageDrafts(p,'https://sandbox.example').map(d=>({...d,campaign_id:campaign.id,approved_at:new Date().toISOString(),approved_by:user.id}))).select());ok(await db.rpc('dydd_finalize_circle_campaign',{campaign_key:campaign.id,actor_user:user.id,actor_scope:null}));
  const issue=token=>db.rpc('dydd_issue_circle_invitation',{campaign_key:campaign.id,actor_user:user.id,recipient:email,person_name:'QA Member',new_token_hash:token,expires:'2027-01-14T23:59:00Z',invitation_url:'https://sandbox.example/invite?token='+token});
  const issued=(await Promise.all([issue('token-a-'+suffix),issue('token-b-'+suffix)])).map(ok);assert.equal(issued.filter(Boolean).length,1);
@@ -39,5 +40,6 @@ try{
  const reminder=drafts.find(d=>d.template_id==='E02');assert.equal(Date.parse(reminder.expires_at),Date.parse(localInstant('2027-01-07','00:00','America/New_York')));assert.match((await lifecycleEligibility({...memberJob,expires_at:reminder.expires_at},Date.parse(localInstant('2027-01-07','09:00','America/New_York')))).stop,/expired/);
  console.log('PASS tomorrow reminders cannot survive into meeting-day morning after pause/outage');
 }finally{
+ if(campaignId)await db.from('dydd_lifecycle_events').delete().eq('kind','circle_finalized').eq('source_id',campaignId);
  if(circle)await db.from('journey_circle_plans').delete().eq('id',circle);if(user)await db.auth.admin.deleteUser(user.id);await db.from('dydd_email_preferences').delete().eq('email',email);await db.from('dydd_email_preference_tokens').delete().eq('email',email);console.log('Race-test sandbox fixtures removed; no provider calls');
 }

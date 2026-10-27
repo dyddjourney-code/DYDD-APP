@@ -845,6 +845,7 @@ export async function sendFruitLifeReminder(formData: FormData) {
         }),
         to: participantEmail,
         templateId:"B04-self-reminder",
+        idempotencyKey:`fruitlife-self-reminder-${sessionId}-${new Date().toISOString().slice(0,10)}`,
         deliveryContext:{type:"fruitlife_self",sessionId},
       })
     : { message: "No participant email/self link available.", sent: false, skipped: true };

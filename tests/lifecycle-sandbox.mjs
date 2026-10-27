@@ -55,6 +55,7 @@ try{
  assert((await anon.rpc('dydd_claim_lifecycle_jobs',{batch_size:1})).error);
  console.log('PASS eight workers claim once, stale leases recover, provider ambiguity expires to manual review, anonymous tables/RPC denied');
 }finally{
+ if(campaign)await db.from('dydd_lifecycle_events').delete().eq('kind','circle_finalized').eq('source_id',campaign);
  if(circle)await db.from('journey_circle_plans').delete().eq('id',circle);
  await db.from('dydd_email_preferences').delete().eq('email',email);await db.from('dydd_email_preference_tokens').delete().eq('email',email);
  if(user)await db.auth.admin.deleteUser(user.id);

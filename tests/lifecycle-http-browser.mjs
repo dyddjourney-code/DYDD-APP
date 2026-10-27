@@ -25,7 +25,7 @@ try{
  browser=await puppeteer.launch({args:chromium.args,executablePath:await chromium.executablePath(),headless:true});const page=await browser.newPage(),problems=[];page.on('pageerror',e=>problems.push(e.message));
  await page.setCookie(...creator.cookies.map(k=>({name:k.name,value:k.value,domain:new URL(base).hostname,path:'/'})));
  for(const width of [360,390,768,1280]){
-  await page.setViewport({width,height:900});await page.goto(base+'/camp-circle/my-circles?circle='+circle,{waitUntil:'networkidle2'});
+  await page.setViewport({width,height:900});await page.goto(base+'/camp-circle/my-circles?circle='+circle,{waitUntil:'domcontentloaded',timeout:60000});
   await page.waitForFunction(()=>[...document.querySelectorAll('button')].some(b=>b.textContent.trim()==='Messages'));
   await page.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Messages').click());
   await page.waitForSelector('.email-message-toggle');
@@ -97,7 +97,7 @@ try{
 
  fs.writeFileSync(`tmp/email-circle-${base.includes('localhost')?'local':'published'}-http-proof.json`,JSON.stringify({checkedAt:new Date().toISOString(),base,widths:[360,390,768,1280],circleFixtureRemoved:true,providerCalls:0,assertions:'authenticated ownership, edit/persistence, stale approval, all-approved gate, invitation acceptance, optouts, sandbox worker, schedule revision'},null,2));
 }finally{
- if(browser)await browser.close();if(otherCircle)await db.from('journey_circle_plans').delete().eq('id',otherCircle);if(circle)await db.from('journey_circle_plans').delete().eq('id',circle);
+ if(browser)await browser.close();if(circle)await db.from('dydd_lifecycle_events').delete().eq('kind','circle_finalized').contains('payload',{circleId:circle});if(otherCircle)await db.from('journey_circle_plans').delete().eq('id',otherCircle);if(circle)await db.from('journey_circle_plans').delete().eq('id',circle);
  for(const user of users){await db.from('dydd_email_preferences').delete().eq('email',user.email);await db.from('dydd_email_preference_tokens').delete().eq('email',user.email);await db.auth.admin.deleteUser(user.id);}
  console.log('Synthetic sandbox HTTP/browser accounts and Circle cleaned up; no real customer emails');
 }

@@ -479,7 +479,7 @@ function CoupleDataDashboard({ members }: { members: DemoAssessmentMember[] }) {
 
 export function CircleProgressDashboard({ plan, tab, samples, circleId }: { plan: CirclePlan; tab: string; samples: boolean; circleId?: string }) {
   const params = useSearchParams();
-  const [data, setData] = useState<{ circleId: string; members: CircleAssessmentMember[] } | null>(null);
+  const [data, setData] = useState<{ circleId: string; preview: boolean; members: CircleAssessmentMember[] } | null>(null);
   const [error, setError] = useState("");
   const review = params.get("review"), key = params.get("key");
   useEffect(() => {
@@ -492,7 +492,7 @@ export function CircleProgressDashboard({ plan, tab, samples, circleId }: { plan
     fetch("/api/circles/data?" + query, { cache: "no-store" }).then(async r => {
       const body = await r.json();
       if (!r.ok) throw Error(body.error || "Circle results could not be loaded.");
-      if (!ignore) setData({ circleId, members: body.members.map((m: CircleAssessmentMember, i: number) => ({ ...m, color: demoColors[i % demoColors.length] })) });
+      if (!ignore) setData({ circleId, preview: Boolean(body.preview), members: body.members.map((m: CircleAssessmentMember, i: number) => ({ ...m, color: demoColors[i % demoColors.length] })) });
     }).catch(e => { if (!ignore) setError(e.message); });
     return () => { ignore = true; };
   }, [circleId, samples, review, key, plan]);
@@ -503,7 +503,7 @@ export function CircleProgressDashboard({ plan, tab, samples, circleId }: { plan
   const assessments = samples ? demo : actual;
   const members: CircleMember[] = samples ? demo.map((p, i) => ({ name: p.name, role: i === 0 ? "Organizer · sample" : "Sample participant", progress: 0, current: "Not started", assessment: "Fictional demo assessment", shared: "No activity yet" })) : actual.map(m => ({ name: m.name, role: m.role || "Accepted member", progress: 0, current: "Not connected", assessment: [m.gifts.length && "Spiritual Gifts", m.designId && "DesignID", m.designPd && "DesignPD"].filter(Boolean).join(" · ") || "No completed assessments", shared: "Saved assessments" }));
   const hasAssessments = assessments.some(m => m.designId || m.designPd || m.gifts.length);
-  if (tab === "Data") return <section className="circle-data-panel" aria-label="Selected Circle data"><h3>Group design</h3><p className="circle-fine-print">{samples ? `FICTIONAL DEMO · ${count} sample people. These are not participant results.` : "Only the host and accepted members still listed in this Circle, using their own saved completed results. Listed or invited people are not assessment participants."}</p>{error && <p role="alert">{error}</p>}{!samples && !data && !error && <p>Loading saved Circle results…</p>}{hasAssessments ? <GroupDataDashboard members={assessments} /> : <div className="circle-data-empty"><strong>No saved assessment results yet</strong><p>No sample results are assigned to real people. Each assessment appears only after a genuine saved completion.</p></div>}</section>;
+  if (tab === "Data") return <section className="circle-data-panel" aria-label="Selected Circle data"><h3>Group design</h3><p className="circle-fine-print">{samples ? `FICTIONAL DEMO · ${count} sample people. These are not participant results.` : data?.preview ? "Owner preview: only the existing private copy of John’s actual saved assessment results. Planning roster placeholders have no results, and missing assessments are never generated." : "Only the host and accepted members still listed in this Circle, using their own saved completed results. Listed or invited people are not assessment participants."}</p>{error && <p role="alert">{error}</p>}{!samples && !data && !error && <p>Loading saved Circle results…</p>}{hasAssessments ? <GroupDataDashboard members={assessments} /> : <div className="circle-data-empty"><strong>No saved assessment results yet</strong><p>No sample results are assigned to real people. Each assessment appears only after a genuine saved completion.</p></div>}</section>;
   return <section className="circle-compact-progress" aria-label="Selected Circle progress">
     <div className="card-heading wide-heading"><h3>Journey Tracker</h3><span>{members.length} {samples ? "sample people" : "authorized people"} / {count} planned</span></div>
     <p className="circle-fine-print">{samples ? "Fictional demo names · no real participant activity." : "The host and accepted members appear here. Course progress is not connected yet; no activity is inferred from the roster or assessments."}</p>

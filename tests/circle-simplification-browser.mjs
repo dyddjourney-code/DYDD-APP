@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';import fs from 'node:fs';import crypto from 'node:crypto';import {createClient} from '@supabase/supabase-js';import {createServerClient} from '@supabase/ssr';import {createRequire} from 'node:module';import puppeteer from 'puppeteer-core';import chromium from '@sparticuz/chromium';
 const require=createRequire(import.meta.url),load=require('../scripts/fruitlife-test-load.cjs'),{blankCirclePlan}=load('lib/circles/plan.ts');
+process.loadEnvFile('.env.local');
 const base=process.env.CIRCLE_TEST_BASE||'http://localhost:3147';assert(['localhost','127.0.0.1','dydd-online-school-sandbox.vercel.app'].includes(new URL(base).hostname));
 const c=JSON.parse(fs.readFileSync('/home/openclaw/.openclaw/secrets/dydd-online-school-sandbox.json'));assert.equal(c.ref,'atemrshtshxoqnuevvqu');const db=createClient(c.project_url,c.service_role_key,{auth:{persistSession:false}}),ok=r=>{assert(!r.error,r.error?.message);return r.data;};let user,circle,browser;const snapshotIds=[];
 try{
@@ -24,7 +25,9 @@ try{
  }
  await page.evaluate(()=>[...document.querySelectorAll('.email-message-editor button')].find(b=>b.textContent.includes('Exclude / skip')).click());await page.waitForFunction(()=>document.querySelector('[role=status]')?.textContent.includes('excluded'));
  data=await call(path);const excluded=data.body.messages.find(m=>m.excluded||m.excluded_at);assert(excluded,'Exclude persists server-side');
- await page.reload({waitUntil:'domcontentloaded'});await page.waitForFunction(()=>[...document.querySelectorAll('button')].some(b=>b.textContent.trim()==='Messages'));await page.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Messages').click());await page.waitForSelector('.email-message-section');assert((await page.$eval('.email-workspace',e=>e.innerText)).includes('excluded'));
+ // Deliberately retain a valid owner-review cookie: it must not replace this real learner.
+ await page.setCookie({name:'dydd_sandbox_review',value:process.env.DYDD_REVIEW_TOKEN,domain:new URL(base).hostname,path:'/'});
+ await page.reload({waitUntil:'domcontentloaded'});try{await page.waitForFunction(()=>[...document.querySelectorAll('button')].some(b=>b.textContent.trim()==='Messages'));}catch(error){console.log('Reload diagnostic',await page.evaluate(()=>({path:location.pathname,text:document.body.innerText.slice(0,2400)})),errors);throw error;}await page.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Messages').click());await page.waitForSelector('.email-message-section');assert((await page.$eval('.email-workspace',e=>e.innerText)).includes('excluded'));
  assert.equal((await post('restore',{messageId:excluded.id,revision:excluded.revision})).status,200);data=await call(path);const restored=data.body.messages.find(m=>m.id===excluded.id);assert(!restored.excluded&&!restored.excluded_at);assert.equal(restored.approved_at,null);
  assert.equal(errors.length,0,errors.join('\n'));console.log('PASS authenticated real Circle host-only scores/gifts, six uninvited placeholders excluded, no synthetic DesignPD, Journey Tracker, no real-circle sample toggle; 360/390/768/1280 grouped collapsed messages, no overflow/editor fits; exclusion persists reload and restore clears approval; no provider calls.');
 }finally{

@@ -152,3 +152,17 @@ export async function loadCircleData(circleId: string, creatorId: string, plan: 
   });
   return circleDataResponse(circleId, members);
 }
+
+/** An explicitly authorized sandbox owner preview may display only the existing
+ * private copy of John's actual saved report. Never resolve roster contacts,
+ * fall back to name/email lookup, query production, or synthesize missing types. */
+export async function loadOwnerPreviewCircleData(circleId: string, db: Db = createSupabaseAdminClient()): Promise<CircleData> {
+  const {data, error} = await db.storage.from("assessment-report-pdfs").download("sandbox-owner/john-assessment-report.json", {cacheNonce: crypto.randomUUID()}, {cache: "no-store"});
+  if (error || !data) throw new Error("Saved owner report unavailable");
+  const report = JSON.parse(await data.text());
+  if (!Array.isArray(report.all)) throw new Error("Saved owner report unavailable");
+  const saved = (report.all as Snapshot[]).filter(completed).sort((a,b) => Date.parse(b.source_submitted_at || b.created_at) - Date.parse(a.source_submitted_at || a.created_at));
+  const latest = (type: string) => saved.find(snapshot => snapshot.assessment_type === type);
+  const id = latest("designid"), pd = latest("designpd"), gifts = latest("spiritual_gifts");
+  return circleDataResponse(circleId, [{id: "owner-preview-host", name: "John", role: "Host", ...(id ? savedDesignId(id.scores) : {designId: null, primary: null}), designPd: pd ? savedDesignPd(pd.scores) : null, gifts: gifts ? savedGifts(gifts.scores) : []}], true);
+}

@@ -13,7 +13,7 @@ class Query {
   maybeSingle(){return Promise.resolve(this.result(true));}
   then(resolve,reject){return Promise.resolve(this.result()).then(resolve,reject);}
 }
-const db={from(table){calls.push({table,op:'from'});return new Query(table);}};
+let previewDownloads=0;const db={from(table){calls.push({table,op:'from'});return new Query(table);},storage:{from(bucket){assert.equal(bucket,'assessment-report-pdfs');return {download:async file=>{assert.equal(file,'sandbox-owner/john-assessment-report.json');previewDownloads++;return {data:{text:async()=>JSON.stringify({all:[snap('saved-owner',null,'designid',allocation)]})},error:null};}};}}};
 const mocks={
   'server-only':{},
   '@/lib/supabase/admin':{createSupabaseAdminClient:()=>db},
@@ -83,5 +83,9 @@ async function get(id=A,extra=''){const response=await route.GET(new Request('ht
  rows.assessment_snapshots=rows.assessment_snapshots.filter(row=>row.assessment_type==='designpd');
  r=await get();assert.equal(r.body.members[0].designId,null);assert.equal(r.body.members[0].primary,null);assert.deepEqual(r.body.members[0].designPd,{plan:-50,decide:50,do:0});
  console.log('PASS pagination retains older independently completed types; saved PD without ID stays independent');
+ const preview=await data.loadOwnerPreviewCircleData(A,{storage:{from:bucket=>({download:async file=>{assert.equal(bucket,'assessment-report-pdfs');assert.equal(file,'sandbox-owner/john-assessment-report.json');return {data:{text:async()=>JSON.stringify({all:[snap('saved-owner',null,'designid',allocation)]})},error:null};}})}});assert.deepEqual(preview.counts,{members:1,designId:1,designPd:0,gifts:0});assert.equal(preview.preview,true);assert.equal(preview.members[0].designPd,null);
+ console.log('PASS explicit private saved-owner report only, no roster attachment, missing Gifts/PD never fabricated');
+ reset();process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT='sandbox';calls=[];r=await get(PREVIEW,'&review=owner&key=valid');assert.equal(r.status,200);assert.deepEqual(r.body.counts,{members:1,designId:1,designPd:0,gifts:0});assert.equal(previewDownloads,1);assert(calls.every(c=>c.table==='journey_circle_plans'));process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT='production';r=await get(PREVIEW,'&review=owner&key=valid');assert.equal(r.body.counts.members,0);assert.equal(previewDownloads,1);
+ console.log('PASS exact authorized owner-preview circle + sandbox environment guard; production preview never reads owner copy');
 
 })().catch(error=>{console.error(error);process.exitCode=1;});

@@ -13,15 +13,6 @@ export async function middleware(request: NextRequest) {
   const validQuery = Boolean(token && key === token && (review === "new" || review === "owner"));
   const validCookie = Boolean(token && request.cookies.get("dydd_sandbox_review")?.value === token);
   const previewPath = /^\/(?:hq|journey|trailheads|ranger-station|field-kit|gear|fireside|waypoints|live|camp-circle|command-center|courses|learn)(?:\/|$)/.test(request.nextUrl.pathname);
-  if (sandbox && request.method === "GET" && previewPath && !key && validCookie) {
-    const destination = request.nextUrl.clone();
-    destination.searchParams.set("review", destination.pathname.startsWith("/command-center") ? "owner" : "new");
-    destination.searchParams.set("key", token!);
-    const restored = NextResponse.redirect(destination);
-    restored.headers.set("Cache-Control", "private, no-store");
-    restored.headers.set("Referrer-Policy", "no-referrer");
-    return restored;
-  }
   const { anonKey, url } = getSupabaseConfig();
 
   const supabase = createServerClient(url, anonKey, {
@@ -43,7 +34,21 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  // Prefetched sandbox links may set a review cookie. It must never replace
+  // a genuine signed-in learner on reload or ordinary navigation.
+  if (sandbox && request.method === "GET" && previewPath && !key && validCookie && !user) {
+    const destination = request.nextUrl.clone();
+    destination.searchParams.set("review", destination.pathname.startsWith("/command-center") ? "owner" : "new");
+    destination.searchParams.set("key", token!);
+    const restored = NextResponse.redirect(destination);
+    restored.headers.set("Cache-Control", "private, no-store");
+    restored.headers.set("Referrer-Policy", "no-referrer");
+    for (const cookie of response.cookies.getAll()) restored.cookies.set(cookie);
+    return restored;
+  }
+
 
   if (sandbox && validQuery) {
     response.cookies.set("dydd_sandbox_review", token!, {

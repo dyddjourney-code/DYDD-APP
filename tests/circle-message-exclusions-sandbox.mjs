@@ -7,6 +7,7 @@ assert.equal(c.ref,'atemrshtshxoqnuevvqu');
 const s=JSON.parse(fs.readFileSync('/home/openclaw/.openclaw/secrets/supabase-project.json'));
 const migration=fs.readFileSync(new URL('../supabase/migrations/20261027203849_circle_message_exclusions.sql',import.meta.url),'utf8');
 assert(!/\b(commit|begin;)\b/i.test(migration),'Migration must be safe within rollback-only harness');
+const followUpMigration=fs.readFileSync(new URL('../supabase/migrations/20261027210232_circle_welcome_excluded_preparation.sql',import.meta.url),'utf8');
 const checks=`
 do $test$
 declare p uuid:=gen_random_uuid(); c uuid; c2 uuid; m uuid; d uuid; w uuid; prep uuid; other uuid; j uuid; lease uuid:=gen_random_uuid(); r jsonb; v integer; rejected boolean; creator uuid:=gen_random_uuid(); invitation uuid; reminder uuid; leader uuid; owner_circle uuid:=gen_random_uuid(); owner_campaign uuid; fixture_email text:='exclude-'||gen_random_uuid()||'@example.test'; plan jsonb;
@@ -40,7 +41,7 @@ begin
  if exists(select 1 from public.dydd_lifecycle_jobs where campaign_id=c and draft_id=w and (length(body)-length(replace(body,'Open the Journey:','')))/length('Open the Journey:')<>1) then raise exception 'Managed preparation duplicated Journey CTA';end if;
  -- Excluding approved preparation removes embedded copy from an already queued welcome.
  perform public.dydd_set_circle_message_excluded(prep,null,'owner',1,true);
- if not exists(select 1 from public.dydd_lifecycle_jobs where campaign_id=c and draft_id=w and status='queued' and body like '%NEXT INCLUDED PREPARATION%' and body not like '%SECRET FIRST PREPARATION%') then raise exception 'Excluded preparation leaked into pending welcome';end if;
+ if not exists(select 1 from public.dydd_lifecycle_jobs where campaign_id=c and draft_id=w and status='queued' and body like '%Your leader will confirm preparation for your next meeting.%' and body not like '%SECRET FIRST PREPARATION%' and body not like '%NEXT INCLUDED PREPARATION%') then raise exception 'Excluded preparation leaked into pending welcome';end if;
  -- Restore clears approval and cancels the full pending plan until re-finalization.
  r:=public.dydd_set_circle_message_excluded(d,null,'owner',2,false);
  if r->>'excluded_at' is not null or r->>'approved_at' is not null or (select status from public.dydd_circle_campaigns where id=c)<>'draft' then raise exception 'Restore failed to reopen review';end if;
@@ -122,6 +123,6 @@ begin
 end $test$;
 `;
 const inspected=await fetch('https://api.supabase.com/v1/projects/'+c.ref+'/database/query',{method:'POST',headers:{Authorization:'Bearer '+s.management_access_token,'Content-Type':'application/json'},body:JSON.stringify({query:"select exists(select 1 from information_schema.columns where table_schema='public' and table_name='dydd_circle_message_drafts' and column_name='excluded_at') as applied"})});assert(inspected.ok);const alreadyApplied=(await inspected.json())[0].applied;
-const response=await fetch('https://api.supabase.com/v1/projects/'+c.ref+'/database/query',{method:'POST',headers:{Authorization:'Bearer '+s.management_access_token,'Content-Type':'application/json'},body:JSON.stringify({query:'begin;\n'+(alreadyApplied?'':migration)+'\n'+checks+'\nrollback;'})});
+const response=await fetch('https://api.supabase.com/v1/projects/'+c.ref+'/database/query',{method:'POST',headers:{Authorization:'Bearer '+s.management_access_token,'Content-Type':'application/json'},body:JSON.stringify({query:'begin;\n'+(alreadyApplied?'':migration)+'\n'+followUpMigration+'\n'+checks+'\nrollback;'})});
 const body=await response.text();assert(response.ok,body);
 console.log('PASS rollback-only sandbox DB: creator authorization, persisted exclusion, stale revisions, approve-or-exclude finalization, restored re-review, pending managed-slot replacement, scheduled/retry exclusion fences, submitted-history preservation, material revision inheritance, excluded invitation/reminder/leader queues, restored leader finalization, ambiguous-retry manual review, private RPC grants. No persisted migration/fixtures or provider calls.');

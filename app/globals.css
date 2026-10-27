@@ -21911,3 +21911,11 @@ body:has(.mobile-nav-drawer[open]) { overflow: hidden; }
 .email-workspace .email-message-section>summary{padding:1rem 0;line-height:1.6;color:#3e562e;overflow-wrap:anywhere}
 .email-message-section[open]>summary{border-bottom:1px solid #e0e5da;margin-bottom:.75rem}
 .email-message-section>.email-message{margin:.75rem 0}
+
+/* Review groups use quiet, distinct tints; labels remain the primary cue. */
+.email-message-section[data-message-group="welcome"]{background:#faf6ed;border-color:#dfcda9}
+.email-message-section[data-message-group="leader"]{background:#f2f0f7;border-color:#cec5dd}
+.email-message-section[data-message-group="participant"]{background:#eef5f7;border-color:#bfd4dc}
+.email-workspace .email-message-section[data-message-group="welcome"]>summary{color:#634b27}
+.email-workspace .email-message-section[data-message-group="leader"]>summary{color:#524268}
+.email-workspace .email-message-section[data-message-group="participant"]>summary{color:#2e5663}

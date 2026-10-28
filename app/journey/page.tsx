@@ -1,3 +1,7 @@
+import { journeySpiritualGiftsSnapshot } from "@/lib/journey/spiritual-gifts-snapshot";
+import { journeySlug, latestJourneySources, sourcesForJourneyRound, type JourneyAssessmentSource } from "@/lib/reflections/journey-assessments";
+import { courseAssessmentEligibility, reportCompletedAt } from "@/lib/trails/course-eligibility";
+import { previewParams, previewReflectionData } from "@/lib/reflections/preview";
 import { journeyDesignIdSnapshot, journeyReflectionNames, journeyCapacityScores } from "@/lib/journey/designid-snapshot";
 import { getAssessmentSnapshotsForUser } from "@/lib/assessments/student-context";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -34,8 +38,24 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   const reviewParams = designIdCourseReviewParams(params);
-  const assessmentReport = (await getHeatherReviewReport(reviewParams)) ?? (await getNewReviewReport(reviewParams)) ?? (user ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email)) : {all: [], latest: []});
+  const allAssessmentReport = (await getHeatherReviewReport(reviewParams)) ?? (await getNewReviewReport(reviewParams)) ?? (user ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email)) : {all: [], latest: []});
+  // Teaching personalization and saved writing use the same round-specific sources.
+  const eligibleSources: JourneyAssessmentSource[] = (await Promise.all((["designid", "spiritual_gifts"] as const).map(async assessmentType => {
+    const eligible = await courseAssessmentEligibility(assessmentType, user ?? {id:"",email:""}, allAssessmentReport.all);
+    return eligible.reports.map(r => ({id:r.id, assessmentType, completedAt: reportCompletedAt(r), label: assessmentType}));
+  }))).flat();
+  const preview = previewParams(params ?? {});
+  let currentRound = preview ? (await previewReflectionData(preview, journeySlug)).rounds[0] : null;
+  if (!preview && user) {
+    const savedRound = await supabase.from("reflection_rounds").select("*").eq("user_id", user.id).eq("course_slug", journeySlug).order("started_at", {ascending:false}).order("id", {ascending:false}).limit(1).maybeSingle();
+    if (savedRound.error) throw Error("Could not open your saved Journey assessment sources. Please reload; your reflections are unchanged.");
+    currentRound = savedRound.data;
+  }
+  const sources = currentRound ? sourcesForJourneyRound(currentRound, eligibleSources) : latestJourneySources(eligibleSources);
+  const chosen = allAssessmentReport.all.filter(r => sources.some(source => source.id === r.id));
+  const assessmentReport = {all: chosen, latest: chosen};
   const designIdSnapshotHtml = journeyDesignIdSnapshot(assessmentReport);
+  const spiritualGiftsSnapshotHtml = journeySpiritualGiftsSnapshot(assessmentReport);
 
   return (
     <main className="journey-shell dydd-journey-class">
@@ -72,7 +92,7 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
       />
 
       <ReflectionCourseShell courseSlug="discover-your-divine-design" compactControls>
-        <JourneyCourseNavigator modules={dyddMainCourseOutline} designIdSnapshotHtml={designIdSnapshotHtml} reflectionNames={journeyReflectionNames(assessmentReport)} capacityScores={journeyCapacityScores(assessmentReport)} />
+        <JourneyCourseNavigator modules={dyddMainCourseOutline} designIdSnapshotHtml={designIdSnapshotHtml} spiritualGiftsSnapshotHtml={spiritualGiftsSnapshotHtml} reflectionNames={journeyReflectionNames(assessmentReport)} capacityScores={journeyCapacityScores(assessmentReport)} />
 
         {params?.saved ? (
           <p className="journey-save-notice">

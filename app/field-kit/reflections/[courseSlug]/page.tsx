@@ -54,10 +54,9 @@ export default async function ReflectionWorkbookPage({
         />
         <div>
           <p className="eyebrow">Field Kit · Course Reflections</p>
-          <h1>{experience.title}</h1>
+          <h1>{journey ? "Your Journey Reflections" : experience.title}</h1>
           <p className="lede">
-            Your reflections, one step at a time. Open a module, then choose a
-            lesson to revisit your discoveries.
+            {journey ? "Your private saved Journey writing is here, in the same workbook you use in the course. Open a module and lesson to read your current responses. Earlier rounds are preserved separately below." : "Your reflections, one step at a time. Open a module, then choose a lesson to revisit your discoveries."}
           </p>
         </div>
       </header>

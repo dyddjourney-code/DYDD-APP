@@ -1,0 +1,16 @@
+const assert = require('node:assert/strict');
+const load = require('../scripts/fruitlife-test-load.cjs');
+const {encodeJourneySources,savedJourneySources,sourcesForJourneyRound,latestJourneySources} = load('lib/reflections/journey-assessments.ts');
+const a={id:'design-new',assessmentType:'designid',completedAt:'2026-10-29',label:'DesignID new'},b={id:'design-old',assessmentType:'designid',completedAt:'2026-10-01',label:'DesignID old'},c={id:'gift',assessmentType:'spiritual_gifts',completedAt:'2026-10-02',label:'Spiritual Gifts saved'};
+const reports=[a,b,c],round={source:'course',started_at:'2026-10-28'};
+assert.deepEqual(sourcesForJourneyRound(round,reports),[b,c]);
+const frozen={source:encodeJourneySources([b,c]),started_at:'2026-10-28'};
+assert.deepEqual(sourcesForJourneyRound(frozen,[a]),[b,c]);
+assert.deepEqual(latestJourneySources(reports),[a,c]);
+assert.equal(savedJourneySources({source:'legacy'}),null);
+assert.equal(savedJourneySources({source:'journey-assessments-v1:bad'}),null);
+assert.equal(savedJourneySources({source:'journey-assessments-v1:[{"id":"foreign"}]'}),null);
+assert.deepEqual(savedJourneySources({source:encodeJourneySources([])}),[]);
+console.log('PASS dual Journey sources: both instruments, legacy as-of-round dates, frozen original labels/IDs despite newer results, latest only for explicit new choice, malformed metadata and empty sources.');
+assert.deepEqual(latestJourneySources([a,{...a,id:'tied-design'},c]),[c]);
+assert.deepEqual(sourcesForJourneyRound(round,[b,{...b,id:'tied-old'},c]),[c]);

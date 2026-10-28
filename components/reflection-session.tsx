@@ -1142,7 +1142,7 @@ export function ReflectionWorkbook() {
           const lessons = [...new Set(allQuestions.map((q) => q.lessonSlug))];
           return (
             <details
-              open={discussionOnly ? true : undefined}
+              open={discussionOnly || (s.courseSlug === journeySlug && allQuestions.some(hasAnswer)) ? true : undefined}
               className={`reflection-module${title === "Niche" ? " reflection-module-niche" : ""}`}
               key={title}
               hidden={!questions.length}
@@ -1178,7 +1178,7 @@ export function ReflectionWorkbook() {
                   );
                   return (
                     <details
-                      open={discussionOnly ? true : undefined}
+                      open={discussionOnly || (s.courseSlug === journeySlug && lessonQuestions.some(hasAnswer)) ? true : undefined}
                       className="reflection-lesson"
                       key={lessonSlug}
                       hidden={!visible.length}

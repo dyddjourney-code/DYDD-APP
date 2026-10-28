@@ -62,6 +62,7 @@ type Session = {
   setDraft: (id: string, value: string) => void;
   save: (q: ReflectionQuestion) => Promise<boolean>;
   automatic: boolean;
+  savingLesson: boolean;
   flush: () => Promise<boolean>;
   statuses: Record<string, string>;
   readOnly: boolean;
@@ -115,7 +116,11 @@ export function ReflectionSession({
   const reminderDraftRef = useRef(reminderDrafts); reminderDraftRef.current = reminderDrafts;
   const reminderTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
   const saveReminderRef = useRef<(id: string) => Promise<boolean>>(async () => false);
-  const automatic = compactControls && courseSlug === "discover-your-divine-design";
+  // Course lessons commit at explicit lesson boundaries; Field Kit keeps explicit editing.
+  const automatic = compactControls || inlineEntry;
+  const [savingLesson, setSavingLesson] = useState(false);
+  const [saveError, setSaveError] = useState("");
+  const pendingFlush = useRef<Promise<boolean> | null>(null);
   const dirty = useRef(false),
     busy = useRef(new Set<string>()),
     draftRef = useRef(drafts);
@@ -154,7 +159,7 @@ export function ReflectionSession({
       );
       let body = await r.json();
       if (!r.ok) throw Error(body.error);
-      if (automatic && body.signedIn && !body.rounds.length) {
+      if (automatic && courseSlug === "discover-your-divine-design" && body.signedIn && !body.rounds.length) {
         const setup = await reflectionFetch("/api/course-reflections", {
           method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ action: "ensure-round", courseSlug }),
@@ -217,8 +222,11 @@ export function ReflectionSession({
     const navigate = (e: MouseEvent) => {
       const link = (e.target as Element).closest?.("a[href]") as HTMLAnchorElement | null;
       if (automatic && link && link.target !== "_blank" && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.button === 0 && dirty.current) {
-        e.preventDefault(); e.stopPropagation();
+        // Same-document anchors do not leave the lesson.
+        if (link.pathname === window.location.pathname && link.search === window.location.search && link.hash) return;
+        if (link.hasAttribute("download")) return;
         const href = link.href;
+        e.preventDefault(); e.stopPropagation();
         void flushRef.current().then(ok => { if (ok) window.location.assign(href); });
         return;
       }
@@ -237,9 +245,41 @@ export function ReflectionSession({
     };
     window.addEventListener("beforeunload", unload);
     document.addEventListener("click", navigate, true);
+    // Chromium's cancellable Navigation API also covers same-document browser Back/Forward.
+    // Other browsers use a capture-phase popstate guard before app-router unmount.
+    const browserNavigation = (window as unknown as { navigation?: EventTarget & { traverseTo: (key: string) => unknown } }).navigation;
+    let resumingTraversal = false;
+    const traverse = (event: Event) => {
+      const e = event as Event & { navigationType: string; destination: { key: string; url: string } };
+      if (!automatic || resumingTraversal || e.navigationType !== "traverse" || !dirty.current || !e.cancelable) return;
+      const destination = new URL(e.destination.url);
+      if (destination.pathname === window.location.pathname && destination.search === window.location.search) return;
+      e.preventDefault();
+      void flushRef.current().then(ok => {
+        if (!ok) return;
+        resumingTraversal = true;
+        browserNavigation?.traverseTo(e.destination.key);
+        resumingTraversal = false;
+      });
+    };
+    browserNavigation?.addEventListener("navigate", traverse);
+    const mountedUrl = window.location.href;
+    const fallbackTraverse = (event: PopStateEvent) => {
+      if (browserNavigation || !automatic || !dirty.current) return;
+      const destination = window.location.href;
+      const target = new URL(destination), mounted = new URL(mountedUrl);
+      if (target.pathname === mounted.pathname && target.search === mounted.search) return;
+      event.stopImmediatePropagation();
+      // Restore the mounted lesson while saving; failure must not leave its URL/UI.
+      window.history.pushState(window.history.state, "", mountedUrl);
+      void flushRef.current().then(ok => { if (ok) window.location.assign(destination); });
+    };
+    window.addEventListener("popstate", fallbackTraverse, true);
     return () => {
       window.removeEventListener("beforeunload", unload);
       document.removeEventListener("click", navigate, true);
+      browserNavigation?.removeEventListener("navigate", traverse);
+      window.removeEventListener("popstate", fallbackTraverse, true);
     };
   }, []);
   const setRoundUrl = (id: string) => {
@@ -379,6 +419,10 @@ export function ReflectionSession({
         if (!r.ok) throw Error(b.error);
         const next = [...reminderRef.current.filter(v => !(v.round_id === roundId && v.question_id === id)), b.reminder];
         reminderRef.current = next; setReminders(next);
+        dirty.current = reminderDirty() || Object.entries(draftRef.current).some(([id, text]) => {
+          const saved = entriesRef.current.filter(e => e.round_id === roundId && e.question_id === id).sort((a,b) => b.revision-a.revision)[0];
+          return text !== (saved?.response ?? "");
+        });
         setReminderStatuses(s => ({ ...s, [id]: reminderDraftRef.current[id]?.note === draft.note && reminderDraftRef.current[id]?.marked === draft.marked ? 'Saved' : 'Unsaved changes' }));
         return true;
       } catch (e) { setReminderStatuses(s => ({ ...s, [id]: e instanceof Error ? e.message : 'Could not save reminder. Please try again.' })); return false; }
@@ -388,12 +432,23 @@ export function ReflectionSession({
     return task;
   };
   saveReminderRef.current = saveReminder;
-  const flush = async () => {
-    const changed = questions.filter(q => Object.hasOwn(draftRef.current, q.id));
-    let ok = true;
-    for (const q of changed) if (!await saveRef.current(q)) ok = false;
-    for (const id of Object.keys(reminderDraftRef.current)) if (!await saveReminderRef.current(id)) ok = false;
-    return ok;
+  const flush = (): Promise<boolean> => {
+    if (pendingFlush.current) return pendingFlush.current;
+    const task = (async () => {
+      setSavingLesson(true);
+      setSaveError("");
+      try {
+        const changed = questions.filter(q => Object.hasOwn(draftRef.current, q.id));
+        let ok = true;
+        for (const q of changed) if (!await saveRef.current(q)) ok = false;
+        for (const id of Object.keys(reminderDraftRef.current)) if (!await saveReminderRef.current(id)) ok = false;
+        if (!ok) setSaveError("Your changes have not all been saved. Your drafts are still here. Stay on this lesson and retry before leaving.");
+        return ok;
+      } finally { setSavingLesson(false); }
+    })();
+    pendingFlush.current = task;
+    void task.finally(() => { pendingFlush.current = null; });
+    return task;
   };
   flushRef.current = flush;
   useEffect(() => () => { for (const timer of [...Object.values(timers.current), ...Object.values(reminderTimers.current)]) clearTimeout(timer); }, []);
@@ -464,7 +519,7 @@ export function ReflectionSession({
       setReminderDrafts(reminderDraftRef.current); dirty.current = true;
       setReminderStatuses(s => ({ ...s, [id]: 'Unsaved changes' }));
       clearTimeout(reminderTimers.current[id]);
-      reminderTimers.current[id] = setTimeout(() => { void saveReminderRef.current(id); }, 700);
+      if (!automatic) reminderTimers.current[id] = setTimeout(() => { void saveReminderRef.current(id); }, 700);
     },
     courseSlug,
     data,
@@ -482,15 +537,11 @@ export function ReflectionSession({
       draftRef.current = { ...draftRef.current, [id]: value };
       dirty.current = true;
       setDrafts(draftRef.current);
-      if (automatic) {
-        clearTimeout(timers.current[id]);
-        const q = questions.find(q => q.id === id);
-        if (q) timers.current[id] = setTimeout(() => { void saveRef.current(q); }, 700);
-      }
       setStatuses((s) => ({ ...s, [id]: "Unsaved changes" }));
     },
     save,
     automatic,
+    savingLesson,
     flush,
     statuses,
     readOnly,
@@ -611,6 +662,10 @@ export function ReflectionSession({
       {automatic || contextualEntry ? null : assessmentEntry ? (
         data.rounds.length ? <details className="reflection-workbook-settings"><summary>Previous reflections and fresh sets</summary>{controls}</details> : setup
       ) : controls}
+      {automatic ? <p className="reflection-lesson-save-state" role={saveError ? "alert" : "status"}>
+        {saveError || (savingLesson ? "Saving your lesson reflections…" : "Take your time. Changed answers save together when you complete or leave this lesson—not while typing or moving between boxes. To close or reload the browser, save your lesson first.")}
+        {saveError ? <> <button type="button" disabled={savingLesson} onClick={() => void flush()}>Retry saving lesson</button></> : null}
+      </p> : null}
       {children}
       {contextualEntry && data.rounds.length > 0 ? <details className="reflection-workbook-settings">
         <summary>Reflection workbook · Previous reflections and fresh sets</summary>
@@ -684,7 +739,7 @@ export function ReflectionAnswer({
         </>
       ) : (
         <>
-          {s.automatic ? <small>Your answers save automatically.</small> : null}
+          {s.automatic ? <small>Saved when you complete or leave this lesson. You can edit again when you return.</small> : null}
           <label htmlFor={inputId}>
             Your reflection
             <textarea
@@ -692,9 +747,8 @@ export function ReflectionAnswer({
               value={value}
               maxLength={8000}
               rows={5}
-              disabled={!s.round || s.loading}
+              disabled={!s.round || s.loading || s.savingLesson}
               onChange={(e) => s.setDraft(q.id, e.target.value)}
-              onBlur={() => { if (s.automatic) void s.save(q); }}
               placeholder={
                 s.round
                   ? "Write what you want to remember…"
@@ -707,8 +761,8 @@ export function ReflectionAnswer({
               {(!s.automatic || (s.statuses[q.id] && !["Saved", "Saving…", "Unsaved changes"].includes(s.statuses[q.id]))) ? <button
                 type="button"
                 className="button secondary"
-                disabled={s.statuses[q.id] === "Saving…" || s.loading}
-                onClick={() => void s.save(q)}
+                disabled={s.statuses[q.id] === "Saving…" || s.loading || s.savingLesson}
+                onClick={() => void (s.automatic ? s.flush() : s.save(q))}
               >
                 {s.automatic ? "Try saving again" : "Save reflection"}
               </button> : null}
@@ -774,15 +828,15 @@ function DiscussionControl({ questionId }: { questionId: string }) {
   const current = s.reminderDrafts[questionId] ?? saved ?? { marked: false, note: '' };
   const status = s.reminderStatuses[questionId];
   return <div className="discussion-control">
-    <button type="button" className="discussion-mark" aria-pressed={current.marked} disabled={s.readOnly} onClick={() => { s.setReminder(questionId, !current.marked, current.note); }}>
+    <button type="button" className="discussion-mark" aria-pressed={current.marked} disabled={s.readOnly || s.savingLesson} onClick={() => { s.setReminder(questionId, !current.marked, current.note); }}>
       <span aria-hidden="true">{current.marked ? '◆' : '◇'}</span> {current.marked ? 'Marked for Class' : 'Take to Class'}
     </button>
     {current.marked ? <>
       <small>Private reminder · Not posted or sent to your class.</small>
-      {!noteOpen && !current.note ? <button className="discussion-add-note" type="button" onClick={() => setNoteOpen(true)}>Add a note (optional)</button> : <label htmlFor={noteId}>Discussion note (optional)<textarea id={noteId} className="discussion-note" rows={2} maxLength={1000} value={current.note} disabled={s.readOnly} placeholder="What would you like to discuss?" onChange={e => s.setReminder(questionId, true, e.target.value)} onBlur={() => void s.saveReminder(questionId)} /></label>}
+      {!noteOpen && !current.note ? <button className="discussion-add-note" type="button" onClick={() => setNoteOpen(true)}>Add a note (optional)</button> : <label htmlFor={noteId}>Discussion note (optional)<textarea id={noteId} className="discussion-note" rows={2} maxLength={1000} value={current.note} disabled={s.readOnly || s.savingLesson} placeholder="What would you like to discuss?" onChange={e => s.setReminder(questionId, true, e.target.value)} onBlur={() => { if (!s.automatic) void s.saveReminder(questionId); }} /></label>}
     </> : null}
     {status ? <small role="status">{status}</small> : null}
-    {status && !['Saved', 'Saving…', 'Unsaved changes'].includes(status) ? <button type="button" onClick={() => void s.saveReminder(questionId)}>Try saving reminder again</button> : null}
+    {status && !['Saved', 'Saving…', 'Unsaved changes'].includes(status) ? <button type="button" onClick={() => void (s.automatic ? s.flush() : s.saveReminder(questionId))}>Try saving reminder again</button> : null}
   </div>;
 }
 export function ReflectionWorkbook() {
@@ -1302,7 +1356,7 @@ export function ReflectionNicheBuilder() {
                   {e?.response && q.id !== "niche-working-declaration" ? (
                     <button
                       type="button"
-                      disabled={!session.round || session.readOnly}
+                      disabled={!session.round || session.readOnly || session.savingLesson}
                       onClick={() => add(q, e)}
                     >
                       Add this insight to my draft

@@ -10,6 +10,7 @@ const base=process.env.BETA_QA_BASE||'http://localhost:3148';
 assert(['http://localhost:3148','https://dydd-online-school.vercel.app'].includes(base),'Use only the reviewed stable beta/local QA target');
 const cfg=JSON.parse(fs.readFileSync('/home/openclaw/.openclaw/secrets/dydd-online-school-supabase.json'));
 const admin=createClient(cfg.project_url,cfg.service_role_key,{auth:{persistSession:false}});
+const signinClient=createClient(cfg.project_url,cfg.anon_key,{auth:{persistSession:false}});
 const ids=[],checks=[];let browser;
 const ok=x=>{assert(!x.error,x.error?.message);return x.data};
 const pass=s=>{checks.push(s);console.log('PASS '+s)};
@@ -71,15 +72,15 @@ try {
  await Promise.all([page.waitForNavigation({waitUntil:'networkidle2'}),page.click('button[type="submit"]')]);
  const content=await page.$eval('body',e=>e.textContent);assert(content.includes('Check your email to confirm your account'),content.slice(-1300));
  const listed=ok(await admin.auth.admin.listUsers({perPage:1000})).users;const fresh=listed.find(u=>u.email===email);assert(fresh);ids.push(fresh.id);assert(!fresh.email_confirmed_at);
- assert((await admin.auth.signInWithPassword({email,password})).error,'Unverified registration cannot claim old matching records');
+ assert((await signinClient.auth.signInWithPassword({email,password})).error,'Unverified registration cannot claim old matching records');
  // Generate a fresh verification credential without sending another message; exercise public confirm route.
  const link=ok(await admin.auth.admin.generateLink({type:'signup',email,password}));
  const confirm=await fetch(base+'/auth/confirm',{method:'POST',body:new URLSearchParams({token_hash:link.properties.hashed_token,next:'/hq'}),redirect:'manual'});assert.equal(confirm.status,307);assert(confirm.headers.getSetCookie().length);
- const signed=ok(await admin.auth.signInWithPassword({email,password}));assert.equal(signed.user.id,fresh.id);
+ const signed=ok(await signinClient.auth.signInWithPassword({email,password}));assert.equal(signed.user.id,fresh.id);
  pass('fresh new-email registration through public UI, SMTP accepted confirmation, unverified login refused, public confirmation sets session, password sign-in works');
  fs.writeFileSync('tmp/beta-qa-'+(base.startsWith('https')?'live':'local')+'.json',JSON.stringify({base,checks,at:new Date().toISOString()},null,2));
 } finally {
  if(browser)await browser.close();
- for(const id of ids){await admin.storage.from('assessment-report-pdfs').remove([`private-discussion-reminders/user-${id}.json`,`private-discussion-reminders/user-${id}.lock`]);await admin.auth.admin.signOut(id).catch(()=>{});const deleted=await admin.auth.admin.deleteUser(id);assert(!deleted.error,deleted.error?.message);}
+ for(const id of ids){const removed=await admin.storage.from('assessment-report-pdfs').remove([`private-discussion-reminders/user-${id}.json`,`private-discussion-reminders/user-${id}.lock`]);assert(!removed.error,removed.error?.message);await admin.auth.admin.signOut(id).catch(()=>{});const deleted=await admin.auth.admin.deleteUser(id);assert(!deleted.error,deleted.error?.message);}
  console.log('All synthetic accounts/private reminder fixtures removed.');
 }

@@ -66,9 +66,9 @@ export default async function LearningCoursePage({
   }
   const course = getLearningCourse(courseSlug);
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
-  const tracksOrigin = courseSlug === "designpd-alignment" || courseSlug === "fruitlife-360-formation";
-  const origin = courseSlug === "fruitlife-360-formation" ? "field-kit" : courseOrigin(reviewParams?.origin);
-  const cardHref = withReviewQuery(tracksOrigin ? courseCardHref(courseSlug, origin) : courseSlug === "spiritual-gifts-service" ? fruitLifeLane ? "/spiritual-gifts?lane=fruitlife" : "/field-kit" : fruitLifeLane ? "/trailheads?lane=fruitlife" : "/trailheads", reviewParams);
+  const tracksOrigin = courseSlug === "designpd-alignment" || courseSlug === "fruitlife-360-formation" || courseSlug === "spiritual-gifts-service";
+  const origin = (courseSlug === "fruitlife-360-formation" || courseSlug === "spiritual-gifts-service") ? "field-kit" : courseOrigin(reviewParams?.origin);
+  const cardHref = withReviewQuery(tracksOrigin ? courseCardHref(courseSlug, origin) : fruitLifeLane ? "/trailheads?lane=fruitlife" : "/trailheads", reviewParams);
   const isSpiritualGifts = course?.slug === "spiritual-gifts-service";
   const isFruitLife = course?.slug === "fruitlife-360-formation";
   const isDesignPd = course?.slug === "designpd-alignment";

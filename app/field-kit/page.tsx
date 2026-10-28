@@ -198,7 +198,7 @@ export default async function FieldKitPage({
           snapshot.assessment_type === "designid"
             ? "/courses/designid-foundations"
             : snapshot.assessment_type === "spiritual_gifts"
-              ? "/courses/spiritual-gifts-service"
+              ? "/courses/spiritual-gifts-service?origin=field-kit"
               : snapshot.assessment_type === "fruit_360"
                 ? "/courses/fruitlife-360-formation?origin=field-kit"
                 : snapshot.assessment_type === "designpd" && designPdUnlocked

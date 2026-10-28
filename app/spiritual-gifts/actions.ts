@@ -239,14 +239,18 @@ async function sendSpiritualGiftsResultEmail({
   reportUrl?: string;
 }) {
   if(!attachment&&!reportUrl)return {sent:false,skipped:true,message:"The report is not ready; no report-ready email was sent."};
-  return sendResendEmail({
+  try {
+    return await sendResendEmail({
     templateId:"B01-spiritual-gifts",
     idempotencyKey:"spiritual-report-"+crypto.createHash("sha256").update(participantEmail.toLowerCase()+"|"+(reportUrl||attachment?.filename||"")+"|"+(attachment?"attachment":"link")).digest("hex"),
     deliveryContext:{type:"spiritual_report",reportUrl},
     ...spiritualGiftsResultEmail({ participantName, reportUrl }),
     ...(attachment ? { attachments: [attachment] } : {}),
     to: participantEmail,
-  });
+    });
+  } catch {
+    return {sent:false,skipped:false,message:"Report email delivery needs retry; the saved report remains available."};
+  }
 }
 async function saveCompletedSpiritualGiftsResponse({
   participantId,
@@ -390,7 +394,7 @@ async function saveCompletedSpiritualGiftsResponse({
       responseError?.message ?? "Unable to save Spiritual Gifts response.",
     );
   }
-  const { data: snapshot } = await supabase
+  const { data: snapshot, error: snapshotError } = await supabase
     .from("assessment_snapshots")
     .insert({
       assessment_type: "spiritual_gifts",
@@ -403,6 +407,9 @@ async function saveCompletedSpiritualGiftsResponse({
     })
     .select("id")
     .maybeSingle();
+  if (snapshotError || !snapshot?.id) {
+    throw new Error("Your response was saved, but the report record could not be saved. No report email was sent.");
+  }
   const pdfFilename = pdfReportFilename(participantName, sessionId);
   let pdfMetadata: {
     storage?: StoredReport;
@@ -448,7 +455,12 @@ async function saveCompletedSpiritualGiftsResponse({
         pdfMetadata.archiveError =
           error instanceof Error ? error.message : "PDF archive failed";
       }
-      pdfAttachment = await pdfAttachmentFromUrl(providerUrl, pdfFilename);
+      // Attachment transport is optional; it must not invalidate a ready PDF.
+      try {
+        pdfAttachment = await pdfAttachmentFromUrl(readyDocument.download_url ?? providerUrl, pdfFilename);
+      } catch {
+        pdfAttachment = null;
+      }
     }
   } catch (error) {
     pdfMetadata = {
@@ -461,6 +473,24 @@ async function saveCompletedSpiritualGiftsResponse({
       reportAccessUrl,
       status: "error",
     };
+  }
+  // The email locator resolves through session.metadata.pdfMonkey. Save both
+  // artifact records before exposing that locator to an email recipient.
+  const snapshotSaved = await supabase.from("assessment_snapshots").update({
+    scores: {...snapshotScorePayload, pdfMonkey: pdfMetadata, reportAccessUrl},
+  }).eq("id", snapshot.id).select("id").single();
+  if (snapshotSaved.error || !snapshotSaved.data) {
+    throw new Error("Your response was saved, but report metadata could not be saved. No report email was sent.");
+  }
+  const sessionSaved = await supabase.from("spiritual_gifts_sessions").update({
+    metadata: {...(sessionMetadata ?? {}), pdfMonkey: pdfMetadata, reportAccessUrl, resultUrl},
+    report_status: ["ready", "success"].includes(String(pdfMetadata?.status)) ? "ready" : "error",
+    result_snapshot_id: snapshot.id,
+    session_status: "completed",
+    submitted_at: submittedAt,
+  }).eq("id", sessionId).select("id").single();
+  if (sessionSaved.error || !sessionSaved.data) {
+    throw new Error("Your response and PDF were saved, but the report link could not be saved. No report email was sent.");
   }
   let emailResult = participantEmail
     ? await sendSpiritualGiftsResultEmail({
@@ -489,60 +519,40 @@ async function saveCompletedSpiritualGiftsResponse({
       emailResult = emailRetryResult;
     }
   }
-  if (snapshot?.id) {
-    await supabase
-      .from("assessment_snapshots")
-      .update({
-        scores: {
-          ...snapshotScorePayload,
-          pdfMonkey: pdfMetadata,
-          reportPayload,
-          reportPayloadFormat: "template-v1",
-          reportAccessUrl,
-          resultEmail: {
-            attachmentIncluded: Boolean(pdfAttachment),
-            resendSent: emailResult.sent,
-          },
-        },
-      })
-      .eq("id", snapshot.id);
+  // Re-read only the two just-created records. A concurrent report download can
+  // archive/recover a PDF while delivery is pending; never replace that metadata.
+  const latestSnapshot = await supabase.from("assessment_snapshots").select("scores").eq("id", snapshot.id).single();
+  if (!latestSnapshot.error && latestSnapshot.data) {
+    await supabase.from("assessment_snapshots").update({scores: {
+      ...latestSnapshot.data.scores,
+      resultEmail: {attachmentIncluded: Boolean(pdfAttachment), resendSent: emailResult.sent},
+    }}).eq("id", snapshot.id);
   }
-  await supabase
-    .from("spiritual_gifts_sessions")
-    .update({
+  const latestSession = await supabase.from("spiritual_gifts_sessions").select("metadata").eq("id", sessionId).single();
+  if (!latestSession.error && latestSession.data) {
+    await supabase.from("spiritual_gifts_sessions").update({
       metadata: {
-        ...(sessionMetadata ?? {}),
+        ...latestSession.data.metadata,
         resultEmail: {
           attachmentIncluded: Boolean(pdfAttachment),
           error: emailResult.message ?? null,
           purpose: "spiritual_gifts_result_email",
           resendId: emailResult.id ?? null,
-          retryWithoutAttachment: emailRetryResult
-            ? {
-                error: emailRetryResult.message ?? null,
-                resendId: emailRetryResult.id ?? null,
-                resendSkipped: emailRetryResult.skipped,
-                resendSent: emailRetryResult.sent,
-              }
-            : null,
+          retryWithoutAttachment: emailRetryResult ? {
+            error: emailRetryResult.message ?? null,
+            resendId: emailRetryResult.id ?? null,
+            resendSkipped: emailRetryResult.skipped,
+            resendSent: emailRetryResult.sent,
+          } : null,
           resendSkipped: emailResult.skipped,
           resendSent: emailResult.sent,
-          sentAt: new Date().toISOString(),
+          sentAt: emailResult.sent ? new Date().toISOString() : null,
         },
-        pdfMonkey: pdfMetadata,
-        reportAccessUrl,
-        resultUrl,
       },
-      report_status: emailResult.sent
-        ? "sent"
-        : pdfMetadata?.providerUrl
-          ? "ready"
-          : "error",
-      result_snapshot_id: snapshot?.id ?? null,
-      session_status: "completed",
-      submitted_at: submittedAt,
-    })
-    .eq("id", sessionId);
+      report_status: emailResult.sent ? "sent" :
+        (["ready", "success"].includes(String(pdfMetadata?.status)) ? "ready" : "error"),
+    }).eq("id", sessionId);
+  }
   return {
     sessionId,
     statusHref,
@@ -764,16 +774,11 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
         : "Unable to save Spiritual Gifts response.",
     );
   }
+  if (isAppChannel) redirect("/field-kit#collection-spiritual-gifts");
   const resultParams = new URLSearchParams({
-    channel: isAppChannel ? "app" : "public",
-    message: isAppChannel
-      ? "Your Spiritual Gifts assessment has been saved."
-      : "Your Spiritual Gifts assessment has been submitted. Your PDF report is being delivered to your email.",
+    channel: "public",
+    message: "Your Spiritual Gifts assessment has been submitted. Your PDF report is being delivered to your email.",
   });
-  if (isAppChannel) {
-    resultParams.set("session", session.id);
-    resultParams.set("token", token);
-  }
   redirect(`/spiritual-gifts/thanks?${resultParams.toString()}`);
 }
 export async function saveSpiritualGiftsSelfResponse(formData: FormData) {
@@ -812,13 +817,7 @@ export async function saveSpiritualGiftsSelfResponse(formData: FormData) {
         : "Unable to save Spiritual Gifts response.",
     );
   }
-  const resultParams = new URLSearchParams({
-    channel: "app",
-    message: "Your Spiritual Gifts assessment was saved inside the app.",
-    session: session.id,
-    token,
-  });
-  redirect(`/spiritual-gifts/thanks?${resultParams.toString()}`);
+  redirect("/field-kit#collection-spiritual-gifts");
 }
 export async function getSpiritualGiftsSessionStatus(
   sessionId: string,

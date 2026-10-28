@@ -18639,6 +18639,7 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
 .spiritual-gifts-form {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
   margin: 0 auto;
   max-width: 960px;
@@ -19403,8 +19404,8 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .spiritual-gifts-rating-buttons input:checked + span {
-  background: var(--gift-accent);
-  border-color: var(--gift-accent);
+  background: var(--green-dark);
+  border-color: var(--green-dark);
   color: #fff;
 }
 
@@ -19985,6 +19986,15 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .spiritual-gifts-ranked-list small {
     text-align: left;
   }
+}
+
+/* Native fieldsets must not expand the rating form beyond a narrow viewport. */
+.spiritual-gifts-form fieldset { min-inline-size: 0; }
+@media (max-width: 400px) {
+  .spiritual-gifts-form .spiritual-gifts-panel { padding: 12px; }
+  .spiritual-gifts-form .spiritual-gifts-scale { padding: 10px; }
+  .spiritual-gifts-rating-buttons { gap: 4px; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .spiritual-gifts-rubric span { min-width: 0; overflow-wrap: anywhere; }
 }
 
 /* DesignID clarification sort: compact targets above the alphabetical word list. */

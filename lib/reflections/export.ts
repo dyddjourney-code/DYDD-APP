@@ -1,9 +1,10 @@
 import type { ReflectionEntry, ReflectionRound } from "./types";
-import { getReflectionExperience } from "./catalog";
+import { getReflectionExperience, reflectionReviewQuestions } from "./catalog";
 
 export function reflectionExportText(
   rounds: ReflectionRound[],
   entries: ReflectionEntry[],
+  currentRoundIds: string[] = [],
 ) {
   const dated = (value: string) =>
     new Intl.DateTimeFormat("en-US", {
@@ -35,7 +36,8 @@ export function reflectionExportText(
         latest.set(entry.question_id, entry);
     let module = "",
       lesson = "";
-    for (const question of round.questions) {
+    const questions = reflectionReviewQuestions(round.course_slug, round.questions, currentRoundIds.includes(round.id));
+    for (const question of questions) {
       if (module !== question.moduleTitle) {
         module = question.moduleTitle;
         lines.push("", `MODULE: ${module}`);
@@ -52,7 +54,20 @@ export function reflectionExportText(
         "Answer:",
         answer?.response || "[Not answered in this walkthrough]",
       );
-      if (answer) lines.push(`Saved: ${dated(answer.saved_at)}`);
+      if (answer) {
+        if (answer.prompt && answer.prompt !== question.prompt) lines.push(`Question when saved: ${answer.prompt}`);
+        lines.push(`Saved: ${dated(answer.saved_at)}`);
+      }
+    }
+    const shown = new Set(questions.map(q => q.id));
+    const historical = entries.filter(e => e.round_id === round.id && !shown.has(e.question_id));
+    if (historical.length) {
+      lines.push("", "EARLIER ACTIVITY ANSWERS (preserved history)");
+      for (const id of new Set(historical.map(e => e.question_id))) {
+        for (const entry of historical.filter(e => e.question_id === id).sort((a, b) => b.revision - a.revision)) {
+          lines.push("", `Lesson: ${entry.lesson_title}`, `Question when saved: ${entry.prompt}`, `Revision: ${entry.revision}`, "Answer:", entry.response || "[Answer left blank]", `Saved: ${dated(entry.saved_at)}`);
+        }
+      }
     }
     lines.push("");
   }

@@ -59,7 +59,7 @@ export async function POST(request:Request){
    if(trail){
     const snapshots=await getAssessmentSnapshotsForUser(user.id,user.email??'');
     let ready=snapshots.all.some(s=>s.assessment_type===trail.assessmentType && (savedAssessmentComplete(s,snapshots.all) || completedLegacyFruitSnapshot(s)));
-    if(!ready && trail.id==='fruitlife-360' && user.email)ready=(await completedFruitSessionsForEmail(user.email)).length>0;
+    if(!ready && trail.id==='fruitlife-360' && user.email)ready=(await completedFruitSessionsForEmail(user.email,user.id)).length>0;
     // Keep the sandbox owner's already-approved universal teaching preview;
     // preview/access is never assessment evidence and cannot award a result.
     if(!(isSandbox() && isDyddAdminEmail(user.email)) && (!ready || trail.id==='designpd' && !hasDesignPdCourseAccess(user.email,snapshots.all)))return reply({error:'Complete this trail’s report before saving course progress.'},403);

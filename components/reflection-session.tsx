@@ -13,7 +13,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { ReflectionQuestion } from "@/lib/reflections/catalog";
+import { reflectionReviewQuestions, type ReflectionQuestion } from "@/lib/reflections/catalog";
 import type {
   ReflectionData,
   ReflectionEntry,
@@ -526,12 +526,8 @@ export function ReflectionSession({
     round,
     loading,
     error,
-    // Retired Journey lesson prompts stay in saved history, not the active workbook.
-    questions: (round?.questions ?? questions).filter(
-      (question) =>
-        courseSlug !== "discover-your-divine-design" ||
-        !question.id.endsWith("-lesson-reflection"),
-    ),
+    // Current activities follow source; earlier walkthroughs retain their actual snapshot.
+    questions: reflectionReviewQuestions(courseSlug, round?.questions ?? questions, !round || round.id === data.rounds[0]?.id),
     drafts,
     setDraft: (id, value) => {
       draftRef.current = { ...draftRef.current, [id]: value };
@@ -715,6 +711,7 @@ export function ReflectionAnswer({
   return (
     <section className="reflection-answer" data-question={q.id}>
       {showQuestion ? <h3>{q.prompt}</h3> : null}
+      {current?.prompt && current.prompt !== q.prompt ? <p className="reflection-original-question">Question when saved: {current.prompt}</p> : null}
       {retiredCanonical && !s.readOnly ? <p className="reflection-retired-pathfinder">This earlier answer is preserved for history. <ReviewAwareLink href={`/journey?lesson=${s.questions.find(q => q.id === retiredCanonical)?.lessonSlug ?? "niche-pathfinder-preparing-your-niche-declaration-68"}`}>Edit the shared Pathfinder answer</ReviewAwareLink>.</p> : null}
       {s.inlineEntry && !s.round ? (entryPoint ? s.setup : <p>Begin your reflections at the first reflection in this lesson.</p>) : <>
       {s.error ? <p role="alert">{s.error} <button type="button" onClick={() => void s.reload()}>Try again</button></p> : null}
@@ -808,6 +805,7 @@ export function ReflectionAnswer({
               <small>
                 {date(e.saved_at)} · Revision {e.revision}
               </small>
+              {e.prompt && e.prompt !== q.prompt ? <p>Question when saved: {e.prompt}</p> : null}
               <p className="reflection-read-answer">
                 {e.response || "Answer left blank."}
               </p>
@@ -1193,6 +1191,7 @@ export function ReflectionWorkbook() {
           );
         })}
       </div>
+      <EarlierActivityAnswers />
       {!visibleQuestions.length ? (
         <p className="reflection-filter-empty">
           {discussionOnly ? "No discussion reminders in this view yet. Mark any CARE reflection with Take to Class—even before you answer it." : "No reflections match this view. Choose another module or show all reflections."}
@@ -1200,6 +1199,33 @@ export function ReflectionWorkbook() {
       ) : null}
     </div>
   );
+}
+
+/** Retired prompts are history, not unanswered work to complete or editable activities. */
+function EarlierActivityAnswers() {
+  const s = useContext(Context);
+  if (!s?.round || s.round.id !== s.data.rounds[0]?.id || s.courseSlug !== "discover-your-divine-design") return null;
+  const active = new Set(s.questions.map(q => q.id));
+  const entries = s.data.entries.filter(e => e.round_id === s.round!.id && !active.has(e.question_id));
+  const ids = [...new Set(entries.map(e => e.question_id))];
+  if (!ids.length) return null;
+  return <details className="reflection-history reflection-earlier-activities">
+    <summary>Earlier activity answers ({ids.length})</summary>
+    <p>Saved answers from earlier activities are preserved here. They are not part of the current activity list and remain available in your text download.</p>
+    {ids.map(id => {
+      const revisions = entries.filter(e => e.question_id === id).sort((a, b) => b.revision - a.revision);
+      const current = revisions[0];
+      return <article key={id} id={`reflection-${id}`}>
+        <h3>{current.lesson_title}</h3>
+        <p>{current.prompt}</p>
+        <p className="reflection-read-answer"><ReflectionText text={current.response || "Answer left blank."} /></p>
+        <small>Saved {date(current.saved_at)} · Revision {current.revision}</small>
+        {revisions.length > 1 ? <details><summary>Earlier edits ({revisions.length - 1})</summary>
+          {revisions.slice(1).map(entry => <article key={entry.id}><p>{entry.prompt}</p><p className="reflection-read-answer"><ReflectionText text={entry.response || "Answer left blank."} /></p><small>Saved {date(entry.saved_at)} · Revision {entry.revision}</small></article>)}
+        </details> : null}
+      </article>;
+    })}
+  </details>;
 }
 
 const sourceExperiences = [
@@ -1338,7 +1364,7 @@ export function ReflectionNicheBuilder() {
             {currentRound?.assessment_label ? (
               <p>{currentRound.assessment_label}</p>
             ) : null}
-            {currentRound?.questions.map((q) => {
+            {(currentRound ? reflectionReviewQuestions(sourceSlug, currentRound.questions, currentRound.id === source?.rounds[0]?.id) : []).map((q) => {
               const e = source.entries
                 .filter(
                   (e) => e.round_id === sourceRound && e.question_id === q.id,

@@ -45,10 +45,10 @@ export default async function DesignPdThanksPage({ searchParams }: DesignPdThank
             : "Your report request has been saved. Visit Field Kit to access your report when it is ready."}
         </p>
         <div className="spiritual-gifts-thanks-actions">
-          <Link className="button primary" href={reportHref}>
+          <Link className="button primary" href={reportHref} target="_blank" rel="noopener noreferrer">
             Open report
           </Link>
-          <Link className="button secondary" href="/trailheads#designpd">Continue This Trail</Link>
+          <Link className="button secondary" href="/courses/designpd-alignment">Continue This Trail</Link>
           <Link className="button secondary" href="/journey">Return to My Journey</Link>
           <Link className="button secondary" href="/field-kit">
             Back to Field Kit

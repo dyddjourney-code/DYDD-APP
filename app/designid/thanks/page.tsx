@@ -47,10 +47,10 @@ export default async function DesignIdThanksPage({ searchParams }: DesignIdThank
             : "Your assessment has been saved in the app. Visit Field Kit to access your report when it is ready."}
         </p>
         <div className="fieldkit-artifact-actions">
-          <Link className="button primary" href={reportHref}>
+          <Link className="button primary" href={reportHref} target="_blank" rel="noopener noreferrer">
             Open report
           </Link>
-          <Link className="button secondary" href="/trailheads#designid">Continue This Trail</Link>
+          <Link className="button secondary" href="/courses/designid-foundations">Continue This Trail</Link>
           <Link className="button secondary" href="/journey">Return to My Journey</Link>
           <Link className="button secondary" href="/field-kit">
             Back to Field Kit

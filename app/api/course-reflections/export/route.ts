@@ -50,6 +50,14 @@ async function prepare(request: Request) {
   }
   if (scope === "round" && !rounds.length)
     return { error: fail("Reflection walkthrough not found.", 404) };
+  // A single archived-round export must not be mistaken for the current round.
+  let currentRoundIds = rounds.filter((r, i) => !rounds.slice(0, i).some(previous => previous.course_slug === r.course_slug)).map(r => r.id);
+  if (scope === "round" && slug === "discover-your-divine-design") {
+    const newest = await s.from("reflection_rounds").select("id").eq("user_id", user.id).eq("course_slug", slug)
+      .order("started_at", { ascending: false }).order("id", { ascending: false }).limit(1).maybeSingle();
+    if (newest.error) return { error: fail("Could not load your saved work. Please try again.", 500) };
+    currentRoundIds = newest.data ? [newest.data.id] : [];
+  }
   const entries: ReflectionEntry[] = [];
   // Batch round IDs so long-term histories do not exceed URL limits.
   for (let batch = 0; batch < rounds.length; batch += 100) {
@@ -77,7 +85,7 @@ async function prepare(request: Request) {
   }
   return {
     user,
-    text: reflectionExportText(rounds, entries),
+    text: reflectionExportText(rounds, entries, currentRoundIds),
     title:
       scope === "all"
         ? "All my workbooks"

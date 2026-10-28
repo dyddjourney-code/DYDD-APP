@@ -146,7 +146,7 @@ export default async function FruitLifeStatusPage({
         </div>
         <div className="fruitlife-latest-actions">
           {reportArtifact?.external_url ? (
-            <Link href={reportHref(session.id)}>Open report</Link>
+            <Link href={reportHref(session.id)} target="_blank" rel="noopener noreferrer">Open report</Link>
           ) : null}
           {canManage && ((session.metadata as any)?.selfLink && !session.self_completed_at || activeInvites.some((invite) => invite.invite_status !== "completed")) ? (
             <form action={sendFruitLifeReminder}>

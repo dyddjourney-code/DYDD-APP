@@ -47,6 +47,9 @@ for (const [moduleIndex, module] of dyddMainCourseOutline.entries()) {
     }
   }
 }
+// This is the current player-defined activity set. Supplementary legacy prompts
+// below remain in persistence snapshots for compatibility, not the current review.
+const currentJourneyQuestions = [...journeyQuestions];
 // Include supplementary chapter prompts from the original workbook too.
 for (const stage of dyddJourney.stages) {
   const module = dyddMainCourseOutline.find(
@@ -85,6 +88,7 @@ journeyQuestions.push({
   prompt: "My working niche declaration",
   version: questionVersion,
 });
+currentJourneyQuestions.push(journeyQuestions.find(q => q.id === "niche-working-declaration")!);
 // Keep supplementary prompts beside their chapter, not at the end of the workbook.
 const journeyLessonOrder = dyddMainCourseOutline.flatMap((m) =>
   m.units.map((u) => u.slug),
@@ -263,6 +267,24 @@ export function withExpertise(courseSlug: string, questions: ReflectionQuestion[
   for (const canonical of approved) {
     const old = result.find(q => q.id === canonical.id);
     if (old?.prompt === canonical.prompt) continue;
+    result = old ? result.map(q => q.id === canonical.id ? canonical : q) : [...result, canonical];
+  }
+  return result;
+}
+
+/** Current review follows the same authored activities as the Journey player.
+ * Frozen snapshots are retained separately for historical answers and prior rounds. */
+export function reflectionReviewQuestions(courseSlug: string, snapshot: ReflectionQuestion[], current: boolean) {
+  return current && courseSlug === "discover-your-divine-design" ? currentJourneyQuestions : snapshot;
+}
+
+/** Add/update active metadata only. Never remove historical keys from a snapshot. */
+export function withCurrentJourneyActivities(courseSlug: string, snapshot: ReflectionQuestion[]) {
+  if (courseSlug !== "discover-your-divine-design") return snapshot;
+  let result = snapshot;
+  for (const canonical of currentJourneyQuestions) {
+    const old = result.find(q => q.id === canonical.id);
+    if (old && Object.keys(canonical).every(key => old[key as keyof ReflectionQuestion] === canonical[key as keyof ReflectionQuestion])) continue;
     result = old ? result.map(q => q.id === canonical.id ? canonical : q) : [...result, canonical];
   }
   return result;

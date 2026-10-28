@@ -2,6 +2,7 @@ import { syncPassportAwards } from "@/lib/passport/state";
 import { previewPassportState } from "@/lib/passport/preview";
 import { savedAssessmentComplete, savedPrimary, completedLegacyFruitSnapshot } from "@/lib/passport/evidence";
 import { isSandbox } from "@/lib/environment";
+import { getBaseCampAdminReports } from "@/lib/basecamp/admin-reports";
 import { OnTheHorizon } from "@/components/on-the-horizon";
 import { BaseCampProfile } from "@/components/basecamp-profile";
 import { redirect } from "next/navigation";
@@ -21,7 +22,6 @@ import {
   assessmentLabels,
   buildDesignIdContext,
   displayDate,
-  getAssessmentSnapshotsForParticipantMatch,
   getAssessmentSnapshotsForUser,
   type StudentAssessmentReport,
   latestByAssessment,
@@ -33,7 +33,6 @@ import {
 import { allCourseSummaries } from "@/lib/courses/course-catalog";
 import { designIdCourse } from "@/lib/courses/designid-foundations";
 import {
-  canonicalizeParticipantEmail,
   normalizeEmail,
   participantEmailCandidates,
 } from "@/lib/identity/email";
@@ -52,18 +51,6 @@ import {
 import { buildPassportBadges } from "@/lib/passport-badges";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-
-type AdminSnapshotSummary = AssessmentSnapshotSummary & {
-  assessment_participants:
-    | {
-        display_name: string | null;
-        normalized_email: string | null;
-      }
-    | null;
-  id: string;
-};
-
-type NamedParticipantSnapshot = AssessmentSnapshotSummary;
 
 type FruitLifeDashboardSession = {
   artifacts: Array<{
@@ -162,16 +149,6 @@ const fruitLifeStages = [
     state: "Next",
   },
 ];
-
-function isAdminEmail(email: string | null | undefined) {
-  const configured = (process.env.DYDD_ADMIN_EMAILS ?? "")
-    .split(",")
-    .map((value) => canonicalizeParticipantEmail(value))
-    .filter(Boolean);
-  const adminEmails = new Set(["dyddjourney@gmail.com", ...configured]);
-
-  return adminEmails.has(canonicalizeParticipantEmail(email));
-}
 
 function titleizeStatus(value: string | null | undefined) {
   return value ? value.replace(/_/g, " ") : "not started";
@@ -372,68 +349,6 @@ async function getFruitLifeDashboardSessions({
   }));
 }
 
-async function getAdminAssessmentReport(enabled: boolean) {
-  if (!enabled) {
-    return null;
-  }
-
-  const supabaseAdmin = createSupabaseAdminClient();
-  const { data } = await supabaseAdmin
-    .from("assessment_snapshots")
-    .select(
-      "id,assessment_type,created_at,scores,source,source_submitted_at,assessment_participants(display_name,normalized_email)",
-    )
-    .order("source_submitted_at", { ascending: false, nullsFirst: false })
-    .order("created_at", { ascending: false })
-    .limit(120);
-
-  const recent = ((data ?? []) as unknown as Array<
-    Omit<AdminSnapshotSummary, "assessment_participants"> & {
-      assessment_participants:
-        | AdminSnapshotSummary["assessment_participants"]
-        | AdminSnapshotSummary["assessment_participants"][];
-    }
-  >).map((snapshot) => ({
-    ...snapshot,
-    assessment_participants: Array.isArray(snapshot.assessment_participants)
-      ? (snapshot.assessment_participants[0] ?? null)
-      : snapshot.assessment_participants,
-  }));
-  const duplicateGroups = new Map<string, number>();
-
-  for (const snapshot of recent) {
-    const email =
-      snapshot.assessment_participants?.normalized_email ?? "unknown-participant";
-    const key = `${email}:${snapshot.assessment_type}`;
-    duplicateGroups.set(key, (duplicateGroups.get(key) ?? 0) + 1);
-  }
-
-  return {
-    duplicatePairsInRecentWindow: Array.from(duplicateGroups.values()).filter(
-      (count) => count > 1,
-    ).length,
-    recent,
-    totalInRecentWindow: recent.length,
-  };
-}
-
-async function getHeatherAssessmentReport(enabled: boolean) {
-  if (!enabled) {
-    return null;
-  }
-
-  const report = await getAssessmentSnapshotsForParticipantMatch({
-    displayNames: [heatherReviewName],
-    emails: ["willoughbyhs@gmail.com"],
-  });
-
-  return {
-    latest: report.latest as NamedParticipantSnapshot[],
-    participantCount: report.latest.length ? 1 : 0,
-    totalSnapshots: report.all.length,
-  };
-}
-
 function ownsAssessment(report: StudentAssessmentReport, assessmentType: string) {
   return report.latest.some(
     (snapshot) => snapshot.assessment_type === assessmentType,
@@ -568,9 +483,9 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   const assessmentReport: StudentAssessmentReport = reviewReport ??
     (await getAssessmentSnapshotsForUser(user?.id ?? "", normalizeEmail(user?.email)));
   const snapshots = assessmentReport.latest;
-  const isAdmin = Boolean(user && isAdminEmail(user.email));
-  const adminReport = await getAdminAssessmentReport(isAdmin);
-  const heatherReport = await getHeatherAssessmentReport(isAdmin);
+  const { isAdmin, adminReport, heatherReport } = await getBaseCampAdminReports({
+    preview: Boolean(reviewReport),
+  });
 
   const rawDisplayName = heatherPreview
     ? `${heatherReviewName} Preview`
@@ -583,7 +498,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     ? "willoughbyhs@gmail.com"
     : newPreview
       ? jordanReviewEmail
-      : normalizeEmail(profile?.email ?? user?.email);
+      : normalizeEmail(user?.email);
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
   const fruitLifeReviewQuery = reviewQuery(reviewParams);
   const fruitLifeSessions = await getFruitLifeDashboardSessions({
@@ -610,7 +525,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   const verifiedDesign = verifiedSnapshots.find(snapshot => snapshot.assessment_type === "designid");
   const passportBadges = buildPassportBadges({
     completedCourses: passportState?.legacyCourses ?? [],
-    completedAssessments: verifiedSnapshots.map(snapshot => snapshot.assessment_type),
+    completedAssessments: [...verifiedSnapshots.map(snapshot => snapshot.assessment_type), ...(passportState?.completedAssessments ?? [])],
     primaryDesign: verifiedDesign ? savedPrimary(verifiedDesign) : undefined,
     earnedBadgeKeys: passportState?.awards.map(a => a.badge_key) ?? previewChecklist?.awards ?? [],
   });
@@ -716,7 +631,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                 </div>
                 <div>
                   <dt>Email</dt>
-                  <dd>{profile?.email ?? user?.email ?? fruitLifeDashboardEmail ?? "Preview account"}</dd>
+                  <dd>{user?.email ?? fruitLifeDashboardEmail ?? "Preview account"}</dd>
                 </div>
               </dl>
             </article>
@@ -795,7 +710,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             </div>
             <div>
               <dt>Email</dt>
-              <dd>{profile?.email ?? user?.email ?? fruitLifeDashboardEmail ?? "Preview account"}</dd>
+              <dd>{user?.email ?? fruitLifeDashboardEmail ?? "Preview account"}</dd>
             </div>
           </dl>
         </article>
@@ -815,7 +730,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         </p>
       </section>
 
-      {adminReport ? (
+      {isAdmin && adminReport ? (
         <section className="hq-grid" aria-label="Base Camp admin view">
           <article className="admin-panel">
             <div className="card-heading">

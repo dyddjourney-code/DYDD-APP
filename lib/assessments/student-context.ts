@@ -1,5 +1,5 @@
 import { canonicalDesignIdShadow } from "@/lib/designid/shadow";
-import { participantEmailCandidates } from "@/lib/identity/email";
+import { normalizeEmail, participantEmailCandidates } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export type AssessmentSnapshotSummary = {
@@ -258,7 +258,9 @@ export async function findOrAttachParticipant(userId: string, email: string) {
     return existingParticipant.id as string;
   }
 
-  const emailCandidates = participantEmailCandidates(email);
+  // An authenticated account is not the owner of every Gmail delivery alias.
+  // Canonical aliases remain available to explicit administrative matching, not claims.
+  const emailCandidates = [normalizeEmail(email)].filter(Boolean);
 
   if (!emailCandidates.length) {
     return null;
@@ -270,17 +272,23 @@ export async function findOrAttachParticipant(userId: string, email: string) {
     .in("normalized_email", emailCandidates)
     .returns<ParticipantRecord[]>();
 
-  const emailParticipant = emailParticipants?.[0];
+  const emailParticipant = emailParticipants?.find(participant => !participant.user_id || participant.user_id === userId);
 
   if (!emailParticipant) {
     return null;
   }
 
   if (!emailParticipant.user_id) {
-    await supabaseAdmin
+    // Claim only an unowned legacy participant. A concurrent claimant cannot
+    // acquire another account's reports through a profile/email race.
+    const claimed = await supabaseAdmin
       .from("assessment_participants")
       .update({ user_id: userId, updated_at: new Date().toISOString() })
-      .eq("id", emailParticipant.id);
+      .eq("id", emailParticipant.id)
+      .is("user_id", null)
+      .select("id")
+      .maybeSingle();
+    if (claimed.error || !claimed.data) return null;
   }
 
   return emailParticipant.id as string;
@@ -299,7 +307,7 @@ export async function getAssessmentSnapshotsForUser(
     .order("created_at", { ascending: false });
 
   const { data } = participantId
-    ? await query.or(`participant_id.eq.${participantId},user_id.eq.${userId}`)
+    ? await query.or(`user_id.eq.${userId},and(participant_id.eq.${participantId},user_id.is.null)`)
     : await query.eq("user_id", userId);
 
   const all = (data ?? []) as AssessmentSnapshotSummary[];

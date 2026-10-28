@@ -94,7 +94,10 @@ export async function sendAssessmentReportEmail({
   participantName: string;
   reportUrl: string;
 }) {
-  const text = `Hi ${participantName},\n\nYour ${assessmentName} report is ready.\n\nOpen your report here: ${reportUrl}\n\nSincerely,\nDiscover Your Divine Design Team`;
+  const signInNote = assessmentName === "DesignID"
+    ? "Sign in with the same account you used to complete DesignID. Your report is also available in Field Kit."
+    : "";
+  const text = `Hi ${participantName},\n\nYour ${assessmentName} report is ready.\n\nOpen your report here: ${reportUrl}${signInNote ? `\n\n${signInNote}` : ""}\n\nSincerely,\nDiscover Your Divine Design Team`;
   return sendResendEmail({
     templateId: "B01-"+assessmentName.toLowerCase(),
     idempotencyKey:"assessment-report-"+createHash("sha256").update(participantEmail.toLowerCase()+"|"+reportUrl).digest("hex"),
@@ -103,6 +106,7 @@ export async function sendAssessmentReportEmail({
       `<p>Hi ${participantName},</p>`,
       `<p>Your ${assessmentName} report is ready.</p>`,
       `<p><a href="${reportUrl}">Open your ${assessmentName} report</a></p>`,
+      ...(signInNote ? [`<p>${signInNote}</p>`] : []),
       "<p>Sincerely,<br>Discover Your Divine Design Team</p>",
     ].join(""),
     subject: `Your ${assessmentName} report is ready`,

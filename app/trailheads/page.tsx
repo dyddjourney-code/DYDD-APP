@@ -1,3 +1,4 @@
+import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import { withCourseOrigin } from "@/lib/trails/course-origin";
 import { isOwnerCoursePreview, designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import Link from "next/link";
@@ -91,6 +92,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
   const fruitReady = sessions.some((session) =>
     Boolean(fruitLifeReportArtifact(session)),
   );
+  const lifetimeAccess = user && !preview ? await hasLifetimePersonalAccess(user.id) : false;
   const fruitPermit =
     mini && user ? await userHasFruitLifeEntitlement(user.id) : false;
   const fromJourney = params?.from === "journey";
@@ -258,7 +260,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                   terrain={trail.terrain}
                   gear={trail.gear}
                   bestFor={trail.bestFor}
-                  permit={
+                  permit={lifetimeAccess ? "Lifetime personal access · Included" :
                     trail.id === "designpd"
                       ? complete
                         ? "Expansion unlocked"

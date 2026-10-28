@@ -1,3 +1,5 @@
+import { BetaAccess } from "@/components/beta-access";
+import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import { syncPassportAwards } from "@/lib/passport/state";
 import { previewPassportState } from "@/lib/passport/preview";
 import { savedAssessmentComplete, savedPrimary, completedLegacyFruitSnapshot } from "@/lib/passport/evidence";
@@ -468,6 +470,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     redirect("/login");
   }
 
+  const lifetimeAccess = user && !reviewReport ? await hasLifetimePersonalAccess(user.id) : false;
   const { data: profile } = user
     ? await supabase
         .from("school_profiles")
@@ -719,15 +722,16 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       <section className="basecamp-account-card purchases" aria-label="Purchase history">
         <div className="card-heading">
           <p className="section-label">Purchases</p>
-          <h2>Nothing purchased yet.</h2>
+          <h2>{lifetimeAccess ? "Your access is active." : "Nothing purchased yet."}</h2>
           <p>
-            After you begin a tool, course, or guided journey, access will appear here.
+            {lifetimeAccess ? "Free lifetime personal all-access · No expiry · No payment required." : "After you begin a tool, course, or guided journey, access will appear here."}
           </p>
         </div>
         <p className="empty-account-note">
           Ranger Station will help you decide whether to start with the free Spiritual Gifts
           assessment, FruitLife360, DesignID, or the full Discover Your Divine Design journey.
         </p>
+        {user && !reviewReport ? <BetaAccess active={lifetimeAccess} verified={Boolean(user.email_confirmed_at)} /> : null}
       </section>
 
       {isAdmin && adminReport ? (

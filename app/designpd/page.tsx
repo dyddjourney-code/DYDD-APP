@@ -1,3 +1,4 @@
+import { hasIncludedPersonalAccess, hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import { courseCardHref, courseOrigin } from "@/lib/trails/course-origin";
 import Link from "next/link";
 import { isDyddAdminEmail } from "@/lib/admin-access";
@@ -55,7 +56,8 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
           cardHref={cardHref}
           participantEmail={participantEmail}
           participantName={participantName}
-          ownerAccess={isDyddAdminEmail(user.email)}
+          ownerAccess={await hasIncludedPersonalAccess(user.id) || isDyddAdminEmail(user.email)}
+          lifetimeAccess={await hasLifetimePersonalAccess(user.id)}
           savedReportHref={savedDesignPd ? `/designpd/report?snapshot=${encodeURIComponent(savedDesignPd.id)}` : undefined}
         />
       ) : (

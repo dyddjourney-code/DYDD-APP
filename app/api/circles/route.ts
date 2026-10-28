@@ -95,6 +95,10 @@ export async function POST(request: Request) {
     }
     return reply({ circle: data });
   }
+  const prior = await circleQuery(actor).eq("id", b.id).maybeSingle();
+  if (prior.error) return reply({error:"Your Circle could not be checked. Try again."},503);
+  if (prior.data && prior.data.revision === b.revision && prior.data.status === b.status && isDeepStrictEqual(prior.data.plan,b.plan))
+    return reply({circle:prior.data});
   let query = db
     .from("journey_circle_plans")
     .update({

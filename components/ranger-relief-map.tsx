@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type MapPoint = {
   body: string;
@@ -301,8 +301,36 @@ export function RangerReliefMap() {
     [activeId],
   );
 
-  return (
-    <section className="relief-map-workbench" aria-label="Interactive DYDD relief map">
+  const [expanded, setExpanded] = useState(false);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const expandButtonRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!expanded) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const previousOverflow = document.body.style.overflow;
+    dialog.showModal();
+    const trapFocus = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const controls = [...dialog.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], [tabindex="0"]')];
+      const first = controls[0], last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault(); last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault(); first?.focus();
+      }
+    };
+    dialog.addEventListener("keydown", trapFocus);
+    document.body.style.overflow = "hidden";
+    return () => {
+      dialog.removeEventListener("keydown", trapFocus);
+      dialog.close();
+      document.body.style.overflow = previousOverflow;
+      expandButtonRef.current?.focus({ preventScroll: true });
+    };
+  }, [expanded]);
+
+  const mapStage = (
       <div className="relief-map-stage-scroll">
         <div className="relief-map-stage">
           <img
@@ -364,23 +392,40 @@ export function RangerReliefMap() {
             <button
               className={`relief-map-marker ${point.type} marker-${point.id} ${activePoint.id === point.id ? "active" : ""}`}
               key={point.id}
+              aria-label={point.label}
+              aria-pressed={activePoint.id === point.id}
+              aria-controls={expanded ? "expanded-map-selection" : "relief-map-details"}
               onClick={() => setActiveId(point.id)}
               onMouseEnter={() => setActiveId(point.id)}
-              style={{ left: point.left, top: point.top }}
+              style={{ left: point.left, top: `clamp(8%, ${point.top}, 92%)` }}
               type="button"
             >
-              <span>{point.label}</span>
+              <span className="relief-marker-label">{point.label}</span>
             </button>
           ))}
         </div>
       </div>
+  );
 
-      <aside className="relief-map-panel">
+  return (
+    <section className="relief-map-workbench" aria-label="Interactive DYDD relief map">
+      <div className="relief-map-canvas">
+        <div className="relief-map-toolbar"><p>Choose a place or trail to explore.</p><button className="button secondary" ref={expandButtonRef} type="button" onClick={() => setExpanded(true)}>Expand map</button></div>
+        {!expanded ? mapStage : null}
+      </div>
+      {expanded ? <dialog ref={dialogRef} className="relief-map-dialog" aria-labelledby="expanded-map-title" onCancel={() => setExpanded(false)}>
+        <div className="relief-map-dialog-toolbar"><h2 id="expanded-map-title">DYDD Ecosystem Map</h2><button className="button secondary" type="button" autoFocus onClick={() => setExpanded(false)}>Close map</button></div>
+        <p className="relief-map-expanded-hint">Turn your phone sideways for larger labels. Tap a named place or trail to explore.</p>
+        {mapStage}
+        <p id="expanded-map-selection" className="relief-map-selection" aria-live="polite">{activePoint.label} — {activePoint.title}</p>
+      </dialog> : null}
+
+      <aside id="relief-map-details" className="relief-map-panel" aria-label="Selected map place">
         <div className={`relief-panel-visual visual-${activePoint.id}`}>
           <img src={activePoint.image} alt={activePoint.imageAlt} />
           {activePoint.imageLabel ? <span>{activePoint.imageLabel}</span> : null}
         </div>
-        <h3>{activePoint.label}</h3>
+        <h3 aria-live="polite">{activePoint.label}</h3>
         <p className="relief-panel-subtitle">{activePoint.title}</p>
         <div className="relief-panel-copy">
           <p>{activePoint.body}</p>
@@ -400,6 +445,7 @@ export function RangerReliefMap() {
         {legendTrails.map((trail) => (
           <button
             className={activePoint.id === trail.id ? "active" : ""}
+            aria-pressed={activePoint.id === trail.id}
             key={trail.id}
             onClick={() => setActiveId(trail.id)}
             type="button"

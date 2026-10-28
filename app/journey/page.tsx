@@ -1,3 +1,9 @@
+import { journeyDesignIdSnapshot, journeyReflectionNames, journeyCapacityScores } from "@/lib/journey/designid-snapshot";
+import { getAssessmentSnapshotsForUser } from "@/lib/assessments/student-context";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { normalizeEmail } from "@/lib/identity/email";
+import { getHeatherReviewReport, getNewReviewReport, type ReviewSearchParams } from "@/lib/review/heather";
+import { designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import { ReflectionCourseShell } from "@/components/reflection-course-shell";
 import { ReflectionAnswer } from "@/components/reflection-session";
 import {
@@ -17,7 +23,7 @@ const careLabels = {
 };
 
 type JourneyPageProps = {
-  searchParams?: Promise<{
+  searchParams?: Promise<ReviewSearchParams & {
     message?: string;
     saved?: string;
   }>;
@@ -25,6 +31,11 @@ type JourneyPageProps = {
 
 export default async function JourneyPage({ searchParams }: JourneyPageProps) {
   const params = await searchParams;
+  const supabase = await createSupabaseServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const reviewParams = designIdCourseReviewParams(params);
+  const assessmentReport = (await getHeatherReviewReport(reviewParams)) ?? (await getNewReviewReport(reviewParams)) ?? (user ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email)) : {all: [], latest: []});
+  const designIdSnapshotHtml = journeyDesignIdSnapshot(assessmentReport);
 
   return (
     <main className="journey-shell dydd-journey-class">
@@ -60,8 +71,8 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
         title="How to walk the Journey"
       />
 
-      <ReflectionCourseShell courseSlug="discover-your-divine-design">
-        <JourneyCourseNavigator modules={dyddMainCourseOutline} />
+      <ReflectionCourseShell courseSlug="discover-your-divine-design" compactControls>
+        <JourneyCourseNavigator modules={dyddMainCourseOutline} designIdSnapshotHtml={designIdSnapshotHtml} reflectionNames={journeyReflectionNames(assessmentReport)} capacityScores={journeyCapacityScores(assessmentReport)} />
 
         {params?.saved ? (
           <p className="journey-save-notice">
@@ -408,7 +419,7 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
                         </div>
                         <div>
                           <p className="section-label">
-                            Jordan's facilitator playbook
+                            John's facilitator playbook
                           </p>
                           <h3>
                             {playbookStage.session}: {playbookStage.title}

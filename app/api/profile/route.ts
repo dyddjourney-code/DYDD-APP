@@ -1,3 +1,4 @@
+import { sandboxProfileRequest, sandboxProfileGet, sandboxProfileSave } from '@/lib/profile/sandbox-preview';
 import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
@@ -8,7 +9,8 @@ const reply = (body: unknown, status = 200) => NextResponse.json(body, { status,
 function publicProfile(row: Record<string, unknown>) {
   return { display_name: row.display_name, bio: row.bio, fun_facts: row.fun_facts, has_photo: Boolean(row.photo_path), revision: row.revision };
 }
-export async function GET() {
+export async function GET(request: Request) {
+  if (sandboxProfileRequest(request)) return sandboxProfileGet();
   const db = await createSupabaseServerClient();
   const { data: { user } } = await db.auth.getUser();
   if (!user) return reply({ error: 'Sign in to open your profile.' }, 401);
@@ -20,6 +22,7 @@ export async function POST(request: Request) {
   const origin = request.headers.get('origin');
   if ((origin && origin !== new URL(request.url).origin) || request.headers.get('sec-fetch-site') === 'cross-site') return reply({ error: 'Open Base Camp to save your profile.' }, 403);
   if (!request.headers.get('content-type')?.startsWith('multipart/form-data')) return reply({ error: 'Check your profile details.' }, 415);
+  if (sandboxProfileRequest(request)) return sandboxProfileSave(request);
   const db = await createSupabaseServerClient();
   const { data: { user } } = await db.auth.getUser();
   if (!user) return reply({ error: 'Sign in to save your profile.' }, 401);

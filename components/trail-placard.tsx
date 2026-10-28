@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { TrailDetails } from "@/components/trail-details";
 type Props = {
   number: string;
   name: string;
@@ -11,7 +12,7 @@ type Props = {
   permit: string;
   main?: boolean;
   assessmentIcon?: string;
-  details: ReactNode;
+  trailId: "journey" | "designid" | "spiritual-gifts" | "fruitlife-360" | "designpd";
   children: ReactNode;
 };
 export function TrailPlacard({
@@ -26,7 +27,7 @@ export function TrailPlacard({
   permit,
   main,
   assessmentIcon,
-  details,
+  trailId,
   children,
 }: Props) {
   return (
@@ -77,7 +78,22 @@ export function TrailPlacard({
             <dd>{permit}</dd>
           </div>
         </dl>
-        <div className="trail-details-action">{details}</div>
+        <div className="trail-details-action">
+          <TrailDetails
+            trailId={trailId}
+            supplement={
+              <section className="trail-mobile-guide-extras">
+                <h3>Trail essentials</h3>
+                <p>{ratingNote}</p>
+                <dl>
+                  {[["Terrain", terrain], ["Gear to bring", gear], ["Best for", bestFor], ["Permit", permit]].map(([label, value]) => (
+                    <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
+                  ))}
+                </dl>
+              </section>
+            }
+          />
+        </div>
         {children}
       </div>
       <div className="trail-placard-foot" aria-hidden="true">

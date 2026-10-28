@@ -1,11 +1,13 @@
+import { missingPathfinderEntries, retiredPathfinderCanonical } from '@/lib/journey/pathfinder';
 import 'server-only';
 import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { reportBucket } from '@/lib/assessments/report-storage';
-import { getReflectionExperience, reflectionLessonExists, reflectionExperiences } from './catalog';
+import { getReflectionExperience, reflectionLessonExists, reflectionExperiences, withWhoWhoseExplore, withDesignIdWelcome, withDesignIdLens, withIdentityBelievers, withDesignReflectionsLove, withOneAnother, withPathfinder, withExpertise } from './catalog';
 import type { ReflectionRound, ReflectionEntry, ReflectionData } from './types';
 import { getHeatherReviewReport, getNewReviewReport, isReviewRequest, type ReviewSearchParams } from '@/lib/review/heather';
+import { isOwnerCoursePreview } from '@/lib/trails/course-preview';
 import { isOwnerPreviewRequest } from '@/lib/owner-preview';
 import { trailDefinitions, isTrailAssessmentComplete } from '@/lib/trails/catalog';
 import { reflectionExportText } from './export';
@@ -28,7 +30,16 @@ async function load(p: ReviewSearchParams, slug: string): Promise<Saved> {
             return { rounds: [], entries: [] };
         throw Error('Could not load the saved preview workbook. Please try again.');
     }
-    return JSON.parse(await data.text());
+    const saved: Saved = JSON.parse(await data.text());
+    if (saved.rounds[0]) saved.rounds[0].questions = withExpertise(slug, withPathfinder(slug, withOneAnother(slug, withDesignReflectionsLove(slug, withIdentityBelievers(slug, withDesignIdLens(slug, withDesignIdWelcome(slug, withWhoWhoseExplore(slug, saved.rounds[0].questions))))))));
+    if (slug === 'discover-your-divine-design' && saved.rounds[0]) {
+      const round = saved.rounds[0];
+      for (const recovered of missingPathfinderEntries(round.id, saved.entries)) {
+        const q = round.questions.find(q => q.id === recovered.question_id);
+        if (q) saved.entries.push({...recovered, id: randomUUID(), prompt: q.prompt, question_version: q.version, lesson_slug: q.lessonSlug, lesson_title: q.lessonTitle});
+      }
+    }
+    return saved;
 }
 export async function previewReflectionRounds(p: ReviewSearchParams) {
     return (await Promise.all(reflectionExperiences.map(e => load(p, e.slug)))).flatMap(d => d.rounds);
@@ -37,7 +48,7 @@ async function reportContext(p: ReviewSearchParams, slug: string) {
     const report = p.review === 'heather' ? await getHeatherReviewReport(p) : await getNewReviewReport(p);
     const trail = trailDefinitions.find(t => t.courseSlug === slug);
     const reports = (report?.all ?? []).filter(s => s.assessment_type === trail?.assessmentType && isTrailAssessmentComplete(s.assessment_type, [s])).map(s => ({ id: s.id, completedAt: s.source_submitted_at ?? s.created_at, label: `${getReflectionExperience(slug)!.title} — ${s.source_submitted_at ?? s.created_at}` }));
-    return { reports, canStart: !trail || reports.length > 0 };
+    return { reports, canStart: isOwnerCoursePreview(p) || !trail || reports.length > 0 };
 }
 export async function previewReflectionData(p: ReviewSearchParams, slug: string): Promise<ReflectionData> {
     const saved = await load(p, slug), ctx = await reportContext(p, slug);
@@ -69,7 +80,9 @@ export async function previewReflectionRequest(request: Request, p: ReviewSearch
     try {
         const saved = await load(p, b.courseSlug), ctx = await reportContext(p, b.courseSlug), now = new Date().toISOString();
         let result: unknown;
-        if (b.action === 'new-round' || b.action === 'sync-round') {
+        if (b.action === 'new-round' || b.action === 'sync-round' || b.action === 'ensure-round') {
+            if (b.action === 'ensure-round' && b.courseSlug !== 'discover-your-divine-design')
+                return reply({ error: 'Automatic setup is only available for the Journey.' }, 400);
             if (!ctx.canStart)
                 return reply({ error: 'Complete this trail’s report first.' }, 403);
             const report = b.action === 'sync-round' ? ctx.reports[0] : ctx.reports.find(r => r.id === b.assessmentSnapshotId);
@@ -77,7 +90,7 @@ export async function previewReflectionRequest(request: Request, p: ReviewSearch
                 return reply({ error: 'Choose a report from this preview.' }, 400);
             if (b.action === 'sync-round' && !report)
                 return reply({ error: 'No completed report found.' }, 400);
-            const existing = b.action === 'sync-round' ? saved.rounds.find(r => r.assessment_snapshot_id === report?.id) : null;
+            const existing = b.action === 'ensure-round' ? saved.rounds[0] : b.action === 'sync-round' ? saved.rounds.find(r => r.assessment_snapshot_id === report?.id) : null;
             const round: ReflectionRound = existing ?? { id: randomUUID(), course_slug: b.courseSlug, last_lesson_slug: null, questions: experience.questions, assessment_snapshot_id: report?.id ?? null, assessment_label: report?.label ?? null, source: 'owner-preview', started_at: now, updated_at: now };
             if (!existing)
                 saved.rounds.unshift(round);
@@ -97,6 +110,8 @@ export async function previewReflectionRequest(request: Request, p: ReviewSearch
                 result = { ok: true };
             }
             else if (b.action === 'save') {
+                if (b.courseSlug === 'discover-your-divine-design' && retiredPathfinderCanonical(b.questionId))
+                    return reply({error: 'This Pathfinder piece now has one shared answer. Your earlier answer is preserved for history. Copy any draft and reopen the Pathfinder lesson to continue.'}, 409);
                 const q = round.questions.find(q => q.id === b.questionId);
                 if (!q || typeof b.response !== 'string' || b.response.length > 8000 || !Number.isSafeInteger(b.expectedRevision) || b.expectedRevision < 0)
                     return reply({ error: 'Invalid reflection details.' }, 400);

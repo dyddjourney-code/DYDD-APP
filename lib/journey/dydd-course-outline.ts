@@ -1,3 +1,4 @@
+import { expertiseLessons } from "./expertise-lessons";
 import type { CompanionMoment } from "@/lib/courses/companion-moments";
 import { dyddJourneyCompanionMoments } from "@/lib/courses/course-companion-moment-data";
 
@@ -9,6 +10,14 @@ export type DyddCourseUnitType =
   | "workbook-checkpoint"
   | "pathfinder"
   | "completion";
+export type JourneyLessonBlock =
+  | { type: "paragraph" | "heading"; text: string }
+  | { type: "table"; headers: string[]; rows: string[][]; label: string }
+  | { type: "list"; items: string[] }
+  | { type: "scripture"; text: string; reference: string }
+  | { type: "image"; src: string; alt: string }
+  | { type: "link"; href: string; text: string };
+
 export type DyddCourseUnit = {
   row: number;
   slug: string;
@@ -28,12 +37,18 @@ export type DyddCourseUnit = {
     image?: string;
     label: string;
     type: "image" | "video";
+    additionalImages?: { image: string; label: string }[];
   };
   companionMoment?: CompanionMoment;
+  companionMomentPosition?: "before-teaching" | "after-teaching";
+  closingScripture?: { text: string; reference: string };
   practice?: {
     prompt: string;
     title: string;
   };
+  lessonBody?: JourneyLessonBlock[];
+  contentStatus?: "draft";
+  assessmentTarget?: "designid";
   teachingBlocks: string[];
 };
 export type DyddCourseModule = {
@@ -48,7 +63,7 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
     slug: "welcome-and-orientation",
     title: "Welcome & Orientation",
     kicker: "1: Welcome & Orientation",
-    summary: "Open the trail, explain how the digital class works, and help the learner choose a pace.",
+    summary: "Begin your journey with room to reflect and discover your God-given design.",
     units: [
       {
         row: 2,
@@ -58,12 +73,41 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         title: "Welcome to Discover Your Divine Design",
         typeLabel: "Orientation",
         duration: "4-6 min",
-        lessonMainIdea: "Welcome the learner into Welcome to Discover Your Divine Design and make the next part of the journey feel clear, doable, and personal.",
-        companionMoment: dyddJourneyCompanionMoments.welcome,
-        teachingBlocks: [
-          "This lesson introduces Welcome to Discover Your Divine Design as part of the Welcome & Orientation movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+        lessonMainIdea: "You are On Purpose and you are For Purpose.",
+        focus: [
+          "Welcome",
+          "A Journey - not a destination"
         ],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/1b3445f5-4111-4eea-b140-ef3e50b11c10/photo_2026-07-24_10-52-05+23.jpg?format=2500w",
+          "label": "Welcome to your Discover Your Divine Design journey",
+          "type": "image"
+        },
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "We are pleased to welcome to the Discover Your Divine Design Journey! This course is the heart of the DYDD ecosystem and the best place to start. Our prayer for your journey is that you are able to fully grasp that you are On Purpose and that you are For Purpose."
+          },
+          {
+            "type": "scripture",
+            "text": "For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.",
+            "reference": "Ephesians 2:10"
+          },
+          {
+            "type": "paragraph",
+            "text": "You are extremely valuable. In Ephesians 2:10, God calls you His handiwork. Think of this as a materpiece, a work of art, or His poetry. You are no accident, you are On Purpose. The second half of the verse says that God has planned good works for us to do. We are not intended to sit on the sidelines. Our relational journey with Jesus is intended to be action oriented. You are For Purpose. Jesus wants to be part of the Good Work Force, carrying out His mission through love and service."
+          },
+          {
+            "type": "paragraph",
+            "text": "This is a journey. If you dig, you will find your divine design. This is a process and not a destination. The intent is to help you discover new perspective and utilize your highly valuable and unique contribution to enage."
+          }
+        ],
+        teachingBlocks: [
+          "We are pleased to welcome to the Discover Your Divine Design Journey! This course is the heart of the DYDD ecosystem and the best place to start. Our prayer for your journey is that you are able to fully grasp that you are On Purpose and that you are For Purpose.",
+          "You are extremely valuable. In Ephesians 2:10, God calls you His handiwork. Think of this as a materpiece, a work of art, or His poetry. You are no accident, you are On Purpose. The second half of the verse says that God has planned good works for us to do. We are not intended to sit on the sidelines. Our relational journey with Jesus is intended to be action oriented. You are For Purpose. Jesus wants to be part of the Good Work Force, carrying out His mission through love and service.",
+          "This is a journey. If you dig, you will find your divine design. This is a process and not a destination. The intent is to help you discover new perspective and utilize your highly valuable and unique contribution to enage."
+        ],
+        companionMoment: dyddJourneyCompanionMoments.welcome,
       },
       {
         row: 3,
@@ -73,10 +117,50 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         title: "Course Outline & Objectives",
         typeLabel: "Orientation",
         duration: "4-6 min",
-        lessonMainIdea: "Welcome the learner into Course Outline & Objectives and make the next part of the journey feel clear, doable, and personal.",
+        lessonMainIdea: "God created you on purpose—with a design worth discovering.",
+        focus: [
+          "Outline",
+          "Objectives"
+        ],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/f006dfd8-a675-4d08-bf97-46a3eaa0eb96/ChatGPT+Image+Jul+18%2C+2025%2C+09_10_53+AM.png?format=2500w",
+          "label": "The six areas of Discover Your Divine Design",
+          "type": "image"
+        },
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "God created you on purpose—with a design worth discovering. This journey will help you recognize the threads He has woven into your life and consider how to put them into practice."
+          },
+          {
+            "type": "paragraph",
+            "text": "Together, we’ll explore six areas:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "Identity — How you are uniquely designed.",
+              "Expertise — The abilities and experience you have developed.",
+              "Story — The experiences that have shaped you.",
+              "Desire — The interests and burdens that move your heart.",
+              "Gifts — How God has equipped you to serve others.",
+              "Niche — Where these discoveries come together in meaningful contribution."
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "By the end, you’ll have a clearer understanding of your design, words to express it, and practical next steps for living it out."
+          },
+          {
+            "type": "paragraph",
+            "text": "You don’t need to have your purpose figured out before you begin. That’s what this journey is for."
+          }
+        ],
         teachingBlocks: [
-          "This lesson introduces Course Outline & Objectives as part of the Welcome & Orientation movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+          "God created you on purpose—with a design worth discovering. This journey will help you recognize the threads He has woven into your life and consider how to put them into practice.",
+          "Together, we’ll explore six areas:",
+          "By the end, you’ll have a clearer understanding of your design, words to express it, and practical next steps for living it out.",
+          "You don’t need to have your purpose figured out before you begin. That’s what this journey is for."
         ],
       },
       {
@@ -86,27 +170,44 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         section: "Welcome & Orientation",
         title: "How This Journey Works",
         typeLabel: "Orientation",
-        duration: "6-8 min",
-        lessonMainIdea: "A video-led orientation lesson that gives John a clean space to explain the rhythm of each chapter before the learner reaches CARE prompts.",
+        duration: "4–6 min",
+        lessonMainIdea: "Move through the lessons in order, at a pace that gives you room to reflect.",
         focus: [
-          "Introduce the recurring chapter flow: teaching, reflection, CARE, and Pathfinder.",
-          "Explain that assessments are mirrors that help personalize the journey.",
-          "Clarify what stays private and what can later be shared in a Camp Circle.",
+          "Journey"
         ],
         media: {
-          image: "/brand/john-author-cartoon-dydd-style.png",
-          label: "Video teaching space with John",
-          type: "video",
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/62e375ae-3e4a-48a5-b1bf-16933b5510c8/back-side-of-young-traveler-see-the-map-in-the-dee-2024-10-18-09-26-30-utc.jpg?format=2500w",
+          "label": "A traveler exploring the map",
+          "type": "image"
         },
-        practice: {
-          title: "Pace decision",
-          prompt: "Choose whether you are walking this weekly, in a short intensive, with a partner, or inside a group. That pace will shape reminders and chapter expectations later.",
-        },
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "Move through the lessons in order, at a pace that gives you room to reflect. Read or watch the teaching, consider the questions, and write honestly about what you’re discovering. This isn’t about finding impressive answers. It’s about paying attention to what God is revealing through your design and your life."
+          },
+          {
+            "type": "paragraph",
+            "text": "When it’s time to take an assessment or complete a related learning experience, the lesson will guide you. There’s no need to jump ahead or figure it all out now."
+          },
+          {
+            "type": "paragraph",
+            "text": "Your written reflections save automatically as you work and are gathered in your Field Kit—your personal place to revisit what you’re discovering. We’ll introduce the reflection tools when you reach them."
+          },
+          {
+            "type": "paragraph",
+            "text": "If you’re walking through this with a group, follow your facilitator’s schedule and come ready to share what you feel comfortable discussing."
+          },
+          {
+            "type": "paragraph",
+            "text": "Take your time. You’re not just finishing a course—you’re learning to recognize and live out your God-given design."
+          }
+        ],
         teachingBlocks: [
-          "Every chapter should feel familiar without becoming flat. The learner begins with a short teaching section, moves into reflection, practices the CARE rhythm, and carries Pathfinder language forward when a chapter is building toward niche.",
-          "The goal is not to finish a checklist. The goal is to slow down enough to recognize what God is revealing and then take the next faithful step with it.",
-          "DesignID, Spiritual Gifts, DesignPD, and FruitLife360 can eventually sit beside the lesson and speak directly into the learner's path. The course still needs one clear path for everyone, but the app can place personal insight beside that path when the learner is signed in and records are connected.",
-          "Journal entries, CARE reflections, and assessment records belong first to the learner. Camp Circle tools can invite shared progress, reminders, and discussion, while private workbook answers stay protected.",
+          "Move through the lessons in order, at a pace that gives you room to reflect. Read or watch the teaching, consider the questions, and write honestly about what you’re discovering. This isn’t about finding impressive answers. It’s about paying attention to what God is revealing through your design and your life.",
+          "When it’s time to take an assessment or complete a related learning experience, the lesson will guide you. There’s no need to jump ahead or figure it all out now.",
+          "Your written reflections save automatically as you work and are gathered in your Field Kit—your personal place to revisit what you’re discovering. We’ll introduce the reflection tools when you reach them.",
+          "If you’re walking through this with a group, follow your facilitator’s schedule and come ready to share what you feel comfortable discussing.",
+          "Take your time. You’re not just finishing a course—you’re learning to recognize and live out your God-given design."
         ],
       },
       {
@@ -117,10 +218,69 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         title: "Course Resources",
         typeLabel: "Orientation",
         duration: "4-6 min",
-        lessonMainIdea: "Welcome the learner into Course Resources and make the next part of the journey feel clear, doable, and personal.",
+        lessonMainIdea: "You have everything you need to begin this journey.",
+        focus: [
+          "Resources"
+        ],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/cc5ca5fa-c867-4dcd-acda-aba7873fd315/image-gen+%2823%292.png?format=2500w",
+          "label": "Resources for your DYDD journey",
+          "type": "image"
+        },
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "You have everything you need to begin this journey. These resources will help you go deeper and put what you discover into practice."
+          },
+          {
+            "type": "heading",
+            "text": "The Book: Go Deeper"
+          },
+          {
+            "type": "paragraph",
+            "text": "The Discover Your Divine Design book is a valuable companion to this course. It provides fuller explanations and additional insight into the ideas we explore, giving you more room to understand and reflect on your God-given design. Keep it alongside you as you work through the lessons, or return to it whenever you want to explore a topic more deeply."
+          },
+          {
+            "type": "image",
+            "src": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/21f43bde-f412-4698-8329-e0ca5f779a46/Book+front+cover+on+purpose+for+purpose+Final_Updated.png?format=2500w",
+            "alt": "Discover Your Divine Design book cover"
+          },
+          {
+            "type": "heading",
+            "text": "Your Workbook: Included in This Journey"
+          },
+          {
+            "type": "paragraph",
+            "text": "The Discover Your Divine Design workbook is included digitally in this journey. You’ll work through its reflection questions and activities within the course, with your responses saved in your personal Field Kit. Prefer writing by hand? A paper copy of the workbook is available to purchase, too."
+          },
+          {
+            "type": "link",
+            "href": "/gear#books",
+            "text": "Get the book or a paper workbook → Visit our Gear page."
+          },
+          {
+            "type": "heading",
+            "text": "Page References Along the Way"
+          },
+          {
+            "type": "paragraph",
+            "text": "Where appropriate, each lesson will indicate the corresponding book and workbook page numbers, making it easy to follow along, read more, or complete your reflections on paper."
+          },
+          {
+            "type": "heading",
+            "text": "Other Resources"
+          },
+          {
+            "type": "paragraph",
+            "text": "Assessment instructions and any additional resources will be introduced when you need them. Keep your Bible nearby for the Scriptures we explore, and use your Field Kit to revisit your saved reflections and personal discussion reminders."
+          }
+        ],
         teachingBlocks: [
-          "This lesson introduces Course Resources as part of the Welcome & Orientation movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+          "You have everything you need to begin this journey. These resources will help you go deeper and put what you discover into practice.",
+          "The Discover Your Divine Design book is a valuable companion to this course. It provides fuller explanations and additional insight into the ideas we explore, giving you more room to understand and reflect on your God-given design. Keep it alongside you as you work through the lessons, or return to it whenever you want to explore a topic more deeply.",
+          "The Discover Your Divine Design workbook is included digitally in this journey. You’ll work through its reflection questions and activities within the course, with your responses saved in your personal Field Kit. Prefer writing by hand? A paper copy of the workbook is available to purchase, too.",
+          "Where appropriate, each lesson will indicate the corresponding book and workbook page numbers, making it easy to follow along, read more, or complete your reflections on paper.",
+          "Assessment instructions and any additional resources will be introduced when you need them. Keep your Bible nearby for the Scriptures we explore, and use your Field Kit to revisit your saved reflections and personal discussion reminders."
         ],
       },
     ],
@@ -129,7 +289,7 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
     slug: "what-is-dydd",
     title: "What is DYDD?",
     kicker: "2: What is DYDD?",
-    summary: "Frame grace, purpose, DESIGN, CARE, assessments, and Pathfinder before the chapter work begins.",
+    summary: "Saved by grace, designed on purpose, and invited to walk in the good works God prepared for us.",
     units: [
       {
         row: 6,
@@ -139,10 +299,28 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         title: "What is DYDD?",
         typeLabel: "Orientation",
         duration: "4-6 min",
-        lessonMainIdea: "Welcome the learner into What is DYDD? and make the next part of the journey feel clear, doable, and personal.",
+        lessonMainIdea: "Recognize how God has uniquely shaped you and where your life can contribute to His work.",
+        focus: [
+          "What is DYDD?"
+        ],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/c003db7b-6e82-4d02-9090-8326f74f9235/DYDD-logo.jpg?format=2500w",
+          "label": "Discover Your Divine Design",
+          "type": "image"
+        },
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "Discover Your Divine Design exists to help believers recognize how God has uniquely shaped them and where their lives can contribute to His work. When a church walks through this journey together, participants begin to see themselves and one another through a new lens. Rather than simply asking where help is needed, people begin to understand how their God given design can serve the body of Christ and the world around them."
+          },
+          {
+            "type": "paragraph",
+            "text": "The goal of DYDD is not simply to complete a study or identify a label. The goal is to help believers recognize how God has designed them and to begin living more intentionally within the good works He has prepared for them. They become part of the Good Work force! As participants move forward in faith, the church often sees people serving with renewed joy, deeper purpose, and a clearer understanding of their role within the body of Christ."
+          }
+        ],
         teachingBlocks: [
-          "This lesson introduces What is DYDD? as part of the What is DYDD? movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+          "Discover Your Divine Design exists to help believers recognize how God has uniquely shaped them and where their lives can contribute to His work. When a church walks through this journey together, participants begin to see themselves and one another through a new lens. Rather than simply asking where help is needed, people begin to understand how their God given design can serve the body of Christ and the world around them.",
+          "The goal of DYDD is not simply to complete a study or identify a label. The goal is to help believers recognize how God has designed them and to begin living more intentionally within the good works He has prepared for them. They become part of the Good Work force! As participants move forward in faith, the church often sees people serving with renewed joy, deeper purpose, and a clearer understanding of their role within the body of Christ."
         ],
       },
       {
@@ -153,10 +331,85 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         title: "Grace",
         typeLabel: "Orientation",
         duration: "4-6 min",
-        lessonMainIdea: "Welcome the learner into Grace and make the next part of the journey feel clear, doable, and personal.",
+        lessonMainIdea: "We are saved by grace, designed on purpose, and invited to walk in the good works God prepared for us.",
+        focus: [
+          "Saved by Grace",
+          "For Good Works"
+        ],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/30918f86-aa02-4167-8145-ce39e25a28f1/metal-2025-03-09-00-03-37-utc.jpg?format=500w",
+          "label": "Saved by grace, designed on purpose",
+          "type": "image"
+        },
+        lessonBody: [
+          {
+            "type": "heading",
+            "text": "Saved by Grace – Designed on Purpose - Walking in the Good Works Prepared for Us"
+          },
+          {
+            "type": "scripture",
+            "text": "For it is by grace you have been saved, through faith and this is not from yourselves, it is the gift of God, not by works, so that no one can boast. For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.",
+            "reference": "Ephesians 2:8–10"
+          },
+          {
+            "type": "paragraph",
+            "text": "Discover Your Divine Design begins with the truth of this passage. Ephesians 2:8–10 reveals the full story of the Christian life. It shows how salvation begins, how God forms His people, and how He intends them to live. These verses remind us that our relationship with God begins with grace, continues through His intentional design, and unfolds through the good works He prepared for us long before we ever recognized them."
+          },
+          {
+            "type": "paragraph",
+            "text": "DYDD is built around this movement. We are saved by grace, designed on purpose, and invited to walk in the good works God prepared for us."
+          },
+          {
+            "type": "heading",
+            "text": "Saved by Grace"
+          },
+          {
+            "type": "paragraph",
+            "text": "The foundation of everything begins with grace. Salvation is not something we achieve through effort, talent, or accomplishment. It is a gift from God. We are brought into relationship with Him through faith, not through our own performance or ability."
+          },
+          {
+            "type": "paragraph",
+            "text": "This truth protects the entire journey of discovering our design. Purpose is not about earning God's approval or proving our value. Instead, it grows from the security of knowing we already belong to Him. When people understand they are saved by grace, they are free to explore how God created them without pressure, comparison, or striving."
+          },
+          {
+            "type": "heading",
+            "text": "Designed on Purpose"
+          },
+          {
+            "type": "paragraph",
+            "text": "Ephesians continues by reminding us that we are God's handiwork. The word used in this passage points to something carefully crafted, something formed with intention and care."
+          },
+          {
+            "type": "paragraph",
+            "text": "Every believer has been uniquely shaped by God. Our story, identity, experiences, abilities, desires, and spiritual gifts all reflect aspects of how He formed us. Discover Your Divine Design helps people recognize this intentional design. Rather than seeing their life as random or disconnected, participants begin to see how God has been shaping them for meaningful contribution."
+          },
+          {
+            "type": "heading",
+            "text": "Walking in Good Works Prepared for Us"
+          },
+          {
+            "type": "paragraph",
+            "text": "The passage ends with a powerful reminder. God not only saves and shapes us, He prepares a path for us to walk."
+          },
+          {
+            "type": "paragraph",
+            "text": "Good works are not something we invent for ourselves. Scripture tells us that God prepared them in advance. Our role is to recognize where He is leading and step into those opportunities with faith and obedience."
+          },
+          {
+            "type": "paragraph",
+            "text": "This is the heart of the DYDD journey. As people understand their design, they begin to see where their life can serve others, strengthen the church, and reflect the work God is already doing around them. Discovering our design is not the final goal. The goal is to live faithfully in the good works God has prepared for us."
+          }
+        ],
         teachingBlocks: [
-          "This lesson introduces Grace as part of the What is DYDD? movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+          "Discover Your Divine Design begins with the truth of this passage. Ephesians 2:8–10 reveals the full story of the Christian life. It shows how salvation begins, how God forms His people, and how He intends them to live. These verses remind us that our relationship with God begins with grace, continues through His intentional design, and unfolds through the good works He prepared for us long before we ever recognized them.",
+          "DYDD is built around this movement. We are saved by grace, designed on purpose, and invited to walk in the good works God prepared for us.",
+          "The foundation of everything begins with grace. Salvation is not something we achieve through effort, talent, or accomplishment. It is a gift from God. We are brought into relationship with Him through faith, not through our own performance or ability.",
+          "This truth protects the entire journey of discovering our design. Purpose is not about earning God's approval or proving our value. Instead, it grows from the security of knowing we already belong to Him. When people understand they are saved by grace, they are free to explore how God created them without pressure, comparison, or striving.",
+          "Ephesians continues by reminding us that we are God's handiwork. The word used in this passage points to something carefully crafted, something formed with intention and care.",
+          "Every believer has been uniquely shaped by God. Our story, identity, experiences, abilities, desires, and spiritual gifts all reflect aspects of how He formed us. Discover Your Divine Design helps people recognize this intentional design. Rather than seeing their life as random or disconnected, participants begin to see how God has been shaping them for meaningful contribution.",
+          "The passage ends with a powerful reminder. God not only saves and shapes us, He prepares a path for us to walk.",
+          "Good works are not something we invent for ourselves. Scripture tells us that God prepared them in advance. Our role is to recognize where He is leading and step into those opportunities with faith and obedience.",
+          "This is the heart of the DYDD journey. As people understand their design, they begin to see where their life can serve others, strengthen the church, and reflect the work God is already doing around them. Discovering our design is not the final goal. The goal is to live faithfully in the good works God has prepared for us."
         ],
       },
       {
@@ -167,10 +420,66 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         title: "On Purpose For Purpose",
         typeLabel: "Orientation",
         duration: "4-6 min",
-        lessonMainIdea: "Welcome the learner into On Purpose For Purpose and make the next part of the journey feel clear, doable, and personal.",
+        lessonMainIdea: "Discover who you are in Christ and participate in the work God has prepared for you.",
+        focus: [
+          "Mision",
+          "Vision"
+        ],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/5e055743-b070-4064-a966-a8e099763c66/2026-10-13_16-27-45.jpg?format=2500w",
+          "label": "On purpose, for purpose",
+          "type": "image"
+        },
+        lessonBody: [
+          {
+            "type": "heading",
+            "text": "The Mission & Vision Behind DYDD"
+          },
+          {
+            "type": "heading",
+            "text": "Mission: On Purpose"
+          },
+          {
+            "type": "paragraph",
+            "text": "Discover Your Divine Design exists to help people rediscover who they are in Christ. Scripture tells us that we are God’s workmanship, His masterpiece, created intentionally and uniquely by Him."
+          },
+          {
+            "type": "paragraph",
+            "text": "Through biblical teaching, reflection, and practical tools, DYDD helps people gain clarity about their identity, story, gifts, and design so they can live with confidence in who God created them to be."
+          },
+          {
+            "type": "scripture",
+            "text": "For we are God’s handiwork, created in Christ Jesus…",
+            "reference": "Ephesians 2:10"
+          },
+          {
+            "type": "heading",
+            "text": "Vision: For Purpose"
+          },
+          {
+            "type": "paragraph",
+            "text": "We envision a Church where believers understand their design and joyfully participate in the work God has prepared for them."
+          },
+          {
+            "type": "paragraph",
+            "text": "When people discover their identity and embrace their unique contribution, they find belonging, meaningful service, and a deeper sense of calling within the Body of Christ."
+          },
+          {
+            "type": "scripture",
+            "text": "…to do good works, which God prepared in advance for us to do.",
+            "reference": "Ephesians 2:10"
+          },
+          {
+            "type": "paragraph",
+            "text": "Discover Your Divine Design helps believers understand how God uniquely created them so they can live and serve with clarity and purpose."
+          }
+        ],
         teachingBlocks: [
-          "This lesson introduces On Purpose For Purpose as part of the What is DYDD? movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+          "Discover Your Divine Design exists to help people rediscover who they are in Christ. Scripture tells us that we are God’s workmanship, His masterpiece, created intentionally and uniquely by Him.",
+          "Through biblical teaching, reflection, and practical tools, DYDD helps people gain clarity about their identity, story, gifts, and design so they can live with confidence in who God created them to be.",
+          "We envision a Church where believers understand their design and joyfully participate in the work God has prepared for them.",
+          "When people discover their identity and embrace their unique contribution, they find belonging, meaningful service, and a deeper sense of calling within the Body of Christ.",
+          "Discover Your Divine Design helps believers understand how God uniquely created them so they can live and serve with clarity and purpose."
         ],
       },
       {
@@ -181,10 +490,165 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         title: "D.E.S.I.G.N",
         typeLabel: "Orientation",
         duration: "4-6 min",
-        lessonMainIdea: "Welcome the learner into D.E.S.I.G.N and make the next part of the journey feel clear, doable, and personal.",
+        lessonMainIdea: "Explore six key areas that together reveal how God has uniquely shaped you.",
+        focus: [
+          "Identity",
+          "Expertise",
+          "Story",
+          "Desire",
+          "Gifts",
+          "Niche"
+        ],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/a41a6cf7-fbee-4855-97d2-323bfe455241/envato-labs-image-edit+%2861%29.png?format=2500w",
+          "label": "The elements of your divine design",
+          "type": "image"
+        },
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "Design is used as an acronym to represent the process taken for Discovery. It is not completed in the order of the acronym, on purpose. The process was carefully developed to help participants build from section to section, constantly gaining ground in their understanding."
+          },
+          {
+            "type": "paragraph",
+            "text": "The DYDD journey helps participants explore six key areas of their life that together reveal how God has uniquely shaped them. Each element offers a different perspective on how God forms a person through identity, experiences, passions, and spiritual empowerment. As participants reflect on these areas, they often begin to see patterns that reveal how their design may connect with the good works God has prepared for them."
+          },
+          {
+            "type": "heading",
+            "text": "Identity"
+          },
+          {
+            "type": "paragraph",
+            "text": "It all begins with knowing whose you are. Before we can understand what we are called to do, we must first understand who we are in Christ. Identity provides the foundation for the entire journey because our sense of purpose flows from our relationship with God and the truth of what He says about us."
+          },
+          {
+            "type": "paragraph",
+            "text": "Participants often find themselves reflecting on questions such as:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "Have I been carrying labels that do not reflect God’s truth about me?",
+              "What does Scripture reveal about my identity in Christ?",
+              "How might seeing myself through God’s perspective change the way I live and serve?"
+            ]
+          },
+          {
+            "type": "heading",
+            "text": "Expertise"
+          },
+          {
+            "type": "paragraph",
+            "text": "It all builds with what you have learned. Over time, each person develops knowledge, skills, and practical experience through work, education, relationships, and daily responsibilities. These abilities may feel ordinary to the person who possesses them, yet they often represent important ways God has been preparing them to contribute to others."
+          },
+          {
+            "type": "paragraph",
+            "text": "Participants begin recognizing that:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "Skills they once considered routine may actually hold meaningful value",
+              "Strengths developed over time can become tools for serving others",
+              "God often prepares people for purpose through everyday experiences"
+            ]
+          },
+          {
+            "type": "heading",
+            "text": "Story"
+          },
+          {
+            "type": "paragraph",
+            "text": "It all comes together through your story. Every person carries a unique set of life experiences that shape perspective, compassion, and understanding. As participants reflect on their story, they often begin to see how God has been present and active throughout different seasons of their life."
+          },
+          {
+            "type": "paragraph",
+            "text": "This reflection may reveal:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "Experiences that shaped their perspective or strengthened their faith",
+              "Difficult seasons that now provide empathy and understanding for others",
+              "Moments where God’s guidance becomes clearer in hindsight"
+            ]
+          },
+          {
+            "type": "heading",
+            "text": "Desire"
+          },
+          {
+            "type": "paragraph",
+            "text": "It all deepens with what stirs your heart. God often places interests, passions, and concerns within us that draw our attention toward particular needs or opportunities. These desires can provide important clues about where our design may naturally find expression."
+          },
+          {
+            "type": "paragraph",
+            "text": "Participants may begin noticing:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "Interests or passions that consistently capture their attention",
+              "Problems or needs that move them toward action",
+              "Opportunities that feel both meaningful and energizing"
+            ]
+          },
+          {
+            "type": "heading",
+            "text": "Spiritual Gifts"
+          },
+          {
+            "type": "paragraph",
+            "text": "It all strengthens when God equips you. Spiritual gifts represent the ways the Holy Spirit empowers believers to serve and build up the Body of Christ. These gifts extend beyond natural talents and reflect God’s grace working through His people."
+          },
+          {
+            "type": "paragraph",
+            "text": "As participants explore this area, they may begin discovering:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "Ways God has already been working through them to encourage or strengthen others",
+              "Spiritual strengths that become evident through service and community",
+              "Opportunities to use these gifts more intentionally within the life of the church"
+            ]
+          },
+          {
+            "type": "heading",
+            "text": "Niche"
+          },
+          {
+            "type": "paragraph",
+            "text": "It all leads to where your design meets God’s purpose. Niche represents the intersection where identity, expertise, story, desire, and spiritual gifts begin to align with real opportunities to serve others. Rather than defining a permanent role, niche reflects a growing awareness of how a person’s design can make a meaningful contribution."
+          },
+          {
+            "type": "paragraph",
+            "text": "Participants often begin asking:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "Where do the different elements of my design naturally come together?",
+              "Who might God be inviting me to serve?",
+              "What opportunities around me could become expressions of purpose?"
+            ]
+          }
+        ],
         teachingBlocks: [
-          "This lesson introduces D.E.S.I.G.N as part of the What is DYDD? movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+          "Design is used as an acronym to represent the process taken for Discovery. It is not completed in the order of the acronym, on purpose. The process was carefully developed to help participants build from section to section, constantly gaining ground in their understanding.",
+          "The DYDD journey helps participants explore six key areas of their life that together reveal how God has uniquely shaped them. Each element offers a different perspective on how God forms a person through identity, experiences, passions, and spiritual empowerment. As participants reflect on these areas, they often begin to see patterns that reveal how their design may connect with the good works God has prepared for them.",
+          "It all begins with knowing whose you are. Before we can understand what we are called to do, we must first understand who we are in Christ. Identity provides the foundation for the entire journey because our sense of purpose flows from our relationship with God and the truth of what He says about us.",
+          "Participants often find themselves reflecting on questions such as:",
+          "It all builds with what you have learned. Over time, each person develops knowledge, skills, and practical experience through work, education, relationships, and daily responsibilities. These abilities may feel ordinary to the person who possesses them, yet they often represent important ways God has been preparing them to contribute to others.",
+          "Participants begin recognizing that:",
+          "It all comes together through your story. Every person carries a unique set of life experiences that shape perspective, compassion, and understanding. As participants reflect on their story, they often begin to see how God has been present and active throughout different seasons of their life.",
+          "This reflection may reveal:",
+          "It all deepens with what stirs your heart. God often places interests, passions, and concerns within us that draw our attention toward particular needs or opportunities. These desires can provide important clues about where our design may naturally find expression.",
+          "Participants may begin noticing:",
+          "It all strengthens when God equips you. Spiritual gifts represent the ways the Holy Spirit empowers believers to serve and build up the Body of Christ. These gifts extend beyond natural talents and reflect God’s grace working through His people.",
+          "As participants explore this area, they may begin discovering:",
+          "It all leads to where your design meets God’s purpose. Niche represents the intersection where identity, expertise, story, desire, and spiritual gifts begin to align with real opportunities to serve others. Rather than defining a permanent role, niche reflects a growing awareness of how a person’s design can make a meaningful contribution.",
+          "Participants often begin asking:"
         ],
       },
       {
@@ -196,12 +660,42 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         bookPages: "p8 - p9",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach How to C.A.R.E with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
-        companionMoment: dyddJourneyCompanionMoments.care,
-        teachingBlocks: [
-          "This lesson introduces How to C.A.R.E as part of the What is DYDD? movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+        lessonMainIdea: "Connect, Act, Reflect, and Explore.",
+        focus: [
+          "Connect",
+          "Act",
+          "Reflect",
+          "Explore"
         ],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/af154b59-5141-44a7-9893-0c1c67dd7b4d/ChatGPT+Image+Jul+18%2C+2025%2C+10_44_58+AM.png?format=2500w",
+          "label": "Connect, Act, Reflect, Explore",
+          "type": "image"
+        },
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "As you move through Discover Your Divine Design, you’ll notice that this isn’t just a book to read, it’s a journey to live. To help you engage deeply with the material, we invite you to use the C.A.R.E. process, structured for the DYDD workbook. C.A.R.E. stands for Connect, Act, Reflect, and Explore, four simple but powerful approaches that will help you pause, notice, evaluate, and apply what God is showing you."
+          },
+          {
+            "type": "list",
+            "items": [
+              "Connect: Engage with God, yourself, and others. Pause to notice where His hand has been shaping your story and stirring your heart (engage relationally, align with God’s movement in your life).",
+              "Act: Take the next small, faithful step. Don’t wait for perfection; move forward trusting that God meets you in motion (take faithful steps, apply insights with courage).",
+              "Reflect: Pause and notice what’s happening in and around you. Evaluate what you’re learning, where God is leading, and what’s being refined in your heart (pause, notice, and discern).",
+              "Explore: Stay curious. Ask questions, imagine new possibilities, and consider how God might be inviting you to grow beyond what you’ve seen before (stay curious, imagine, and grow)."
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "Think of C.A.R.E. as both a compass and a rhythm: It helps you keep oriented on your journey, ensuring you’re not just gathering information but experiencing transformation. Whether you’re reading a chapter, answering workbook prompts, or journaling your thoughts, use C.A.R.E. to slow down, engage meaningfully, and allow God’s design in you to unfold with purpose."
+          }
+        ],
+        teachingBlocks: [
+          "As you move through Discover Your Divine Design, you’ll notice that this isn’t just a book to read, it’s a journey to live. To help you engage deeply with the material, we invite you to use the C.A.R.E. process, structured for the DYDD workbook. C.A.R.E. stands for Connect, Act, Reflect, and Explore, four simple but powerful approaches that will help you pause, notice, evaluate, and apply what God is showing you.",
+          "Think of C.A.R.E. as both a compass and a rhythm: It helps you keep oriented on your journey, ensuring you’re not just gathering information but experiencing transformation. Whether you’re reading a chapter, answering workbook prompts, or journaling your thoughts, use C.A.R.E. to slow down, engage meaningfully, and allow God’s design in you to unfold with purpose."
+        ],
+        companionMoment: dyddJourneyCompanionMoments.care,
       },
       {
         row: 11,
@@ -211,10 +705,40 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         title: "DYDD Assessments",
         typeLabel: "Assessment step",
         duration: "8-12 min",
-        lessonMainIdea: "Help the learner complete or reconnect the assessment, then bring the result back into the Journey record.",
+        lessonMainIdea: "DesignID and Spiritual Gifts support reflection, discussion, and discovery.",
+        focus: [
+          "DesignID",
+          "Spiritual Gifts"
+        ],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/3b11fc20-87d4-432b-ac33-3d670854d0f5/ID-logo-hrz-color.jpg?format=2500w",
+          "label": "DesignID assessment",
+          "type": "image",
+          "additionalImages": [
+            {
+              "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/3dd783ab-7840-4865-94b5-1487517efa6e/dydd-gifts-logo.jpg?format=2500w",
+              "label": "Spiritual Gifts assessment"
+            }
+          ]
+        },
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "The DYDD Journey includes the use of two assessments, the DesignID Assessment used for identity, and the Spiritual Gifts Assessment used for understanding gifts. DesignId is a unique and custom assessment built specifically for DYDD. Both assessments will be presented as needed within the course content."
+          },
+          {
+            "type": "paragraph",
+            "text": "The DesignID assessment is an important part of the DYDD journey. While the class itself focuses on reflection, discussion, and discovery, DesignID provides participants with structured insight into how their design often expresses itself in real life. The assessment helps individuals recognize patterns in how they perceive situations, approach challenges, and contribute within community and ministry."
+          },
+          {
+            "type": "paragraph",
+            "text": "The Spiritual Gifts Assessment is designed to be a simple and reflective part of the DYDD journey. While DesignID focuses on how a person’s design tends to operate in relationships and contribution, the Spiritual Gifts Assessment helps participants consider how the Holy Spirit may be empowering them to serve within the body of Christ."
+          }
+        ],
         teachingBlocks: [
-          "This lesson should briefly explain why the assessment matters, send the learner to complete or review it, and then confirm whether the result is connected to their account.",
-          "The deeper teaching can stay in the assessment course. The Journey only needs the bridge, the reflection, and the return path.",
+          "The DYDD Journey includes the use of two assessments, the DesignID Assessment used for identity, and the Spiritual Gifts Assessment used for understanding gifts. DesignId is a unique and custom assessment built specifically for DYDD. Both assessments will be presented as needed within the course content.",
+          "The DesignID assessment is an important part of the DYDD journey. While the class itself focuses on reflection, discussion, and discovery, DesignID provides participants with structured insight into how their design often expresses itself in real life. The assessment helps individuals recognize patterns in how they perceive situations, approach challenges, and contribute within community and ministry.",
+          "The Spiritual Gifts Assessment is designed to be a simple and reflective part of the DYDD journey. While DesignID focuses on how a person’s design tends to operate in relationships and contribution, the Spiritual Gifts Assessment helps participants consider how the Holy Spirit may be empowering them to serve within the body of Christ."
         ],
       },
       {
@@ -225,10 +749,47 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         title: "Pathfinder (Niche)",
         typeLabel: "Orientation",
         duration: "4-6 min",
-        lessonMainIdea: "Welcome the learner into Pathfinder (Niche) and make the next part of the journey feel clear, doable, and personal.",
+        lessonMainIdea: "A niche is the place where identity, expertise, story, desire, and spiritual gifts begin to intersect.",
+        focus: [
+          "What is a Niche? Pathfinder"
+        ],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/c5196bb6-f968-4aab-8b29-698d6cb71a8e/aerial-view-of-campuhan-ridge-walk-scenic-green-2024-09-20-23-45-29-utc.jpg?format=500w",
+          "label": "Discover your niche",
+          "type": "image"
+        },
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "The goal of the DYDD journey is not simply self-understanding. It is participation in the work God is already doing. The concept of Niche helps bring the different parts of a person’s design together so they can begin to see where their life most naturally serves others."
+          },
+          {
+            "type": "paragraph",
+            "text": "A niche is the place where identity, expertise, story, desire, and spiritual gifts begin to intersect. It is not a title or a position. It is the environment where a person’s design aligns with opportunities to serve and make an impact."
+          },
+          {
+            "type": "paragraph",
+            "text": "Many believers want to live with greater purpose but are unsure how their life fits into the larger work of God’s Kingdom. Exploring a niche helps move the conversation from general calling to practical expression. It helps people recognize where their design may be most effective and where their contribution can be most meaningful."
+          },
+          {
+            "type": "paragraph",
+            "text": "Understanding a niche does not mean every question about the future is answered. Instead, it provides direction. It gives individuals a clearer starting point for stepping forward in faith and exploring how God may use their life in the good works He has prepared."
+          },
+          {
+            "type": "heading",
+            "text": "Pathfinder"
+          },
+          {
+            "type": "paragraph",
+            "text": "As part of your journey, you will engage in active Niche building at the end of each major section. These are specifically designed CARE reflections which support your discovery process. The Pathfinder activities are an important part of completing your journey."
+          }
+        ],
         teachingBlocks: [
-          "This lesson introduces Pathfinder (Niche) as part of the What is DYDD? movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+          "The goal of the DYDD journey is not simply self-understanding. It is participation in the work God is already doing. The concept of Niche helps bring the different parts of a person’s design together so they can begin to see where their life most naturally serves others.",
+          "A niche is the place where identity, expertise, story, desire, and spiritual gifts begin to intersect. It is not a title or a position. It is the environment where a person’s design aligns with opportunities to serve and make an impact.",
+          "Many believers want to live with greater purpose but are unsure how their life fits into the larger work of God’s Kingdom. Exploring a niche helps move the conversation from general calling to practical expression. It helps people recognize where their design may be most effective and where their contribution can be most meaningful.",
+          "Understanding a niche does not mean every question about the future is answered. Instead, it provides direction. It gives individuals a clearer starting point for stepping forward in faith and exploring how God may use their life in the good works He has prepared.",
+          "As part of your journey, you will engage in active Niche building at the end of each major section. These are specifically designed CARE reflections which support your discovery process. The Pathfinder activities are an important part of completing your journey."
         ],
       },
     ],
@@ -240,37 +801,175 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
     summary: "Begin with whose you are before what you do, then use DesignID as a helpful mirror.",
     units: [
       {
-        row: 14,
+        row: 13,
         slug: "identity-purpose-14",
         type: "normal",
         section: "Identity Overview",
-        title: "Purpose",
+        title: "On Purpose",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Purpose with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
-        anchorScripture: "Ephesians 2:10",
+        lessonMainIdea: "Your identity is based on who God says you are.",
+        focus: [
+          "God Says",
+          "Formed",
+          "Pursued",
+          "New",
+          "Shaped"
+        ],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/c5564d73-f4d1-4243-9e30-a38ce5712668/close-up-2024-10-15-04-58-09-utc.jpg?format=2500w",
+          "label": "Intentionally formed and shaped by God",
+          "type": "image"
+        },
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "Your Identity is so much more than your name, your job, or how others see you. Our identity is where everything begins. Throughout Scripture, we see that God shapes identity in powerful, personal ways. He calls people by name, He redefines them beyond their failures, and He reminds them that who they are is rooted in His plans, not their past. Your identity is not based on your mistakes, your achievements, or the labels others have given you. It’s based on who God says you are."
+          },
+          {
+            "type": "heading",
+            "text": "God says:"
+          },
+          {
+            "type": "paragraph",
+            "text": "You are valuable and purposefully and wonderfully made and that was no mistake. He declares you delivered, forgiven, and healed from sin. You are redeemed, safe, and no longer separated or condemned. You are victorious and a born-again new creation. You are a child of God and member of His family who is qualified to share in His inheritance. You are part of His royal priesthood with a secure place in His kingdom. You are loved. See Psalm 139, Romans 8:1–2, Romans 8:35–37, Ephesians 1, 2 Corinthians 5:17, 1 Peter 2:9, and 1 Peter 2:24."
+          },
+          {
+            "type": "paragraph",
+            "text": "You were formed, pursued, made new, and shaped on purpose."
+          },
+          {
+            "type": "list",
+            "items": [
+              "Formed: God’s intention was present before you could prove, perform, or produce anything. Psalm 139:13-16, Jeremiah 1:5",
+              "Pursued: Salvation is not random. God moved toward you with love, mercy, and rescue. John 3:16, Romans 5:8, Titus 3:4-5",
+              "New: In Christ, your life is not just improved. It is made new. 2 Corinthians 5:17",
+              "Shaped: God is still forming you. Your story, growth, wiring, healing, and next steps are part of His work in you. Phil 1:6, Rom 12:2, 2 Cor. 3:18"
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "You are not accidental. You are intentionally formed, rescued, renewed, and still being shaped by God."
+          }
+        ],
         teachingBlocks: [
-          "This lesson introduces Purpose as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+          "Your Identity is so much more than your name, your job, or how others see you. Our identity is where everything begins. Throughout Scripture, we see that God shapes identity in powerful, personal ways. He calls people by name, He redefines them beyond their failures, and He reminds them that who they are is rooted in His plans, not their past. Your identity is not based on your mistakes, your achievements, or the labels others have given you. It’s based on who God says you are.",
+          "You are valuable and purposefully and wonderfully made and that was no mistake. He declares you delivered, forgiven, and healed from sin. You are redeemed, safe, and no longer separated or condemned. You are victorious and a born-again new creation. You are a child of God and member of His family who is qualified to share in His inheritance. You are part of His royal priesthood with a secure place in His kingdom. You are loved. See Psalm 139, Romans 8:1–2, Romans 8:35–37, Ephesians 1, 2 Corinthians 5:17, 1 Peter 2:9, and 1 Peter 2:24.",
+          "You were formed, pursued, made new, and shaped on purpose.",
+          "You are not accidental. You are intentionally formed, rescued, renewed, and still being shaped by God."
         ],
       },
       {
-        row: 15,
+        row: 14,
         slug: "identity-handiwork-15",
         type: "normal",
         section: "Identity Overview",
         title: "Handiwork",
         typeLabel: "Teaching lesson",
-        duration: "6-9 min",
-        lessonMainIdea: "Teach Handiwork with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
-        anchorScripture: "Ephesians 2:10",
-        teachingBlocks: [
-          "This lesson introduces Handiwork as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+        duration: "3–5 min",
+        lessonMainIdea: "Who you are in Christ comes before what you do for Him.",
+        focus: [
+          "Treasure beyond Measure"
         ],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/47ff95a7-b7ae-4aef-b6e5-55b83079f7e8/milky-way-with-silhouette-of-a-standing-happy-gir-2026-01-06-09-08-16-utc.jpg?format=500w",
+          "label": "A silhouette beneath the Milky Way",
+          "type": "image"
+        },
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "Who you are in Christ comes before what you do for Him. Before your life ever had any titles, it was beautiful to Him. Identity is not discovered by looking inward, it is received by looking upward. When He calls you His Handiwork, He is referring to you as a work of art, a treasure beyond measure, something of which He is very fond."
+          },
+          {
+            "type": "paragraph",
+            "text": "Take a moment of silence and listen to what Dydi has to share about your identity. Press play, close your eyes, and really take in what you hear."
+          }
+        ],
+        teachingBlocks: [
+          "Who you are in Christ comes before what you do for Him. Before your life ever had any titles, it was beautiful to Him. Identity is not discovered by looking inward, it is received by looking upward. When He calls you His Handiwork, He is referring to you as a work of art, a treasure beyond measure, something of which He is very fond.",
+          "Take a moment of silence and listen to what Dydi has to share about your identity. Press play, close your eyes, and really take in what you hear."
+        ],
+        anchorScripture: "Psalm 139:13–14",
+        companionMomentPosition: "after-teaching",
+        companionMoment: {
+          audioSrc: "/audio/companions/course-moments/dydd-journey-handiwork-dydi.wav",
+          duration: "1 min 26 sec",
+          kicker: "Listen and receive",
+          title: "Treasure beyond Measure",
+          speakers: [{
+            image: "/brand/characters/full-body/dydi-full-body.png",
+            imageAlt: "Dydi, your DYDD guide",
+            name: "Dydi",
+            role: "DYDD guide",
+          }],
+          transcript: [
+            {
+                        "text": "You are not worthless, you are valuable."
+            },
+            {
+                        "text": "You are not accidental, you are purposely made."
+            },
+            {
+                        "text": "You are not a mistake, you are intended."
+            },
+            {
+                        "text": "You are not a captive, you are delivered."
+            },
+            {
+                        "text": "You are not condemned, you are forgiven."
+            },
+            {
+                        "text": "You are not broken, you are healed."
+            },
+            {
+                        "text": "You are not lost, you are found."
+            },
+            {
+                        "text": "You are not vulnerable, you are safe."
+            },
+            {
+                        "text": "You are not isolated, you are family."
+            },
+            {
+                        "text": "You are not separated, you are together whole."
+            },
+            {
+                        "text": "You are not defeated, you are victorious."
+            },
+            {
+                        "text": "You are not dead, you are born again."
+            },
+            {
+                        "text": "You are not your old self, you are a new creation."
+            },
+            {
+                        "text": "You are not an orphan, you are a child of God."
+            },
+            {
+                        "text": "You are not a stranger, you are a cherished family member."
+            },
+            {
+                        "text": "You are not disqualified, you are inheritance worthy."
+            },
+            {
+                        "text": "You are not an outsider, you are a member of the royal priesthood."
+            },
+            {
+                        "text": "You are not excluded, you have a place in the kingdom."
+            },
+            {
+                        "text": "You are not unloved, you are loved."
+            }
+],
+        },
+        closingScripture: {
+          text: "For you created my inmost being; you knit me together in my mother’s womb. I praise you because I am fearfully and wonderfully made; your works are wonderful, I know that full well.",
+          reference: "Psalm 139:13–14",
+        },
       },
       {
-        row: 16,
+        row: 15,
         slug: "identity-who-vs-whose-16",
         type: "normal",
         section: "Identity Overview",
@@ -280,47 +979,327 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         workbookPages: "p7 - p8",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Who Vs. Whose with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+        lessonMainIdea: "Who you are may describe you. Whose you are defines you.",
         anchorScripture: "Ephesians 2:10",
         companionMoment: dyddJourneyCompanionMoments.identity,
-        teachingBlocks: [
-          "This lesson introduces Who Vs. Whose as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+        focus: ["Who", "Whose"],
+        media: {"image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/61335d73-5a9f-42ed-b64a-b334c4463126/elderly-hand-resting-on-bible-indoors-2026-01-09-10-57-28-utc.jpg?format=300w", "label": "A hand resting on an open Bible", "type": "image"},
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "Design starts with identity. Before we explore your gifts, personality, or purpose, we need to begin with something more foundational: who you belong to."
+          },
+          {
+            "type": "paragraph",
+            "text": "“Who am I?” is an important question. But in discovering your divine design, it finds its deepest meaning when grounded in another question: “Whose am I?”"
+          },
+          {
+            "type": "heading",
+            "text": "Who Are You?"
+          },
+          {
+            "type": "paragraph",
+            "text": "When you describe yourself, you might talk about:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "Your personality",
+              "Your experiences",
+              "Your talents",
+              "Your story",
+              "How others describe you"
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "These things matter. They help you recognize what makes you unique and how you engage with the world. Your experiences have shaped your perspective. Your talents influence what comes naturally. Your personality affects how you connect, contribute, and respond."
+          },
+          {
+            "type": "paragraph",
+            "text": "But none of these can carry the full weight of your identity. Your abilities can change. Your roles can shift. Other people’s opinions can be mistaken. Even your own understanding of yourself can be shaped by disappointment, comparison, or past mistakes. If these become the foundation of your identity, your sense of worth can rise and fall with how well life is going."
+          },
+          {
+            "type": "heading",
+            "text": "Whose You Are?"
+          },
+          {
+            "type": "paragraph",
+            "text": "For those who belong to Jesus, there is a deeper foundation:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "You are a child of God.",
+              "You are fully known.",
+              "You are deeply loved.",
+              "You are secure in Christ.",
+              "You belong to the One who created you."
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "“Whose you are” is about belonging before achievement. You do not have to discover your gifts, prove your usefulness, or figure out your purpose to become worthy of God’s love."
+          },
+          {
+            "type": "scripture",
+            "text": "See what great love the Father has lavished on us, that we should be called children of God! And that is what we are!",
+            "reference": "1 John 3:1 (NIV)"
+          },
+          {
+            "type": "paragraph",
+            "text": "Your relationship with God is not another item on the list of things that describe you. It is the foundation from which you begin to understand everything else."
+          },
+          {
+            "type": "heading",
+            "text": "Why This Matters for Your Design"
+          },
+          {
+            "type": "paragraph",
+            "text": "When you start with “who,” discovering your design can become a search for proof that you matter. You may compare your gifts with someone else’s, wish you had a different personality, or feel that your story disqualifies you. When you start with “whose,” you can approach discovery from a place of belonging. You are not trying to earn your place in God’s family. You are learning how to live as someone who already belongs to Him."
+          },
+          {
+            "type": "paragraph",
+            "text": "Who you are may describe you. Whose you are defines you."
+          }
         ],
+        teachingBlocks: [],
       },
       {
-        row: 17,
+        row: 16,
         slug: "identity-good-works-17",
         type: "normal",
         section: "Identity Overview",
         title: "Good Works",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Good Works with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+        lessonMainIdea: "Purposeful, not passive. Devoted, not driven.",
         anchorScripture: "Ephesians 2:10",
-        teachingBlocks: [
-          "This lesson introduces Good Works as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+        focus: ["Good Works Force"],
+        media: {"image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/75649fd9-ec07-44c3-bb09-dd7525a017a2/young-plant-2026-01-06-10-42-38-utc.jpg?format=500w", "label": "A young plant growing in soil", "type": "image"},
+        lessonBody: [
+          {
+            "type": "heading",
+            "text": "Good Works: Joining the Good Works Force"
+          },
+          {
+            "type": "paragraph",
+            "text": "Purposeful, not passive."
+          },
+          {
+            "type": "paragraph",
+            "text": "Devoted, not driven."
+          },
+          {
+            "type": "scripture",
+            "text": "For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.",
+            "reference": "Ephesians 2:10"
+          },
+          {
+            "type": "paragraph",
+            "text": "Your identity in Christ is not something you earn through good works. It is the foundation from which you do them. You don’t work to become His, you serve because you already belong to Him."
+          },
+          {
+            "type": "paragraph",
+            "text": "God invites you into what we’re calling the Good Works Force: His people putting their God-given design into action to love others, meet needs, and make His goodness visible. This isn’t a workforce competing for recognition or earning God’s approval. It’s a people serving together, with different designs and a shared Kingdom purpose."
+          },
+          {
+            "type": "paragraph",
+            "text": "Your part will often take shape through:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "Expertise — what you’ve developed",
+              "Story — what you’ve experienced",
+              "Desire — what you’re drawn toward",
+              "Gifts — what God empowers"
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "God can work through your skills, redeem your experiences, direct your desires, and empower your gifts. Your contribution may look different from someone else’s, and that is part of the beauty of His design."
+          },
+          {
+            "type": "paragraph",
+            "text": "The question is not, “How do I do more?” It is, “What good is God inviting me to do with the life and design He has given me?” You don’t have to do everyone’s work. You are invited to faithfully take your part in the Good Works Force."
+          },
+          {
+            "type": "paragraph",
+            "text": "Purpose is not performance. It is faithful expression."
+          }
         ],
+        teachingBlocks: [],
       },
       {
-        row: 18,
+        row: 17,
         slug: "identity-niche-18",
         type: "normal",
         section: "Identity Overview",
         title: "Niche",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Niche with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+        lessonMainIdea: "Not doing more. Doing what fits.",
         anchorScripture: "Ephesians 2:10",
-        teachingBlocks: [
-          "This lesson introduces Niche as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+        focus: ["Doing What fits"],
+        media: {"image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/fffc22e1-ffe8-48b5-9642-b68bc7bcbfd0/closeup-image-of-two-people-playing-and-building-r-2024-12-05-18-40-10-utc.jpg?format=500w", "label": "Two people fitting puzzle pieces together", "type": "image"},
+        lessonBody: [
+          {
+            "type": "heading",
+            "text": "NICHE"
+          },
+          {
+            "type": "paragraph",
+            "text": "Not doing more. Doing what fits."
+          },
+          {
+            "type": "paragraph",
+            "text": "Think of your God-given design as a puzzle piece. Its shape is not a flaw to correct or something to squeeze into someone else’s space. Your particular mix of skills, story, passions, and gifts shapes how you can contribute to the bigger picture of what God is doing. Your niche is where that design meets an opportunity to love, serve, and bring good to others. It is your particular contribution within the Good Works Force."
+          },
+          {
+            "type": "paragraph",
+            "text": "Jesus draws our attention to people who are hungry, overlooked, sick, or forgotten. Discovering your niche isn’t simply finding what makes you feel fulfilled. It is recognizing where what God has formed in you can become a meaningful gift to someone else."
+          },
+          {
+            "type": "paragraph",
+            "text": "That fit doesn’t mean everything will be easy or comfortable. God may stretch you as you grow into it. And you don’t need to find one perfect role before you begin. Your design can find expression in different relationships, places, and seasons."
+          },
+          {
+            "type": "paragraph",
+            "text": "So instead of asking, “Where can I do more?” begin asking, “Where do I see a need that connects with how God has shaped me?” You can explore that connection one faithful step at a time."
+          },
+          {
+            "type": "paragraph",
+            "text": "Not an identity you chase."
+          },
+          {
+            "type": "paragraph",
+            "text": "Not a fit you force."
+          },
+          {
+            "type": "paragraph",
+            "text": "A contribution you grow into"
+          }
         ],
+        teachingBlocks: [],
+      },
+      {
+        row: 18,
+        slug: "identity-assessment-time-designid",
+        type: "assessment-link",
+        typeLabel: "Assessment step",
+        section: "Identity Assessment",
+        title: "Assessment Time: DesignID",
+        duration: "15 min assessment + course",
+        lessonMainIdea: "Recognize God’s design through a tool for discovery, reflection, and faithful contribution.",
+        assessmentTarget: "designid",
+        focus: ["DesignID"],
+        media: {"image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/a3412b55-fabf-4ec5-9721-7348edea38dd/DYDD_piegraph+final.png?format=2500w", "label": "DesignID wheel: divine and integrated reflections", "type": "image"},
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "God’s design is already reflected in the way you create, relate, think, and serve. An assessment can help you recognize those patterns and give you language to explore them."
+          },
+          {
+            "type": "paragraph",
+            "text": "An assessment is a tool for discovery—not a label that defines your identity or limits what God can do through you. Your identity is rooted in Christ. Your results provide a starting point for reflection, growth, and faithful contribution."
+          },
+          {
+            "type": "scripture",
+            "text": "For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.",
+            "reference": "Ephesians 2:10"
+          },
+          {
+            "type": "heading",
+            "text": "A lens for identity, grace, and contribution"
+          },
+          {
+            "type": "paragraph",
+            "text": "DesignID™ is a faith-integrated assessment that helps you explore how God’s design is expressed through your life. More than describing personality, it offers a lens for understanding how you naturally contribute within the Body of Christ."
+          },
+          {
+            "type": "paragraph",
+            "text": "DesignID begins with a biblical conviction: every person is made in the image of God. We each have opportunities to reflect His character through the ways we live, love, work, and serve."
+          },
+          {
+            "type": "paragraph",
+            "text": "Consider the DesignID wheel. At its center is God Himself—Father, Son, and Holy Spirit. Flowing outward are four divine reflections: Architect, Artisan, Shepherd, and Steward. These provide language for exploring different patterns of contribution."
+          },
+          {
+            "type": "paragraph",
+            "text": "Around the outside of the wheel are the Integrated Reflections. Each combines two reflections, helping you explore how they work together in the way you lead, build, relate, and contribute."
+          },
+          {
+            "type": "paragraph",
+            "text": "DesignID does not replace biblical truth, spiritual formation, or dependence on the Holy Spirit. It supports your discovery by helping you recognize your design and steward it more faithfully."
+          },
+          {
+            "type": "heading",
+            "text": "Your next step: discover your DesignID"
+          },
+          {
+            "type": "paragraph",
+            "text": "We will refer to your DesignID results throughout the rest of the DYDD Journey, especially in the next unit. Take time to complete this step before moving forward."
+          },
+          {
+            "type": "heading",
+            "text": "1. Take the assessment."
+          },
+          {
+            "type": "paragraph",
+            "text": "Select Open Connected Trail below to find DesignID and take your assessment. You can also find DesignID in Trailheads."
+          },
+          {
+            "type": "paragraph",
+            "text": "Allow about 15 minutes. Answer according to how you naturally respond—not how you think you should respond or who you wish you were. Your results are available immediately after completion."
+          },
+          {
+            "type": "paragraph",
+            "text": "Already completed DesignID? Use your saved results; you do not need to retake it just to continue this Journey."
+          },
+          {
+            "type": "heading",
+            "text": "2. Complete the DesignID course."
+          },
+          {
+            "type": "paragraph",
+            "text": "Walk through the DesignID course to understand your results, explore the reflections, and consider how your design shows up in everyday life. Give yourself time to reflect rather than simply reading your scores."
+          },
+          {
+            "type": "heading",
+            "text": "3. Return to this lesson."
+          },
+          {
+            "type": "paragraph",
+            "text": "Bring what you have discovered back into the Journey. Your saved results will provide a reference point for the lessons ahead."
+          },
+          {
+            "type": "paragraph",
+            "text": "Before continuing, consider:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "What feels familiar in your results?",
+              "What surprised you or needs further reflection?",
+              "Where do you recognize opportunities to serve others through your design?"
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "Complete your DesignID assessment before continuing to the next lesson."
+          }
+        ],
+        teachingBlocks: [],
       },
       {
         row: 19,
         slug: "identity-the-designid-lens-what-is-in-the-report-19",
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/74f7b500-1ecc-4b6c-a597-567f00de5aae/image-gen+%2810%29.jpg?format=300w",
+          "label": "The DesignID Lens",
+          "type": "image"
+        },
         type: "designid-reflection",
         section: "Identity Assessment",
         title: "The DesignID Lens: What is in the report?",
@@ -348,12 +1327,81 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         workbookPages: "p19 - p21",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Identity among believers with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
-        anchorScripture: "Ephesians 2:10",
-        teachingBlocks: [
-          "This lesson introduces Identity among believers as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+        lessonMainIdea: "Identity doesn’t exist in isolation. God didn’t just design you for personal discovery; He designed you for connection, belonging, and purpose within the Body of Christ.",
+        focus: ["Heart, Mind, Soul, Strength"],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/b539874a-d535-451b-a72b-5cd5730534cf/diverse-group-of-people-community-togetherness-con-2023-11-27-05-29-24-utc.webp?format=500w",
+          "label": "Identity among believers",
+          "type": "image"
+        },
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "Identity doesn’t exist in isolation. God didn’t just design you for personal discovery; He designed you for connection, belonging, and purpose within the Body of Christ."
+          },
+          {
+            "type": "paragraph",
+            "text": "Jesus, referring to the commandment from Deuteronomy 6, tells us that we are to love God with our hearts, our souls, our minds, and our strengths. If God, who is perfect and without sin, has decided to love you, even before you repented, why do we struggle so much to love what He created? I am referring to you, of course."
+          },
+          {
+            "type": "scripture",
+            "text": "One of the teachers of the law came and heard them debating. Noticing that Jesus had given them a good answer, he asked him, “Of all the commandments, which is the most important?” “The most important one,” answered Jesus, “is this: ‘Hear, O Israel: The Lord our God, the Lord is one.  Love the Lord your God with all your heart and with all your soul and with all your mind and with all your strength.’ The second is this: ‘Love your neighbor as yourself.’ There is no commandment greater than these.”",
+            "reference": "Mark 12:28–31"
+          },
+          {
+            "type": "paragraph",
+            "text": "When Jesus was pointing out what the greatest two commands were, He did not say admire, like, be fond of, or adore. He said love. Every other way fails in comparison. The Greek word for love in these verses is agape. Agape means to love someone by choice as an act of your will. It is intentional and actionable. Agape is unconditional, not looking for reciprocation."
+          },
+          {
+            "type": "paragraph",
+            "text": "We are commanded to love, period. There is no “so that” with agape love. Often, we love so that …"
+          },
+          {
+            "type": "list",
+            "items": [
+              "Others change.",
+              "Someone repents.",
+              "A person or group gets saved."
+            ]
+          },
+          {
+            "type": "paragraph",
+            "text": "First Peter 4:8 says, “Above all, love each other deeply, because love covers over a multitude of sins.” We are not intended to love so that something happens, but simply to love with all our heart, mind, soul, and strength."
+          },
+          {
+            "type": "heading",
+            "text": "Heart"
+          },
+          {
+            "type": "paragraph",
+            "text": "Your “heart” is your passions and desires. “For where your treasure is, there your heart will be also” (Matthew 6:21). Loving God with your heart also means loving Him with and through your emotions. We don’t love only within fair weather but also in the tempest."
+          },
+          {
+            "type": "heading",
+            "text": "Soul"
+          },
+          {
+            "type": "paragraph",
+            "text": "Your soul is what Jesus purchased on the cross. Our soul is of the highest value, and nothing can be measured against it. Matthew 16:26 says, “What good will it be for someone to gain the whole world, yet forfeit their soul? Or what can anyone give in exchange for their soul?” Your soul is the eternal part of you that will go on forever. Another way to think about your soul is as your will. The good news is that God gave us free will so when we love with our soul, we are choosing to love or deciding to love with our whole being."
+          },
+          {
+            "type": "heading",
+            "text": "Mind"
+          },
+          {
+            "type": "paragraph",
+            "text": "Your mind is your intellect, your cunning, and even your daydreaming. We use our minds to make choices or weigh decisions. It is from our minds that we reason out our need for God and choose to surrender. Your mind is a cognitive and practical approach to loving God. This does not mean that it is not highly creative and intuitive as well. It is with your mind that you build knowledge of God through study and experiences."
+          },
+          {
+            "type": "heading",
+            "text": "Strength"
+          },
+          {
+            "type": "paragraph",
+            "text": "Loving God with your strength is letting Him have your time, your sweat, your abilities, and your possessions. When we surrender our strengths, we no longer must count on ourselves. Our strength is finite but His is infinite. Philippians 4:13 says, “I can do all this through him who gives me strength.” God’s infinite strength is available to us when we need it. “That is why, for Christ’s sake, I delight in weaknesses, in insults, in hardships, in persecutions, in difficulties. For when I am weak, then I am strong” (2 Corinthians 12:10)."
+          }
         ],
+        teachingBlocks: [],
       },
       {
         row: 21,
@@ -365,12 +1413,71 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         workbookPages: "p22 - p24",
         typeLabel: "DesignID reflection",
         duration: "10-15 min",
-        lessonMainIdea: "Use DesignID as a mirror inside Identity, helping the learner connect assessment language to faithful love and service.",
-        anchorScripture: "Ephesians 2:10",
-        teachingBlocks: [
-          "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
-          "Placed inside Identity, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course.",
+        lessonMainIdea: "Consider what you just learned from Deuteronomy and Mark regarding how to love the Lord with your heart, mind, soul, and strength. Each of us approaches these areas in a unique way. As we will learn later in the chapter on Story, our experiences have a great impact on our capacity and ability to love. Within the chapter on Expertise, we will explore how different talents and skills were developed. Some of them were shaped through the hard knocks of life, while others emerged from deep-seated passion.",
+        focus: [
+          "Designed To Love"
         ],
+        media: {
+          "image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/d9c32b17-5849-4ddb-a3f0-039b4eddf3e4/hands-reaching-for-a-heart-on-a-wooden-table-2026-01-05-06-26-34-utc.jpg?format=300w",
+          "label": "Hands reaching toward a heart on a wooden table",
+          "type": "image"
+        },
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "Consider what you just learned from Deuteronomy and Mark regarding how to love the Lord with your heart, mind, soul, and strength. Each of us approaches these areas in a unique way. As we will learn later in the chapter on Story, our experiences have a great impact on our capacity and ability to love. Within the chapter on Expertise, we will explore how different talents and skills were developed. Some of them were shaped through the hard knocks of life, while others emerged from deep-seated passion."
+          },
+          {
+            "type": "paragraph",
+            "text": "Let’s take a few moments and consider the reflections lens as it relates to this greatest command, to love the Lord your God with all your heart, soul, mind, and strength."
+          },
+          {
+            "type": "paragraph",
+            "text": "As a lens, DesignID helps us understand our capacities and what fulfills us. This includes how we choose to spend our time, the efforts we make in different parts of our life, and how we mentally and emotionally approach situations and people. There is a strong correlation between the four reflections of DesignID and the way we live out the greatest commandment."
+          },
+          {
+            "type": "table",
+            "headers": [
+              "Reflection",
+              "Heart",
+              "Soul",
+              "Strength",
+              "Mind"
+            ],
+            "rows": [
+              [
+                "Architect ",
+                "Leads with courage and conviction; pursues purpose that honors God.",
+                "Obeys from a place of trust and devotion, surrendering outcomes to God.",
+                "Brings energy and action, serving with boldness and perseverance.",
+                "Thinks strategically and acts with vision guided by faith."
+              ],
+              [
+                "Artisan",
+                "Expresses love through beauty, order, and understanding.",
+                "Aligns actions and intentions with truth and wisdom.",
+                "Creates and refines with excellence, honoring God through design and detail.",
+                "Reflects deeply, seeing patterns of grace and communicating truth clearly."
+              ],
+              [
+                "Shepherd",
+                "Loves through presence, empathy, and relational care.",
+                "Chooses surrender and humility, nurturing others from a heart of service.",
+                "Serves with endurance and gentleness, offering consistent support.",
+                "Thinks relationally, seeking unity and emotional understanding."
+              ],
+              [
+                "Steward",
+                "Loves by protecting, providing, and remaining steadfast.",
+                "Devotes self to integrity and responsibility as acts of worship.",
+                "Works diligently, ensuring faithfulness in action and stewardship of resources.",
+                "Considers carefully what is right and just, maintaining peace through structure."
+              ]
+            ],
+            "label": "Design reflections and loving God"
+          }
+        ],
+        teachingBlocks: [],
       },
       {
         row: 22,
@@ -383,12 +1490,28 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         workbookPages: "p25 - p26",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Love your neighbor as yourself with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
-        anchorScripture: "Ephesians 2:10",
-        teachingBlocks: [
-          "This lesson introduces Love your neighbor as yourself as part of the Identity movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
+        lessonMainIdea: "",
+        focus: ["You Are Worth Loving"],
+        media: {"image":"https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/05b25f49-a299-4ab4-9476-838b7bae1473/smiling-woman-enjoying-nature-and-forest-sunshine-2026-09-25-08-46-31-utc.jpg?format=2500w","label":"Receiving God’s love and loving yourself","type":"image"},
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "Jesus tells us to “love your neighbor as yourself,” it’s not just about being kind to others; it’s a reminder that you can’t pour out what you haven’t first received. Loving yourself isn’t selfish; it’s survival, and it’s the only way to truly love your neighbor."
+          },
+          {
+            "type": "paragraph",
+            "text": "Do you love yourself? Can you say it? “I love myself.” Are you able to tell others that you love yourself? If you ever want to find a way to break the ice in a conversation in a strange way, walk up to someone new next time you are out or at church and just tell them, “I really love me some me.” As funny as that sounds, based on Mark 12, you are letting them know that you are capable of loving them."
+          },
+          {
+            "type": "paragraph",
+            "text": "This is incredibly powerful. Loving yourself means seeing God’s perspective. How often do we put consequences, obstacles, or false perceptions above the knowledge that God loves us?"
+          },
+          {
+            "type": "paragraph",
+            "text": "God loves you. There is no denying it. He loved you before you ever loved Him back. This includes all your blemishes, wrinkles, and scars. If you can know, truly know, that God loves you and you can surrender to being His purposeful creation, the blemishes, wrinkles, and scars, fade away. Loving yourself, the uniquely created person God designed, frees you to love others with untethered and reckless abandon. It is this type of love that will actually change your neighbors, and it is sorely missed in the fellowship of believers today."
+          }
         ],
+        teachingBlocks: [],
       },
       {
         row: 23,
@@ -400,12 +1523,40 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         workbookPages: "p27 - p30",
         typeLabel: "DesignID reflection",
         duration: "10-15 min",
-        lessonMainIdea: "Use DesignID as a mirror inside Identity, helping the learner connect assessment language to faithful love and service.",
-        anchorScripture: "Ephesians 2:10",
-        teachingBlocks: [
-          "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
-          "Placed inside Identity, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course.",
+        lessonMainIdea: "",
+        focus: ["Love One Another"],
+        media: {"image":"https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/c1f8f611-a5f0-438a-a31e-1f72fe74d2a7/relaxed-family-sitting-grass-mountain-slope-at-sum-2026-01-05-23-35-52-utc.jpg?format=500w","label":"A family together in creation","type":"image"},
+        lessonBody: [
+          {
+            "type": "heading",
+            "text": "Called to “One Another”"
+          },
+          {
+            "type": "paragraph",
+            "text": "As Christians, we are family. When we pursue harmony, mutual respect, and peace with each other, we reflect God’s character and His love. The fact that God created us all uniquely means that this unity will take work. We are called to work, love, and serve with those who are different and unfamiliar. This can create anxiety, and a multitude of miscommunications. It can lead to hurts and disagreements, or even outright conflict. All of this is not just okay but part of God’s design."
+          },
+          {
+            "type": "paragraph",
+            "text": "He knew that we would start our campaign as an eternal citizen in heaven, here on earth. He knew that we would grow and be refined simply because others were not like us. It is His design that we are to love in unity, being one body with many parts. Let’s face it, some of those we work with are as different as the night is from the day. Isn’t that wonderful! What an opportunity to love."
+          },
+          {
+            "type": "paragraph",
+            "text": "The world is watching to see if we will accept each other and love despite our differences and hang-ups, because they want to know that we will love them in the same way. What a shame it is that the Body of Christ, His bride, is so fragmented today. We have to learn to obey His commands associated with the phrase “one another.”"
+          },
+          {
+            "type": "paragraph",
+            "text": "In the New Testament, Jesus and the apostles tell us to feel, say, or do something to one another numerous times."
+          },
+          {
+            "type": "paragraph",
+            "text": "Consider what it means to “one another” through your reflection. In what ways has God uniquely designed you to support and strengthen other believers?"
+          },
+          {
+            "type": "paragraph",
+            "text": "It is important that you can “one another” for all four of your reflections. Even in the areas where you have less energy or natural capacity, the call remains the same. Every believer is invited to live out the “one another” commands of Scripture. You may simply need to lean on God’s strength more deeply in those areas, for in your weakness, He is strong."
+          }
         ],
+        teachingBlocks: [],
       },
       {
         row: 24,
@@ -418,12 +1569,56 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         workbookPages: "p31 - p32",
         typeLabel: "Pathfinder / niche",
         duration: "12-20 min",
-        lessonMainIdea: "Shape the Identity chapter into one useful line for the learner's developing niche declaration.",
-        anchorScripture: "Ephesians 2:10",
-        teachingBlocks: [
-          "This Pathfinder moment turns the Identity chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
-          "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration.",
+        lessonMainIdea: "Your identity is the foundation of your calling.",
+        focus: ["Identity "],
+        media: {"image": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/418f123c-15e8-4a72-83c6-8e590c46f670/woman-sits-in-nature-in-thoughtful-pose-2026-09-22-10-54-13-utc.jpg?format=2500w", "label": "A woman sitting in nature in a thoughtful pose", "type": "image"},
+        lessonBody: [
+          {
+            "type": "paragraph",
+            "text": "Before you begin writing your Niche Declaration, spend a few moments reflecting on the truth of who you are in Christ. Your identity is the foundation of your calling. It is not shaped by your past, your mistakes, or your circumstances, but by the One who created you, redeemed you, and calls you His own."
+          },
+          {
+            "type": "paragraph",
+            "text": "Use this space to declare your identity in your own words. Let Scripture guide you as you write statements that reflect who God says you are."
+          },
+          {
+            "type": "paragraph",
+            "text": "You might reflect on verses such as:"
+          },
+          {
+            "type": "paragraph",
+            "text": "● Ephesians 2:10: “For we are God’s handiwork…”"
+          },
+          {
+            "type": "paragraph",
+            "text": "● 1 Peter 2:9: “…a chosen people…God’s special possession…”"
+          },
+          {
+            "type": "paragraph",
+            "text": "● Romans 8:16: “The Spirit himself testifies…that we are God’s children.”"
+          },
+          {
+            "type": "paragraph",
+            "text": "Take your time. Write honestly. Let this be an act of worship. You might write observations such as:"
+          },
+          {
+            "type": "paragraph",
+            "text": "● “I am a beloved child of God, created on purpose and for a purpose.”"
+          },
+          {
+            "type": "paragraph",
+            "text": "● “I am chosen, redeemed, equipped, and sent as His workmanship.”"
+          },
+          {
+            "type": "paragraph",
+            "text": "● “I am accepted, forgiven, and empowered by His Spirit.”"
+          },
+          {
+            "type": "paragraph",
+            "text": "● “I am His workmanship, created for good works…”"
+          }
         ],
+        teachingBlocks: [],
       },
     ],
   },
@@ -438,91 +1633,61 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         slug: "expertise-the-journey-to-expertise-26",
         type: "normal",
         section: "Expertise Journey",
-        title: "The Journey to Expertise",
         bookPages: "p41 - p46",
         workbookSection: "The slow and faithful journey to Expertise",
         workbookPages: "p34 - p36",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach The Journey to Expertise with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
-        anchorScripture: "Colossians 3:23",
         companionMoment: dyddJourneyCompanionMoments.expertise,
-        teachingBlocks: [
-          "This lesson introduces The Journey to Expertise as part of the Expertise movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
-        ],
+        ...expertiseLessons["expertise-the-journey-to-expertise-26"],
       },
       {
         row: 27,
         slug: "expertise-talent-27",
         type: "normal",
         section: "Expertise Journey",
-        title: "Talent",
         bookPages: "p46 - p47",
         workbookSection: "What are your talents?",
         workbookPages: "p37",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Talent with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
-        anchorScripture: "Colossians 3:23",
-        teachingBlocks: [
-          "This lesson introduces Talent as part of the Expertise movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
-        ],
+        ...expertiseLessons["expertise-talent-27"],
       },
       {
         row: 28,
         slug: "expertise-competence-28",
         type: "normal",
         section: "Expertise Journey",
-        title: "Competence",
         bookPages: "p48 - p50",
         workbookSection: "Where are you growing in Competency?",
         workbookPages: "p38 - p39",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Competence with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
-        anchorScripture: "Colossians 3:23",
-        teachingBlocks: [
-          "This lesson introduces Competence as part of the Expertise movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
-        ],
+        ...expertiseLessons["expertise-competence-28"],
       },
       {
         row: 29,
         slug: "expertise-expertise-29",
         type: "normal",
         section: "Expertise Journey",
-        title: "Expertise",
         bookPages: "p51 - p60",
         workbookSection: "What is expertise?",
         workbookPages: "p40 - p41",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Expertise with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
-        anchorScripture: "Colossians 3:23",
-        teachingBlocks: [
-          "This lesson introduces Expertise as part of the Expertise movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
-        ],
+        ...expertiseLessons["expertise-expertise-29"],
       },
       {
         row: 30,
         slug: "expertise-being-vs-doing-30",
         type: "normal",
         section: "Deep Efforts produce deep results",
-        title: "Being Vs. Doing",
         bookPages: "p61 - p66",
         workbookSection: "Being Before Doing",
         workbookPages: "p42 - p44",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Being Vs. Doing with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
-        anchorScripture: "Colossians 3:23",
-        teachingBlocks: [
-          "This lesson introduces Being Vs. Doing as part of the Expertise movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
-        ],
+        ...expertiseLessons["expertise-being-vs-doing-30"],
       },
       {
         row: 31,
@@ -532,30 +1697,21 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         title: "Applied Capacity",
         typeLabel: "Teaching lesson",
         duration: "6-9 min",
-        lessonMainIdea: "Teach Applied Capacity with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
-        anchorScripture: "Colossians 3:23",
-        teachingBlocks: [
-          "This lesson introduces Applied Capacity as part of the Expertise movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
-          "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place.",
-        ],
+        lessonMainIdea: "Use capacity as a grace-filled lens for fulfillment and time.",
+        focus: ["Capacity", "Fulfillment", "Time"],
+        teachingBlocks: [],
       },
       {
         row: 32,
         slug: "expertise-connecting-identity-and-expertise-32",
         type: "designid-reflection",
         section: "Deep Efforts produce deep results",
-        title: "Connecting Identity & Expertise",
         bookPages: "p67",
         workbookSection: "The Reflections: Talent - Competency - Expertise",
         workbookPages: "p45 - p46",
         typeLabel: "DesignID reflection",
         duration: "10-15 min",
-        lessonMainIdea: "Use DesignID as a mirror inside Expertise, helping the learner connect assessment language to faithful love and service.",
-        anchorScripture: "Colossians 3:23",
-        teachingBlocks: [
-          "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
-          "Placed inside Expertise, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course.",
-        ],
+        ...expertiseLessons["expertise-connecting-identity-and-expertise-32"],
       },
       {
         row: 33,
@@ -564,16 +1720,20 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         section: "Expertise Pathfinder: Niche",
         title: "Niche Preparation: Expertise",
         bookPages: "p68 - p69",
-        workbookSection: "Which will enable me to use my...",
+        workbookSection: "Which will allow me to use my…",
         workbookPages: "p47 - p48",
         typeLabel: "Pathfinder / niche",
         duration: "12-20 min",
-        lessonMainIdea: "Shape the Expertise chapter into one useful line for the learner's developing niche declaration.",
+        lessonMainIdea: "Gather the talents, skills, competency, and expertise God is developing in you to bless others.",
+        focus: ["Expertise"],
         anchorScripture: "Colossians 3:23",
-        teachingBlocks: [
-          "This Pathfinder moment turns the Expertise chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
-          "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration.",
-        ],
+        media: {
+          image: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/ca2d3562-b308-4cd2-96cb-2837e1edad51/business-people-discussing-business-contract-2025-02-11-15-37-53-utc.jpg?format=2500w",
+          label: "Business colleagues sharing their knowledge and experience around a table",
+          type: "image",
+        },
+        lessonBody: [{ type: "paragraph", text: "God-given talent is the starting point. Through faithful practice, it grows into reliable competence and, over time, deeper wisdom and expertise. What you do flows from who you are in Christ; it does not determine your worth. As you gather what you’ve discovered, notice where you find energy and fulfillment, and where you may need rest, growth, or partnership." }],
+        teachingBlocks: [],
       },
     ],
   },
@@ -1157,8 +2317,8 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         slug: "niche-which-will-enable-me-to-use-my-70",
         type: "pathfinder",
         section: "Step in to your purpose",
-        title: "Which will enable me to use my...",
-        workbookSection: "Which will enable me to use my...",
+        title: "Which will allow me to use my…",
+        workbookSection: "Which will allow me to use my…",
         typeLabel: "Pathfinder / niche",
         duration: "12-20 min",
         lessonMainIdea: "Shape the Niche chapter into one useful line for the learner's developing niche declaration.",

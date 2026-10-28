@@ -1,4 +1,7 @@
 "use client";
+import { retiredPathfinderCanonical } from "@/lib/journey/pathfinder";
+import { isSandbox } from '@/lib/environment';
+import { careDiscussionIds, discussionCourse, type DiscussionReminder } from '@/lib/reflections/discussion-catalog';
 import { ReviewAwareLink } from "@/components/review-aware-link";
 import {
   createContext,
@@ -47,6 +50,8 @@ function ReflectionText({ text }: { text: string }) {
   );
 }
 type Session = {
+  inlineEntry: boolean;
+  setup: ReactNode;
   courseSlug: string;
   data: ReflectionData;
   round: ReflectionRound | null;
@@ -55,11 +60,20 @@ type Session = {
   questions: ReflectionQuestion[];
   drafts: Record<string, string>;
   setDraft: (id: string, value: string) => void;
-  save: (q: ReflectionQuestion) => Promise<void>;
+  save: (q: ReflectionQuestion) => Promise<boolean>;
+  automatic: boolean;
+  flush: () => Promise<boolean>;
   statuses: Record<string, string>;
   readOnly: boolean;
   recordPosition: (lessonSlug: string) => void;
   reload: () => Promise<void>;
+  discussionEnabled: boolean;
+  reminderError: string;
+  reminders: DiscussionReminder[];
+  reminderDrafts: Record<string, { marked: boolean; note: string }>;
+  reminderStatuses: Record<string, string>;
+  setReminder: (id: string, marked: boolean, note: string) => void;
+  saveReminder: (id: string) => Promise<boolean>;
 };
 const Context = createContext<Session | null>(null);
 const empty: ReflectionData = {
@@ -73,10 +87,14 @@ export function ReflectionSession({
   courseSlug,
   questions,
   children,
+  compactControls = false,
+  inlineEntry = false,
 }: {
   courseSlug: string;
   questions: ReflectionQuestion[];
   children: ReactNode;
+  compactControls?: boolean;
+  inlineEntry?: boolean;
 }) {
   const [data, setData] = useState<ReflectionData>(empty),
     [selected, setSelected] = useState(""),
@@ -86,10 +104,27 @@ export function ReflectionSession({
     [error, setError] = useState(""),
     [creating, setCreating] = useState(false),
     [report, setReport] = useState("");
+  const assessmentEntry = ["designid-foundations", "spiritual-gifts-service", "fruitlife-360-formation", "designpd-alignment"].includes(courseSlug);
+  const contextualEntry = inlineEntry && assessmentEntry;
+  const discussionEnabled = courseSlug === discussionCourse;
+  const [reminderError, setReminderError] = useState('');
+  const [reminders, setReminders] = useState<DiscussionReminder[]>([]);
+  const [reminderDrafts, setReminderDrafts] = useState<Record<string, { marked: boolean; note: string }>>({});
+  const [reminderStatuses, setReminderStatuses] = useState<Record<string, string>>({});
+  const reminderRef = useRef(reminders); reminderRef.current = reminders;
+  const reminderDraftRef = useRef(reminderDrafts); reminderDraftRef.current = reminderDrafts;
+  const reminderTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+  const saveReminderRef = useRef<(id: string) => Promise<boolean>>(async () => false);
+  const automatic = compactControls && courseSlug === "discover-your-divine-design";
   const dirty = useRef(false),
     busy = useRef(new Set<string>()),
     draftRef = useRef(drafts);
   draftRef.current = drafts;
+  const timers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+  const saveRef = useRef<(q: ReflectionQuestion) => Promise<boolean>>(async () => false);
+  const flushRef = useRef<() => Promise<boolean>>(async () => true);
+  const entriesRef = useRef<ReflectionData["entries"]>([]);
+  entriesRef.current = data.entries;
   const positionQueue = useRef<Promise<void>>(Promise.resolve());
   const round = data.rounds.find((r) => r.id === selected) ?? null;
   const latest = useMemo(() => {
@@ -99,7 +134,11 @@ export function ReflectionSession({
         map[e.question_id] = e;
     return map;
   }, [data.entries, selected]);
-  dirty.current = Object.entries(drafts).some(
+  const reminderDirty = () => Object.entries(reminderDraftRef.current).some(([id, value]) => {
+    const prior = reminderRef.current.find(r => r.round_id === selected && r.question_id === id);
+    return value.marked !== (prior?.marked ?? false) || value.note !== (prior?.note ?? '');
+  });
+  dirty.current = reminderDirty() || Object.entries(drafts).some(
     ([id, value]) => value !== (latest[id]?.response ?? ""),
   );
   const readOnly = Boolean(
@@ -115,6 +154,15 @@ export function ReflectionSession({
       );
       let body = await r.json();
       if (!r.ok) throw Error(body.error);
+      if (automatic && body.signedIn && !body.rounds.length) {
+        const setup = await reflectionFetch("/api/course-reflections", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "ensure-round", courseSlug }),
+        });
+        const result = await setup.json();
+        if (!setup.ok) throw Error(result.error);
+        body = { ...body, rounds: [result.round] };
+      }
       if (body.nextAssessmentReportId) {
         const sync = await reflectionFetch("/api/course-reflections", {
           method: "POST",
@@ -130,10 +178,18 @@ export function ReflectionSession({
         body = await fresh.json();
         if (!fresh.ok) throw Error(body.error);
       }
+      if (discussionEnabled && body.signedIn) {
+        try {
+          const response = await reflectionFetch(`/api/course-reflections/discussion?courseSlug=${encodeURIComponent(courseSlug)}`, { cache: 'no-store' });
+          const saved = await response.json();
+          if (!response.ok) throw Error(saved.error);
+          reminderRef.current = saved.reminders;
+          setReminders(saved.reminders); setReminderError('');
+        } catch (e) { setReminderError(e instanceof Error ? e.message : 'Could not load discussion reminders.'); }
+        // An optional reminder outage must not prevent opening/saving the actual workbook.
+      }
       setData(body);
-      const requestedRound = new URLSearchParams(window.location.search).get(
-        "round",
-      );
+      const requestedRound = automatic ? null : new URLSearchParams(window.location.search).get("round");
       setSelected((current) =>
         body.rounds.some((r: ReflectionRound) => r.id === current)
           ? current
@@ -159,6 +215,13 @@ export function ReflectionSession({
       }
     };
     const navigate = (e: MouseEvent) => {
+      const link = (e.target as Element).closest?.("a[href]") as HTMLAnchorElement | null;
+      if (automatic && link && link.target !== "_blank" && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.button === 0 && dirty.current) {
+        e.preventDefault(); e.stopPropagation();
+        const href = link.href;
+        void flushRef.current().then(ok => { if (ok) window.location.assign(href); });
+        return;
+      }
       const a = (e.target as Element).closest?.("a[href]");
       if (
         a &&
@@ -218,6 +281,8 @@ export function ReflectionSession({
       )
     )
       return;
+    for (const timer of Object.values(reminderTimers.current)) clearTimeout(timer);
+    setReminderDrafts({}); reminderDraftRef.current = {}; setReminderStatuses({});
     setDrafts({});
     setStatuses({});
     setSelected(id);
@@ -247,6 +312,8 @@ export function ReflectionSession({
       const b = await r.json();
       if (!r.ok) throw Error(b.error);
       setData((d) => ({ ...d, rounds: [b.round, ...d.rounds] }));
+      setReminderDrafts({}); reminderDraftRef.current = {}; setReminderStatuses({});
+      for (const timer of Object.values(reminderTimers.current)) clearTimeout(timer);
       setSelected(b.round.id);
       setRoundUrl(b.round.id);
       setDrafts({});
@@ -257,50 +324,79 @@ export function ReflectionSession({
       setCreating(false);
     }
   };
-  const save = async (q: ReflectionQuestion) => {
-    if (!round || readOnly || busy.current.has(q.id)) return;
-    busy.current.add(q.id);
+  const save = (q: ReflectionQuestion): Promise<boolean> => {
+    clearTimeout(timers.current[q.id]);
+    if (!round || readOnly) return Promise.resolve(false);
     const savingRound = round.id;
-    const value = drafts[q.id] ?? latest[q.id]?.response ?? "";
-    setStatuses((s) => ({ ...s, [q.id]: "Saving…" }));
-    try {
-      const r = await reflectionFetch("/api/course-reflections", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "save",
-          courseSlug,
-          roundId: savingRound,
-          questionId: q.id,
-          response: value,
-          expectedRevision: latest[q.id]?.revision ?? 0,
-        }),
-      });
-      const b = await r.json();
-      if (!r.ok) throw Error(b.error);
-      setData((d) => ({
-        ...d,
-        entries: [...d.entries.filter((e) => e.id !== b.entry.id), b.entry],
-      }));
-      setStatuses((s) => ({
-        ...s,
-        [q.id]:
-          (draftRef.current[q.id] ?? value) === value
-            ? data.preview ? "Saved to your preview workbook" : "Saved to your account"
-            : "Unsaved changes",
-      }));
-    } catch (e) {
-      setStatuses((s) => ({
-        ...s,
-        [q.id]:
-          e instanceof Error
-            ? e.message
-            : "Could not save. Your draft is still here.",
-      }));
-    } finally {
-      busy.current.delete(q.id);
-    }
+    const task = positionQueue.current.catch(() => {}).then(async () => {
+      const previous = entriesRef.current.filter(e => e.round_id === savingRound && e.question_id === q.id).sort((a,b) => b.revision-a.revision)[0];
+      const value = draftRef.current[q.id] ?? previous?.response ?? "";
+      if (value === (previous?.response ?? "")) {
+        if (automatic) setStatuses(s => ({ ...s, [q.id]: "Saved" }));
+        return true;
+      }
+      busy.current.add(q.id);
+      setStatuses(s => ({ ...s, [q.id]: "Saving…" }));
+      try {
+        const r = await reflectionFetch("/api/course-reflections", {
+          method: "POST", keepalive: true, headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "save", courseSlug, roundId: savingRound, questionId: q.id, response: value, expectedRevision: previous?.revision ?? 0 }),
+        });
+        const b = await r.json();
+        if (!r.ok) throw Error(b.error);
+        const entries = [...entriesRef.current.filter(e => e.id !== b.entry.id), b.entry];
+        entriesRef.current = entries;
+        dirty.current = reminderDirty() || Object.entries(draftRef.current).some(([id, text]) => {
+          const saved = entries.filter(e => e.round_id === savingRound && e.question_id === id).sort((a,b) => b.revision-a.revision)[0];
+          return text !== (saved?.response ?? "");
+        });
+        setData(d => ({ ...d, entries }));
+        setStatuses(s => ({ ...s, [q.id]: (draftRef.current[q.id] ?? value) === value ? (automatic ? "Saved" : data.preview ? "Saved to your preview workbook" : "Saved to your account") : "Unsaved changes" }));
+        return true;
+      } catch (e) {
+        setStatuses(s => ({ ...s, [q.id]: e instanceof Error ? e.message : "Could not save. Your draft is still here. Please try again." }));
+        return false;
+      } finally { busy.current.delete(q.id); }
+    });
+    positionQueue.current = task.then(() => {});
+    return task;
   };
+  saveRef.current = save;
+  const saveReminder = (id: string): Promise<boolean> => {
+    clearTimeout(reminderTimers.current[id]);
+    if (!round || readOnly || !discussionEnabled) return Promise.resolve(false);
+    const roundId = round.id;
+    const task = positionQueue.current.catch(() => {}).then(async () => {
+      const draft = reminderDraftRef.current[id];
+      if (!draft) return true;
+      const previous = reminderRef.current.find(r => r.round_id === roundId && r.question_id === id);
+      if (draft.marked === (previous?.marked ?? false) && draft.note === (previous?.note ?? '')) return true;
+      busy.current.add('reminder-' + id);
+      setReminderStatuses(s => ({ ...s, [id]: 'Saving…' }));
+      try {
+        const r = await reflectionFetch('/api/course-reflections/discussion', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ courseSlug, roundId, questionId: id, ...draft, expectedRevision: previous?.revision ?? 0 }) });
+        const b = await r.json();
+        if (!r.ok) throw Error(b.error);
+        const next = [...reminderRef.current.filter(v => !(v.round_id === roundId && v.question_id === id)), b.reminder];
+        reminderRef.current = next; setReminders(next);
+        setReminderStatuses(s => ({ ...s, [id]: reminderDraftRef.current[id]?.note === draft.note && reminderDraftRef.current[id]?.marked === draft.marked ? 'Saved' : 'Unsaved changes' }));
+        return true;
+      } catch (e) { setReminderStatuses(s => ({ ...s, [id]: e instanceof Error ? e.message : 'Could not save reminder. Please try again.' })); return false; }
+      finally { busy.current.delete('reminder-' + id); }
+    });
+    positionQueue.current = task.then(() => {});
+    return task;
+  };
+  saveReminderRef.current = saveReminder;
+  const flush = async () => {
+    const changed = questions.filter(q => Object.hasOwn(draftRef.current, q.id));
+    let ok = true;
+    for (const q of changed) if (!await saveRef.current(q)) ok = false;
+    for (const id of Object.keys(reminderDraftRef.current)) if (!await saveReminderRef.current(id)) ok = false;
+    return ok;
+  };
+  flushRef.current = flush;
+  useEffect(() => () => { for (const timer of [...Object.values(timers.current), ...Object.values(reminderTimers.current)]) clearTimeout(timer); }, []);
   const recordPosition = (lessonSlug: string) => {
     if (!round || readOnly) return;
     const roundId = round.id;
@@ -331,7 +427,45 @@ export function ReflectionSession({
       })
       .catch((e) => setError(e.message));
   };
+  const reportSelector = (
+    <details className="reflection-report-link">
+      <summary>Link these reflections to a report (optional)</summary>
+      <p>This labels this set of reflections; your lesson content stays the same.</p>
+      <label>
+        Report
+        <select value={report} onChange={(e) => setReport(e.target.value)} disabled={creating}>
+          <option value="">Course reflections only</option>
+          {data.reports.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
+        </select>
+      </label>
+    </details>
+  );
+  const setup = (
+    <div className="reflection-entry-setup">
+      <h3>Your private reflections</h3>
+      <p>Save what you notice as you work through this course.</p>
+      {loading ? <p role="status">Loading your reflections…</p> : !data.signedIn ? (
+        <p><ReviewAwareLink href={`/login?next=${encodeURIComponent(`/courses/${courseSlug}`)}`}>Sign in to save your reflections</ReviewAwareLink></p>
+      ) : data.canStart ? <>
+        <button className="button primary" type="button" onClick={() => void newRound()} disabled={creating}>
+          {creating ? "Beginning…" : "Begin my reflections"}
+        </button>
+        {reportSelector}
+      </> : <p>Begin this trail at <ReviewAwareLink href="/trailheads">Trailheads</ReviewAwareLink>; its completed report opens your reflections.</p>}
+      {error ? <p role="alert">{error} <button type="button" onClick={() => void reload()}>Try loading again</button></p> : null}
+    </div>
+  );
   const session: Session = {
+    inlineEntry: contextualEntry,
+    setup,
+    discussionEnabled, reminderError, reminders, reminderDrafts, reminderStatuses, saveReminder,
+    setReminder: (id, marked, note) => {
+      reminderDraftRef.current = { ...reminderDraftRef.current, [id]: { marked, note } };
+      setReminderDrafts(reminderDraftRef.current); dirty.current = true;
+      setReminderStatuses(s => ({ ...s, [id]: 'Unsaved changes' }));
+      clearTimeout(reminderTimers.current[id]);
+      reminderTimers.current[id] = setTimeout(() => { void saveReminderRef.current(id); }, 700);
+    },
     courseSlug,
     data,
     round,
@@ -345,18 +479,32 @@ export function ReflectionSession({
     ),
     drafts,
     setDraft: (id, value) => {
-      setDrafts((d) => ({ ...d, [id]: value }));
+      draftRef.current = { ...draftRef.current, [id]: value };
+      dirty.current = true;
+      setDrafts(draftRef.current);
+      if (automatic) {
+        clearTimeout(timers.current[id]);
+        const q = questions.find(q => q.id === id);
+        if (q) timers.current[id] = setTimeout(() => { void saveRef.current(q); }, 700);
+      }
       setStatuses((s) => ({ ...s, [id]: "Unsaved changes" }));
     },
     save,
+    automatic,
+    flush,
     statuses,
     readOnly,
     recordPosition,
     reload,
   };
-  return (
-    <Context.Provider value={session}>
-      <section className="reflection-round-bar" aria-label="Reflection rounds">
+  const controls = (
+    <section className="reflection-round-bar" aria-label="Reflection rounds">
+      {assessmentEntry ? null : compactControls ? (
+        <p>
+          Your CARE reflections stay editable here and in Field Kit. Both places
+          use the same saved answers.
+        </p>
+      ) : (
         <div>
           <p className="section-label">Your private workbook</p>
           <h2>Reflections for this walk.</h2>
@@ -366,97 +514,109 @@ export function ReflectionSession({
             reflections stay intact and read-only.
           </p>
         </div>
-        {loading ? (
-          <p role="status">Loading your reflection history…</p>
-        ) : !data.signedIn ? (
-          <p>
-            <a
-              href={`/login?next=${encodeURIComponent(typeof window !== "undefined" ? window.location.pathname : "/field-kit")}`}
-            >
-              Sign in to save your reflections
-            </a>
-            . Preview answers are not saved.
-          </p>
-        ) : (
-          <div className="reflection-round-controls">
-            {data.rounds.length > 0 ? (
-              <label>
-                Reflection round
+      )}
+      {loading ? (
+        <p role="status">Loading your reflection history…</p>
+      ) : !data.signedIn ? (
+        <p>
+          <a
+            href={`/login?next=${encodeURIComponent(typeof window !== "undefined" ? window.location.pathname : "/field-kit")}`}
+          >
+            Sign in to save your reflections
+          </a>
+          . Preview answers are not saved.
+        </p>
+      ) : (
+        <div className="reflection-round-controls">
+          {data.rounds.length > 0 ? (
+            <label>
+              Reflection round
+              <select
+                disabled={Object.values(statuses).includes("Saving…")}
+                value={selected}
+                onChange={(e) => changeRound(e.target.value)}
+              >
+                {data.rounds.map((r, i) => (
+                  <option key={r.id} value={r.id}>
+                    {date(r.started_at)}
+                    {i === 0 ? " — current round" : " — previous round"}
+                    {r.source === "legacy" ? " (earlier saved work)" : ""}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <p>No saved rounds yet. Begin your first round to write here.</p>
+          )}
+          {data.canStart ? (
+            <>
+              {assessmentEntry ? reportSelector : <label>
+                Connect a report (optional)
                 <select
-                  disabled={Object.values(statuses).includes("Saving…")}
-                  value={selected}
-                  onChange={(e) => changeRound(e.target.value)}
+                  value={report}
+                  onChange={(e) => setReport(e.target.value)}
                 >
-                  {data.rounds.map((r, i) => (
+                  <option value="">Course reflections only</option>
+                  {data.reports.map((r) => (
                     <option key={r.id} value={r.id}>
-                      {date(r.started_at)}
-                      {i === 0 ? " — current round" : " — previous round"}
-                      {r.source === "legacy" ? " (earlier saved work)" : ""}
+                      {r.label}
                     </option>
                   ))}
                 </select>
-              </label>
-            ) : (
-              <p>No saved rounds yet. Begin your first round to write here.</p>
-            )}
-            {data.canStart ? (
-              <>
-                <label>
-                  Connect a report (optional)
-                  <select
-                    value={report}
-                    onChange={(e) => setReport(e.target.value)}
-                  >
-                    <option value="">Course reflections only</option>
-                    {data.reports.map((r) => (
-                      <option key={r.id} value={r.id}>
-                        {r.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <button
-                  className="button primary"
-                  type="button"
-                  onClick={newRound}
-                  disabled={
-                    creating || Object.values(statuses).includes("Saving…")
-                  }
-                >
-                  {creating
-                    ? "Beginning…"
-                    : data.rounds.length
-                      ? "Begin a new reflection round"
-                      : "Begin my reflections"}
-                </button>
-              </>
-            ) : (
-              <p>
-                Begin this trail at <ReviewAwareLink href="/trailheads">Trailheads</ReviewAwareLink>; its
-                completed report opens new reflection rounds.
-              </p>
-            )}
-            {round?.assessment_label ? (
-              <p>Connected report: {round.assessment_label}</p>
-            ) : null}
-            {readOnly ? (
-              <p>
-                You’re reading a previous round. Choose the current round to
-                continue writing, or begin a new one.
-              </p>
-            ) : null}
-          </div>
-        )}
-        {error ? (
-          <p className="form-message error" role="alert">
-            {error}{" "}
-            <button type="button" onClick={() => void reload()}>
-              Try loading again
-            </button>
-          </p>
-        ) : null}
-      </section>
+              </label>}
+              <button
+                className={assessmentEntry ? "button secondary" : "button primary"}
+                type="button"
+                onClick={newRound}
+                disabled={
+                  creating || Object.values(statuses).includes("Saving…")
+                }
+              >
+                {creating
+                  ? "Beginning…"
+                  : data.rounds.length
+                    ? assessmentEntry ? "Start a fresh set of reflections" : "Begin a new reflection round"
+                    : "Begin my reflections"}
+              </button>
+            </>
+          ) : (
+            <p>
+              Begin this trail at <ReviewAwareLink href="/trailheads">Trailheads</ReviewAwareLink>; its
+              completed report opens new reflection rounds.
+            </p>
+          )}
+          {round?.assessment_label ? (
+            <p>Connected report: {round.assessment_label}</p>
+          ) : null}
+          {readOnly ? (
+            <p>
+              You’re reading a previous round. Choose the current round to
+              continue writing, or begin a new one.
+            </p>
+          ) : null}
+        </div>
+      )}
+      {error ? (
+        <p className="form-message error" role="alert">
+          {error}{" "}
+          <button type="button" onClick={() => void reload()}>
+            Try loading again
+          </button>
+        </p>
+      ) : null}
+    </section>
+  );
+  return (
+    <Context.Provider value={session}>
+      {automatic || contextualEntry ? null : assessmentEntry ? (
+        data.rounds.length ? <details className="reflection-workbook-settings"><summary>Previous reflections and fresh sets</summary>{controls}</details> : setup
+      ) : controls}
       {children}
+      {contextualEntry && data.rounds.length > 0 ? <details className="reflection-workbook-settings">
+        <summary>Reflection workbook · Previous reflections and fresh sets</summary>
+        <p><ReviewAwareLink href={`/field-kit/reflections/${courseSlug}`}>Open my reflection workbook</ReviewAwareLink></p>
+        {controls}
+      </details> : null}
     </Context.Provider>
   );
 }
@@ -464,10 +624,12 @@ export function ReflectionAnswer({
   questionId,
   showQuestion = true,
   reading = false,
+  entryPoint = false,
 }: {
   questionId: string;
   showQuestion?: boolean;
   reading?: boolean;
+  entryPoint?: boolean;
 }) {
   const inputId = useId();
   const [editingHere, setEditingHere] = useState(false);
@@ -476,6 +638,7 @@ export function ReflectionAnswer({
   if (!s) return null;
   const q = s.questions.find((q) => q.id === questionId);
   if (!q) return null;
+  const retiredCanonical = s.courseSlug === "discover-your-divine-design" ? retiredPathfinderCanonical(q.id) : undefined;
   const entries = s.data.entries
     .filter((e) => e.round_id === s.round?.id && e.question_id === q.id)
     .sort((a, b) => b.revision - a.revision);
@@ -497,15 +660,19 @@ export function ReflectionAnswer({
   return (
     <section className="reflection-answer" data-question={q.id}>
       {showQuestion ? <h3>{q.prompt}</h3> : null}
+      {retiredCanonical && !s.readOnly ? <p className="reflection-retired-pathfinder">This earlier answer is preserved for history. <ReviewAwareLink href={`/journey?lesson=${s.questions.find(q => q.id === retiredCanonical)?.lessonSlug ?? "niche-pathfinder-preparing-your-niche-declaration-68"}`}>Edit the shared Pathfinder answer</ReviewAwareLink>.</p> : null}
+      {s.inlineEntry && !s.round ? (entryPoint ? s.setup : <p>Begin your reflections at the first reflection in this lesson.</p>) : <>
+      {s.error ? <p role="alert">{s.error} <button type="button" onClick={() => void s.reload()}>Try again</button></p> : null}
+      {!s.loading && !s.data.signedIn ? <p><a href={`/login?next=${encodeURIComponent("/journey")}`}>Sign in to save your reflections</a></p> : null}
       {s.loading ? (
         <p>Loading answer…</p>
-      ) : s.readOnly || (reading && !editingHere) ? (
+      ) : s.readOnly || Boolean(retiredCanonical) || (reading && !editingHere) ? (
         <>
           <p className="reflection-read-answer">
             <ReflectionText text={value || "Not answered in this round."} />
           </p>
           {current ? <small>Saved {date(current.saved_at)}</small> : null}
-          {!s.readOnly && s.round ? (
+          {!s.readOnly && !retiredCanonical && s.round ? (
             <button
               className="button secondary"
               type="button"
@@ -517,6 +684,7 @@ export function ReflectionAnswer({
         </>
       ) : (
         <>
+          {s.automatic ? <small>Your answers save automatically.</small> : null}
           <label htmlFor={inputId}>
             Your reflection
             <textarea
@@ -526,23 +694,24 @@ export function ReflectionAnswer({
               rows={5}
               disabled={!s.round || s.loading}
               onChange={(e) => s.setDraft(q.id, e.target.value)}
+              onBlur={() => { if (s.automatic) void s.save(q); }}
               placeholder={
                 s.round
                   ? "Write what you want to remember…"
-                  : "Begin a reflection round above to write here."
+                  : s.automatic ? "Your workbook is opening…" : "Begin a reflection round above to write here."
               }
             />
           </label>
           {s.round ? (
             <div className="reflection-answer-actions">
-              <button
+              {(!s.automatic || (s.statuses[q.id] && !["Saved", "Saving…", "Unsaved changes"].includes(s.statuses[q.id]))) ? <button
                 type="button"
                 className="button secondary"
                 disabled={s.statuses[q.id] === "Saving…" || s.loading}
                 onClick={() => void s.save(q)}
               >
-                Save reflection
-              </button>
+                {s.automatic ? "Try saving again" : "Save reflection"}
+              </button> : null}
               <span role="status">
                 {s.statuses[q.id] ??
                   (current
@@ -553,6 +722,8 @@ export function ReflectionAnswer({
           ) : null}
         </>
       )}
+      </>}
+      <DiscussionControl questionId={q.id} />
       {previous.length ? (
         <details className="reflection-history">
           <summary>View previous dated reflections ({previous.length})</summary>
@@ -593,10 +764,33 @@ export function ReflectionAnswer({
     </section>
   );
 }
+function DiscussionControl({ questionId }: { questionId: string }) {
+  const s = useContext(Context);
+  const noteId = useId();
+  const [noteOpen, setNoteOpen] = useState(false);
+  if (!s?.discussionEnabled || !careDiscussionIds.has(questionId) || !s.round || s.loading) return null;
+  if (s.reminderError) return <div className="discussion-control"><small role="alert">{s.reminderError}</small><button type="button" onClick={() => void s.reload()}>Try loading reminders again</button></div>;
+  const saved = s.reminders.find(r => r.round_id === s.round!.id && r.question_id === questionId);
+  const current = s.reminderDrafts[questionId] ?? saved ?? { marked: false, note: '' };
+  const status = s.reminderStatuses[questionId];
+  return <div className="discussion-control">
+    <button type="button" className="discussion-mark" aria-pressed={current.marked} disabled={s.readOnly} onClick={() => { s.setReminder(questionId, !current.marked, current.note); }}>
+      <span aria-hidden="true">{current.marked ? '◆' : '◇'}</span> {current.marked ? 'Marked for Class' : 'Take to Class'}
+    </button>
+    {current.marked ? <>
+      <small>Private reminder · Not posted or sent to your class.</small>
+      {!noteOpen && !current.note ? <button className="discussion-add-note" type="button" onClick={() => setNoteOpen(true)}>Add a note (optional)</button> : <label htmlFor={noteId}>Discussion note (optional)<textarea id={noteId} className="discussion-note" rows={2} maxLength={1000} value={current.note} disabled={s.readOnly} placeholder="What would you like to discuss?" onChange={e => s.setReminder(questionId, true, e.target.value)} onBlur={() => void s.saveReminder(questionId)} /></label>}
+    </> : null}
+    {status ? <small role="status">{status}</small> : null}
+    {status && !['Saved', 'Saving…', 'Unsaved changes'].includes(status) ? <button type="button" onClick={() => void s.saveReminder(questionId)}>Try saving reminder again</button> : null}
+  </div>;
+}
 export function ReflectionWorkbook() {
   const [editing, setEditing] = useState(false);
   const [moduleFilter, setModuleFilter] = useState("");
   const [answerFilter, setAnswerFilter] = useState("all");
+  const [discussionOnly, setDiscussionOnly] = useState(false);
+  useEffect(() => { if (new URLSearchParams(window.location.search).get('view') === 'discussion') setDiscussionOnly(true); }, []);
   const [exportScope, setExportScope] = useState("round");
   const [exportStatus, setExportStatus] = useState("");
   const [exporting, setExporting] = useState(false);
@@ -686,8 +880,10 @@ export function ReflectionWorkbook() {
   };
   const modules = [...new Set(s.questions.map((q) => q.moduleTitle))];
   const hasAnswer = (q: ReflectionQuestion) => answered.has(q.id);
+  const isMarked = (id: string) => s.reminderDrafts[id]?.marked ?? s.reminders.find(r => r.round_id === s.round?.id && r.question_id === id)?.marked ?? false;
   const visibleQuestions = s.questions.filter(
     (q) =>
+      (!discussionOnly || isMarked(q.id)) &&
       (!moduleFilter || q.moduleTitle === moduleFilter) &&
       (answerFilter === "all" ||
         hasAnswer(q) === (answerFilter === "answered")),
@@ -703,6 +899,12 @@ export function ReflectionWorkbook() {
   };
   return (
     <div className="reflection-workbook" ref={workbook}>
+      {s.discussionEnabled ? <section className="discussion-view" id="discussion-reminders" aria-label="My discussion reminders">
+        <h2>My discussion reminders</h2>
+        <p>Private reminders for your next conversation. Nothing is shared.</p>
+        <button type="button" className="button secondary" aria-pressed={discussionOnly} onClick={() => { setDiscussionOnly(v => !v); setModuleFilter(''); setAnswerFilter('all'); }}>{discussionOnly ? 'Show all reflections' : `View discussion reminders (${s.questions.filter(q => isMarked(q.id)).length})`}</button>
+      </section> : null}
+      {!discussionOnly ? <>
       <div className="reflection-workbook-toolbar">
         <div>
           <p className="section-label">Explore your workbook</p>
@@ -836,6 +1038,7 @@ export function ReflectionWorkbook() {
           </button>
         </div>
       </div>
+      </> : null}
       <p className="reflection-filter-count" role="status">
         {visibleQuestions.length} of {s.questions.length} reflections ·{" "}
         {modules.length} modules
@@ -851,6 +1054,7 @@ export function ReflectionWorkbook() {
           const lessons = [...new Set(allQuestions.map((q) => q.lessonSlug))];
           return (
             <details
+              open={discussionOnly ? true : undefined}
               className={`reflection-module${title === "Niche" ? " reflection-module-niche" : ""}`}
               key={title}
               hidden={!questions.length}
@@ -886,6 +1090,7 @@ export function ReflectionWorkbook() {
                   );
                   return (
                     <details
+                      open={discussionOnly ? true : undefined}
                       className="reflection-lesson"
                       key={lessonSlug}
                       hidden={!visible.length}
@@ -936,8 +1141,7 @@ export function ReflectionWorkbook() {
       </div>
       {!visibleQuestions.length ? (
         <p className="reflection-filter-empty">
-          No reflections match this view. Choose another module or show all
-          reflections.
+          {discussionOnly ? "No discussion reminders in this view yet. Mark any CARE reflection with Take to Class—even before you answer it." : "No reflections match this view. Choose another module or show all reflections."}
         </p>
       ) : null}
     </div>
@@ -1125,5 +1329,6 @@ export function useReflectionPosition() {
     roundId: s?.round?.id,
     lessonSlug: s?.round?.last_lesson_slug,
     recordPosition: s?.recordPosition,
+    flush: s?.automatic ? s.flush : undefined,
   };
 }

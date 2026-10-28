@@ -1,3 +1,4 @@
+import { getSavedWaypointPrimary } from "@/lib/waypoints/user-context";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 import { WaypointExplorer } from "@/components/waypoint-explorer";
@@ -8,6 +9,7 @@ import {
   previousWaypoint as scheduledPreviousWaypoint,
   waypointCategories as scheduledWaypointCategories,
   getReleasedWaypoints,
+  personalizeWaypoint,
 } from "@/lib/waypoints/waypoint-data";
 import { reviewQuery, type ReviewSearchParams } from "@/lib/review/heather";
 
@@ -24,6 +26,7 @@ async function getWaypointSubscriptionState() {
 
   if (!user || !email) {
     return {
+      savedPrimary: "",
       initialSubscribeEmail: "",
       initialSubscribeMessage:
         "Receive the weekly DYDD Waypoint every Friday at 8:00 AM Eastern.",
@@ -31,6 +34,7 @@ async function getWaypointSubscriptionState() {
     };
   }
 
+  const savedPrimary = await getSavedWaypointPrimary(user.id, email);
   const supabase = createSupabaseAdminClient();
   const { data: userSubscription } = await supabase
     .from("dydd_waypoint_subscriptions")
@@ -41,6 +45,7 @@ async function getWaypointSubscriptionState() {
 
   if (userSubscription) {
     return {
+      savedPrimary,
       initialSubscribeEmail: userSubscription.email ?? email,
       initialSubscribeMessage:
         "You're subscribed to weekly DYDD Waypoint emails.",
@@ -64,6 +69,7 @@ async function getWaypointSubscriptionState() {
     }
 
     return {
+      savedPrimary,
       initialSubscribeEmail: emailSubscription.email ?? email,
       initialSubscribeMessage:
         "You're subscribed to weekly DYDD Waypoint emails.",
@@ -72,6 +78,7 @@ async function getWaypointSubscriptionState() {
   }
 
   return {
+    savedPrimary,
     initialSubscribeEmail: email,
     initialSubscribeMessage:
       "Receive the weekly DYDD Waypoint every Friday at 8:00 AM Eastern.",
@@ -89,7 +96,8 @@ export default async function WaypointsPage({ searchParams }: WaypointsPageProps
     releasedWaypointArchive[0] ?? scheduledCurrentWaypoint;
   const activePreviousWaypoint =
     releasedWaypointArchive[1] ?? scheduledPreviousWaypoint;
-  const waypointSubscriptionState = await getWaypointSubscriptionState();
+  const { savedPrimary, ...waypointSubscriptionState } = await getWaypointSubscriptionState();
+  const personalizedWaypoints = releasedWaypointArchive.map(waypoint => personalizeWaypoint(waypoint, savedPrimary));
 
   return (
     <main className={`journey-shell hq-standalone-page fireside-page${fruitLifeLane ? " fruitlife-release-shell" : ""}`}>
@@ -122,7 +130,7 @@ export default async function WaypointsPage({ searchParams }: WaypointsPageProps
           currentId={activeCurrentWaypoint.id}
           {...waypointSubscriptionState}
           previousId={activePreviousWaypoint.id}
-          waypoints={releasedWaypointArchive}
+          waypoints={personalizedWaypoints}
         />
       </section>
 

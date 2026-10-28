@@ -164,7 +164,7 @@ export function AppSidebar() {
         <img src="/brand/dydd-logo.webp" alt="Discover Your Divine Design" />
       </ReviewAwareLink>
       <nav className="hq-sidebar-nav">
-        {navItems.map((item) => (
+        {navItems.filter(item => process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox" || item.href !== "/command-center").map((item) => (
           <div className="hq-nav-group" key={item.label}>
             <ReviewAwareLink className="hq-nav-item" href={item.href}>
               <AppNavIcon name={item.icon} />

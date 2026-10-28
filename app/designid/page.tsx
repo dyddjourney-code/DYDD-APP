@@ -35,7 +35,7 @@ export default async function DesignIdPage({ searchParams }: DesignIdPageProps) 
     .maybeSingle();
   const authDisplayName = String(user.user_metadata?.full_name ?? user.user_metadata?.name ?? "").trim();
   const reviewer = {
-    email: normalizeEmail(profile?.email ?? user.email),
+    email: normalizeEmail(user.email),
     name: profile?.full_name?.trim() || authDisplayName || user.email?.split("@")[0] || "DesignID Participant",
   };
 

@@ -48,22 +48,22 @@ const podcastNameIdeas = [
 export default function LivePage() {
   return (
     <main className="journey-shell hq-standalone-page fireside-page">
+      <header className="fireside-image-header live-fireside-header">
+        <img
+          alt="Illustrated Live Fireside gathering around a campfire"
+          src="/brand/dydd-live-fireside-banner-concept.png"
+        />
+        <div className="live-header-copy">
+          <p>Live Fireside</p>
+          <span>Gatherings, teaching, and conversations.</span>
+        </div>
+      </header>
+
       <section
         className="fireside-live-section"
         id="live"
         aria-label="Live Fireside"
       >
-        <div className="fireside-image-header live-fireside-header">
-          <img
-            alt="Illustrated Live Fireside gathering around a campfire"
-            src="/brand/dydd-live-fireside-banner-concept.png"
-          />
-          <div className="fireside-image-title live-title">
-            <p>Live Fireside</p>
-            <span>Gatherings, teaching, and conversations.</span>
-          </div>
-        </div>
-
         <div
           className="fireside-live-type-row"
           aria-label="Live Fireside categories"

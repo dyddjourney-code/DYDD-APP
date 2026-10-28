@@ -1,3 +1,4 @@
+import { canonicalDesignIdShadow } from "@/lib/designid/shadow";
 import { participantEmailCandidates } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
@@ -269,17 +270,23 @@ export async function findOrAttachParticipant(userId: string, email: string) {
     .in("normalized_email", emailCandidates)
     .returns<ParticipantRecord[]>();
 
-  const emailParticipant = emailParticipants?.[0];
+  const emailParticipant = emailParticipants?.find(participant => !participant.user_id || participant.user_id === userId);
 
   if (!emailParticipant) {
     return null;
   }
 
   if (!emailParticipant.user_id) {
-    await supabaseAdmin
+    // Claim only an unowned legacy participant. A concurrent claimant cannot
+    // acquire another account's reports through a profile/email race.
+    const claimed = await supabaseAdmin
       .from("assessment_participants")
       .update({ user_id: userId, updated_at: new Date().toISOString() })
-      .eq("id", emailParticipant.id);
+      .eq("id", emailParticipant.id)
+      .is("user_id", null)
+      .select("id")
+      .maybeSingle();
+    if (claimed.error || !claimed.data) return null;
   }
 
   return emailParticipant.id as string;
@@ -413,42 +420,47 @@ function readFirstValue(
 
 export function buildDesignIdContext(report: StudentAssessmentReport) {
   const designId = getLatestSnapshot(report, "designid");
+  const payload = designId?.scores?.reportPayload;
+  const savedValue = (key: string) => readFirstValue(designId, [key]) || (
+    payload && typeof payload === "object" && !Array.isArray(payload)
+      ? compactValue((payload as Record<string, unknown>)[key]) : ""
+  );
+  // Older native reportPayloads contain generator-invented generic cells. Resolve
+  // the established Shadow sheet row by this person's SAVED Primary, not pair,
+  // sample data, or those placeholders. Original snapshots/scores stay untouched.
+  const shadow = canonicalDesignIdShadow(savedValue("Primary"));
+  const shadowValue = (key: string) => shadow?.[key] ?? "";
 
   return {
-    architectBand: readFirstValue(designId, ["Band_Architect"]),
-    architectPts: readFirstValue(designId, ["Architect_Pts"]),
-    artisanBand: readFirstValue(designId, ["Band_Artisan"]),
-    artisanPts: readFirstValue(designId, ["Artisan_Pts"]),
-    integrativeExpression: readFirstValue(designId, [
-      "Integrative_Expression",
-      "Integrative_Summary",
-    ]),
-    integrativeReflection: readFirstValue(designId, [
-      "Integrative_Reflection",
-    ]),
+    ...Object.fromEntries(["A", "B", "C", "D"].flatMap(letter =>
+      ["Risk", "Root", "Red"].map(field => [
+        `shadow${field}${letter}`, shadowValue(`Shadow_${field}_${letter}`),
+      ]),
+    )),
+    architectBand: (savedValue("Band_Architect")),
+    architectPts: (savedValue("Architect_Pts")),
+    artisanBand: (savedValue("Band_Artisan")),
+    artisanPts: (savedValue("Artisan_Pts")),
+    integrativeExpression: (savedValue("Integrative_Expression") || savedValue("Integrative_Summary")),
+    integrativeReflection: (savedValue("Integrative_Reflection")),
     lastAssessmentDate: displayDate(
       designId?.source_submitted_at ?? designId?.created_at ?? null,
     ),
-    primary: readFirstValue(designId, ["Primary"]),
-    primaryReflection: readFirstValue(designId, [
-      "Primary_Text",
-      "Primary_Summary",
-      "Primary",
-    ]),
-    primaryScripture: readFirstValue(designId, ["Primary_Scripture"]),
-    reflectionShadow: readFirstValue(designId, [
-      "Reflection_Shadow",
-      "Potential_Shadow",
-      "Shadow_Overview",
-    ]),
-    reportVersion: readFirstValue(designId, ["Report_Version"]),
-    runCount: readFirstValue(designId, ["Run_Count"]),
-    secondary: readFirstValue(designId, ["Secondary"]),
-    secondaryScripture: readFirstValue(designId, ["Secondary_Scripture"]),
-    shepherdBand: readFirstValue(designId, ["Band_Shepherd"]),
-    shepherdPts: readFirstValue(designId, ["Shepherd_Pts"]),
-    stewardBand: readFirstValue(designId, ["Band_Steward"]),
-    stewardPts: readFirstValue(designId, ["Steward_Pts"]),
+    primary: (savedValue("Primary")),
+    primaryReflection: (savedValue("Primary_Text") || savedValue("Primary_Summary") || savedValue("Primary")),
+    primaryIntro: (savedValue("Primary_Text") || savedValue("Primary_Summary")),
+    secondaryIntro: (savedValue("Secondary_Text") || savedValue("Secondary_Summary")),
+    spiritualStrength: (savedValue("Spiritual_Strength")),
+    primaryScripture: (savedValue("Primary_Scripture")),
+    reflectionShadow: shadowValue("Reflection_Shadow"),
+    reportVersion: (savedValue("Report_Version")),
+    runCount: (savedValue("Run_Count")),
+    secondary: (savedValue("Secondary")),
+    secondaryScripture: (savedValue("Secondary_Scripture")),
+    shepherdBand: (savedValue("Band_Shepherd")),
+    shepherdPts: (savedValue("Shepherd_Pts")),
+    stewardBand: (savedValue("Band_Steward")),
+    stewardPts: (savedValue("Steward_Pts")),
   };
 }
 

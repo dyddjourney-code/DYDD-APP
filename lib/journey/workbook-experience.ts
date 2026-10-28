@@ -1,3 +1,8 @@
+import { expertiseLessons } from "./expertise-lessons";
+import { identityPathfinderPrompts, laterPathfinderIds } from './pathfinder';
+import { oneAnotherCare } from "@/lib/journey/one-another-care";
+import { designReflectionsLoveCare } from "@/lib/journey/design-reflections-love-care";
+import { identityBelieversCare } from "@/lib/journey/identity-believers-care";
 import { dyddJourney } from "@/lib/journey/dydd-journey";
 import type {
   JourneyCarePerspective,
@@ -68,6 +73,34 @@ function defaultDesignIdExperience(
   if (unit.type !== "designid-reflection") {
     return null;
   }
+
+  if (unit.slug === "identity-the-designid-lens-what-is-in-the-report-19") {
+    return {
+      kind: "designid",
+      title: "Unpack Your Reflections",
+      purpose: "",
+      marker: { alt: "DesignID", image: "/brand/tools/badge-icons/designid-icon.png", label: "DesignID reflection" },
+      care: {
+        connect: "Look at your Snapshot as a mirror, not a box. Notice what feels familiar and what surprises you.",
+        act: "Choose one strength reflected in your results and look for an opportunity to use it intentionally this week.",
+        reflect: "Think back to a specific situation or relationship that was difficult or misunderstood. Look with curiosity and grace, not regret.",
+        explore: "Consider a current relationship or responsibility at home, work, church, or in your community.",
+      },
+      prompts: [
+        { id: `${unit.slug}-designid-connect`, careStep: "connect", label: "Which part of your results best describes how you naturally respond, connect, or contribute? Share one everyday example.", responseType: "long_text" },
+        { id: `${unit.slug}-designid-act`, careStep: "act", label: "Where will you practice this strength, whom could it serve, and what will you watch for as you use it?", responseType: "long_text" },
+        { id: `${unit.slug}-designid-reflect`, careStep: "reflect", label: "What does your design help you understand about your response then? Knowing this now, what might you have done differently?", responseType: "long_text" },
+        { id: `${unit.slug}-designid-explore`, careStep: "explore", label: "How could understanding your design help you communicate, collaborate, or serve better there? What is one adjustment you could try?", responseType: "long_text" },
+      ],
+    };
+  }
+
+  if (unit.slug === "identity-the-design-reflections-and-love-21") return {
+    kind: "designid", title: unit.title, purpose: "", sourceRef: `Workbook ${unit.workbookPages}`,
+    marker: { alt: "DesignID", image: "/brand/tools/badge-icons/designid-icon.png", label: "DesignID reflection" },
+    care: { connect: "", act: "", reflect: "", explore: "" },
+    prompts: designReflectionsLoveCare.map(item => ({ id: item.questionId, careStep: item.stage, label: item.prompt, responseType: "long_text" })),
+  };
 
   return {
     care: {
@@ -195,10 +228,32 @@ export function getWorkbookExperience(
   active: FlatUnit,
 ): WorkbookExperience | null {
   const { module, unit } = active;
+  const expertise = expertiseLessons[unit.slug];
+  if (expertise) return {
+    kind: "care", title: expertise.careTitle, purpose: expertise.careIntro,
+    care: Object.fromEntries(expertise.care.map(item => [item.stage, item.explanation])) as JourneyCarePerspective,
+    prompts: expertise.care.map(item => ({ id: item.questionId, careStep: item.stage, label: item.prompt, responseType: "long_text" })),
+  };
+  if (unit.slug === "identity-love-your-neighbor-as-yourself-22") return null;
+  if (unit.slug === "identity-reflections-and-one-anothering-23") return {
+    kind: "care", title: unit.title, purpose: "",
+    care: Object.fromEntries(oneAnotherCare.map(item => [item.stage, item.explanation])) as JourneyCarePerspective,
+    prompts: oneAnotherCare.flatMap(item => "questionId" in item ? [{ id: item.questionId, careStep: item.stage, label: item.question, responseType: "long_text" as const }] : []),
+  };
+  if (unit.slug === "identity-identity-among-believers-20") return {
+    kind: "care", title: "Your Identity Among Believers", purpose: "",
+    care: Object.fromEntries(identityBelieversCare.map(item => [item.stage, item.explanation])) as JourneyCarePerspective,
+    prompts: identityBelieversCare.map(item => ({ id: item.questionId, careStep: item.stage, label: item.question, responseType: "long_text" })),
+  };
   const stageSlug = moduleToStageSlug(module);
   const stage = dyddJourney.stages.find((item) => item.slug === stageSlug);
 
   if (unit.type === "pathfinder") {
+    if (unit.row === 24) return { ...defaultPathfinderExperience(unit), title: "Niche Pathfinder", purpose: "", prompts: identityPathfinderPrompts };
+    if (module.slug === "niche" && laterPathfinderIds[unit.slug]) {
+      const prompts = [...identityPathfinderPrompts, ...dyddJourney.stages.flatMap(s => s.pathfinder?.prompts ?? [])];
+      return { ...defaultPathfinderExperience(unit), title: unit.title, prompts: laterPathfinderIds[unit.slug].map(id => prompts.find(p => p.id === id)!) };
+    }
     if (stage?.pathfinder && module.slug !== "niche") {
       return {
         care: {

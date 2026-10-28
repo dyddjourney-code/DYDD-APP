@@ -1,3 +1,5 @@
+import { designIdAuthoredLessons } from "./designid-authored-lessons";
+import { designIdWelcome } from "./designid-welcome";
 import { designIdLessonBodies } from "./designid-source-html";
 const clean = (text: string) =>
   text
@@ -17,6 +19,8 @@ const lessonPrompts: Record<string, string> = {
   "call-to-arms": "What is one faithful step you will take with what God has revealed through your DesignID?",
 };
 export function getDesignIdReflectionPrompts(lessonSlug: string) {
+  if (lessonSlug === "welcome-to-designid") return [{ id: "welcome-to-designid-notice", prompt: designIdWelcome.reflection }];
+  if (designIdAuthoredLessons[lessonSlug]) return designIdAuthoredLessons[lessonSlug].reflections;
   const source =
     designIdLessonBodies[lessonSlug as keyof typeof designIdLessonBodies] ?? "";
   const prompts = Array.from(

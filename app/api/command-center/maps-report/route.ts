@@ -1,6 +1,7 @@
+import { isSandbox } from "@/lib/environment";
 import { NextResponse, type NextRequest } from "next/server";
 import { isDyddAdminEmail } from "@/lib/admin-access";
-import { sendResendEmail } from "@/lib/email/resend";
+import { sendApplicationEmail as sendResendEmail } from "@/lib/lifecycle/application-mail";
 import {
   buildMapsRoadmapHtml,
   cleanMapsFilename,
@@ -39,6 +40,7 @@ function commandCenterRedirect(request: NextRequest, message: string, group?: st
 }
 
 async function getActor(request: NextRequest): Promise<CommandCenterActor | null> {
+  if (!isSandbox()) return null;
   if (isOwnerPreviewRequest(Object.fromEntries(request.nextUrl.searchParams))) {
     return { isAdmin: true };
   }
@@ -232,6 +234,7 @@ async function sendMapsEmail({
   }
 
   return sendResendEmail({
+    templateId:"requested-maps-report",
     attachments: [
       {
         content: Buffer.from(pdf).toString("base64"),

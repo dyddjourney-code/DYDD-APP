@@ -66,24 +66,25 @@ export async function GET(request: NextRequest) {
     return new NextResponse(
       unsubscribeHtml("This unsubscribe link is missing its token."),
       {
-        headers: { "Content-Type": "text/html; charset=utf-8" },
+        headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control":"no-store", "Referrer-Policy":"no-referrer" },
         status: 400,
       },
     );
   }
 
   const supabase = createSupabaseAdminClient();
-  const { error } = await supabase
-    .from("dydd_waypoint_subscriptions")
-    .update({
-      status: "unsubscribed",
-      unsubscribed_at: new Date().toISOString(),
-    })
-    .eq("unsubscribe_token_hash", hashToken(token));
+  const hash = hashToken(token);
+  const history = await supabase.from("dydd_waypoint_unsubscribe_tokens").select("subscription_id").eq("token_hash",hash).maybeSingle();
+  if(history.error) return new NextResponse(unsubscribeHtml("We could not update that subscription yet."),{status:503,headers:{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","Referrer-Policy":"no-referrer"}});
+  // Compatibility with the last legacy token, including subscriptions created before this migration.
+  const lookup = history.data ? {data:{id:history.data.subscription_id},error:null} : await supabase.from("dydd_waypoint_subscriptions").select("id").eq("unsubscribe_token_hash",hash).maybeSingle();
+  if(lookup.error) return new NextResponse(unsubscribeHtml("We could not update that subscription yet."),{status:503});
+  if(!lookup.data) return new NextResponse(unsubscribeHtml("This unsubscribe link is not recognized. Use Waypoints in your account or contact DYDD for help."),{status:400,headers:{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","Referrer-Policy":"no-referrer"}});
+  const { error } = await supabase.from("dydd_waypoint_subscriptions").update({status:"unsubscribed",unsubscribed_at:new Date().toISOString()}).eq("id",lookup.data.id);
 
   if (error) {
     return new NextResponse(unsubscribeHtml("We could not update that subscription yet."), {
-      headers: { "Content-Type": "text/html; charset=utf-8" },
+      headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control":"no-store", "Referrer-Policy":"no-referrer" },
       status: 500,
     });
   }
@@ -91,12 +92,14 @@ export async function GET(request: NextRequest) {
   return new NextResponse(
     unsubscribeHtml("You are unsubscribed from weekly DYDD Waypoint emails."),
     {
-      headers: { "Content-Type": "text/html; charset=utf-8" },
+      headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control":"no-store", "Referrer-Policy":"no-referrer" },
     },
   );
 }
 
 export async function POST(request: NextRequest) {
+  // RFC 8058: the immutable token authenticates provider one-click POST; no account session needed.
+  if(request.nextUrl.searchParams.has("token")) return GET(request);
   const payload = (await request.json().catch(() => ({}))) as {
     email?: string;
   };

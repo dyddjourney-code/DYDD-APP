@@ -1,4 +1,4 @@
-import shadowSource from "../designpd/source/libraries.json";
+import { canonicalDesignIdShadow } from "./shadow";
 import { designIdScorePayload, type DesignIdResult } from "./engine";
 import type { DesignIdReflection } from "./intake";
 const reflectionContent: Record<
@@ -247,29 +247,13 @@ export function buildDesignIdReportPayload({
     Primary_Summary: primary.summary,
     Primary_Text: primary.text,
     Reflection_Of_God: pair.reflectionOfGod,
-    Reflection_Shadow: shadowSource.reflectionShadows[result.primary],
     Secondary: result.secondary,
     Secondary_Core: secondary.core,
     Secondary_Reflection: result.secondary,
     Secondary_Scripture: secondary.scripture,
     Secondary_Summary: secondary.summary,
     Secondary_Text: secondary.text,
-    Shadow_Overview: pair.shadowOverview,
-    Shadow_Redemption:
-      "Shadow is not a sentence. It is an invitation to return your design to love, humility, dependence on God, and wise community.",
-    Shadow_Risk_A: "Overusing a strength under pressure.",
-    Shadow_Risk_B: "Confusing design with identity.",
-    Shadow_Risk_C: "Carrying more than grace has assigned.",
-    Shadow_Risk_D: "Letting fear narrow faithful action.",
-    Shadow_Root_A: "Fear of failure",
-    Shadow_Root_B: "Desire for control",
-    Shadow_Root_C: "Need for affirmation",
-    Shadow_Root_D: "Unprocessed pressure",
-    Shadow_Red_A: "Practice surrender.",
-    Shadow_Red_B: "Invite trusted feedback.",
-    Shadow_Red_C: "Choose one faithful next step.",
-    Shadow_Red_D: "Let love govern strength.",
-    Shadow_Scripture: "2 Corinthians 12:9",
+    ...canonicalDesignIdShadow(result.primary),
     Spiritual_Strength: pair.strength,
     Timestamp: new Date().toISOString(),
     qc_donut: "",

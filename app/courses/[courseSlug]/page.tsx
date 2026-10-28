@@ -1,3 +1,4 @@
+import { designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import { ReflectionCourseShell } from "@/components/reflection-course-shell";
 import { redirect } from "next/navigation";
 import { requireTrailCourseAssessment } from "@/lib/trails/course-access";
@@ -31,6 +32,7 @@ type LearningCoursePageProps = {
   searchParams?: Promise<
     ReviewSearchParams & {
       lane?: string;
+      lesson?: string;
     }
   >;
 };
@@ -78,9 +80,19 @@ export default async function LearningCoursePage({
   searchParams,
 }: LearningCoursePageProps) {
   const { courseSlug } = await params;
-  const reviewParams = await searchParams;
+  const reviewParams = designIdCourseReviewParams(await searchParams);
+  // The catalog's retired two-lesson Journey is not the canonical 71-lesson trail.
+  if (courseSlug === "discover-your-divine-design") {
+    redirect(withReviewQuery(`/journey${reviewParams?.lesson ? `?lesson=${encodeURIComponent(reviewParams.lesson)}` : ""}`, reviewParams));
+  }
   const course = getLearningCourse(courseSlug);
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
+  const isSpiritualGifts = course?.slug === "spiritual-gifts-service";
+  const isFruitLife = course?.slug === "fruitlife-360-formation";
+  const isDesignPd = course?.slug === "designpd-alignment";
+  const hasIllustratedHeader = isSpiritualGifts || isFruitLife || isDesignPd;
+  const headerClass = isDesignPd ? "designpd-course" : isFruitLife ? "fruitlife-course" : "spiritual-gifts-course";
+  const trackClass = isDesignPd ? "designpd-top-racetrack" : isFruitLife ? "fruitlife-top-racetrack" : "spiritual-gifts-top-racetrack";
   const fruitLifeReviewQuery = reviewQuery(reviewParams);
   const courseQuery = fruitLifeLane
     ? `?lane=fruitlife${fruitLifeReviewQuery ? `&${fruitLifeReviewQuery.slice(1)}` : ""}`
@@ -121,7 +133,7 @@ export default async function LearningCoursePage({
 
   return (
     <main
-      className={`course-shell course-shell-${course.accent}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}
+      className={`course-shell course-shell-${course.accent}${hasIllustratedHeader ? ` journey-shell ${headerClass}-shell` : ""}${fruitLifeLane ? " fruitlife-release-shell" : ""}`}
     >
       {fruitLifeLane ? (
         <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} />
@@ -136,9 +148,36 @@ export default async function LearningCoursePage({
           Return to My Journey
         </a>
       </nav>
-      <header className="mini-course-logo-intro">
-        <img src={course.logo} alt={`${course.title} logo`} />
-      </header>
+      {hasIllustratedHeader ? (
+        <>
+          <header className={`journey-hero ${headerClass}-hero`}>
+            <div>
+              <h1>{course.title}</h1>
+              <p className="lede">{course.tagline}</p>
+            </div>
+          </header>
+          <nav
+            className={`dydd-progress-racetrack journey-top-racetrack ${trackClass}`}
+            aria-label={`${course.title} module navigation`}
+          >
+            <ol>
+              {course.modules.map((module, index) => (
+                <li key={module.slug}>
+                  <a href={`/courses/${course.slug}${courseQuery}${courseQuery ? "&" : "?"}lesson=${encodeURIComponent(module.lessons[0].slug)}#${course.slug}-course-player`}>
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                    <strong>{module.title.replace(/^Module\s+\d+:\s*/i, "")}</strong>
+                    <small>{module.lessons.length} {module.lessons.length === 1 ? "lesson" : "lessons"}</small>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </>
+      ) : (
+        <header className="mini-course-logo-intro">
+          <img src={course.logo} alt={`${course.title} logo`} />
+        </header>
+      )}
 
       {insights.rows.length ? (
         <section
@@ -163,7 +202,7 @@ export default async function LearningCoursePage({
       ) : null}
 
       <div id={`${course.slug}-course-player`}>
-        <ReflectionCourseShell courseSlug={course.slug}>
+        <ReflectionCourseShell courseSlug={course.slug} inlineEntry>
           <AssessmentCourseNavigator
             accent={course.accent}
             assessmentLabel={course.title}

@@ -134,7 +134,7 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
         .maybeSingle()
     : { data: null };
   const authDisplayName = String(user?.user_metadata?.full_name ?? user?.user_metadata?.name ?? "").trim();
-  const participantEmail = normalizeEmail(profile?.email ?? user?.email);
+  const participantEmail = normalizeEmail(user?.email);
   const displayName =
     profile?.full_name?.trim() || authDisplayName || user?.email?.split("@")[0] || "Traveler";
   const assessmentReport = user
@@ -154,7 +154,7 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
       : "/spiritual-gifts?channel=app&lane=fruitlife");
   const reviewer = user
     ? {
-        email: profile?.email ?? user.email ?? "",
+        email: user.email ?? "",
         name: profile?.full_name?.trim() || authDisplayName || user.email?.split("@")[0] || "",
       }
     : reviewIdentity ?? appIdentity ?? undefined;

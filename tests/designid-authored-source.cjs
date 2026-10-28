@@ -1,0 +1,20 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),cp=require('node:child_process'),load=require('../scripts/fruitlife-test-load.cjs');
+const raw=require('../content/designid-foundations/authored-through-row8-2026-10-21.json'),rows=raw.sheets[0].data[0].rowData;
+const {designIdAuthoredLessons:lessons}=load('lib/courses/designid-authored-lessons.ts'),{getDesignIdReflectionPrompts:prompts}=load('lib/courses/designid-reflection-prompts.ts');
+assert.deepEqual(rows[0].values.map(c=>c.formattedValue),['Module','Lesson','Lesson Title','Lesson Focus','Content','Image URL','Reflection']);assert.equal(rows[1].values[2].formattedValue,'Welcome to DesignID');assert.equal(rows[8].values[4]?.formattedValue,undefined);assert.equal(Object.keys(lessons).length,12);
+const clean=s=>s.replace(/<[^>]*>/g,' ').replace(/&amp;/g,'&').replace(/&#x27;|&#39;/g,"'").replace(/&quot;/g,'"').replace(/\s+/g,' ').trim();
+for(const [slug,lesson] of Object.entries(lessons).filter(([,l])=>l.sourceRow<=8)){
+ const c=rows[lesson.sourceRow-1].values;assert.equal(lesson.title,c[2].formattedValue);assert.equal(lesson.images[0].src,c[5].hyperlink);assert.deepEqual(lesson.focus,c[3].formattedValue.split(',').map(s=>s.trim()));assert(!/build note|design note/i.test(lesson.bodyHtml));
+ if(slug!=='your-design-profile')for(const line of c[4].formattedValue.replace(/\r/g,'').split('\n').map(s=>s.trim()).filter(Boolean)){
+  if(line===lesson.title||/build note/i.test(line)||/^(Top left:|Top right|Bottom Left|Architect:|Artisan:|Shepherd:|Steward:)$/.test(line))continue;
+  assert(clean(lesson.bodyHtml).includes(clean(line.replace(/^•\s*/,''))),slug+': '+line);
+ }
+ const r=c[6].formattedValue;if(r.toLowerCase().startsWith('no reflection'))assert.deepEqual(prompts(slug),[]);else{assert.equal(prompts(slug).length,1);assert.equal(prompts(slug)[0].prompt,r);}
+}
+const {buildDesignIdContext}=load('lib/assessments/student-context.ts',{'@/lib/supabase/admin':{}}),{personalizeDesignIdAuthored:render}=load('lib/courses/designid-authored-personalization.ts');
+const snapshot=(primary,secondary,score)=>({assessment_type:'designid',created_at:'2026-10-20T12:00:00Z',source_submitted_at:'2026-10-19T12:00:00Z',scores:{scores:{Architect_Pts:score,Artisan_Pts:0,Band_Architect:'Steady'},summary:{Primary:primary,Secondary:secondary,Integrative_Reflection:'Test pair',Spiritual_Strength:'Specific report strength'},profileLanguage:{Primary_Text:primary+' saved report intro\n\nSecond paragraph',Secondary_Text:secondary+' saved report intro',Integrative_Summary:'Saved expression <script>alert(1)</script>'}}});
+for(const [primary,secondary,score] of [['Artisan','Steward',29],['Architect','Shepherd',37]]){
+ const snap=snapshot(primary,secondary,score),context={designId:buildDesignIdContext({all:[snap],latest:[snap]})};const html=render(lessons['your-design-profile'].bodyHtml,context);assert(html.includes('Primary Reflection: '+primary));assert(html.includes(primary+' saved report intro'));assert(!html.includes('Second paragraph'));assert(html.includes(secondary+' saved report intro'));assert(html.includes('<td>'+score+'</td>'));assert(html.includes('<td>0</td>'));assert(html.includes('Specific report strength'));assert(!html.includes('<script>'));assert(html.includes('&lt;script&gt;'));assert(html.includes('Oct 19, 2026'));assert(!html.includes('Primary Reflection: Shepherd'));}
+assert(render(lessons['your-design-profile'].bodyHtml,null).includes('Not available in your saved report.'));
+const {withDesignIdWelcome:refresh,getReflectionExperience}=load('lib/reflections/catalog.ts');const old=[{id:'retired-key',prompt:'old answer snapshot'}],updated=refresh('designid-foundations',old);assert.equal(updated[0],old[0]);assert.equal(old.length,1);assert.equal(refresh('designid-foundations',updated),updated);assert.equal(refresh('other',old),old);
+console.log('PASS rich current source rows/IDs/full wording/notes/images/reflections; canonical report data both personas/zero/HTML escaping/missing/assessment date/intro; current-round metadata idempotence and retired keys');

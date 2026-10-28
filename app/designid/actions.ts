@@ -90,7 +90,7 @@ export async function saveDesignIdResponse(formData: FormData) {
     authDisplayName ||
     user.email?.split("@")[0] ||
     "DesignID Participant";
-  const participantEmail = normalizeEmail(profile?.email ?? user.email);
+  const participantEmail = normalizeEmail(user.email);
   if (!participantEmail) {
     fail("Your account needs an email address before starting DesignID.");
   }

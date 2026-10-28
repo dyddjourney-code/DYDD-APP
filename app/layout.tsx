@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AppChrome } from "@/components/app-chrome";
 import "./globals.css";
+import "./field-guide.css";
 
 export const metadata: Metadata = {
   title: "DYDD Online School",
@@ -18,7 +19,9 @@ export default function RootLayout({
       <body>
         {process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox" ? (
           <div role="note" style={{ padding: "10px 20px", background: "#f0d99e", color: "#3f381d", fontSize: 14, textAlign: "center" }}>
-            DYDD Sandbox — separate test accounts and data. Email, payments and external report delivery are off.
+            DYDD Sandbox — separate test accounts and data. Email, payments and external report delivery are off.{" "}
+            <a href="/base-camp" style={{ color: "inherit", textDecoration: "underline", whiteSpace: "nowrap" }}>Sandbox Base Camp</a>
+            {" · "}<a href="/sandbox-review" style={{ color: "inherit", textDecoration: "underline", whiteSpace: "nowrap" }}>Preview all courses</a>
           </div>
         ) : null}
         <AppChrome>{children}</AppChrome>

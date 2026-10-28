@@ -99,7 +99,7 @@ export function SpiritualGiftsAssessmentForm({
 
       if (isMounted) {
         setClientReviewer({
-          email: profile?.email ?? user.email ?? "",
+          email: user.email ?? "",
           name: profile?.full_name?.trim() || authDisplayName || user.email?.split("@")[0] || "",
         });
         setAccountLookupComplete(true);

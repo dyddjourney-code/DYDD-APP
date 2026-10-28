@@ -11,7 +11,7 @@ import {
   spiritualGiftQuestionBank,
   spiritualGiftRatingField,
 } from "@/lib/spiritual-gifts/intake";
-import { sendResendEmail } from "@/lib/email/resend";
+import { sendApplicationEmail as sendResendEmail } from "@/lib/lifecycle/application-mail";
 import { normalizeEmail } from "@/lib/identity/email";
 import {
   createPdfMonkeyDocument,
@@ -238,7 +238,11 @@ async function sendSpiritualGiftsResultEmail({
   participantName: string;
   reportUrl?: string;
 }) {
+  if(!attachment&&!reportUrl)return {sent:false,skipped:true,message:"The report is not ready; no report-ready email was sent."};
   return sendResendEmail({
+    templateId:"B01-spiritual-gifts",
+    idempotencyKey:"spiritual-report-"+crypto.createHash("sha256").update(participantEmail.toLowerCase()+"|"+(reportUrl||attachment?.filename||"")+"|"+(attachment?"attachment":"link")).digest("hex"),
+    deliveryContext:{type:"spiritual_report",reportUrl},
     ...spiritualGiftsResultEmail({ participantName, reportUrl }),
     ...(attachment ? { attachments: [attachment] } : {}),
     to: participantEmail,
@@ -464,7 +468,7 @@ async function saveCompletedSpiritualGiftsResponse({
         participantEmail,
         participantName,
         reportUrl:
-          pdfMetadata?.providerUrl || pdfMetadata?.documentId
+          ["ready","success"].includes(String(pdfMetadata?.status))
             ? reportAccessUrl
             : undefined,
       })
@@ -472,7 +476,7 @@ async function saveCompletedSpiritualGiftsResponse({
   let emailRetryResult: Awaited<
     ReturnType<typeof sendSpiritualGiftsResultEmail>
   > | null = null;
-  if (participantEmail && !emailResult.sent && pdfAttachment) {
+  if (participantEmail && !emailResult.sent && pdfAttachment && /Provider HTTP (413|422)\b/.test(emailResult.message ?? "")) {
     emailRetryResult = await sendSpiritualGiftsResultEmail({
       participantEmail,
       participantName,
@@ -664,7 +668,7 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
   }
   const participantEmail = normalizeEmail(
     user
-      ? (profile?.email ?? user.email)
+      ? (user.email)
       : (reviewIdentity?.email ??
           signedAppIdentity?.email ??
           getString(formData, "reviewer_email")),

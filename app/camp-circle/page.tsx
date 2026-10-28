@@ -1,3 +1,4 @@
+import { CirclePageHeader } from "@/components/circle-page-header";
 import { ReviewAwareLink } from "@/components/review-aware-link";
 
 export const dynamic = "force-dynamic";
@@ -11,18 +12,12 @@ const formats = [
 export default function CampCirclePage() {
   return (
     <main className="journey-shell hq-standalone-page camp-circle-page camp-circle-overview">
-      <header className="standalone-hero camp-circle-hero">
-        <div>
-          <p className="eyebrow">Together</p>
-          <h1>Camp Circles</h1>
-          <p className="lede">
-            A parallel leader workspace for people walking through DYDD together.
-            The course stays clean for the learner. The circle gives the host
-            progress, pacing, shared discussion, and the Field Guide beside the
-            Journey without crowding it.
-          </p>
-        </div>
-      </header>
+      <CirclePageHeader title="Camp Circles">
+        A parallel leader workspace for people walking through DYDD together.
+        The course stays clean for the learner. The circle gives the host
+        progress, pacing, shared discussion, and the Field Guide beside the
+        Journey without crowding it.
+      </CirclePageHeader>
 
       <section className="circle-overview-intro" aria-labelledby="circle-invitation">
         <h2 id="circle-invitation">Discover your design. Walk it out together.</h2>
@@ -43,6 +38,11 @@ export default function CampCirclePage() {
         <h2 id="circle-formats">Start a purposeful journey.</h2>
         <p>Choose the kind of Circle that fits the people you want to walk with.</p>
         <div className="circle-overview-cards circle-format-cards">{formats.map((format, i) => <article className={`circle-tile circle-tile-${["sage", "sand", "moss"][i]}`} key={format.label}><h3>{format.label}</h3><p>{format.detail}</p></article>)}</div>
+      </section>
+
+      <section className="circle-before-start" aria-labelledby="circle-before-start">
+        <div><p className="eyebrow">Thinking about leading?</p><h2 id="circle-before-start">Before you start a Circle</h2><p>You don’t need to arrive with every answer. A Circle leader creates space for people to listen, reflect, and discover how God has shaped their lives for purpose.</p><p>Start with people you care about, a rhythm you can sustain, and a willingness to walk alongside them.</p><div className="circle-preview-sample"><strong>A glimpse inside the Field Guide</strong><p>For your first gathering, begin with grace—not pressure to find an impressive calling. Ask: “What if God has been shaping my life on purpose?” Then give people time to think before they speak.</p></div><div className="circle-action-row"><ReviewAwareLink className="button" href="/camp-circle/my-circles#start-circle">Start a Circle</ReviewAwareLink></div></div>
+        <div><details><summary>What am I committing to?</summary><p>An eight-session journey with time for personal learning, reflection, conversation, and prayer. Sessions 7 and 8 stay distinct: bringing your design together, then declarations, commissioning, and next steps. Meet weekly, every other week, or at a pace that fits your people.</p></details><details><summary>What does a leader actually do?</summary><p>Prepare the gathering, welcome people, introduce the main idea, ask thoughtful questions, and make room for each person’s voice. You guide discovery; you don’t assign someone’s purpose or need to interpret everyone’s life.</p></details><details><summary>What should I consider first?</summary><p>Who would you like to invite? Where will you meet? What dates and preparation rhythm can you sustain? Each person—including you—needs their own active journey subscription. Private reflections remain personal unless someone chooses to share.</p></details><details><summary>What support will I have?</summary><p>Inside a started Circle, the Field Guide brings together guided launch preparation, eight distinct session references, and a practical Leader Toolkit. The first full-depth session guide includes preparation, a gathering flow, discussion prompts, and facilitation help. Further sessions will receive the same treatment as the guide grows.</p><p>Teaching-slide PDFs will be added for Circle leaders when supplied. They are not included in this public preview.</p></details></div>
       </section>
 
       <section className="circle-overview-section" aria-labelledby="circle-receives">

@@ -14,9 +14,10 @@ import {
   type SavedCircle,
 } from "@/lib/circles/plan";
 import { CircleScheduleEditor } from "./circle-schedule-editor";
-import { facilitatorPlaybookStages } from "@/lib/journey/facilitator-playbook";
+import { CircleMessages } from "@/components/circle-messages";
+import { CircleFieldGuide } from "@/components/circle-field-guide";
 const stages = ["Circle details", "Meeting schedule", "People", "Review"];
-export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (plan: CirclePlan, tab: string, samples: boolean) => ReactNode }) {
+export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (plan: CirclePlan, tab: string, samples: boolean, circleId?: string) => ReactNode }) {
   const params = useSearchParams();
   const query = new URLSearchParams();
   for (const key of ["review", "key"])
@@ -29,9 +30,9 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
     [selected, setSelected] = useState<SavedCircle | null>(null);
   const [newId, setNewId] = useState(""),
     [workspace, setWorkspace] = useState(false),
-    [tab, setTab] = useState("Progress");
+    [tab, setTab] = useState(params.get("fieldGuide") === "1" ? "Field Guide" : "Progress");
   const [showSetup, setShowSetup] = useState(true);
-  const [samples, setSamples] = useState(true);
+  const [samples, setSamples] = useState(false);
   const [participant, setParticipant] = useState({ name: "", email: "" });
   const [notice, setNotice] = useState(""),
     [error, setError] = useState(""),
@@ -108,7 +109,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
   function open(circle: SavedCircle) {
     setShowSetup(true);
     setTab("Progress");
-    setSamples(true);
+    setSamples(false);
     rememberCircle(circle.id);
     setSelected(circle);
     setPlan(normalizePlan(circle.plan));
@@ -120,7 +121,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
   }
   function startNew() {
     setShowSetup(true);
-    setSamples(true);
+    setSamples(false);
     rememberCircle();
     setSelected(null);
     setNewId(crypto.randomUUID());
@@ -198,14 +199,14 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
       ]);
       setPlan(normalizePlan(circle.plan));
       setWorkspace(circle.status !== "draft");
-      if (!workspace) setTab("Progress");
+      if (!workspace) setTab("Messages");
       try {
         localStorage.removeItem(storageKey);
       } catch {}
       setNotice(
         circle.status === "draft"
           ? "Draft saved to your account."
-          : "Circle saved. Your workspace is ready.",
+          : "Circle saved. Review and approve your messages before finalizing its communication schedule.",
       );
     } catch (e) {
       setError((e as Error).message);
@@ -358,7 +359,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
           {circles.length > 0 && <section className="circle-saved-list" aria-label="Your saved Circles"><div className="circle-current-heading"><h3>Current Circles</h3><span>{circles.filter(c => c.status !== "archived").length} Circles</span></div><div>{circles.filter(c => c.status !== "archived").map(c => {
             const ds = scheduledDates(c.plan), today = new Date().toLocaleDateString("en-CA", { timeZone: c.plan.timezone }), upcoming = ds.find(d => d >= today), number = upcoming ? ds.indexOf(upcoming) + 1 : 0;
             const modules = number ? [...new Set(meetingLessons(c.plan, number).map(l => l.moduleTitle))].join(" · ") : "";
-            return <button type="button" className={`circle-saved-item${selected?.id === c.id && showSetup ? " selected" : ""}`} key={c.id} onClick={() => open(c)} disabled={busy} aria-pressed={selected?.id === c.id && showSetup}><span className="circle-card-topline">{c.plan.format}<b>{c.status === "draft" ? "Draft" : ds[0] && ds[0] > today ? "Not started" : "Scheduled"}</b></span><strong>{c.plan.name}</strong><span>{c.plan.expectedPeople} planned · {c.plan.participants.length + 1} listed</span><span>Start: {ds[0] || "Not set"} · Finish: {ds.at(-1) || "Not set"}</span><span className="circle-card-next"><b>Next meeting</b>{upcoming ? `${upcoming}${c.plan.time ? ` · ${c.plan.time}` : ""} · ${c.plan.timezone}` : "No upcoming meeting scheduled"}</span>{modules && <small>{modules}</small>}<span>{c.status === "draft" ? "Continue setup" : "Progress · Data · Schedule · People · Field Guide"}</span></button>;
+            return <button type="button" className={`circle-saved-item${selected?.id === c.id && showSetup ? " selected" : ""}`} key={c.id} onClick={() => open(c)} disabled={busy} aria-pressed={selected?.id === c.id && showSetup}><span className="circle-card-topline">{c.plan.format}<b>{c.status === "draft" ? "Draft" : ds[0] && ds[0] > today ? "Not started" : "Scheduled"}</b></span><strong>{c.plan.name}</strong><span>{c.plan.expectedPeople} planned · {c.plan.participants.length + 1} listed</span><span>Start: {ds[0] || "Not set"} · Finish: {ds.at(-1) || "Not set"}</span><span className="circle-card-next"><b>Next meeting</b>{upcoming ? `${upcoming}${c.plan.time ? ` · ${c.plan.time}` : ""} · ${c.plan.timezone}` : "No upcoming meeting scheduled"}</span>{modules && <small>{modules}</small>}<span>{c.status === "draft" ? "Continue setup" : "Progress · Data · Schedule · People · Messages · Field Guide"}</span></button>;
           })}</div><details className="circle-archive-drawer"><summary>Archived Circles ({circles.filter(c => c.status === "archived").length})</summary>{circles.filter(c => c.status === "archived").map(c => <button className="circle-saved-item" type="button" key={c.id} onClick={() => open(c)}><strong>{c.plan.name}</strong><span>{c.plan.expectedPeople} planned · View archive</span></button>)}{!circles.some(c => c.status === "archived") && <p>No archived Circles.</p>}</details></section>}
           {!signedIn && (
             <p className="circle-form-error">
@@ -385,7 +386,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
                 className="circle-action-row"
                 aria-label="Circle workspace sections"
               >
-                {["Progress", "Data", "Schedule", "People", "Field Guide"].map((t) => (
+                {["Progress", "Data", "Schedule", "People", "Messages", "Field Guide"].map((t) => (
                   <button
                     type="button"
                     className={`button${t === tab ? "" : " secondary"}`}
@@ -397,7 +398,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
                   </button>
                 ))}
               </div>
-              {(tab === "Progress" || tab === "Data") && <><label className="circle-sample-toggle"><input type="checkbox" checked={samples} onChange={e => setSamples(e.target.checked)} />Preview with sample people ({plan.expectedPeople})</label>{renderDashboard?.(plan, tab, samples)}</>}
+              {(tab === "Progress" || tab === "Data") && <>{params.get("review") && <label className="circle-sample-toggle"><input type="checkbox" checked={samples} onChange={e => setSamples(e.target.checked)} />Show explicitly fictional demo assessments ({plan.expectedPeople})</label>}{renderDashboard?.(plan, tab, Boolean(params.get("review")) && samples, selected?.id)}</>}
               <div className="circle-selected-summary"><strong>{plan.name}</strong><span>{Number(plan.expectedPeople)} planned · {plan.participants.length + 1} listed</span><span>Next: {dates.find(d => d >= new Date().toLocaleDateString("en-CA", {timeZone: plan.timezone})) || "No upcoming meeting"}{plan.time ? ` · ${plan.time}` : ""} · {plan.timezone}</span></div>
               {tab === "Schedule" && (
                 <>
@@ -409,59 +410,11 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
                 </>
               )}
               {tab === "People" && people}
-              {tab === "Field Guide" && (
-                <div className="circle-guide-by-meeting">
-                  {Array.from({ length: plan.meetingCount }, (_, i) => {
-                    const lessons = meetingLessons(plan, i + 1),
-                      modules = [...new Set(lessons.map((l) => l.moduleSlug))];
-                    const guides = facilitatorPlaybookStages.filter((g) =>
-                      modules.some(
-                        (m) =>
-                          m === g.slug ||
-                          (["welcome-and-orientation", "what-is-dydd"].includes(
-                            m,
-                          ) &&
-                            g.slug === "welcome"),
-                      ),
-                    );
-                    return (
-                      <details key={i}>
-                        <summary>
-                          Meeting {i + 1} · {dates[i] || "Date to be set"}
-                          <small>
-                            {[
-                              ...new Set(lessons.map((l) => l.moduleTitle)),
-                            ].join(" · ") || "Discussion / catch-up"}
-                          </small>
-                        </summary>
-                        {guides.map((g) => (
-                          <section key={g.slug}>
-                            <h3>{g.title}</h3>
-                            <h4>Lead the conversation</h4>
-                            <ul>
-                              {g.inTheMoment.map((s) => (
-                                <li key={s}>{s}</li>
-                              ))}
-                            </ul>
-                            <h4>Prepare next</h4>
-                            <ul>
-                              {g.prepareNext.map((s) => (
-                                <li key={s}>{s}</li>
-                              ))}
-                            </ul>
-                          </section>
-                        ))}
-                        {!guides.length && (
-                          <p>
-                            Make room to connect, reflect, and choose a next
-                            step together.
-                          </p>
-                        )}
-                      </details>
-                    );
-                  })}
-                </div>
+              {tab === "Messages" && selected && <CircleMessages circleId={selected.id} revision={selected.revision} query={query.toString()} hasUnsavedChanges={JSON.stringify(plan)!==JSON.stringify(normalizePlan(selected.plan))} />}
+              {tab === "Field Guide" && selected?.status === "active" && (
+                <CircleFieldGuide key={selected.id} circleId={selected.id} plan={plan} onSchedule={() => setTab("Schedule")} />
               )}
+              {tab === "Field Guide" && selected?.status !== "active" && <p>The full Field Guide is available inside a started Circle.</p>}
               <div className="circle-action-row">
                 <button
                   type="button"

@@ -1,4 +1,11 @@
 "use client";
+import { useCourseProgress, CourseCompletionControls, NicheDeclarationCompletion } from "@/components/course-progress";
+import { JourneyAppliedCapacity } from "@/components/journey-applied-capacity";
+import { appliedCapacitySlug, type AppliedCapacityScores } from "@/lib/journey/applied-capacity";
+import { expertiseLessons } from "@/lib/journey/expertise-lessons";
+import { JourneyExpertiseCare, JourneyExpertiseBody } from "@/components/journey-expertise-lesson";
+import { JourneyOneAnotherCare } from "@/components/journey-one-another-care";
+import { JourneyCareDirections } from "@/components/journey-care-directions";
 import {
   useReflectionPosition,
   ReflectionAnswer,
@@ -7,6 +14,10 @@ import {
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ReviewAwareLink } from "@/components/review-aware-link";
+import { JourneyIdentityBelieversCare } from "@/components/journey-identity-believers-care";
+import { JourneyWhoWhoseCare } from "@/components/journey-who-whose-care";
+import { JourneyCareIntroduction } from "@/components/journey-care-introduction";
+import { JourneyLessonBody } from "@/components/journey-lesson-body";
 import { CompanionAudioCard } from "@/components/companion-audio-card";
 import type { CareStep } from "@/lib/journey/dydd-journey";
 import type {
@@ -17,6 +28,9 @@ import type {
 
 type JourneyCourseNavigatorProps = {
   modules: DyddCourseModule[];
+  designIdSnapshotHtml: string;
+  capacityScores: AppliedCapacityScores;
+  reflectionNames: {primary: string; secondary: string};
 };
 
 type SectionGroup = {
@@ -126,6 +140,9 @@ function flattenModules(modules: DyddCourseModule[]) {
 
 export function JourneyCourseNavigator({
   modules,
+  designIdSnapshotHtml,
+  reflectionNames,
+  capacityScores,
 }: JourneyCourseNavigatorProps) {
   const moduleSections = useMemo(
     () =>
@@ -134,6 +151,8 @@ export function JourneyCourseNavigator({
   );
   const flatUnits = useMemo(() => flattenModules(modules), [modules]);
   const savedPosition = useReflectionPosition();
+  const checklistSlugs = useMemo(() => flatUnits.map(item => item.unit.slug), [flatUnits]);
+  const checklist = useCourseProgress("discover-your-divine-design", checklistSlugs);
   useEffect(() => {
     if (!savedPosition.roundId) return;
     const requested =
@@ -169,15 +188,30 @@ export function JourneyCourseNavigator({
   const activeLessonRef = useRef<HTMLElement | null>(null);
   const activeIndex = Math.max(
     0,
-    flatUnits.findIndex((item) => item.unit.slug === activeSlug),
+    flatUnits.findIndex((item) => item.unit.slug === (checklist.canVisit(activeSlug) ? activeSlug : checklistSlugs.find(slug => !checklist.done(slug)) ?? checklistSlugs[0])),
   );
+  // Forward-only authoring rule: keep previously approved lessons unchanged.
+  const connectedTrailBoundary = flatUnits.findIndex(
+    (item) => item.unit.slug === "expertise-connecting-identity-and-expertise-32",
+  );
+  const beforeConnectedTrailBoundary = connectedTrailBoundary >= 0 && activeIndex < connectedTrailBoundary;
   const active = flatUnits[activeIndex] ?? flatUnits[0];
   const previous = activeIndex > 0 ? flatUnits[activeIndex - 1] : null;
   const next =
     activeIndex < flatUnits.length - 1 ? flatUnits[activeIndex + 1] : null;
-  const progress = flatUnits.length
-    ? Math.round(((activeIndex + 1) / flatUnits.length) * 100)
-    : 0;
+  const progress = checklist.percent;
+  const isAppliedCapacity = active.unit.slug === appliedCapacitySlug;
+  const isDesignIdLens = active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19";
+  const isDesignReflectionsLove = active.unit.slug === "identity-the-design-reflections-and-love-21";
+  const isWhoWhose = active.unit.slug === "identity-who-vs-whose-16";
+  const expertiseLesson = expertiseLessons[active.unit.slug];
+  const isOneAnother = active.unit.slug === "identity-reflections-and-one-anothering-23";
+  const isNeighbor = active.unit.slug === "identity-love-your-neighbor-as-yourself-22";
+  const usesApprovedLessonFormat = isAppliedCapacity || Boolean(expertiseLesson) || isOneAnother || isNeighbor || isDesignReflectionsLove || isWhoWhose || ["identity-good-works-17", "identity-niche-18", "identity-identity-among-believers-20"].includes(active.unit.slug);
+  const isIdentityPathfinder = active.unit.row === 24;
+  const isExpertisePathfinder = active.unit.slug === "expertise-niche-preparation-expertise-33";
+  const isPathfinder = active.unit.type === "pathfinder";
+  const isCareIntroduction = active.unit.slug === "what-is-dydd-how-to-c-a-r-e-10";
   const workbookExperience = active ? getWorkbookExperience(active) : null;
   const lessonMainIdea = cleanLessonMainIdea(
     active.unit,
@@ -192,15 +226,33 @@ export function JourneyCourseNavigator({
   const lessonImage = active.unit.media?.image ?? chapterArtwork;
   const lessonImageLabel =
     active.unit.media?.label ?? `${active.module.title} Journey illustration`;
+  // Approved forward format, opt-in only; older lesson cleanup remains deferred.
+  const wrapLessonImage = active.unit.slug === "what-is-dydd-d-e-s-i-g-n-9" || usesApprovedLessonFormat || isIdentityPathfinder || isExpertisePathfinder;
+  const lessonArtwork = (
+    <div className="journey-lesson-images">
+      {[{ image: lessonImage, label: lessonImageLabel }, ...(active.unit.media?.additionalImages ?? [])].map((image) => (
+        <figure
+          key={image.image}
+          className={`assessment-lesson-image${active.unit.media?.type === "video" || active.unit.media?.additionalImages?.length || active.unit.slug === "identity-assessment-time-designid" ? " contain" : ""}`}
+        >
+          <img src={image.image} alt={image.label} loading="lazy" />
+        </figure>
+      ))}
+    </div>
+  );
   const lessonFocus = active.unit.focus?.length
-    ? active.unit.focus
+    ? active.unit.focus.flatMap((item) =>
+        item.split(/[,;\n]+|(?<=\?)\s+(?=[A-Z])/).map((focus) => focus.trim()).filter(Boolean),
+      )
     : [lessonMainIdea];
 
   if (!active) {
     return null;
   }
 
-  const setLesson = (item: FlatUnit) => {
+  const setLesson = async (item: FlatUnit, completedAdvance = false) => {
+    if (!completedAdvance && !checklist.canVisit(item.unit.slug)) return;
+    if (savedPosition.flush && !await savedPosition.flush()) return;
     const sectionKey = `${item.module.slug}-${item.section}`;
     setActiveSlug(item.unit.slug);
     savedPosition.recordPosition?.(item.unit.slug);
@@ -238,7 +290,7 @@ export function JourneyCourseNavigator({
 
   return (
     <section
-      className="journey-course-walkthrough dydd-journey-walkthrough"
+      className={`journey-course-walkthrough dydd-journey-walkthrough${usesApprovedLessonFormat || isPathfinder ? " journey-who-whose-walkthrough" : ""}${active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? " journey-designid-lens-walkthrough" : ""}`}
       aria-label="Guided course walkthrough"
     >
       <aside className="journey-course-index">
@@ -253,7 +305,7 @@ export function JourneyCourseNavigator({
           <span style={{ width: `${progress}%` }} />
         </div>
         <p className="journey-course-progress-label">
-          Lesson {activeIndex + 1} of {flatUnits.length}
+          Lesson {activeIndex + 1} of {flatUnits.length} · {checklist.state?.completed.length ?? 0} completed
         </p>
 
         <div className="journey-module-accordion">
@@ -312,6 +364,7 @@ export function JourneyCourseNavigator({
                                           ? "active"
                                           : ""
                                       }
+                                      disabled={!checklist.canVisit(unit.slug) || checklist.busy}
                                       onClick={() =>
                                         flatUnit
                                           ? setLesson(flatUnit)
@@ -319,10 +372,10 @@ export function JourneyCourseNavigator({
                                       }
                                       type="button"
                                     >
-                                      <span className={typeClass[unit.type]}>
+                                      {!["identity-who-vs-whose-16", "identity-good-works-17", "identity-niche-18"].includes(unit.slug) ? <span className={typeClass[unit.type]}>
                                         {unit.typeLabel}
-                                      </span>
-                                      <strong>{unit.title}</strong>
+                                      </span> : null}
+                                      <strong>{unit.title}</strong><small className="lesson-checklist-status">{checklist.done(unit.slug) ? "✓ Completed" : checklist.canVisit(unit.slug) ? "○ Not completed" : "🔒 Complete earlier lessons"}</small>
                                     </button>
                                   </li>
                                 );
@@ -341,7 +394,7 @@ export function JourneyCourseNavigator({
       </aside>
 
       <article
-        className={`journey-active-lesson ${typeClass[active.unit.type]}`}
+        className={`journey-active-lesson ${typeClass[active.unit.type]}${usesApprovedLessonFormat || isIdentityPathfinder || isExpertisePathfinder ? " journey-who-whose-lesson" : ""}${isOneAnother || isNeighbor ? " journey-neighbor-lesson" : ""}${expertiseLesson ? " journey-expertise-lesson" : ""}${isAppliedCapacity ? " journey-applied-capacity-lesson" : ""}${isDesignReflectionsLove ? " journey-design-love-lesson" : ""}${active.unit.slug === "identity-identity-among-believers-20" ? " journey-identity-believers-lesson" : ""}`}
         ref={activeLessonRef}
       >
         <header>
@@ -351,11 +404,11 @@ export function JourneyCourseNavigator({
               .{active.sectionIndex + 1} / Lesson {active.unitIndex + 1}
             </p>
             <h2>{active.unit.title}</h2>
-            <p>{lessonMainIdea}</p>
+            {!isAppliedCapacity && !isPathfinder && !isDesignReflectionsLove && !expertiseLesson && !isOneAnother && !isNeighbor ? <p>{lessonMainIdea}</p> : null}
           </div>
           <div className="journey-active-meta">
-            <span>{active.unit.typeLabel}</span>
-            <span>{active.unit.duration}</span>
+            {!usesApprovedLessonFormat ? <span>{active.unit.typeLabel}</span> : null}
+            <span>{usesApprovedLessonFormat && !isDesignReflectionsLove && !expertiseLesson && !isOneAnother && !isNeighbor && active.unit.slug !== "identity-identity-among-believers-20" ? "3–5 minutes" : active.unit.duration}</span>
             {active.unit.bookPages ? (
               <span>Book {active.unit.bookPages}</span>
             ) : null}
@@ -365,58 +418,76 @@ export function JourneyCourseNavigator({
           </div>
         </header>
 
-        <section
-          className="journey-active-section-marker"
-          aria-label="Current section"
-        >
-          <span>{active.section}</span>
-          <strong>{active.module.summary}</strong>
-        </section>
-
         <div className="journey-active-body has-care">
           <section className="journey-teaching-card assessment-teaching-card">
             <p className="section-label">Lesson focus</p>
             <div className="journey-active-focus" aria-label="Lesson focus">
-              {lessonFocus.map((item) => (
+              {(isDesignIdLens ? ["DesignID results"] : lessonFocus).map((item) => (
                 <span key={item}>{item}</span>
               ))}
             </div>
 
-            <CompanionAudioCard moment={active.unit.companionMoment} />
+            {isDesignIdLens ? (
+              <div className="journey-designid-return">
+                <div className="journey-designid-intro"><div><h3>Welcome back to the Journey</h3>
+                <p>In the DesignID course, you explored your primary and secondary reflections, how they come together in your integrative reflection, and the shadow patterns to notice under pressure. You also discovered how your capacity can feel natural, steady, stretched, or draining.</p>
+                <p>Now bring those discoveries into everyday life. Review your personal snapshot below as a mirror, not a box, then use CARE to connect what you learned with one faithful next step.</p>
+                </div>{lessonArtwork}</div>
+                <div dangerouslySetInnerHTML={{ __html: designIdSnapshotHtml }} />
+              </div>
+            ) : null}
 
-            <div className="assessment-lesson-content with-image">
+            {active.unit.companionMomentPosition !== "after-teaching" ? (
+              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction && !usesApprovedLessonFormat} />
+            ) : null}
+
+            {isAppliedCapacity ? <JourneyAppliedCapacity scores={capacityScores} /> : null}
+            {!isAppliedCapacity && !isDesignIdLens ? <div className={`assessment-lesson-content${isCareIntroduction ? " journey-care-introduction-layout" : " with-image"}${wrapLessonImage ? " journey-wrap-pilot" : ""}`}>
               <section
                 className="lesson-source readable-lesson-body"
                 aria-label="Lesson body"
               >
-                <h3 className="lesson-body-subheading">{active.unit.title}</h3>
-                {active.unit.teachingBlocks.map((block) => (
+                {!isCareIntroduction && wrapLessonImage ? lessonArtwork : null}
+                {!isPathfinder && !expertiseLesson && !isOneAnother && !isNeighbor && !["identity-good-works-17", "identity-niche-18", "identity-the-design-reflections-and-love-21"].includes(active.unit.slug) ? <h3 className="lesson-body-subheading">{active.unit.title}</h3> : null}
+                {active.unit.contentStatus === "draft" ? (
+                  <p role="status">Lesson content is being prepared.</p>
+                ) : isCareIntroduction && active.unit.lessonBody ? (
+                  <JourneyCareIntroduction blocks={active.unit.lessonBody} />
+                ) : expertiseLesson ? (
+                  <JourneyExpertiseBody blocks={expertiseLesson.lessonBody} />
+                ) : active.unit.lessonBody ? (
+                  <JourneyLessonBody blocks={active.unit.lessonBody} identityPathfinder={isIdentityPathfinder} closingCallout={active.unit.slug === "identity-niche-18"} />
+                ) : active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? null : active.unit.teachingBlocks.map((block) => (
                   <p key={block}>
                     {cleanTeachingBlock(block, Boolean(workbookExperience))}
                   </p>
                 ))}
               </section>
-              <figure
-                className={`assessment-lesson-image${active.unit.media?.type === "video" ? " contain" : ""}`}
-              >
-                <img src={lessonImage} alt={lessonImageLabel} loading="lazy" />
-                {active.unit.media ? (
-                  <figcaption>{active.unit.media.label}</figcaption>
-                ) : null}
-              </figure>
-            </div>
+              {!isCareIntroduction && !wrapLessonImage ? lessonArtwork : null}
+            </div> : null}
+
+            {active.unit.companionMomentPosition === "after-teaching" ? (
+              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction && !usesApprovedLessonFormat} />
+            ) : null}
+            {active.unit.closingScripture ? (
+              <blockquote className="journey-closing-scripture">
+                <p>“{active.unit.closingScripture.text}”</p>
+                <cite>{active.unit.closingScripture.reference}</cite>
+              </blockquote>
+            ) : null}
           </section>
 
-          {active.unit.type === "assessment-link" ||
+          {/* Keep the overview in class; connected trails remain available at the assessment introductions. */}
+          {beforeConnectedTrailBoundary && !isDesignIdLens && !isDesignReflectionsLove && !isOneAnother && active.unit.slug !== "what-is-dydd-dydd-assessments-11" && active.unit.contentStatus !== "draft" && (active.unit.type === "assessment-link" ||
           active.unit.type === "designid-reflection" ||
-          active.unit.slug.includes("spiritual-gifts-assessment") ? (
+          active.unit.slug.includes("spiritual-gifts-assessment")) ? (
             <aside className="trail-fieldkit-note">
               <div>
                 <p className="section-label">A connected trail</p>
                 <h2>
                   {active.unit.slug.includes("spiritual-gifts")
                     ? "Explore your Spiritual Gifts"
-                    : active.unit.type === "designid-reflection"
+                    : (active.unit.type === "designid-reflection" || active.unit.assessmentTarget === "designid")
                       ? "Bring your DesignID into the Journey"
                       : "Discover your connected assessments"}
                 </h2>
@@ -428,7 +499,7 @@ export function JourneyCourseNavigator({
               </div>
               <ReviewAwareLink
                 className="button primary"
-                href={`/trailheads?from=journey${active.unit.slug.includes("spiritual-gifts") ? "#spiritual-gifts" : active.unit.type === "designid-reflection" ? "#designid" : ""}`}
+                href={`/trailheads?from=journey${active.unit.slug.includes("spiritual-gifts") ? "#spiritual-gifts" : (active.unit.type === "designid-reflection" || active.unit.assessmentTarget === "designid") ? "#designid" : ""}`}
                 onClick={() => {
                   try {
                     localStorage.setItem(
@@ -443,11 +514,11 @@ export function JourneyCourseNavigator({
             </aside>
           ) : null}
 
-          {workbookExperience ? (
+          {isAppliedCapacity ? null : expertiseLesson ? <JourneyExpertiseCare lesson={expertiseLesson} reflectionNames={reflectionNames} /> : isOneAnother ? <JourneyOneAnotherCare /> : active.unit.slug === "identity-identity-among-believers-20" ? <JourneyIdentityBelieversCare /> : isWhoWhose ? <JourneyWhoWhoseCare /> : workbookExperience ? (
             <section
-              className={`journey-active-workbook ${workbookExperience.kind}`}
+              className={`journey-active-workbook ${workbookExperience.kind}${(isDesignIdLens || isDesignReflectionsLove) ? " journey-who-whose-care journey-designid-lens-care" : ""}`}
             >
-              <div
+              {!isPathfinder && !isDesignIdLens && !isDesignReflectionsLove ? <div
                 className="journey-care-divider"
                 aria-label="CARE workbook section"
               >
@@ -455,12 +526,12 @@ export function JourneyCourseNavigator({
                 <span>A</span>
                 <span>R</span>
                 <span>E</span>
-              </div>
+              </div> : null}
               <div className="journey-care-heading">
                 <div>
                   <p className="section-label">
                     {workbookExperience.kind === "pathfinder"
-                      ? "Pathfinder CARE"
+                      ? "PATHFINDER"
                       : workbookExperience.kind === "designid"
                         ? "DesignID CARE reflection"
                         : "Workbook CARE reflection"}
@@ -482,6 +553,23 @@ export function JourneyCourseNavigator({
                 ) : null}
               </div>
 
+              {workbookExperience.kind !== "pathfinder" ? <JourneyCareDirections /> : null}
+              {isPathfinder ? <div className="journey-pathfinder-waypoints">
+                <p className="journey-pathfinder-saving">Your words save after a pause and before Next. {isIdentityPathfinder || isExpertisePathfinder ? "These same pieces are ready to edit in section 8.2 and your Field Kit." : "Review your saved pieces in your Field Kit."}</p>
+                {workbookExperience.prompts.map((prompt, index) => <section className="journey-pathfinder-waypoint" key={prompt.id}>
+                  <span className="journey-pathfinder-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                  <div><h4>{prompt.label}</h4>{prompt.helper ? <p>{prompt.helper}</p> : null}<ReflectionAnswer questionId={prompt.id} showQuestion={false} /></div>
+                </section>)}
+              </div> : isDesignIdLens || isDesignReflectionsLove ? (
+                <div className="journey-care-response-grid">
+                  {careOrder.filter(stage => workbookExperience.care[stage] || workbookExperience.prompts.some(p => p.careStep === stage)).map(stage => <section className={`journey-care-response-cell ${stage}`} key={stage} data-care-stage={stage}>
+                    <h4>{careLabels[stage]}</h4>
+                    <div className="journey-care-response-content">{workbookExperience.care[stage] ? <p>{workbookExperience.care[stage]}</p> : null}
+                      {workbookExperience.prompts.filter(p => p.careStep === stage).map(p => <ReflectionAnswer key={p.id} questionId={p.id} />)}
+                    </div>
+                  </section>)}
+                </div>
+              ) : <>
               <div className="journey-care-process">
                 {careOrder
                   .filter((careStep) => workbookExperience.care[careStep])
@@ -502,12 +590,15 @@ export function JourneyCourseNavigator({
                 ))}
               </div>
 
-              {showNicheBuilder ? <ReflectionNicheBuilder /> : null}
+              </>}
+
+              {isExpertisePathfinder ? <p className="journey-pathfinder-closing">Keep the words that best express what you can offer today and what God is still developing. You can return to these pieces as your niche declaration takes shape.</p> : null}
+              {showNicheBuilder ? <><ReflectionNicheBuilder /><NicheDeclarationCompletion progress={checklist} flush={savedPosition.flush} /></> : null}
             </section>
           ) : null}
         </div>
 
-        {active.unit.notes ? (
+        {active.unit.notes && !isPathfinder ? (
           <p className="journey-active-note">{active.unit.notes}</p>
         ) : null}
 
@@ -519,13 +610,7 @@ export function JourneyCourseNavigator({
           ) : (
             <span>First lesson</span>
           )}
-          {next ? (
-            <button onClick={() => setLesson(next)} type="button">
-              Next: {next.unit.title}
-            </button>
-          ) : (
-            <span>Course complete</span>
-          )}
+          <CourseCompletionControls progress={checklist} lessonSlug={active.unit.slug} nextTitle={next?.unit.title} onNext={next ? () => { void setLesson(next, true); } : undefined} flush={savedPosition.flush} />
         </footer>
       </article>
     </section>

@@ -1,8 +1,9 @@
+import {createHash} from "node:crypto";
 import {
   archiveReportPdf,
   type StoredReport,
 } from "@/lib/assessments/report-storage";
-import { sendResendEmail } from "@/lib/email/resend";
+import { sendApplicationEmail as sendResendEmail } from "@/lib/lifecycle/application-mail";
 import {
   createPdfMonkeyDocument,
   getPdfMonkeyDocument,
@@ -95,6 +96,9 @@ export async function sendAssessmentReportEmail({
 }) {
   const text = `Hi ${participantName},\n\nYour ${assessmentName} report is ready.\n\nOpen your report here: ${reportUrl}\n\nSincerely,\nDiscover Your Divine Design Team`;
   return sendResendEmail({
+    templateId: "B01-"+assessmentName.toLowerCase(),
+    idempotencyKey:"assessment-report-"+createHash("sha256").update(participantEmail.toLowerCase()+"|"+reportUrl).digest("hex"),
+    deliveryContext:{type:"assessment_report",reportUrl},
     html: [
       `<p>Hi ${participantName},</p>`,
       `<p>Your ${assessmentName} report is ready.</p>`,

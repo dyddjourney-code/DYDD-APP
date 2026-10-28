@@ -1,0 +1,2588 @@
+{
+  "fetchedAt": "2026-10-22T21:44:29.672Z",
+  "readOnly": true,
+  "metadata": {
+    "spreadsheetId": "1GTyYUL883YogJ9n46WyUyhQBZpQuU9nCrMtRlbfP1l4",
+    "properties": {
+      "title": "DYDD Journey Course Content",
+      "locale": "en_US",
+      "autoRecalc": "ON_CHANGE",
+      "timeZone": "America/New_York",
+      "defaultFormat": {
+        "backgroundColor": {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        },
+        "padding": {
+          "top": 2,
+          "right": 3,
+          "bottom": 2,
+          "left": 3
+        },
+        "verticalAlignment": "BOTTOM",
+        "wrapStrategy": "OVERFLOW_CELL",
+        "textFormat": {
+          "foregroundColor": {},
+          "fontFamily": "arial,sans,sans-serif",
+          "fontSize": 10,
+          "bold": false,
+          "italic": false,
+          "strikethrough": false,
+          "underline": false,
+          "foregroundColorStyle": {
+            "rgbColor": {}
+          }
+        },
+        "backgroundColorStyle": {
+          "rgbColor": {
+            "red": 1,
+            "green": 1,
+            "blue": 1
+          }
+        }
+      },
+      "spreadsheetTheme": {
+        "primaryFontFamily": "Arial",
+        "themeColors": [
+          {
+            "colorType": "TEXT",
+            "color": {
+              "rgbColor": {}
+            }
+          },
+          {
+            "colorType": "BACKGROUND",
+            "color": {
+              "rgbColor": {
+                "red": 1,
+                "green": 1,
+                "blue": 1
+              }
+            }
+          },
+          {
+            "colorType": "ACCENT1",
+            "color": {
+              "rgbColor": {
+                "red": 0.25882354,
+                "green": 0.52156866,
+                "blue": 0.95686275
+              }
+            }
+          },
+          {
+            "colorType": "ACCENT2",
+            "color": {
+              "rgbColor": {
+                "red": 0.91764706,
+                "green": 0.2627451,
+                "blue": 0.20784314
+              }
+            }
+          },
+          {
+            "colorType": "ACCENT3",
+            "color": {
+              "rgbColor": {
+                "red": 0.9843137,
+                "green": 0.7372549,
+                "blue": 0.015686275
+              }
+            }
+          },
+          {
+            "colorType": "ACCENT4",
+            "color": {
+              "rgbColor": {
+                "red": 0.20392157,
+                "green": 0.65882355,
+                "blue": 0.3254902
+              }
+            }
+          },
+          {
+            "colorType": "ACCENT5",
+            "color": {
+              "rgbColor": {
+                "red": 1,
+                "green": 0.42745098,
+                "blue": 0.003921569
+              }
+            }
+          },
+          {
+            "colorType": "ACCENT6",
+            "color": {
+              "rgbColor": {
+                "red": 0.27450982,
+                "green": 0.7411765,
+                "blue": 0.7764706
+              }
+            }
+          },
+          {
+            "colorType": "LINK",
+            "color": {
+              "rgbColor": {
+                "red": 0.06666667,
+                "green": 0.33333334,
+                "blue": 0.8
+              }
+            }
+          }
+        ]
+      }
+    },
+    "sheets": [
+      {
+        "properties": {
+          "sheetId": 0,
+          "title": "DYDD Journey Course",
+          "index": 0,
+          "sheetType": "GRID",
+          "gridProperties": {
+            "rowCount": 1000,
+            "columnCount": 24,
+            "frozenRowCount": 1
+          }
+        }
+      },
+      {
+        "properties": {
+          "sheetId": 271274217,
+          "title": "DesignID Course",
+          "index": 1,
+          "sheetType": "GRID",
+          "gridProperties": {
+            "rowCount": 1000,
+            "columnCount": 25
+          }
+        }
+      }
+    ]
+  },
+  "spreadsheetId": "1GTyYUL883YogJ9n46WyUyhQBZpQuU9nCrMtRlbfP1l4",
+  "properties": {
+    "title": "DYDD Journey Course Content",
+    "locale": "en_US",
+    "autoRecalc": "ON_CHANGE",
+    "timeZone": "America/New_York",
+    "defaultFormat": {
+      "backgroundColor": {
+        "red": 1,
+        "green": 1,
+        "blue": 1
+      },
+      "padding": {
+        "top": 2,
+        "right": 3,
+        "bottom": 2,
+        "left": 3
+      },
+      "verticalAlignment": "BOTTOM",
+      "wrapStrategy": "OVERFLOW_CELL",
+      "textFormat": {
+        "foregroundColor": {},
+        "fontFamily": "arial,sans,sans-serif",
+        "fontSize": 10,
+        "bold": false,
+        "italic": false,
+        "strikethrough": false,
+        "underline": false,
+        "foregroundColorStyle": {
+          "rgbColor": {}
+        }
+      },
+      "backgroundColorStyle": {
+        "rgbColor": {
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      }
+    },
+    "spreadsheetTheme": {
+      "primaryFontFamily": "Arial",
+      "themeColors": [
+        {
+          "colorType": "TEXT",
+          "color": {
+            "rgbColor": {}
+          }
+        },
+        {
+          "colorType": "BACKGROUND",
+          "color": {
+            "rgbColor": {
+              "red": 1,
+              "green": 1,
+              "blue": 1
+            }
+          }
+        },
+        {
+          "colorType": "ACCENT1",
+          "color": {
+            "rgbColor": {
+              "red": 0.25882354,
+              "green": 0.52156866,
+              "blue": 0.95686275
+            }
+          }
+        },
+        {
+          "colorType": "ACCENT2",
+          "color": {
+            "rgbColor": {
+              "red": 0.91764706,
+              "green": 0.2627451,
+              "blue": 0.20784314
+            }
+          }
+        },
+        {
+          "colorType": "ACCENT3",
+          "color": {
+            "rgbColor": {
+              "red": 0.9843137,
+              "green": 0.7372549,
+              "blue": 0.015686275
+            }
+          }
+        },
+        {
+          "colorType": "ACCENT4",
+          "color": {
+            "rgbColor": {
+              "red": 0.20392157,
+              "green": 0.65882355,
+              "blue": 0.3254902
+            }
+          }
+        },
+        {
+          "colorType": "ACCENT5",
+          "color": {
+            "rgbColor": {
+              "red": 1,
+              "green": 0.42745098,
+              "blue": 0.003921569
+            }
+          }
+        },
+        {
+          "colorType": "ACCENT6",
+          "color": {
+            "rgbColor": {
+              "red": 0.27450982,
+              "green": 0.7411765,
+              "blue": 0.7764706
+            }
+          }
+        },
+        {
+          "colorType": "LINK",
+          "color": {
+            "rgbColor": {
+              "red": 0.06666667,
+              "green": 0.33333334,
+              "blue": 0.8
+            }
+          }
+        }
+      ]
+    }
+  },
+  "sheets": [
+    {
+      "properties": {
+        "sheetId": 0,
+        "title": "DYDD Journey Course",
+        "index": 0,
+        "sheetType": "GRID",
+        "gridProperties": {
+          "rowCount": 1000,
+          "columnCount": 24,
+          "frozenRowCount": 1
+        }
+      },
+      "data": [
+        {
+          "rowData": [
+            {
+              "values": [
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Module"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Module"
+                  },
+                  "formattedValue": "Module",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "OVERFLOW_CELL",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "OVERFLOW_CELL",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Section"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Section"
+                  },
+                  "formattedValue": "Section",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "OVERFLOW_CELL",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "OVERFLOW_CELL",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Lesson"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Lesson"
+                  },
+                  "formattedValue": "Lesson",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "OVERFLOW_CELL",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "OVERFLOW_CELL",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Lesson Title"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Lesson Title"
+                  },
+                  "formattedValue": "Lesson Title",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Lesson Focus"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Lesson Focus"
+                  },
+                  "formattedValue": "Lesson Focus",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Content"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Content"
+                  },
+                  "formattedValue": "Content",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "OVERFLOW_CELL",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "OVERFLOW_CELL",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Image URL"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Image URL"
+                  },
+                  "formattedValue": "Image URL",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": true,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "CARE"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "CARE"
+                  },
+                  "formattedValue": "CARE",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 11,
+                      "bold": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 11,
+                      "bold": true,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "rowMetadata": [
+            {
+              "pixelSize": 21
+            }
+          ],
+          "columnMetadata": [
+            {
+              "pixelSize": 67
+            },
+            {
+              "pixelSize": 66
+            },
+            {
+              "pixelSize": 65
+            },
+            {
+              "pixelSize": 144
+            },
+            {
+              "pixelSize": 136
+            },
+            {
+              "pixelSize": 673
+            },
+            {
+              "pixelSize": 230
+            },
+            {
+              "pixelSize": 382
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            }
+          ]
+        },
+        {
+          "startRow": 23,
+          "rowData": [
+            {
+              "values": [
+                {
+                  "userEnteredFormat": {
+                    "backgroundColor": {
+                      "red": 0.75686276,
+                      "green": 0.9411765,
+                      "blue": 0.78431374
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "OVERFLOW_CELL",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 0.75686276,
+                        "green": 0.9411765,
+                        "blue": 0.78431374
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 0.75686276,
+                      "green": 0.9411765,
+                      "blue": 0.78431374
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "OVERFLOW_CELL",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 0.75686276,
+                        "green": 0.9411765,
+                        "blue": 0.78431374
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "numberValue": 3.3
+                  },
+                  "effectiveValue": {
+                    "numberValue": 3.3
+                  },
+                  "formattedValue": "3.3",
+                  "userEnteredFormat": {
+                    "backgroundColor": {
+                      "red": 0.75686276,
+                      "green": 0.9411765,
+                      "blue": 0.78431374
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "horizontalAlignment": "RIGHT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "OVERFLOW_CELL",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 0.75686276,
+                        "green": 0.9411765,
+                        "blue": 0.78431374
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 0.75686276,
+                      "green": 0.9411765,
+                      "blue": 0.78431374
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "RIGHT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "OVERFLOW_CELL",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 0.75686276,
+                        "green": 0.9411765,
+                        "blue": 0.78431374
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "numberValue": 1
+                  },
+                  "effectiveValue": {
+                    "numberValue": 1
+                  },
+                  "formattedValue": "1",
+                  "userEnteredFormat": {
+                    "backgroundColor": {
+                      "red": 0.75686276,
+                      "green": 0.9411765,
+                      "blue": 0.78431374
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "horizontalAlignment": "RIGHT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "OVERFLOW_CELL",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 0.75686276,
+                        "green": 0.9411765,
+                        "blue": 0.78431374
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 0.75686276,
+                      "green": 0.9411765,
+                      "blue": 0.78431374
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "RIGHT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "OVERFLOW_CELL",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 0.75686276,
+                        "green": 0.9411765,
+                        "blue": 0.78431374
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Niche Preparation: Identity"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Niche Preparation: Identity"
+                  },
+                  "formattedValue": "Niche Preparation: Identity",
+                  "userEnteredFormat": {
+                    "backgroundColor": {
+                      "red": 0.75686276,
+                      "green": 0.9411765,
+                      "blue": 0.78431374
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 0.75686276,
+                        "green": 0.9411765,
+                        "blue": 0.78431374
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 0.75686276,
+                      "green": 0.9411765,
+                      "blue": 0.78431374
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "\"Aptos Narrow\", sans-serif",
+                      "fontSize": 11,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 0.75686276,
+                        "green": 0.9411765,
+                        "blue": 0.78431374
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Identity "
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Identity "
+                  },
+                  "formattedValue": "Identity ",
+                  "userEnteredFormat": {
+                    "backgroundColor": {
+                      "red": 0.75686276,
+                      "green": 0.9411765,
+                      "blue": 0.78431374
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 11,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 0.75686276,
+                        "green": 0.9411765,
+                        "blue": 0.78431374
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 0.75686276,
+                      "green": 0.9411765,
+                      "blue": 0.78431374
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 11,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 0.75686276,
+                        "green": 0.9411765,
+                        "blue": 0.78431374
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "Before you begin writing your Niche Declaration, spend a few moments reflecting on the truth of who you are in Christ. Your identity is the foundation of your calling. It is not shaped by your past, your mistakes, or your circumstances, but by the One who created you, redeemed you, and calls you His own.\r\nUse this space to declare your identity in your own words. Let Scripture guide you as you write statements that reflect who God says you are.\r\nYou might reflect on verses such as:\r\n●\tEphesians 2:10: “For we are God’s handiwork…”\r\n●\t1 Peter 2:9: “…a chosen people…God’s special possession…”\r\n●\tRomans 8:16: “The Spirit himself testifies…that we are God’s children.”\r\nTake your time. Write honestly. Let this be an act of worship. You might write observations such as:\r\n●\t“I am a beloved child of God, created on purpose and for a purpose.”\r\n●\t“I am chosen, redeemed, equipped, and sent as His workmanship.”\r\n●\t“I am accepted, forgiven, and empowered by His Spirit.”\r\n●\t“I am His workmanship, created for good works…”\r"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "Before you begin writing your Niche Declaration, spend a few moments reflecting on the truth of who you are in Christ. Your identity is the foundation of your calling. It is not shaped by your past, your mistakes, or your circumstances, but by the One who created you, redeemed you, and calls you His own.\r\nUse this space to declare your identity in your own words. Let Scripture guide you as you write statements that reflect who God says you are.\r\nYou might reflect on verses such as:\r\n●\tEphesians 2:10: “For we are God’s handiwork…”\r\n●\t1 Peter 2:9: “…a chosen people…God’s special possession…”\r\n●\tRomans 8:16: “The Spirit himself testifies…that we are God’s children.”\r\nTake your time. Write honestly. Let this be an act of worship. You might write observations such as:\r\n●\t“I am a beloved child of God, created on purpose and for a purpose.”\r\n●\t“I am chosen, redeemed, equipped, and sent as His workmanship.”\r\n●\t“I am accepted, forgiven, and empowered by His Spirit.”\r\n●\t“I am His workmanship, created for good works…”\r"
+                  },
+                  "formattedValue": "Before you begin writing your Niche Declaration, spend a few moments reflecting on the truth of who you are in Christ. Your identity is the foundation of your calling. It is not shaped by your past, your mistakes, or your circumstances, but by the One who created you, redeemed you, and calls you His own.\r\nUse this space to declare your identity in your own words. Let Scripture guide you as you write statements that reflect who God says you are.\r\nYou might reflect on verses such as:\r\n●\tEphesians 2:10: “For we are God’s handiwork…”\r\n●\t1 Peter 2:9: “…a chosen people…God’s special possession…”\r\n●\tRomans 8:16: “The Spirit himself testifies…that we are God’s children.”\r\nTake your time. Write honestly. Let this be an act of worship. You might write observations such as:\r\n●\t“I am a beloved child of God, created on purpose and for a purpose.”\r\n●\t“I am chosen, redeemed, equipped, and sent as His workmanship.”\r\n●\t“I am accepted, forgiven, and empowered by His Spirit.”\r\n●\t“I am His workmanship, created for good works…”\r",
+                  "userEnteredFormat": {
+                    "backgroundColor": {
+                      "red": 0.75686276,
+                      "green": 0.9411765,
+                      "blue": 0.78431374
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 11,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 0.75686276,
+                        "green": 0.9411765,
+                        "blue": 0.78431374
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 0.75686276,
+                      "green": 0.9411765,
+                      "blue": 0.78431374
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 11,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 0.75686276,
+                        "green": 0.9411765,
+                        "blue": 0.78431374
+                      }
+                    }
+                  }
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/418f123c-15e8-4a72-83c6-8e590c46f670/woman-sits-in-nature-in-thoughtful-pose-2026-09-22-10-54-13-utc.jpg?format=2500w"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/418f123c-15e8-4a72-83c6-8e590c46f670/woman-sits-in-nature-in-thoughtful-pose-2026-09-22-10-54-13-utc.jpg?format=2500w"
+                  },
+                  "formattedValue": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/418f123c-15e8-4a72-83c6-8e590c46f670/woman-sits-in-nature-in-thoughtful-pose-2026-09-22-10-54-13-utc.jpg?format=2500w",
+                  "userEnteredFormat": {
+                    "backgroundColor": {
+                      "red": 0.75686276,
+                      "green": 0.9411765,
+                      "blue": 0.78431374
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "fontFamily": "Arial",
+                      "fontSize": 11,
+                      "link": {
+                        "uri": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/418f123c-15e8-4a72-83c6-8e590c46f670/woman-sits-in-nature-in-thoughtful-pose-2026-09-22-10-54-13-utc.jpg?format=2500w"
+                      }
+                    },
+                    "hyperlinkDisplayType": "LINKED",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 0.75686276,
+                        "green": 0.9411765,
+                        "blue": 0.78431374
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 0.75686276,
+                      "green": 0.9411765,
+                      "blue": 0.78431374
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {
+                        "red": 0.06666667,
+                        "green": 0.33333334,
+                        "blue": 0.8
+                      },
+                      "fontFamily": "Arial",
+                      "fontSize": 11,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": true,
+                      "foregroundColorStyle": {
+                        "rgbColor": {
+                          "red": 0.06666667,
+                          "green": 0.33333334,
+                          "blue": 0.8
+                        }
+                      },
+                      "link": {
+                        "uri": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/418f123c-15e8-4a72-83c6-8e590c46f670/woman-sits-in-nature-in-thoughtful-pose-2026-09-22-10-54-13-utc.jpg?format=2500w"
+                      }
+                    },
+                    "hyperlinkDisplayType": "LINKED",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 0.75686276,
+                        "green": 0.9411765,
+                        "blue": 0.78431374
+                      }
+                    }
+                  },
+                  "hyperlink": "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/418f123c-15e8-4a72-83c6-8e590c46f670/woman-sits-in-nature-in-thoughtful-pose-2026-09-22-10-54-13-utc.jpg?format=2500w"
+                },
+                {
+                  "userEnteredValue": {
+                    "stringValue": "*Build note: We are going to stop using “CARE” for the Niche Pathfinder lessons. We need to instead come up with a distinct visual that represents Pathfinder. In my book and workbook I used a rich burnt orange to help it stand out from the rest of the content. Instead of Care, we are going to ask them to work on elements of their Niche. These will connect to section 8.2 later in the course. The content will already be populated there from these earlier pathfinder lessons and be aviabile for editing and combining to develop a real and final niche decleration. \r\nNiche Pathfinder\r\nI believe God created me…\r\nUse this space to write a sentence or paragraph that captures your true identity in Christ.\r\nWhich will enable me to use my…\r\nReflections: What have you learned about your divine reflections that you might be able to use for serving God?\r\nWhich will enable me to use my… \r\nLove for Others: How you naturally connect and care\r"
+                  },
+                  "effectiveValue": {
+                    "stringValue": "*Build note: We are going to stop using “CARE” for the Niche Pathfinder lessons. We need to instead come up with a distinct visual that represents Pathfinder. In my book and workbook I used a rich burnt orange to help it stand out from the rest of the content. Instead of Care, we are going to ask them to work on elements of their Niche. These will connect to section 8.2 later in the course. The content will already be populated there from these earlier pathfinder lessons and be aviabile for editing and combining to develop a real and final niche decleration. \r\nNiche Pathfinder\r\nI believe God created me…\r\nUse this space to write a sentence or paragraph that captures your true identity in Christ.\r\nWhich will enable me to use my…\r\nReflections: What have you learned about your divine reflections that you might be able to use for serving God?\r\nWhich will enable me to use my… \r\nLove for Others: How you naturally connect and care\r"
+                  },
+                  "formattedValue": "*Build note: We are going to stop using “CARE” for the Niche Pathfinder lessons. We need to instead come up with a distinct visual that represents Pathfinder. In my book and workbook I used a rich burnt orange to help it stand out from the rest of the content. Instead of Care, we are going to ask them to work on elements of their Niche. These will connect to section 8.2 later in the course. The content will already be populated there from these earlier pathfinder lessons and be aviabile for editing and combining to develop a real and final niche decleration. \r\nNiche Pathfinder\r\nI believe God created me…\r\nUse this space to write a sentence or paragraph that captures your true identity in Christ.\r\nWhich will enable me to use my…\r\nReflections: What have you learned about your divine reflections that you might be able to use for serving God?\r\nWhich will enable me to use my… \r\nLove for Others: How you naturally connect and care\r",
+                  "userEnteredFormat": {
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 11,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    }
+                  },
+                  "effectiveFormat": {
+                    "backgroundColor": {
+                      "red": 1,
+                      "green": 1,
+                      "blue": 1
+                    },
+                    "borders": {
+                      "top": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "bottom": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "left": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      },
+                      "right": {
+                        "style": "SOLID",
+                        "width": 1,
+                        "color": {},
+                        "colorStyle": {
+                          "rgbColor": {}
+                        }
+                      }
+                    },
+                    "padding": {
+                      "top": 2,
+                      "right": 3,
+                      "bottom": 2,
+                      "left": 3
+                    },
+                    "horizontalAlignment": "LEFT",
+                    "verticalAlignment": "BOTTOM",
+                    "wrapStrategy": "WRAP",
+                    "textFormat": {
+                      "foregroundColor": {},
+                      "fontFamily": "Arial",
+                      "fontSize": 11,
+                      "bold": false,
+                      "italic": false,
+                      "strikethrough": false,
+                      "underline": false,
+                      "foregroundColorStyle": {
+                        "rgbColor": {}
+                      }
+                    },
+                    "hyperlinkDisplayType": "PLAIN_TEXT",
+                    "backgroundColorStyle": {
+                      "rgbColor": {
+                        "red": 1,
+                        "green": 1,
+                        "blue": 1
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "rowMetadata": [
+            {
+              "pixelSize": 21
+            }
+          ],
+          "columnMetadata": [
+            {
+              "pixelSize": 67
+            },
+            {
+              "pixelSize": 66
+            },
+            {
+              "pixelSize": 65
+            },
+            {
+              "pixelSize": 144
+            },
+            {
+              "pixelSize": 136
+            },
+            {
+              "pixelSize": 673
+            },
+            {
+              "pixelSize": 230
+            },
+            {
+              "pixelSize": 382
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            },
+            {
+              "pixelSize": 100
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "spreadsheetUrl": "https://docs.google.com/spreadsheets/d/1GTyYUL883YogJ9n46WyUyhQBZpQuU9nCrMtRlbfP1l4/edit",
+  "commentsViewMode": "COMMENTS_VIEW_MODE_OMITTED"
+}

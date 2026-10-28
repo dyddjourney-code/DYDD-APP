@@ -1,3 +1,5 @@
+import { designIdAuthoredLessons } from "./designid-authored-lessons";
+import { designIdWelcome } from "./designid-welcome";
 import { designIdLessonBodies } from "./designid-source-html";
 import type { CompanionMoment } from "./companion-moments";
 import { designIdCompanionMoments } from "./course-companion-moment-data";
@@ -18,9 +20,9 @@ export type DesignIdModule = {
   lessons: DesignIdLesson[];
 };
 
-export const designIdCourse = {
+const legacyDesignIdCourse = {
   slug: "designid-foundations",
-  title: "DesignID Foundations",
+  title: "DesignID Course",
   source:
     "DesignIDCourseCode---40bef919-638d-4f9b-8a2a-0fb09597b63a.txt",
   description:
@@ -36,11 +38,7 @@ export const designIdCourse = {
           sourceTitle: "Welcome to DesignID",
           summary:
             "Orients the learner to DesignID as a meaningful first step in the broader Discover Your Divine Design journey.",
-          focus: [
-            "DesignID is language for how God has shaped a person.",
-            "The class helps the learner understand results and begin applying them.",
-            "The journey starts with receiving the assessment as an invitation.",
-          ],
+          focus: designIdWelcome.focus,
           companionMoment: designIdCompanionMoments.welcome,
         },
         {
@@ -206,6 +204,8 @@ export const designIdCourse = {
     },
   ],
 } as const;
+
+export const designIdCourse = { ...legacyDesignIdCourse, modules: legacyDesignIdCourse.modules.map(module => ({ ...module, lessons: module.lessons.map(lesson => ({ ...lesson, focus: designIdAuthoredLessons[lesson.slug]?.focus ?? lesson.focus })) })) };
 
 export const designIdLessons = designIdCourse.modules.flatMap((module) =>
   module.lessons.map((lesson) => ({

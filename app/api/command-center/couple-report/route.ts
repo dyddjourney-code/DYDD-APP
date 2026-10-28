@@ -1,3 +1,4 @@
+import { isSandbox } from "@/lib/environment";
 import { NextResponse, type NextRequest } from "next/server";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import { isOwnerPreviewRequest } from "@/lib/owner-preview";
@@ -1096,6 +1097,7 @@ async function renderMarriageDesignPdf(html: string) {
 }
 
 async function getActor(request: NextRequest) {
+  if (!isSandbox()) return null;
   const ownerParams = {
     key: request.nextUrl.searchParams.get("key"),
     review: request.nextUrl.searchParams.get("review"),

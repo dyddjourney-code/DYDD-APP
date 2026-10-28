@@ -8,3 +8,7 @@ export function schoolFeatures() {
     journeyDiscussionPins: isSandbox() && process.env.DYDD_FEATURE_DISCUSSION_PINS === 'true',
   };
 }
+
+// Stable public release is a free beta. Never grants owner/admin or course prerequisites.
+export function isFreeBeta() { return !isSandbox(); }
+export function discussionRemindersEnabled() { return true; }

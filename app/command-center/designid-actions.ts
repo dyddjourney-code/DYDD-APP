@@ -1,10 +1,13 @@
 'use server';
+import { isSandbox } from '@/lib/environment';
+import { notFound } from 'next/navigation';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { isDyddAdminEmail } from '@/lib/admin-access';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 export async function grantDesignIdRetake(form: FormData) {
+  if (!isSandbox()) notFound();
   const {data:{user}} = await (await createSupabaseServerClient()).auth.getUser();
   if (!user || !isDyddAdminEmail(user.email)) redirect('/login?next=%2Fcommand-center');
   const participantId = String(form.get('participant_id') ?? '');

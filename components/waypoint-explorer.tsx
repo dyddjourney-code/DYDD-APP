@@ -1,5 +1,6 @@
 "use client";
 
+import { formatWaypointScripture } from "@/lib/waypoints/scripture-format";
 import type { FormEvent } from "react";
 import { useMemo, useState } from "react";
 
@@ -9,6 +10,9 @@ type Waypoint = {
   date: string;
   category: string;
   scripture: string;
+  scriptureText: string;
+  scriptureTranslation: string;
+  scriptureAttribution: string;
   tags: string[];
   excerpt: string;
   body: string[];
@@ -47,6 +51,8 @@ export function WaypointExplorer({
 
   const selectedWaypoint =
     waypoints.find((waypoint) => waypoint.id === selectedId) ?? waypoints[0];
+  const currentWaypoint =
+    waypoints.find((waypoint) => waypoint.id === currentId) ?? waypoints[0];
   const previousWaypoint =
     waypoints.find((waypoint) => waypoint.id === previousId) ?? waypoints[1];
 
@@ -177,7 +183,7 @@ export function WaypointExplorer({
 
   return (
     <>
-      <article className="waypoint-display-card">
+      <article className="waypoint-display-card" data-waypoint-id={selectedWaypoint.id}>
         <div className="waypoint-card-topline">
           <span>
             {selectedWaypoint.id === currentId
@@ -203,56 +209,17 @@ export function WaypointExplorer({
           ))}
         </div>
 
+        <section className="waypoint-scripture-passage" aria-label="Scripture passage">
+          <h3>{selectedWaypoint.scripture}</h3>
+          <blockquote>{formatWaypointScripture(selectedWaypoint.scriptureText)}</blockquote>
+          <p className="waypoint-scripture-attribution">{selectedWaypoint.scriptureAttribution}</p>
+        </section>
+
         <div className="waypoint-lower-row">
           <div className="waypoint-reflection-box">
             <strong>For your design:</strong>
             <span>{selectedWaypoint.reflection}</span>
           </div>
-
-          {subscribeState === "success" ? (
-            <div className="waypoint-subscribed-card">
-              <strong>Subscribed</strong>
-              <small>{subscribeMessage}</small>
-              <button
-                className="waypoint-unsubscribe-link"
-                onClick={handleUnsubscribe}
-                type="button"
-              >
-                Unsubscribe
-              </button>
-            </div>
-          ) : (
-            <form className="waypoint-subscribe-card" onSubmit={handleSubscribe}>
-              <label htmlFor="waypoint-email">Email address</label>
-              <div>
-                <input
-                  id="waypoint-email"
-                  name="email"
-                  placeholder="jordan@example.com"
-                  onChange={(event) => setSubscribeEmail(event.target.value)}
-                  required
-                  type="email"
-                  value={subscribeEmail}
-                />
-                <button
-                  className="button primary"
-                  disabled={subscribeState === "loading"}
-                  type="submit"
-                >
-                  {subscribeState === "loading" ? "Saving..." : "Subscribe"}
-                </button>
-              </div>
-              <small
-                className={
-                  subscribeState === "error"
-                    ? "waypoint-subscribe-message error"
-                    : "waypoint-subscribe-message"
-                }
-              >
-                {subscribeMessage}
-              </small>
-            </form>
-          )}
         </div>
 
         <div className="waypoint-tag-row">
@@ -274,8 +241,10 @@ export function WaypointExplorer({
         >
           <span>Current week</span>
           <strong>
-            {waypoints.find((waypoint) => waypoint.id === currentId)?.title}
+            {currentWaypoint.title}
           </strong>
+          <small>{currentWaypoint.scripture}</small>
+          <small>{currentWaypoint.date}</small>
         </button>
         {previousWaypoint ? (
           <button
@@ -289,11 +258,60 @@ export function WaypointExplorer({
           >
             <span>See last week</span>
             <strong>{previousWaypoint.title}</strong>
-            <small>
-              {previousWaypoint.scripture} · {previousWaypoint.date}
-            </small>
+            <small>{previousWaypoint.scripture}</small>
+            <small>{previousWaypoint.date}</small>
           </button>
         ) : null}
+
+        {subscribeState === "success" ? (
+          <div className="waypoint-subscribed-card" role="status">
+            <strong>Subscribed</strong>
+            <small>{subscribeMessage}</small>
+            <button
+              className="waypoint-unsubscribe-link"
+              onClick={handleUnsubscribe}
+              type="button"
+            >
+              Unsubscribe
+            </button>
+          </div>
+        ) : (
+          <form className="waypoint-subscribe-card" onSubmit={handleSubscribe}>
+            <p className="waypoint-action-label">Subscribe</p>
+            <label className="waypoint-email-label" htmlFor="waypoint-email">Email address</label>
+            <div>
+              <input
+                id="waypoint-email"
+                name="email"
+                autoComplete="email"
+                aria-describedby="waypoint-subscribe-message"
+                placeholder="Your email"
+                onChange={(event) => setSubscribeEmail(event.target.value)}
+                required
+                type="email"
+                value={subscribeEmail}
+              />
+              <button
+                className="button primary"
+                disabled={subscribeState === "loading"}
+                type="submit"
+              >
+                {subscribeState === "loading" ? "Saving..." : "Subscribe"}
+              </button>
+            </div>
+            <small
+              id="waypoint-subscribe-message"
+              role="status"
+              className={
+                subscribeState === "error"
+                  ? "waypoint-subscribe-message error"
+                  : "waypoint-subscribe-message"
+              }
+            >
+              {subscribeMessage}
+            </small>
+          </form>
+        )}
       </div>
 
       {similarWaypoints.length > 0 ? (
@@ -357,6 +375,7 @@ export function WaypointExplorer({
                       ? "waypoint-result-card is-selected"
                       : "waypoint-result-card"
                   }
+                  data-waypoint-id={waypoint.id}
                   key={waypoint.id}
                   onClick={() => selectWaypoint(waypoint.id)}
                   type="button"

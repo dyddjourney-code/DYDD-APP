@@ -1,0 +1,95 @@
+DYDD FIELD GUIDE — SESSIONS 3–8
+Source coverage and editorial decisions — October 20, 2026
+
+Scope: six complete, distinct session guides in the existing sandbox Field Guide.
+The approved two-column Prepare / Leading now interface is retained. Sessions 1
+and 2, the six-step prelaunch content, existing toolkit entries, participant CARE,
+assessment scoring, saved schedules, data-access rules, and production are unchanged.
+
+Source: John Willoughby's Leaders Playbook.docx, preserved in dydd-source-library.
+Line references below refer to its complete extracted_text/
+DYDD__Books__Leaders__Playbook.docx.txt, not a new pagination or participant book.
+Ranges below are inclusive. The original source file is not edited.
+
+SESSION 3 — EXPERTISE
+Full teaching 273–293; complete teaching outline 899–908; original table questions
+982–985. Supporting full facilitation 446–506; purpose conversations 1181–1196;
+FAQ 1093–1102. Practical adaptation addresses ordinary and relational skills,
+talent/competency/expertise, growth, regret, comparison, service, and Story preparation.
+
+SESSION 4 — STORY
+Full teaching 295–319; complete outline 910–918; original table questions 972–975
+(topic matched despite older session numbering). Supporting full facilitation,
+purpose conversations, and FAQ as above. Practical adaptation explicitly protects
+voluntary disclosure, listening without fixing, identity not reduced to wounds,
+care with Romans 8:28, and appropriate individual follow-up when wanted.
+
+SESSION 5 — DESIRE
+Full teaching 321–344; complete outline 920–929; original questions 987–990.
+Supporting full purpose conversations and facilitation. Current Spiritual Gifts
+access/preparation instructions are supplied for the next relevant meeting.
+Desire is discerned with Scripture, wisdom, community, opportunity, and other design
+insights; strong impulse alone does not establish calling.
+
+SESSION 6 — SPIRITUAL GIFTS
+Full teaching 346–393; complete outline 931–940; original questions 992–995;
+assessment facilitation and community affirmation 556–578; full facilitation and
+FAQ. A complete operational instruction article replaces outdated access steps.
+Eight primary source paragraphs (349,370,372,376,377,378,392,393) are adapted only
+for current timing/access/report availability. Biblical teaching remains intact.
+Older mandatory-sounding email, chart, top-two report, and website-link claims
+are reconciled with current in-app Top 5 results and cutoff tie explanations.
+Additional report material is used only if present in the participant's version.
+The current result surface checked: app/spiritual-gifts/status/page.tsx.
+The facilitation article's QR placeholder and score-collection suggestion are
+replaced by current individual access and voluntary examples, not private reports.
+Results discussion defaults to optional completion beforehand using the actual
+Circle schedule; those without reports can participate fully and complete later.
+
+SESSION 7 — NICHE PREPARATION
+Full teaching 395–419; complete outline 942–951; original questions 997–1000.
+Full purpose activation chapter 580–627, purpose conversations, facilitation,
+and FAQ. Practical guidance covers private review of CARE/assessments, emerging
+patterns/declaration lines, uncertainty, ordinary-life opportunities, and small
+supported service experiments. This remains separate from the closing session.
+
+SESSION 8 — DECLARATIONS, COMMISSIONING, AND NEXT STEPS
+Full teaching 421–444; complete outline 953–962; original questions 1002–1005.
+Full purpose activation 580–627; purpose conversations; alumni chapter 703–785;
+full alumni agenda 1104–1133; all six alumni launch steps 1135–1179; church culture
+and multiplication 629–659; leadership timeline 1198–1215; full facilitation.
+The alumni chapter's appendix-location sentence uses descriptive resource names.
+Practical adaptations cover voluntary declarations, affirmation not grading,
+commissioning, concrete next steps, mentoring, and a realistic agreed rhythm.
+The suggested prayer is explicitly identified as new adaptation, not original text.
+DesignPD remains optional. No enrollment, invitations, or reminders are automated.
+
+SHARED IMPLEMENTATION
+Each new session has an anchor, 5–6 preparation articles, substantial full readings,
+4 original table questions with adapted follow-up/listening help, a suggested
+90-minute gathering flow, 6–7 practical situation responses, and 3 follow-through
+articles. Source chapter-four discussion prompts and outline prompts remain in
+the complete readings alongside the original table-question banks.
+The gathering timings, practical responses, examples, and follow-up suggestions
+are adapted leader help, not original manuscript quotations or replacement CARE.
+The existing current-app schedule continues to determine which meetings relate
+to a topic; all eight independent guides remain available with any meeting count.
+
+Four usable contextual toolkit entries are added: remaining discussion banks,
+Spiritual Gifts guidance, purpose conversations/service experiments, and alumni/
+ongoing support. Each opens actual complete readings rather than an empty link.
+Teaching-slide PDFs are still pending John's files; no download is invented.
+A separate complete-book reader and additional promotion-library expansion are
+not claimed as part of this six-session delivery.
+
+VERIFICATION
+Automated source checks compare full original teachings, outlines, questions,
+facilitation, activation, purpose prompts, and alumni tools. Gifts operational
+paragraph changes have an explicit allowlist. Existing-content comparison verifies
+Sessions 1–2, prelaunch, and old toolkit entries are unchanged.
+Browser checks cover real sandbox account/Jordan preview at 1280,390,320 px:
+all new readings' beginning/end, Prepare/Leading now, full question support,
+situation help, follow-through, session isolation, responsive columns/stacking,
+focus restoration, overflow, contextual toolkit, access restrictions, and retry.
+Tests create only temporary synthetic accounts/Circles and remove their artifacts.
+Final release record and results are recorded with the sandbox commit/deployment.

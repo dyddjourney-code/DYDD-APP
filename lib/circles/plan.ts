@@ -64,10 +64,15 @@ export type SavedCircle = {
 export function suggestedAssignments(count: number) {
   const modules = [...new Set(circleCurriculum.map((l) => l.moduleSlug))];
   const groups = Math.max(1, modules.length - 1);
+  const closingLessons = new Set(["niche-congratulations-75", "niche-prayer-76", "niche-whats-next-77"]);
   return Object.fromEntries(
     circleCurriculum.map((l, index) => [
       l.slug,
-      count === groups
+      count === 8
+        ? l.moduleSlug === "niche"
+          ? closingLessons.has(l.slug) ? 8 : 7
+          : Math.max(1, modules.indexOf(l.moduleSlug))
+        : count === groups
         ? Math.max(1, modules.indexOf(l.moduleSlug))
         : Math.min(
             count,
@@ -77,7 +82,7 @@ export function suggestedAssignments(count: number) {
   );
 }
 export function blankCirclePlan(): CirclePlan {
-  const count = Math.max(1, dyddMainCourseOutline.length - 1);
+  const count = 8;
   return {
     name: "",
     format: "Small group",

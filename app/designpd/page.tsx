@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { isFreeBeta } from "@/lib/environment";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import { redirect } from "next/navigation";
 import { getAssessmentSnapshotsForUser, latestByAssessment } from "@/lib/assessments/student-context";
@@ -31,7 +32,7 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
     .select("full_name,email")
     .eq("id", user.id)
     .maybeSingle();
-  const participantEmail = normalizeEmail(profile?.email ?? user.email);
+  const participantEmail = normalizeEmail(user.email);
   const participantName =
     profile?.full_name?.trim() ||
     String(user.user_metadata?.full_name ?? user.user_metadata?.name ?? "").trim() ||
@@ -50,7 +51,7 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
           action={saveDesignPdResponse}
           participantEmail={participantEmail}
           participantName={participantName}
-          ownerAccess={isDyddAdminEmail(user.email)}
+          ownerAccess={isFreeBeta() || isDyddAdminEmail(user.email)}
           savedReportHref={savedDesignPd ? `/designpd/report?snapshot=${encodeURIComponent(savedDesignPd.id)}` : undefined}
         />
       ) : (

@@ -1,3 +1,4 @@
+import { isFreeBeta } from "@/lib/environment";
 import Stripe from "stripe";
 
 export const fruitLifeProductSlug = "fruitlife_360";
@@ -8,6 +9,7 @@ export const fruitLifeStripePriceId =
 let stripeClient: Stripe | null = null;
 
 export function getStripeClient() {
+  if (isFreeBeta()) throw new Error("Payments are disabled during the free beta.");
   if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox") {
     throw new Error("Payments are disabled in the sandbox.");
   }

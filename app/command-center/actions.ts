@@ -1,5 +1,7 @@
 "use server";
 
+import { isSandbox } from "@/lib/environment";
+import { notFound } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getDyddAdminEmails, isDyddAdminEmail } from "@/lib/admin-access";
@@ -16,7 +18,7 @@ function isOwnerPreviewForm(formData: FormData) {
   const key = getString(formData, "key");
 
   return (
-    review === "owner" &&
+    isSandbox() && review === "owner" &&
     Boolean(key) &&
     Boolean(process.env.DYDD_REVIEW_TOKEN) &&
     key === process.env.DYDD_REVIEW_TOKEN
@@ -76,6 +78,7 @@ async function getCurrentUser() {
 }
 
 async function getCommandCenterActor(formData: FormData) {
+  if (!isSandbox()) notFound();
   if (!isOwnerPreviewForm(formData)) {
     const user = await getCurrentUser();
     return {

@@ -1,3 +1,4 @@
+import { isSandbox } from "@/lib/environment";
 import { hasFullReport } from "@/lib/assessments/report-recovery";
 import { previewParams, previewReflectionRounds } from "@/lib/reflections/preview";
 import { isTrailAssessmentComplete } from "@/lib/trails/catalog";
@@ -6,7 +7,6 @@ import { FieldKitLegacyLinks } from "@/components/field-kit-legacy-links";
 import { hasDesignPdCourseAccess } from "@/lib/designpd/access";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { PageHelp } from "@/components/page-help";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 import { FruitLifeCurrentAssessmentProcess } from "@/components/fruitlife-current-assessment-process";
@@ -120,14 +120,14 @@ export default async function FieldKitPage({
   if (!user && fruitLifeLane && !reviewReport) {
     redirect(`/login?next=${encodeURIComponent("/field-kit?lane=fruitlife")}`);
   }
-  if (!user && !reviewReport && process.env.DYDD_REVIEW_TOKEN) {
+  if (!user && !reviewReport) {
     redirect("/login?next=%2Ffield-kit");
   }
   const participantEmail = isHeatherReviewRequest(reviewParams)
     ? "willoughbyhs@gmail.com"
     : isNewReviewRequest(reviewParams)
       ? jordanReviewEmail
-      : normalizeEmail(profile?.email ?? user?.email);
+      : normalizeEmail(user?.email);
   const assessmentReport = reviewReport ??
     (await getFieldKitAssessmentReport(
       user?.id ?? "",
@@ -436,17 +436,6 @@ export default async function FieldKitPage({
             earlier discoveries, see your growth over time, and bring what you
             learn into your Journey.
           </p>
-        </div>
-        <div className="fieldkit-help">
-          <PageHelp
-            title="Field Kit Help"
-            items={[
-              "Start assessments and their connected courses at Trailheads.",
-              "Each trail keeps all dated reports beside its course reflection history.",
-              "Begin a new reflection round to capture growth without replacing earlier answers.",
-              "Visit your Passport in Base Camp for journey stamps and progress.",
-            ]}
-          />
         </div>
       </header>
 

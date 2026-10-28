@@ -1,0 +1,85 @@
+import { addDays, meetingLessons, scheduledDates, planGoal, type CirclePlan } from '@/lib/circles/plan';
+export type Category='service'|'circle'|'learning'|'growth';
+export type MessageDraft={message_key:string;template_id:string;kind:'member'|'leader'|'invitation';category:Category;subject:string;body:string;scheduled_at:string;expires_at:string;meeting_index?:number};
+export const escapeHtml=(s:string)=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
+export function lifecycleHtml(subject:string,text:string){
+ const linked=(value:string)=>value.split(/(https?:\/\/[^\s]+)/g).map(part=>/^https?:\/\//.test(part)?`<a style="color:#4a6239" href="${escapeHtml(part)}">${escapeHtml(part)}</a>`:escapeHtml(part)).join('');
+ return `<div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;color:#263324;line-height:1.7"><p style="font-size:12px;letter-spacing:1px;color:#4a6239">DISCOVER YOUR DIVINE DESIGN</p><h1 style="font-size:24px;color:#4a6239">${escapeHtml(subject)}</h1>${text.split(/\n\n/).map(p=>`<p style="white-space:pre-wrap">${linked(p)}</p>`).join('')}</div>`;
+}
+export function localParts(date:Date,timezone:string) {
+ const parts=new Intl.DateTimeFormat('en-CA',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date);
+ return Object.fromEntries(parts.filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));
+}
+// Find all actual instants matching a wall clock. Reject spring-forward nonexistent time;
+// choose the earlier occurrence on fall-back and show explicit UTC in the review list.
+export function localInstant(day:string,time:string,timezone:string) {
+ const target=day+'T'+time,rough=Date.parse(target+':00Z'),offsets=new Set<number>();
+ for(const shift of [-36,-12,0,12,36]){
+  const instant=new Date(rough+shift*3600000),p=localParts(instant,timezone);
+  offsets.add(Date.parse(`${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:00Z`)-instant.getTime());
+ }
+ const found=[...offsets].map(offset=>new Date(rough-offset)).filter(d=>{const p=localParts(d,timezone);return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`===target;}).sort((a,b)=>+a-+b);
+ if(!found.length)throw Error(`${day} ${time} does not exist in ${timezone} because of a clock change. Choose a different meeting time.`);
+ return found[0].toISOString();
+}
+export function dateLabel(iso:string,zone:string){return new Intl.DateTimeFormat('en-US',{timeZone:zone,dateStyle:'full',timeStyle:'short'}).format(new Date(iso))+` (${zone})`;}
+const plus=(iso:string,hours:number)=>new Date(Date.parse(iso)+hours*3600000).toISOString();
+export function circleMessageDrafts(p:CirclePlan,base:string,changed=false,now=new Date()):MessageDraft[]{
+ const dates=scheduledDates(p);if(!dates.length)throw Error('Choose your meeting dates first.');
+ const meetings=dates.map(day=>localInstant(day,p.time,p.timezone));
+ const schedule=meetings.map((d,i)=>`Meeting ${i+1}: ${dateLabel(d,p.timezone)}`).join('\n');
+ const pauses=p.breaks.length ? p.breaks.map(b=>`${b.start} through ${b.end}`).join('; ') : 'None planned';
+ const course=`${base}/journey`,details=`Circle: ${p.name}\nWhere: ${p.location}\nMeeting format: ${p.meetingMode}\nOur goal: ${planGoal(p)}\nPlanned pauses: ${pauses}\n\n${schedule}`;
+ const prep=(i:number)=>{
+  const lessons=meetingLessons(p,i+1),work=lessons.map(l=>`• ${l.title}`).join('\n');
+  return `${p.target==='Work through assigned content together' ? 'We will work through these lessons together at our meeting.' : p.target==='Begin together; finish before the next meeting' ? `We will begin these lessons together.${meetings[i+1]?` Complete them before our next meeting: ${dateLabel(meetings[i+1],p.timezone)}.`:' After our final meeting, finish at a thoughtful pace.'}` : `Preparation due: ${dateLabel(meetings[i],p.timezone)}. Bring any questions or reflections you would like to share.`}\n\n${work || 'Your leader will confirm preparation for this meeting.'}\n\nA small faithful step matters more than rushing. You are welcome to keep personal reflections private.`;
+ };
+ const followThrough=(i:number)=>i===0?'':`Follow-through from meeting ${i}: choose one small faithful step from the assigned content and bring any questions you want to share.${p.target==='Begin together; finish before the next meeting'?' If you still have work from that meeting, finish it before our next meeting.':''} If you have already finished, simply reflect on how to put it into practice.\n\n`;
+ const nowIso=now.toISOString();
+ const rows:MessageDraft[]=[{message_key:'invitation',template_id:'D01',kind:'invitation',category:'service',subject:`You are invited to ${p.name}`,body:`You are invited to walk the Discover Your Divine Design Journey with ${p.name}.\n\n${details}\n\nReview your invitation and choose whether to join: {{invitation_url}}\n\nSign in with the invited email address. Joining this Circle does not subscribe you to Waypoints or ministry offers.`,scheduled_at:nowIso,expires_at:meetings.at(-1)!},
+ {message_key:'welcome',template_id:'D03',kind:'member',category:'service',subject:`Welcome to ${p.name}`,body:`Welcome to ${p.name}! We are glad to take this Journey with you.\n\n${details}\n\nPreparation for your next meeting:\n{{next_preparation}}\n\nOpen the Journey: ${course}`,scheduled_at:nowIso,expires_at:meetings.at(-1)!},
+ {message_key:'leader-launch',template_id:'F01',kind:'leader',category:'service',subject:`${p.name}: your Circle launch checklist`,body:`Your approved Circle communication plan is finalized.\n\n${details}\n\nSend invitations deliberately, check accepted memberships, and use your Field Guide to prepare. Saved names alone are not confirmed members.\n\nOpen the Journey: ${course}`,scheduled_at:nowIso,expires_at:meetings[0]}];
+ if(plus(nowIso,4*24)<meetings[0])rows.push({message_key:'invitation-reminder',template_id:'D02',kind:'invitation',category:'service',subject:`Your invitation to ${p.name} is still open`,body:`A gentle reminder: you are invited to join ${p.name}.\n\n${details}\n\nIf you would like to join, review your private invitation: {{invitation_url}}\n\nIf you are not joining, you may decline. No further automatic invitation reminders will be sent.`,scheduled_at:plus(nowIso,4*24),expires_at:meetings[0]});
+ rows.push({message_key:'leader-action',template_id:'F03',kind:'leader',category:'service',subject:`${p.name}: a quick Circle setup check`,body:`Before your upcoming meeting, review pending invitations and any delivery issues shown in My Circles. Confirm that your accepted members have the current meeting details and preparation.\n\nOpen the Journey: ${course}\n\nThis notice is sent only when the saved setup or delivery state needs attention.`,scheduled_at:localInstant(addDays(dates[0],-3),'09:00',p.timezone),expires_at:meetings[0]});
+ if(changed)rows.push({message_key:'schedule-change',template_id:'D05',kind:'member',category:'service',subject:`Updated schedule for ${p.name}`,body:`Your Circle leader has confirmed an updated schedule. Please use these dates in place of earlier notices.\n\n${details}\n\nYour updated preparation and meeting reminders will follow the approved schedule.\n\nOpen the Journey: ${course}`,scheduled_at:nowIso,expires_at:meetings.at(-1)!});
+ meetings.forEach((instant,i)=>{
+  const gap=i>0 ? (Date.parse(dates[i])-Date.parse(dates[i-1]))/86400000 : 0;
+  const prepDay=i===0 || gap>8 ? addDays(dates[i],-7) : addDays(dates[i-1],1);
+  const prepAt=localInstant(prepDay,'09:00',p.timezone),reminderTime=(Math.max(8,Math.min(19,Number(p.time.split(':')[0])))).toString().padStart(2,'0')+':'+p.time.split(':')[1];
+  rows.push({message_key:`preparation-${i+1}`,template_id:i===0?'D04':'E01',kind:'member',category:'circle',meeting_index:i+1,subject:`${p.name}: ${gap>8?'we resume — ':''}${i>0?'follow-through and ':''}prepare for meeting ${i+1}`,body:`Our next Circle meeting is ${dateLabel(instant,p.timezone)}.\n\nWhere: ${p.location}\n\n${followThrough(i)}${prep(i)}\n\n${gap>8?`Our planned pause ends before this meeting. There is no meeting during the break.\n\n`:''}Open the Journey: ${course}`,scheduled_at:prepAt,expires_at:instant});
+  rows.push({message_key:`reminder-${i+1}`,template_id:'E02',kind:'member',category:'circle',meeting_index:i+1,subject:`${p.name}: we meet tomorrow`,body:`We look forward to seeing you tomorrow: ${dateLabel(instant,p.timezone)}.\n\nWhere: ${p.location}\n\n${prep(i)}\n\nIf your preparation is already complete, simply bring your questions and the reflections you wish to share.\n\nOpen the Journey: ${course}`,scheduled_at:localInstant(addDays(dates[i],-1),reminderTime,p.timezone),expires_at:localInstant(dates[i],'00:00',p.timezone)});
+  rows.push({message_key:`leader-digest-${i+1}`,template_id:'F02',kind:'leader',category:'circle',meeting_index:i+1,subject:`${p.name}: leader preparation for meeting ${i+1}`,body:`Your next Circle meeting is ${dateLabel(instant,p.timezone)}.\n\n${prep(i)}\n\nReview accepted memberships and your Field Guide from My Circles. Participants' private assessment results and workbook responses are not included in this email.\n\nOpen the Journey: ${course}`,scheduled_at:localInstant(addDays(dates[i],-3),'09:00',p.timezone),expires_at:instant});
+ });
+ const end=plus(meetings.at(-1)!,Number(p.meetingMinutes)/60),wrapDay=addDays(dates.at(-1)!,1),wrapAt=localInstant(wrapDay,'09:00',p.timezone);
+ rows.push({message_key:'circle-wrap',template_id:'E04',kind:'member',category:'circle',subject:`${p.name}: carry the Journey into everyday life`,body:`Your Circle's final scheduled meeting has now passed. Thank you for setting aside time to explore how God has shaped you. This marks the end of the meeting schedule, not an automatic claim that every lesson is complete.\n\nChoose one small faithful step to practice this week. You can return to the Journey and your saved reflections whenever you need them.\n\nOpen the Journey: ${course}`,scheduled_at:wrapAt> end?wrapAt:plus(end,1),expires_at:plus(wrapAt,7*24)});
+ rows.push({message_key:'leader-wrap',template_id:'F04',kind:'leader',category:'circle',subject:`${p.name}: leader wrap-up`,body:`Your Circle's final scheduled meeting has passed. Thank you for making space for people to explore God's design together.\n\nReview any remaining practical follow-up and invite people to carry one faithful practice into daily life. Do not share private reflections or assessment results without permission.\n\nOpen the Journey: ${course}`,scheduled_at:plus(wrapAt,1),expires_at:plus(wrapAt,7*24)});
+ const usable=rows.filter(d=>d.expires_at>nowIso&&d.expires_at>d.scheduled_at);
+ // A custom rhythm or moved dates may cluster meetings. Never create a third
+ // routine participant email in seven local calendar days, even across DST.
+ // Service notices and leader mail are separate; past preparation remains
+ // available for the accepted-member welcome but does not reserve future slots.
+ const routine=(d:MessageDraft)=>d.kind==='member'&&d.category==='circle'&&d.scheduled_at>=nowIso;
+ const selected:MessageDraft[]=[],days:string[]=[];
+ for(const draft of usable.filter(routine).sort((a,b)=>a.scheduled_at.localeCompare(b.scheduled_at))){
+  const parts=localParts(new Date(draft.scheduled_at),p.timezone),day=`${parts.year}-${parts.month}-${parts.day}`;
+  if(days.filter(previous=>previous>=addDays(day,-6)).length>=2)continue;
+  selected.push(draft);days.push(day);
+ }
+ return usable.filter(d=>!routine(d)||selected.includes(d));
+}
+export const lifecycleCopy={
+ A03:{category:'service',subject:'Welcome to Discover Your Divine Design',body:'We are pleased to welcome to the Discover Your Divine Design Journey! This course is the heart of the DYDD ecosystem and the best place to start. Our prayer for your journey is that you are able to fully grasp that you are On Purpose and that you are For Purpose.\n\nStart here: {{base}}/journey\n\nTake one faithful step at a time. Your account does not automatically subscribe you to Waypoints or ministry offers.\n\nChoose your email preferences: {{base}}/email-preferences.'},
+ A04:{category:'learning',subject:'A simple place to begin your DYDD Journey',body:'You do not need to have everything figured out before you begin. Start with the welcome lesson and bring an honest question about how God has shaped you.\n\nBegin the Journey: {{base}}/journey\n\nIf you have already started, keep taking the next faithful step at your own pace.'},
+ A05:{category:'learning',subject:'Your next faithful step is still here',body:'Your saved Journey is here when you are ready. Return to your course map, choose the next unfinished lesson, and take one small step.\n\nContinue: {{course_url}}\n\nThere is no need to rush or start over.'},
+ B05:{category:'learning',subject:'Make room to use your results',body:'Your assessment results are a starting point for reflection, not a label that limits you. Set aside a few minutes to notice what feels familiar, encouraging, or worth exploring with God.\n\nOpen your next learning step: {{course_url}}'},
+ C01:{category:'learning',subject:'Your next learning step is ready',body:'Your course is ready for you. Begin with the first lesson, bring your results and questions, and let the reflection lead toward one practical step.\n\nBegin: {{course_url}}'},
+ C02:{category:'learning',subject:'You completed {{course_title}}',body:'Congratulations on completing {{course_title}}. Take a moment to notice what God has helped you see and choose one practical way to live it this week.\n\nReturn to your course and saved reflections: {{course_url}}'},
+ C03:{category:'learning',subject:'You completed the DYDD Journey',body:'Congratulations on completing the Discover Your Divine Design Journey. You have made space to explore your identity, expertise, story, desire, gifts, and niche.\n\nKeep your working declaration close and choose one faithful step you can practice this week. Completion is a beginning, not the end of living your design.\n\nReturn to your Journey: {{base}}/journey'},
+ C04:{category:'growth',subject:'Your next step: FruitLife 360',body:'As you continue living your design, FruitLife 360 offers a way to reflect on the fruit being formed in your life, with thoughtful input from people you choose.\n\nExplore your available next step: {{base}}/fruitlife360\n\nChoose the timing that is right for you. There is no need to begin another assessment if you already have one underway.'},
+ C05:{category:'growth',subject:'Consider your DesignPD learning step',body:'DesignPD explores how your design moves through the ways you Plan, Decide, and Do. If this report and learning step are already available to you, take time to notice how those patterns appear in ordinary life.\n\nOpen your available DesignPD step: {{base}}/courses/designpd-alignment\n\nThis is not a request to buy access or start over.'},
+ C06:{category:'learning',subject:'Keep living your design: one small practice',body:'Choose one part of your working niche declaration and turn it into one small practice this week. Ask where God is inviting you to serve faithfully with the people and opportunities already in front of you.\n\nRevisit your Journey: {{base}}/journey'},
+ G04:{category:'growth',subject:'A gentle invitation to return to your DYDD Journey',body:'When the time is right, your saved learning is here for you. Choose one unfinished step and make a little room to reflect on how God has shaped you.\n\nReturn to your course: {{course_url}}\n\nThis is one invitation, not a repeating reminder. There is no need to start over or rush.'},
+ G05:{category:'growth',subject:'What has been helpful on your DYDD Journey?',body:'If you would like, share one thing that helped you and one thing that would make the Journey clearer. Your feedback can help us care for future learners.\n\nShare private feedback: {{base}}/contact\n\nSending feedback does not give permission to publish your name or story.'},
+} as const;
+export type LifecycleTemplate=keyof typeof lifecycleCopy;
+export function renderLifecycle(id:LifecycleTemplate,values:Record<string,string>){const t=lifecycleCopy[id],fill=(s:string)=>s.replace(/\{\{([a-z_]+)\}\}/g,(_,k)=>{if(!(k in values))throw Error('Missing email field '+k);return values[k];});return {category:t.category,subject:fill(t.subject),body:fill(t.body)};}

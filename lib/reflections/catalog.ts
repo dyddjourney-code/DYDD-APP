@@ -1,3 +1,5 @@
+import { expertiseLessons } from "@/lib/journey/expertise-lessons";
+import { designIdAuthoredLessons } from "@/lib/courses/designid-authored-lessons";
 import { getDesignIdReflectionPrompts } from "@/lib/courses/designid-reflection-prompts";
 import { dyddJourney } from "@/lib/journey/dydd-journey";
 import { learningCourses } from "@/lib/courses/course-catalog";
@@ -39,7 +41,7 @@ for (const [moduleIndex, module] of dyddMainCourseOutline.entries()) {
           lessonSlug: unit.slug,
           lessonTitle: unit.title,
           moduleTitle: module.title,
-          prompt: prompt.label,
+          prompt: experience?.kind === "pathfinder" && prompt.helper ? `${prompt.label}\n${prompt.helper}` : prompt.label,
           version: questionVersion,
         });
     }
@@ -111,7 +113,7 @@ export const reflectionExperiences: ReflectionExperience[] = [
           lessonTitle: l.title,
           moduleTitle: m.title,
           prompt: prompt.prompt,
-          version: "2026-10-19",
+          version: (designIdAuthoredLessons[l.slug]?.sourceRow ?? 0) >= 9 ? "2026-10-22" : l.slug === "welcome-to-designid" || designIdAuthoredLessons[l.slug] ? "2026-10-21" : "2026-10-19",
         })),
       ),
     ),
@@ -164,4 +166,104 @@ export function reflectionLessonExists(courseSlug: string, lessonSlug: string) {
       ?.modules.some((m) => m.lessons.some((l) => l.slug === lessonSlug)) ??
     false
   );
+}
+
+/** Add this pilot's new prompt only; never rewrite historical prompts or other courses. */
+export function withWhoWhoseExplore(courseSlug: string, questions: ReflectionQuestion[]) {
+  if (courseSlug !== "discover-your-divine-design" || questions.some(q => q.id === "whose-tomorrow")) return questions;
+  const explore = getReflectionExperience(courseSlug)?.questions.find(q => q.id === "whose-tomorrow");
+  if (!explore) return questions;
+  const anchor = questions.findIndex(q => q.id === "whose-before-who");
+  return [...questions.slice(0, anchor + 1), explore, ...questions.slice(anchor + 1)];
+}
+
+/** Refresh approved current DesignID prompt metadata, retaining retired keys and historic entries. */
+export function withDesignIdWelcome(courseSlug: string, questions: ReflectionQuestion[]) {
+  if (courseSlug !== "designid-foundations") return questions;
+  const approved = getReflectionExperience(courseSlug)!.questions.filter(q => q.lessonSlug === "welcome-to-designid" || designIdAuthoredLessons[q.lessonSlug]);
+  let result = questions;
+  for (const canonical of approved) {
+    const old = result.find(q => q.id === canonical.id);
+    if (old?.prompt === canonical.prompt && old.version === canonical.version) continue;
+    result = old ? result.map(q => q.id === canonical.id ? canonical : q) : [...result, canonical];
+  }
+  return result;
+}
+
+/** Upgrade only the current Lens snapshot. Entries retain their original prompt and revisions. */
+export function withDesignIdLens(courseSlug: string, questions: ReflectionQuestion[]) {
+  if (courseSlug !== "discover-your-divine-design") return questions;
+  const approved = getReflectionExperience(courseSlug)!.questions.filter(q => q.lessonSlug === "identity-the-designid-lens-what-is-in-the-report-19");
+  let result = questions;
+  for (const canonical of approved) {
+    const old = result.find(q => q.id === canonical.id);
+    if (old?.prompt === canonical.prompt) continue;
+    result = old ? result.map(q => q.id === canonical.id ? canonical : q) : [...result, canonical];
+  }
+  return result;
+}
+
+/** Current authored lesson metadata only; answers, revisions, and archived rounds stay intact. */
+export function withIdentityBelievers(courseSlug: string, questions: ReflectionQuestion[]) {
+  if (courseSlug !== "discover-your-divine-design") return questions;
+  const approved = getReflectionExperience(courseSlug)!.questions.filter(q => q.lessonSlug === "identity-identity-among-believers-20");
+  let result = questions;
+  for (const canonical of approved) {
+    const old = result.find(q => q.id === canonical.id);
+    if (old?.prompt === canonical.prompt) continue;
+    result = old ? result.map(q => q.id === canonical.id ? canonical : q) : [...result, canonical];
+  }
+  return result;
+}
+
+/** Current authored lesson metadata only; answers, revisions, and archived rounds stay intact. */
+export function withDesignReflectionsLove(courseSlug: string, questions: ReflectionQuestion[]) {
+  if (courseSlug !== "discover-your-divine-design") return questions;
+  const approved = getReflectionExperience(courseSlug)!.questions.filter(q => q.lessonSlug === "identity-the-design-reflections-and-love-21");
+  let result = questions;
+  for (const canonical of approved) {
+    const old = result.find(q => q.id === canonical.id);
+    if (old?.prompt === canonical.prompt) continue;
+    result = old ? result.map(q => q.id === canonical.id ? canonical : q) : [...result, canonical];
+  }
+  return result;
+}
+
+/** Current authored lesson metadata only; answers, revisions, and archived rounds stay intact. */
+export function withOneAnother(courseSlug: string, questions: ReflectionQuestion[]) {
+  if (courseSlug !== "discover-your-divine-design") return questions;
+  const approved = getReflectionExperience(courseSlug)!.questions.filter(q => q.lessonSlug === "identity-reflections-and-one-anothering-23");
+  let result = questions;
+  for (const canonical of approved) {
+    const old = result.find(q => q.id === canonical.id);
+    if (old?.prompt === canonical.prompt) continue;
+    result = old ? result.map(q => q.id === canonical.id ? canonical : q) : [...result, canonical];
+  }
+  return result;
+}
+
+/** Refresh current Pathfinder metadata without removing retired questions or answers. */
+export function withPathfinder(courseSlug: string, questions: ReflectionQuestion[]) {
+  if (courseSlug !== "discover-your-divine-design") return questions;
+  const approved = getReflectionExperience(courseSlug)!.questions.filter(q => ["identity-declaration", "identity-service-reflections", "identity-love-for-others", "expertise-talents-skills", "expertise-declaration"].includes(q.id) || q.lessonSlug.startsWith("niche-"));
+  let result = questions;
+  for (const canonical of approved) {
+    const old = result.find(q => q.id === canonical.id);
+    if (old?.prompt === canonical.prompt) continue;
+    result = old ? result.map(q => q.id === canonical.id ? canonical : q) : [...result, canonical];
+  }
+  return result;
+}
+
+/** Refresh current Expertise prompts only. Entries, revisions and archived rounds remain untouched. */
+export function withExpertise(courseSlug: string, questions: ReflectionQuestion[]) {
+  if (courseSlug !== "discover-your-divine-design") return questions;
+  const approved = getReflectionExperience(courseSlug)!.questions.filter(q => expertiseLessons[q.lessonSlug]?.care.some(item => item.questionId === q.id));
+  let result = questions;
+  for (const canonical of approved) {
+    const old = result.find(q => q.id === canonical.id);
+    if (old?.prompt === canonical.prompt) continue;
+    result = old ? result.map(q => q.id === canonical.id ? canonical : q) : [...result, canonical];
+  }
+  return result;
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { isSandbox } from "@/lib/environment";
 import { enterNewPreview } from "@/app/login/actions";
 import { allCourseSummaries } from "@/lib/courses/course-catalog";
 import { designIdCourse } from "@/lib/courses/designid-foundations";
@@ -59,33 +60,23 @@ export default function Home() {
             src="/brand/dydd-logo.webp"
             alt="Discover Your Divine Design"
           />
-          <p className="eyebrow">Private journey portal</p>
+          <p className="eyebrow">DYDD · Free beta</p>
           <h1>Your design deserves more than a report.</h1>
           <p className="lede">
-            The DYDD online school is being shaped as a guided headquarters for
-            assessment results, course content, workbook reflection, and future
-            companion conversations.
+            Explore your design through assessments, guided courses, and private
+            reflections. Create your own account to save your progress.
+            Everything in this beta is free—no payment details needed.
           </p>
           <div className="portal-access-panel" aria-label="Portal access">
             <div>
               <p className="section-label">Portal entry</p>
-              <h2>Open the active work surfaces.</h2>
+              <h2>Begin your DYDD Journey.</h2>
             </div>
-            <form action={enterNewPreview}>
-              <button className="button primary portal-login-button" type="submit">
-                New person review
-              </button>
-            </form>
-            <Link href="/owner" className="button secondary">
-              Owner Command Center
-            </Link>
-            <Link href="/first-launch" className="button secondary">
-              First Launch Mini App
-            </Link>
-            <p className="helper-text">
-              Vercel-protected preview access opens these review surfaces
-              without using a learner account.
-            </p>
+            {isSandbox() ? <form action={enterNewPreview}><button className="button primary portal-login-button" type="submit">New person review</button></form> : <>
+              <Link href="/login?mode=signup" className="button primary portal-login-button">Create your free account</Link>
+              <Link href="/login" className="button secondary">Sign in</Link>
+              <p className="helper-text">Your reflections and progress belong to your own account. Confirm your email to get started.</p>
+            </>}
           </div>
         </div>
 

@@ -1,5 +1,6 @@
 "use server";
 
+import { isSandbox } from "@/lib/environment";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -293,7 +294,7 @@ export async function updatePassword(formData: FormData) {
 }
 
 export async function enterHeatherPreview() {
-  const reviewToken = process.env.DYDD_REVIEW_TOKEN;
+  const reviewToken = isSandbox() ? process.env.DYDD_REVIEW_TOKEN : undefined;
 
   if (!reviewToken) {
     loginRedirect("Heather preview access is not configured yet.");
@@ -303,7 +304,7 @@ export async function enterHeatherPreview() {
 }
 
 export async function enterNewPreview() {
-  const reviewToken = process.env.DYDD_REVIEW_TOKEN;
+  const reviewToken = isSandbox() ? process.env.DYDD_REVIEW_TOKEN : undefined;
 
   if (!reviewToken) {
     loginRedirect("New-person preview access is not configured yet.");
@@ -313,7 +314,7 @@ export async function enterNewPreview() {
 }
 
 export async function enterOwnerCommandCenterPreview() {
-  const reviewToken = process.env.DYDD_REVIEW_TOKEN;
+  const reviewToken = isSandbox() ? process.env.DYDD_REVIEW_TOKEN : undefined;
 
   if (!reviewToken) {
     loginRedirect("Owner Command Center preview access is not configured yet.");

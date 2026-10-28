@@ -1,11 +1,12 @@
+import { designIdAuthoredLessons } from "@/lib/courses/designid-authored-lessons";
+import { personalizeDesignIdAuthored } from "@/lib/courses/designid-authored-personalization";
+import { designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import { getReflectionExperience } from "@/lib/reflections/catalog";
 import { ReflectionCourseShell } from "@/components/reflection-course-shell";
 import { requireTrailCourseAssessment } from "@/lib/trails/course-access";
-import Link from "next/link";
 import {
   buildDesignIdContext,
   getAssessmentSnapshotsForUser,
-  hasDesignIdData,
 } from "@/lib/assessments/student-context";
 import {
   designIdCourse,
@@ -14,6 +15,7 @@ import {
 import {
   buildWalkthroughPrompt,
   personalizeDesignIdHtml,
+  personalizeDesignIdWelcome,
 } from "@/lib/courses/personalization";
 import { normalizeEmail } from "@/lib/identity/email";
 import {
@@ -24,12 +26,10 @@ import {
   newReviewName,
   reviewQuery,
   type ReviewSearchParams,
-  withReviewQuery,
 } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { designIdLessonPresentation } from "@/lib/courses/designid-lesson-presentation";
 import { DesignIdCourseNavigator } from "@/components/designid-course-navigator";
-import { PageHelp } from "@/components/page-help";
 
 export const dynamic = "force-dynamic";
 
@@ -40,7 +40,7 @@ type DesignIdCoursePageProps = {
 export default async function DesignIdCoursePage({
   searchParams,
 }: DesignIdCoursePageProps) {
-  const reviewParams = await searchParams;
+  const reviewParams = designIdCourseReviewParams(await searchParams);
   const reviewReport =
     (await getHeatherReviewReport(reviewParams)) ??
     (await getNewReviewReport(reviewParams));
@@ -76,7 +76,6 @@ export default async function DesignIdCoursePage({
     displayName: user?.email ?? "Learner",
     isSignedIn: Boolean(user),
   };
-  const connected = hasDesignIdData(designId);
   const lessonsBySlug = new Map(
     designIdLessons.map((lesson) => [lesson.slug, lesson]),
   );
@@ -89,7 +88,8 @@ export default async function DesignIdCoursePage({
       const walkthrough = buildWalkthroughPrompt(lesson.title, studentContext);
 
       return {
-        bodyHtml: personalizeDesignIdHtml(lessonBody, studentContext),
+        authored: Boolean(designIdAuthoredLessons[lesson.slug]),
+        bodyHtml: (designIdAuthoredLessons[lesson.slug] ? personalizeDesignIdAuthored : lesson.slug === "welcome-to-designid" ? personalizeDesignIdWelcome : personalizeDesignIdHtml)(lessonBody, studentContext),
         images: presentation?.images ?? [],
         focus: lesson.focus,
         personalizedNotes: walkthrough.items,
@@ -104,47 +104,12 @@ export default async function DesignIdCoursePage({
 
   return (
     <main className="journey-shell designid-course-shell">
-      <nav className="course-nav" aria-label="Course navigation">
-        <Link href={withReviewQuery("/trailheads", reviewParams) + "#designid"}>
-          Back to Trailhead
-        </Link>
-        <Link href={withReviewQuery("/journey", reviewParams)}>
-          Return to My Journey
-        </Link>
-        <Link href="/">DYDD home</Link>
-      </nav>
-
-      <header className="course-hero polished-course-hero">
+      <header className="journey-hero designid-course-hero">
         <div>
-          <img
-            className="course-logo"
-            src="/brand/dydd-logo.webp"
-            alt="Discover Your Divine Design"
-          />
-          <p className="eyebrow">DYDD class branch</p>
           <h1>{designIdCourse.title}</h1>
-          <p className="lede">{designIdCourse.description}</p>
-          <Link className="button primary" href="#designid-course-player">
-            Open course lessons
-          </Link>
+          <p className="lede">Identity</p>
         </div>
-        <aside className="course-verse">
-          <p>
-            “For we are God&apos;s handiwork, created in Christ Jesus to do good
-            works, which God prepared in advance for us to do.”
-          </p>
-          <span>Ephesians 2:10</span>
-        </aside>
       </header>
-
-      <PageHelp
-        items={[
-          "Use the course menu to move through one DesignID lesson at a time.",
-          "Open or close modules so the whole course stays easy to scan.",
-          "Connect assessment data with the same email so the course can reflect the learner's pattern.",
-        ]}
-        title="How to use this course"
-      />
 
       <section
         className="dydd-progress-racetrack journey-top-racetrack designid-top-racetrack"
@@ -161,44 +126,8 @@ export default async function DesignIdCoursePage({
         </ol>
       </section>
 
-      <section
-        className="course-personalization"
-        aria-label="Personalization status"
-      >
-        <div>
-          <p className="section-label">Individual walkthrough</p>
-          <h2>
-            {connected
-              ? reviewContext
-                ? "You are previewing a saved DesignID pattern."
-                : "This course can now read the learner's DesignID pattern."
-              : "Sign in with the assessment email to personalize this course."}
-          </h2>
-        </div>
-        {connected ? (
-          <dl>
-            <div>
-              <dt>Primary</dt>
-              <dd>{designId.primary}</dd>
-            </div>
-            <div>
-              <dt>Secondary</dt>
-              <dd>{designId.secondary}</dd>
-            </div>
-            <div>
-              <dt>Integrative</dt>
-              <dd>{designId.integrativeReflection}</dd>
-            </div>
-          </dl>
-        ) : (
-          <Link className="button secondary" href="/login">
-            Sign in to connect records
-          </Link>
-        )}
-      </section>
-
       <div id="designid-course-player">
-        <ReflectionCourseShell courseSlug="designid-foundations">
+        <ReflectionCourseShell courseSlug="designid-foundations" inlineEntry>
           <DesignIdCourseNavigator
             reflectionQuestions={
               getReflectionExperience("designid-foundations")!.questions

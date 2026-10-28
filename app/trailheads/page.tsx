@@ -1,5 +1,6 @@
+import { isFreeBeta } from "@/lib/environment";
+import { isOwnerCoursePreview, designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import Link from "next/link";
-import { TrailDetails } from "@/components/trail-details";
 import { TrailPlacard } from "@/components/trail-placard";
 import { TrailResumeLink } from "@/components/trail-resume-link";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
@@ -40,7 +41,7 @@ type Props = {
   >;
 };
 export default async function TrailheadsPage({ searchParams }: Props) {
-  const params = await searchParams;
+  const params = designIdCourseReviewParams(await searchParams);
   const mini = params?.lane === "fruitlife";
   const supabase = await createSupabaseServerClient();
   const {
@@ -57,7 +58,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
     ? heatherReviewEmail
     : isNewReviewRequest(params)
       ? jordanReviewEmail
-      : normalizeEmail(profile?.email ?? user?.email);
+      : normalizeEmail(user?.email);
   const preview =
     (await getHeatherReviewReport(params)) ??
     (await getNewReviewReport(params));
@@ -157,14 +158,14 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                 bestFor="Anyone seeking clarity about their God-given design and purpose"
                 permit="Included"
                 main
-                details={<TrailDetails trailId="journey" />}
+                trailId="journey"
               >
                 <p className="trail-prerequisite">
                   No assessment needed to begin. Explore the connected
                   assessments as you go.
                 </p>
                 <TrailResumeLink
-                  href="/journey"
+                  href={path("/journey")}
                   progressKey="dydd-journey-position"
                   startLabel="Start the Journey"
                   continueLabel="Continue My Journey"
@@ -245,13 +246,13 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                   name={trail.name}
                   assessmentIcon={`/brand/tools/badge-icons/${trail.id}-icon.png`}
                   description={trail.description}
-                  details={<TrailDetails trailId={trail.id} />}
+                  trailId={trail.id}
                   rating={trail.rating}
                   ratingNote={trail.ratingNote}
                   terrain={trail.terrain}
                   gear={trail.gear}
                   bestFor={trail.bestFor}
-                  permit={
+                  permit={isFreeBeta() ? "Free beta · Included" :
                     trail.id === "designpd"
                       ? complete
                         ? "Expansion unlocked"
@@ -293,7 +294,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                   </ol>
                   <p className="trail-prerequisite">
                     {trail.id === "designpd" && !designIdReady
-                      ? "Complete DesignID first. Then unlock your DesignPD report and its course."
+                      ? "Complete DesignID first. Then create your DesignPD report and explore its course."
                       : ready
                         ? "Your results are connected. Bring them along as you explore the course."
                         : inProgress
@@ -301,6 +302,11 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                           : trail.prerequisite}
                   </p>
                   <div className="trail-guide-route-actions">
+                    {isOwnerCoursePreview(params) ? (
+                      <Link className="button secondary" href={courseHref}>
+                        Preview {trail.name} Course (Owner)
+                      </Link>
+                    ) : null}
                     {ready ? (
                       <TrailResumeLink
                         href={courseHref}

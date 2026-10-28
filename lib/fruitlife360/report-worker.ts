@@ -2,7 +2,7 @@ import {
   archiveReportPdf,
   type StoredReport,
 } from "@/lib/assessments/report-storage";
-import { sendResendEmail } from "@/lib/email/resend";
+import { sendApplicationEmail as sendResendEmail } from "@/lib/lifecycle/application-mail";
 import {
   createPdfMonkeyDocument,
   getPdfMonkeyDocument,
@@ -452,6 +452,8 @@ export async function processFruitLifeReportJobs({
                 }),
                 to: typedSession.participant_email,
                 idempotencyKey: `fruitlife-final-${job.id}`,
+                templateId:"B01-fruitlife",
+                deliveryContext:{type:"fruitlife_report",sessionId:job.session_id},
               });
         emailSent = emailResult.sent || Boolean(existingFinalEmail?.id);
         emailSkipped = emailResult.skipped;

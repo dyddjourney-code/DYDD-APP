@@ -1,3 +1,4 @@
+import { isFreeBeta } from "@/lib/environment";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { fruitLifeProductSlug } from "./stripe";
@@ -25,7 +26,7 @@ export async function getActiveFruitLifeEntitlement(userId: string) {
 }
 
 export async function userHasFruitLifeEntitlement(userId: string) {
-  return Boolean(await getActiveFruitLifeEntitlement(userId));
+  return Boolean(userId) && (isFreeBeta() || Boolean(await getActiveFruitLifeEntitlement(userId)));
 }
 
 export async function grantFruitLifeEntitlement({

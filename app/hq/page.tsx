@@ -1,3 +1,8 @@
+import { syncPassportAwards } from "@/lib/passport/state";
+import { previewPassportState } from "@/lib/passport/preview";
+import { savedAssessmentComplete, savedPrimary, completedLegacyFruitSnapshot } from "@/lib/passport/evidence";
+import { isSandbox } from "@/lib/environment";
+import { OnTheHorizon } from "@/components/on-the-horizon";
 import { BaseCampProfile } from "@/components/basecamp-profile";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -578,7 +583,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     ? "willoughbyhs@gmail.com"
     : newPreview
       ? jordanReviewEmail
-      : normalizeEmail(profile?.email ?? user?.email);
+      : normalizeEmail(user?.email);
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
   const fruitLifeReviewQuery = reviewQuery(reviewParams);
   const fruitLifeSessions = await getFruitLifeDashboardSessions({
@@ -596,18 +601,18 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     selectedFruitLifeSession?.id === activeFruitLifeSession?.id && reviewParams?.fruitlife_token
       ? reviewParams.fruitlife_token
       : fruitLifeTokenFromSession(activeFruitLifeSession);
-  const { data: completedEnrollments, error: passportProgressError } = user && !reviewReport
-    ? await supabase.from("enrollments").select("courses(slug)").eq("user_id", user.id).eq("status", "completed")
-    : { data: [], error: null };
-  if (passportProgressError) console.error("Passport course completion lookup failed", passportProgressError.code);
-  const completedCourses = (completedEnrollments ?? []).flatMap((enrollment) => {
-    const courses = enrollment.courses as { slug: string } | { slug: string }[] | null;
-    return (Array.isArray(courses) ? courses : courses ? [courses] : []).map((course) => course.slug);
-  });
+  const passportState = user && !reviewReport ? await syncPassportAwards(user).catch((error) => {
+    console.error("Passport lookup failed", error.message);
+    return null;
+  }) : null;
+  const previewChecklist = reviewReport && isSandbox() ? await previewPassportState(reviewParams ?? {}).catch(() => null) : null;
+  const verifiedSnapshots = assessmentReport.all.filter(snapshot => savedAssessmentComplete(snapshot, assessmentReport.all) || completedLegacyFruitSnapshot(snapshot));
+  const verifiedDesign = verifiedSnapshots.find(snapshot => snapshot.assessment_type === "designid");
   const passportBadges = buildPassportBadges({
-    completedCourses,
-    completedAssessments: assessmentReport.latest.map((snapshot) => snapshot.assessment_type),
-    primaryDesign: buildDesignIdContext(assessmentReport).primary,
+    completedCourses: passportState?.legacyCourses ?? [],
+    completedAssessments: verifiedSnapshots.map(snapshot => snapshot.assessment_type),
+    primaryDesign: verifiedDesign ? savedPrimary(verifiedDesign) : undefined,
+    earnedBadgeKeys: passportState?.awards.map(a => a.badge_key) ?? previewChecklist?.awards ?? [],
   });
 
   if (fruitLifeLane) {
@@ -656,7 +661,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             </div>
           </section>
 
-          <BaseCampProfile initialName={displayName} preview={Boolean(reviewReport)} />
+          <BaseCampProfile initialName={displayName} preview={Boolean(reviewReport)} previewQuery={isSandbox() && newPreview ? reviewQuery(reviewParams) : ""} />
 
           <section className="fruitlife-basecamp-intro" aria-label="What you can do here">
             <article>
@@ -711,7 +716,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                 </div>
                 <div>
                   <dt>Email</dt>
-                  <dd>{profile?.email ?? user?.email ?? fruitLifeDashboardEmail ?? "Preview account"}</dd>
+                  <dd>{user?.email ?? fruitLifeDashboardEmail ?? "Preview account"}</dd>
                 </div>
               </dl>
             </article>
@@ -753,7 +758,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         </div>
       </section>
 
-      <BaseCampProfile initialName={displayName} preview={Boolean(reviewReport)} />
+      <BaseCampProfile initialName={displayName} preview={Boolean(reviewReport)} previewQuery={isSandbox() && newPreview ? reviewQuery(reviewParams) : ""} />
 
       <section className="basecamp-orientation-band" aria-label="DYDD Base Camp next step">
         <div className="basecamp-ranger-launch-card">
@@ -772,6 +777,8 @@ export default async function HqPage({ searchParams }: HqPageProps) {
 
       <DydPassportBook badges={passportBadges} firstName={welcomeName} />
 
+      <OnTheHorizon />
+
       <section className="basecamp-account-layout basecamp-account-layout-single" aria-label="Base Camp account overview">
         <article className="basecamp-account-card profile">
           <div className="card-heading">
@@ -788,7 +795,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             </div>
             <div>
               <dt>Email</dt>
-              <dd>{profile?.email ?? user?.email ?? fruitLifeDashboardEmail ?? "Preview account"}</dd>
+              <dd>{user?.email ?? fruitLifeDashboardEmail ?? "Preview account"}</dd>
             </div>
           </dl>
         </article>

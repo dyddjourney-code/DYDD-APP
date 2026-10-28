@@ -1,4 +1,7 @@
 "use client";
+import { useCourseProgress, CourseCompletionControls } from "@/components/course-progress";
+import { DesignIdAuthoredBody } from "@/components/designid-authored-body";
+import { DesignIdWelcomeBody } from "@/components/designid-welcome-body";
 import type { ReflectionQuestion } from "@/lib/reflections/catalog";
 import {
   useReflectionPosition,
@@ -10,6 +13,7 @@ import type { CompanionMoment } from "@/lib/courses/companion-moments";
 import { CompanionAudioCard } from "@/components/companion-audio-card";
 
 type DesignIdLessonView = {
+  authored?: boolean;
   bodyHtml: string;
   images: readonly { src: string; alt: string }[];
   companionMoment?: CompanionMoment;
@@ -61,6 +65,8 @@ export function DesignIdCourseNavigator({
 }: DesignIdCourseNavigatorProps) {
   const flatLessons = useMemo(() => flattenModules(modules), [modules]);
   const savedPosition = useReflectionPosition();
+  const checklistSlugs = useMemo(() => flatLessons.map(item => item.lesson.slug), [flatLessons]);
+  const checklist = useCourseProgress("designid-foundations", checklistSlugs);
   useEffect(() => {
     if (!savedPosition.roundId) return;
     const requested =
@@ -98,21 +104,21 @@ export function DesignIdCourseNavigator({
   const activeLessonRef = useRef<HTMLElement | null>(null);
   const activeIndex = Math.max(
     0,
-    flatLessons.findIndex((item) => item.lesson.slug === activeSlug),
+    flatLessons.findIndex((item) => item.lesson.slug === (checklist.canVisit(activeSlug) ? activeSlug : checklistSlugs.find(slug => !checklist.done(slug)) ?? checklistSlugs[0])),
   );
   const active = flatLessons[activeIndex] ?? flatLessons[0];
   const previous = activeIndex > 0 ? flatLessons[activeIndex - 1] : null;
   const next =
     activeIndex < flatLessons.length - 1 ? flatLessons[activeIndex + 1] : null;
-  const progress = flatLessons.length
-    ? Math.round(((activeIndex + 1) / flatLessons.length) * 100)
-    : 0;
+  const progress = checklist.percent;
 
   if (!active) {
     return null;
   }
 
-  const setLesson = (item: FlatDesignIdLesson) => {
+  const setLesson = async (item: FlatDesignIdLesson, completedAdvance = false) => {
+    if (!completedAdvance && !checklist.canVisit(item.lesson.slug)) return;
+    if (savedPosition.flush && !await savedPosition.flush()) return;
     setActiveSlug(item.lesson.slug);
     savedPosition.recordPosition?.(item.lesson.slug);
     try {
@@ -141,7 +147,7 @@ export function DesignIdCourseNavigator({
 
   return (
     <section
-      className="journey-course-walkthrough designid-course-walkthrough"
+      className={`journey-course-walkthrough designid-course-walkthrough ${active.lesson.slug === "welcome-to-designid" || active.lesson.authored ? "designid-welcome-walkthrough" : ""}`}
       aria-label="DesignID course walkthrough"
     >
       <aside className="journey-course-index designid-course-index">
@@ -156,7 +162,7 @@ export function DesignIdCourseNavigator({
           <span style={{ width: `${progress}%` }} />
         </div>
         <p className="journey-course-progress-label">
-          Lesson {activeIndex + 1} of {flatLessons.length}
+          Lesson {activeIndex + 1} of {flatLessons.length} · {checklist.state?.completed.length ?? 0} completed
         </p>
 
         <div className="journey-module-accordion">
@@ -197,6 +203,7 @@ export function DesignIdCourseNavigator({
                                   ? "active"
                                   : ""
                               }
+                              disabled={!checklist.canVisit(lesson.slug) || checklist.busy}
                               onClick={() =>
                                 flatLesson ? setLesson(flatLesson) : undefined
                               }
@@ -205,7 +212,7 @@ export function DesignIdCourseNavigator({
                               <span className="designid">
                                 Lesson {lessonIndex + 1}
                               </span>
-                              <strong>{lesson.title}</strong>
+                              <strong>{lesson.title}</strong><small className="lesson-checklist-status">{checklist.done(lesson.slug) ? "✓ Completed" : checklist.canVisit(lesson.slug) ? "○ Not completed" : "🔒 Complete earlier lessons"}</small>
                             </button>
                           </li>
                         );
@@ -220,7 +227,7 @@ export function DesignIdCourseNavigator({
       </aside>
 
       <article
-        className="journey-active-lesson designid designid-active-lesson"
+        className={`journey-active-lesson designid designid-active-lesson ${active.lesson.slug === "welcome-to-designid" ? "designid-welcome-lesson" : ""}`}
         ref={activeLessonRef}
       >
         <header>
@@ -233,17 +240,18 @@ export function DesignIdCourseNavigator({
           </div>
           <div className="journey-active-meta">
             <span>DesignID</span>
-            <span>{active.module.title}</span>
+            <span>{active.lesson.slug === "welcome-to-designid" ? `Module ${active.moduleIndex + 1}` : active.module.title}</span>
+            {active.lesson.slug === "welcome-to-designid" ? <><span>Welcome</span><span>3–5 minutes</span></> : null}
           </div>
         </header>
 
-        <section
+        {active.lesson.slug !== "welcome-to-designid" ? <section
           className="journey-active-section-marker"
           aria-label="Current module"
         >
           <span>{active.module.title}</span>
 
-        </section>
+        </section> : null}
 
         <div className="journey-active-body has-care">
           <section className="journey-teaching-card designid-teaching-card">
@@ -256,7 +264,7 @@ export function DesignIdCourseNavigator({
 
             <CompanionAudioCard moment={active.lesson.companionMoment} />
 
-            <div className="assessment-lesson-content designid-lesson-content with-image">
+            {active.lesson.slug === "welcome-to-designid" ? <DesignIdWelcomeBody bodyHtml={active.lesson.bodyHtml} image={active.lesson.images[0]} /> : active.lesson.authored ? <DesignIdAuthoredBody bodyHtml={active.lesson.bodyHtml} images={active.lesson.images} compactIntro={active.lesson.slug === "your-design-profile"} capacityIntro={active.lesson.slug === "reflection-capacity"} /> : <div className="assessment-lesson-content designid-lesson-content with-image">
               <section className="lesson-source readable-lesson-body designid-clean-lesson" aria-label="Lesson body">
                 <h3 className="lesson-body-subheading">{active.lesson.title}</h3>
                 <div className="designid-semantic-body" dangerouslySetInnerHTML={{ __html: active.lesson.bodyHtml }} />
@@ -271,20 +279,20 @@ export function DesignIdCourseNavigator({
                   </figure>
                 ))}
               </aside>
-            </div>
-            <details className="designid-report-connection">
+            </div>}
+            {active.lesson.slug !== "welcome-to-designid" && !active.lesson.authored ? <details className="designid-report-connection">
               <summary>Connect this lesson to your report</summary>
               <ul>{active.lesson.personalizedNotes.map((item) => <li key={item}>{item}</li>)}</ul>
-            </details>
-            <section className="designid-lesson-reflections" aria-label="Lesson reflections">
+            </details> : null}
+            {reflectionQuestions.some(q => q.lessonSlug === active.lesson.slug) ? <section className="designid-lesson-reflections" aria-label="Lesson reflections">
               <p className="section-label">Reflect and apply</p>
 
             {reflectionQuestions
               .filter((q) => q.lessonSlug === active.lesson.slug)
-              .map((q) => (
-                <ReflectionAnswer key={q.id} questionId={q.id} />
+              .map((q, index) => (
+                <ReflectionAnswer key={q.id} questionId={q.id} entryPoint={index === 0} />
               ))}
-            </section>
+            </section> : null}
           </section>
         </div>
 
@@ -296,15 +304,8 @@ export function DesignIdCourseNavigator({
           ) : (
             <span>First lesson</span>
           )}
-          {next ? (
-            <button onClick={() => setLesson(next)} type="button">
-              Next: {next.lesson.title}
-            </button>
-          ) : (
-            <a href={withReview("/journey", reviewQuery)}>
-              Continue to DYDD Journey
-            </a>
-          )}
+          <CourseCompletionControls progress={checklist} lessonSlug={active.lesson.slug} nextTitle={next?.lesson.title} onNext={next ? () => { void setLesson(next, true); } : undefined} flush={savedPosition.flush} completionHref={withReview("/journey", reviewQuery)} />
+
         </footer>
       </article>
     </section>

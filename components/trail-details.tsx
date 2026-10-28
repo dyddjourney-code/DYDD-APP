@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { TrailDetailsDialog } from "@/components/trail-details-dialog";
 import { designIdCourse } from "@/lib/courses/designid-foundations";
 import { designPdCourse } from "@/lib/courses/designpd-alignment";
@@ -46,14 +47,14 @@ const details = {
     name: "DesignPD",
     about: "An extended trail built on DesignID that explores how your design moves through planning, deciding, and doing. Turn insight into clearer decisions, healthier collaboration, and sustainable action in life, leadership, work, ministry, and relationships.",
     bestFor: "People who already know their DesignID and want to understand why they approach plans, decisions, and follow-through the way they do—and how to work more effectively with others.",
-    before: "Complete DesignID, then unlock the $15 DesignPD expansion. DesignPD uses your existing DesignID results to create an additional report; it is not a separate questionnaire. Your completed, unlocked DesignPD report opens the course.",
+    before: "Complete DesignID, then create your DesignPD report (included during the free beta). DesignPD uses your existing DesignID results to create an additional report; it is not a separate questionnaire. Your completed, unlocked DesignPD report opens the course.",
     experience: "Explore your Plan, Decide, and Do tendencies, recognize strengths and pressure points, and practice clearer conversations, support agreements, and realistic rhythms. Keep both your DesignID and DesignPD reports available.",
     outcome: "Build a practical operating rhythm for your design: clearer plans, wiser decisions, appropriate support, and a manageable next action you can sustain.",
-    access: "$15 optional expansion after DesignID. The unlocked DesignPD report includes access to its connected course; this expansion is not needed for the focused trails or to begin the main Journey. Checkout is currently coming soon for new purchases; already-unlocked reports retain course access.",
+    access: "Included during the free beta after DesignID. The unlocked DesignPD report includes access to its connected course; this expansion is not needed for the focused trails or to begin the main Journey. No payment is required during beta; already-saved reports retain course access.",
   },
 } as const;
 
-export function TrailDetails({ trailId }: { trailId: keyof typeof details }) {
+export function TrailDetails({ trailId, supplement }: { trailId: keyof typeof details; supplement?: ReactNode }) {
   const info = details[trailId];
   const courses = { designid: designIdCourse, designpd: designPdCourse, "spiritual-gifts": spiritualGiftsCourse, "fruitlife-360": fruitLife360Course };
   const modules = trailId === "journey"
@@ -73,6 +74,7 @@ export function TrailDetails({ trailId }: { trailId: keyof typeof details }) {
   return (
     <TrailDetailsDialog name={info.name}>
       <p className="trail-details-intro">{info.about}</p>
+      {supplement}
       <dl className="trail-details-stats">
         <div><dt>Course structure</dt><dd>{modules.length} modules · {lessonCount} {trailId === "journey" ? "lesson and workbook units" : "lessons"}</dd></div>
         <div><dt>Pace</dt><dd>Self-paced · return to your saved lesson</dd></div>

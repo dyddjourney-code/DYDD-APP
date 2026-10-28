@@ -1,5 +1,6 @@
 "use server";
 import crypto from "node:crypto";
+import { isFreeBeta } from "@/lib/environment";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -58,7 +59,7 @@ export async function saveDesignPdResponse(formData: FormData) {
     .select("full_name,email")
     .eq("id", user.id)
     .maybeSingle();
-  const participantEmail = normalizeEmail(profile?.email ?? user.email);
+  const participantEmail = normalizeEmail(user.email);
   const authDisplayName = String(
     user.user_metadata?.full_name ?? user.user_metadata?.name ?? "",
   ).trim();
@@ -82,7 +83,7 @@ export async function saveDesignPdResponse(formData: FormData) {
   }
   // Existing reports remain accessible; generating for a new DesignID requires
   // a per-attempt unlock. Stripe fulfillment is intentionally not enabled yet.
-  if (!isDyddAdminEmail(user.email)) {
+  if (!isFreeBeta() && !isDyddAdminEmail(user.email)) {
     const existing = assessmentReport.all.find(
       (snapshot) =>
         snapshot.assessment_type === "designpd" &&

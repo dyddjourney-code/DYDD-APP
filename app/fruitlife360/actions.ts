@@ -1,5 +1,6 @@
 "use server";
 
+import { isFreeBeta } from "@/lib/environment";
 import crypto from "node:crypto";
 import legacyInstrument from "@/lib/fruitlife360/legacy-instrument.json";
 import { isDyddAdminEmail } from "@/lib/admin-access";
@@ -10,7 +11,7 @@ import {
   consumeFruitLifeEntitlement,
   getActiveFruitLifeEntitlement,
 } from "@/lib/commerce/fruitlife-entitlements";
-import { sendResendEmail } from "@/lib/email/resend";
+import { sendApplicationEmail as sendResendEmail } from "@/lib/lifecycle/application-mail";
 import {
   fruitLifeFruits,
   fruitLifeInstrumentVersion,
@@ -400,6 +401,9 @@ async function recordAndSendInviteEmail({
   const result = await sendResendEmail({
     ...email,
     to: participantEmail,
+    templateId:"B04-self",
+    idempotencyKey:`fruitlife-self-${sessionId}`,
+    deliveryContext:{type:"fruitlife_self",sessionId},
   });
 
   await supabase.from("fruitlife_360_report_artifacts").insert({
@@ -425,7 +429,9 @@ async function recordAndSendObserverEmails({
   participantName,
   sessionId,
   supabase,
+  reminder=false,
 }: {
+  reminder?:boolean;
   observerLinks: Array<{ email: string; link: string; name: string; relationship: string }>;
   participantName: string;
   sessionId: string;
@@ -442,6 +448,9 @@ async function recordAndSendObserverEmails({
     const result = await sendResendEmail({
       ...email,
       to: observer.email,
+      templateId:reminder?"B03":"B02",
+      idempotencyKey:`fruitlife-observer-${sessionId}-${hashToken(observer.link)}${reminder?"-manual-"+new Date().toISOString().slice(0,10):""}`,
+      deliveryContext:{type:"fruitlife_observer",sessionId,observerEmail:observer.email,observerLink:observer.link},
     });
 
     if (!result.sent) failed = true;
@@ -581,7 +590,7 @@ export async function createFruitLifeSession(formData: FormData) {
   const now = new Date().toISOString();
   const activeEntitlement = user?.id ? await getActiveFruitLifeEntitlement(user.id) : null;
   const canCreatePaidSession =
-    Boolean(user?.id && activeEntitlement) || isFruitLifeAdmin(user?.email);
+    Boolean(user?.id && (isFreeBeta() || activeEntitlement)) || isFruitLifeAdmin(user?.email);
 
   if (!user) redirect(`/login?next=${encodeURIComponent("/fruitlife360")}`);
   // Participant identity comes from the signed-in account, never editable form data.
@@ -675,7 +684,7 @@ export async function createFruitLifeSession(formData: FormData) {
     fail("/fruitlife360", sessionError?.message ?? "Unable to create FruitLife session.");
   }
 
-  if (legacyLane && user?.id && activeEntitlement) {
+  if (!isFreeBeta() && legacyLane && user?.id && activeEntitlement) {
     try {
       await consumeFruitLifeEntitlement(user.id, session.id);
     } catch (error) {
@@ -836,6 +845,9 @@ export async function sendFruitLifeReminder(formData: FormData) {
           selfLink: metadata.selfLink,
         }),
         to: participantEmail,
+        templateId:"B04-self-reminder",
+        idempotencyKey:`fruitlife-self-reminder-${sessionId}-${new Date().toISOString().slice(0,10)}`,
+        deliveryContext:{type:"fruitlife_self",sessionId},
       })
     : { message: "No participant email/self link available.", sent: false, skipped: true };
 
@@ -854,6 +866,7 @@ export async function sendFruitLifeReminder(formData: FormData) {
   });
 
   const observerResult = await recordAndSendObserverEmails({
+    reminder:true,
     observerLinks: pendingObserverLinks,
     participantName,
     sessionId,

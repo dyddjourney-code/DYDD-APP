@@ -1,0 +1,3001 @@
+{
+  "schemaVersion": 1,
+  "auditDate": "2026-10-23",
+  "generatedAt": "2026-10-23T19:12:06.737259+00:00",
+  "method": "Canonical book/chapter/verse union; actual reproduced text incl partial quotations; all translations; baseline carry-forward plus reviewed Oct21–23 source changes. Not a license-remaining calculation.",
+  "scope": "Historical production/sandbox/workbook/published-report baseline retained; committed sandbox course delta; local authored Waypoints including scheduled future releases. No claim of fresh remote deployment verification.",
+  "baseline": {
+    "path": "/home/openclaw/.openclaw/workspace/outputs/scripture-audit-2026-10-20/quoted-verses.csv",
+    "sha256": "1f86845eb771c30f9094071b9a995fab7ccc44f94de36567941552d8dd7a98de",
+    "quotedCountScriptSha256": "f7d92db9734a23119b7c66288a23c52912b18170a0c6c7453703f51edbf96fdb",
+    "sandboxBaselineCommit": "6ed5d49839999d3a98ec648535d8b147b90824c7",
+    "referenceInventory513IsNotQuotationCount": true,
+    "notReauditedRemotely": true
+  },
+  "sourceSnapshots": [
+    {
+      "path": "lib/journey/dydd-course-outline.ts",
+      "sha256": "cec84eda81895821b0edf84bdaeb2687dfcffc2e3083a5fff66c537d26026a30"
+    },
+    {
+      "path": "lib/journey/expertise-lessons.ts",
+      "sha256": "ae9583ab30d0a5439821e996c015152ef08827ae4a81eeaca2b85ce4bc6ad790"
+    },
+    {
+      "path": "lib/courses/designid-authored-lessons.ts",
+      "sha256": "3c2f3654bbfe5dd7c8c3b828226b9f9ddab3222876301cd2fa9260d67b4cd7c2"
+    },
+    {
+      "path": "lib/courses/designid-welcome.ts",
+      "sha256": "79e3019aae497b1547d2dcd7e98aa079e429e0ee97f7b05b92f1bec80b0ef878"
+    },
+    {
+      "path": "lib/waypoints/waypoints.json",
+      "sha256": "b3513ef81e3b3cbc3be6cf71904dc11d25ec9121ec2b76ce8cf6dff22166a290"
+    }
+  ],
+  "sandboxHead": "208b36c7d9c5bb6182f088b0f1f5341d9c068d8d",
+  "counts": {
+    "october20AllSurfaceBaseline": 150,
+    "october20SandboxSourceEvidence": 102,
+    "october20ProductionSourceEvidence": 87,
+    "verifiedPostBaselineCourseDistinctVerses": 43,
+    "newCourseVersesBeyondBaseline": 17,
+    "baselinePlusVerifiedCourses": 167,
+    "waypointRecords": 35,
+    "waypointRecordsWithQuotation": 35,
+    "waypointDistinctPassages": 25,
+    "waypointUniqueVerses": 29,
+    "waypointReleasedUniqueVerses": 14,
+    "waypointFutureUniqueVerses": 19,
+    "waypointNetNewBeyondBaselineAndCourses": 12,
+    "releasedWaypointNetNewBeyondBaselineAndCourses": 4,
+    "newWaypointRecords": 12,
+    "newWaypointRecordUniqueVerses": 15,
+    "originalWaypointRecordUniqueVerses": 14,
+    "allAuthoredIncludingFutureUnion": 179,
+    "releasedSourcesAndBaselineUnion": 171,
+    "sandboxSourceEvidenceUnionIncludingLocalFutureWaypoints": 138,
+    "pendingReferenceOnlyWaypoints": 0
+  },
+  "addedCourseVerses": [
+    "Psalm 46:10",
+    "Proverbs 1:7",
+    "Proverbs 22:29",
+    "Matthew 6:21",
+    "Matthew 16:26",
+    "Mark 12:28",
+    "Mark 12:29",
+    "Mark 12:30",
+    "Mark 12:31",
+    "Acts 4:13",
+    "Romans 8:16",
+    "2 Corinthians 12:10",
+    "Philippians 1:6",
+    "Philippians 4:13",
+    "Hebrews 5:14",
+    "1 Peter 2:9",
+    "1 Peter 4:8"
+  ],
+  "addedWaypointVerses": [
+    "Psalm 37:23",
+    "Psalm 130:5",
+    "Proverbs 20:5",
+    "Matthew 5:23",
+    "Matthew 5:24",
+    "Luke 2:10",
+    "Luke 2:11",
+    "Luke 2:19",
+    "1 Corinthians 12:18",
+    "1 Corinthians 12:22",
+    "Galatians 2:20",
+    "1 Thessalonians 5:18"
+  ],
+  "pendingWaypoints": [],
+  "plannedNewPassagesNotYetInSource": 0,
+  "evidence": [
+    {
+      "id": "q0001",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 93,
+      "reference": "Ephesians 2:10",
+      "quotedVerses": [
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0002",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 351,
+      "reference": "Ephesians 2:8-10",
+      "quotedVerses": [
+        "Ephesians 2:8",
+        "Ephesians 2:9",
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "For it is by grace you have been saved, through faith and this is not from yourselves, it is the gift of God, not by works, so that no one can boast. For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0003",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 452,
+      "reference": "Ephesians 2:10",
+      "quotedVerses": [
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "For we are God’s handiwork, created in Christ Jesus…",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0004",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 469,
+      "reference": "Ephesians 2:10",
+      "quotedVerses": [
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "…to do good works, which God prepared in advance for us to do.",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0005",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 967,
+      "reference": "Psalm 139:13-14",
+      "quotedVerses": [
+        "Psalm 139:13",
+        "Psalm 139:14"
+      ],
+      "quotationContext": "For you created my inmost being; you knit me together in my mother’s womb. I praise you because I am fearfully and wonderfully made; your works are wonderful, I know that full well.",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0006",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 1046,
+      "reference": "1 John 3:1",
+      "quotedVerses": [
+        "1 John 3:1"
+      ],
+      "quotationContext": "See what great love the Father has lavished on us, that we should be called children of God! And that is what we are!",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0007",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 1095,
+      "reference": "Ephesians 2:10",
+      "quotedVerses": [
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0008",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 1209,
+      "reference": "Ephesians 2:10",
+      "quotedVerses": [
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0009",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 1348,
+      "reference": "Mark 12:28-31",
+      "quotedVerses": [
+        "Mark 12:28",
+        "Mark 12:29",
+        "Mark 12:30",
+        "Mark 12:31"
+      ],
+      "quotationContext": "One of the teachers of the law came and heard them debating. Noticing that Jesus had given them a good answer, he asked him, “Of all the commandments, which is the most important?” “The most important one,” answered Jesus, “is this: ‘Hear, O Israel: The Lord our God, the Lord is one.  Love the Lord your God with all your heart and with all your soul and with all your mind and with all your strength.’ The second is this: ‘Love your neighbor as yourself.’ There is no commandment greater than these.”",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0010",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 1369,
+      "reference": "1 Peter 4:8",
+      "quotedVerses": [
+        "1 Peter 4:8"
+      ],
+      "quotationContext": "First Peter 4:8 says, “Above all, love each other deeply, because love covers over a multitude of sins.” We are not intended to love so that something happens, but simply to love with all our heart, mind, soul, and strength.",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0011",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 1377,
+      "reference": "Matthew 6:21",
+      "quotedVerses": [
+        "Matthew 6:21"
+      ],
+      "quotationContext": "Your “heart” is your passions and desires. “For where your treasure is, there your heart will be also” (Matthew 6:21). Loving God with your heart also means loving Him with and through your emotions. We don’t love only within fair weather but also in the tempest.",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0012",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 1385,
+      "reference": "Matthew 16:26",
+      "quotedVerses": [
+        "Matthew 16:26"
+      ],
+      "quotationContext": "Your soul is what Jesus purchased on the cross. Our soul is of the highest value, and nothing can be measured against it. Matthew 16:26 says, “What good will it be for someone to gain the whole world, yet forfeit their soul? Or what can anyone give in exchange for their soul?” Your soul is the eternal part of you that will go on forever. Another way to think about your soul is as your will. The good news is that God gave us free will so when we love with our soul, we are choosing to love or deciding to love with our whole being.",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0013",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 1401,
+      "reference": "Philippians 4:13",
+      "quotedVerses": [
+        "Philippians 4:13"
+      ],
+      "quotationContext": "Loving God with your strength is letting Him have your time, your sweat, your abilities, and your possessions. When we surrender our strengths, we no longer must count on ourselves. Our strength is finite but His is infinite. Philippians 4:13 says, “I can do all this through him who gives me strength.” God’s infinite strength is available to us when we need it. “That is why, for Christ’s sake, I delight in weaknesses, in insults, in hardships, in persecutions, in difficulties. For when I am weak, then I am strong” (2 Corinthians 12:10).",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0014",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 1401,
+      "reference": "2 Corinthians 12:10",
+      "quotedVerses": [
+        "2 Corinthians 12:10"
+      ],
+      "quotationContext": "Loving God with your strength is letting Him have your time, your sweat, your abilities, and your possessions. When we surrender our strengths, we no longer must count on ourselves. Our strength is finite but His is infinite. Philippians 4:13 says, “I can do all this through him who gives me strength.” God’s infinite strength is available to us when we need it. “That is why, for Christ’s sake, I delight in weaknesses, in insults, in hardships, in persecutions, in difficulties. For when I am weak, then I am strong” (2 Corinthians 12:10).",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0015",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 1590,
+      "reference": "Ephesians 2:10",
+      "quotedVerses": [
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "● Ephesians 2:10: “For we are God’s handiwork…”",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0016",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 1594,
+      "reference": "1 Peter 2:9",
+      "quotedVerses": [
+        "1 Peter 2:9"
+      ],
+      "quotationContext": "● 1 Peter 2:9: “…a chosen people…God’s special possession…”",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0017",
+      "source": "lib/journey/dydd-course-outline.ts",
+      "line": 1598,
+      "reference": "Romans 8:16",
+      "quotedVerses": [
+        "Romans 8:16"
+      ],
+      "quotationContext": "● Romans 8:16: “The Spirit himself testifies…that we are God’s children.”",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0018",
+      "source": "lib/journey/expertise-lessons.ts",
+      "line": 35,
+      "reference": "Philippians 1:6",
+      "quotedVerses": [
+        "Philippians 1:6"
+      ],
+      "quotationContext": "“Being confident of this, that he who began a good work in you will carry it on to completion until the day of Christ Jesus” (Philippians 1:6).",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0019",
+      "source": "lib/journey/expertise-lessons.ts",
+      "line": 114,
+      "reference": "Ephesians 2:10",
+      "quotedVerses": [
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "“For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do” Ephesians 2:10.",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0020",
+      "source": "lib/journey/expertise-lessons.ts",
+      "line": 126,
+      "reference": "1 Peter 4:10",
+      "quotedVerses": [
+        "1 Peter 4:10"
+      ],
+      "quotationContext": "“Each of you should use whatever gift you have received to serve others, as faithful stewards of God’s grace in its various forms.” Peter 4:10",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0021",
+      "source": "lib/journey/expertise-lessons.ts",
+      "line": 193,
+      "reference": "Proverbs 1:7",
+      "quotedVerses": [
+        "Proverbs 1:7"
+      ],
+      "quotationContext": "Knowledge: Facts and information acquired through experience using all our senses. “The fear of the Lord is the beginning of knowledge; but fools despise wisdom and instruction” (Proverbs 1:7).",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0022",
+      "source": "lib/journey/expertise-lessons.ts",
+      "line": 194,
+      "reference": "Proverbs 22:29",
+      "quotedVerses": [
+        "Proverbs 22:29"
+      ],
+      "quotationContext": "Skills: Specific things we develop through repetition in learned activities. “Do you see someone skilled in their work? They will serve before kings; they will not serve before officials of low rank” (Proverbs 22:29).",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0023",
+      "source": "lib/journey/expertise-lessons.ts",
+      "line": 195,
+      "reference": "1 Peter 4:10",
+      "quotedVerses": [
+        "1 Peter 4:10"
+      ],
+      "quotationContext": "Ability: Performance of natural, innate skills strengthened through practice over time. “Each of you should use whatever gift you have received to serve others, as faithful stewards of God’s grace in its various forms” (1 Peter 4:10).",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0024",
+      "source": "lib/journey/expertise-lessons.ts",
+      "line": 211,
+      "reference": "Luke 16:10",
+      "quotedVerses": [
+        "Luke 16:10"
+      ],
+      "quotationContext": "“Whoever can be trusted with very little can also be trusted with much…” Luke 16:10",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0025",
+      "source": "lib/journey/expertise-lessons.ts",
+      "line": 305,
+      "reference": "Acts 4:13",
+      "quotedVerses": [
+        "Acts 4:13"
+      ],
+      "quotationContext": "“When they saw the courage of Peter and John and realized that they were unschooled, ordinary men, they were astonished, and they took note that these men had been with Jesus”. Acts 4:13",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0026",
+      "source": "lib/journey/expertise-lessons.ts",
+      "line": 342,
+      "reference": "Colossians 3:23",
+      "quotedVerses": [
+        "Colossians 3:23"
+      ],
+      "quotationContext": "Excellence grows through faithful repetition.  “Whatever you do, work at it with all your heart, as working for the Lord” (Colossians 3:23). Choose one deliberate, learnable practice, and start showing up to it consistently. Record your plan.",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0027",
+      "source": "lib/journey/expertise-lessons.ts",
+      "line": 349,
+      "reference": "Hebrews 5:14",
+      "quotedVerses": [
+        "Hebrews 5:14"
+      ],
+      "quotationContext": "Where are you competent, and where is God inviting you toward expertise? “But solid food is for the mature, who by constant use have trained themselves to distinguish good from evil” Hebrews 5:14. Name the shortcuts you’ve been tempted to take.",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0028",
+      "source": "lib/journey/expertise-lessons.ts",
+      "line": 356,
+      "reference": "Exodus 35:31",
+      "quotedVerses": [
+        "Exodus 35:31"
+      ],
+      "quotationContext": "Stay curious; stay teachable. “He has filled him with the Spirit of God, with wisdom, with understanding, with knowledge and with all kinds of skills” (Exodus 35:31). Plan your next learning stretch: a book list, a course, shadowing a seasoned practitioner, or teaching what you know to someone newer. Ask where your craft can bless others and strengthen the Body.",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0029",
+      "source": "lib/journey/expertise-lessons.ts",
+      "line": 387,
+      "reference": "Psalm 46:10",
+      "quotedVerses": [
+        "Psalm 46:10"
+      ],
+      "quotationContext": "Psalm 46:10 says, “Be still, and know that I am God.” It is important that we learn to stop striving at times and learn to simply rest in our identity in Christ, recognizing His sovereignty and presence. The phrase “be still” in Hebrew can be defined as letting go, releasing, or stopping. In this context, it can be considered a declarative command to STOP. Psalm 46 speaks of turbulent times with war and earthquakes. This command asks us to trust that He is God and to let go of our anxieties and fears. The second part of the verse, “know that I am God,” invites us to lean not on our own understanding and accept His authority and care for all things in our lives.",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0030",
+      "source": "lib/journey/expertise-lessons.ts",
+      "line": 391,
+      "reference": "Ephesians 2:10",
+      "quotedVerses": [
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "At the heart of it all lies the truth of Ephesians 2:10: “For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” This verse holds the perfect balance between being and doing. We are His handiwork—that’s our being, our identity rooted in Christ, formed by His love and redeemed by His grace. And we are created to do good works—that’s our doing, the natural outflow of who we are in Him.",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0031",
+      "source": "lib/journey/expertise-lessons.ts",
+      "line": 429,
+      "reference": "John 15:4",
+      "quotedVerses": [
+        "John 15:4"
+      ],
+      "quotationContext": "Being anchors doing, but it also fuels discovery. When you rest in Christ, your actions begin to flow from love, not striving. This is where creativity, wisdom, and purpose take shape. “Remain in me, as I also remain in you. No branch can bear fruit by itself; it must remain in the vine” (John 15:4).",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0032",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 10,
+      "reference": "Genesis 1:26-27",
+      "quotedVerses": [
+        "Genesis 1:26",
+        "Genesis 1:27"
+      ],
+      "quotationContext": "  “Then God said, ‘Let us make mankind in our image, in our likeness, so that they may rule…’ So God created mankind in His own image, in the image of God He created them; male and female He created them.” Genesis 1:26–27  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0033",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 10,
+      "reference": "John 8:12",
+      "quotedVerses": [
+        "John 8:12"
+      ],
+      "quotationContext": "  “I am the light of the world. Whoever follows me will never walk in darkness but will have the light of life.” John 8:12  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0034",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 10,
+      "reference": "Matthew 5:14-16",
+      "quotedVerses": [
+        "Matthew 5:14",
+        "Matthew 5:16"
+      ],
+      "quotationContext": "  “You are the light of the world. A town built on a hill cannot be hidden... let your light shine before others, that they may see your good deeds and glorify your Father in heaven.” Matthew 5:14–16  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0035",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 32,
+      "reference": "2 Corinthians 9:8",
+      "quotedVerses": [
+        "2 Corinthians 9:8"
+      ],
+      "quotationContext": "  “And God is able to make all grace overflow to you, so that, always having all sufficiency in everything, you may have an abundance for every good deed.” 2 Corinthians 9:8  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0036",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 32,
+      "reference": "2 Corinthians 12:9",
+      "quotedVerses": [
+        "2 Corinthians 12:9"
+      ],
+      "quotationContext": "  “My grace is sufficient for you, for power is perfected in weakness.” 2 Corinthians 12:9  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0037",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 32,
+      "reference": "Ephesians 2:8-10",
+      "quotedVerses": [
+        "Ephesians 2:8",
+        "Ephesians 2:9",
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "  “For it is by grace you have been saved, through faith—and this is not from yourselves, it is the gift of God—not by works, so that no one can boast. For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” Ephesians 2:8–10  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0038",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 32,
+      "reference": "Titus 3:8",
+      "quotedVerses": [
+        "Titus 3:8"
+      ],
+      "quotationContext": "  “This is a trustworthy saying. And I want you to stress these things, so that those who have trusted in God may be careful to devote themselves to doing what is good. These things are excellent and profitable for everyone.” Titus 3:8  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0039",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 32,
+      "reference": "2 Corinthians 5:17",
+      "quotedVerses": [
+        "2 Corinthians 5:17"
+      ],
+      "quotationContext": "  “Therefore, if anyone is in Christ, the new creation has come: The old has gone, the new is here!” 2 Corinthians 5:17  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0040",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 53,
+      "reference": "Ephesians 2:10",
+      "quotedVerses": [
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "  “For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” Ephesians 2:10  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0041",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 123,
+      "reference": "1 Corinthians 12:5-6",
+      "quotedVerses": [
+        "1 Corinthians 12:5",
+        "1 Corinthians 12:6"
+      ],
+      "quotationContext": "  “There are different kinds of service, but the same Lord. There are different kinds of working, but in all of them and in everyone it is the same God at work.” 1 Corinthians 12:5–6  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0042",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 144,
+      "reference": "Proverbs 1:5",
+      "quotedVerses": [
+        "Proverbs 1:5"
+      ],
+      "quotationContext": "  “Let the wise listen and add to their learning” (Proverbs 1:5), and “grow in the grace and knowledge of our Lord and Savior Jesus Christ” (2 Peter 3:18).  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0043",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 144,
+      "reference": "2 Peter 3:18",
+      "quotedVerses": [
+        "2 Peter 3:18"
+      ],
+      "quotationContext": "  “Let the wise listen and add to their learning” (Proverbs 1:5), and “grow in the grace and knowledge of our Lord and Savior Jesus Christ” (2 Peter 3:18).  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0044",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 165,
+      "reference": "2 Corinthians 12:9",
+      "quotedVerses": [
+        "2 Corinthians 12:9"
+      ],
+      "quotationContext": "  “My grace is sufficient for you, for my power is made perfect in weakness.” 2 Corinthians 12:9  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0045",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 165,
+      "reference": "1 John 1:7",
+      "quotedVerses": [
+        "1 John 1:7"
+      ],
+      "quotationContext": "  “But if we walk in the light, as He is in the light, we have fellowship with one another, and the blood of Jesus, His Son, purifies us from all sin.” 1 John 1:7  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0046",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 165,
+      "reference": "Proverbs 27:17",
+      "quotedVerses": [
+        "Proverbs 27:17"
+      ],
+      "quotationContext": "  “As iron sharpens iron, so one person sharpens another.” Proverbs 27:17  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0047",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 185,
+      "reference": "Ephesians 2:10",
+      "quotedVerses": [
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "  “We are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” Ephesians 2:10  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0048",
+      "source": "lib/courses/designid-authored-lessons.ts",
+      "line": 53,
+      "reference": "Ephesians 2:10",
+      "quotedVerses": [
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "  “For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” Ephesians 2:10  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0049",
+      "source": "lib/courses/designid-welcome.ts",
+      "line": 7,
+      "reference": "Ephesians 2:10",
+      "quotedVerses": [
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "  “For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.” Ephesians 2:10  ",
+      "stage": "committed-sandbox-course-source",
+      "translation": "mixed/unverified; preserve authored wording"
+    },
+    {
+      "id": "q0050",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 3,
+      "reference": "James 1:19",
+      "quotedVerses": [
+        "James 1:19"
+      ],
+      "quotationContext": "My dear brothers and sisters, take note of this: Everyone should be quick to listen, slow to speak and slow to become angry,",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "legacy-leadership-that-listens-first-2026-06-17",
+      "releaseAt": "2026-06-17T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0051",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 31,
+      "reference": "Galatians 2:20",
+      "quotedVerses": [
+        "Galatians 2:20"
+      ],
+      "quotationContext": "I have been crucified with Christ and I no longer live, but Christ lives in me. The life I now live in the body, I live by faith in the Son of God, who loved me and gave himself for me.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "legacy-named-by-grace-not-output-2026-06-24",
+      "releaseAt": "2026-06-24T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0052",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 59,
+      "reference": "John 15:5",
+      "quotedVerses": [
+        "John 15:5"
+      ],
+      "quotationContext": "“I am the vine; you are the branches. If you remain in me and I in you, you will bear much fruit; apart from me you can do nothing.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "legacy-belonging-before-building-2026-07-08",
+      "releaseAt": "2026-07-08T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0053",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 87,
+      "reference": "Matthew 11:28",
+      "quotedVerses": [
+        "Matthew 11:28"
+      ],
+      "quotationContext": "“Come to me, all you who are weary and burdened, and I will give you rest.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "legacy-when-your-design-needs-rest-2026-07-15",
+      "releaseAt": "2026-07-15T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0054",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 115,
+      "reference": "2 Corinthians 12:9",
+      "quotedVerses": [
+        "2 Corinthians 12:9"
+      ],
+      "quotationContext": "But he said to me, “My grace is sufficient for you, for my power is made perfect in weakness.” Therefore I will boast all the more gladly about my weaknesses, so that Christ’s power may rest on me.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "legacy-called-before-you-feel-ready-2026-07-22",
+      "releaseAt": "2026-07-22T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0055",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 143,
+      "reference": "Colossians 3:23",
+      "quotedVerses": [
+        "Colossians 3:23"
+      ],
+      "quotationContext": "Whatever you do, work at it with all your heart, as working for the Lord, not for human masters,",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "legacy-faithfulness-in-the-ordinary-work-2026-07-29",
+      "releaseAt": "2026-07-29T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0056",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 171,
+      "reference": "1 Corinthians 12:18",
+      "quotedVerses": [
+        "1 Corinthians 12:18"
+      ],
+      "quotationContext": "But in fact God has placed the parts in the body, every one of them, just as he wanted them to be.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "legacy-the-shape-of-faithful-strength-2026-08-05",
+      "releaseAt": "2026-08-05T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0057",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 199,
+      "reference": "Proverbs 20:5",
+      "quotedVerses": [
+        "Proverbs 20:5"
+      ],
+      "quotationContext": "The purposes of a person’s heart are deep waters, but one who has insight draws them out.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "legacy-the-courage-to-name-what-matters-2026-08-05",
+      "releaseAt": "2026-08-05T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0058",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 227,
+      "reference": "1 Peter 4:10",
+      "quotedVerses": [
+        "1 Peter 4:10"
+      ],
+      "quotationContext": "Each of you should use whatever gift you have received to serve others, as faithful stewards of God’s grace in its various forms.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "legacy-when-your-gifts-need-room-to-breathe-2026-08-12",
+      "releaseAt": "2026-08-12T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0059",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 255,
+      "reference": "Ephesians 2:10",
+      "quotedVerses": [
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "legacy-begin-with-who-god-says-you-are-2026-08-19",
+      "releaseAt": "2026-08-19T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0060",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 283,
+      "reference": "Romans 12:6",
+      "quotedVerses": [
+        "Romans 12:6"
+      ],
+      "quotationContext": "We have different gifts, according to the grace given to each of us. If your gift is prophesying, then prophesy in accordance with your faith;",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "legacy-designed-to-move-with-grace-2026-08-26",
+      "releaseAt": "2026-08-26T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0061",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 311,
+      "reference": "Psalm 37:23",
+      "quotedVerses": [
+        "Psalm 37:23"
+      ],
+      "quotationContext": "The Lord makes firm the steps of the one who delights in him;",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "grace-for-the-step-you-can-take",
+      "releaseAt": "2026-09-04T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0062",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 339,
+      "reference": "Galatians 5:22-23",
+      "quotedVerses": [
+        "Galatians 5:22",
+        "Galatians 5:23"
+      ],
+      "quotationContext": "But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness, gentleness and self-control. Against such things there is no law.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "fruit-that-can-be-seen",
+      "releaseAt": "2026-09-11T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0063",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 367,
+      "reference": "Romans 12:6",
+      "quotedVerses": [
+        "Romans 12:6"
+      ],
+      "quotationContext": "We have different gifts, according to the grace given to each of us. If your gift is prophesying, then prophesy in accordance with your faith;",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "designed-to-move-with-grace",
+      "releaseAt": "2026-09-18T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0064",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 395,
+      "reference": "Ephesians 2:10",
+      "quotedVerses": [
+        "Ephesians 2:10"
+      ],
+      "quotationContext": "For we are God’s handiwork, created in Christ Jesus to do good works, which God prepared in advance for us to do.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "begin-with-who-god-says-you-are",
+      "releaseAt": "2026-09-25T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0065",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 423,
+      "reference": "1 Peter 4:10",
+      "quotedVerses": [
+        "1 Peter 4:10"
+      ],
+      "quotationContext": "Each of you should use whatever gift you have received to serve others, as faithful stewards of God’s grace in its various forms.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "when-your-gifts-need-room-to-breathe",
+      "releaseAt": "2026-10-02T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0066",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 451,
+      "reference": "1 Corinthians 12:18",
+      "quotedVerses": [
+        "1 Corinthians 12:18"
+      ],
+      "quotationContext": "But in fact God has placed the parts in the body, every one of them, just as he wanted them to be.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "the-shape-of-faithful-strength",
+      "releaseAt": "2026-10-09T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0067",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 479,
+      "reference": "Matthew 11:28",
+      "quotedVerses": [
+        "Matthew 11:28"
+      ],
+      "quotationContext": "“Come to me, all you who are weary and burdened, and I will give you rest.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "when-your-design-needs-rest",
+      "releaseAt": "2026-10-16T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0068",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 507,
+      "reference": "Proverbs 20:5",
+      "quotedVerses": [
+        "Proverbs 20:5"
+      ],
+      "quotationContext": "The purposes of a person’s heart are deep waters, but one who has insight draws them out.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "the-courage-to-name-what-matters",
+      "releaseAt": "2026-10-23T12:00:00.000Z",
+      "releasedAsOfAudit": true,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0069",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 535,
+      "reference": "2 Corinthians 12:9",
+      "quotedVerses": [
+        "2 Corinthians 12:9"
+      ],
+      "quotationContext": "But he said to me, “My grace is sufficient for you, for my power is made perfect in weakness.” Therefore I will boast all the more gladly about my weaknesses, so that Christ’s power may rest on me.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "called-before-you-feel-ready",
+      "releaseAt": "2026-10-30T12:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0070",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 563,
+      "reference": "John 15:5",
+      "quotedVerses": [
+        "John 15:5"
+      ],
+      "quotationContext": "“I am the vine; you are the branches. If you remain in me and I in you, you will bear much fruit; apart from me you can do nothing.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "belonging-before-building",
+      "releaseAt": "2026-11-06T13:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0071",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 591,
+      "reference": "Galatians 2:20",
+      "quotedVerses": [
+        "Galatians 2:20"
+      ],
+      "quotationContext": "I have been crucified with Christ and I no longer live, but Christ lives in me. The life I now live in the body, I live by faith in the Son of God, who loved me and gave himself for me.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "named-by-grace-not-output",
+      "releaseAt": "2026-11-13T13:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0072",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 619,
+      "reference": "Colossians 3:23",
+      "quotedVerses": [
+        "Colossians 3:23"
+      ],
+      "quotationContext": "Whatever you do, work at it with all your heart, as working for the Lord, not for human masters,",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "faithfulness-in-the-ordinary-work",
+      "releaseAt": "2026-11-20T13:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0073",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 647,
+      "reference": "1 Thessalonians 5:18",
+      "quotedVerses": [
+        "1 Thessalonians 5:18"
+      ],
+      "quotationContext": "give thanks in all circumstances; for this is God’s will for you in Christ Jesus.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "gratitude-with-room-for-the-truth",
+      "releaseAt": "2026-11-27T13:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0074",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 676,
+      "reference": "Psalm 130:5",
+      "quotedVerses": [
+        "Psalm 130:5"
+      ],
+      "quotationContext": "I wait for the Lord, my whole being waits, and in his word I put my hope.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "hope-in-the-unhurried-wait",
+      "releaseAt": "2026-12-04T13:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0075",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 705,
+      "reference": "Isaiah 40:11",
+      "quotedVerses": [
+        "Isaiah 40:11"
+      ],
+      "quotationContext": "He tends his flock like a shepherd: He gathers the lambs in his arms and carries them close to his heart; he gently leads those that have young.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "led-gently-not-driven-harder",
+      "releaseAt": "2026-12-11T13:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0076",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 734,
+      "reference": "Luke 2:19",
+      "quotedVerses": [
+        "Luke 2:19"
+      ],
+      "quotationContext": "But Mary treasured up all these things and pondered them in her heart.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "make-room-to-ponder",
+      "releaseAt": "2026-12-18T13:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0077",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 763,
+      "reference": "Luke 2:10-11",
+      "quotedVerses": [
+        "Luke 2:10",
+        "Luke 2:11"
+      ],
+      "quotationContext": "But the angel said to them, “Do not be afraid. I bring you good news that will cause great joy for all the people. Today in the town of David a Savior has been born to you; he is the Messiah, the Lord.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "good-news-before-your-response",
+      "releaseAt": "2026-12-25T13:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0078",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 792,
+      "reference": "Lamentations 3:22-23",
+      "quotedVerses": [
+        "Lamentations 3:22",
+        "Lamentations 3:23"
+      ],
+      "quotationContext": "Because of the Lord’s great love we are not consumed, for his compassions never fail. They are new every morning; great is your faithfulness.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "mercy-before-the-new-list",
+      "releaseAt": "2027-01-01T13:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0079",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 821,
+      "reference": "James 1:5",
+      "quotedVerses": [
+        "James 1:5"
+      ],
+      "quotationContext": "If any of you lacks wisdom, you should ask God, who gives generously to all without finding fault, and it will be given to you.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "wisdom-you-can-ask-for",
+      "releaseAt": "2027-01-08T13:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0080",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 850,
+      "reference": "Matthew 5:23-24",
+      "quotedVerses": [
+        "Matthew 5:23",
+        "Matthew 5:24"
+      ],
+      "quotationContext": "“Therefore, if you are offering your gift at the altar and there remember that your brother or sister has something against you, leave your gift there in front of the altar. First go and be reconciled to them; then come and offer your gift.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "repair-before-moving-on",
+      "releaseAt": "2027-01-15T13:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0081",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 879,
+      "reference": "1 Corinthians 12:22",
+      "quotedVerses": [
+        "1 Corinthians 12:22"
+      ],
+      "quotationContext": "On the contrary, those parts of the body that seem to be weaker are indispensable,",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "the-gift-you-might-overlook",
+      "releaseAt": "2027-01-22T13:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0082",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 908,
+      "reference": "Galatians 6:9",
+      "quotedVerses": [
+        "Galatians 6:9"
+      ],
+      "quotationContext": "Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "faithful-without-forcing-the-harvest",
+      "releaseAt": "2027-01-29T13:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0083",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 937,
+      "reference": "Psalm 46:10",
+      "quotedVerses": [
+        "Psalm 46:10"
+      ],
+      "quotationContext": "He says, “Be still, and know that I am God; I will be exalted among the nations, I will be exalted in the earth.”",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "stillness-is-not-surrender-to-fear",
+      "releaseAt": "2027-02-05T13:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    },
+    {
+      "id": "q0084",
+      "source": "lib/waypoints/waypoints.json",
+      "line": 966,
+      "reference": "1 John 4:19",
+      "quotedVerses": [
+        "1 John 4:19"
+      ],
+      "quotationContext": "We love because he first loved us.",
+      "stage": "local-waypoints-authored-library",
+      "waypointId": "love-that-begins-with-receiving",
+      "releaseAt": "2027-02-12T13:00:00.000Z",
+      "releasedAsOfAudit": false,
+      "translation": "NIV",
+      "attribution": "Holy Bible, New International Version®, NIV® Copyright ©1973, 1978, 1984, 2011 by Biblica, Inc.® Used by permission. All rights reserved worldwide.",
+      "textCompleteness": "declared full passage; separately verify against NIV source"
+    }
+  ],
+  "verses": [
+    {
+      "verse": "Genesis 1:26",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts"
+      ],
+      "evidenceIds": [
+        "q0032"
+      ]
+    },
+    {
+      "verse": "Genesis 1:27",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts"
+      ],
+      "evidenceIds": [
+        "q0032"
+      ]
+    },
+    {
+      "verse": "Exodus 35:31",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json"
+      ],
+      "evidenceIds": [
+        "q0028"
+      ]
+    },
+    {
+      "verse": "Nehemiah 8:10",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Psalm 23:6",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json",
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Psalm 28:7",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Psalm 37:4",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Psalm 37:23",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0061"
+      ]
+    },
+    {
+      "verse": "Psalm 46:10",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0029",
+        "q0083"
+      ]
+    },
+    {
+      "verse": "Psalm 96:1",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json",
+        "projects/dydd-online-school-sandbox/lib/spiritual-gifts/intake.ts",
+        "projects/dydd-online-school/lib/spiritual-gifts/intake.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Psalm 119:105",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Psalm 119:130",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-design.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Psalm 127:1",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-design.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Psalm 130:5",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0074"
+      ]
+    },
+    {
+      "verse": "Psalm 139:13",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/journey/dydd-course-outline.ts"
+      ],
+      "evidenceIds": [
+        "q0005"
+      ]
+    },
+    {
+      "verse": "Psalm 139:14",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/journey/dydd-course-outline.ts"
+      ],
+      "evidenceIds": [
+        "q0005"
+      ]
+    },
+    {
+      "verse": "Psalm 139:23",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/template-designid.json:published"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Psalm 139:24",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/template-designid.json:published"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Proverbs 1:5",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-design.json",
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts"
+      ],
+      "evidenceIds": [
+        "q0042"
+      ]
+    },
+    {
+      "verse": "Proverbs 1:7",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0021"
+      ]
+    },
+    {
+      "verse": "Proverbs 3:3",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Proverbs 3:5",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/courses/designpd-alignment.ts",
+        "projects/dydd-online-school/lib/courses/designpd-alignment.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Proverbs 3:6",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/courses/designpd-alignment.ts",
+        "projects/dydd-online-school/lib/courses/designpd-alignment.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Proverbs 3:19",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-design.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Proverbs 15:22",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Proverbs 16:3",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/template-designid.json:published",
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json",
+        "projects/dydd-online-school-sandbox/lib/courses/designpd-alignment.ts",
+        "projects/dydd-online-school/lib/courses/designpd-alignment.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Proverbs 20:5",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0057",
+        "q0068"
+      ]
+    },
+    {
+      "verse": "Proverbs 22:29",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0022"
+      ]
+    },
+    {
+      "verse": "Proverbs 25:28",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Proverbs 27:17",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts"
+      ],
+      "evidenceIds": [
+        "q0046"
+      ]
+    },
+    {
+      "verse": "Proverbs 29:18",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/designpd-alignment.ts",
+        "projects/dydd-online-school/lib/courses/designpd-alignment.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Ecclesiastes 4:9",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/app/api/command-center/couple-report/route.ts",
+        "projects/dydd-online-school-sandbox/lib/courses/designpd-alignment.ts",
+        "projects/dydd-online-school/app/api/command-center/couple-report/route.ts",
+        "projects/dydd-online-school/lib/courses/designpd-alignment.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Ecclesiastes 4:10",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/app/api/command-center/couple-report/route.ts",
+        "projects/dydd-online-school/app/api/command-center/couple-report/route.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Isaiah 26:3",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Isaiah 40:11",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-design.json"
+      ],
+      "evidenceIds": [
+        "q0075"
+      ]
+    },
+    {
+      "verse": "Isaiah 61:3",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts:joy-prose-quotation"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Jeremiah 29:11",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Lamentations 3:22",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": [
+        "q0078"
+      ]
+    },
+    {
+      "verse": "Lamentations 3:23",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": [
+        "q0078"
+      ]
+    },
+    {
+      "verse": "Amos 3:3",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/app/api/command-center/couple-report/route.ts",
+        "projects/dydd-online-school/app/api/command-center/couple-report/route.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Matthew 5:9",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/template-designpd.json:published"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Matthew 5:14",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts"
+      ],
+      "evidenceIds": [
+        "q0034"
+      ]
+    },
+    {
+      "verse": "Matthew 5:16",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts"
+      ],
+      "evidenceIds": [
+        "q0034"
+      ]
+    },
+    {
+      "verse": "Matthew 5:23",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0080"
+      ]
+    },
+    {
+      "verse": "Matthew 5:24",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0080"
+      ]
+    },
+    {
+      "verse": "Matthew 6:21",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0011"
+      ]
+    },
+    {
+      "verse": "Matthew 10:16",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Matthew 11:28",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-design.json"
+      ],
+      "evidenceIds": [
+        "q0053",
+        "q0067"
+      ]
+    },
+    {
+      "verse": "Matthew 16:26",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0012"
+      ]
+    },
+    {
+      "verse": "Matthew 20:26",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/template-designpd.json:published",
+        "projects/dydd-online-school-sandbox/lib/courses/designpd-alignment.ts",
+        "projects/dydd-online-school/lib/courses/designpd-alignment.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Matthew 22:37",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Matthew 22:38",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Matthew 22:39",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Matthew 22:40",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Matthew 28:19",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json",
+        "projects/dydd-online-school-sandbox/lib/spiritual-gifts/intake.ts",
+        "projects/dydd-online-school/lib/spiritual-gifts/intake.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Mark 10:45",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json",
+        "projects/dydd-online-school-sandbox/lib/spiritual-gifts/intake.ts",
+        "projects/dydd-online-school/lib/spiritual-gifts/intake.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Mark 12:28",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0009"
+      ]
+    },
+    {
+      "verse": "Mark 12:29",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0009"
+      ]
+    },
+    {
+      "verse": "Mark 12:30",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0009"
+      ]
+    },
+    {
+      "verse": "Mark 12:31",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0009"
+      ]
+    },
+    {
+      "verse": "Luke 2:10",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0077"
+      ]
+    },
+    {
+      "verse": "Luke 2:11",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0077"
+      ]
+    },
+    {
+      "verse": "Luke 2:19",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0076"
+      ]
+    },
+    {
+      "verse": "Luke 16:10",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json"
+      ],
+      "evidenceIds": [
+        "q0024"
+      ]
+    },
+    {
+      "verse": "John 8:12",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts"
+      ],
+      "evidenceIds": [
+        "q0033"
+      ]
+    },
+    {
+      "verse": "John 15:1",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "John 15:2",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "John 15:3",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "John 15:4",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": [
+        "q0031"
+      ]
+    },
+    {
+      "verse": "John 15:5",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": [
+        "q0052",
+        "q0070"
+      ]
+    },
+    {
+      "verse": "John 15:6",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "John 15:7",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "John 15:8",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "John 21:15",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "John 21:16",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "John 21:17",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Acts 4:13",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0025"
+      ]
+    },
+    {
+      "verse": "Acts 19:11",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json",
+        "projects/dydd-online-school-sandbox/lib/spiritual-gifts/intake.ts",
+        "projects/dydd-online-school/lib/spiritual-gifts/intake.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Romans 8:16",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0017"
+      ]
+    },
+    {
+      "verse": "Romans 8:28",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Romans 12:3",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Romans 12:4",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Romans 12:5",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Romans 12:6",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": [
+        "q0060",
+        "q0063"
+      ]
+    },
+    {
+      "verse": "Romans 12:7",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Romans 12:8",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json",
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school-sandbox/lib/spiritual-gifts/intake.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/spiritual-gifts/intake.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Romans 12:10",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-design.json",
+        "projects/dydd-online-school-sandbox/app/api/command-center/couple-report/route.ts",
+        "projects/dydd-online-school/app/api/command-center/couple-report/route.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Romans 12:12",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/template-designpd.json:published"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Romans 12:13",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json",
+        "projects/dydd-online-school-sandbox/lib/spiritual-gifts/intake.ts",
+        "projects/dydd-online-school/lib/spiritual-gifts/intake.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Romans 15:13",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 3:10",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 4:2",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-design.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 9:24",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 9:25",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 9:26",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 9:27",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 12:1",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 12:2",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 12:3",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 12:4",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 12:5",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": [
+        "q0041"
+      ]
+    },
+    {
+      "verse": "1 Corinthians 12:6",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": [
+        "q0041"
+      ]
+    },
+    {
+      "verse": "1 Corinthians 12:7",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/template-spiritual_gifts.json:published",
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 12:8",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-design.json",
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json",
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 12:9",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 12:10",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 12:11",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 12:18",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0056",
+        "q0066"
+      ]
+    },
+    {
+      "verse": "1 Corinthians 12:22",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0081"
+      ]
+    },
+    {
+      "verse": "1 Corinthians 12:27",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 13:4",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 13:5",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 13:6",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 13:7",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 14:3",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 14:13",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Corinthians 14:40",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-design.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "2 Corinthians 1:3",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "2 Corinthians 1:4",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "2 Corinthians 5:17",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts"
+      ],
+      "evidenceIds": [
+        "q0039"
+      ]
+    },
+    {
+      "verse": "2 Corinthians 9:7",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json",
+        "projects/dydd-online-school-sandbox/lib/spiritual-gifts/intake.ts",
+        "projects/dydd-online-school/lib/spiritual-gifts/intake.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "2 Corinthians 9:8",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts"
+      ],
+      "evidenceIds": [
+        "q0035"
+      ]
+    },
+    {
+      "verse": "2 Corinthians 12:9",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts"
+      ],
+      "evidenceIds": [
+        "q0036",
+        "q0044",
+        "q0054",
+        "q0069"
+      ]
+    },
+    {
+      "verse": "2 Corinthians 12:10",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0014"
+      ]
+    },
+    {
+      "verse": "Galatians 2:20",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0051",
+        "q0071"
+      ]
+    },
+    {
+      "verse": "Galatians 3:26",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Galatians 5:22",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/template-fruitlife.json:published",
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": [
+        "q0062"
+      ]
+    },
+    {
+      "verse": "Galatians 5:23",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/template-fruitlife.json:published",
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": [
+        "q0062"
+      ]
+    },
+    {
+      "verse": "Galatians 6:2",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/app/api/command-center/couple-report/route.ts",
+        "projects/dydd-online-school/app/api/command-center/couple-report/route.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Galatians 6:9",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/template-designpd.json:published",
+        "projects/dydd-online-school-sandbox/lib/courses/designpd-alignment.ts",
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/designpd-alignment.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": [
+        "q0082"
+      ]
+    },
+    {
+      "verse": "Galatians 6:10",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Ephesians 2:8",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school-sandbox/lib/journey/dydd-course-outline.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts"
+      ],
+      "evidenceIds": [
+        "q0002",
+        "q0037"
+      ]
+    },
+    {
+      "verse": "Ephesians 2:9",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school-sandbox/lib/journey/dydd-course-outline.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts"
+      ],
+      "evidenceIds": [
+        "q0002",
+        "q0037"
+      ]
+    },
+    {
+      "verse": "Ephesians 2:10",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/template-designid.json:published",
+        "outputs/scripture-audit-2026-10-20/template-designpd.json:published",
+        "outputs/scripture-audit-2026-10-20/template-spiritual_gifts.json:published",
+        "projects/dydd-online-school-sandbox/app/api/command-center/couple-report/route.ts",
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school-sandbox/lib/courses/designpd-alignment.ts",
+        "projects/dydd-online-school-sandbox/lib/journey/dydd-course-outline.ts",
+        "projects/dydd-online-school-sandbox/lib/journey/dydd-journey.ts",
+        "projects/dydd-online-school/app/api/command-center/couple-report/route.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/designpd-alignment.ts",
+        "projects/dydd-online-school/lib/journey/dydd-course-outline.ts",
+        "projects/dydd-online-school/lib/journey/dydd-journey.ts"
+      ],
+      "evidenceIds": [
+        "q0001",
+        "q0002",
+        "q0003",
+        "q0004",
+        "q0007",
+        "q0008",
+        "q0015",
+        "q0019",
+        "q0030",
+        "q0037",
+        "q0040",
+        "q0047",
+        "q0048",
+        "q0049",
+        "q0059",
+        "q0064"
+      ]
+    },
+    {
+      "verse": "Ephesians 4:2",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json",
+        "projects/dydd-online-school-sandbox/lib/courses/designpd-alignment.ts",
+        "projects/dydd-online-school/lib/courses/designpd-alignment.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Ephesians 4:3",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/template-designpd.json:published"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Ephesians 4:11",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Ephesians 4:12",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Ephesians 4:13",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Ephesians 4:32",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Ephesians 6:18",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Philippians 1:6",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0018"
+      ]
+    },
+    {
+      "verse": "Philippians 2:13",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Philippians 4:5",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Philippians 4:6",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json",
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Philippians 4:7",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json",
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Philippians 4:13",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0013"
+      ]
+    },
+    {
+      "verse": "Colossians 3:12",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json",
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Colossians 3:23",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-design.json",
+        "projects/dydd-online-school-sandbox/lib/courses/designpd-alignment.ts",
+        "projects/dydd-online-school/lib/courses/designpd-alignment.ts"
+      ],
+      "evidenceIds": [
+        "q0026",
+        "q0055",
+        "q0072"
+      ]
+    },
+    {
+      "verse": "Colossians 3:24",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/designpd-alignment.ts",
+        "projects/dydd-online-school/lib/courses/designpd-alignment.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Colossians 4:6",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-design.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Thessalonians 5:11",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Thessalonians 5:18",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0073"
+      ]
+    },
+    {
+      "verse": "2 Timothy 4:5",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Titus 2:11",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Titus 2:12",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Titus 3:2",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Titus 3:8",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts"
+      ],
+      "evidenceIds": [
+        "q0038"
+      ]
+    },
+    {
+      "verse": "Hebrews 5:14",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0027"
+      ]
+    },
+    {
+      "verse": "Hebrews 10:23",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/fruitlife-360-formation.ts",
+        "projects/dydd-online-school/lib/courses/fruitlife-360-formation.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Hebrews 10:24",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Hebrews 11:1",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "Hebrews 11:3",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-design.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "James 1:5",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json"
+      ],
+      "evidenceIds": [
+        "q0079"
+      ]
+    },
+    {
+      "verse": "James 1:19",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/app/api/command-center/couple-report/route.ts",
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/courses/designpd-alignment.ts",
+        "projects/dydd-online-school/app/api/command-center/couple-report/route.ts",
+        "projects/dydd-online-school/lib/courses/designpd-alignment.ts"
+      ],
+      "evidenceIds": [
+        "q0050"
+      ]
+    },
+    {
+      "verse": "James 1:22",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-design.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "James 3:1",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "James 5:15",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json",
+        "projects/dydd-online-school-sandbox/lib/spiritual-gifts/intake.ts",
+        "projects/dydd-online-school/lib/spiritual-gifts/intake.ts"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Peter 2:9",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0016"
+      ]
+    },
+    {
+      "verse": "1 Peter 4:8",
+      "inOctober20Baseline": false,
+      "baselineSources": [],
+      "evidenceIds": [
+        "q0010"
+      ]
+    },
+    {
+      "verse": "1 Peter 4:10",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/template-designid.json:published",
+        "outputs/scripture-audit-2026-10-20/workbook-design.json",
+        "projects/dydd-online-school-sandbox/lib/circles/field-guide-content.json",
+        "projects/dydd-online-school-sandbox/lib/courses/spiritual-gifts-service.ts",
+        "projects/dydd-online-school/lib/courses/spiritual-gifts-service.ts"
+      ],
+      "evidenceIds": [
+        "q0020",
+        "q0023",
+        "q0058",
+        "q0065"
+      ]
+    },
+    {
+      "verse": "1 Peter 4:11",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 Peter 5:2",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "2 Peter 3:18",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts"
+      ],
+      "evidenceIds": [
+        "q0043"
+      ]
+    },
+    {
+      "verse": "1 John 1:6",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/template-designid.json:published"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 John 1:7",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/courses/designid-source-html.ts",
+        "projects/dydd-online-school/lib/courses/designid-source-html.ts"
+      ],
+      "evidenceIds": [
+        "q0045"
+      ]
+    },
+    {
+      "verse": "1 John 3:1",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "projects/dydd-online-school-sandbox/lib/journey/dydd-journey.ts",
+        "projects/dydd-online-school/lib/journey/dydd-journey.ts"
+      ],
+      "evidenceIds": [
+        "q0006"
+      ]
+    },
+    {
+      "verse": "1 John 4:1",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-gifts.json"
+      ],
+      "evidenceIds": []
+    },
+    {
+      "verse": "1 John 4:19",
+      "inOctober20Baseline": true,
+      "baselineSources": [
+        "outputs/scripture-audit-2026-10-20/workbook-fruit.json"
+      ],
+      "evidenceIds": [
+        "q0084"
+      ]
+    }
+  ],
+  "caveats": [
+    "Historical 150 is all translations, not an NIV-only audit.",
+    "Historical partial quotations stay partial; a whole citation range does not imply omitted verses were reproduced.",
+    "Local Waypoints source is not proof of deployment. Future library quotations count as authored/storage coverage, not currently released learner visibility.",
+    "Production, live PDFMonkey templates and workbooks have not been remotely recaptured; their Oct20 evidence is carried forward. Production post-Oct20 MAPS source diff reviewed without finding new reproduced Scripture.",
+    "Signed license not examined. September3 offer and October20 reported approval do not establish a fresh license-remaining number.",
+    "New Bible text is only counted when scriptureText exists; reference-only pending items do not count."
+  ]
+}

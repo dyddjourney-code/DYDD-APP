@@ -20,11 +20,13 @@ async function preparePhoto(file: File): Promise<Blob> {
   } finally { bitmap.close(); }
 }
 
-export function BaseCampProfile({ initialName, preview = false }: { initialName: string; preview?: boolean }) {
+export function BaseCampProfile({ initialName, preview = false, previewQuery = '', readOnly = false }: { initialName: string; preview?: boolean; previewQuery?: string; readOnly?: boolean }) {
   const router = useRouter();
+  const canPersist = !preview || Boolean(previewQuery);
+  const endpoint = '/api/profile' + previewQuery;
   const [profile, setProfile] = useState<BaseCampProfile>({ ...emptyProfile, display_name: initialName });
   const [draft, setDraft] = useState(profile);
-  const [loading, setLoading] = useState(!preview);
+  const [loading, setLoading] = useState(canPersist);
   const [loadFailed, setLoadFailed] = useState(false);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -42,15 +44,15 @@ export function BaseCampProfile({ initialName, preview = false }: { initialName:
     return () => URL.revokeObjectURL(url);
   }, [photo]);
   useEffect(() => {
-    if (preview) return;
+    if (!canPersist) return;
     const controller = new AbortController();
-    fetch('/api/profile', { cache: 'no-store', signal: controller.signal })
+    fetch(endpoint, { cache: 'no-store', signal: controller.signal })
       .then(async response => { const body = await response.json(); if (!response.ok) throw Error(body.error); return body.profile as BaseCampProfile; })
       .then(value => { const loaded = { ...value, display_name: value.display_name || initialName }; setProfile(loaded); setDraft(loaded); })
       .catch(err => { if (err.name !== 'AbortError') { setError(err.message || 'Your profile could not be loaded.'); setLoadFailed(true); } })
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
-  }, [preview, initialName]);
+  }, [canPersist, endpoint, initialName]);
   async function choosePhoto(file?: File) {
     if (!file) return;
     const requestId = ++photoRequest.current;
@@ -63,14 +65,14 @@ export function BaseCampProfile({ initialName, preview = false }: { initialName:
   async function save(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); setSaving(true); setError(''); setMessage('');
     try {
-      if (preview) {
+      if (!canPersist) {
         setMessage('This is a preview account. Sign in to save your own profile.');
         return;
       }
       const form = new FormData();
       form.set('profile', JSON.stringify({ ...draft, remove_photo: removePhoto }));
       if (photo) form.set('photo', photo, 'profile.jpg');
-      const response = await fetch('/api/profile', { method: 'POST', body: form });
+      const response = await fetch(endpoint, { method: 'POST', body: form });
       const body = await response.json();
       if (!response.ok) throw Error(body.error || 'Your profile could not be saved.');
       setProfile(body.profile); setDraft(body.profile); setPhoto(null); setRemovePhoto(false); setEditing(false); setMessage('Your profile is saved.'); router.refresh();
@@ -78,16 +80,16 @@ export function BaseCampProfile({ initialName, preview = false }: { initialName:
     finally { setSaving(false); }
   }
   const shown = editing ? draft : profile;
-  const image = editing && photoUrl ? photoUrl : shown.has_photo && !(editing && removePhoto) ? `/api/profile/photo?v=${profile.revision}` : '';
+  const image = editing && photoUrl ? photoUrl : shown.has_photo && !(editing && removePhoto) ? `/api/profile/photo${previewQuery || "?"}${previewQuery ? "&" : ""}v=${profile.revision}` : '';
   const initials = (shown.display_name || initialName).split(/\s+/).filter(Boolean).slice(0,2).map(word => word[0]).join('').toUpperCase();
-  return <section className={styles.panel} aria-label="Your Base Camp profile" id="your-profile">
-    <div className={styles.heading}><div><p className="section-label">Your profile</p><h2>A little about you.</h2><p>An introduction for the people walking alongside you.</p></div>{!editing && !loading && !loadFailed && <button className="button secondary" onClick={() => { setDraft(profile); setEditing(true); setMessage(''); }}> {profile.revision ? 'Edit profile' : 'Set up profile'}</button>}</div>
+  return <section className={styles.panel} aria-label="Your Base Camp profile" id={readOnly ? "circle-profile-preview" : "your-profile"}>
+    <div className={styles.heading}><div><p className="section-label">Your profile</p><h2>A little about you.</h2><p>An introduction for the people walking alongside you.</p></div>{!readOnly && !editing && !loading && !loadFailed && <button className="button secondary" onClick={() => { setDraft(profile); setEditing(true); setMessage(''); }}> {profile.revision ? 'Edit profile' : 'Set up profile'}</button>}</div>
     {loading ? <div className={styles.skeleton} aria-label="Loading your profile" /> : <>
       <div className={styles.introduction}>
         <div className={styles.avatar}>{image ? <img src={image} alt={`${shown.display_name || initialName}'s profile`} /> : <span aria-label="Your initials">{initials}</span>}</div>
         <div className={styles.summary}><h3>{shown.display_name || initialName}</h3><p>{shown.bio || 'Your story, in a few words. Add a short bio and a few things you enjoy.'}</p>{shown.fun_facts.filter(Boolean).length > 0 && <ul className={styles.facts}>{shown.fun_facts.filter(Boolean).map((fact,i) => <li key={i}>{fact}</li>)}</ul>}</div>
       </div>
-      {preview && <p className={styles.note}>Preview account. Sign in to save your own profile.</p>}
+      {preview && <p className={styles.note}>{previewQuery ? (readOnly ? "Your saved sandbox profile. This is a private Circle preview, not a published member profile." : "Sandbox profile: your changes are saved for this preview account only.") : "Preview account. Sign in to save your own profile."}</p>}
       {editing && <form onSubmit={save} className={styles.form}>
         <fieldset disabled={saving} className={styles.fields}>
           <div className={styles.photoControls}><label className="button secondary" htmlFor="profile-photo">{preparing ? 'Preparing photo…' : 'Choose photo'}</label><input ref={chooser} id="profile-photo" type="file" accept="image/jpeg,image/png,image/webp" disabled={preparing || saving} onChange={e => void choosePhoto(e.target.files?.[0])} />{(profile.has_photo || photo) && <button type="button" className="button secondary" onClick={() => { photoRequest.current++; setPreparing(false); setPhoto(null); setRemovePhoto(true); }}>Remove photo</button>}<p>JPEG, PNG or WebP, up to 12 MB. We center-crop and resize it to a square before uploading.</p></div>

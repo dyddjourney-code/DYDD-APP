@@ -1,3 +1,5 @@
+import { isSandbox } from "@/lib/environment";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import {
   buildDesignIdContext,
   getAssessmentSnapshotsForParticipantMatch,
@@ -14,8 +16,8 @@ export const heatherReviewEmails = [
 ];
 export const heatherReviewNames = [heatherReviewName, "Heather Lawton"];
 export const jordanReviewEmail = "willoughby.john@gmail.com";
-export const jordanReviewName = "Jordan Gray";
-export const newReviewName = "Jordan Preview";
+export const jordanReviewName = "John Willoughby";
+export const newReviewName = "John";
 
 export type ReviewSearchParams = {
   key?: string;
@@ -24,7 +26,7 @@ export type ReviewSearchParams = {
 
 export function isHeatherReviewRequest(params?: ReviewSearchParams | null) {
   return (
-    params?.review === "heather" &&
+    isSandbox() && params?.review === "heather" &&
     Boolean(params.key) &&
     Boolean(process.env.DYDD_REVIEW_TOKEN) &&
     params.key === process.env.DYDD_REVIEW_TOKEN
@@ -33,7 +35,7 @@ export function isHeatherReviewRequest(params?: ReviewSearchParams | null) {
 
 export function isNewReviewRequest(params?: ReviewSearchParams | null) {
   return (
-    params?.review === "new" &&
+    isSandbox() && params?.review === "new" &&
     Boolean(params.key) &&
     Boolean(process.env.DYDD_REVIEW_TOKEN) &&
     params.key === process.env.DYDD_REVIEW_TOKEN
@@ -81,6 +83,18 @@ export async function getNewReviewReport(params?: ReviewSearchParams | null) {
     return null;
   }
 
+  // Private owner-authorized sandbox copy of John's authentic saved report.
+  // Never query production at runtime or create a learner/report submission.
+  if (isSandbox()) {
+    const { data, error } = await createSupabaseAdminClient().storage
+      .from("assessment-report-pdfs").download("sandbox-owner/john-assessment-report.json", { cacheNonce: crypto.randomUUID() }, { cache: "no-store" });
+    if (data && !error) {
+      const report = JSON.parse(await data.text()) as StudentAssessmentReport;
+      if (Array.isArray(report.all) && Array.isArray(report.latest)) return report;
+    }
+    if (error && !["400", "404"].includes(String(error.statusCode)))
+      throw Error("Your saved owner report could not be loaded. Please try again.");
+  }
   return getAssessmentSnapshotsForParticipantMatch({
     displayNames: [jordanReviewName],
     emails: [jordanReviewEmail],

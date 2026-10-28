@@ -3,7 +3,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { getAssessmentSnapshotsForUser } from '@/lib/assessments/student-context';
 import { participantEmailCandidates } from '@/lib/identity/email';
 import { passportCurriculum, journeySlug, journeyChapterBadges, courseCompleted } from './curriculum';
-import { savedAssessmentComplete, savedPrimary, completedFruitSession, completedLegacyFruitSnapshot } from './evidence';
+import { savedAssessmentComplete, savedPrimary, currentPrimaryAwards, completedFruitSession, completedLegacyFruitSnapshot } from './evidence';
 
 export async function readPassportState(user: {id:string;email?:string}) {
  const db=createSupabaseAdminClient();
@@ -36,15 +36,16 @@ export async function syncPassportAwards(user:{id:string;email?:string}, state?:
  const report=await getAssessmentSnapshotsForUser(user.id,user.email??'');
  const verified=report.all.filter(s=>savedAssessmentComplete(s,report.all));
  for(const snapshot of verified)badges.push({key:snapshot.assessment_type,evidence:{snapshotId:snapshot.id,source:'saved_completed_result'}});
- // Each genuinely earned primary is durable; retakes do not revoke earlier awards.
- for(const snapshot of verified.filter(s=>s.assessment_type==='designid')) {
-  const primary=savedPrimary(snapshot);
-  if(primary)badges.push({key:primary,evidence:{snapshotId:snapshot.id,source:'canonical_saved_primary'}});
- }
+ // Reports are newest first. Only the latest completed DesignID's canonical
+ // saved Primary earns a reflection badge; secondary/history never add badges.
+ const designId=verified.find(s=>s.assessment_type==='designid');
+ const primary=designId ? savedPrimary(designId) : undefined;
+ if(primary)badges.push({key:primary,evidence:{snapshotId:designId!.id,source:'canonical_saved_primary'}});
  for(const snapshot of report.all.filter(completedLegacyFruitSnapshot))badges.push({key:'fruit_360',evidence:{snapshotId:snapshot.id,source:'retained_full360_report_response_counts'}});
  if(user.email)for(const session of await completedFruitSessionsForEmail(user.email))badges.push({key:'fruit_360',evidence:{sessionId:session.id,source:'completed_report_and_required_observers'}});
  await awardBadges(user.id,badges);
- return readPassportState(user);
+ const synced=await readPassportState(user);
+ return {...synced,awards:currentPrimaryAwards(synced.awards,primary)};
 }
 
 export async function completedFruitSessionsForEmail(email:string) {

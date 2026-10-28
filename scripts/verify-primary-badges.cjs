@@ -40,7 +40,7 @@ const {syncPassportAwards}=load('lib/passport/state.ts',{'@/lib/supabase/admin':
  for(const href of ['/designid','/spiritual-gifts?channel=app','/fruitlife360'])assert(empty.includes('href="'+href+'"'));
  assert(empty.includes('Complete DesignID first to open DesignPD.'));
  const artifact={experienceSlug:'designid-foundations',id:'saved',title:'Saved DesignID',meta:[],detail:'Saved',action:'View snapshot',href:'/snapshot'};
- const returning=render([artifact]);assert(returning.includes('href="/designpd"'));assert(!returning.includes('Complete DesignID first to open DesignPD.'));assert.equal((returning.match(/>Take assessment<\/a>/g)||[]).length,9);
+ const returning=render([artifact]);assert(returning.includes('href="/designpd?origin=field-kit"'));assert(!returning.includes('Complete DesignID first to open DesignPD.'));assert.equal((returning.match(/>Take assessment<\/a>/g)||[]).length,9);
  if(process.env.BADGE_QA_HTML_DIR){fs.mkdirSync(process.env.BADGE_QA_HTML_DIR,{recursive:true});fs.writeFileSync(process.env.BADGE_QA_HTML_DIR+'/empty.html',empty);fs.writeFileSync(process.env.BADGE_QA_HTML_DIR+'/returning.html',returning);}
  console.log('PASS primary-only all four designs; stale/historical/secondary excluded; exact tie canonical saved primary; fresh empty; sync awards latest primary only; independent assessment/course milestones; real Field Kit routes and DesignPD prerequisite.');
 })().catch(e=>{console.error(e);process.exitCode=1});

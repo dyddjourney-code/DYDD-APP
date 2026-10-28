@@ -15,6 +15,7 @@ Authorized: implement and deploy both live and sandbox. This release follows the
 
 ## Verification and release
 
+- `node tests/course-auth-origins.cjs`: independent review caught the prior sign-in redirect dropping origin/lesson; corrected canonical allowlisted course return and origin-specific ineligible card; anonymous course/invalid origin/lesson regressions.
 - `node tests/course-card-origins.cjs`: actual navigator render, exact saved axes/labels, absent states, unmodified source teaching/prompts, durable allowlisted routes.
 - `node tests/fruitlife-assessment-badge.cjs`: native/imported completed reports, null mode, full observer gate, foreign/alias/incomplete/stale-ledger denial, independent course completion.
 - `node tests/designpd-artifact-lifecycle.cjs`, `node tests/designpd-report-state.cjs`, `node tests/artifact-access.cjs`, `node tests/designid-email-access.cjs`: ownership, login/resume, immediate/deferred link lifecycle, persist-before-email, no unauthorized writes, no real sends.

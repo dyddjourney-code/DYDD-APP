@@ -1,3 +1,4 @@
+import { courseCardHref, courseOrigin } from "@/lib/trails/course-origin";
 import { designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import { ReflectionCourseShell } from "@/components/reflection-course-shell";
 import { redirect } from "next/navigation";
@@ -32,6 +33,7 @@ type LearningCoursePageProps = {
   searchParams?: Promise<
     ReviewSearchParams & {
       lane?: string;
+      origin?: string;
       lesson?: string;
     }
   >;
@@ -41,29 +43,6 @@ export function generateStaticParams() {
   return learningCourses.map((course) => ({
     courseSlug: course.slug,
   }));
-}
-
-function getCourseCompletionHref(courseSlug: string, fruitLifeLane: boolean) {
-  if (fruitLifeLane) {
-    if (courseSlug === "spiritual-gifts-service") {
-      return "/spiritual-gifts?lane=fruitlife";
-    }
-
-    if (courseSlug === "fruitlife-360-formation") {
-      return "/field-kit?lane=fruitlife";
-    }
-
-    return "/trailheads?lane=fruitlife";
-  }
-
-  if (
-    courseSlug === "spiritual-gifts-service" ||
-    courseSlug === "fruitlife-360-formation"
-  ) {
-    return "/field-kit";
-  }
-
-  return "/trailheads";
 }
 
 export async function generateMetadata({ params }: LearningCoursePageProps) {
@@ -87,6 +66,9 @@ export default async function LearningCoursePage({
   }
   const course = getLearningCourse(courseSlug);
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
+  const tracksOrigin = courseSlug === "designpd-alignment" || courseSlug === "fruitlife-360-formation";
+  const origin = courseSlug === "fruitlife-360-formation" ? "field-kit" : courseOrigin(reviewParams?.origin);
+  const cardHref = withReviewQuery(tracksOrigin ? courseCardHref(courseSlug, origin) : courseSlug === "spiritual-gifts-service" ? fruitLifeLane ? "/spiritual-gifts?lane=fruitlife" : "/field-kit" : fruitLifeLane ? "/trailheads?lane=fruitlife" : "/trailheads", reviewParams);
   const isSpiritualGifts = course?.slug === "spiritual-gifts-service";
   const isFruitLife = course?.slug === "fruitlife-360-formation";
   const isDesignPd = course?.slug === "designpd-alignment";
@@ -94,9 +76,10 @@ export default async function LearningCoursePage({
   const headerClass = isDesignPd ? "designpd-course" : isFruitLife ? "fruitlife-course" : "spiritual-gifts-course";
   const trackClass = isDesignPd ? "designpd-top-racetrack" : isFruitLife ? "fruitlife-top-racetrack" : "spiritual-gifts-top-racetrack";
   const fruitLifeReviewQuery = reviewQuery(reviewParams);
-  const courseQuery = fruitLifeLane
+  const baseCourseQuery = fruitLifeLane
     ? `?lane=fruitlife${fruitLifeReviewQuery ? `&${fruitLifeReviewQuery.slice(1)}` : ""}`
     : fruitLifeReviewQuery;
+  const courseQuery = tracksOrigin ? `${baseCourseQuery}${baseCourseQuery ? "&" : "?"}origin=${origin}` : baseCourseQuery;
 
   if (!course) {
     notFound();
@@ -140,9 +123,9 @@ export default async function LearningCoursePage({
       ) : null}
       <nav className="course-nav" aria-label="Trail navigation">
         <a
-          href={`/trailheads${courseQuery}#${course.assessmentType === "spiritual_gifts" ? "spiritual-gifts" : course.assessmentType === "fruit_360" ? "fruitlife-360" : course.assessmentType}`}
+          href={tracksOrigin ? cardHref : `/trailheads${courseQuery}#${course.assessmentType === "spiritual_gifts" ? "spiritual-gifts" : course.assessmentType === "fruit_360" ? "fruitlife-360" : course.assessmentType}`}
         >
-          Back to Trailhead
+          {tracksOrigin && origin === "field-kit" ? "Back to Field Kit" : "Back to Trailhead"}
         </a>
         <a href={withReviewQuery("/journey", reviewParams)}>
           Return to My Journey
@@ -207,7 +190,7 @@ export default async function LearningCoursePage({
             accent={course.accent}
             assessmentLabel={course.title}
             connected={insights.connected}
-            completionHref={getCourseCompletionHref(course.slug, fruitLifeLane)}
+            completionHref={cardHref}
             courseSlug={course.slug}
             insights={insights.rows}
             modules={course.modules}

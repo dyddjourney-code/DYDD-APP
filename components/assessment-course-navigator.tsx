@@ -300,6 +300,22 @@ export function AssessmentCourseNavigator({
             </div>
 
             <CompanionAudioCard moment={active.lesson.companionMoment} />
+            {courseSlug === "designpd-alignment" &&
+              (["unpacking-your-report", "planning", "deciding", "doing"].includes(active.module.slug)) ? (
+              <section className="personal-walkthrough assessment-personal-walkthrough designpd-lesson-tendencies" aria-label="Your saved DesignPD tendencies">
+                <p className="section-label">Your DesignPD result</p>
+                <h3>{active.module.slug === "unpacking-your-report" ? "How you Plan, Decide, and Do" : `Your ${active.module.slug} tendency`}</h3>
+                <dl className="lesson-insight-list">
+                  {(active.module.slug === "unpacking-your-report" ? ["Plan", "Decide", "Do"] : [active.module.slug === "planning" ? "Plan" : active.module.slug === "deciding" ? "Decide" : "Do"]).map(label => (
+                    <div key={label}>
+                      <dt>{label}</dt>
+                      <dd>{insights.find(row => row.label === label)?.value ?? "Not available in your saved report"}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            ) : null}
+
 
             {showPersonalization ? (
               <section className="personal-walkthrough assessment-personal-walkthrough">

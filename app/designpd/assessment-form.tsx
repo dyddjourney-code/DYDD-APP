@@ -1,5 +1,6 @@
 "use client";
 
+import type { CourseOrigin } from "@/lib/trails/course-origin";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -9,12 +10,16 @@ type Props = {
   participantName: string;
   ownerAccess: boolean;
   savedReportHref?: string;
+  origin?: CourseOrigin;
+  cardHref?: string;
 };
 
-export function DesignPdAssessmentForm({action, participantEmail, participantName, ownerAccess, savedReportHref}: Props) {
+export function DesignPdAssessmentForm({action, participantEmail, participantName, ownerAccess, savedReportHref, origin = "field-kit", cardHref = "/field-kit#collection-designpd"}: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   return (
     <form action={action} onSubmit={() => setIsSubmitting(true)} className="designid-form">
+      <input type="hidden" name="origin" value={origin} />
+      <nav className="course-nav" aria-label="DesignPD navigation"><Link href={cardHref}>{origin === "trailheads" ? "Back to Trailheads" : "Back to Field Kit"}</Link></nav>
       <section className="fruitlife-panel fruitlife-message-card">
         <img src="/brand/tools/designpd-logo.jpg" alt="DesignPD logo" />
         <h1>Explore your design in motion.</h1>

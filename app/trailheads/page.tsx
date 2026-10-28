@@ -1,3 +1,4 @@
+import { withCourseOrigin } from "@/lib/trails/course-origin";
 import { isOwnerCoursePreview, designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import Link from "next/link";
 import { TrailAnchor } from "@/components/trail-anchor";
@@ -214,7 +215,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
               (s) => s.assessment_type === "designid",
             );
             const inProgress = trail.id === "fruitlife-360" && Boolean(active);
-            let startHref: string = trail.assessmentHref;
+            let startHref: string = trail.id === "designpd" ? withCourseOrigin(trail.assessmentHref, "trailheads") : trail.assessmentHref;
             if (mini && trail.id === "spiritual-gifts")
               startHref += "&lane=fruitlife";
             if (trail.id === "fruitlife-360") {
@@ -229,7 +230,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
             if (trail.id === "designpd" && !designIdReady)
               startHref = "/designid";
             const courseHref = path(
-              `${trail.courseHref}${mini ? "?lane=fruitlife" : ""}`,
+              trail.id === "designpd" || trail.id === "fruitlife-360" ? withCourseOrigin(`${trail.courseHref}${mini ? "?lane=fruitlife" : ""}`, trail.id === "fruitlife-360" ? "field-kit" : "trailheads") : `${trail.courseHref}${mini ? "?lane=fruitlife" : ""}`,
             );
             return (
               <article

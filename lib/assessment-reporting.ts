@@ -94,8 +94,8 @@ export async function sendAssessmentReportEmail({
   participantName: string;
   reportUrl: string;
 }) {
-  const signInNote = assessmentName === "DesignID"
-    ? "Sign in with the same account you used to complete DesignID. Your report is also available in Field Kit."
+  const signInNote = ["DesignID", "DesignPD"].includes(assessmentName)
+    ? `Sign in with the same account you used to complete ${assessmentName}. Your report is also available in Field Kit.`
     : "";
   const text = `Hi ${participantName},\n\nYour ${assessmentName} report is ready.\n\nOpen your report here: ${reportUrl}${signInNote ? `\n\n${signInNote}` : ""}\n\nSincerely,\nDiscover Your Divine Design Team`;
   return sendResendEmail({

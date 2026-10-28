@@ -7,7 +7,7 @@ import type { ReviewSearchParams } from '@/lib/review/heather';
 export const dynamic = 'force-dynamic';
 type Props = {
  params: Promise<{courseSlug:string;lessonSlug:string}>;
- searchParams?: Promise<ReviewSearchParams & {lane?:string}>;
+ searchParams?: Promise<ReviewSearchParams & {lane?:string;origin?:string}>;
 };
 export function generateStaticParams() {
  return learningCourses.flatMap(course => course.modules.flatMap(module => module.lessons.map(lesson => ({courseSlug:course.slug,lessonSlug:lesson.slug}))));

@@ -1,3 +1,4 @@
+import { courseCardHref, courseOrigin } from "@/lib/trails/course-origin";
 import Link from "next/link";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import { redirect } from "next/navigation";
@@ -9,20 +10,22 @@ import { saveDesignPdResponse } from "./actions";
 import { DesignPdAssessmentForm } from "./assessment-form";
 
 type DesignPdPageProps = {
-  searchParams?: Promise<{ message?: string }>;
+  searchParams?: Promise<{ message?: string; origin?: string }>;
 };
 
 export const dynamic = "force-dynamic";
 
 export default async function DesignPdPage({ searchParams }: DesignPdPageProps) {
   const params = await searchParams;
+  const origin = courseOrigin(params?.origin);
+  const cardHref = courseCardHref("designpd-alignment", origin);
   const serverSupabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await serverSupabase.auth.getUser();
 
   if (!user) {
-    redirect(`/login?next=${encodeURIComponent("/designpd")}`);
+    redirect(`/login?next=${encodeURIComponent(`/designpd?origin=${origin}`)}`);
   }
 
   const supabase = createSupabaseAdminClient();
@@ -48,6 +51,8 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
       {hasDesignId ? (
         <DesignPdAssessmentForm
           action={saveDesignPdResponse}
+          origin={origin}
+          cardHref={cardHref}
           participantEmail={participantEmail}
           participantName={participantName}
           ownerAccess={isDyddAdminEmail(user.email)}
@@ -66,7 +71,7 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
             <Link className="button primary" href="/designid">
               Start DesignID
             </Link>
-            <Link className="button secondary" href="/field-kit">
+            <Link className="button secondary" href={cardHref}>
               Back to Field Kit
             </Link>
           </div>

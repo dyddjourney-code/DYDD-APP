@@ -1,5 +1,6 @@
 "use server";
 import crypto from "node:crypto";
+import { courseOrigin } from "@/lib/trails/course-origin";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -10,6 +11,7 @@ import {
 } from "@/lib/assessment-reporting";
 import {
   getAssessmentSnapshotsForUser,
+  findOrAttachParticipant,
   latestByAssessment,
 } from "@/lib/assessments/student-context";
 import { designPdScoringVersion, scoreDesignPd } from "@/lib/designpd/engine";
@@ -23,9 +25,6 @@ import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 const productionAppUrl = "https://dydd-online-school.vercel.app";
-function fail(message: string): never {
-  redirect(`/designpd?message=${encodeURIComponent(message)}`);
-}
 async function getAppBaseUrl() {
   const requestHeaders = await headers();
   const configuredUrl =
@@ -45,12 +44,16 @@ async function getAppBaseUrl() {
   );
 }
 export async function saveDesignPdResponse(formData: FormData) {
+  const origin = courseOrigin(String(formData.get("origin") ?? ""));
+  function fail(message: string): never {
+    redirect(`/designpd?origin=${origin}&message=${encodeURIComponent(message)}`);
+  }
   const serverSupabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await serverSupabase.auth.getUser();
   if (!user) {
-    redirect(`/login?next=${encodeURIComponent("/designpd")}`);
+    redirect(`/login?next=${encodeURIComponent(`/designpd?origin=${origin}`)}`);
   }
   const supabase = createSupabaseAdminClient();
   const { data: profile } = await supabase
@@ -120,47 +123,43 @@ export async function saveDesignPdResponse(formData: FormData) {
   }
   const now = new Date().toISOString();
   const sourceResponseId = `designpd_app:${user.id}:${crypto.randomUUID()}`;
-  const { data: participant, error: participantError } = await supabase
-    .from("assessment_participants")
-    .upsert(
-      {
-        display_name: participantName,
-        normalized_email: participantEmail,
-        user_id: user.id,
-        updated_at: now,
-      },
-      { onConflict: "normalized_email" },
-    )
-    .select("id")
-    .single();
-  if (participantError || !participant?.id) {
-    fail(
-      participantError?.message ?? "Unable to connect your DesignPD record.",
-    );
+  let participantId = await findOrAttachParticipant(user.id, participantEmail);
+  if (!participantId) {
+    // Never upsert user_id on email conflict: that can reassign another account's
+    // participant and strand (or expose) previously emailed report links.
+    const { data: participant, error: participantError } = await supabase
+      .from("assessment_participants")
+      .insert({ display_name: participantName, normalized_email: participantEmail,
+        user_id: user.id, updated_at: now })
+      .select("id").single();
+    if (participantError || !participant?.id)
+      fail("Unable to connect your DesignPD record. Please contact support.");
+    participantId = participant.id;
   }
   const sections = designPdSnapshotSections(result, reportPayload);
+  const snapshotScores = {
+    axisScores: result.axisScores,
+    axisTendencies: result.axisTendencies,
+    channel: "native_app",
+    contentVersion: designPdContentVersion,
+    reportPayload,
+    reportPayloadFormat: "template-v1",
+    reportTemplateId: designPdTemplateId,
+    designIdSnapshotId: designIdSnapshot.id,
+    profileLanguage: sections.profileLanguage,
+    questionVersion: "designpd-derived-from-designid-v1",
+    scoringVersion: designPdScoringVersion,
+    movement: result.movement,
+    ratings: result.ratings,
+    sourceResponseId,
+    summary: sections.summary,
+  };
   const { data: snapshot, error: snapshotError } = await supabase
     .from("assessment_snapshots")
     .insert({
       assessment_type: "designpd",
-      participant_id: participant.id,
-      scores: {
-        axisScores: result.axisScores,
-        axisTendencies: result.axisTendencies,
-        channel: "native_app",
-        contentVersion: designPdContentVersion,
-        reportPayload,
-        reportPayloadFormat: "template-v1",
-        reportTemplateId: designPdTemplateId,
-        designIdSnapshotId: designIdSnapshot.id,
-        profileLanguage: sections.profileLanguage,
-        questionVersion: "designpd-derived-from-designid-v1",
-        scoringVersion: designPdScoringVersion,
-        movement: result.movement,
-        ratings: result.ratings,
-        sourceResponseId,
-        summary: sections.summary,
-      },
+      participant_id: participantId,
+      scores: snapshotScores,
       source: "designpd_app",
       source_response_id: sourceResponseId,
       source_submitted_at: now,
@@ -197,64 +196,46 @@ export async function saveDesignPdResponse(formData: FormData) {
       reportAccessUrl,
       status: report.document.status ?? null,
     };
-    if (
-      report.ready &&
-      (!isDyddAdminEmail(user.email) || formData.get("emailReport") === "yes")
-    ) {
-      const email = await sendAssessmentReportEmail({
-        assessmentName: "DesignPD",
-        participantEmail,
-        participantName,
-        reportUrl: reportAccessUrl,
-      });
-      emailMetadata = {
-        error: email.message ?? null,
-        resendId: email.id ?? null,
-        sent: email.sent,
-        skipped: email.skipped,
-      };
-    } else if (report.ready) {
-      emailMetadata = {
-        sent: false,
-        skipped: true,
-        reason: "owner_review_without_email",
-      };
-    }
   } catch (error) {
     pdfMetadata = {
       ...pdfMetadata,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Unable to generate DesignPD PDF.",
+      error: error instanceof Error ? error.message : "Unable to generate DesignPD PDF.",
       reportAccessUrl,
       status: "error",
     };
   }
-  await supabase
-    .from("assessment_snapshots")
-    .update({
-      scores: {
-        axisScores: result.axisScores,
-        axisTendencies: result.axisTendencies,
-        channel: "native_app",
-        contentVersion: designPdContentVersion,
-        reportPayload,
-        reportTemplateId: designPdTemplateId,
-        designIdSnapshotId: designIdSnapshot.id,
-        pdfMonkey: pdfMetadata,
-        reportPayloadFormat: "template-v1",
-        profileLanguage: sections.profileLanguage,
-        questionVersion: "designpd-derived-from-designid-v1",
-        scoringVersion: designPdScoringVersion,
-        movement: result.movement,
-        ratings: result.ratings,
-        reportAccessUrl,
-        resultEmail: emailMetadata,
-        sourceResponseId,
-        summary: sections.summary,
-      },
-    })
-    .eq("id", snapshot.id);
-  redirect(`/designpd/thanks?snapshot=${encodeURIComponent(snapshot.id)}`);
+  const savedSnapshotId = snapshot.id;
+  const ownerId = user.id;
+  async function persistReportState(includeReport = true) {
+    const { data: current, error: readError } = await supabase.from("assessment_snapshots")
+      .select("scores").eq("id", savedSnapshotId).eq("user_id", ownerId).single();
+    if (readError || !current) fail("Your result is saved, but its report status could not be read. Open Field Kit or contact support.");
+    const { data, error } = await supabase.from("assessment_snapshots")
+      .update({ scores: { ...current.scores,
+        ...(includeReport ? { pdfMonkey: pdfMetadata, reportAccessUrl } : {}),
+        resultEmail: emailMetadata } })
+      .eq("id", savedSnapshotId).eq("user_id", ownerId).select("id").single();
+    if (error || !data) fail("Your result is saved, but its report status could not be saved. Open Field Kit or contact support.");
+  }
+  // Persist the ready artifact BEFORE enqueueing/sending its URL. An immediate
+  // click or a deferred lifecycle send must see the same durable saved report.
+  await persistReportState();
+  if (["ready", "success"].includes(String(pdfMetadata.status))) {
+    if (!isDyddAdminEmail(user.email) || formData.get("emailReport") === "yes") {
+      try {
+        const email = await sendAssessmentReportEmail({ assessmentName: "DesignPD",
+          participantEmail, participantName, reportUrl: reportAccessUrl });
+        emailMetadata = { error: email.message ?? null, resendId: email.id ?? null,
+          sent: email.sent, skipped: email.skipped };
+      } catch (error) {
+        // Email failure must not turn an already-ready PDF into a failed report.
+        emailMetadata = { sent: false, skipped: false,
+          error: error instanceof Error ? error.message : "Unable to email your report link." };
+      }
+    } else {
+      emailMetadata = { sent: false, skipped: true, reason: "owner_review_without_email" };
+    }
+    await persistReportState(false);
+  }
+  redirect(`/designpd/thanks?snapshot=${encodeURIComponent(snapshot.id)}&origin=${origin}`);
 }

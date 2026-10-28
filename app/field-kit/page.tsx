@@ -1,3 +1,4 @@
+import { TrailAnchor } from "@/components/trail-anchor";
 import { hasFullReport } from "@/lib/assessments/report-recovery";
 import { previewParams, previewReflectionRounds } from "@/lib/reflections/preview";
 import { isTrailAssessmentComplete } from "@/lib/trails/catalog";
@@ -199,9 +200,9 @@ export default async function FieldKitPage({
             : snapshot.assessment_type === "spiritual_gifts"
               ? "/courses/spiritual-gifts-service"
               : snapshot.assessment_type === "fruit_360"
-                ? "/courses/fruitlife-360-formation"
+                ? "/courses/fruitlife-360-formation?origin=field-kit"
                 : snapshot.assessment_type === "designpd" && designPdUnlocked
-                  ? "/courses/designpd-alignment"
+                  ? "/courses/designpd-alignment?origin=field-kit"
                   : "/trailheads",
         detail: `Completed ${displayDateTime(snapshot.source_submitted_at ?? snapshot.created_at)}.`,
         href: withReviewQuery(
@@ -242,7 +243,7 @@ export default async function FieldKitPage({
         pdfHref: withReviewQuery(fruitLifeReportHref(session) + "&download=1", reviewParams),
         pdfReady: true,
         courseAction: "Explore course",
-        courseHref: "/courses/fruitlife-360-formation",
+        courseHref: "/courses/fruitlife-360-formation?origin=field-kit",
         detail: `Your ${fruitLifeReportModeLabel(session).toLowerCase()} FruitLife360 report is ready to review.`,
         href: withReviewQuery(fruitLifeReportHref(session), reviewParams),
         logo: "/brand/tools/fruitful-life-360-logo.jpg",
@@ -425,6 +426,7 @@ export default async function FieldKitPage({
     : { data: [] };
   return (
     <main className="journey-shell hq-standalone-page fieldkit-renewal">
+      <TrailAnchor />
       <FieldKitLegacyLinks />
       <header className="standalone-hero fieldkit-hero">
         <div>

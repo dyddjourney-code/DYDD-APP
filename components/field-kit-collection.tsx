@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { withCourseOrigin } from "@/lib/trails/course-origin";
 import { isSandbox } from "@/lib/environment";
 import { trailDefinitions } from "@/lib/trails/catalog";
 import { withReviewQuery, type ReviewSearchParams } from "@/lib/review/heather";
@@ -83,7 +84,7 @@ export function FieldKitCollection({
     const path = (href: string) => withReviewQuery(href, reviewParams);
     const assessmentEntry = !main && !reports.length && trail ? (
       <div className="fieldkit-assessment-entry">
-        <Link className="button primary" href={path(needsDesignId ? "/designid" : trail.assessmentHref)}>
+        <Link className="button primary" href={path(trail.id === "designpd" && !needsDesignId ? withCourseOrigin(trail.assessmentHref, "field-kit") : needsDesignId ? "/designid" : trail.assessmentHref)}>
           Take assessment
         </Link>
         {needsDesignId ? <p>Complete DesignID first to open DesignPD.</p> : null}
@@ -155,7 +156,7 @@ export function FieldKitCollection({
             </section>
           </div>
           <div className="fieldkit-collection-footer">
-            <Link className="button secondary" href={path(courseHref)}>
+            <Link className="button secondary" href={path(slug === "designpd-alignment" || slug === "fruitlife-360-formation" ? withCourseOrigin(courseHref, "field-kit") : courseHref)}>
               Continue course
             </Link>
             {!main ? (
@@ -291,6 +292,8 @@ export function FieldKitCollection({
                 <div className="trail-guide-route-art">
                   <img
                     src={t.signpost}
+                    width={832}
+                    height={820}
                     alt={`${t.name} trail signpost`}
                     loading="lazy"
                   />

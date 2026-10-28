@@ -103,6 +103,9 @@ try {
     assert.equal(context.status, 200); assert.equal(context.body.canStart, true);
     assert.equal(context.body.reports[0].id, slug === designCourse ? designSnapshot : fruitSnapshot);
   }
+  const beforeCompletion = await api('/api/course-progress?courseSlug=' + fruitCourse);
+  assert(beforeCompletion.body.awards.includes('fruit_360'), 'Assessment completion recognized before course completion');
+  assert.equal(beforeCompletion.body.complete, false, 'Assessment badge never auto-completes course');
   checks.push('Suppression precedes auth creation; owned DesignID/DesignPD and native null-mode SELF_ONLY fixtures; all prerequisite lessons completed');
   browser = await puppeteer.launch({ args: chromium.args.filter(x => x !== '--single-process'), executablePath: await chromium.executablePath(), headless: true });
   page = await browser.newPage(); page.setDefaultTimeout(30000);
@@ -155,12 +158,15 @@ try {
       assert.equal(await page.$eval('.course-completion-controls [role=status] a', e => e.getAttribute('href')), c.card);
       const progress = await api('/api/course-progress?courseSlug=' + c.slug);
       assert.equal(progress.status, 200); assert.equal(progress.body.complete, true); assert(progress.body.completed.includes(final.slug));
-      if (c.slug === fruitCourse) assert(!progress.body.awards.includes('fruit_360'), 'SELF_ONLY must not award full-360 badge');
+      if (c.slug === fruitCourse) assert(progress.body.awards.includes('fruit_360'), 'Owned completed SELF_ONLY report earns assessment completion, independent of course');
       await noOverflow(); await shot(`${width}-${c.slug}-${c.origin}-final`);
       // Exercise the final Continue link and anchored destination, not only its markup.
       await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded' }), page.$eval('.course-completion-controls [role=status] a', e => e.click())]);
       assert.equal(new URL(page.url()).pathname + new URL(page.url()).hash, c.card);
       await page.waitForSelector(c.section);
+      await page.waitForFunction(selector => { const r=document.querySelector(selector)?.getBoundingClientRect(); return Boolean(r && scrollY>100 && r.top<innerHeight*.7 && r.bottom>0); }, {timeout:10000}, c.section);
+      const anchorShot = `${out}/published-${env}-${width}-${c.slug}-${c.origin}-card.png`;
+      await page.screenshot({path:anchorShot}); screenshots.push(anchorShot);
       checks.push({ width, course: c.slug, origin: c.origin, actualCardEntry: entry, backAndContinue: c.card, reloadAndCanonicalOrigin: true, reflectionSaveReload: true, finalCompletionPersisted: true, noOverflow: true });
     }
     for (const [lesson, labels] of [

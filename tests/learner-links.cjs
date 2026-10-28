@@ -29,7 +29,7 @@ const mocks={
  assert(thanksHtml.includes('href="/designid/report?snapshot=synthetic" target="_blank" rel="noopener noreferrer"'));
  assert(thanksHtml.includes('href="/courses/designid-foundations">Continue This Trail'));
  const pdHtml=renderToStaticMarkup(await pd({searchParams:Promise.resolve({snapshot:'synthetic'})}));
- assert(pdHtml.includes('target="_blank" rel="noopener noreferrer"'));assert(pdHtml.includes('href="/courses/designpd-alignment">Continue This Trail'));
+ assert(pdHtml.includes('target="_blank" rel="noopener noreferrer"'));assert(pdHtml.includes('href="/courses/designpd-alignment?origin=field-kit">Continue This Trail'));
  const gearHtml=renderToStaticMarkup(await gear({}));
  const hrefs=[...gearHtml.matchAll(/href="([^"]+)"[^>]*>Purchase (?:book|workbook)/g)].map(m=>m[1]);assert.equal(hrefs.length,2);assert.equal(hrefs[0],hrefs[1]);
  const fixture=[];

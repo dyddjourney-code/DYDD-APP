@@ -1,5 +1,6 @@
 "use server";
 import crypto from "node:crypto";
+import { courseOrigin } from "@/lib/trails/course-origin";
 import { isFreeBeta } from "@/lib/environment";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import { headers } from "next/headers";
@@ -25,9 +26,6 @@ import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 const productionAppUrl = "https://dydd-online-school.vercel.app";
-function fail(message: string): never {
-  redirect(`/designpd?message=${encodeURIComponent(message)}`);
-}
 async function getAppBaseUrl() {
   const requestHeaders = await headers();
   const configuredUrl =
@@ -47,12 +45,16 @@ async function getAppBaseUrl() {
   );
 }
 export async function saveDesignPdResponse(formData: FormData) {
+  const origin = courseOrigin(String(formData.get("origin") ?? ""));
+  function fail(message: string): never {
+    redirect(`/designpd?origin=${origin}&message=${encodeURIComponent(message)}`);
+  }
   const serverSupabase = await createSupabaseServerClient();
   const {
     data: { user },
   } = await serverSupabase.auth.getUser();
   if (!user) {
-    redirect(`/login?next=${encodeURIComponent("/designpd")}`);
+    redirect(`/login?next=${encodeURIComponent(`/designpd?origin=${origin}`)}`);
   }
   const supabase = createSupabaseAdminClient();
   const { data: profile } = await supabase
@@ -236,5 +238,5 @@ export async function saveDesignPdResponse(formData: FormData) {
     }
     await persistReportState(false);
   }
-  redirect(`/designpd/thanks?snapshot=${encodeURIComponent(snapshot.id)}`);
+  redirect(`/designpd/thanks?snapshot=${encodeURIComponent(snapshot.id)}&origin=${origin}`);
 }

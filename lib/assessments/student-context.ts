@@ -1,3 +1,4 @@
+import { savedDesignPdTendencies } from "@/lib/designpd/tendencies";
 import { canonicalDesignIdShadow } from "@/lib/designid/shadow";
 import { normalizeEmail, participantEmailCandidates } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -546,7 +547,10 @@ export function buildAssessmentCourseInsights(
       assessmentType === "fruit_360"
         ? "This data represents the most recent FruitLife360 submission."
         : "",
-    rows: snapshotInsightRows(
+    rows: assessmentType === "designpd" ? [
+      ...savedDesignPdTendencies(snapshot),
+      ...snapshotInsightRows(snapshot, detailKeysByAssessment.designpd.slice(3)),
+    ] : snapshotInsightRows(
       snapshot,
       detailKeysByAssessment[assessmentType] ?? [],
     ),

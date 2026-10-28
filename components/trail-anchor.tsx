@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-const trailIds = new Set(["designid", "spiritual-gifts", "fruitlife-360", "designpd"]);
+const trailIds = new Set(["designid", "spiritual-gifts", "fruitlife-360", "designpd", "collection-designid", "collection-spiritual-gifts", "collection-fruitlife-360", "collection-designpd"]);
 
 /** Keep an incoming trail link on its named block after hydration/font reflow.
  * Stop correcting as soon as the learner intentionally scrolls or interacts. */
@@ -25,7 +25,7 @@ export function TrailAnchor() {
     const stop = () => { stopped = true; cancelAnimationFrame(frame); };
     const hash = () => { stopped = false; align(); };
     const observer = new ResizeObserver(align);
-    const root = document.querySelector(".trailhead-renewal");
+    const root = document.querySelector(".trailhead-renewal, .fieldkit-renewal");
     if (root) observer.observe(root);
     align();
     void document.fonts.ready.then(align);

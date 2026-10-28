@@ -55,23 +55,24 @@ const actions=load('app/designpd/actions.ts',{
     }
   }
 });
-async function run({email=true,sendFails=false,persistFails=false,status='success',linked='participant',conflict=false}={}){
+async function run({email=true,sendFails=false,persistFails=false,status='success',linked='participant',conflict=false,origin='field-kit'}={}){
   events=[];scores=null;sendFailure=sendFails;persistFailure=persistFails;pdfStatus=status;participantId=linked;participantConflict=conflict;
-  const form=new FormData();if(email)form.set('emailReport','yes');
+  const form=new FormData();form.set('origin',origin);if(email)form.set('emailReport','yes');
   try {await actions.saveDesignPdResponse(form);assert.fail('Expected redirect');}
   catch(error){assert(error.location,error.stack);return error.location;}
 }
 (async()=>{
-  assert.equal(await run(),'/designpd/thanks?snapshot=saved-pd');
+  assert.equal(await run(),'/designpd/thanks?snapshot=saved-pd&origin=field-kit');
   assert.deepEqual(events,['snapshot','pdf','persist','email','persist']);
+  assert.equal(await run({origin:'trailheads'}),'/designpd/thanks?snapshot=saved-pd&origin=trailheads');
   assert.equal(scores.resultEmail.sent,true);
   assert.equal(scores.pdfRecovery.documentId,'concurrent-recovery','email status update preserves download lifecycle changes');
   await run({email:false});assert(!events.includes('email'));assert.equal(scores.resultEmail.reason,'owner_review_without_email');
   await run({sendFails:true});assert.equal(scores.pdfMonkey.status,'success');assert.equal(scores.resultEmail.sent,false);assert.equal(scores.resultEmail.error,'email unavailable');
-  const failed=await run({persistFails:true});assert(failed.startsWith('/designpd?message='));assert(!events.includes('email'),'no delivery of an unpersisted artifact URL');
+  const failed=await run({persistFails:true});assert(failed.startsWith('/designpd?origin=field-kit&message='));assert(!events.includes('email'),'no delivery of an unpersisted artifact URL');
   await run({status:'pending'});assert(!events.includes('email'));assert.equal(scores.pdfMonkey.status,'pending');
   await run({linked:null});assert(events.includes('participant-insert'));
-  const conflict=await run({linked:null,conflict:true});assert(conflict.startsWith('/designpd?message='));assert.deepEqual(events,['participant-insert'],'foreign email conflict cannot steal participant or create report');
+  const conflict=await run({linked:null,conflict:true});assert(conflict.startsWith('/designpd?origin=field-kit&message='));assert.deepEqual(events,['participant-insert'],'foreign email conflict cannot steal participant or create report');
   let mail;
   const reporting=load('lib/assessment-reporting.ts',{
     '@/lib/lifecycle/application-mail':{sendApplicationEmail:async input=>{mail=input;return {sent:false,skipped:true};}}

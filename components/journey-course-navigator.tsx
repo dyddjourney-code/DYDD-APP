@@ -555,7 +555,7 @@ export function JourneyCourseNavigator({
 
               {workbookExperience.kind !== "pathfinder" ? <JourneyCareDirections /> : null}
               {isPathfinder ? <div className="journey-pathfinder-waypoints">
-                <p className="journey-pathfinder-saving">Your words save after a pause and before Next. {isIdentityPathfinder || isExpertisePathfinder ? "These same pieces are ready to edit in section 8.2 and your Field Kit." : "Review your saved pieces in your Field Kit."}</p>
+                <p className="journey-pathfinder-saving">Your changed words save together when you complete or leave this lesson, including Next. {isIdentityPathfinder || isExpertisePathfinder ? "These same pieces are ready to edit in section 8.2 and your Field Kit." : "Review your saved pieces in your Field Kit."}</p>
                 {workbookExperience.prompts.map((prompt, index) => <section className="journey-pathfinder-waypoint" key={prompt.id}>
                   <span className="journey-pathfinder-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                   <div><h4>{prompt.label}</h4>{prompt.helper ? <p>{prompt.helper}</p> : null}<ReflectionAnswer questionId={prompt.id} showQuestion={false} /></div>

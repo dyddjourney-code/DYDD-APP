@@ -191,7 +191,7 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
           },
           {
             "type": "paragraph",
-            "text": "Your written reflections save automatically as you work and are gathered in your Field Kit—your personal place to revisit what you’re discovering. We’ll introduce the reflection tools when you reach them."
+            "text": "Your changed written reflections save when you complete or leave a lesson and are gathered in your Field Kit—your personal place to revisit what you’re discovering. We’ll introduce the reflection tools when you reach them."
           },
           {
             "type": "paragraph",
@@ -205,7 +205,7 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
         teachingBlocks: [
           "Move through the lessons in order, at a pace that gives you room to reflect. Read or watch the teaching, consider the questions, and write honestly about what you’re discovering. This isn’t about finding impressive answers. It’s about paying attention to what God is revealing through your design and your life.",
           "When it’s time to take an assessment or complete a related learning experience, the lesson will guide you. There’s no need to jump ahead or figure it all out now.",
-          "Your written reflections save automatically as you work and are gathered in your Field Kit—your personal place to revisit what you’re discovering. We’ll introduce the reflection tools when you reach them.",
+          "Your changed written reflections save when you complete or leave a lesson and are gathered in your Field Kit—your personal place to revisit what you’re discovering. We’ll introduce the reflection tools when you reach them.",
           "If you’re walking through this with a group, follow your facilitator’s schedule and come ready to share what you feel comfortable discussing.",
           "Take your time. You’re not just finishing a course—you’re learning to recognize and live out your God-given design."
         ],

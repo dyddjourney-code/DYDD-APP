@@ -3,7 +3,6 @@ import { nativeDesignPdRecoveryPayload } from "@/lib/assessments/native-designpd
 import {
   assessmentLabels,
   displayDate,
-  getAssessmentSnapshotsForUser,
   snapshotHighlights,
   type AssessmentSnapshotSummary,
 } from "@/lib/assessments/student-context";
@@ -12,6 +11,7 @@ import {
   getPdfMonkeyDocument,
 } from "@/lib/pdfmonkey/client";
 import { normalizeEmail } from "@/lib/identity/email";
+import { getOwnedArtifactSnapshot } from "@/lib/assessments/artifact-access";
 import {
   getHeatherReviewReport,
   getNewReviewReport,
@@ -164,18 +164,21 @@ async function findSnapshot(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return null;
+    // An emailed URL is a durable locator, not a bearer credential. A new
+    // browser/session must sign in and then return to this exact report.
+    const target = new URL(request.url);
+    target.searchParams.delete("key");
+    target.searchParams.delete("review");
+    const login = new URL("/login", request.url);
+    login.searchParams.set("next", target.pathname + target.search);
+    return NextResponse.redirect(login, { status: 303, headers });
   }
-  const report = await getAssessmentSnapshotsForUser(
-    user.id,
-    normalizeEmail(user.email),
-  );
-  return report.all.find((snapshot) => snapshot.id === snapshotId) ?? null;
+  return getOwnedArtifactSnapshot(snapshotId, user.id, normalizeEmail(user.email));
 }
 /** Supplement legacy FruitLife snapshots with their owned session’s retained PDF. */
 async function findAuthorizedSnapshot(request: NextRequest, snapshotId: string) {
   const snapshot = await findSnapshot(request, snapshotId);
-  if (!snapshot) return null;
+  if (!snapshot || snapshot instanceof Response) return snapshot;
   const admin = createSupabaseAdminClient();
   if (snapshot.assessment_type === "designpd" && snapshot.scores.channel === "native_app" &&
       !snapshot.scores.reportArtifact && !Object.keys(object(snapshot.scores.reportPayload)).length &&
@@ -279,6 +282,7 @@ export async function GET(
 ) {
   const { snapshotId = "" } = await context.params;
   const snapshot = await findAuthorizedSnapshot(request, snapshotId);
+  if (snapshot instanceof Response) return snapshot;
   if (!snapshot)
     return NextResponse.json(
       { error: "Artifact not found." },
@@ -306,6 +310,7 @@ export async function POST(
     );
   const { snapshotId = "" } = await context.params;
   const snapshot = await findAuthorizedSnapshot(request, snapshotId);
+  if (snapshot instanceof Response) return snapshot;
   if (!snapshot)
     return NextResponse.json(
       { error: "Artifact not found." },

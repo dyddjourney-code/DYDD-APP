@@ -142,7 +142,7 @@ const get = (query = "", id = snapshot.id) =>
   assert(!text.includes("Saved Highlights"));
   assert(!text.includes("Print / Save as PDF"));
   for (const query of ["", "?review=new&key=bad", "?review=heather&key=bad"])
-    assert.equal((await get(query)).status, 404);
+    assert.equal((await get(query)).status, 303);
   assert.equal((await get("?review=new&key=valid", "foreign")).status, 404);
   r = await get("?review=new&key=valid");
   assert((await r.text()).includes("Preparing your PDF"));
@@ -244,7 +244,7 @@ const get = (query = "", id = snapshot.id) =>
   assert((await r.text()).includes("Download PDF"));
   r = await get("?review=new&key=valid");
   assert.equal(r.status,307,"Legacy FruitLife session PDF is not snapshot-only");
-  assert.equal((await get("?review=new&key=invalid")).status,404);
+  assert.equal((await get("?review=new&key=invalid")).status,303);
   console.log(
     "PASS snapshot score/label fidelity, no duplicate highlights or arbitrary gift bars, explicit PDF separation, authorization/foreign denial, real PDF archival, expired-link recovery, origin check and full-template generation without email.",
   );

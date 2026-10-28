@@ -29,6 +29,7 @@ import type {
 type JourneyCourseNavigatorProps = {
   modules: DyddCourseModule[];
   designIdSnapshotHtml: string;
+  spiritualGiftsSnapshotHtml?: string;
   capacityScores: AppliedCapacityScores;
   reflectionNames: {primary: string; secondary: string};
 };
@@ -141,6 +142,7 @@ function flattenModules(modules: DyddCourseModule[]) {
 export function JourneyCourseNavigator({
   modules,
   designIdSnapshotHtml,
+  spiritualGiftsSnapshotHtml,
   reflectionNames,
   capacityScores,
 }: JourneyCourseNavigatorProps) {
@@ -426,6 +428,8 @@ export function JourneyCourseNavigator({
                 <span key={item}>{item}</span>
               ))}
             </div>
+
+            {active.module.slug === "gifts" && spiritualGiftsSnapshotHtml ? <div dangerouslySetInnerHTML={{ __html: spiritualGiftsSnapshotHtml }} /> : null}
 
             {isDesignIdLens ? (
               <div className="journey-designid-return">

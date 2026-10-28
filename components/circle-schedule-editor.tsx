@@ -5,7 +5,8 @@ import {
   countUntil,
   scheduledDates,
   meetingLessons,
-  suggestedAssignments,
+  resizeCirclePlan,
+  updateCircleCalendar,
   unassignedLessons,
   type CirclePlan,
 } from "@/lib/circles/plan";
@@ -21,19 +22,18 @@ export function CircleScheduleEditor({
     [error, setError] = useState("");
   const dates = scheduledDates(p),
     missing = unassignedLessons(p);
-  function suggest() {
-    const count = p.paceMode === "finish" ? countUntil(p) : p.meetingCount;
-    if (!Number.isInteger(count) || count < 1 || count > 104) {
+  function calendar(patch: Partial<CirclePlan>) {
+    change(updateCircleCalendar(p, patch));
+  }
+  function finishBy(finishDate: string) {
+    const next = { ...p, finishDate };
+    const count = countUntil(next);
+    if (count < 1 || count > 104) {
+      change(next);
       setError("Choose dates and a pace that allow 1–104 meetings.");
       return;
     }
-    change({
-      ...p,
-      meetingCount: count,
-      curriculum: circleCurriculum,
-      assignments: suggestedAssignments(count),
-      movedDates: {},
-    });
+    change(resizeCirclePlan(next, count));
     setError("");
   }
   function assign(slugs: string[], meeting: number) {
@@ -54,7 +54,7 @@ export function CircleScheduleEditor({
           <select
             id="pace-mode"
             value={p.paceMode}
-            onChange={(e) => change({ ...p, paceMode: e.target.value })}
+            onChange={(e) => calendar({ paceMode: e.target.value })}
           >
             <option value="pace">Number of meetings</option>
             <option value="finish">Finish date</option>
@@ -71,19 +71,10 @@ export function CircleScheduleEditor({
               value={p.meetingCount}
               onChange={(e) => {
                 const count = +e.target.value;
-                change({
-                  ...p,
-                  meetingCount: count,
-                  assignments: Object.fromEntries(
-                    Object.entries(p.assignments).map(([s, n]) => [
-                      s,
-                      n > count ? 0 : n,
-                    ]),
-                  ),
-                  movedDates: Object.fromEntries(
-                    Object.entries(p.movedDates).filter(([n]) => +n <= count),
-                  ),
-                });
+                if (Number.isInteger(count) && count >= 1 && count <= 104) {
+                  change(updateCircleCalendar(resizeCirclePlan(p, count), {}));
+                  setError("");
+                }
               }}
             />
           </label>
@@ -95,16 +86,15 @@ export function CircleScheduleEditor({
               type="date"
               min={p.startDate}
               value={p.finishDate}
-              onChange={(e) => change({ ...p, finishDate: e.target.value })}
+              onChange={(e) => finishBy(e.target.value)}
             />
           </label>
         )}
       </div>
-      <button type="button" className="button secondary" onClick={suggest}>
-        Build suggested schedule
-      </button>
-      <p className="circle-fine-print">
-        Adjust the lesson assignments below to suit your group.
+      <p className="circle-fine-print" role="status">
+        The complete curriculum is scheduled for you; custom assignments are optional.
+        Customize assignments below only if your group needs a different plan.
+        Date, rhythm, and holiday changes keep your lesson assignments and learners’ saved work.
       </p>
       <details className="circle-breaks">
         <summary>
@@ -143,8 +133,7 @@ export function CircleScheduleEditor({
               setError("Choose a valid break date or range.");
               return;
             }
-            change({
-              ...p,
+            calendar({
               breaks: [
                 ...p.breaks,
                 { start: breakStart, end: breakEnd || breakStart },
@@ -167,7 +156,7 @@ export function CircleScheduleEditor({
                 className="button text-button"
                 aria-label={`Remove break ${b.start}`}
                 onClick={() =>
-                  change({ ...p, breaks: p.breaks.filter((_, n) => i !== n) })
+                  calendar({ breaks: p.breaks.filter((_, n) => i !== n) })
                 }
               >
                 Remove
@@ -183,59 +172,12 @@ export function CircleScheduleEditor({
       )}
       {missing.length > 0 && (
         <p role="status" className="circle-form-error">
-          {missing.length} current lessons need a meeting.{" "}
-          <button
-            type="button"
-            className="button text-button"
-            onClick={() =>
-              change({
-                ...p,
-                curriculum: circleCurriculum,
-                assignments: Object.fromEntries(
-                  circleCurriculum.map((l) => [
-                    l.slug,
-                    p.assignments[l.slug] &&
-                    p.assignments[l.slug] <= p.meetingCount
-                      ? p.assignments[l.slug]
-                      : 0,
-                  ]),
-                ),
-              })
-            }
-          >
-            Refresh lesson list
-          </button>
-        </p>
-      )}
-      {p.curriculum.some(
-        (l) => !circleCurriculum.some((c) => c.slug === l.slug),
-      ) && (
-        <p className="circle-form-error">
-          The course has changed. Refresh the lesson list to remove retired
-          lessons; existing assignments will be kept.{" "}
-          <button
-            type="button"
-            className="button text-button"
-            onClick={() =>
-              change({
-                ...p,
-                curriculum: circleCurriculum,
-                assignments: Object.fromEntries(
-                  circleCurriculum.map((l) => [
-                    l.slug,
-                    p.assignments[l.slug] || 0,
-                  ]),
-                ),
-              })
-            }
-          >
-            Refresh lesson list
-          </button>
+          {missing.length} lessons were left unassigned in your custom plan. Choose a meeting below.
         </p>
       )}
       <details className="circle-lesson-allocation">
         <summary>
-          Assign modules and lessons · {circleCurriculum.length} lessons
+          Optional: customize modules and lessons · {circleCurriculum.length} lessons
         </summary>
         {modules.map((module) => {
           const lessons = circleCurriculum.filter(
@@ -340,7 +282,7 @@ export function CircleScheduleEditor({
                         if (e.target.value)
                           movedDates[String(i + 1)] = e.target.value;
                         else delete movedDates[String(i + 1)];
-                        change({ ...p, movedDates });
+                        calendar({ movedDates });
                       }}
                     />
                   </label>
@@ -352,12 +294,14 @@ export function CircleScheduleEditor({
                       onClick={() => {
                         const movedDates = { ...p.movedDates };
                         delete movedDates[String(i + 1)];
-                        change({
-                          ...p,
+                        const regularDate = scheduledDates({ ...p, movedDates: {} })[i];
+                        calendar({
                           movedDates,
                           breaks: [
                             ...p.breaks,
                             { start: dates[i], end: dates[i] },
+                            ...(regularDate && regularDate !== dates[i]
+                              ? [{ start: regularDate, end: regularDate }] : []),
                           ],
                         });
                       }}
@@ -371,7 +315,7 @@ export function CircleScheduleEditor({
                         onClick={() => {
                           const movedDates = { ...p.movedDates };
                           delete movedDates[String(i + 1)];
-                          change({ ...p, movedDates });
+                          calendar({ movedDates });
                         }}
                       >
                         Reset date

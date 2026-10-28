@@ -1,0 +1,12 @@
+.picker {
+  min-width: 0;
+  margin: 0;
+  padding: 14px;
+  border: 1px solid #b5c3b7;
+  border-radius: 12px;
+}
+.picker legend { padding: 0 6px; font-size: 1.1rem; font-weight: 700; }
+.fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.picker .fields label { display: grid; gap: 7px; font-size: 1rem; font-weight: 650; }
+.picker .fields select { width: 100%; min-height: 48px; padding: 10px 5px; font-size: 1.1rem; }
+.picker .fields select:focus-visible { outline: 3px solid #647c9b; outline-offset: 3px; }

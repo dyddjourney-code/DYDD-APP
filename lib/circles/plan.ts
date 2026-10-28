@@ -61,25 +61,72 @@ export type SavedCircle = {
   revision: number;
   updated_at: string;
 };
-export function suggestedAssignments(count: number) {
-  const modules = [...new Set(circleCurriculum.map((l) => l.moduleSlug))];
-  const groups = Math.max(1, modules.length - 1);
-  const closingLessons = new Set(["niche-congratulations-75", "niche-prayer-76", "niche-whats-next-77"]);
-  return Object.fromEntries(
-    circleCurriculum.map((l, index) => [
-      l.slug,
-      count === 8
-        ? l.moduleSlug === "niche"
-          ? closingLessons.has(l.slug) ? 8 : 7
-          : Math.max(1, modules.indexOf(l.moduleSlug))
-        : count === groups
-        ? Math.max(1, modules.indexOf(l.moduleSlug))
-        : Math.min(
-            count,
-            Math.floor((index * count) / circleCurriculum.length) + 1,
-          ),
-    ]),
-  );
+/** Curriculum boundaries, not equal lesson piles. Eight meetings is the core path:
+ * orientation + foundations; Identity; Expertise; Story; Desire; Gifts; Niche;
+ * celebration/next steps. Extra meetings expand sections before individual lessons.
+ */
+export function suggestedAssignments(count: number): Record<string, number> {
+  if (!Number.isInteger(count) || count < 1 || count > 104)
+    throw new RangeError("Choose 1–104 meetings.");
+  const units = dyddMainCourseOutline.flatMap(m => m.units);
+  const closing = units.findIndex(u => u.type === "completion");
+  const starts = [0, ...["identity", "expertise", "story", "desire", "gifts", "niche"]
+    .map(slug => circleCurriculum.findIndex(l => l.moduleSlug === slug)), closing]
+    .filter(n => n >= 0);
+  // Shorter plans combine adjacent, related curriculum blocks; never cut a
+  // module merely to equalize lesson counts. Closing rejoins Niche first.
+  const compressed: Record<number, number[]> = {
+    1: [0], 2: [0, 4], 3: [0, 3, 5], 4: [0, 2, 3, 5],
+    5: [0, 2, 3, 5, 6], 6: [0, 2, 3, 4, 5, 6],
+    7: [0, 1, 2, 3, 4, 5, 6], 8: [0, 1, 2, 3, 4, 5, 6, 7],
+  };
+  let boundaries = count <= 8 ? compressed[count].map(i => starts[i]) : [...starts];
+  const sectionStarts = units.flatMap((u, i) => i &&
+    (u.section !== units[i - 1].section || circleCurriculum[i].moduleSlug !== circleCurriculum[i - 1].moduleSlug) ? [i] : []);
+  while (boundaries.length < Math.min(count, units.length)) {
+    const ends = [...boundaries.slice(1), units.length];
+    const candidates = sectionStarts.filter(i => !boundaries.includes(i));
+    const available = candidates.length ? candidates : units.flatMap((_, i) => i && !boundaries.includes(i) ? [i] : []);
+    // Expand the largest remaining curriculum block, at a real section boundary
+    // where possible. The stable course order breaks ties deterministically.
+    const choices = boundaries.map((start, n) => {
+      const inside = available.filter(i => i > start && i < ends[n]);
+      return { start, end: ends[n], inside };
+    }).filter(g => g.inside.length).sort((a, b) => (b.end - b.start) - (a.end - a.start));
+    const group = choices[0];
+    const split = group.inside.reduce((best, i) =>
+      Math.abs(i - (group.start + group.end) / 2) < Math.abs(best - (group.start + group.end) / 2) ? i : best);
+    boundaries = [...boundaries, split].sort((a, b) => a - b);
+  }
+  // With more meetings than lessons, the remaining meetings are intentional
+  // practice/discussion space; no lesson is duplicated or withheld.
+  return Object.fromEntries(circleCurriculum.map((l, i) =>
+    [l.slug, boundaries.filter(start => start <= i).length]));
+}
+
+/** Count changes reflow automatic plans. Custom plans retain every valid choice;
+ * only assignments beyond a shortened plan move to its final meeting.
+ * Calendar-only changes must never call this with a new count.
+ */
+export function resizeCirclePlan(p: CirclePlan, count: number): CirclePlan {
+  if (!Number.isInteger(count) || count < 1 || count > 104) return p;
+  const automatic = suggestedAssignments(p.meetingCount);
+  const isAutomatic = circleCurriculum.every(l => p.assignments[l.slug] === automatic[l.slug]);
+  return normalizePlan({ ...p, meetingCount: count,
+    assignments: isAutomatic ? suggestedAssignments(count) : Object.fromEntries(
+      Object.entries(p.assignments).map(([slug, n]) => [slug, Math.min(n, count)])),
+    movedDates: Object.fromEntries(Object.entries(p.movedDates).filter(([n]) => +n <= count)),
+  });
+}
+
+/** Calendar edits keep meeting identities and lesson assignments. A finish-date
+ * target is recalculated only when the organizer explicitly edits that target.
+ */
+export function updateCircleCalendar(p: CirclePlan, patch: Partial<CirclePlan>): CirclePlan {
+  const next = { ...p, ...patch };
+  if (next.paceMode === "finish" && next.startDate && !Object.hasOwn(patch, "finishDate"))
+    next.finishDate = scheduledDates(next).at(-1) || next.finishDate;
+  return next;
 }
 export function blankCirclePlan(): CirclePlan {
   const count = 8;
@@ -181,13 +228,21 @@ export function unassignedLessons(p: CirclePlan) {
 }
 export function normalizePlan(value: unknown): CirclePlan {
   const p = value as Partial<CirclePlan>;
+  const count = Number.isInteger(p.meetingCount) && p.meetingCount! >= 1 && p.meetingCount! <= 104 ? p.meetingCount! : 8;
+  const automatic = suggestedAssignments(count);
   return {
     ...blankCirclePlan(),
     ...p,
-    curriculum:
-      p.curriculum?.map(
-        (l) => circleCurriculum.find((c) => c.slug === l.slug) || l,
-      ) || circleCurriculum,
+    curriculum: circleCurriculum,
+    assignments: Object.fromEntries(circleCurriculum.map(l => {
+      const existing = p.assignments?.[l.slug];
+      // Explicit unassignment is a customization, not an unnoticed refresh task.
+      if (Number.isInteger(existing) && existing! >= 0 && existing! <= count)
+        return [l.slug, existing!];
+      const sibling = circleCurriculum.find(c => c.moduleSlug === l.moduleSlug &&
+        p.assignments?.[c.slug] && p.assignments[c.slug] <= count);
+      return [l.slug, sibling ? p.assignments![sibling.slug] : automatic[l.slug]];
+    })),
     customGoal:
       p.customGoal ||
       (p.target && !completionGoals.includes(p.target) ? p.target : ""),
@@ -358,9 +413,15 @@ export function validatePlan(value: unknown, creating = false): string | null {
     p.paceMode === "finish" &&
     p.startDate &&
     (!p.finishDate ||
-      countUntil(p) !== p.meetingCount ||
       dates.at(-1)! > p.finishDate)
   )
-    return "Apply your finish-date schedule again after changing dates or breaks.";
+    return "Choose a finish date on or after your last meeting.";
   return null;
+}
+
+/** Human-facing display only; stored HH:mm remains compatible with scheduling. */
+export function displayCircleTime(value: string): string {
+  if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(value)) return '';
+  const [hour, minute] = value.split(':');
+  return `${Number(hour) % 12 || 12}:${minute} ${Number(hour) >= 12 ? 'PM' : 'AM'}`;
 }

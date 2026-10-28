@@ -1,4 +1,5 @@
 "use client";
+import { journeySlug, journeyAssessmentTypes, sourcesForJourneyRound } from "@/lib/reflections/journey-assessments";
 import { retiredPathfinderCanonical } from "@/lib/journey/pathfinder";
 import { isSandbox } from '@/lib/environment';
 import { careDiscussionIds, discussionCourse, type DiscussionReminder } from '@/lib/reflections/discussion-catalog';
@@ -105,6 +106,8 @@ export function ReflectionSession({
     [error, setError] = useState(""),
     [creating, setCreating] = useState(false),
     [report, setReport] = useState("");
+  const journey = courseSlug === journeySlug;
+  const [assessmentChoices, setAssessmentChoices] = useState<Record<string, string>>({});
   const assessmentEntry = ["designid-foundations", "spiritual-gifts-service", "fruitlife-360-formation", "designpd-alignment"].includes(courseSlug);
   const contextualEntry = inlineEntry && assessmentEntry;
   const discussionEnabled = courseSlug === discussionCourse;
@@ -328,7 +331,7 @@ export function ReflectionSession({
     setSelected(id);
     setRoundUrl(id);
   };
-  const newRound = async () => {
+  const newRound = async (journeyAssessmentIds?: string[]) => {
     if (busy.current.size || creating) return;
     if (
       dirty.current &&
@@ -347,6 +350,7 @@ export function ReflectionSession({
           action: "new-round",
           courseSlug,
           assessmentSnapshotId: report || null,
+          ...(journeyAssessmentIds ? { journeyAssessmentIds } : {}),
         }),
       });
       const b = await r.json();
@@ -544,6 +548,30 @@ export function ReflectionSession({
     recordPosition,
     reload,
   };
+  const journeySources = round ? sourcesForJourneyRound(round, data.journeyReports ?? []) : [];
+  const currentJourneySources = data.rounds[0] ? sourcesForJourneyRound(data.rounds[0], data.journeyReports ?? []) : [];
+  const journeySourcePanel = journey && data.signedIn && !loading ? <section className="journey-assessment-sources" aria-label="Assessment sources">
+    <h2>Assessment sources for this round</h2>
+    <p>Your Journey brings together DesignID and Spiritual Gifts. Available results connect automatically when you begin. Your saved writing stays private to your account; Circle leaders do not receive these answers.</p>
+    {round && !round.source.startsWith("journey-assessments-v1:") ? <p>For earlier rounds without recorded connections, the sources below are the latest unambiguous results completed by the round’s start date—not newer results.</p> : null}
+    <ul>{journeyAssessmentTypes.map(type => {
+      const title = type === 'designid' ? 'DesignID' : 'Spiritual Gifts';
+      const source = journeySources.find(r => r.assessmentType === type);
+      return <li key={type}><strong>{title}:</strong> {source?.label ?? 'No result recorded for this round. Continue reflecting, or choose an available assessment below; no retake is required.'}</li>;
+    })}</ul>
+    {round?.id === data.rounds[0]?.id && (data.journeyReports ?? []).some(r => !journeySources.some(source => source.id === r.id)) ? <details>
+      <summary>Choose different or newer assessment results</summary>
+      <p>This is separate from starting fresh writing with the same results. Choose which DesignID or Spiritual Gifts result to use in a new, empty round. Your current and earlier rounds keep their saved writing and original assessment sources.</p>
+      {journeyAssessmentTypes.map(type => <label key={type}>{type === 'designid' ? 'DesignID result' : 'Spiritual Gifts result'}
+        <select value={assessmentChoices[type] ?? journeySources.find(r => r.assessmentType === type)?.id ?? ''} onChange={e => setAssessmentChoices(c => ({...c, [type]: e.target.value}))}>
+          <option value="">No result connected</option>
+          {journeySources.filter(r => r.assessmentType === type && !(data.journeyReports ?? []).some(available => available.id === r.id)).map(r => <option key={r.id} value={r.id}>{r.label} (original saved reference; report unavailable)</option>)}
+          {(data.journeyReports ?? []).filter(r => r.assessmentType === type).map(r => <option key={r.id} value={r.id}>{r.label}</option>)}
+        </select>
+      </label>)}
+      <button type="button" className="button secondary" disabled={creating} onClick={() => void newRound(journeyAssessmentTypes.map(type => assessmentChoices[type] ?? journeySources.find(r => r.assessmentType === type)?.id ?? '').filter(Boolean))}>Use selected assessment results in a new round</button>
+    </details> : null}
+  </section> : null;
   const controls = (
     <section className="reflection-round-bar" aria-label="Reflection rounds">
       {assessmentEntry ? null : compactControls ? (
@@ -556,9 +584,9 @@ export function ReflectionSession({
           <p className="section-label">Your private workbook</p>
           <h2>Reflections for this walk.</h2>
           <p>
-            Save what you discover. Your current walkthrough stays editable. A
-            newly completed assessment opens a fresh walkthrough; earlier
-            reflections stay intact and read-only.
+            Save what you discover. Your current walkthrough stays editable. Earlier
+            reflections stay intact and read-only. A new reflection round starts
+            fresh writing; you do not need to retake an assessment.
           </p>
         </div>
       )}
@@ -597,7 +625,7 @@ export function ReflectionSession({
           )}
           {data.canStart ? (
             <>
-              {assessmentEntry ? reportSelector : <label>
+              {assessmentEntry ? reportSelector : journey ? null : <label>
                 Assessment for a fresh walkthrough
                 <select
                   value={report}
@@ -614,7 +642,7 @@ export function ReflectionSession({
               <button
                 className={assessmentEntry ? "button secondary" : "button primary"}
                 type="button"
-                onClick={newRound}
+                onClick={() => void newRound()}
                 disabled={
                   creating || Object.values(statuses).includes("Saving…")
                 }
@@ -622,7 +650,7 @@ export function ReflectionSession({
                 {creating
                   ? "Beginning…"
                   : data.rounds.length
-                    ? assessmentEntry ? "Start a fresh set of reflections" : "Begin a new reflection round"
+                    ? assessmentEntry ? "Start a fresh set of reflections" : "Start a new reflection round"
                     : "Start my reflections"}
               </button>
             </>
@@ -655,7 +683,15 @@ export function ReflectionSession({
   );
   return (
     <Context.Provider value={session}>
-      {automatic || contextualEntry ? null : assessmentEntry ? (
+      {journey && !automatic ? <>
+        {journeySourcePanel}
+        {!loading && data.signedIn && !data.rounds.length ? <p>No saved Journey responses yet. <ReviewAwareLink href="/journey">Open the Journey to begin your private reflections</ReviewAwareLink>. Available assessment results connect automatically; no retake is required.</p> : null}
+        <details className="reflection-workbook-settings"><summary>Earlier rounds and start a new reflection round</summary>
+          <p>A new reflection round gives you empty responses for another walk through the Journey, using the current round’s assessment sources (not a selected historical round). Earlier responses, edits and dated rounds remain available here. No assessment retake is required.</p>
+          <p>Sources for a fresh round: {currentJourneySources.map(r => r.label).join("; ") || "No recorded assessment sources"}.</p>
+          {controls}
+        </details>
+      </> : automatic || contextualEntry ? null : assessmentEntry ? (
         data.rounds.length ? <details className="reflection-workbook-settings"><summary>Previous reflections and fresh sets</summary>{controls}</details> : setup
       ) : controls}
       {automatic ? <p className="reflection-lesson-save-state" role={saveError ? "alert" : "status"}>

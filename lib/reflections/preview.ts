@@ -1,3 +1,4 @@
+import { journeySlug, journeyAssessmentTypes, encodeJourneySources, latestJourneySources, sourcesForJourneyRound, type JourneyAssessmentSource } from "./journey-assessments";
 import { missingPathfinderEntries, retiredPathfinderCanonical } from '@/lib/journey/pathfinder';
 import 'server-only';
 import { randomUUID } from 'node:crypto';
@@ -49,7 +50,8 @@ async function reportContext(p: ReviewSearchParams, slug: string) {
     const report = p.review === 'heather' ? await getHeatherReviewReport(p) : await getNewReviewReport(p);
     const trail = trailDefinitions.find(t => t.courseSlug === slug);
     const reports = (report?.all ?? []).filter(s => s.assessment_type === trail?.assessmentType && isTrailAssessmentComplete(s.assessment_type, [s])).map(s => ({ id: s.id, completedAt: s.source_submitted_at ?? s.created_at, label: `${getReflectionExperience(slug)!.title} — ${s.source_submitted_at ?? s.created_at}` }));
-    return { reports, canStart: isOwnerCoursePreview(p) || !trail || reports.length > 0 };
+    const journeyReports: JourneyAssessmentSource[] = slug === journeySlug ? journeyAssessmentTypes.flatMap(assessmentType => (report?.all ?? []).filter(s => s.assessment_type === assessmentType && isTrailAssessmentComplete(assessmentType, [s])).sort((a,b) => Date.parse(b.source_submitted_at ?? b.created_at) - Date.parse(a.source_submitted_at ?? a.created_at)).map(s => ({ id: s.id, assessmentType, completedAt: s.source_submitted_at ?? s.created_at, label: `${assessmentType === 'designid' ? 'DesignID' : 'Spiritual Gifts'} — ${s.source_submitted_at ?? s.created_at}` }))) : [];
+    return { journeyReports, reports, canStart: isOwnerCoursePreview(p) || !trail || reports.length > 0 };
 }
 export async function previewReflectionData(p: ReviewSearchParams, slug: string): Promise<ReflectionData> {
     const saved = await load(p, slug), ctx = await reportContext(p, slug);
@@ -92,7 +94,14 @@ export async function previewReflectionRequest(request: Request, p: ReviewSearch
             if (b.action === 'sync-round' && !report)
                 return reply({ error: 'No completed report found.' }, 400);
             const existing = b.action === 'ensure-round' ? saved.rounds[0] : b.action === 'sync-round' ? saved.rounds.find(r => r.assessment_snapshot_id === report?.id) : null;
-            const round: ReflectionRound = existing ?? { id: randomUUID(), course_slug: b.courseSlug, last_lesson_slug: null, questions: experience.questions, assessment_snapshot_id: report?.id ?? null, assessment_label: report?.label ?? null, source: 'owner-preview', started_at: now, updated_at: now };
+            let journeySources = saved.rounds[0] ? sourcesForJourneyRound(saved.rounds[0], ctx.journeyReports) : latestJourneySources(ctx.journeyReports);
+            if (b.courseSlug === journeySlug && b.journeyAssessmentIds !== undefined) {
+                if (!Array.isArray(b.journeyAssessmentIds) || b.journeyAssessmentIds.length > 2 || b.journeyAssessmentIds.some((id: unknown) => typeof id !== 'string' || ![...ctx.journeyReports, ...journeySources].some(r => r.id === id))) return reply({ error: 'Choose reports from this preview.' }, 400);
+                journeySources = [...new Map([...journeySources, ...ctx.journeyReports].map(r => [r.id, r])).values()].filter(r => b.journeyAssessmentIds.includes(r.id));
+                if (new Set(journeySources.map(r => r.assessmentType)).size !== journeySources.length) return reply({ error: 'Choose one result for each assessment.' }, 400);
+            }
+            const round: ReflectionRound = existing ?? { id: randomUUID(), course_slug: b.courseSlug, last_lesson_slug: null, questions: experience.questions, assessment_snapshot_id: report?.id ?? null, assessment_label: report?.label ?? null, source: b.courseSlug === journeySlug ? encodeJourneySources(journeySources) : 'owner-preview', started_at: now, updated_at: now };
+            if (!existing && b.courseSlug === journeySlug) round.assessment_label = journeySources.map(r => r.label).join('; ') || null;
             if (!existing)
                 saved.rounds.unshift(round);
             result = { round };

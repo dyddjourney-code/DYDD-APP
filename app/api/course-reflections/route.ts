@@ -1,3 +1,4 @@
+import { journeySlug, journeyAssessmentTypes, encodeJourneySources, latestJourneySources, sourcesForJourneyRound } from "@/lib/reflections/journey-assessments";
 import { missingPathfinderEntries, retiredPathfinderCanonical } from '@/lib/journey/pathfinder';
 import type { ReflectionEntry } from '@/lib/reflections/types';
 import { createHash } from "node:crypto";
@@ -32,7 +33,7 @@ async function context(
   const experience = getReflectionExperience(courseSlug);
   if (!experience) return null;
   const trail = trailDefinitions.find((t) => t.courseSlug === courseSlug);
-  const snapshots = trail && trail.assessmentType !== "fruit_360"
+  const snapshots = (courseSlug === journeySlug || trail && trail.assessmentType !== "fruit_360")
     ? await getAssessmentSnapshotsForUser(user.id, user.email ?? "")
     : { all: [], latest: [] };
   const eligibility = trail
@@ -41,7 +42,13 @@ async function context(
   let ready = eligibility.ready;
   if (trail?.id === "designpd")
     ready = ready && hasDesignPdCourseAccess(user.email, snapshots.all);
+  const journeyReports = courseSlug === journeySlug ? (await Promise.all(journeyAssessmentTypes.map(async assessmentType => {
+    const eligible = await courseAssessmentEligibility(assessmentType, user, snapshots.all);
+    const title = assessmentType === "designid" ? "DesignID" : "Spiritual Gifts";
+    return eligible.reports.map(report => ({ id: report.id, assessmentType, completedAt: reportCompletedAt(report), label: `${title} — ${displayDateTime(reportCompletedAt(report))}` }));
+  }))).flat() : [];
   return {
+    journeyReports,
     experience,
     canStart: ready,
     reports: eligibility.reports
@@ -147,6 +154,7 @@ export async function GET(request: Request) {
     rounds: rounds ?? [],
     entries,
     reports: ctx.reports,
+    journeyReports: ctx.journeyReports,
     canStart: ctx.canStart,
     signedIn: true,
     nextAssessmentReportId: rounds?.[0]
@@ -190,11 +198,15 @@ export async function POST(request: Request) {
     const id = `${hash.slice(0,8)}-${hash.slice(8,12)}-4${hash.slice(13,16)}-a${hash.slice(17,20)}-${hash.slice(20,32)}`;
     const created = await s.from("reflection_rounds").upsert({
       id, user_id: user.id, course_slug: b.courseSlug, questions: ctx!.experience.questions,
+      source: encodeJourneySources(latestJourneySources(ctx!.journeyReports)),
+      assessment_label: latestJourneySources(ctx!.journeyReports).map(r => r.label).join("; ") || null,
     }, { onConflict: "id", ignoreDuplicates: true });
     if (created.error) return json({ error: "Could not open your workbook. Please try again." }, 500);
     const opened = await s.from("reflection_rounds").select("*").eq("id", id).eq("user_id", user.id).single();
     return opened.error ? json({ error: "Could not open your workbook. Please try again." }, 500) : json({ round: opened.data });
   }
+  if (b.action === "sync-round" && b.courseSlug === journeySlug)
+    return json({ error: "Choose the named assessment under Assessment sources to use it in a separate round." }, 400);
   if (b.action === "sync-round") {
     const ctx = await context(b.courseSlug, user);
     if (!ctx?.canStart)
@@ -237,6 +249,18 @@ export async function POST(request: Request) {
       : ctx.reports[0];
     if (explicitReport && !report)
       return json({ error: "Choose one of your own reports." }, 400);
+    let journeySources = latestJourneySources(ctx.journeyReports);
+    if (b.courseSlug === journeySlug) {
+      const existing = await s.from("reflection_rounds").select("*").eq("user_id", user.id).eq("course_slug", journeySlug).order("started_at", { ascending: false }).order("id", { ascending: false }).limit(1).maybeSingle();
+      if (existing.error) return json({ error: "Could not open your current round. Try again." }, 503);
+      // Fresh writing keeps the current sources; switching assessments is a separate explicit choice.
+      if (existing.data) journeySources = sourcesForJourneyRound(existing.data, ctx.journeyReports);
+      if (b.journeyAssessmentIds !== undefined) {
+        if (!Array.isArray(b.journeyAssessmentIds) || b.journeyAssessmentIds.length > 2 || b.journeyAssessmentIds.some((id: unknown) => typeof id !== "string" || ![...ctx.journeyReports, ...journeySources].some(r => r.id === id))) return json({ error: "Choose your own completed DesignID and Spiritual Gifts assessments." }, 400);
+        journeySources = [...new Map([...journeySources, ...ctx.journeyReports].map(r => [r.id, r])).values()].filter(r => b.journeyAssessmentIds.includes(r.id));
+        if (new Set(journeySources.map(r => r.assessmentType)).size !== journeySources.length) return json({ error: "Choose one result for each assessment." }, 400);
+      }
+    }
     const { data: round, error } = await s
       .from("reflection_rounds")
       .insert({
@@ -244,7 +268,8 @@ export async function POST(request: Request) {
         course_slug: b.courseSlug,
         questions: ctx.experience.questions,
         assessment_snapshot_id: report?.id ?? null,
-        assessment_label: report?.label ?? null,
+        assessment_label: b.courseSlug === journeySlug ? journeySources.map(r => r.label).join("; ") || null : report?.label ?? null,
+        ...(b.courseSlug === journeySlug ? { source: encodeJourneySources(journeySources) } : {}),
       })
       .select(
         "id,course_slug,last_lesson_slug,questions,assessment_snapshot_id,assessment_label,source,started_at,updated_at",

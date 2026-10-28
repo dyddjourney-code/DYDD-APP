@@ -22,7 +22,7 @@ export type ReflectionEntry = {
   revision: number;
   saved_at: string;
 };
-export type ReflectionReport = { id: string; label: string };
+export type ReflectionReport = { id: string; label: string; assessmentType?: string; completedAt?: string };
 export type ReflectionData = {
   rounds: ReflectionRound[];
   entries: ReflectionEntry[];
@@ -31,4 +31,5 @@ export type ReflectionData = {
   signedIn: boolean;
   preview?: boolean;
   nextAssessmentReportId?: string | null;
+  journeyReports?: import("./journey-assessments").JourneyAssessmentSource[];
 };

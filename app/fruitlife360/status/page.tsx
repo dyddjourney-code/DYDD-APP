@@ -5,6 +5,7 @@ import {
   sendFruitLifeReminder,
 } from "../actions";
 import { FruitLifeSessionAutoRefresh } from "../session-auto-refresh";
+import { fruitLifeCompletionState } from "../completion-state";
 import { fruitLifeVisibleInvites } from "@/lib/fruitlife360/dashboard";
 
 type FruitLifeStatusPageProps = {
@@ -94,18 +95,14 @@ export default async function FruitLifeStatusPage({
   }
 
   const { artifacts, canManage, invites, responses, session, token } = status;
+  const completion = fruitLifeCompletionState(status);
   const selfResponse = responses.find((response: any) => response.response_type === "self");
   const activeInvites = fruitLifeVisibleInvites({ invites } as any);
   const completedObservers = activeInvites.filter((invite) => invite.invite_status === "completed").length;
   const requiredCount = 1 + Math.max(0, Number(session.observer_goal ?? 0));
   const completedCount = (session.self_completed_at ? 1 : 0) + completedObservers;
   const progress = Math.min(100, Math.round((completedCount / Math.max(1, requiredCount)) * 100));
-  const reportArtifact = artifacts.find(
-    (artifact: any) => artifact.artifact_type === "pdf" && artifact.artifact_status === "ready",
-  );
-  const shouldRefresh = !["report_ready", "report_sent", "completed", "sent"].includes(
-    session.session_status,
-  );
+  const shouldRefresh = !completion.ready;
 
   return (
     <main className="fruitlife-shell fruitlife-public">
@@ -119,12 +116,25 @@ export default async function FruitLifeStatusPage({
         {params?.message ? <p className="form-message">{params.message}</p> : null}
       </section>
 
+      <section className="fruitlife-panel" id="report-results" aria-labelledby="fruitlife-results-title">
+        <p className="section-label">Your results</p>
+        <h2 id="fruitlife-results-title">{completion.heading}</h2>
+        <p>{completion.description}</p>
+        <div className="fieldkit-artifact-actions">
+          {completion.ready ? (
+            <Link className="button primary" href={reportHref(session.id)} target="_blank" rel="noopener noreferrer" prefetch={false}>Open report</Link>
+          ) : null}
+          <Link className={`button ${completion.ready ? "secondary" : "primary"}`} href="/courses/fruitlife-360-formation">Take the course</Link>
+          <Link className="button secondary" href="/field-kit#collection-fruitlife-360">FruitLife360 in Field Kit</Link>
+        </div>
+      </section>
+
       <section className="fruitlife-status-console fruitlife-status-page-card">
         <div className="fruitlife-session-summary">
           <p className="section-label">Session progress</p>
           <strong>{completedCount} of {requiredCount}</strong>
           <small>
-            {titleize(session.session_status)} · report {titleize(session.report_status)}
+            {!completion.submitted ? "waiting for self reflection" : completion.waitingForObservers ? "waiting for observers" : completion.ready ? "report ready" : "report not ready yet"}
           </small>
         </div>
         <div className="fruitlife-progress-meter" aria-label={`${progress}% complete`}>
@@ -140,12 +150,12 @@ export default async function FruitLifeStatusPage({
             <small>Observers</small>
           </p>
           <p>
-            <span>{reportArtifact?.external_url ? "Ready" : titleize(session.report_status)}</span>
+            <span>{completion.ready ? "Ready" : completion.waitingForObservers ? "Waiting for observers" : "Not ready yet"}</span>
             <small>Report</small>
           </p>
         </div>
         <div className="fruitlife-latest-actions">
-          {reportArtifact?.external_url ? (
+          {completion.ready ? (
             <Link href={reportHref(session.id)} target="_blank" rel="noopener noreferrer">Open report</Link>
           ) : null}
           {canManage && ((session.metadata as any)?.selfLink && !session.self_completed_at || activeInvites.some((invite) => invite.invite_status !== "completed")) ? (
@@ -232,7 +242,7 @@ export default async function FruitLifeStatusPage({
                   </small>
                 </div>
                 <span>{titleize(artifact.artifact_status)}</span>
-                {artifact.external_url ? (
+                {(artifact.artifact_type === "pdf" ? completion.ready && artifact.artifact_status === "ready" : artifact.external_url) ? (
                   <Link
                     href={
                       artifact.artifact_type === "pdf" ? reportHref(session.id) : artifact.external_url

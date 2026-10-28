@@ -505,6 +505,8 @@ export async function processFruitLifeReportJobs({
           .from("fruitlife_360_sessions")
           .update({
             ...(snapshotId ? { report_snapshot_id: snapshotId } : {}),
+            ...(isReady && ["SELF_ONLY", "360", "FULL_360"].includes(stringPayload(job.payload, "report_mode"))
+              ? { report_mode: stringPayload(job.payload, "report_mode") } : {}),
             report_status:
               isReady && emailSent ? "sent" : isReady ? "ready" : "queued",
             report_url: url || null,

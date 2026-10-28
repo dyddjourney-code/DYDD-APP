@@ -100,6 +100,12 @@ export function DesignIdCourseNavigator({
         );
     } catch {}
   }, [flatLessons]);
+  const [savingReflection, setSavingReflection] = useState(false);
+  const saveReflection = async () => {
+    if (!savedPosition.flush || savingReflection) return;
+    setSavingReflection(true);
+    try { await savedPosition.flush(); } finally { setSavingReflection(false); }
+  };
   const [openModules, setOpenModules] = useState<string[]>([]);
   const activeLessonRef = useRef<HTMLElement | null>(null);
   const activeIndex = Math.max(
@@ -286,12 +292,14 @@ export function DesignIdCourseNavigator({
             </details> : null}
             {reflectionQuestions.some(q => q.lessonSlug === active.lesson.slug) ? <section className="designid-lesson-reflections" aria-label="Lesson reflections">
               <p className="section-label">Reflect and apply</p>
+              <p>Use Save reflection to save without leaving. Complete &amp; Next also saves your reflections before opening the next lesson. If saving fails, you stay here and can retry. Save before closing or reloading.</p>
 
             {reflectionQuestions
               .filter((q) => q.lessonSlug === active.lesson.slug)
               .map((q, index) => (
                 <ReflectionAnswer key={q.id} questionId={q.id} entryPoint={index === 0} />
               ))}
+              {savedPosition.roundId && savedPosition.flush ? <button className="button secondary designid-save-reflection" type="button" disabled={savingReflection} onClick={() => void saveReflection()}>{savingReflection ? "Saving…" : "Save reflection"}</button> : null}
             </section> : null}
           </section>
         </div>

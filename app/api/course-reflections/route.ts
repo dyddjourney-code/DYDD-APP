@@ -16,15 +16,9 @@ import {
   getAssessmentSnapshotsForUser,
   displayDateTime,
 } from "@/lib/assessments/student-context";
-import {
-  trailDefinitions,
-  isTrailAssessmentComplete,
-} from "@/lib/trails/catalog";
+import { trailDefinitions } from "@/lib/trails/catalog";
 import { hasDesignPdCourseAccess } from "@/lib/designpd/access";
-import {
-  getFruitLifeDashboardSessions,
-  fruitLifeReportArtifact,
-} from "@/lib/fruitlife360/dashboard";
+import { courseAssessmentEligibility, reportCompletedAt } from "@/lib/trails/course-eligibility";
 export const dynamic = "force-dynamic";
 const json = (body: unknown, status = 200) =>
   NextResponse.json(body, {
@@ -38,33 +32,23 @@ async function context(
   const experience = getReflectionExperience(courseSlug);
   if (!experience) return null;
   const trail = trailDefinitions.find((t) => t.courseSlug === courseSlug);
-  const snapshots = trail
+  const snapshots = trail && trail.assessmentType !== "fruit_360"
     ? await getAssessmentSnapshotsForUser(user.id, user.email ?? "")
     : { all: [], latest: [] };
-  let ready =
-    !trail || isTrailAssessmentComplete(trail.assessmentType, snapshots.all);
-  if (!ready && trail?.id === "fruitlife-360")
-    ready = (
-      await getFruitLifeDashboardSessions({
-        email: user.email ?? "",
-        enabled: Boolean(user.email),
-      })
-    ).some((s) => Boolean(fruitLifeReportArtifact(s)));
+  const eligibility = trail
+    ? await courseAssessmentEligibility(trail.assessmentType, user, snapshots.all)
+    : { ready: true, reports: [] };
+  let ready = eligibility.ready;
   if (trail?.id === "designpd")
     ready = ready && hasDesignPdCourseAccess(user.email, snapshots.all);
   return {
     experience,
     canStart: ready,
-    reports: snapshots.all
-      .filter(
-        (s) =>
-          s.assessment_type === trail?.assessmentType &&
-          isTrailAssessmentComplete(s.assessment_type, [s]),
-      )
+    reports: eligibility.reports
       .map((s) => ({
         id: s.id,
-        completedAt: s.source_submitted_at ?? s.created_at,
-        label: `${experience.title} — ${displayDateTime(s.source_submitted_at ?? s.created_at)}`,
+        completedAt: reportCompletedAt(s),
+        label: `${experience.title} — ${displayDateTime(reportCompletedAt(s))}`,
       })),
   };
 }
@@ -244,10 +228,11 @@ export async function POST(request: Request) {
         },
         403,
       );
-    const report = b.assessmentSnapshotId
+    const explicitReport = b.assessmentSnapshotId !== undefined && b.assessmentSnapshotId !== null;
+    const report = explicitReport
       ? ctx.reports.find((r) => r.id === b.assessmentSnapshotId)
-      : null;
-    if (b.assessmentSnapshotId && !report)
+      : ctx.reports[0];
+    if (explicitReport && !report)
       return json({ error: "Choose one of your own reports." }, 400);
     const { data: round, error } = await s
       .from("reflection_rounds")

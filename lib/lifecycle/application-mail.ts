@@ -5,16 +5,18 @@ import {createSupabaseAdminClient} from '@/lib/supabase/admin';
 import {isDeepStrictEqual} from 'node:util';
 import {enqueue,must} from './store';
 import {lifecycleEligibility} from './worker';
+import {fruitLifeSelfEmailStop,suppressFruitLifeSelfEmail} from './fruitlife-email-policy';
 type ApplicationEmail=SendEmailInput&{templateId?:string;deliveryContext?:Record<string,unknown>};
 export async function sendApplicationEmail(input:ApplicationEmail):Promise<SendEmailResult>{
+ if(suppressFruitLifeSelfEmail(input.templateId,input.deliveryContext))return {sent:false,skipped:true,message:fruitLifeSelfEmailStop};
  const key=input.idempotencyKey||`dydd-application-${randomUUID()}`,db=createSupabaseAdminClient(),now=Date.now(),eventKey='application:'+key;
  const {templateId,deliveryContext,...payload}=input;
  const senderInput={...payload,idempotencyKey:key};
  try{
   await enqueue({event_key:eventKey,template_id:templateId||'requested-service-email',category:'service',email:input.to,subject:input.subject,body:input.text,scheduled_at:new Date(now).toISOString(),expires_at:new Date(now+23*3600000).toISOString(),context:{kind:'application',deliveryContext:deliveryContext||{},senderInput,deliveryKey:key}});
-  if(['B02','B04-self'].includes(templateId||'')){
+  if(templateId==='B02'){
    const reminderInput={...senderInput,subject:'Reminder: '+senderInput.subject,text:'A gentle reminder:\n\n'+senderInput.text,html:'<p>A gentle reminder:</p>'+senderInput.html,idempotencyKey:key+'-reminder-1'};
-   await enqueue({event_key:eventKey+':reminder-1',template_id:templateId==='B02'?'B03':'B04-self-reminder',category:'service',email:input.to,subject:reminderInput.subject,body:reminderInput.text,scheduled_at:new Date(now+5*86400000).toISOString(),expires_at:new Date(now+8*86400000).toISOString(),context:{kind:'application',deliveryContext:deliveryContext||{},senderInput:reminderInput,deliveryKey:reminderInput.idempotencyKey}});
+   await enqueue({event_key:eventKey+':reminder-1',template_id:'B03',category:'service',email:input.to,subject:reminderInput.subject,body:reminderInput.text,scheduled_at:new Date(now+5*86400000).toISOString(),expires_at:new Date(now+8*86400000).toISOString(),context:{kind:'application',deliveryContext:deliveryContext||{},senderInput:reminderInput,deliveryKey:reminderInput.idempotencyKey}});
   }
   const row=must(await db.from('dydd_lifecycle_jobs').select('*').eq('event_key',eventKey).single()) as any;
   // Content snapshots never drift on a retry or a repeated business event.

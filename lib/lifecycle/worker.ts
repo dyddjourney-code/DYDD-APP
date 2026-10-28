@@ -8,6 +8,7 @@ import {passportCurriculum,courseCompleted,journeySlug} from '@/lib/passport/cur
 import {completedFruitSessionsForEmail} from '@/lib/passport/state';
 import {completedLegacyFruitSnapshot,savedAssessmentComplete} from '@/lib/passport/evidence';
 import {appBase,enqueue,enqueueCampaignMembers,must,tokenHash} from './store';
+import {fruitLifeSelfEmailStop,suppressFruitLifeSelfEmail} from './fruitlife-email-policy';
 import {renderLifecycle,lifecycleHtml,localParts,localInstant,type LifecycleTemplate} from './templates';
 const iso=(n:number)=>new Date(n).toISOString(),day=86400000;
 async function userById(id:string){const r=await createSupabaseAdminClient().auth.admin.getUserById(id);if(r.error)throw Error('Verified account eligibility could not be loaded.');return r.data.user;}
@@ -35,9 +36,8 @@ export async function processLifecycleEvents(limit=50){
    const circle=campaign?must(await db.from('journey_circle_plans').select('user_id').eq('id',campaign.circle_id).maybeSingle()) as any:null;
    if(circle?.user_id){const leader=await userById(circle.user_id);if(leader?.email)must(await db.rpc('dydd_queue_circle_leader_messages',{campaign_key:e.source_id,creator_user:leader.id,creator_email:leader.email}));}
   } else if(e.kind==='fruitlife_self_completed'&&e.email){
-   const base=appBase(),subject='FruitLife360: your next step',text=`Your self reflection is saved. Some observer reflections are still pending. Your report follows the cycle’s existing completion rules.\n\nReview your private tracker to see whether any action is useful: ${base}/hq\n\nYou can review invitations or send a thoughtful reminder without revealing confidential responses.`;
-   const key='fruitlife-status-'+e.source_id;
-   await enqueue({event_key:key,template_id:'B04-status',category:'service',email:e.email,subject,body:text,scheduled_at:iso(t+5*day),expires_at:iso(t+8*day),context:{kind:'application',deliveryContext:{type:'fruitlife_status',sessionId:e.source_id},senderInput:{to:e.email,subject,text,html:lifecycleHtml(subject,text),idempotencyKey:key},deliveryKey:key}});
+   // Consume the event without queuing participant reminder/status mail.
+   // Observer invitation reminders and report-ready events have separate paths.
   } else if(user?.id && user?.email){
    if(e.kind==='account_verified'){
     await queueTemplate('A03',`welcome:${user.id}`,user,t,t+2*day);
@@ -73,6 +73,8 @@ export async function processLifecycleEvents(limit=50){
 }
 // Return a permanent stop, a temporary deferral, or permission. Storage errors throw (retry), never send.
 export async function lifecycleEligibility(job:any,now=Date.now()):Promise<{stop?:string;deferUntil?:string;reason?:string}>{
+ // Also stop old queued/retry/submitting self messages before any provider call.
+ if(suppressFruitLifeSelfEmail(job.template_id,job.context?.deliveryContext))return {stop:fruitLifeSelfEmailStop};
  const db=createSupabaseAdminClient(),settings=must(await db.from('dydd_lifecycle_settings').select('*').eq('id',true).single()) as any;
  if(settings.paused)return {deferUntil:iso(now+3600000),reason:'All lifecycle communication is paused.'};
  if(Date.parse(job.expires_at)<=now)return {stop:'Message expired; no stale reminder or backlog send.'};
@@ -88,13 +90,10 @@ export async function lifecycleEligibility(job:any,now=Date.now()):Promise<{stop
   const context=job.context.deliveryContext||{},type=context.type;
   if(type==='waypoint_confirmation'){const confirmation=must(await db.from('dydd_waypoint_confirmations').select('email,expires_at,used_at').eq('id',context.confirmationId).maybeSingle()) as any;if(!confirmation||confirmation.email!==job.email||confirmation.used_at||confirmation.expires_at<=iso(now))return {stop:'Waypoint confirmation used, replaced or expired.'};}
   if(type==='account_service'){const account=await userById(context.userId);if(!account?.email_confirmed_at||account.email?.toLowerCase()!==job.email)return {stop:'Verified account or requested export recipient changed.'};}
-  if(type==='fruitlife_self'||type==='fruitlife_observer'||type==='fruitlife_report'||type==='fruitlife_status'){
+  if(type==='fruitlife_observer'||type==='fruitlife_report'){
    const session=must(await db.from('fruitlife_360_sessions').select('*').eq('id',context.sessionId).maybeSingle()) as any;
    if(!session||['archived','cancelled'].includes(session.session_status))return {stop:'FruitLife session is no longer active.'};
-   if(type==='fruitlife_status'){if(session.participant_email?.toLowerCase()!==job.email||!session.self_completed_at||session.observer_completed_count>=session.observer_goal||['ready','sent'].includes(session.report_status))return {stop:'No pending participant action remains.'};}
-   else if(type==='fruitlife_self'){
-    if(session.participant_email?.toLowerCase()!==job.email||session.self_completed_at)return {stop:'Self reflection complete or recipient changed.'};
-   } else if(type==='fruitlife_observer'){
+   if(type==='fruitlife_observer'){
     if(['ready','sent'].includes(session.report_status))return {stop:'FruitLife cycle is complete.'};
     const invite=must(await db.from('fruitlife_360_observer_invites').select('*').eq('session_id',context.sessionId).eq('observer_email',job.email).maybeSingle()) as any;
     if(!invite||!['invited','draft','opened'].includes(invite.invite_status)||invite.completed_at)return {stop:'Observer already completed, declined or was removed.'};

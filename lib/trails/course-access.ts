@@ -1,10 +1,8 @@
 import { isOwnerCoursePreview } from "./course-preview";
 import { redirect } from "next/navigation";
 import type { AssessmentSnapshotSummary } from "@/lib/assessments/student-context";
-import {
-  getFruitLifeDashboardSessions,
-  fruitLifeReportArtifact,
-} from "@/lib/fruitlife360/dashboard";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { courseAssessmentEligibility } from "./course-eligibility";
 import { hasDesignPdCourseAccess } from "@/lib/designpd/access";
 import { trailDefinitions, isTrailAssessmentComplete } from "./catalog";
 import { withReviewQuery, type ReviewSearchParams } from "@/lib/review/heather";
@@ -36,15 +34,13 @@ export async function requireTrailCourseAssessment({
   if (!signedIn && !preview)
     redirect(`/login?next=${encodeURIComponent(trailHref)}`);
   let completed = isTrailAssessmentComplete(trail.assessmentType, snapshots);
-  if (!completed && trail.id === "fruitlife-360" && email) {
-    const sessions = await getFruitLifeDashboardSessions({
-      email,
-      enabled: true,
-    });
-    completed = sessions.some((session) =>
-      Boolean(fruitLifeReportArtifact(session)),
-    );
+  if (trail.id === "fruitlife-360" && signedIn) {
+    // Re-authenticate here rather than accepting a caller's email or preview snapshots.
+    const db = await createSupabaseServerClient();
+    const { data: { user } } = await db.auth.getUser();
+    completed = Boolean(user && (await courseAssessmentEligibility(trail.assessmentType, user, snapshots)).ready);
   }
+
   if (
     !completed ||
     (trail.id === "designpd" && !hasDesignPdCourseAccess(email, snapshots))

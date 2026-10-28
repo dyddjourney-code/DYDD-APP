@@ -6,8 +6,8 @@ import { hasDesignPdCourseAccess } from '@/lib/designpd/access';
 import { isDyddAdminEmail } from '@/lib/admin-access';
 import { trailDefinitions } from '@/lib/trails/catalog';
 import { passportCurriculum, journeySlug, nicheRequiredPromptIds, lessonAvailable, courseCompleted } from '@/lib/passport/curriculum';
-import { readPassportState, syncPassportAwards, awardBadges, completedFruitSessionsForEmail } from '@/lib/passport/state';
-import { savedAssessmentComplete, completedLegacyFruitSnapshot } from '@/lib/passport/evidence';
+import { readPassportState, syncPassportAwards, awardBadges } from '@/lib/passport/state';
+import { courseAssessmentEligibility } from '@/lib/trails/course-eligibility';
 import { previewParams } from '@/lib/reflections/preview';
 import { isSandbox } from '@/lib/environment';
 import { previewProgressRequest } from '@/lib/passport/preview';
@@ -57,9 +57,8 @@ export async function POST(request:Request){
    if(!view.legacyComplete && !lessonAvailable(b.courseSlug,b.lessonSlug,view.completed))return reply({error:'Complete the earlier lessons before moving forward.'},409);
    const trail=trailDefinitions.find(t=>t.courseSlug===b.courseSlug);
    if(trail){
-    const snapshots=await getAssessmentSnapshotsForUser(user.id,user.email??'');
-    let ready=snapshots.all.some(s=>s.assessment_type===trail.assessmentType && (savedAssessmentComplete(s,snapshots.all) || completedLegacyFruitSnapshot(s)));
-    if(!ready && trail.id==='fruitlife-360' && user.email)ready=(await completedFruitSessionsForEmail(user.email,user.id)).length>0;
+    const snapshots=trail.assessmentType==='fruit_360' ? {all:[]} : await getAssessmentSnapshotsForUser(user.id,user.email??'');
+    const {ready}=await courseAssessmentEligibility(trail.assessmentType,user,snapshots.all);
     // Keep the sandbox owner's already-approved universal teaching preview;
     // preview/access is never assessment evidence and cannot award a result.
     if(!(isSandbox() && isDyddAdminEmail(user.email)) && (!ready || trail.id==='designpd' && !hasDesignPdCourseAccess(user.email,snapshots.all)))return reply({error:'Complete this trail’s report before saving course progress.'},403);

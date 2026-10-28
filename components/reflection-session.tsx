@@ -484,12 +484,12 @@ export function ReflectionSession({
   };
   const reportSelector = (
     <details className="reflection-report-link">
-      <summary>Link these reflections to a report (optional)</summary>
-      <p>This labels this set of reflections; your lesson content stays the same.</p>
+      <summary>Choose an earlier assessment (optional)</summary>
+      <p>Your latest completed assessment is selected automatically. Choose an earlier report only when you want a separate walkthrough for it. Existing reflections keep their original assessment.</p>
       <label>
         Report
         <select value={report} onChange={(e) => setReport(e.target.value)} disabled={creating}>
-          <option value="">Course reflections only</option>
+          <option value="">Latest completed assessment (automatic)</option>
           {data.reports.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
         </select>
       </label>
@@ -498,12 +498,12 @@ export function ReflectionSession({
   const setup = (
     <div className="reflection-entry-setup">
       <h3>Your private reflections</h3>
-      <p>Save what you notice as you work through this course.</p>
+      <p>Choose Start my reflections once to open your private workbook. {data.reports.length ? "Your latest completed assessment connects automatically; no separate connection step is needed." : "No separate report-selection step is needed."} Continue to the next lesson to save your changes, and find these same answers in Field Kit.</p>
       {loading ? <p role="status">Loading your reflections…</p> : !data.signedIn ? (
         <p><ReviewAwareLink href={`/login?next=${encodeURIComponent(`/courses/${courseSlug}`)}`}>Sign in to save your reflections</ReviewAwareLink></p>
       ) : data.canStart ? <>
         <button className="button primary" type="button" onClick={() => void newRound()} disabled={creating}>
-          {creating ? "Beginning…" : "Begin my reflections"}
+          {creating ? "Beginning…" : "Start my reflections"}
         </button>
         {reportSelector}
       </> : <p>Begin this trail at <ReviewAwareLink href="/trailheads">Trailheads</ReviewAwareLink>; its completed report opens your reflections.</p>}
@@ -598,12 +598,12 @@ export function ReflectionSession({
           {data.canStart ? (
             <>
               {assessmentEntry ? reportSelector : <label>
-                Connect a report (optional)
+                Assessment for a fresh walkthrough
                 <select
                   value={report}
                   onChange={(e) => setReport(e.target.value)}
                 >
-                  <option value="">Course reflections only</option>
+                  <option value="">Latest completed assessment (automatic)</option>
                   {data.reports.map((r) => (
                     <option key={r.id} value={r.id}>
                       {r.label}
@@ -623,7 +623,7 @@ export function ReflectionSession({
                   ? "Beginning…"
                   : data.rounds.length
                     ? assessmentEntry ? "Start a fresh set of reflections" : "Begin a new reflection round"
-                    : "Begin my reflections"}
+                    : "Start my reflections"}
               </button>
             </>
           ) : (

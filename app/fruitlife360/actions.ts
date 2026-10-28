@@ -327,30 +327,6 @@ async function processQueuedFruitLifeReport() {
   });
 }
 
-function fruitLifeInviteEmail({
-  participantName,
-  selfLink,
-}: {
-  participantName: string;
-  selfLink: string;
-}) {
-  const safeParticipantName = escapeHtml(participantName);
-
-  const text = `Hi ${participantName},\n\nYour FruitLife360 reflection is ready to begin.\n\nComplete your self reflection:\n${selfLink}\n\nFruitLife360 is designed as a formation mirror, not a grade or label.\n\nSincerely,\nDiscover Your Divine Design Team`;
-
-  return {
-    html: `
-      <p>Hi ${safeParticipantName},</p>
-      <p>Your FruitLife360 reflection is ready to begin.</p>
-      <p><a href="${selfLink}">Complete your FruitLife360 self reflection</a></p>
-      <p>FruitLife360 is designed as a formation mirror, not a grade or label.</p>
-      <p>Sincerely,<br>Discover Your Divine Design Team</p>
-    `,
-    subject: "Your FruitLife360 self reflection",
-    text,
-  };
-}
-
 function fruitLifeObserverEmail({
   observerName,
   observerLink,
@@ -376,51 +352,6 @@ function fruitLifeObserverEmail({
     subject: `FruitLife360 reflection for ${participantName}`,
     text,
   };
-}
-
-async function recordAndSendInviteEmail({
-  observerLinks,
-  participantEmail,
-  participantName,
-  selfLink,
-  sessionId,
-  supabase,
-}: {
-  observerLinks?: Array<{ email: string; link: string; name: string; relationship: string }>;
-  participantEmail: string;
-  participantName: string;
-  selfLink: string;
-  sessionId: string;
-  supabase: ReturnType<typeof createSupabaseAdminClient>;
-}) {
-  const email = fruitLifeInviteEmail({
-    participantName,
-    selfLink,
-  });
-  const result = await sendResendEmail({
-    ...email,
-    to: participantEmail,
-    templateId:"B04-self",
-    idempotencyKey:`fruitlife-self-${sessionId}`,
-    deliveryContext:{type:"fruitlife_self",sessionId},
-  });
-
-  await supabase.from("fruitlife_360_report_artifacts").insert({
-    artifact_status: result.sent ? "sent" : result.skipped ? "draft" : "error",
-    artifact_type: "email",
-    metadata: {
-      error: result.message ?? null,
-      observerLinks: observerLinks ?? [],
-      purpose: "initial_invite_email",
-      resendSkipped: result.skipped,
-      resendSent: result.sent,
-      selfLink,
-    },
-    provider: "resend",
-    provider_document_id: result.id ?? null,
-    session_id: sessionId,
-  });
-  return result;
 }
 
 async function recordAndSendObserverEmails({
@@ -743,14 +674,7 @@ export async function createFruitLifeSession(formData: FormData) {
     })
     .eq("id", session.id);
 
-  const participantInviteResult = await recordAndSendInviteEmail({
-    observerLinks: observerLinks.filter((observer) => observer.email),
-    participantEmail,
-    participantName,
-    selfLink,
-    sessionId: session.id,
-    supabase,
-  });
+  // The participant continues in-app; only observers receive invitations.
   const observerInviteResult = await recordAndSendObserverEmails({
     observerLinks: observerLinks.filter((observer) => observer.email),
     participantName,
@@ -761,7 +685,7 @@ export async function createFruitLifeSession(formData: FormData) {
   await supabase.from("fruitlife_360_sessions").update({ metadata: {
     observerLinks, selfLink, source: "native_fruitlife_intake",
         instrumentVersion: fruitLifeInstrumentVersion, channel: legacyLane ? "legacy_lane" : "current_app",
-    invitationDeliveryIssue: !participantInviteResult.sent || observerInviteResult.failed,
+    invitationDeliveryIssue: observerInviteResult.failed,
   } }).eq("id", session.id);
   redirect(legacyLane ? appendFruitLifeStatusParam(returnTo, "created") : `/fruitlife360/self?session=${encodeURIComponent(session.id)}&token=${encodeURIComponent(selfToken)}`);
 }
@@ -835,35 +759,7 @@ export async function sendFruitLifeReminder(formData: FormData) {
     })
     .filter((observer) => observer.email && observer.link);
   const participantName = String(session.participant_name ?? "your FruitLife participant");
-  const participantEmail = normalizeEmail(String(session.participant_email ?? ""));
-  const observerLinks = Array.isArray(metadata.observerLinks) ? metadata.observerLinks : [];
-  const participantResult = participantEmail && metadata.selfLink && !session.self_completed_at
-    ? await sendResendEmail({
-        ...fruitLifeInviteEmail({
-          participantName,
-          selfLink: metadata.selfLink,
-        }),
-        to: participantEmail,
-        templateId:"B04-self-reminder",
-        idempotencyKey:`fruitlife-self-reminder-${sessionId}-${new Date().toISOString().slice(0,10)}`,
-        deliveryContext:{type:"fruitlife_self",sessionId},
-      })
-    : { message: "No participant email/self link available.", sent: false, skipped: true };
-
-  await supabase.from("fruitlife_360_report_artifacts").insert({
-    artifact_status: participantResult.sent ? "sent" : participantResult.skipped ? "draft" : "error",
-    artifact_type: "email",
-    metadata: {
-      error: participantResult.message ?? null,
-      purpose: "manual_reminder_email",
-      resendSkipped: participantResult.skipped,
-      resendSent: participantResult.sent,
-    },
-    provider: "resend",
-    provider_document_id: participantResult.id ?? null,
-    session_id: sessionId,
-  });
-
+  // Self participants are never chased by email, even while observers are pending.
   const observerResult = await recordAndSendObserverEmails({
     reminder:true,
     observerLinks: pendingObserverLinks,
@@ -872,10 +768,9 @@ export async function sendFruitLifeReminder(formData: FormData) {
     supabase,
   });
 
-  const participantNeeded = Boolean(participantEmail && metadata.selfLink && !session.self_completed_at);
-  const failed = observerResult.failed || participantNeeded && !participantResult.sent;
+  const failed = observerResult.failed;
   await supabase.from("fruitlife_360_sessions").update({ metadata: { ...metadata, invitationDeliveryIssue: failed } }).eq("id", sessionId);
-  redirect(appendFruitLifeStatusParam(returnTo, failed ? "reminder_failed" : participantResult.sent || observerResult.sent ? "reminder_sent" : "no_reminders_needed"));
+  redirect(appendFruitLifeStatusParam(returnTo, failed ? "reminder_failed" : observerResult.sent ? "reminder_sent" : "no_reminders_needed"));
 }
 
 export async function getFruitLifeObserverContext(sessionId: string, token: string) {

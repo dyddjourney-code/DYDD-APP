@@ -90,6 +90,15 @@ async function noOverflow() {
   assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'Horizontal overflow at ' + page.viewport().width);
 }
 try {
+  for (const origin of ['field-kit','trailheads']) {
+    const target = `/courses/designpd-alignment?origin=${origin}&lesson=your-planning-tendency`;
+    const response = await fetch(base + target, {redirect:'manual'});
+    assert([302,303,307].includes(response.status));
+    const login = new URL(response.headers.get('location'),base);
+    assert.equal(login.pathname,'/login');
+    assert.equal(login.searchParams.get('next'),target);
+  }
+  checks.push('Anonymous DesignPD deep links retain both course origins and validated lesson through normal sign-in');
   owner = await account('owner'); cookie = owner.cookie;
   participant = check(await db.from('assessment_participants').insert({ user_id: owner.uid, normalized_email: owner.email, display_name: 'Synthetic Final Eight QA' }).select('id').single()).id;
   await snapshot('designid', { summary: { Primary: 'Architect', Secondary: 'Artisan', Integrative_Reflection: 'Visionary' }, scores: { Architect_Pts: 40, Artisan_Pts: 30, Shepherd_Pts: 20, Steward_Pts: 10 } });
@@ -121,6 +130,11 @@ try {
     }
     return r.continue();
   });
+  await go('/hq#passport'); await page.waitForSelector('.passport-badge-button');
+  const initialBadge = await page.$$eval('.passport-badge-button',es=>es.map(e=>({title:e.querySelector('strong')?.textContent,earned:e.classList.contains('earned')})));
+  assert(initialBadge.find(b=>b.title==='FruitLife360')?.earned);
+  assert.equal(initialBadge.find(b=>b.title==='FruitLife360 Course')?.earned,false);
+  checks.push('Actual Passport UI shows owned assessment earned before course completion; course badge independent');
   for (const width of [1280, 390, 320]) {
     await page.setViewport({ width, height: 1000 });
     for (const c of cases) {
@@ -194,6 +208,13 @@ try {
       await noOverflow(); await shot(`${width}-designpd-${lesson}`);
       checks.push({ width, lesson, savedTendencies: labels, scopedPanel: true, reflectionSaveReload: lesson === 'what-you-see' });
     }
+    await go('/designpd?origin=field-kit');
+    assert.equal(await page.$eval('input[name=origin]',e=>e.value),'field-kit');
+    assert.equal(await page.$eval('form .course-nav a',e=>e.getAttribute('href')),'/field-kit#collection-designpd');
+    await go('/hq#passport'); await page.waitForSelector('.passport-badge-button');
+    const earned = await page.$$eval('.passport-badge-button.earned strong',es=>es.map(e=>e.textContent));
+    assert(earned.includes('FruitLife360')); assert(earned.includes('FruitLife360 Course'));
+    checks.push({width,actualAssessmentAndExistingCourseBadgesEarned:true,designPdFormOriginAndBack:true});
     await go(`/designpd/thanks?snapshot=${designSnapshot}&origin=field-kit`);
     await page.waitForSelector('main h1');
     const thanks = await page.$eval('main', e => ({ text: e.textContent, links: [...e.querySelectorAll('a')].map(a => a.getAttribute('href')) }));

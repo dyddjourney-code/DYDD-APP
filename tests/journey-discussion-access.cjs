@@ -9,8 +9,8 @@ const route = load('app/api/course-reflections/discussion/route.ts', {
 });
 (async()=>{
   process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT = 'production';
-  assert.equal((await route.GET(new Request('https://school.example/api/course-reflections/discussion?courseSlug=discover-your-divine-design'))).status,404);
-  assert.equal((await route.POST(new Request('https://school.example/api/course-reflections/discussion',{method:'POST'}))).status,404);
+  assert.equal((await route.GET(new Request('https://school.example/api/course-reflections/discussion?courseSlug=discover-your-divine-design'))).status,401);
+  assert.equal((await route.POST(new Request('https://school.example/api/course-reflections/discussion',{method:'POST'}))).status,401);
   process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT = 'sandbox';
   assert.equal((await route.GET(new Request('https://school.example/api/course-reflections/discussion?courseSlug=discover-your-divine-design'))).status,401);
   signedIn = true;
@@ -18,5 +18,5 @@ const route = load('app/api/course-reflections/discussion/route.ts', {
   assert.equal((await route.POST(new Request('https://school.example/api/course-reflections/discussion',{method:'POST',headers:{origin:'https://elsewhere.example'}}))).status,403);
   const {careDiscussionIds}=load('lib/reflections/discussion-catalog.ts');
   assert(careDiscussionIds.has('child-of-god-response'));assert(!careDiscussionIds.has('niche-working-declaration'));assert(!careDiscussionIds.has('anything-lesson-reflection'));
-  console.log('PASS stable runtime disabled, auth required, wrong-course/foreign-origin denied before storage; only CARE questions eligible');
+  console.log('PASS stable and sandbox require auth, wrong-course/foreign-origin denied before storage; only CARE questions eligible');
 })();

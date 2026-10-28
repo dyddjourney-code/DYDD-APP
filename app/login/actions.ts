@@ -18,7 +18,7 @@ function safeNextPath(value: FormDataEntryValue | string | null | undefined) {
   return next;
 }
 
-function loginRedirect(message: string, next = "/hq", mode?: "signin" | "signup" | "recovery"): never {
+function loginRedirect(message: string, next = "/hq", mode?: "signin" | "signup" | "recovery" | "confirmation"): never {
   const params = new URLSearchParams({
     message,
     next,
@@ -189,9 +189,9 @@ export async function createPasswordAccount(formData: FormData) {
   }
 
   loginRedirect(
-    "Check your email to confirm your account. After confirming, you can sign in with your email and password.",
+    "Open the confirmation email and select the verification link to gain access to your account.",
     next,
-    "signin",
+    "confirmation",
   );
 }
 
@@ -215,7 +215,13 @@ export async function signInWithPassword(formData: FormData) {
   });
 
   if (error) {
-    loginRedirect(error.message, next, "signin");
+    loginRedirect(
+      error.code === "email_not_confirmed"
+        ? "Your email is not verified yet. Open your confirmation email and select the verification link before signing in. Check spam or junk if you do not see it."
+        : error.message,
+      next,
+      "signin",
+    );
   }
 
   if (data.user) {

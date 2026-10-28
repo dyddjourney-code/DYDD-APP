@@ -18,7 +18,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
   const message = params?.message;
   const next = params?.next?.startsWith("/") ? params.next : "/hq";
-  const mode = params?.mode === "signup" || params?.mode === "recovery"
+  const mode = params?.mode === "signup" || params?.mode === "recovery" || params?.mode === "confirmation"
     ? params.mode
     : "signin";
   const isFruitLifeAccess =
@@ -33,7 +33,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       : isCommandCenterAccess
         ? "Owner Command Center access"
         : "DYDD Journey access";
-  const accessHeading = isMiniAppAccess
+  const accessHeading = mode === "confirmation"
+    ? "Check your email to continue."
+    : isMiniAppAccess
     ? isSpiritualGiftsAccess
       ? "Create your Spiritual Gifts account."
       : "Create your FruitLife360 account."
@@ -85,14 +87,18 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <div>
           <p className="section-label">Your personal Base Camp</p>
           <h2>
-            {mode === "signup"
+            {mode === "confirmation"
+              ? "Verify your email"
+              : mode === "signup"
               ? "Create account"
               : mode === "recovery"
                 ? "Reset password"
                 : "Sign in"}
           </h2>
           <p className="helper-text">
-            {mode === "signup"
+            {mode === "confirmation"
+              ? "One more step before you can access your account."
+              : mode === "signup"
               ? "Free beta access. Save your progress and return whenever you’re ready."
               : mode === "recovery"
                 ? "Enter your account email and we will send a reset link."
@@ -102,7 +108,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </p>
         </div>
 
-        <nav className="login-choice" aria-label="Account action">
+        {mode !== "confirmation" ? <nav className="login-choice" aria-label="Account action">
           <Link
             aria-current={mode === "signin" ? "page" : undefined}
             className={mode === "signin" ? "active" : ""}
@@ -117,9 +123,24 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           >
             Create account
           </Link>
-        </nav>
+        </nav> : null}
 
-        {mode === "signup" ? (
+        {message && mode !== "confirmation" ? (
+          <p className={styles.feedback} role="alert">{message}</p>
+        ) : null}
+
+        {mode === "confirmation" ? (
+          <div className={styles.confirmation} role="status">
+            <p>Your account is waiting for email verification. You do not have account access yet.</p>
+            <ol>
+              <li>Open the confirmation email in the inbox you used to sign up.</li>
+              <li>Select the verification link. It will sign you in and open your next step.</li>
+            </ol>
+            <p>No email? Check your spam or junk folder. If the link opens in another browser, return here to sign in after verifying.</p>
+            <Link className="button primary" href={signInHref}>I’ve verified my email — sign in</Link>
+            <Link href={signUpHref}>Used the wrong email? Return to create account</Link>
+          </div>
+        ) : mode === "signup" ? (
           <form action={createPasswordAccount} className="auth-form">
             <input name="next" type="hidden" value={next} />
             <label htmlFor="full-name">Name</label>
@@ -206,7 +227,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </form>
         )}
 
-        {mode !== "recovery" ? (
+        {mode === "confirmation" ? null : mode !== "recovery" ? (
           <Link className="login-recovery-toggle" href={recoveryHref}>
             Forgot password?
           </Link>
@@ -215,8 +236,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             Return to sign in
           </Link>
         )}
-
-        {message ? <p className="status-note" role="status">{message}</p> : null}
 
         {!isMiniAppAccess && !isCommandCenterAccess && mode === "signup" ? (
           <p className={styles.assessmentNote}>

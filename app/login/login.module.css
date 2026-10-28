@@ -182,3 +182,30 @@
     font-size: 0.86rem;
   }
 }
+
+/* Feedback is above the form so a failed sign-in never looks like a no-op. */
+.feedback {
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid #b75e47;
+  border-radius: 9px;
+  background: #fff5ef;
+  color: #713522;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.confirmation {
+  display: grid;
+  gap: 16px;
+  color: var(--ink);
+  font-size: 0.94rem;
+  line-height: 1.65;
+}
+
+.confirmation p, .confirmation ol { margin: 0; }
+.confirmation ol { padding-left: 22px; }
+.confirmation li + li { margin-top: 10px; }
+.confirmation a { overflow-wrap: anywhere; }
+.confirmation a:last-child { font-size: 0.84rem; color: var(--green-dark); }

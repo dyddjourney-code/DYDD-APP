@@ -3,6 +3,11 @@ import { buildDesignIdContext, type AssessmentSnapshotSummary } from '@/lib/asse
 const object = (v: unknown): Record<string,unknown> => v && typeof v === 'object' && !Array.isArray(v) ? v as Record<string,unknown> : {};
 const populated = (v: unknown) => Object.keys(object(v)).length > 0;
 const primaryNames = ['Architect','Artisan','Shepherd','Steward'];
+/** Reflection badges describe the current saved primary, not historical retakes.
+ * Retain the award ledger as history; never surface other primaries as earned. */
+export function currentPrimaryAwards<T extends {badge_key:string}>(awards:T[], primary?:string):T[] {
+ return awards.filter(award => !primaryNames.includes(award.badge_key) || award.badge_key === primary);
+}
 export function savedPrimary(snapshot: AssessmentSnapshotSummary) {
  const value = buildDesignIdContext({all:[snapshot],latest:[snapshot]}).primary;
  return primaryNames.find(n => n.toLowerCase() === value.trim().toLowerCase());

@@ -175,6 +175,7 @@ export function buildPassportBadges({ completedAssessments, primaryDesign, compl
       state: completedCourses.includes(marker.slug) || earned.has(marker.slug) ? "earned" : marker.assessment === "DesignPD" && !completed.has("designid") ? "locked" : "ahead",
     };
   });
-  const historicalReflections = designIdReflectionBadges.filter(b => earned.has(b.title) && b.title !== earnedReflection?.title).map(b => ({...b, group: "journey" as const, state: "earned" as const}));
-  return [...badges, ...historicalReflections, ...(earnedReflection || historicalReflections.length ? [] : designIdReflectionBadges), ...courses];
+  // Persisted historical reflection awards are audit history, not current design.
+  // Main Passport and short trails share this single current-primary projection.
+  return [...badges, ...(earnedReflection ? [] : designIdReflectionBadges), ...courses];
 }

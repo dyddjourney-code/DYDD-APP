@@ -78,7 +78,17 @@ export function FieldKitCollection({
           new Date(a.completedAt ?? 0).getTime(),
       );
     const saved = rounds.filter((r) => r.course_slug === slug);
+    const trail = trailDefinitions.find((t) => t.courseSlug === slug);
+    const needsDesignId = trail?.id === "designpd" && !artifacts.some((a) => a.experienceSlug === "designid-foundations");
     const path = (href: string) => withReviewQuery(href, reviewParams);
+    const assessmentEntry = !main && !reports.length && trail ? (
+      <div className="fieldkit-assessment-entry">
+        <Link className="button primary" href={path(needsDesignId ? "/designid" : trail.assessmentHref)}>
+          Take assessment
+        </Link>
+        {needsDesignId ? <p>Complete DesignID first to open DesignPD.</p> : null}
+      </div>
+    ) : null;
     const collectionDetails = (<>
           <div className="fieldkit-collection-columns">
             <section aria-label={`${name} reports`}>
@@ -117,10 +127,10 @@ export function FieldKitCollection({
                   ) : null}
                 </div>
               ) : (
-                <p>
-                  No completed report yet. Start this trail at Trailheads; your
-                  completed reports will collect here.
-                </p>
+                <>
+                  <p>No completed report yet. Take the assessment to begin; your completed report will collect here.</p>
+                  {assessmentEntry}
+                </>
               )}
             </section>
             <section aria-label={`${name} course reflections`}>
@@ -195,7 +205,8 @@ export function FieldKitCollection({
           <p className="trail-description">{description}</p>
           <div className="fieldkit-mobile-summary">
             <p className="fieldkit-mobile-status">{main ? "Journey workbook" : reports.length ? `${reports.length} completed ${reports.length === 1 ? "report" : "reports"}` : "No completed report yet"} · {saved.length ? `${saved.length} reflection ${saved.length === 1 ? "round" : "rounds"}` : "No reflection rounds yet"}</p>
-            <Link className="button primary" href={path(`/field-kit/reflections/${slug}`)}>Review my reflections</Link>
+            {assessmentEntry}
+            <Link className="button secondary" href={path(`/field-kit/reflections/${slug}`)}>Review my reflections</Link>
           </div>
           <details className="fieldkit-mobile-details">
             <summary>Reports, workbook &amp; course details</summary>

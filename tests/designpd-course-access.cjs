@@ -30,16 +30,16 @@ const firstLesson = catalog.getLearningCourse('designpd-alignment').modules[0].l
   user = null; all = [];
   await assert.rejects(()=>page(args),/REDIRECT:.*login/);
   user = {id:'account',email:'traveler@example.com'};all = [snapshot('designid')];
-  await assert.rejects(()=>page(args),/REDIRECT:\/trailheads#designpd/);
+  await assert.rejects(()=>page(args),/REDIRECT:\/field-kit#collection-designpd/);
   preview = {all:[snapshot('designpd')],latest:[]};
-  await assert.rejects(()=>page(args),/REDIRECT:\/trailheads#designpd/);
+  await assert.rejects(()=>page(args),/REDIRECT:\/field-kit#collection-designpd/);
   preview = null;
   all = [snapshot('designpd','designpd_app','error')];
-  await assert.rejects(()=>page(args),/REDIRECT:\/trailheads#designpd/);
+  await assert.rejects(()=>page(args),/REDIRECT:\/field-kit#collection-designpd/);
   all = [snapshot('designpd','designpd_app','success')];
   assert(await page(args));
   user = {id:'owner',email:'john@discoverdivine.design'};all=[];
-  await assert.rejects(()=>page(args),/REDIRECT:\/trailheads#designpd/);
+  await assert.rejects(()=>page(args),/REDIRECT:\/field-kit#collection-designpd/);
  }
  console.log('PASS: DesignID-only denied; ready/legacy DesignPD allowed; failed/pending denied; stable owner does not bypass report prerequisites. Canonical course enforces signed-in access; standalone redirects to canonical secured course.');
 })().catch(e=>{console.error(e);process.exitCode=1});

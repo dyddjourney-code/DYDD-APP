@@ -1,3 +1,4 @@
+import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import { isFreeBeta } from "@/lib/environment";
 import { headers } from "next/headers";
 import { NextResponse, type NextRequest } from "next/server";
@@ -65,6 +66,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  if (await hasLifetimePersonalAccess(user.id)) return NextResponse.redirect(new URL(returnTo, request.url));
   if (isFreeBeta()) return NextResponse.redirect(new URL("/fruitlife360", request.url));
   const existingEntitlement = await getActiveFruitLifeEntitlement(user.id);
 

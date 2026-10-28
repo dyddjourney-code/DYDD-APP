@@ -1,7 +1,7 @@
 "use server";
+import { hasIncludedPersonalAccess } from "@/lib/commerce/personal-access";
 import crypto from "node:crypto";
 import { courseOrigin } from "@/lib/trails/course-origin";
-import { isFreeBeta } from "@/lib/environment";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -86,7 +86,7 @@ export async function saveDesignPdResponse(formData: FormData) {
   }
   // Existing reports remain accessible; generating for a new DesignID requires
   // a per-attempt unlock. Stripe fulfillment is intentionally not enabled yet.
-  if (!isFreeBeta() && !isDyddAdminEmail(user.email)) {
+  if (!await hasIncludedPersonalAccess(user.id) && !isDyddAdminEmail(user.email)) {
     const existing = assessmentReport.all.find(
       (snapshot) =>
         snapshot.assessment_type === "designpd" &&

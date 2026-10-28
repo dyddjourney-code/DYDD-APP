@@ -10,12 +10,13 @@ type Props = {
   participantEmail: string;
   participantName: string;
   ownerAccess: boolean;
+  lifetimeAccess?: boolean;
   savedReportHref?: string;
   origin?: CourseOrigin;
   cardHref?: string;
 };
 
-export function DesignPdAssessmentForm({action, participantEmail, participantName, ownerAccess, savedReportHref, origin = "field-kit", cardHref = "/field-kit#collection-designpd"}: Props) {
+export function DesignPdAssessmentForm({action, participantEmail, participantName, ownerAccess, lifetimeAccess = false, savedReportHref, origin = "field-kit", cardHref = "/field-kit#collection-designpd"}: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   return (
     <form action={action} onSubmit={() => setIsSubmitting(true)} className="designid-form">
@@ -30,9 +31,9 @@ export function DesignPdAssessmentForm({action, participantEmail, participantNam
           <div><span>Email</span><strong>{participantEmail}</strong></div>
         </div>
         <p>No additional assessment questions are needed.</p>
-        <p><strong>{isFreeBeta() ? "DesignPD is included during the free beta" : "Unlock your DesignPD report · $15"}</strong></p>
-        <p>{isFreeBeta() ? "Create your report from your completed DesignID results, then explore the connected course. No payment is needed." : "A one-time add-on for this DesignID result, including the supporting course. Your purchased report stays available to reopen and download. A new DesignID result can be unlocked separately."}</p>
-        {!ownerAccess ? <p>Checkout is coming soon. No payment will be taken here.</p> : <p>{isFreeBeta() ? "Free beta access: no payment will be taken." : "Owner access: you can generate a report without payment."}</p>}
+        <p><strong>{lifetimeAccess ? "DesignPD is included in your lifetime personal all-access" : isFreeBeta() ? "DesignPD is included during the free beta" : "Unlock your DesignPD report · $15"}</strong></p>
+        <p>{lifetimeAccess || isFreeBeta() ? "Create your report from your completed DesignID results, then explore the connected course. No payment is needed." : "A one-time add-on for this DesignID result, including the supporting course. Your purchased report stays available to reopen and download. A new DesignID result can be unlocked separately."}</p>
+        {!ownerAccess ? <p>Checkout is coming soon. No payment will be taken here.</p> : <p>{lifetimeAccess ? "Lifetime personal access: no payment will be taken." : isFreeBeta() ? "Free beta access: no payment will be taken." : "Owner access: you can generate a report without payment."}</p>}
         {ownerAccess ? <label className="fruitlife-checkbox-row"><input type="checkbox" name="emailReport" value="yes" /> Email me a link to this report</label> : null}
         {savedReportHref ? <p><Link className="button secondary" href={savedReportHref}>Open saved DesignPD report</Link></p> : null}
         <button className="button primary" type="submit" disabled={isSubmitting || !ownerAccess}>{isSubmitting ? "Preparing your report..." : ownerAccess ? "Create my DesignPD report" : "Unlock DesignPD · $15 (coming soon)"}</button>

@@ -1,6 +1,7 @@
 "use server";
 
 import { isFreeBeta } from "@/lib/environment";
+import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import crypto from "node:crypto";
 import legacyInstrument from "@/lib/fruitlife360/legacy-instrument.json";
 import { isDyddAdminEmail } from "@/lib/admin-access";
@@ -520,8 +521,9 @@ export async function createFruitLifeSession(formData: FormData) {
   } = await serverSupabase.auth.getUser();
   const now = new Date().toISOString();
   const activeEntitlement = user?.id ? await getActiveFruitLifeEntitlement(user.id) : null;
+  const lifetimeAccess = user?.id ? await hasLifetimePersonalAccess(user.id) : false;
   const canCreatePaidSession =
-    Boolean(user?.id && (isFreeBeta() || activeEntitlement)) || isFruitLifeAdmin(user?.email);
+    Boolean(user?.id && (lifetimeAccess || isFreeBeta() || activeEntitlement)) || isFruitLifeAdmin(user?.email);
 
   if (!user) redirect(`/login?next=${encodeURIComponent("/fruitlife360")}`);
   // Participant identity comes from the signed-in account, never editable form data.
@@ -615,7 +617,7 @@ export async function createFruitLifeSession(formData: FormData) {
     fail("/fruitlife360", sessionError?.message ?? "Unable to create FruitLife session.");
   }
 
-  if (!isFreeBeta() && legacyLane && user?.id && activeEntitlement) {
+  if (!lifetimeAccess && !isFreeBeta() && legacyLane && user?.id && activeEntitlement) {
     try {
       await consumeFruitLifeEntitlement(user.id, session.id);
     } catch (error) {

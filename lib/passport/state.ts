@@ -3,7 +3,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { getAssessmentSnapshotsForUser } from '@/lib/assessments/student-context';
 import { normalizeEmail } from '@/lib/identity/email';
 import { passportCurriculum, journeySlug, journeyChapterBadges, courseCompleted } from './curriculum';
-import { savedAssessmentComplete, savedPrimary, currentPrimaryAwards, completedFruitSession, completedLegacyFruitSnapshot } from './evidence';
+import { savedAssessmentComplete, savedPrimary, currentPrimaryAwards, completedFruitAssessmentSession, completedLegacyFruitAssessmentSnapshot, completedFruitReportStatuses } from './evidence';
 
 export async function readPassportState(user: {id:string;email?:string}) {
  const db=createSupabaseAdminClient();
@@ -41,8 +41,8 @@ export async function syncPassportAwards(user:{id:string;email?:string}, state?:
  const designId=verified.find(s=>s.assessment_type==='designid');
  const primary=designId ? savedPrimary(designId) : undefined;
  if(primary)badges.push({key:primary,evidence:{snapshotId:designId!.id,source:'canonical_saved_primary'}});
- for(const snapshot of report.all.filter(completedLegacyFruitSnapshot))badges.push({key:'fruit_360',evidence:{snapshotId:snapshot.id,source:'retained_full360_report_response_counts'}});
- if(user.email)for(const session of await completedFruitSessionsForEmail(user.email,user.id))badges.push({key:'fruit_360',evidence:{sessionId:session.id,source:'completed_report_and_required_observers'}});
+ for(const snapshot of report.all.filter(completedLegacyFruitAssessmentSnapshot))badges.push({key:'fruit_360',evidence:{snapshotId:snapshot.id,source:'retained_completed_fruit_report'}});
+ if(user.email)for(const session of await completedFruitSessionsForEmail(user.email,user.id))badges.push({key:'fruit_360',evidence:{sessionId:session.id,source:'completed_owned_fruit_assessment_report'}});
  await awardBadges(user.id,badges);
  const synced=await readPassportState(user);
  const completedAssessments=Array.from(new Set(badges.map(b=>b.key).filter(key=>['designid','designpd','spiritual_gifts','fruit_360'].includes(key))));
@@ -62,9 +62,22 @@ export async function completedFruitSessionsForEmail(email:string,userId:string)
  if(participants.error)throw Error('Your FruitLife360 report identity could not be checked. Please try again.');
  const participantIds=(participants.data??[]).map(p=>p.id);
  const ownership=[`created_by_user_id.eq.${userId}`,...participantIds.map(id=>`and(participant_id.eq.${id},created_by_user_id.is.null)`)];
- const sessions=await db.from('fruitlife_360_sessions')
+ const [sessions,snapshots]=await Promise.all([db.from('fruitlife_360_sessions')
   .select('id,self_completed_at,observer_goal,observer_completed_count,report_status,report_mode,report_snapshot_id,report_url,artifacts:fruitlife_360_report_artifacts(artifact_type,artifact_status)')
-  .or(ownership.join(',')).in('report_status',['ready','sent']);
- if(sessions.error)throw Error('Your FruitLife360 report evidence could not be checked. Please try again.');
- return (sessions.data??[]).filter(completedFruitSession);
+  .or(ownership.join(',')).in('report_status',completedFruitReportStatuses),
+  db.from('assessment_snapshots').select('id,scores').eq('assessment_type','fruit_360')
+   .or([`user_id.eq.${userId}`,...participantIds.map(id=>`and(participant_id.eq.${id},user_id.is.null)`)].join(',')),
+ ]);
+ if(sessions.error || snapshots.error)throw Error('Your FruitLife360 report evidence could not be checked. Please try again.');
+ // Earlier workers left report_mode null. Recover only from the exact linked
+ // snapshot under the SAME strict ownership predicate, never an alias/foreign row.
+ const ownedById=new Map((snapshots.data??[]).map(snapshot=>[snapshot.id,snapshot]));
+ return (sessions.data??[]).filter(session=>{
+  if(session.report_mode || !session.report_snapshot_id)return completedFruitAssessmentSession(session);
+  const snapshot=ownedById.get(session.report_snapshot_id);
+  if(snapshot && ['draft','pending','in_progress','failed','error'].includes(String(snapshot.scores?.status)))return false;
+  const summary=snapshot?.scores?.summary as Record<string,unknown> | undefined;
+  const mode=typeof summary?.Report_Mode==='string' ? summary.Report_Mode.toUpperCase() : '';
+  return completedFruitAssessmentSession({...session,report_mode:mode || null});
+ });
 }

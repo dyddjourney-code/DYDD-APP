@@ -1,4 +1,5 @@
 import Link from "next/link";
+import styles from "./login.module.css";
 import {
   createPasswordAccount,
   requestPasswordReset,
@@ -38,21 +39,25 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       : "Create your FruitLife360 account."
     : isCommandCenterAccess
       ? "Open the Command Center."
-      : "Enter your DYDD account.";
+      : mode === "signup"
+        ? "Your DYDD Journey starts here."
+        : mode === "recovery"
+          ? "Let’s get you back on the trail."
+          : "Welcome back to DYDD.";
   const accessCopy = isMiniAppAccess
     ? isSpiritualGiftsAccess
       ? "Use an email and password so your free Spiritual Gifts report, course access, and future DYDD app history stay connected."
       : "Use an email and password so you can return to your FruitLife360 process, track observer progress, send reminders, and access your report."
     : isCommandCenterAccess
       ? "Use the owner account to review assessment activity, create groups, and manage the people connected to classes, circles, and future dashboards."
-      : "Sign in to continue the DYDD Journey, collect your artifacts, and prepare for guided reflection around your design.";
+      : "Discover your design, reflect on your story, and take your next faithful step.";
   const signInHref = `/login?${new URLSearchParams({ mode: "signin", next }).toString()}`;
   const signUpHref = `/login?${new URLSearchParams({ mode: "signup", next }).toString()}`;
   const recoveryHref = `/login?${new URLSearchParams({ mode: "recovery", next }).toString()}`;
 
   return (
-    <main className={`login-shell${isMiniAppAccess ? " fruitlife-access-shell" : ""}`}>
-      <section className="login-copy">
+    <main className={`login-shell ${styles.shell}${isMiniAppAccess ? " fruitlife-access-shell" : ""}`}>
+      <section className={`login-copy ${styles.intro}`}>
         {isMiniAppAccess ? (
           <>
             <img
@@ -66,8 +71,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </>
         ) : (
           <>
-            <Link className="text-link" href="/">
-              Discover Your Divine Design
+            <Link className={styles.brand} href="/" aria-label="Discover Your Divine Design home">
+              <img src="/brand/dydd-logo-transparent.webp" width={2500} height={785} alt="Discover Your Divine Design" />
             </Link>
             <p className="eyebrow">{accessTitle}</p>
             <h1>{accessHeading}</h1>
@@ -76,9 +81,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         )}
       </section>
 
-      <section className="login-panel" aria-label="Account access">
+      <section className={`login-panel ${styles.panel}`} aria-label="Account access">
         <div>
-          <p className="section-label">Account</p>
+          <p className="section-label">Your personal Base Camp</p>
           <h2>
             {mode === "signup"
               ? "Create account"
@@ -88,7 +93,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </h2>
           <p className="helper-text">
             {mode === "signup"
-              ? "Create your account once, then return anytime with your email and password."
+              ? "Free beta access. Save your progress and return whenever you’re ready."
               : mode === "recovery"
                 ? "Enter your account email and we will send a reset link."
                 : isCommandCenterAccess
@@ -97,22 +102,22 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </p>
         </div>
 
-        <div className="login-choice" role="tablist" aria-label="Account action">
+        <nav className="login-choice" aria-label="Account action">
           <Link
-            aria-selected={mode === "signin"}
+            aria-current={mode === "signin" ? "page" : undefined}
             className={mode === "signin" ? "active" : ""}
             href={signInHref}
           >
             Sign in
           </Link>
           <Link
-            aria-selected={mode === "signup"}
+            aria-current={mode === "signup" ? "page" : undefined}
             className={mode === "signup" ? "active" : ""}
             href={signUpHref}
           >
             Create account
           </Link>
-        </div>
+        </nav>
 
         {mode === "signup" ? (
           <form action={createPasswordAccount} className="auth-form">
@@ -138,12 +143,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <label htmlFor="signup-password">Password</label>
             <input
               autoComplete="new-password"
+              aria-describedby="password-hint"
               id="signup-password"
               minLength={8}
               name="password"
               required
               type="password"
             />
+            <p id="password-hint" className={styles.fieldHint}>Use at least 8 characters.</p>
             <label htmlFor="confirm-password">Confirm password</label>
             <input
               autoComplete="new-password"
@@ -209,7 +216,13 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </Link>
         )}
 
-        {message ? <p className="status-note">{message}</p> : null}
+        {message ? <p className="status-note" role="status">{message}</p> : null}
+
+        {!isMiniAppAccess && !isCommandCenterAccess && mode === "signup" ? (
+          <p className={styles.assessmentNote}>
+            Already taken a DYDD assessment? Use the same email to connect eligible saved results after you confirm your account. Already have an account? Choose Sign in.
+          </p>
+        ) : null}
 
         {isMiniAppAccess ? (
           <p className="helper-text">
@@ -218,6 +231,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </p>
         ) : null}
       </section>
+      <Link className={styles.homeLink} href="/">Back to Discover Your Divine Design</Link>
     </main>
   );
 }

@@ -1,0 +1,184 @@
+/* Keep public account entry independent of the shared hero/grid breakpoints. */
+.shell:global(.login-shell) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 40px 24px;
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(115, 157, 94, 0.15), transparent 52%),
+    radial-gradient(ellipse at 100% 100%, rgba(184, 138, 67, 0.12), transparent 48%),
+    #f6f7f0;
+}
+
+.intro:global(.login-copy) {
+  display: grid;
+  justify-items: center;
+  grid-row: auto;
+  gap: 10px;
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+}
+
+.brand {
+  display: block;
+  width: min(264px, 75vw);
+  margin-bottom: 8px;
+}
+
+.brand img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.intro :global(.eyebrow) {
+  margin: 0;
+  color: var(--green);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+}
+
+.intro h1 {
+  max-width: none;
+  margin: 0;
+  color: var(--green-dark);
+  font-size: clamp(1.55rem, 4vw, 1.9rem);
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+  overflow-wrap: normal;
+}
+
+.intro :global(.lede) {
+  max-width: 43ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+.panel:global(.login-panel) {
+  width: 100%;
+  max-width: 480px;
+  gap: 20px;
+  padding: 30px 32px;
+  border: 1px solid #dce3d4;
+  border-top: 4px solid var(--green);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 16px 48px rgba(36, 63, 39, 0.075);
+}
+
+.panel :global(.section-label) {
+  margin-bottom: 8px;
+  color: var(--green);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+}
+
+.panel h2 {
+  margin: 0 0 8px;
+  font-size: 1.45rem;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.panel :global(.helper-text) {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.panel :global(.auth-form) {
+  gap: 8px;
+}
+
+.panel :global(.auth-form) label:not(:first-of-type) {
+  margin-top: 7px;
+}
+
+.panel :global(.auth-form) input {
+  min-width: 0;
+  min-height: 46px;
+  background: #fdfefa;
+  border-color: #ccd5c5;
+}
+
+.panel :global(.auth-form) input:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+.panel :global(.button.primary) {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 12px;
+  background: var(--green-dark);
+  color: #fff;
+  border-radius: 9px;
+  transition: background 160ms, transform 160ms;
+}
+
+.panel :global(.button.primary):hover {
+  background: var(--green);
+}
+
+.panel :global(.button.primary):active {
+  transform: translateY(1px);
+}
+
+.panel a:focus-visible,
+.brand:focus-visible,
+.homeLink:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 4px;
+}
+
+.fieldHint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.assessmentNote {
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+.homeLink {
+  color: var(--green-dark);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 540px) {
+  .shell:global(.login-shell) {
+    justify-content: flex-start;
+    gap: 20px;
+    padding: 28px 16px;
+  }
+
+  .brand { width: 224px; }
+
+  .panel:global(.login-panel) {
+    padding: 24px 20px;
+    border-radius: 14px;
+  }
+
+  .panel :global(.login-choice) a {
+    padding-inline: 6px;
+    font-size: 0.86rem;
+  }
+}

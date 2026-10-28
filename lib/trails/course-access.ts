@@ -27,8 +27,8 @@ export async function requireTrailCourseAssessment({
   if (!trail) return;
   if (isOwnerCoursePreview(params)) return;
   const mini = params?.lane === "fruitlife";
-  const tracksOrigin = trail.id === "designpd" || trail.id === "fruitlife-360";
-  const origin = trail.id === "fruitlife-360" ? "field-kit" : courseOrigin(params?.origin);
+  const tracksOrigin = trail.id === "designpd" || trail.id === "fruitlife-360" || trail.id === "spiritual-gifts";
+  const origin = (trail.id === "fruitlife-360" || trail.id === "spiritual-gifts") ? "field-kit" : courseOrigin(params?.origin);
   const trailHref = tracksOrigin ? withReviewQuery(courseCardHref(slug, origin), params) :
     withReviewQuery(`/trailheads${mini ? "?lane=fruitlife" : ""}`, params) + `#${trail.id}`;
   const query = new URLSearchParams({ origin });

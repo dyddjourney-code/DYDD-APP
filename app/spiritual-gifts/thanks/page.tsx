@@ -35,10 +35,10 @@ export default async function SpiritualGiftsThanksPage({ searchParams }: Spiritu
         </div>
         <div className="spiritual-gifts-thanks-copy">
           <p className="section-label">Assessment submitted</p>
-          <h1>{isAppChannel ? "Your report has been emailed to you." : "Check your email for your PDF report."}</h1>
+          <h1>{isAppChannel ? "Your Spiritual Gifts assessment is saved." : "Check your email for your PDF report."}</h1>
           <p>
             {isAppChannel
-              ? "Your Spiritual Gifts assessment is connected to this DYDD account. The PDF report has also been saved as an account artifact so you can return to it inside the app."
+              ? "Your Spiritual Gifts assessment is connected to this DYDD account. Open Spiritual Gifts in Field Kit to review your Snapshot and available PDF report."
               : params?.message ??
                 "Your Spiritual Gifts assessment has been submitted. Your PDF report is being delivered to the email address you provided."}
           </p>
@@ -58,8 +58,8 @@ export default async function SpiritualGiftsThanksPage({ searchParams }: Spiritu
         ) : null}
         {isAppChannel ? (
           <div className="spiritual-gifts-thanks-actions">
-            <Link className="button primary" href="/spiritual-gifts?lane=fruitlife">
-              Back to Spiritual Gifts
+            <Link className="button primary" href="/field-kit#collection-spiritual-gifts">
+              Back to Spiritual Gifts in Field Kit
             </Link>
           </div>
         ) : null}

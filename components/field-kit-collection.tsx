@@ -156,7 +156,7 @@ export function FieldKitCollection({
             </section>
           </div>
           <div className="fieldkit-collection-footer">
-            <Link className="button secondary" href={path(slug === "designpd-alignment" || slug === "fruitlife-360-formation" ? withCourseOrigin(courseHref, "field-kit") : courseHref)}>
+            <Link className="button secondary" href={path(slug === "designpd-alignment" || slug === "fruitlife-360-formation" || slug === "spiritual-gifts-service" ? withCourseOrigin(courseHref, "field-kit") : courseHref)}>
               Continue course
             </Link>
             {!main ? (

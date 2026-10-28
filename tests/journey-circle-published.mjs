@@ -101,7 +101,7 @@ try {
   assert.equal(await page.$eval('h1',e=>e.textContent),'Your Journey Reflections');
   assert((await page.$eval('.reflection-notebook-hero',e=>e.textContent)).includes('private saved Journey writing'),'Direct saved-writing explanation visible');
   const article='#reflection-'+q.id;await page.waitForSelector(article);
-  await page.$eval(article,e=>{for(let parent=e;parent;parent=parent.parentElement)if(parent.tagName==='DETAILS')parent.open=true;});
+  // Answered Journey modules/lessons open automatically: direct review needs no setup/disclosure clicks.
   await page.waitForSelector(article,{visible:true});
   await page.waitForFunction(({s,t})=>document.querySelector(s)?.innerText.includes(t),{}, {s:article,t:answer});
   const sources=await page.$eval('.journey-assessment-sources',e=>e.textContent);assert(sources.includes('DesignID:'));assert(sources.includes('Spiritual Gifts:'));

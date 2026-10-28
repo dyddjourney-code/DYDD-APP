@@ -6,7 +6,7 @@ import { previewParams, previewReflectionRequest } from "@/lib/reflections/previ
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
-  getReflectionExperience,
+  getReflectionExperience, withCurrentJourneyActivities,
   withWhoWhoseExplore,
   withDesignIdWelcome,
   withDesignIdLens, withIdentityBelievers, withDesignReflectionsLove, withOneAnother, withPathfinder, withExpertise,
@@ -106,7 +106,8 @@ export async function GET(request: Request) {
   // DesignID Lens / course prompts), preserving every old answer key/revision and archive.
   if (rounds?.[0] && ["discover-your-divine-design", "designid-foundations"].includes(courseSlug)) {
     const current = rounds[0];
-    const questions = withExpertise(courseSlug, withPathfinder(courseSlug, withOneAnother(courseSlug, withDesignReflectionsLove(courseSlug, withIdentityBelievers(courseSlug, withDesignIdLens(courseSlug, withDesignIdWelcome(courseSlug, withWhoWhoseExplore(courseSlug, current.questions))))))));
+    const updatedQuestions = withExpertise(courseSlug, withPathfinder(courseSlug, withOneAnother(courseSlug, withDesignReflectionsLove(courseSlug, withIdentityBelievers(courseSlug, withDesignIdLens(courseSlug, withDesignIdWelcome(courseSlug, withWhoWhoseExplore(courseSlug, current.questions))))))));
+    const questions = withCurrentJourneyActivities(courseSlug, updatedQuestions);
     if (questions !== current.questions) {
       // Authenticated users cannot edit their prompt snapshots. The server adds
       // only approved prompt metadata to the already owner-filtered current round.

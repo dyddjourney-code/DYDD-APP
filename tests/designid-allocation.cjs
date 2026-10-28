@@ -17,7 +17,7 @@ try {
   const {scoreDesignId,parseDesignIdAllocationAnswers:parse,designIdScorePayload:payload}=require(path.join(out,'lib/designid/engine.js'));
   const {scoreDesignPd}=require(path.join(out,'lib/designpd/engine.js'));
   const {buildDesignPdReportPayload}=require(path.join(out,'lib/designpd/report.js'));
-  const {buildDesignIdReportPayload,designIdSnapshotSections}=require(path.join(out,'lib/designid/report.js'));
+  const {buildDesignIdReportPayload,designIdSnapshotSections}=require('../scripts/fruitlife-test-load.cjs')('lib/designid/report.ts');
   const {scoreMapsConfirmation,mapsConfirmationItems:items}=require(path.join(out,'lib/designid/maps-confirmation.js'));
   const audited=JSON.parse(fs.readFileSync('tests/fixtures/designid-audited-statements.json'));
   const approvedEdits = {'B10_S1':'I bring calm when there is tension.', 'B12_S1':'I stay faithful with what’s entrusted to me.'};

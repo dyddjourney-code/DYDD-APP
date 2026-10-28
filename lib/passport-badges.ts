@@ -143,7 +143,8 @@ export function buildPassportBadges({ completedAssessments, primaryDesign, compl
   earnedBadgeKeys?: string[];
 }): PassportBadge[] {
   const earned = new Set(earnedBadgeKeys);
-  const completed = new Set([...completedAssessments, ...earnedBadgeKeys]);
+  // Historical awards are audit history, never independent assessment evidence.
+  const completed = new Set(completedAssessments);
   const assessmentByTitle: Record<string, string> = {
     DesignID: "designid", DesignPD: "designpd",
     "Spiritual Gifts Assessment": "spiritual_gifts", FruitLife360: "fruit_360",
@@ -154,7 +155,7 @@ export function buildPassportBadges({ completedAssessments, primaryDesign, compl
   const badges = defaultPassportBadges.flatMap((badge): PassportBadge[] => {
     const current: PassportBadge = {
       ...badge,
-      state: earned.has(badge.title) || completed.has(assessmentByTitle[badge.title]) ? "earned" : badge.title === "DesignPD" && !completed.has("designid") ? "locked" : badge.state,
+      state: (assessmentByTitle[badge.title] ? completed.has(assessmentByTitle[badge.title]) : earned.has(badge.title)) ? "earned" : badge.title === "DesignPD" && !completed.has("designid") ? "locked" : badge.state,
     };
     return badge.title === "DesignID" && earnedReflection
       ? [current, { ...earnedReflection, group: "journey", state: "earned" }]

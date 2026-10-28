@@ -10,7 +10,7 @@ const bookResources = [
     description:
       "The theological and conceptual foundation of the DYDD journey, exploring identity in Christ, personal design, and faithful living with clarity and grace.",
     cta: "Purchase book",
-    href: "https://www.amazon.com/Discover-Your-Divine-Design-Purpose/dp/B0DZL6MG7K",
+    href: "https://www.amazon.com/s?k=Discover+Your+Divine+Design+Workbook+John+Willoughby",
   },
   {
     title: "Discover Your Divine Design Workbook",

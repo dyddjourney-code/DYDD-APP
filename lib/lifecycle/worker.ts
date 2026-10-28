@@ -164,7 +164,7 @@ export async function lifecycleEligibility(job:any,now=Date.now()):Promise<{stop
  if(['C01','B05'].includes(job.template_id)&&slug!==journeySlug){
   const snapshots=await getAssessmentSnapshotsForUser(user.id,user.email),assessmentType=slug==='designid-foundations'?'designid':slug==='spiritual-gifts-service'?'spiritual_gifts':slug==='designpd-alignment'?'designpd':'fruit_360';
   const ready=snapshots.all.some(s=>s.assessment_type===assessmentType&&(savedAssessmentComplete(s,snapshots.all)||completedLegacyFruitSnapshot(s)));
-  const fruitReady=assessmentType==='fruit_360'&&(await completedFruitSessionsForEmail(user.email)).length>0;
+  const fruitReady=assessmentType==='fruit_360'&&(await completedFruitSessionsForEmail(user.email,user.id)).length>0;
   if(!ready&&!fruitReady)return {stop:'The matching assessment result/course access is no longer available.'};
   if(assessmentType==='designpd'&&!hasDesignPdCourseAccess(user.email,snapshots.all))return {stop:'DesignPD course access is no longer available.'};
   if(job.template_id==='B05'&&assessmentType!=='fruit_360'){
@@ -195,7 +195,7 @@ export async function lifecycleEligibility(job:any,now=Date.now()):Promise<{stop
  if(job.template_id==='C04'){
   if(activeCircle)return {stop:'Optional recommendation suppressed during active Circle.'};
   const snapshots=await getAssessmentSnapshotsForUser(user.id,user.email);
-  if(snapshots.all.some(s=>s.assessment_type==='fruit_360'&&completedLegacyFruitSnapshot(s))||(await completedFruitSessionsForEmail(user.email)).length)return {stop:'FruitLife report already complete.'};
+  if(snapshots.all.some(s=>s.assessment_type==='fruit_360'&&completedLegacyFruitSnapshot(s))||(await completedFruitSessionsForEmail(user.email,user.id)).length)return {stop:'FruitLife report already complete.'};
   const sessions=must(await db.from('fruitlife_360_sessions').select('session_status').eq('participant_email',job.email).not('session_status','in','(archived,cancelled)')) as any[];
   if(sessions.length)return {stop:'FruitLife already underway or complete.'};
   const entitlements=must(await db.from('fruitlife_360_entitlements').select('id').eq('user_id',user.id).eq('status','active').is('consumed_at',null).limit(1)) as any[];

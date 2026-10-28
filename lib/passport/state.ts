@@ -1,7 +1,7 @@
 import 'server-only';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { getAssessmentSnapshotsForUser } from '@/lib/assessments/student-context';
-import { participantEmailCandidates } from '@/lib/identity/email';
+import { normalizeEmail } from '@/lib/identity/email';
 import { passportCurriculum, journeySlug, journeyChapterBadges, courseCompleted } from './curriculum';
 import { savedAssessmentComplete, savedPrimary, currentPrimaryAwards, completedFruitSession, completedLegacyFruitSnapshot } from './evidence';
 
@@ -42,16 +42,29 @@ export async function syncPassportAwards(user:{id:string;email?:string}, state?:
  const primary=designId ? savedPrimary(designId) : undefined;
  if(primary)badges.push({key:primary,evidence:{snapshotId:designId!.id,source:'canonical_saved_primary'}});
  for(const snapshot of report.all.filter(completedLegacyFruitSnapshot))badges.push({key:'fruit_360',evidence:{snapshotId:snapshot.id,source:'retained_full360_report_response_counts'}});
- if(user.email)for(const session of await completedFruitSessionsForEmail(user.email))badges.push({key:'fruit_360',evidence:{sessionId:session.id,source:'completed_report_and_required_observers'}});
+ if(user.email)for(const session of await completedFruitSessionsForEmail(user.email,user.id))badges.push({key:'fruit_360',evidence:{sessionId:session.id,source:'completed_report_and_required_observers'}});
  await awardBadges(user.id,badges);
  const synced=await readPassportState(user);
- return {...synced,awards:currentPrimaryAwards(synced.awards,primary)};
+ const completedAssessments=Array.from(new Set(badges.map(b=>b.key).filter(key=>['designid','designpd','spiritual_gifts','fruit_360'].includes(key))));
+ // Keep the persisted ledger unchanged. Only current, owner-verified assessment
+ // evidence can project an assessment award into the current earned collection.
+ const currentAwards=currentPrimaryAwards(synced.awards,primary).filter(a=>
+  !['designid','designpd','spiritual_gifts','fruit_360','DesignID','DesignPD','Spiritual Gifts Assessment','FruitLife360'].includes(a.badge_key) || completedAssessments.includes(a.badge_key));
+ return {...synced,completedAssessments,awards:currentAwards};
 }
 
-export async function completedFruitSessionsForEmail(email:string) {
- const sessions=await createSupabaseAdminClient().from('fruitlife_360_sessions')
-  .select('id,self_completed_at,observer_goal,observer_completed_count,report_status,report_snapshot_id,report_url,artifacts:fruitlife_360_report_artifacts(artifact_type,artifact_status)')
-  .in('participant_email',participantEmailCandidates(email)).in('report_status',['ready','sent']);
+/** Exact account/participant ownership, never Gmail delivery-alias equivalence.
+ * Unclaimed exact-email legacy reports remain readable without claiming rows. */
+export async function completedFruitSessionsForEmail(email:string,userId:string) {
+ const db=createSupabaseAdminClient();
+ const participants=await db.from('assessment_participants').select('id,user_id,normalized_email')
+  .or(`user_id.eq.${userId},and(normalized_email.eq.${JSON.stringify(normalizeEmail(email))},user_id.is.null)`);
+ if(participants.error)throw Error('Your FruitLife360 report identity could not be checked. Please try again.');
+ const participantIds=(participants.data??[]).map(p=>p.id);
+ const ownership=[`created_by_user_id.eq.${userId}`,...participantIds.map(id=>`and(participant_id.eq.${id},created_by_user_id.is.null)`)];
+ const sessions=await db.from('fruitlife_360_sessions')
+  .select('id,self_completed_at,observer_goal,observer_completed_count,report_status,report_mode,report_snapshot_id,report_url,artifacts:fruitlife_360_report_artifacts(artifact_type,artifact_status)')
+  .or(ownership.join(',')).in('report_status',['ready','sent']);
  if(sessions.error)throw Error('Your FruitLife360 report evidence could not be checked. Please try again.');
  return (sessions.data??[]).filter(completedFruitSession);
 }

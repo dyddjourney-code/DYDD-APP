@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { reportBucket } from '@/lib/assessments/report-storage';
-import { getReflectionExperience, reflectionLessonExists, reflectionExperiences, withWhoWhoseExplore, withDesignIdWelcome, withDesignIdLens, withIdentityBelievers, withDesignReflectionsLove, withOneAnother, withPathfinder, withExpertise } from './catalog';
+import { withCurrentJourneyActivities, getReflectionExperience, reflectionLessonExists, reflectionExperiences, withWhoWhoseExplore, withDesignIdWelcome, withDesignIdLens, withIdentityBelievers, withDesignReflectionsLove, withOneAnother, withPathfinder, withExpertise } from './catalog';
 import type { ReflectionRound, ReflectionEntry, ReflectionData } from './types';
 import { getHeatherReviewReport, getNewReviewReport, isReviewRequest, type ReviewSearchParams } from '@/lib/review/heather';
 import { isOwnerCoursePreview } from '@/lib/trails/course-preview';
@@ -32,6 +32,7 @@ async function load(p: ReviewSearchParams, slug: string): Promise<Saved> {
     }
     const saved: Saved = JSON.parse(await data.text());
     if (saved.rounds[0]) saved.rounds[0].questions = withExpertise(slug, withPathfinder(slug, withOneAnother(slug, withDesignReflectionsLove(slug, withIdentityBelievers(slug, withDesignIdLens(slug, withDesignIdWelcome(slug, withWhoWhoseExplore(slug, saved.rounds[0].questions))))))));
+    if (saved.rounds[0]) saved.rounds[0].questions = withCurrentJourneyActivities(slug, saved.rounds[0].questions);
     if (slug === 'discover-your-divine-design' && saved.rounds[0]) {
       const round = saved.rounds[0];
       for (const recovered of missingPathfinderEntries(round.id, saved.entries)) {
@@ -149,5 +150,5 @@ export async function previewExport(request: Request, p: ReviewSearchParams) {
     const rounds = saved.flatMap(x => x.rounds).filter(r => scope !== 'round' || r.id === id);
     if (scope === 'round' && !rounds.length)
         return reply({ error: 'Walkthrough not found.' }, 404);
-    return new NextResponse(reflectionExportText(rounds, saved.flatMap(x => x.entries)), { headers: { 'Cache-Control': 'private, no-store', 'Content-Type': 'text/plain; charset=utf-8', 'Content-Disposition': `attachment; filename="dydd-preview-reflections-${scope}.txt"` } });
+    return new NextResponse(reflectionExportText(rounds, saved.flatMap(x => x.entries), saved.flatMap(x => x.rounds[0] ? [x.rounds[0].id] : [])), { headers: { 'Cache-Control': 'private, no-store', 'Content-Type': 'text/plain; charset=utf-8', 'Content-Disposition': `attachment; filename="dydd-preview-reflections-${scope}.txt"` } });
 }

@@ -33,8 +33,10 @@ export function savedAssessmentComplete(snapshot: AssessmentSnapshotSummary, all
  }
  return false; // FruitLife requires verified session/observer evidence, below.
 }
-export function completedFruitSession(s: {self_completed_at:string|null;observer_goal:number;observer_completed_count:number;report_status:string;report_snapshot_id?:string|null;report_url?:string|null;artifacts?:Array<{artifact_type:string;artifact_status:string}>}) {
- return Boolean(s.self_completed_at && s.observer_completed_count >= Math.max(0,s.observer_goal) &&
+export function completedFruitSession(s: {self_completed_at:string|null;observer_goal:number;observer_completed_count:number;report_status:string;report_mode?:string|null;report_snapshot_id?:string|null;report_url?:string|null;artifacts?:Array<{artifact_type:string;artifact_status:string}>}) {
+ return Boolean(s.self_completed_at && s.report_mode?.toUpperCase() !== 'SELF_ONLY' &&
+  Number.isInteger(s.observer_goal) && s.observer_goal > 0 &&
+  Number.isInteger(s.observer_completed_count) && s.observer_completed_count >= s.observer_goal &&
   (['ready','success','sent','report_ready','report_sent','completed','email_sent','email_failed','email_skipped'].includes(s.report_status)) &&
   (s.report_snapshot_id || s.report_url || s.artifacts?.some(a=>a.artifact_type==='pdf' && a.artifact_status==='ready')));
 }

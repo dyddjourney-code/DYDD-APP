@@ -126,7 +126,7 @@ export function FruitLifeCurrentAssessmentProcess({
               <Link href={session.metadata.selfLink}>Open self link</Link>
             ) : null}
             {reportArtifact?.external_url ? (
-              <Link href={fruitLifeReportHref(session)}>Open report</Link>
+              <Link href={fruitLifeReportHref(session)} target="_blank" rel="noopener noreferrer">Open report</Link>
             ) : null}
             {canSendReminders ? (
               <form action={sendFruitLifeReminder}>

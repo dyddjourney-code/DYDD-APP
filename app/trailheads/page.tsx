@@ -1,6 +1,7 @@
 import { isFreeBeta } from "@/lib/environment";
 import { isOwnerCoursePreview, designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import Link from "next/link";
+import { TrailAnchor } from "@/components/trail-anchor";
 import { TrailPlacard } from "@/components/trail-placard";
 import { TrailResumeLink } from "@/components/trail-resume-link";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
@@ -102,6 +103,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
     <main
       className={`journey-shell hq-standalone-page trailhead-renewal${mini ? " fruitlife-release-shell" : ""}`}
     >
+      <TrailAnchor />
       {mini ? <FruitLifeMiniNav reviewQuery={reviewQuery(params)} /> : null}
       <header className="standalone-hero trailheads-hero">
         <div>
@@ -138,6 +140,8 @@ export default async function TrailheadsPage({ searchParams }: Props) {
             <div className="trail-showcase-art">
               <img
                 src="/brand/dydd-trailheads-signpost-dydi.png"
+                width={1254}
+                height={1254}
                 alt="Dydi beside the Discover Your Divine Design trail sign"
               />
             </div>
@@ -237,6 +241,8 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                 <div className="trail-guide-route-art">
                   <img
                     src={trail.signpost}
+                    width={832}
+                    height={820}
                     alt={`${trail.name} trail signpost`}
                     loading="lazy"
                   />

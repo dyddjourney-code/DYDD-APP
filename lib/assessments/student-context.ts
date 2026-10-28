@@ -1,5 +1,5 @@
 import { canonicalDesignIdShadow } from "@/lib/designid/shadow";
-import { participantEmailCandidates } from "@/lib/identity/email";
+import { normalizeEmail, participantEmailCandidates } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export type AssessmentSnapshotSummary = {
@@ -258,7 +258,9 @@ export async function findOrAttachParticipant(userId: string, email: string) {
     return existingParticipant.id as string;
   }
 
-  const emailCandidates = participantEmailCandidates(email);
+  // An authenticated account is not the owner of every Gmail delivery alias.
+  // Canonical aliases remain available to explicit administrative matching, not claims.
+  const emailCandidates = [normalizeEmail(email)].filter(Boolean);
 
   if (!emailCandidates.length) {
     return null;
@@ -305,7 +307,7 @@ export async function getAssessmentSnapshotsForUser(
     .order("created_at", { ascending: false });
 
   const { data } = participantId
-    ? await query.or(`participant_id.eq.${participantId},user_id.eq.${userId}`)
+    ? await query.or(`user_id.eq.${userId},and(participant_id.eq.${participantId},user_id.is.null)`)
     : await query.eq("user_id", userId);
 
   const all = (data ?? []) as AssessmentSnapshotSummary[];

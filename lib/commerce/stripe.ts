@@ -8,8 +8,10 @@ export const fruitLifeStripePriceId =
 
 let stripeClient: Stripe | null = null;
 
-export function getStripeClient() {
-  if (isFreeBeta()) throw new Error("Payments are disabled during the free beta.");
+export function getStripeClient({ fulfillmentOnly = false }: { fulfillmentOnly?: boolean } = {}) {
+  // Existing signed webhooks/success callbacks may read and fulfill old payments.
+  // Only the checkout endpoint creates sessions, and it redirects before this in beta.
+  if (isFreeBeta() && !fulfillmentOnly) throw new Error("Payments are disabled during the free beta.");
   if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox") {
     throw new Error("Payments are disabled in the sandbox.");
   }

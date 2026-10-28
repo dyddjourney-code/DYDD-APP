@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const stripe = getStripeClient();
+  const stripe = getStripeClient({ fulfillmentOnly: true });
   const checkoutSession = await stripe.checkout.sessions.retrieve(checkoutSessionId, {
     expand: ["line_items.data.price"],
   });

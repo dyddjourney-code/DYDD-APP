@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Missing STRIPE_WEBHOOK_SECRET." }, { status: 500 });
   }
 
-  const stripe = getStripeClient();
+  const stripe = getStripeClient({ fulfillmentOnly: true });
   const signature = request.headers.get("stripe-signature");
   const body = await request.text();
 

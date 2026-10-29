@@ -484,6 +484,14 @@ function snapshotSummary(snapshot: AssessmentSnapshot) {
 
 function reportHref(snapshot: AssessmentSnapshot, params?: CommandCenterSearchParams | null) {
   const scores = snapshot.scores ?? {};
+  // Use the protected local resolver, not an old absolute learner-school URL.
+  if (isPrivateOwnerConsole()) {
+    if (["designid", "designpd", "spiritual_gifts"].includes(snapshot.assessment_type)) {
+      const route = snapshot.assessment_type === "spiritual_gifts" ? "spiritual-gifts" : snapshot.assessment_type;
+      return `/${route}/report?snapshot=${encodeURIComponent(snapshot.id)}`;
+    }
+    if (snapshot.assessment_type === "fruit_360") return `/api/artifacts/${encodeURIComponent(snapshot.id)}/download`;
+  }
   const reportAccessUrl = compactValue(scores.reportAccessUrl);
   const ownerQuery = new URLSearchParams();
 
@@ -2411,7 +2419,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                             ) : null}
                             {isAdmin && snapshot.assessment_type === 'designid' ? <DesignIdResearchPanel scores={snapshot.scores} participantId={snapshot.participant_id} /> : null}
                             {href ? (
-                              <Link className="button text" href={href} target="_blank" rel="noreferrer">
+                              <Link className="button text" href={href} target="_blank" rel="noreferrer" prefetch={false}>
                                 Open Report
                               </Link>
                             ) : (
@@ -2420,6 +2428,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                             <Link
                               className="button text"
                               href={artifactHref(snapshot, params)}
+                              prefetch={false}
                               target="_blank"
                               rel="noreferrer"
                             >

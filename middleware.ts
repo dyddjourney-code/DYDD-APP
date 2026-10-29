@@ -10,7 +10,8 @@ export async function middleware(request: NextRequest) {
     if (!pinned) return new NextResponse("Owner deployment unavailable", { status: 503 });
     const path = request.nextUrl.pathname;
     if (path === "/" || path === "/owner") return NextResponse.redirect(new URL("/command-center", request.url));
-    const allowed = /^\/(?:command-center(?:\/|$)|api\/command-center(?:\/|$)|_next(?:\/|$)|brand(?:\/|$))/.test(path);
+    const savedReport = /^\/(?:designid|designpd|spiritual-gifts)\/report$/.test(path) || /^\/api\/artifacts\/[0-9a-f-]{36}\/download$/i.test(path);
+    const allowed = savedReport || /^\/(?:command-center(?:\/|$)|api\/command-center(?:\/|$)|_next(?:\/|$)|brand(?:\/|$))/.test(path);
     if (!allowed) return new NextResponse("Not found", { status: 404 });
     if (!["GET", "HEAD", "OPTIONS"].includes(request.method)) {
       const origin = request.headers.get("origin");

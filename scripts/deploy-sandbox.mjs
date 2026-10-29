@@ -14,7 +14,7 @@ let last='';for(let attempt=0;attempt<90;attempt++){
  const d=await api('GET','/v13/deployments/'+result.id);
  if(d.readyState!==last){console.log('Sandbox deployment '+d.readyState);last=d.readyState;}
  if(['ERROR','CANCELED'].includes(d.readyState))throw Error('Sandbox deployment '+d.readyState);
- if(d.readyState==='READY'){console.log('READY https://dydd-online-school-sandbox.vercel.app');process.exit(0);}
+ if(d.readyState==='READY'){execFileSync(process.execPath,['scripts/repair-sandbox-branch-alias.mjs'],{stdio:'inherit'});console.log('READY https://dydd-online-school-sandbox.vercel.app (sandbox branch alias verified)');process.exit(0);}
  await new Promise(resolve=>setTimeout(resolve,5000));
 }
 throw Error('Sandbox deployment timed out; inspect the recorded deployment before retrying.');

@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { enterNewPreview } from "@/app/login/actions";
-import { allCourseSummaries } from "@/lib/courses/course-catalog";
-import { designIdCourse } from "@/lib/courses/designid-foundations";
+import { redirect } from "next/navigation";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 const includedItems = [
   {
@@ -17,8 +16,8 @@ const includedItems = [
     text: "Workbook prompts and next steps kept near the results that gave them meaning.",
   },
   {
-    label: "Dydi's corner",
-    text: "A guide station for slowing down, noticing what matters, and choosing a faithful next move.",
+    label: "Your next step",
+    text: "Choose a course, revisit a saved reflection, or return to your personal Base Camp.",
   },
 ];
 
@@ -37,19 +36,11 @@ const approachSteps = [
   },
 ];
 
-const previewStats = [
-  { label: "DesignID modules", value: designIdCourse.modules.length },
-  {
-    label: "DesignID lessons",
-    value: designIdCourse.modules.reduce(
-      (count, module) => count + module.lessons.length,
-      0,
-    ),
-  },
-  { label: "Mapped classes", value: allCourseSummaries.length },
-];
+export default async function Home() {
+  const supabase = await createSupabaseServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) redirect("/hq");
 
-export default function Home() {
   return (
     <main className="portal-shell">
       <section className="portal-hero" aria-label="DYDD portal entry">
@@ -59,7 +50,7 @@ export default function Home() {
             src="/brand/dydd-logo.webp"
             alt="Discover Your Divine Design"
           />
-          <p className="eyebrow">Private journey portal</p>
+          <p className="eyebrow">DYDD Sandbox</p>
           <h1>Your design deserves more than a report.</h1>
           <p className="lede">
             The DYDD online school is being shaped as a guided headquarters for
@@ -68,14 +59,11 @@ export default function Home() {
           </p>
           <div className="portal-access-panel" aria-label="Portal access">
             <div>
-              <p className="section-label">Portal entry</p>
-              <h2>Open the active work surfaces.</h2>
+              <p className="section-label">Sandbox entry</p>
+              <h2>Choose your sandbox view.</h2>
             </div>
-            <form action={enterNewPreview}>
-              <button className="button primary portal-login-button" type="submit">
-                New person review
-              </button>
-            </form>
+            <Link href="/base-camp" className="button primary portal-login-button">Sandbox Base Camp</Link>
+            <Link href="/login" className="button secondary">Sign in to a sandbox account</Link>
             <Link href="/owner" className="button secondary">
               Owner Command Center
             </Link>
@@ -83,19 +71,17 @@ export default function Home() {
               First Launch Mini App
             </Link>
             <p className="helper-text">
-              Vercel-protected preview access opens these review surfaces
-              without using a learner account.
+              Base Camp opens the existing teaching preview without a learner login.
+              Sandbox accounts are separate from live accounts. Owner Command
+              Center opens the private owner app with live data and its own Vercel sign-in.
             </p>
           </div>
         </div>
 
-        <div className="portal-journey-note" aria-label="Journey preview">
-          {previewStats.map((stat) => (
-            <p key={stat.label}>
-              <span>{stat.value}</span>
-              <small>{stat.label}</small>
-            </p>
-          ))}
+        <div className="portal-journey-note" aria-label="Your DYDD journey">
+          <p><span>Discover</span><small>Explore your design</small></p>
+          <p><span>Reflect</span><small>Keep your private workbook</small></p>
+          <p><span>Grow</span><small>Put learning into practice</small></p>
         </div>
       </section>
 
@@ -155,38 +141,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="ask-dydi" aria-label="Ask Dydi">
-        <div className="dydi-host">
-          <div className="dydi-figure">
-            <img src="/brand/characters/dydi-full-body.png" alt="Dydi host" />
-          </div>
-          <div className="dydi-copy">
-            <p className="section-label">Ask Dydi</p>
-            <h2>Need help choosing where to begin?</h2>
-            <p>
-              Dydi is stationed beside the doorway as the future guide for the
-              journey, helping someone understand what is available and choose a
-              faithful next step.
-            </p>
-          </div>
-        </div>
-        <form className="dydi-form">
-          <label htmlFor="dydi-question">What would you like to explore?</label>
-          <textarea
-            id="dydi-question"
-            name="question"
-            placeholder="I want to use DYDD with..."
-            rows={5}
-          />
-          <button className="button primary" type="button">
-            Ask Dydi
-          </button>
-          <p className="helper-text">
-            This inquiry box is staged for the product preview. Live Dydi
-            responses will connect later.
-          </p>
-        </form>
-      </section>
     </main>
   );
 }

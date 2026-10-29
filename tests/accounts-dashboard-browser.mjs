@@ -46,19 +46,21 @@ try {
   const page=await browser.newPage();page.on('pageerror',e=>errors.push(e.message));
   await page.setRequestInterception(true);page.on('request',request=>{if(!['GET','HEAD','OPTIONS'].includes(request.method())){errors.push('Unexpected mutation '+request.method()+' '+new URL(request.url()).pathname);return request.abort();}return request.continue();});
   for(const width of [1280,390,320]){
-    await page.setViewport({width,height:1000});await page.goto(base+url+ownerParams,{waitUntil:'networkidle0',timeout:90000});
+    await page.setViewport({width,height:1000});await page.goto(base+url+ownerParams,{waitUntil:'domcontentloaded',timeout:90000});
     await page.waitForSelector('input[type="search"]');
+    await page.waitForFunction(()=>{const input=document.querySelector('input[type=search]');return Boolean(input&&Object.keys(input).some(k=>k.startsWith('__reactProps$')&&typeof input[k]?.onChange==='function'));});
+    console.log('Published/local actual hydrated page viewport '+width);
     assert(await page.$eval('main',e=>e.textContent.includes('SANDBOX DATA ONLY')));
     const metric=await page.$$eval('main>section[aria-label="Account totals"] article',elements=>elements.map(e=>e.textContent));assert(metric[0].includes('2'));assert(metric[2].includes('1'));
     const circles=await page.$eval('section[aria-labelledby="circles-title"]',e=>e.innerText);assert(circles.includes('50.0%'));assert(circles.includes('2.0'));
     const rows=await page.$$('tbody tr');assert.equal(rows.length,2);
     const body=await page.$eval('main',e=>e.innerText);assert(body.includes('Unavailable'));assert(body.includes('Not connected'));assert(!body.includes('Architect'));
     const geometry=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth}));assert(geometry.scroll<=geometry.width+1,'Page overflow at '+width+': '+JSON.stringify(geometry));
-    const screenshot=`${out}/${prefix}-${width}.png`;await page.screenshot({path:screenshot,fullPage:true});screenshots.push(screenshot);
+    const screenshot=`${out}/${prefix}-${width}.png`;await page.screenshot({path:screenshot,fullPage:true,waitForFonts:false});screenshots.push(screenshot);
     await page.type('input[type="search"]','Rowan');await page.waitForFunction(()=>document.querySelectorAll('tbody tr').length===1);assert(await page.$eval('tbody',e=>e.innerText.includes('Rowan')));
     await page.$eval('input[type="search"]',e=>{const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set;setter.call(e,'nobody-matches');e.dispatchEvent(new Event('input',{bubbles:true}));});
     await page.waitForFunction(()=>document.querySelector('main').innerText.includes('No accounts match'));
-    await page.reload({waitUntil:'networkidle0'});
+    await page.reload({waitUntil:'domcontentloaded'});await page.waitForFunction(()=>{const input=document.querySelector('input[type=search]');return Boolean(input&&Object.keys(input).some(k=>k.startsWith('__reactProps$')&&typeof input[k]?.onChange==='function'));});
     await page.select('select','beta');await page.waitForFunction(()=>document.querySelectorAll('tbody tr').length===1);assert(await page.$eval('tbody',e=>e.innerText.includes('Ellis')));
     await page.select('select','all');
     await page.click('button[aria-label^="September 2026:"]');await page.waitForFunction(()=>document.querySelector('input[type="month"]').value==='2026-09');assert((await page.$eval('main>section[aria-label="Account totals"] article:nth-child(2)',e=>e.innerText)).includes('0'));
@@ -84,10 +86,11 @@ finally {
     try {
       const empty=await emptyBrowser.newPage();
       for(const width of [1280,390]){
-        await empty.setViewport({width,height:1000});await empty.goto(base+url+ownerParams,{waitUntil:'networkidle0',timeout:90000});
+        await empty.setViewport({width,height:1000});await empty.goto(base+url+ownerParams,{waitUntil:'domcontentloaded',timeout:90000});
+        await empty.waitForFunction(()=>document.querySelector('main')?.innerText.includes('No sandbox accounts yet'));
         assert(await empty.$eval('main',e=>e.innerText.includes('No sandbox accounts yet')));
         assert.equal(await empty.$eval('main>section[aria-label="Account totals"] article:first-child strong',e=>e.innerText),'0');
-        const path=`${out}/${prefix}-actual-empty-${width}.png`;await empty.screenshot({path,fullPage:true});screenshots.push(path);
+        const path=`${out}/${prefix}-actual-empty-${width}.png`;await empty.screenshot({path,fullPage:true,waitForFonts:false});screenshots.push(path);
       }
       checks.push('Post-cleanup actual empty sandbox page verified1280/390,0accounts/0active real Circles,10unused beta codes, no live beta data');
     } finally {await emptyBrowser.close();}

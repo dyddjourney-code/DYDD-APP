@@ -1,0 +1,21 @@
+// Render the actual pinned owner layout; no network/platform/customer writes.
+const assert = require('node:assert/strict');
+const load = require('../scripts/fruitlife-test-load.cjs');
+const ts = require('typescript');
+const fs = require('node:fs');
+const source = fs.readFileSync('app/layout.tsx', 'utf8').replace(/^import ["']\.\/.*\.css["'];\n/gm, '');
+const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText;
+let owner = true;
+const layoutModule = {};
+new Function('require', 'exports', code)(name => name === '@/lib/private-owner' ? { isPrivateOwnerConsole: () => owner } : name === '@/components/app-chrome' ? { AppChrome: 'app-chrome' } : require(name), layoutModule);
+const html = require('react-dom/server').renderToStaticMarkup(layoutModule.default({ children: 'fixture content' }));
+for (const href of ['https://dydd-online-school.vercel.app/base-camp', 'https://dydd-online-school-sandbox.vercel.app/base-camp']) assert(html.includes('href="' + href + '" referrerPolicy="no-referrer"') || html.includes('href="' + href + '" referrerpolicy="no-referrer"'), href);
+assert(html.includes('App sign-ins are separate.'));
+assert(!html.includes('key='));
+owner = false;
+assert(!require('react-dom/server').renderToStaticMarkup(layoutModule.default({ children: 'fixture content' })).includes('Return to DYDD app'));
+const mode = load('lib/private-owner.ts');
+process.env.DYDD_PRIVATE_OWNER_MODE = 'true'; process.env.VERCEL_ENV = 'production'; process.env.VERCEL_PROJECT_ID = 'incorrect';
+assert.equal(mode.isPrivateOwnerConsole(), false);
+process.env.VERCEL_PROJECT_ID = 'prj_Aw8o5xjiMpVY9NaGvFBsamRIM4Aq'; assert(mode.isPrivateOwnerConsole());
+console.log('PASS pinned owner layout exposes credential-free absolute live/sandbox returns only in owner mode; strict environment gate unchanged.');

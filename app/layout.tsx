@@ -32,7 +32,11 @@ export default function RootLayout({
             <nav aria-label="Owner Command Center" style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
               <Link href="/command-center">Command Center</Link><Link href="/command-center/accounts">Accounts</Link><Link href="/command-center/design-map">Design Map</Link><Link href="/command-center/expedition">Expedition</Link>
             </nav>
-            <small>Private owner · Original-school live data</small>
+            <nav aria-label="Return to DYDD app" style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
+              <a href="https://dydd-online-school.vercel.app/base-camp" referrerPolicy="no-referrer">Live Base Camp</a>
+              <a href="https://dydd-online-school-sandbox.vercel.app/base-camp" referrerPolicy="no-referrer">Sandbox Base Camp</a>
+            </nav>
+            <small>Private owner · Original-school live data. App sign-ins are separate.</small>
           </header>
           {children}
         </> : <AppChrome>{children}</AppChrome>}

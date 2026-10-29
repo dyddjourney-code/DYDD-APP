@@ -30,7 +30,7 @@ export default function RootLayout({
           <header style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 20, padding: "16px 24px", background: "#fffaf0", borderBottom: "1px solid #d5decc" }}>
             <Link href="/command-center"><img src="/brand/dydd-logo.webp" alt="Discover Your Divine Design" style={{ width: 160 }} /></Link>
             <nav aria-label="Owner Command Center" style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
-              <Link href="/command-center">Command Center</Link><Link href="/command-center/accounts">Accounts</Link><Link href="/command-center/design-map">Design Map</Link><Link href="/command-center/expedition">Expedition</Link>
+              <Link href="/command-center">Command Center</Link><Link href="/command-center/accounts">Accounts</Link><Link href="/command-center/design-map">Design Map</Link><Link href="/command-center/maps">MAPS</Link><Link href="/command-center/expedition">Expedition</Link>
             </nav>
             <nav aria-label="Return to DYDD app" style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
               <a href="https://dydd-online-school.vercel.app/base-camp" referrerPolicy="no-referrer">Live Base Camp</a>

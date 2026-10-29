@@ -1,16 +1,10 @@
 import { NextResponse } from "next/server";
 
-export function GET(request: Request) {
-  const url = new URL(request.url);
-  const reviewToken = process.env.DYDD_REVIEW_TOKEN;
-
-  if (!reviewToken) {
-    return NextResponse.redirect(
-      new URL(`/login?next=${encodeURIComponent("/command-center")}`, url),
-    );
-  }
-
-  return NextResponse.redirect(
-    new URL(`/command-center?review=owner&key=${encodeURIComponent(reviewToken)}`, url),
-  );
+/** Original owner operations live behind ALL-deployment Vercel Authentication.
+ * Never issue the public teaching-preview credential for live owner access. */
+export function GET() {
+  const response = NextResponse.redirect("https://dydd-private-owner-console.vercel.app/command-center");
+  response.headers.set("Cache-Control", "private, no-store");
+  response.headers.set("Referrer-Policy", "no-referrer");
+  return response;
 }

@@ -3,6 +3,17 @@ import { type NextRequest, NextResponse } from "next/server";
 import { getSupabaseConfig } from "./lib/supabase/config";
 
 export async function middleware(request: NextRequest) {
+  if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox" && request.method === "GET" && /^\/command-center(?:\/|$)/.test(request.nextUrl.pathname)) {
+    const destination = new URL(request.nextUrl.pathname, "https://dydd-private-owner-console.vercel.app");
+    for (const key of ["assessment", "from", "group", "message", "q", "sort", "to"]) {
+      const value = request.nextUrl.searchParams.get(key);
+      if (value) destination.searchParams.set(key, value);
+    }
+    const forwarded = NextResponse.redirect(destination);
+    forwarded.headers.set("Cache-Control", "private, no-store");
+    forwarded.headers.set("Referrer-Policy", "no-referrer");
+    return forwarded;
+  }
   let response = NextResponse.next({ request });
   // Sandbox review is not a learner login. Preserve only the already-authorized
   // preview credential across plain links and existing gold-bar browser sessions.

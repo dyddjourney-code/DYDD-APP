@@ -2,12 +2,12 @@ import fs from 'node:fs';import {execFileSync} from 'node:child_process';
 const team='team_uVFR0iaoxW2TA9q58bZhl8XK',project='prj_Aw8o5xjiMpVY9NaGvFBsamRIM4Aq',name='dydd-private-owner-console';
 const {token}=JSON.parse(fs.readFileSync('/home/openclaw/.openclaw/secrets/vercel-token.json'));
 const live=JSON.parse(fs.readFileSync('/home/openclaw/.openclaw/secrets/dydd-online-school-supabase.json'));
-const sourceEnv=JSON.parse(fs.readFileSync('/tmp/dydd-owner-source-env.json'));
 async function api(method,path,body){const r=await fetch('https://api.vercel.com'+path+(path.includes('?')?'&':'?')+'teamId='+team,{method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});const d=await r.json();if(!r.ok)throw Error('Vercel '+r.status+': '+JSON.stringify(d.error));return d;}
 fs.mkdirSync('tmp/full-owner',{recursive:true});
 const before=await api('GET','/v9/projects/'+project);if(before.name!==name)throw Error('Wrong project');fs.writeFileSync('tmp/full-owner/project-before.json',JSON.stringify(before,null,2));
 await api('PATCH','/v9/projects/'+project,{ssoProtection:{deploymentType:'all'},framework:'nextjs',autoExposeSystemEnvs:true,buildCommand:'npm run build',outputDirectory:null,installCommand:'npm ci'});
 const p=await api('GET','/v9/projects/'+project);if(p.ssoProtection?.deploymentType!=='all')throw Error('Protection missing');
+const sourceEnv=await api('GET','/v10/projects/prj_YO15mYTp64EHk0wlg6QmBTxNeV5k/env?decrypt=true');
 const values={DYDD_PRIVATE_OWNER_MODE:'true',NEXT_PUBLIC_DYDD_ENVIRONMENT:'owner',NEXT_PUBLIC_SUPABASE_URL:live.project_url,NEXT_PUBLIC_SUPABASE_ANON_KEY:live.anon_key,SUPABASE_SERVICE_ROLE_KEY:live.service_role_key,DYDD_APP_URL:'https://dydd-online-school.vercel.app'};
 for(const key of ['DYDD_RESEND_API_KEY','DYDD_EMAIL_FROM','FRUITLIFE_EMAIL_FROM','PDFMONKEY_API_KEY','DESIGNID_PDFMONKEY_TEMPLATE_ID','DESIGNPD_PDFMONKEY_TEMPLATE_ID','SPIRITUAL_GIFTS_PDFMONKEY_TEMPLATE_ID','FRUITLIFE_PDFMONKEY_TEMPLATE_ID']){const e=sourceEnv.envs.find(x=>x.key===key&&x.target.includes('production'));if(e?.value)values[key]=e.value;}
 for(const [key,value]of Object.entries(values)){await api('POST','/v10/projects/'+project+'/env?upsert=true',{key,value,type:'encrypted',target:['production']});}

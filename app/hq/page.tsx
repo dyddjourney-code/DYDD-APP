@@ -653,9 +653,12 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             <p className="eyebrow">DYDD Base Camp</p>
             <h1>{displayName}</h1>
           </div>
-          <form action={signOut}>
-            <button className="button secondary" type="submit">Sign out</button>
-          </form>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
+            {isAdmin ? <a className="button secondary" href="https://dydd-private-owner-console.vercel.app/command-center" referrerPolicy="no-referrer">Owner Command Center</a> : null}
+            <form action={signOut}>
+              <button className="button secondary" type="submit">Sign out</button>
+            </form>
+          </div>
         </header>
 
       <section className="basecamp-hero" id="basecamp" aria-label="DYDD Base Camp">

@@ -33,6 +33,7 @@ function AppChromeFrame({ children }: AppChromeProps) {
             <Link href="/contact">Contact</Link>
             <Link href="/privacy">Privacy Policy</Link>
             <Link href="/terms">Terms of Service</Link>
+            {process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT !== "sandbox" ? <a href="https://dydd-private-owner-console.vercel.app/command-center" referrerPolicy="no-referrer">Owner sign-in</a> : null}
           </footer>
         </div>
       </div>

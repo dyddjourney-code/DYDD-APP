@@ -1,9 +1,11 @@
+import { isPrivateOwnerConsole } from "@/lib/private-owner";
 export type OwnerPreviewParams = {
   key?: string | null;
   review?: string | null;
 };
 
 export function isOwnerPreviewRequest(params?: OwnerPreviewParams | null) {
+  if (isPrivateOwnerConsole()) return true;
   return (
     params?.review === "owner" &&
     Boolean(params.key) &&

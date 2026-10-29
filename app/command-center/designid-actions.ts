@@ -1,11 +1,17 @@
 'use server';
+import { isPrivateOwnerConsole } from '@/lib/private-owner';
+import { getDyddAdminEmails } from '@/lib/admin-access';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { isDyddAdminEmail } from '@/lib/admin-access';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 export async function grantDesignIdRetake(form: FormData) {
-  const {data:{user}} = await (await createSupabaseServerClient()).auth.getUser();
+  let {data:{user}} = await (await createSupabaseServerClient()).auth.getUser();
+  if (isPrivateOwnerConsole()) {
+    const result = await createSupabaseAdminClient().auth.admin.listUsers({page:1,perPage:1000});
+    user = result.error ? null : result.data.users.find(u => Boolean(u.email_confirmed_at) && getDyddAdminEmails().has((u.email ?? '').trim().toLowerCase())) ?? null;
+  }
   if (!user || !isDyddAdminEmail(user.email)) redirect('/login?next=%2Fcommand-center');
   const participantId = String(form.get('participant_id') ?? '');
   const reason = String(form.get('reason') ?? '').trim();

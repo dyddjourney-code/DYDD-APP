@@ -40,6 +40,6 @@ export async function readAccountsDashboard(params?: OwnerPreviewParams) {
   ]);
   if (codes.error) throw new Error('Beta access totals could not be loaded.');
   const people = buildAccountRows(accounts, progress, awards, access, passportCurriculum);
-  return { people, circles: circleMetrics(circles, memberships, people), unusedBetaCodes: codes.count ?? 0, fetchedAt: new Date().toISOString(), environment: 'sandbox' as const };
+  return { people, circles: circleMetrics(circles, memberships, people), unusedBetaCodes: codes.count ?? 0, fetchedAt: new Date().toISOString(), environment: 'owner' as const };
 }
 export type AccountsDashboardData = Awaited<ReturnType<typeof readAccountsDashboard>>;

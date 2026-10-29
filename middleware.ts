@@ -3,6 +3,21 @@ import { type NextRequest, NextResponse } from "next/server";
 import { getSupabaseConfig } from "./lib/supabase/config";
 
 export async function middleware(request: NextRequest) {
+  if (process.env.DYDD_PRIVATE_OWNER_MODE === "true") {
+    // Vercel Authentication gates ALL deployments before this middleware.
+    // Keep this operational deployment out of every learner/API workflow.
+    const pinned = process.env.VERCEL_PROJECT_ID === "prj_Aw8o5xjiMpVY9NaGvFBsamRIM4Aq" && process.env.VERCEL_ENV === "production";
+    if (!pinned) return new NextResponse("Owner deployment unavailable", { status: 503 });
+    const path = request.nextUrl.pathname;
+    if (path === "/" || path === "/owner") return NextResponse.redirect(new URL("/command-center", request.url));
+    const allowed = /^\/(?:command-center(?:\/|$)|api\/command-center(?:\/|$)|_next(?:\/|$)|brand(?:\/|$))/.test(path);
+    if (!allowed) return new NextResponse("Not found", { status: 404 });
+    const response = NextResponse.next({ request });
+    response.headers.set("Cache-Control", "private, no-store, max-age=0");
+    response.headers.set("Referrer-Policy", "no-referrer");
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+    return response;
+  }
   let response = NextResponse.next({ request });
   // Sandbox review is not a learner login. Preserve only the already-authorized
   // preview credential across plain links and existing gold-bar browser sessions.

@@ -1,3 +1,4 @@
+import { isPrivateOwnerConsole } from "@/lib/private-owner";
 import { DesignIdResearchPanel } from "@/components/designid-research";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -1597,7 +1598,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
         </div>
       </section>
 
-      {isAdmin && isSandbox() ? (
+      {isAdmin && (isSandbox() || isPrivateOwnerConsole()) ? (
         <nav aria-label="Command Center views" style={{ display: 'flex', gap: 16, padding: '16px 0' }}>
           <span aria-current="page">Assessments &amp; groups</span>
           <Link href={'/command-center/accounts' + (isOwnerPreview ? '?' + new URLSearchParams({ review: 'owner', key: params?.key ?? '' }) : '')}>Accounts</Link>

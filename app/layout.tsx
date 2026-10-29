@@ -1,3 +1,5 @@
+import { isPrivateOwnerConsole } from "@/lib/private-owner";
+import Link from "next/link";
 import type { Metadata } from "next";
 import { AppChrome } from "@/components/app-chrome";
 import "./globals.css";
@@ -24,7 +26,16 @@ export default function RootLayout({
             {" · "}<a href="/sandbox-review" style={{ color: "inherit", textDecoration: "underline", whiteSpace: "nowrap" }}>Preview all courses</a>
           </div>
         ) : null}
-        <AppChrome>{children}</AppChrome>
+        {isPrivateOwnerConsole() ? <>
+          <header style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 20, padding: "16px 24px", background: "#fffaf0", borderBottom: "1px solid #d5decc" }}>
+            <Link href="/command-center"><img src="/brand/dydd-logo.webp" alt="Discover Your Divine Design" style={{ width: 160 }} /></Link>
+            <nav aria-label="Owner Command Center" style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
+              <Link href="/command-center">Command Center</Link><Link href="/command-center/accounts">Accounts</Link><Link href="/command-center/design-map">Design Map</Link><Link href="/command-center/expedition">Expedition</Link>
+            </nav>
+            <small>Private owner · Original-school live data</small>
+          </header>
+          {children}
+        </> : <AppChrome>{children}</AppChrome>}
       </body>
     </html>
   );

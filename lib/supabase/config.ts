@@ -15,5 +15,8 @@ export function getSupabaseConfig() {
     }
   }
 
+  if (process.env.DYDD_PRIVATE_OWNER_MODE === "true" && new URL(url).hostname !== "laojrzlqbkmirzcbcnyw.supabase.co") {
+    throw new Error("Original owner database identity mismatch.");
+  }
   return { anonKey, url };
 }

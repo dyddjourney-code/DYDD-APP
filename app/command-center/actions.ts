@@ -1,5 +1,6 @@
 "use server";
 
+import { isPrivateOwnerConsole } from "@/lib/private-owner";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getDyddAdminEmails, isDyddAdminEmail } from "@/lib/admin-access";
@@ -12,6 +13,7 @@ function getString(formData: FormData, key: string) {
 }
 
 function isOwnerPreviewForm(formData: FormData) {
+  if (isPrivateOwnerConsole()) return true;
   const review = getString(formData, "review");
   const key = getString(formData, "key");
 
@@ -29,7 +31,7 @@ function commandCenterTarget(
 ) {
   const query = new URLSearchParams();
 
-  if (isOwnerPreviewForm(formData)) {
+  if (isOwnerPreviewForm(formData) && !isPrivateOwnerConsole()) {
     query.set("review", "owner");
     query.set("key", getString(formData, "key"));
   }
@@ -93,7 +95,7 @@ async function getCommandCenterActor(formData: FormData) {
   });
 
   const owner = data?.users.find((user) =>
-    adminEmails.has(canonicalizeParticipantEmail(user.email)),
+    Boolean(user.email_confirmed_at) && adminEmails.has((user.email ?? "").trim().toLowerCase()),
   );
 
   if (error || !owner) {

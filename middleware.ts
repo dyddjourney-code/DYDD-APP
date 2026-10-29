@@ -12,6 +12,14 @@ export async function middleware(request: NextRequest) {
     if (path === "/" || path === "/owner") return NextResponse.redirect(new URL("/command-center", request.url));
     const allowed = /^\/(?:command-center(?:\/|$)|api\/command-center(?:\/|$)|_next(?:\/|$)|brand(?:\/|$))/.test(path);
     if (!allowed) return new NextResponse("Not found", { status: 404 });
+    if (!["GET", "HEAD", "OPTIONS"].includes(request.method)) {
+      const origin = request.headers.get("origin");
+      // Preserve original write paths, but require a same-origin owner action.
+      // Platform authentication is not a substitute for CSRF protection.
+      if (!origin || origin !== request.nextUrl.origin || request.headers.get("sec-fetch-site") === "cross-site") {
+        return new NextResponse("Same-origin owner action required", { status: 403 });
+      }
+    }
     const response = NextResponse.next({ request });
     response.headers.set("Cache-Control", "private, no-store, max-age=0");
     response.headers.set("Referrer-Policy", "no-referrer");

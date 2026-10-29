@@ -48,7 +48,8 @@ The browser verifier expects the production server at `127.0.0.1:3158` using the
 existing private-owner local verification setup and outputs evidence into
 `tmp/expedition-team-demo/`. It blocks any non-GET/HEAD/OPTIONS browser request.
 It checks desktop/390/320 rendering, actual UI transitions, fixture/plot values,
-local persistence/reset, empty states and incompatible storage recovery.
+local persistence/reset, empty states, incompatible storage recovery, and 120 rapid
+status transitions (regression coverage for redundant persistence-feedback updates).
 The separate model verifier compares every PD movement to the real scoring engine.
 
 Release evidence and deployment receipt are copied to the workspace

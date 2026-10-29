@@ -21,9 +21,9 @@ export function ExpeditionDemo() {
   }, []);
   useEffect(() => {
     if (!loaded) return;
-    try { localStorage.setItem(storageKey, JSON.stringify(state)); setSaved(true); }
-    catch { setSaved(false); }
-  }, [state, loaded]);
+    try { localStorage.setItem(storageKey, JSON.stringify(state)); if (!saved) setSaved(true); }
+    catch { if (saved) setSaved(false); }
+  }, [state, loaded, saved]);
   const data = teamData(state);
   function changePerson(index: number, update: Partial<DemoState["people"][number]>) {
     setState(s => ({ ...s, launched: false, people: s.people.map((p, i) => i === index ? { ...p, ...update } : p) }));

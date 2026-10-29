@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict'),load=require('../scripts/fruitlife-test-load.cjs');
+let authorized=true,adminReads=0,failTable='',calls=[];
+const users=Array.from({length:1001},(_,n)=>({id:'u'+n,email:`synthetic-${n}@example.invalid`,created_at:'2026-10-29T09:00:00Z',user_metadata:{full_name:'Synthetic pagination QA'}}));
+const tables={passport_lesson_completions:[],passport_awards:users.map(u=>({user_id:u.id,badge_key:'designid',awarded_at:u.created_at,course:null,source:'saved_completed_result'})),dydd_personal_access:[],journey_circle_plans:[],dydd_circle_memberships:[]};
+const db={auth:{admin:{listUsers:async({page,perPage})=>{calls.push(['auth',page]);return {data:{users:users.slice((page-1)*perPage,page*perPage)},error:null}}}},from(table){let columns;return {select(value){columns=value;assert(!/scores|reflection|reportPayload|code_hash|evidence\)/.test(value));return this},order(){return this},in(key,values){assert(!values.includes('Architect'));return this},async range(start,end){calls.push([table,start,end]);return table===failTable?{error:{message:'fixture failure'},data:null}:{error:null,data:tables[table].slice(start,end+1)}},async is(){return {error:null,count:10,data:null}}}}};
+const {readAccountsDashboard}=load('lib/accounts/server.ts',{'./access':{canReadAccounts:async()=>authorized},'@/lib/supabase/admin':{createSupabaseAdminClient:()=>{adminReads++;return db}}});
+(async()=>{authorized=false;await assert.rejects(readAccountsDashboard(),/ACCOUNTS_FORBIDDEN/);assert.equal(adminReads,0);authorized=true;
+ const data=await readAccountsDashboard();assert.equal(data.people.length,1001);assert(data.people.every(p=>p.milestones.designid.assessmentAt));assert.equal(data.unusedBetaCodes,10);assert(calls.some(c=>c[0]==='auth'&&c[1]===2));assert(calls.some(c=>c[0]==='passport_awards'&&c[1]===1000));
+ assert(!JSON.stringify(data).includes('evidence'));assert(!JSON.stringify(data).includes('full_name'));assert(!JSON.stringify(data).includes('badge_key'));
+ failTable='passport_awards';await assert.rejects(readAccountsDashboard(),/No partial totals/);
+ console.log('PASS privileged reader:1001accounts/awards across pages, no truncated totals, projection-only output, source failure rejects partial totals, authorization precedes admin client.');
+})().catch(e=>{console.error(e);process.exitCode=1});

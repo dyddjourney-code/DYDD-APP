@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import type { CSSProperties } from "react";
 import { AppNavIcon } from "@/components/app-sidebar";
 import { isDyddAdminEmail } from "@/lib/admin-access";
+import { isSandbox } from "@/lib/environment";
 import { normalizeEmail } from "@/lib/identity/email";
 import { isOwnerPreviewRequest } from "@/lib/owner-preview";
 import { spiritualGifts } from "@/lib/spiritual-gifts/intake";
@@ -1595,6 +1596,13 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
           <small>{activeGroup ? "people in this group view" : "people in the default view"}</small>
         </div>
       </section>
+
+      {isAdmin && isSandbox() ? (
+        <nav aria-label="Command Center views" style={{ display: 'flex', gap: 16, padding: '16px 0' }}>
+          <span aria-current="page">Assessments &amp; groups</span>
+          <Link href={'/command-center/accounts' + (isOwnerPreview ? '?' + new URLSearchParams({ review: 'owner', key: params?.key ?? '' }) : '')}>Accounts</Link>
+        </nav>
+      ) : null}
 
       {params?.message ? <p className="command-center-message">{params.message}</p> : null}
       {isOwnerPreview ? (

@@ -6421,62 +6421,39 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 
 .expedition-page-hero {
-  align-items: stretch;
-  background:
-    linear-gradient(110deg, rgba(23, 39, 25, 0.95) 0%, rgba(36, 63, 39, 0.86) 43%, rgba(36, 63, 39, 0.28) 100%),
-    url("/brand/expedition-team-climb-cartoon-header.png") center / cover;
-  grid-template-columns: minmax(0, 0.76fr) minmax(360px, 1.24fr);
-  min-height: 430px;
+  background: var(--green-dark);
+  color: #fffaf0;
+  margin-bottom: 22px;
   overflow: hidden;
-  position: relative;
-}
-
-.expedition-page-hero > div:first-child {
-  align-self: center;
-  position: relative;
-  z-index: 1;
 }
 
 .expedition-header-art {
-  align-self: stretch;
-  background: rgba(255, 250, 240, 0.12);
-  border: 1px solid rgba(255, 250, 240, 0.22);
-  display: grid;
   margin: 0;
-  min-height: 330px;
-  overflow: hidden;
-  position: relative;
 }
 
 .expedition-header-art img {
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+  display: block;
+  height: auto;
   width: 100%;
 }
 
-.expedition-header-art figcaption {
-  align-items: center;
-  align-self: end;
-  background: linear-gradient(90deg, rgba(23, 39, 25, 0.9), rgba(23, 39, 25, 0.56));
+.expedition-header-copy {
+  padding: clamp(18px, 3vw, 34px);
+}
+
+.expedition-header-copy h1 {
   color: #fffaf0;
-  display: flex;
-  gap: 12px;
-  grid-area: 1 / 1;
-  padding: 14px 16px;
-  position: relative;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  line-height: 1.15;
+  margin: 0 0 10px;
 }
 
-.expedition-header-art .hq-menu-icon {
-  background: rgba(255, 250, 240, 0.18);
-  flex: 0 0 auto;
-}
-
-.expedition-header-art span {
-  color: rgba(255, 250, 240, 0.9);
-  font-size: 0.88rem;
-  font-weight: 850;
-  line-height: 1.35;
+.expedition-header-copy p {
+  color: #fffaf0;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 760px;
 }
 
 .command-center-message {
@@ -8757,10 +8734,6 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 
   .expedition-page-hero {
     min-height: auto;
-  }
-
-  .expedition-header-art {
-    min-height: 240px;
   }
 
   .design-map-shell {
@@ -21563,7 +21536,6 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .gear-hero { --phone-art: url('/brand/dydd-gear-mountain-banner.png'); --phone-art-ratio: 1672 / 941; }
   .fireside-page-hero { --phone-art: url('/brand/dydd-fireside-campfire-banner.png'); --phone-art-ratio: 1742 / 903; }
   .camp-circle-hero, .command-center-hero { --phone-art: url('/brand/dydd-camp-circle-campfire-banner.png'); --phone-art-ratio: 1884 / 835; }
-  .expedition-page-hero { --phone-art: url('/brand/expedition-team-climb-cartoon-header.png'); --phone-art-ratio: 2073 / 758; }
   .design-map-hero { --phone-art: url('/brand/dydd-park-map-concept.png'); --phone-art-ratio: 1672 / 941; }
   .spiritual-gifts-mini-hero { --phone-art: url('/brand/spiritual-gifts-miniapp-banner.png'); --phone-art-ratio: 1672 / 941; }
   .portal-hero { --phone-art: url('/brand/dydd-cabin-hut-only.png'); --phone-art-ratio: 1457 / 542; }
@@ -21628,8 +21600,6 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   .command-center-hero-card :is(span, small, strong), .design-map-status-card :is(span, small, strong) { color: #243f27; }
   .command-center-hero-card { min-height: 0; background: #e9edde; }
   .design-map-status-card { background: #e9edde; }
-  .expedition-page-hero::before { display: none; }
-  .expedition-page-hero > .expedition-header-art { order: -1; min-height: 0; padding: 0; border: 0; }
 }
 @media (max-width: 980px) {
   .assessment-lesson-content.with-image,
@@ -21647,12 +21617,6 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
 }
 @container (max-width: 400px) {
   .command-center-filters { grid-template-columns: minmax(0, 1fr); }
-}
-
-@media (max-width: 980px) {
-  .expedition-header-art img { grid-column: 1; grid-row: 1; }
-  .expedition-header-art figcaption { grid-area: auto; grid-row: 2; background: #e9edde; color: #243f27; }
-  .expedition-header-art figcaption span { color: #243f27; }
 }
 
 /* Sandbox mobile correction: the welcome is already part of the artwork. */

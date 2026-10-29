@@ -39,6 +39,7 @@ const navItems = [
     href: "/command-center",
     children: [
       { icon: "map", label: "Design Map", href: "/command-center/design-map" },
+      { icon: "compass", label: "MAPS", href: "/command-center/maps" },
       { icon: "hiker", label: "Expedition", href: "/command-center/expedition" },
     ],
   },

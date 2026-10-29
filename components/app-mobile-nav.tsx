@@ -20,6 +20,7 @@ const mobileNavGroups = [
   ] },
   { href: "/command-center", label: "Command Center", children: [
     { href: "/command-center/design-map", label: "Design Map" },
+    { href: "/command-center/maps", label: "MAPS" },
     { href: "/command-center/expedition", label: "Expedition" },
   ] },
 ];

@@ -82,10 +82,11 @@ export function FieldKitCollection({
     const trail = trailDefinitions.find((t) => t.courseSlug === slug);
     const needsDesignId = trail?.id === "designpd" && !artifacts.some((a) => a.experienceSlug === "designid-foundations");
     const path = (href: string) => withReviewQuery(href, reviewParams);
-    const assessmentEntry = !main && !reports.length && trail ? (
+    const repeatable = trail?.id === "fruitlife-360" || trail?.id === "spiritual-gifts";
+    const assessmentEntry = !main && trail && (!reports.length || repeatable) ? (
       <div className="fieldkit-assessment-entry">
         <Link className="button primary" href={path(trail.id === "designpd" && !needsDesignId ? withCourseOrigin(trail.assessmentHref, "field-kit") : needsDesignId ? "/designid" : trail.assessmentHref)}>
-          Take assessment
+          {reports.length ? "Take assessment again" : "Take assessment"}
         </Link>
         {needsDesignId ? <p>Complete DesignID first to open DesignPD.</p> : null}
       </div>
@@ -126,6 +127,7 @@ export function FieldKitCollection({
                       </div>
                     </details>
                   ) : null}
+                  {assessmentEntry}
                 </div>
               ) : (
                 <>

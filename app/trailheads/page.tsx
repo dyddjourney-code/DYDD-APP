@@ -346,6 +346,11 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                         View My Results
                       </Link>
                     ) : null}
+                    {ready && !inProgress && (trail.id === "fruitlife-360" || trail.id === "spiritual-gifts") ? (
+                      <Link className="button secondary" href={path(startHref)}>
+                        Take {trail.name} Again
+                      </Link>
+                    ) : null}
                     {ready && inProgress ? (
                       <Link className="button secondary" href={path(startHref)}>
                         Track Current Assessment

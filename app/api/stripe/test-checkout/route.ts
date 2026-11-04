@@ -1,3 +1,4 @@
+import { isDyddAdminEmail } from "@/lib/admin-access";
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -16,6 +17,9 @@ export async function POST(request:Request) {
  if(Number(request.headers.get("content-length")||0)>4096)return reply("Checkout request is too large.",413);
  const body=await request.json(),capability=body.capability as TestCapability;
  if(!Object.hasOwn(testCatalog,capability))return reply("Choose a valid membership or add-on.",400);
+ const lifetime=await hasLifetimePersonalAccess(user.id);
+ if(capability==="personal" && lifetime)return reply("Personal access is already included in your lifetime grant. No payment is needed.",409);
+ if(capability==="designpd" && (lifetime||isDyddAdminEmail(user.email)))return reply("DesignPD is already included in your authorized access. No payment is needed.",409);
  const db=createSupabaseAdminClient();let scopeId="account";
  if(capability==="designpd") {
  if(!validUuid(body.scopeId))return reply("Choose your saved DesignID result.",400);

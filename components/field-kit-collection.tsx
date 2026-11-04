@@ -1,3 +1,5 @@
+import { DesignPdTrailOffer } from "@/components/designpd-trail-offer";
+import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
 import Link from "next/link";
 import { withCourseOrigin } from "@/lib/trails/course-origin";
 import { isSandbox } from "@/lib/environment";
@@ -82,7 +84,8 @@ export function FieldKitCollection({
     const trail = trailDefinitions.find((t) => t.courseSlug === slug);
     const needsDesignId = trail?.id === "designpd" && !artifacts.some((a) => a.experienceSlug === "designid-foundations");
     const path = (href: string) => withReviewQuery(href, reviewParams);
-    const assessmentEntry = !main && !reports.length && trail ? (
+    const designPdOffer = trail?.id === "designpd" && testBillingEnabled();
+    const assessmentEntry = !designPdOffer && !main && !reports.length && trail ? (
       <div className="fieldkit-assessment-entry">
         <Link className="button primary" href={path(trail.id === "designpd" && !needsDesignId ? withCourseOrigin(trail.assessmentHref, "field-kit") : needsDesignId ? "/designid" : trail.assessmentHref)}>
           Take assessment
@@ -129,7 +132,7 @@ export function FieldKitCollection({
                 </div>
               ) : (
                 <>
-                  <p>No completed report yet. Take the assessment to begin; your completed report will collect here.</p>
+                  <p>{designPdOffer ? "Your DesignPD report will collect here after you unlock it for a saved DesignID result." : "No completed report yet. Take the assessment to begin; your completed report will collect here."}</p>
                   {assessmentEntry}
                 </>
               )}
@@ -204,6 +207,7 @@ export function FieldKitCollection({
             </div>
           ) : <h3>{name}</h3>}
           <p className="trail-description">{description}</p>
+          {designPdOffer ? <DesignPdTrailOffer designIdSnapshotId={artifacts.filter(a => a.experienceSlug === "designid-foundations").sort((a,b) => new Date(b.completedAt ?? 0).getTime() - new Date(a.completedAt ?? 0).getTime())[0]?.id} origin="field-kit" reviewParams={reviewParams} /> : null}
           <div className="fieldkit-mobile-summary">
             <p className="fieldkit-mobile-status">{main ? "Journey workbook" : reports.length ? `${reports.length} completed ${reports.length === 1 ? "report" : "reports"}` : "No completed report yet"} · {saved.length ? `${saved.length} reflection ${saved.length === 1 ? "round" : "rounds"}` : "No reflection rounds yet"}</p>
             {assessmentEntry}

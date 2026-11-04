@@ -695,9 +695,23 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         <DyddOrientationSlider />
       </section>
 
-      <DydPassportBook badges={passportBadges} firstName={welcomeName} />
+      <section className="basecamp-account-card purchases" id="purchases" aria-label="Purchase history">
+        <div className="card-heading">
+          <p className="section-label">Purchases</p>
+          <h2>{lifetimeAccess ? "Your access is active." : testBillingEnabled() ? "Choose your next step." : "Nothing purchased yet."}</h2>
+          <p>
+            {lifetimeAccess ? "Free lifetime personal all-access · No expiry · No payment required." : testBillingEnabled() ? "Make room to discover your God-given design and put it into practice." : "After you begin a tool, course, or guided journey, access will appear here."}
+          </p>
+        </div>
+        {!testBillingEnabled() && <p className="empty-account-note">
+          Ranger Station will help you decide whether to start with the free Spiritual Gifts
+          assessment, FruitLife360, DesignID, or the full Discover Your Divine Design journey.
+        </p>}
+        {testBillingEnabled() ? <ContextualPurchases area="personal" preview={Boolean(reviewReport)} /> : null}
+        {user && !reviewReport ? <BetaAccess active={lifetimeAccess} verified={Boolean(user.email_confirmed_at)} /> : null}
+      </section>
 
-      <OnTheHorizon />
+      <DydPassportBook badges={passportBadges} firstName={welcomeName} />
 
       <section className="basecamp-account-layout basecamp-account-layout-single" aria-label="Base Camp account overview">
         <article className="basecamp-account-card profile">
@@ -719,22 +733,6 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             </div>
           </dl>
         </article>
-      </section>
-
-      <section className="basecamp-account-card purchases" id="purchases" aria-label="Purchase history">
-        <div className="card-heading">
-          <p className="section-label">Purchases</p>
-          <h2>{lifetimeAccess ? "Your access is active." : testBillingEnabled() ? "Choose your next step." : "Nothing purchased yet."}</h2>
-          <p>
-            {lifetimeAccess ? "Free lifetime personal all-access · No expiry · No payment required." : testBillingEnabled() ? "Personal access for you. Optional add-ons where you need them." : "After you begin a tool, course, or guided journey, access will appear here."}
-          </p>
-        </div>
-        {!testBillingEnabled() && <p className="empty-account-note">
-          Ranger Station will help you decide whether to start with the free Spiritual Gifts
-          assessment, FruitLife360, DesignID, or the full Discover Your Divine Design journey.
-        </p>}
-        {testBillingEnabled() ? <ContextualPurchases area="personal" preview={Boolean(reviewReport)} /> : null}
-        {user && !reviewReport ? <BetaAccess active={lifetimeAccess} verified={Boolean(user.email_confirmed_at)} /> : null}
       </section>
 
       {isAdmin && adminReport ? (
@@ -813,6 +811,8 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           </article>
         </section>
       ) : null}
+
+      <OnTheHorizon />
 
       </div>
     </main>

@@ -1,3 +1,5 @@
+import { DesignPdTrailOffer } from "@/components/designpd-trail-offer";
+import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
 import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import { withCourseOrigin } from "@/lib/trails/course-origin";
 import { isOwnerCoursePreview, designIdCourseReviewParams } from "@/lib/trails/course-preview";
@@ -309,6 +311,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                           ? "Your assessment is underway. Track responses in Field Kit; the course opens with your completed report."
                           : trail.prerequisite}
                   </p>
+                  {trail.id === "designpd" && testBillingEnabled() ? <DesignPdTrailOffer designIdSnapshotId={snapshots.find(s => s.assessment_type === "designid")?.id} origin="trailheads" reviewParams={params} /> : null}
                   <div className="trail-guide-route-actions">
                     {isOwnerCoursePreview(params) ? (
                       <Link className="button secondary" href={courseHref}>
@@ -322,7 +325,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                         startLabel="Start the Course"
                         continueLabel="Continue the Course"
                       />
-                    ) : (
+                    ) : trail.id === "designpd" && testBillingEnabled() ? null : (
                       <Link className="button primary" href={path(startHref)}>
                         {trail.id === "designpd"
                           ? designIdReady

@@ -21921,3 +21921,23 @@ body:has(.mobile-nav-drawer[open]) { overflow: hidden; }
 .contextual-purchases .purchase-related{display:flex;flex-wrap:wrap;gap:12px 24px;margin-top:18px}
 .contextual-purchases .purchase-test-note{display:block;margin-top:18px;color:#697263;font-size:.75rem}
 @media(max-width:480px){.contextual-purchases .purchase-offer{padding:18px}.contextual-purchases .purchase-offer>.button{width:100%}}
+
+/* Base Camp: membership first, milestone record second. Existing badge interactions stay intact. */
+.passport-book-heading{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.passport-book-heading h2{margin:0;color:var(--green-dark);font-size:clamp(1.35rem,2.2vw,1.8rem)}
+.passport-book-heading p{margin:8px 0 0;color:var(--muted);line-height:1.5}
+.passport-book-toggle{flex-shrink:0;gap:14px;min-height:44px}
+.passport-book-toggle span{font-size:1.35rem}
+.passport-record-notice{margin:0;padding:14px 16px;border-left:4px solid var(--green-dark);background:#e8eddf;color:var(--green-dark);line-height:1.55;font-size:1rem}
+.passport-book-content:not([hidden]){display:grid;gap:18px}
+.passport-book-content[hidden]{display:none}
+.passport-book-cover h3{margin:0;color:var(--green-dark)}
+.purchase-prerequisite{line-height:1.6;margin:0 0 18px}
+.designpd-trail-offer{display:grid;gap:12px;margin:20px 0;padding:22px;border-left:4px solid var(--green-dark);background:#f3f4e9;color:var(--ink)}
+.designpd-trail-offer h4{margin:0;font-size:1.25rem;color:var(--green-dark)}
+.designpd-trail-offer p{margin:0;line-height:1.6}
+.designpd-trail-offer .designpd-offer-price{color:var(--green-dark)}
+.designpd-offer-price strong{font-size:1.5rem}
+.designpd-trail-offer .button{justify-self:start;min-height:44px}
+.passport-book-toggle:focus-visible,.designpd-trail-offer a:focus-visible{outline:3px solid var(--green-dark);outline-offset:4px}
+@media(max-width:680px){.passport-book-heading{align-items:stretch;flex-direction:column;gap:14px}.passport-book-toggle{width:100%;justify-content:space-between}.designpd-trail-offer{padding:16px}.designpd-trail-offer .button{width:100%}}

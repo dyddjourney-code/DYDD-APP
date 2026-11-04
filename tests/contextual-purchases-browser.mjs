@@ -34,6 +34,14 @@ try{
  // Seed only a synthetic QA access fixture, never claim it is a paid purchase.
  const order=ok(await db.from('dydd_test_billing_orders').insert({user_id:user.id,capability:'personal',scope_id:'account',price_id:'qa_fixture',status:'paid'}).select('id').single());ok(await db.from('dydd_test_billing_entitlements').insert({source_id:'qa_context_'+crypto.randomUUID(),order_id:order.id,user_id:user.id,capability:'personal',scope_id:'account',active:true,paid:false,expires_at:new Date(Date.now()+3600000).toISOString()}));
  await page.goto(base+'/camp-circle/my-circles?circle='+circleId,{waitUntil:'domcontentloaded',timeout:60000});await page.waitForFunction(()=>[...document.querySelectorAll('.contextual-purchases button')].some(e=>e.textContent.includes('Unlock this Couples')));intercepted=null;await page.$eval('.contextual-purchases button',e=>e.click());await page.waitForFunction(()=>[...document.querySelectorAll('[role="alert"]')].some(e=>e.textContent.includes('QA transport interception')));assert.equal(intercepted.capability,'couples_circle');assert.equal(intercepted.scopeId,circleId);
+ // Both relocated DesignPD offers must enter the owned latest-result gate, not a generic checkout.
+ for(const [path,anchor]of [['/trailheads#designpd','#designpd'],['/field-kit#collection-designpd','#collection-designpd']]){
+  await page.goto(base+path,{waitUntil:'domcontentloaded',timeout:60000});await page.waitForSelector(anchor+' .designpd-trail-offer a');
+  const href=await page.$eval(anchor+' .designpd-trail-offer a',e=>e.href);assert.equal(new URL(href).searchParams.get('snapshot'),snapshots[0]);
+  await page.$eval(anchor+' .designpd-trail-offer a',e=>e.click());await page.waitForSelector('.designpd-shell button[type="button"]');
+  intercepted=null;await page.$eval('.designpd-shell button[type="button"]',e=>e.click());await page.waitForFunction(()=>[...document.querySelectorAll('[role="alert"]')].some(e=>e.textContent.includes('QA transport interception')));
+  assert.equal(intercepted.capability,'designpd');assert.equal(intercepted.scopeId,snapshots[0]);
+ }
  // Forged return cannot mint DesignPD access.
  const forged=await fetch(base+'/api/stripe/test-access?capability=designpd&scopeId='+snapshots[1],{headers});assert.equal((await forged.json()).active,false);
  const old=await fetch(base+'/memberships',{headers,redirect:'manual'});assert.equal(old.status,307);assert(old.headers.get('location').includes('/hq'));

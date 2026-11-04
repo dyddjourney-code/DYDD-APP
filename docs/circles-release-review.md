@@ -10,3 +10,6 @@ The independent read-only reviewer found four concrete issues. All were resolved
 Additional integration corrections: persistent Couple draft/checkout deadlock resolved; narrow service-only verified-identity SQL predicates replace forbidden broad auth table reads; actual participant long-name mobile overflow fixed; free/expired Personal grants excluded from paid counts/activity; shared spouse edits row-lock identity/billing/revision; PDF exports preserve saved read-only history.
 
 Verification: `docs/evidence/circles-local-acceptance.json` (25actual HTTP/browser checks), `circles-schema-verification.json`, `circles-pdf-verification.json`, billing and UI receipts. Provider subscription-control tests are mocked and distinguished from completed TEST purchases. No real mail, live charge or production change.
+
+## Optional provider extension, not advertised
+Hosted runtime portal configuration failed403more_permissions_required. The unrequested payment-method/history portal button was removed rather than exposed as working. Direct subscription cancel-at-period-end/restore-renewal remains implemented and guarded; current hosted Circle acceptance is independent of optional portal configuration. No broader key permissions were requested or altered.

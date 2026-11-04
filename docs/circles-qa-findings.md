@@ -1,6 +1,6 @@
 # Circles independent QA findings
 
-State: harness created; JavaScript syntax check passes. Read-only local preflight attempted at 2026-11-04 18:42 UTC and failed with `fetch failed` because no app server was listening on localhost:3138. Zero users/Circles/entitlements created; cleanup returned no errors. Full implementation is NOT yet verified. No commits, migrations, deployment or implementation changes by this lane.
+State: final local actual HTTP/browser acceptance PASSED25/25 after integration, with zero runtime errors or horizontal overflow at1280/390/320; all8temporary identities/10Circle fixture IDs cleaned. Initial handoff readiness findings below are historical and resolved. Hosted verification is in progress.
 
 ## Run
 
@@ -35,3 +35,9 @@ Harness now also verifies direct authenticated ledger/RPC isolation, budget ledg
 At initial handoff, sandbox service-role reads confirm Couple bindings table exists, but all seven operations tables (`operation_limits`, `operation_events`, `cohort_requests`, `roster_previews`, `consents`, `callouts`, `held_outbox`, each prefixed `dydd_circle_`) are missing from the REST schema cache. These are migration/readiness blockers, not claimed missing permissions. The QA lane did not apply migrations. The first HTTP run must wait for the parent migration runner and local/hosted app readiness.
 
 A failed operation-budget creation currently appears likely to return generic HTTP503 through legacy create route; the harness expects a controlled 4xx denial and will flag it if reproduced. This is a static contract concern, not a runtime-confirmed defect.
+
+## Final integration resolution
+The local server and all operations migrations are ready. Initial local fetch failure was inherited egress proxy handling; `NO_PROXY=localhost,127.0.0.1` is required for loopback. Couple partner expiry and alternate-route mutual-consent checks are enforced. Quota denial returns controlled409. Canonical Cohort prompt catalog prevents free writing via identifiers; owner report allowances and real planner PDF/history checks pass. See docs/evidence/circles-local-acceptance.json and circles-pdf-verification.json.
+
+## Hosted acceptance checkpoint
+Initial hosted run passed24of25checks, including actual hosted owner approval/allowance changes and all backend workflows. The browser navigation waited for networkidle0 and timed out on external assets; no application runtime error occurred. Harness now waits for DOM content and actual Circle readiness. All7disposable accounts/10Circle fixture IDs cleaned; one explicit synthetic owner fixture is retained solely until hosted acceptance and then removed with its environment authority.

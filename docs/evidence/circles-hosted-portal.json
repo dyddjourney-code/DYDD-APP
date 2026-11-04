@@ -1,0 +1,9 @@
+{
+  "at": "2026-11-04T19:15:11.012Z",
+  "http": 503,
+  "error": "TEST billing-portal configuration could not be verified.",
+  "providerStatus": 403,
+  "providerCode": "more_permissions_required",
+  "syntheticOwner": true,
+  "noCustomersOrPayments": true
+}

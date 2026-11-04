@@ -84,8 +84,11 @@ export async function loadCircleOperationDetail(actor: OperationActor, id: strin
   const acceptedIds = new Set<string>(members.filter(m => m.status === "accepted" && m.user_id).map(m => m.user_id));
   acceptedIds.add(circle.user_id);
   const visibleMembers = creator ? members : members.filter(m => m.status === "accepted" && (m.user_id === actor.userId || consent.some(c => c.user_id === m.user_id && c.people))).map(m => ({ id: m.id, name: m.display_name, role: m.role, self: m.user_id === actor.userId }));
+  const leaderVisible = creator || consent.some(c=>c.user_id===circle.user_id&&c.people===true);
+  const leaderProfile = leaderVisible ? checked(await db.from("school_profiles").select("full_name").eq("id",circle.user_id).maybeSingle()) as Row|null : null;
+  const leaderName = leaderProfile?.full_name || (creator ? "You" : "Leader name not shared yet");
   const result: Row = {
-    circle: creator ? circle : participantCircleProjection(circle), role: creator ? "leader" : own?.role || "participant", lifecycle,
+    circle: {...(creator ? circle : participantCircleProjection(circle)),leaderName}, role: creator ? "leader" : own?.role || "participant", lifecycle,
     members: visibleMembers,
     counts: { accepted: members.filter(m => m.status === "accepted").length + 1, pending: members.filter(m => m.status === "invited" && Date.parse(m.expires_at) > Date.now()).length },
     consents: consent.filter(c => c.user_id === actor.userId).map(({ people, insights }) => ({ people, insights })),
@@ -103,10 +106,15 @@ export async function listCircleOperations(actor: OperationActor) {
   const owned = checked(await db.from("journey_circle_plans").select("id,status,plan,revision,updated_at").eq("user_id", actor.userId).order("updated_at", { ascending: false }).limit(200)) as Row[];
   const memberships = checked(await db.from("dydd_circle_memberships").select("circle_id,role").eq("user_id", actor.userId).eq("status", "accepted")) as Row[];
   const memberIds = [...new Set(memberships.map(m => m.circle_id))].filter(id => !owned.some(c => c.id === id));
-  const joined = memberIds.length ? checked(await db.from("journey_circle_plans").select("id,status,plan,revision,updated_at").in("id", memberIds).order("updated_at", { ascending: false }).limit(200)) as Row[] : [];
+  const joined = memberIds.length ? checked(await db.from("journey_circle_plans").select("id,user_id,status,plan,revision,updated_at").in("id", memberIds).order("updated_at", { ascending: false }).limit(200)) as Row[] : [];
   const limits = checked(await db.from("dydd_circle_operation_limits").select("*").eq("user_id", actor.userId).maybeSingle());
   const approvals = actor.owner ? checked(await db.from("dydd_circle_cohort_requests").select("*").eq("status", "pending").order("created_at", { ascending: true }).limit(200)) : [];
-  return { circles: [...owned.map(c => ({ ...c, role: "leader" })), ...joined.map(c => ({ ...participantCircleProjection(c), role: memberships.find(m => m.circle_id === c.id)?.role || "participant" }))], approvals, limits: limits || operationLimits, owner: actor.owner };
+  const joinedOwners=joined.map(c=>c.user_id).filter(Boolean);
+  const nameConsent=joined.length?checked(await db.from("dydd_circle_consents").select("circle_id,user_id,people").in("circle_id",joined.map(c=>c.id)).eq("people",true)) as Row[]:[];
+  const visibleOwners=[...new Set(joinedOwners.filter(id=>nameConsent.some(c=>c.user_id===id)))];
+  const profiles=visibleOwners.length?checked(await db.from("school_profiles").select("id,full_name").in("id",visibleOwners)) as Row[]:[];
+  const safeLeaderName=(c:Row)=>nameConsent.some(n=>n.circle_id===c.id&&n.user_id===c.user_id)?profiles.find(p=>p.id===c.user_id)?.full_name||"Circle leader":"Leader name not shared yet";
+  return { circles: [...owned.map(c => ({ ...c, leaderName:"You", role: "leader" })), ...joined.map(c => ({ ...participantCircleProjection(c), leaderName:safeLeaderName(c), role: memberships.find(m => m.circle_id === c.id)?.role || "participant" }))], approvals, limits: limits || operationLimits, owner: actor.owner };
 }
 const actions = new Set(["set_report_limits", "set_limits", "request_cohort", "approve_cohort", "preview_roster", "invite_roster", "invite", "accept_invite", "decline_invite", "leave", "revoke_invite", "consent", "callout", "withdraw_callout", "transfer", "set_role"]);
 export async function operateCircle(actor: OperationActor, input: unknown) {

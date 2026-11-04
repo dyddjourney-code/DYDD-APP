@@ -1,6 +1,6 @@
 {
-  "base": "http://localhost:3138",
-  "at": "2026-11-04T19:02:58.811Z",
+  "base": "https://dydd-online-school-sandbox.vercel.app",
+  "at": "2026-11-04T19:17:05.662Z",
   "actualPdf": true,
   "foreignCircleDenied": true,
   "readonlySavedExportPreserved": true,

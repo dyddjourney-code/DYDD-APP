@@ -1,0 +1,17 @@
+{
+  "at": "2026-11-04T19:16:48.919Z",
+  "pass": 24,
+  "failed": [
+    {
+      "name": "Participant actual authenticated UI 1280/390/320, no overflow/private data or runtime errors",
+      "status": "fail",
+      "error": "Navigation timeout of 60000 ms exceeded"
+    }
+  ],
+  "cleanup": {
+    "users": 8,
+    "circles": 10,
+    "preservedOwnerFixtures": 1,
+    "errors": []
+  }
+}

@@ -1,3 +1,4 @@
+import { hasTestEntitlement } from "./test-entitlements";
 import { hasIncludedPersonalAccess, hasLifetimePersonalAccess } from "./personal-access";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -26,7 +27,7 @@ export async function getActiveFruitLifeEntitlement(userId: string) {
 }
 
 export async function userHasFruitLifeEntitlement(userId: string) {
-  return Boolean(userId) && (await hasIncludedPersonalAccess(userId) || Boolean(await getActiveFruitLifeEntitlement(userId)));
+  return Boolean(userId) && (await hasIncludedPersonalAccess(userId) || await hasTestEntitlement(userId,"personal") || Boolean(await getActiveFruitLifeEntitlement(userId)));
 }
 
 export async function grantFruitLifeEntitlement({
@@ -77,7 +78,7 @@ export async function grantFruitLifeEntitlement({
 }
 
 export async function consumeFruitLifeEntitlement(userId: string, fruitLifeSessionId: string) {
-  if (await hasLifetimePersonalAccess(userId)) return true;
+  if (await hasLifetimePersonalAccess(userId) || await hasTestEntitlement(userId,"personal")) return true;
   const entitlement = await getActiveFruitLifeEntitlement(userId);
 
   if (!entitlement) {

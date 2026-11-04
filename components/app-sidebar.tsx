@@ -1,6 +1,8 @@
+import { isSandbox } from "@/lib/environment";
 import { ReviewAwareLink } from "@/components/review-aware-link";
 
 const navItems = [
+  ...(isSandbox() ? [{icon:"badge",label:"Memberships & add-ons",href:"/memberships"}] : []),
   {
     icon: "tent",
     label: "Base Camp",

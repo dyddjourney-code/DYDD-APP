@@ -1,3 +1,4 @@
+import { hasTestCircleTools } from "@/lib/commerce/test-entitlements";
 import "server-only";
 import { NextResponse } from "next/server";
 import { isSandbox } from "@/lib/environment";
@@ -18,6 +19,7 @@ export async function GET(request: Request) {
     const {data, error} = await circleQuery(actor).eq("id", id).maybeSingle();
     if (error) return reply({error: "Your Circle’s data could not be loaded. Please try again."}, 503);
     if (!data) return reply({error: "Circle data is available only to this Circle’s creator."}, 404);
+    if (!await hasTestCircleTools(actor.userId,id,data.plan?.format)) return reply({error:"Your Circle tools need an active membership or this couple’s unlock.",checkoutUrl:"/memberships"},402);
     // Only the validated sandbox owner scopes may use the pre-existing private
     // owner report copy. Preview roster names never discover learner records.
     if (!actor.userId) return reply(isSandbox() && ["new", "owner"].includes(actor.previewScope || "") ? await loadOwnerPreviewCircleData(id) : circleDataResponse(id, [], true));

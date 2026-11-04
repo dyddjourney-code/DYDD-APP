@@ -1,3 +1,4 @@
+import { hasTestCircleTools } from "@/lib/commerce/test-entitlements";
 import "server-only";
 import { NextResponse } from "next/server";
 import { circleActor, circleQuery } from "@/lib/circles/server";
@@ -19,6 +20,7 @@ export async function GET(request: Request) {
     const { data, error } = await circleQuery(actor).eq("id", id).eq("status", "active").maybeSingle();
     if (error) return reply({ error: "Your Field Guide could not be loaded. Please try again." }, 503);
     if (!data) return reply({ error: "The full Field Guide is available to the organizer of a started Circle. Open or start your own Circle first." }, 404);
+    if (!await hasTestCircleTools(actor.userId,id,data.plan?.format)) return reply({error:"Your Circle tools need an active membership or this couple’s unlock.",checkoutUrl:"/memberships"},402);
     return reply({ content });
   } catch {
     return reply({ error: "Your Field Guide could not be loaded. Please try again." }, 503);

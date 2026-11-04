@@ -1,4 +1,5 @@
 "use server";
+import { hasTestEntitlement } from "@/lib/commerce/test-entitlements";
 import { hasIncludedPersonalAccess } from "@/lib/commerce/personal-access";
 import crypto from "node:crypto";
 import { courseOrigin } from "@/lib/trails/course-origin";
@@ -46,8 +47,9 @@ async function getAppBaseUrl() {
 }
 export async function saveDesignPdResponse(formData: FormData) {
   const origin = courseOrigin(String(formData.get("origin") ?? ""));
+  const selectedDesignId = String(formData.get("designIdSnapshotId") || "");
   function fail(message: string): never {
-    redirect(`/designpd?origin=${origin}&message=${encodeURIComponent(message)}`);
+    redirect(`/designpd?origin=${origin}&snapshot=${encodeURIComponent(selectedDesignId)}&message=${encodeURIComponent(message)}`);
   }
   const serverSupabase = await createSupabaseServerClient();
   const {
@@ -78,15 +80,15 @@ export async function saveDesignPdResponse(formData: FormData) {
     user.id,
     participantEmail,
   );
-  const designIdSnapshot = latestByAssessment(assessmentReport.all).find(
-    (snapshot) => snapshot.assessment_type === "designid",
+  const designIdSnapshot = (selectedDesignId ? assessmentReport.all : latestByAssessment(assessmentReport.all)).find(
+    (snapshot) => snapshot.assessment_type === "designid" && (!selectedDesignId || snapshot.id === selectedDesignId),
   );
   if (!designIdSnapshot) {
     fail("Complete DesignID before starting DesignPD.");
   }
   // Existing reports remain accessible; generating for a new DesignID requires
-  // a per-attempt unlock. Stripe fulfillment is intentionally not enabled yet.
-  if (!await hasIncludedPersonalAccess(user.id) && !isDyddAdminEmail(user.email)) {
+  // a per-result unlock; the separate TEST ledger is consulted only in the isolated sandbox.
+  if (!await hasIncludedPersonalAccess(user.id) && !isDyddAdminEmail(user.email) && !await hasTestEntitlement(user.id,"designpd",designIdSnapshot.id)) {
     const existing = assessmentReport.all.find(
       (snapshot) =>
         snapshot.assessment_type === "designpd" &&
@@ -102,7 +104,7 @@ export async function saveDesignPdResponse(formData: FormData) {
     if (existing)
       redirect(`/designpd/report?snapshot=${encodeURIComponent(existing.id)}`);
     fail(
-      "DesignPD is a $15 add-on for each DesignID result. Checkout is not available yet.",
+      "DesignPD is a $15 add-on for each DesignID result. Open Memberships & add-ons to unlock this result.",
     );
   }
   let result;

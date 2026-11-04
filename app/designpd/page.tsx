@@ -1,3 +1,5 @@
+import { hasTestEntitlement } from "@/lib/commerce/test-entitlements";
+import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
 import { hasIncludedPersonalAccess, hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import { courseCardHref, courseOrigin } from "@/lib/trails/course-origin";
 import Link from "next/link";
@@ -11,7 +13,7 @@ import { saveDesignPdResponse } from "./actions";
 import { DesignPdAssessmentForm } from "./assessment-form";
 
 type DesignPdPageProps = {
-  searchParams?: Promise<{ message?: string; origin?: string }>;
+  searchParams?: Promise<{ message?: string; origin?: string; snapshot?: string }>;
 };
 
 export const dynamic = "force-dynamic";
@@ -43,8 +45,10 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
     "DesignPD Participant";
   const assessmentReport = await getAssessmentSnapshotsForUser(user.id, participantEmail);
   const latest = latestByAssessment(assessmentReport.all);
-  const hasDesignId = latest.some((snapshot) => snapshot.assessment_type === "designid");
-  const savedDesignPd = latest.find((snapshot) => snapshot.assessment_type === "designpd");
+  const designId = params?.snapshot ? assessmentReport.all.find((snapshot) => snapshot.assessment_type === "designid" && snapshot.id === params.snapshot) : latest.find((snapshot) => snapshot.assessment_type === "designid");
+  const hasDesignId = Boolean(designId);
+  const paidAccess = Boolean(designId && await hasTestEntitlement(user.id,"designpd",designId.id));
+  const savedDesignPd = assessmentReport.all.find((snapshot) => snapshot.assessment_type === "designpd" && snapshot.scores.designIdSnapshotId === designId?.id) ?? (!params?.snapshot ? latest.find((snapshot) => snapshot.assessment_type === "designpd") : undefined);
 
   return (
     <main className="fruitlife-shell fruitlife-public designid-shell designpd-shell">
@@ -56,7 +60,10 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
           cardHref={cardHref}
           participantEmail={participantEmail}
           participantName={participantName}
-          ownerAccess={await hasIncludedPersonalAccess(user.id) || isDyddAdminEmail(user.email)}
+          ownerAccess={paidAccess || await hasIncludedPersonalAccess(user.id) || isDyddAdminEmail(user.email)}
+          designIdSnapshotId={designId?.id}
+          paidAccess={paidAccess}
+          testCheckoutAvailable={testBillingEnabled()}
           lifetimeAccess={await hasLifetimePersonalAccess(user.id)}
           savedReportHref={savedDesignPd ? `/designpd/report?snapshot=${encodeURIComponent(savedDesignPd.id)}` : undefined}
         />

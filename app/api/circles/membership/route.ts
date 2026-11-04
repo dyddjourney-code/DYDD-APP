@@ -1,3 +1,6 @@
+import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
+import { hasTestEntitlement } from "@/lib/commerce/test-entitlements";
+import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import {NextResponse} from 'next/server';
 import {createSupabaseAdminClient} from '@/lib/supabase/admin';
 import {createSupabaseServerClient} from '@/lib/supabase/server';
@@ -26,6 +29,7 @@ export async function POST(request:Request){
   if(m.status!=='accepted'||m.user_id!==user.id)return reply({error:'Membership not active.'},409);
   must(await db.from('dydd_circle_memberships').update(b.action==='leave'?{status:'left'}:{reminders:b.reminders===true}).eq('id',m.id).eq('user_id',user.id));return reply({saved:true});
  }
+ if(b.action==='accept' && testBillingEnabled() && !await hasLifetimePersonalAccess(user.id) && !await hasTestEntitlement(user.id,"personal"))return reply({error:"Your own personal membership is required to join. Open Memberships & add-ons.",checkoutUrl:"/memberships"},402);
  if(m.status==='accepted'&&b.action==='accept')return reply({accepted:true});
  if(m.status!=='invited'||m.expires_at<=new Date().toISOString())return reply({error:'This invitation is no longer pending.'},410);
  const c=must(await db.from('journey_circle_plans').select('status').eq('id',m.circle_id).single()) as any;if(c.status!=='active')return reply({error:'This Circle has been archived.'},410);

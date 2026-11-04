@@ -1,3 +1,6 @@
+import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
+import { hasTestEntitlement } from "@/lib/commerce/test-entitlements";
+import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import { isDeepStrictEqual } from "node:util";
 import { NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -53,6 +56,16 @@ export async function POST(request: Request) {
     return reply({ error: "Choose a valid Circle." }, 400);
   const invalid = validatePlan(b.plan, b.status === "active");
   if (invalid) return reply({ error: invalid }, 400);
+  // TEST billing only. Drafts/history/owner-preview remain available; money never grants data-sharing roles.
+  if (testBillingEnabled() && actor.userId && b.status === "active") {
+    try {
+      const personal = await hasLifetimePersonalAccess(actor.userId) || await hasTestEntitlement(actor.userId,"personal");
+      const capability = b.plan.format === "Couple" ? "couples_circle" : "circle_leadership";
+      const scope = capability === "couples_circle" ? b.id : "account";
+      if (!personal || !await hasTestEntitlement(actor.userId,capability,scope))
+        return reply({error:"Open Memberships & add-ons to activate your personal membership and this Circle’s required unlock.",checkoutUrl:"/memberships"},402);
+    } catch {return reply({error:"Your TEST access could not be checked. Your draft is preserved."},503);}
+  }
   const db = createSupabaseAdminClient();
   if (b.revision === 0) {
     const { data, error } = await db

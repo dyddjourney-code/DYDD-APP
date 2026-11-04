@@ -67,3 +67,8 @@ assert(pdf.includes("&lt;script&gt;"));
 console.log(
   "PASS curriculum coverage, initial module grouping, breaks, finish dates, moves, DST, new/unassigned lessons, group limits, PDF escaping",
 );
+
+const finished={...m.blankCirclePlan(),name:"Finish-mode Couple",format:"Couple",expectedPeople:"2",startDate:"2026-11-03",paceMode:"finish",finishDate:"2026-12-22"};
+const shifted=m.updateCircleCalendar(finished,{breaks:[{start:"2026-11-24",end:"2026-12-01"}]});
+assert.equal(shifted.finishDate,"2027-01-05");assert.equal(m.validatePlan(shifted,true),null);
+console.log("PASS finish-mode shared holiday edits derive a valid new finish date.");

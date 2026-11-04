@@ -3,7 +3,7 @@ import {testBillingEnabled,validUuid} from '@/lib/commerce/test-billing-config';
 import {operationActor} from '@/lib/circles/operations';
 import {sameOrigin} from '@/lib/circles/server';
 import {createSupabaseAdminClient} from '@/lib/supabase/admin';
-import {validatePlan} from '@/lib/circles/plan';
+import {validatePlan,updateCircleCalendar} from '@/lib/circles/plan';
 export const dynamic='force-dynamic';
 const reply=(body:unknown,status=200)=>NextResponse.json(body,{status,headers:{'Cache-Control':'private, no-store'}});
 export async function POST(request:Request){
@@ -18,8 +18,10 @@ export async function POST(request:Request){
  const db=createSupabaseAdminClient(),saved=await db.from('journey_circle_plans').select('id,user_id,plan,status').eq('id',body.circleId).maybeSingle();if(saved.error)throw Error();
  if(!saved.data||saved.data.plan?.format!=='Couple')return reply({error:'Couples Circle not found.'},404);
  if(saved.data.user_id!==actor.userId){const m=await db.from('dydd_circle_memberships').select('id').eq('circle_id',body.circleId).eq('user_id',actor.userId).eq('status','accepted').maybeSingle();if(m.error)throw Error();if(!m.data)return reply({error:'Accepted spouse permission required.'},403);}
- const invalid=validatePlan({...saved.data.plan,...body.patch},true);if(invalid)return reply({error:invalid},400);
- const result=await db.rpc('dydd_circle_save_shared_plan',{p_actor:actor.userId,p_circle:body.circleId,p_revision:body.revision,p_patch:body.patch});
+ const next=updateCircleCalendar(saved.data.plan,body.patch);
+ const patch={...body.patch,...(next.finishDate!==saved.data.plan.finishDate?{finishDate:next.finishDate}:{})};
+ const invalid=validatePlan(next,true);if(invalid)return reply({error:invalid},400);
+ const result=await db.rpc('dydd_circle_save_shared_plan',{p_actor:actor.userId,p_circle:body.circleId,p_revision:body.revision,p_patch:patch});
  if(result.error)return reply({error:result.error.code==='P0001'?result.error.message:'Your shared plan could not be saved.'},409);
  return reply({circle:result.data});
  }catch{return reply({error:'Your shared plan could not be checked. Please retry.'},503);}

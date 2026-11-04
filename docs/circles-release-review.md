@@ -15,3 +15,7 @@ Verification: `docs/evidence/circles-local-acceptance.json` (25actual HTTP/brows
 Hosted runtime portal configuration failed403more_permissions_required. The unrequested payment-method/history portal button was removed rather than exposed as working. Direct subscription cancel-at-period-end/restore-renewal remains implemented and guarded; current hosted Circle acceptance is independent of optional portal configuration. No broader key permissions were requested or altered.
 
 Final actual viewport inspection caught a native header-style context regression: the new workspace lacked the existing `camp-circle-page` class, so inherited mobile pseudo-art duplicated the supplied header image. Restored that native context; targeted hosted browser verification now asserts one image, no pseudo-art and bounded header height, in addition to real saves and modal assertions.
+
+The final legacy-guide audit distinguishes prior paid read-only history from never-purchased legacy Circles: unpaid creators/participants cannot unlock a full/shared guide merely by owning an old plan or holding a legacy accepted membership. Targeted server tests verify402fornever-paid,200forpriorpaidreadonly, participant-only projection, and foreign/anonymous denial.
+
+Final calendar invariant: shared spouse date/holiday edits now use the planner’s existing calendar derivation and persist the derived finish date, including finish-mode plans. Public callers still cannot override curriculum or finish dates directly; optimistic revision and membership checks remain in the restricted RPC.

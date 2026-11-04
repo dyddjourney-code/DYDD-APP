@@ -12,4 +12,5 @@ const course=load('lib/courses/fruitlife-360-formation.ts').fruitLife360Course;a
 const badges=load('lib/passport-badges.ts').buildPassportBadges({completedAssessments:['fruit_360'],completedCourses:['fruitlife-360-formation']});assert.equal(badges.find(b=>b.title==='Fruitful Life 360').state,'earned');assert.equal(badges.find(b=>b.title==='Fruitful Life 360 Course').state,'earned');
 const copy=load('lib/lifecycle/templates.ts').lifecycleCopy.C04;assert(copy.subject.includes('Fruitful Life 360'));assert(copy.body.includes('/fruitlife360'));
 for(const p of ['content/email-service-previews.json','docs/DYDD-Sandbox-Email-Catalog-and-Walkthrough-2026-11-04.txt']){const s=fs.readFileSync(p,'utf8');assert(!/FruitLife(?:\s*360)?\b|Fruit\s+Life\s*360/.test(s),p);}
+assert(!/\bFruitLife(?:\s*360)?\b/.test(fs.readFileSync('scripts/seed-fruitlife-jordan-demo.mjs','utf8')),'Demo regeneration must keep current display name');
 console.log('PASS display terminology across runtime literals, course, trail, current assessment/course badges, generated email copy; legacy routes/keys preserved.');

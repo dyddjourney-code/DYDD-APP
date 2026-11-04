@@ -196,7 +196,7 @@ function buildSnapshotPayload(run) {
         ? `Give thanks for visible ${fruit.label.toLowerCase()} and practice it deliberately this week.`
         : `Choose one small place to let ${fruit.label.toLowerCase()} become more visible.`;
     profileLanguage[`${fruit.scoreKey}_Summary`] =
-      `${fruit.label} is tracking at ${observerScore.toFixed(1)} in this dated FruitLife run.`;
+      `${fruit.label} is tracking at ${observerScore.toFixed(1)} in this dated Fruitful Life 360 run.`;
   }
 
   scores.Observer_Count = run.observerCount;

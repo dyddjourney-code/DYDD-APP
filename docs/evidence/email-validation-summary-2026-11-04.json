@@ -1,0 +1,118 @@
+{
+  "date": "2026-11-04",
+  "uniquePassingSuites": 20,
+  "suites": [
+    {
+      "command": "node tests/email-foundation.cjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node tests/email-foundation-sandbox.mjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node tests/lifecycle-sandbox.mjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node tests/lifecycle-races-sandbox.mjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node tests/lifecycle-application-sandbox.mjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node tests/lifecycle-course-events-sandbox.mjs",
+      "status": "PASS"
+    },
+    {
+      "command": "LIFECYCLE_BASE=http://localhost:3147 node tests/lifecycle-waypoints-sandbox.mjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node tests/fruitlife-email-policy.cjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node tests/spiritual-gifts-email-lifecycle.cjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node tests/lifecycle-templates.cjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node tests/email-sender.cjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node tests/environment-isolation.cjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node tests/sandbox-email-policy.cjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node tests/lifecycle-workbook-start-sandbox.mjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node tests/circle-held-email-sandbox.mjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node tests/circle-operations-sandbox.mjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node scripts/verify-fruitlife-lifecycle.cjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node scripts/verify-fruitlife-worker.cjs",
+      "status": "PASS"
+    },
+    {
+      "command": "LIFECYCLE_BASE=https://dydd-online-school-sandbox.vercel.app node tests/lifecycle-http-browser.mjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node scripts/verify-sandbox-email-live.mjs --send-controlled",
+      "status": "PASS"
+    }
+  ],
+  "typecheck": "PASS",
+  "productionModeBuild": "PASS",
+  "sourceCatalog": {
+    "planningIDs": 41,
+    "runtimePreviews": 231,
+    "fullCatalogSubjectBodyBlocks": 182,
+    "circleGoalVariants": 4,
+    "authoredWaypoints": 35,
+    "primaryAlternativeParagraphs": 140,
+    "futureReleasesAtAudit": 15
+  },
+  "providerAcceptanceProven": 3,
+  "deliveryVerified": false,
+  "inboxVerified": false,
+  "knownFailedAttemptsResolved": [
+    "Prior fixtures lacked Nov4 Personal/Leadership entitlements; fixed legitimate fixtures and asserted cleanup",
+    "Time-dependent fixed16 future Waypoints assertion corrected to current15 plus complete35 manifest",
+    "Browser required configured authenticated egress proxy; initial navigation readiness failures resolved",
+    "Real Journey enrollment source mismatch fixed by private sandbox migration",
+    "Real paid-Circle held intent and no-op roster revision integration fixed",
+    "New current Circle operations UI lacked direct message review; leader-only editor restored and browser-tested",
+    "Old harness assumed synchronous welcome materialization; paid acceptance is durably materialized on authenticated worker tick",
+    "One newly created owner A03 was held by a non-sending synthetic QA sweep; requeued only after proving no provider intent existed, preserving original business key"
+  ],
+  "initialFailureEvidencePreserved": "docs/evidence/email-durable-regressions-2026-11-04.json",
+  "productionMutations": 0,
+  "bulkSends": 0,
+  "implicitSubscriptions": 0,
+  "pendingExternal": [
+    "Provider-only webhook registration/signing secret and delivery/inbox evidence",
+    "Separately scoped production Waypoints pause repair"
+  ]
+}

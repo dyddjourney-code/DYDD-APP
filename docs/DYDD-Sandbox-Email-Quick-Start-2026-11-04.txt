@@ -1,0 +1,86 @@
+DYDD SANDBOX EMAIL REVIEW — QUICK START
+4 November 2026
+
+OPEN
+https://dydd-online-school-sandbox.vercel.app/sandbox/email-lab
+Use the separate sandbox account at dyddjourney@gmail.com, not Owner Preview.
+A controlled access email supplies a one-time sign-in/password-setup link. A
+sandbox password is separate from the live school's password.
+
+REVIEW NOW
+1. Choose any of the 231 previews: account/course; requested reports and observer
+   messages; Circle leader/participant copy; all 35 Waypoints with generic and
+   four authored DesignID applications each.
+2. Read the copy. Circle meetings and report/observer links are fictional sample
+   fields. A real weekly recipient gets only their own saved Primary or generic,
+   never all four applications.
+3. Click “Send this copy to my verified test inbox” to inspect a chosen copy.
+   Only the exact configured test address can receive real sandbox mail. Every
+   outgoing subject begins [SANDBOX]. Limit: 25 deliberate copies per day.
+4. Refresh status. “Accepted” proves the provider accepted the request, NOT
+   delivered, inbox, or read. Provider delivery telemetry is not yet configured.
+5. /admin/email shows genuine lifecycle events/jobs and weekly Waypoints jobs.
+   Do not reset accepted/review jobs to obtain samples; use the copy preview.
+
+REAL FRESH-ACCOUNT WALKTHROUGH
+The owner's fresh sandbox password signup creates the real verified-account
+state/event and once-only account welcome. Sandbox currently auto-confirms
+password signup and has no custom authentication SMTP, so there is no A01
+verification email here. The live school separately uses confirmation plus
+Resend SMTP; it has not been changed.
+
+Learning and growth emails require explicit choices in Email preferences.
+A first saved course workbook now queues day-7/day-35 inactivity intentions even
+with no lesson checked complete. Recent activity/completion/consent are checked
+again at send time. No historical accounts or old queues were backfilled.
+
+Lesson-completion checkboxes, not page views, create genuine course completion.
+Journey followups are day 5 / 14 / 30 and recheck access, activity and preferences.
+Real report email requires a real ready artifact. External PDF generation remains
+blocked in sandbox; report-copy previews do not invent a report or assessment.
+
+CIRCLES
+Paid-membership and capacity rules remain. Saving a roster is not acceptance.
+Review and individually approve included messages, then finalize the current
+schedule before queuing email invitations. Roster operations can record a held
+invitation first; no mail is authorized until its current schedule is finalized.
+The transactional held outbox is now connected to the approved email queue.
+An identical roster no longer invalidates an approved schedule. Actual roster
+changes still require re-review. Correct verified identity must accept; required
+Personal membership still applies. Routine participant messages stay at two per
+meeting week, with real dates, timezone, pauses and current approved preparation.
+
+FRUITLIFE POLICY — IMPORTANT
+No participant self-start invitation, participant self reminder, or pending-
+observer/status chase is sent in either mode. This is intentional. Observers
+retain invitations and one eligible day-five reminder; actual ready participant
+reports and opted-in use-results followups remain.
+
+WAYPOINTS
+Account creation and this console do NOT subscribe you. If wanted, deliberately
+request and confirm Waypoints separately in the sandbox. Only future Friday
+08:00 America/New_York releases are eligible. Nothing silently sends old issues.
+
+MISSED FRIDAY OCTOBER 30
+The live school has the authored issue and a currently eligible verified
+subscriber, but its optional-email operational switch is paused. That currently
+stops the Waypoints worker before it creates email jobs. October 30 has no job.
+Its exact historical cron HTTP result and pause-change time were not recoverable,
+so this is a confirmed present blocker, not a proven historical inbox diagnosis.
+Sandbox scheduling did run that day, but sandbox had no subscribers and no real
+transport. November 6 is correctly scheduled 08:00 EST / 13:00 UTC.
+Production settings were NOT changed. A production-only decision/repair is still
+needed to resume its intended future operation. The expired October 30 issue is
+not automatically replayed. An explicitly labeled sandbox copy was accepted for
+review; that is not a production backlog resend.
+
+MORE DETAIL
+Full source-generated editorial catalog:
+DYDD-Sandbox-Email-Catalog-and-Walkthrough-2026-11-04.txt
+Technical release evidence: docs/email-package-release-2026-11-04.md
+Live diagnosis: docs/email-audit-2026-11-04-waypoints.md
+
+Not all 41 planning IDs are live sends: authentication/billing stay provider-owned;
+participant FruitLife reminders are deliberately disabled; absent deadline,
+access-expiry and unapproved news/offer campaigns are labeled conditional.
+Editing these TXT files does not change runtime templates.

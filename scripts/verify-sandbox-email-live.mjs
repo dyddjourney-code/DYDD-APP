@@ -21,7 +21,7 @@ const password=staged.testAccountPassword||crypto.randomBytes(24).toString('base
 const runId=staged.verificationRunId||crypto.randomUUID();
 fs.writeFileSync(secretPath,JSON.stringify({...staged,testAccountPassword:password,verificationRunId:runId}),{mode:0o600});
 let browser,outsider;
-const evidence={checkedAt:new Date().toISOString(),base,sandboxRef:c.ref,recipient:'one existing verified owner address',freshAccountCreated:!existing,freshAccountCreatedAt:existing?.created_at||null,providerAccepted:[],delivered:false,inboxVerified:false,webhookConfigured:false,checks:[]};
+const evidence={checkedAt:new Date().toISOString(),base,sandboxRef:c.ref,recipient:'one existing verified owner address',freshAccountCreated:!existing,freshAccountCreatedAt:existing?.created_at||null,providerAccepted:[],deliveryVerified:false,inboxVerified:false,webhookConfigured:false,checks:[]};
 try{
  const unauth=await fetch(base+'/api/sandbox/email-lab');assert.equal(unauth.status,403);evidence.checks.push('Anonymous lab denied');
  const proxy=process.env.HTTPS_PROXY?new URL(process.env.HTTPS_PROXY):null;

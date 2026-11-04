@@ -1,0 +1,48 @@
+{
+  "at": "2026-11-04T20:32:58.741Z",
+  "senderDomain": "mail.discoverdivine.design",
+  "providerDomainDashboard": "unverified: sending-only key",
+  "checks": [
+    {
+      "name": "resend._domainkey.mail.discoverdivine.design",
+      "type": "TXT",
+      "found": true,
+      "recordCount": 1,
+      "dkimPresent": true,
+      "spfPresent": false,
+      "dmarcPolicy": null
+    },
+    {
+      "name": "send.mail.discoverdivine.design",
+      "type": "TXT",
+      "found": true,
+      "recordCount": 1,
+      "dkimPresent": false,
+      "spfPresent": true,
+      "dmarcPolicy": null
+    },
+    {
+      "name": "send.mail.discoverdivine.design",
+      "type": "MX",
+      "found": true,
+      "recordCount": 1,
+      "dkimPresent": false,
+      "spfPresent": false
+    },
+    {
+      "name": "_dmarc.mail.discoverdivine.design",
+      "type": "TXT",
+      "found": false,
+      "code": "ENOTFOUND"
+    },
+    {
+      "name": "_dmarc.discoverdivine.design",
+      "type": "TXT",
+      "found": true,
+      "recordCount": 1,
+      "dkimPresent": false,
+      "spfPresent": false,
+      "dmarcPolicy": "v=DMARC1; p=none;"
+    }
+  ]
+}

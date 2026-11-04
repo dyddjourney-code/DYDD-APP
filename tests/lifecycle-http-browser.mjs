@@ -63,9 +63,9 @@ try{
  note=(await call(path,creator)).body.announcements[0];assert.equal((await post(creator,'announcement-publish',{announcementId:note.id,revision:note.revision})).status,200);assert.equal((await post(creator,'announcement-publish',{announcementId:note.id,revision:note.revision})).status,200);
  assert.equal(ok(await db.from('dydd_lifecycle_jobs').select('id').eq('circle_id',circle).eq('template_id','E05')).length,1);
  assert.equal((await post(creator,'announcement-save',{announcementId:note.id,revision:note.revision,subject:'No mutation',body:'Published history stays frozen.'})).status,409);
- let welcome=ok(await db.from('dydd_lifecycle_jobs').select('*').eq('circle_id',circle).eq('template_id','D03').single());assert.match(welcome.body,/Saved HTTP review note/);
  const unauthorized=await fetch(base+'/api/cron/lifecycle');assert.equal(unauthorized.status,401);
  const secret=process.env.LIFECYCLE_TEST_SECRET||'local-lifecycle-qa-only';r=await fetch(base+'/api/cron/lifecycle',{headers:{authorization:'Bearer '+secret}});assert.equal(r.status,200,await r.clone().text());const run=await r.json();assert(run.sandbox);assert.equal(run.accepted,0);
+ let welcome=ok(await db.from('dydd_lifecycle_jobs').select('*').eq('circle_id',circle).eq('template_id','D03').single());assert.match(welcome.body,/Saved HTTP review note/);
  welcome=ok(await db.from('dydd_lifecycle_jobs').select('*').eq('id',welcome.id).single());assert.equal(welcome.status,'sandbox_ready');
  const reminder=ok(await db.from('dydd_lifecycle_jobs').select('*').eq('circle_id',circle).eq('template_id','E02').limit(1).single());
  const hash=t=>crypto.createHash('sha256').update(t).digest('hex');

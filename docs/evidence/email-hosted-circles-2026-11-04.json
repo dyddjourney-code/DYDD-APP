@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-11-04T20:41:05.997Z",
+  "base": "https://dydd-online-school-sandbox.vercel.app",
+  "widths": [
+    360,
+    390,
+    768,
+    1280
+  ],
+  "circleFixtureRemoved": true,
+  "providerCalls": 0,
+  "assertions": "authenticated ownership, edit/persistence, stale approval, all-approved gate, invitation acceptance, optouts, sandbox worker, schedule revision",
+  "runtimeCommit": "a6ffe16f58ec7bc5b5b57628712c6daae02f061b",
+  "status": "PASS",
+  "assertedCleanupTables": 24,
+  "currentLeaderMessagesPanel": true,
+  "durableAcceptanceWorkerBeforeWelcomeAssertion": true
+}

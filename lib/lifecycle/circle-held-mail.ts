@@ -6,6 +6,7 @@ import {appBase,enqueue,must,tokenHash} from './store';
  * rechecks current plan, message approval/exclusion, token, roster and membership.
  */
 export async function queueApprovedHeldCircleInvitations(circleId:string,holdId?:string){
+ if(process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT!=='sandbox')return {queued:0};
  const db=createSupabaseAdminClient();
  const circle=must(await db.from('journey_circle_plans').select('id,revision,status,plan').eq('id',circleId).maybeSingle()) as any;
  if(!circle||circle.status!=='active')return {queued:0};

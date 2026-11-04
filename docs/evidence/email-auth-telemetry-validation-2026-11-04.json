@@ -1,0 +1,21 @@
+{
+  "at": "2026-11-04T21:03:19.924Z",
+  "checks": [
+    "npm run typecheck",
+    "npm run build",
+    "node scripts/test-sandbox-auth-email.cjs",
+    "node tests/email-sandbox-webhook.cjs",
+    "node tests/email-sender.cjs",
+    "node tests/email-foundation.cjs",
+    "deterministic source catalog",
+    "hosted owner recovery and outsider signup denial",
+    "separate provider webhook registered/enabled; unrelated webhook hash unchanged",
+    "two genuine delivery events plus independent provider inspection"
+  ],
+  "status": "PASS",
+  "ownerPasswordChanged": false,
+  "ownerRecreated": false,
+  "newestAccessEmailRequired": true,
+  "freshOwnerSignupReverified": false,
+  "productionMutations": 0
+}

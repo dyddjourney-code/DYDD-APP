@@ -1,0 +1,23 @@
+{
+  "at": "2026-11-04T20:59:38.515Z",
+  "sandboxRef": "atemrshtshxoqnuevvqu",
+  "hookEnabled": true,
+  "hookUri": "https://dydd-online-school-sandbox.vercel.app/api/sandbox/auth-email",
+  "confirmationRequired": true,
+  "rateLimitPerHour": 100,
+  "smtpUsed": false,
+  "exactOwnerAllowlist": true,
+  "productionAuthUnchanged": true,
+  "changes": [
+    "hook_send_email_enabled",
+    "hook_send_email_uri",
+    "hook_send_email_secrets",
+    "mailer_autoconfirm",
+    "rate_limit_email_sent"
+  ],
+  "before": {
+    "hookEnabled": false,
+    "autoConfirm": true,
+    "rateLimit": 2
+  }
+}

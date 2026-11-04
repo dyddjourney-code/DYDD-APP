@@ -1,0 +1,25 @@
+{
+  "at": "2026-11-04T21:01:20.981Z",
+  "sandboxRef": "atemrshtshxoqnuevvqu",
+  "checks": [
+    "Actual hosted Forgot password → Supabase signed Send Email Hook → exact-owner provider acceptance and durable ledger",
+    "Existing owner account and password preserved; recovery replaces the prior magic-link token, requiring a fresh handoff",
+    "Real recovery token GET remained unused; explicit POST established owner session and reset form",
+    "No owner password changed; signup confirmation state unchanged",
+    "Actual direct Supabase signup outside exact allowlist denied; zero mail intents and rolled-back account",
+    "New owner access handoff provider-accepted after recovery test; newest access email replaces the earlier link"
+  ],
+  "realRecipientCount": 1,
+  "productionMutations": 0,
+  "inboxObserved": false,
+  "verificationSignupFreshAccountProven": false,
+  "providerId": "01a1a85d-ce97-79f4-8d52-22fe05de6964",
+  "replacementHandoff": {
+    "status": "accepted",
+    "providerId": "01a1a85d-e020-7710-94be-c4dd73dee648",
+    "getPreviewDoesNotConsume": true
+  },
+  "authIntentsBefore": 0,
+  "authIntentsAfter": 1,
+  "status": "PASS: real owner recovery accepted/session verified; no fresh owner signup recreated"
+}

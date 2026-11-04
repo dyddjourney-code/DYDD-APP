@@ -8,7 +8,14 @@ const db=createClient(c.project_url,c.service_role_key,{auth:{persistSession:fal
 const ok=r=>{assert(!r.error,r.error?.message);return r.data;};
 async function state(){const r=await fetch(`https://api.supabase.com/v1/projects/${c.ref}/database/query`,{method:'POST',headers:{Authorization:'Bearer '+s.management_access_token,'Content-Type':'application/json'},body:JSON.stringify({query:"select id,confirmation_token,recovery_token,email_confirmed_at,encrypted_password from auth.users where email='dyddjourney@gmail.com'",read_only:true})});assert(r.ok,'Read-only sandbox auth state '+r.status);return (await r.json())[0];}
 const before=await state();assert(before?.email_confirmed_at);
-const proof={at:new Date().toISOString(),sandboxRef:c.ref,checks:[],realRecipientCount:1,productionMutations:0,inboxObserved:false,verificationSignupFreshAccountProven:false};let browser;
+const proof={at:new Date().toISOString(),sandboxRef:c.ref,checks:[],realRecipientCount:1,productionMutations:0,inboxObserved:false,verificationSignupFreshAccountProven:false};let browser,recoveryRequested=false;
+function replaceAccess(){
+ const handoffPath=root+'dydd-sandbox-email.json',current=JSON.parse(fs.readFileSync(handoffPath));
+ current.accessHistory=[...(current.accessHistory||[]),...(current.access?[current.access]:[])];delete current.access;
+ fs.writeFileSync(handoffPath,JSON.stringify(current),{mode:0o600});
+ const replacement=JSON.parse(execFileSync(process.execPath,['scripts/send-sandbox-email-access.mjs','--send-controlled'],{encoding:'utf8'}));
+ assert.equal(replacement.status,'accepted');return {status:replacement.status,providerId:replacement.providerId,getPreviewDoesNotConsume:replacement.getPreviewDoesNotConsume};
+}
 try{
  const initial=ok(await db.from('dydd_email_messages').select('id').like('idempotency_key','sandbox-auth-%'));
  const proxy=process.env.HTTPS_PROXY?new URL(process.env.HTTPS_PROXY):null;
@@ -18,6 +25,7 @@ try{
  await page.waitForSelector('form.auth-form [name=email]');await page.type('form.auth-form [name=email]',email);
  await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded',timeout:60000}),page.click('form.auth-form button[type=submit]')]);
  assert(new URL(page.url()).searchParams.get('message')?.includes('password reset link is on the way'),'Hosted Forgot password must succeed: '+(new URL(page.url()).searchParams.get('message') || 'no status message'));
+ recoveryRequested=true;
  const requested=await state();assert(requested.recovery_token,'Real GoTrue recovery token required');
  const key='sandbox-auth-'+crypto.createHash('sha256').update(email+':recovery:'+requested.recovery_token).digest('hex');
  const intent=ok(await db.from('dydd_email_messages').select('id,provider_id,status,recipient').eq('idempotency_key',key).single());assert(intent.provider_id);assert.equal(intent.status,'accepted');assert.equal(intent.recipient,email);proof.providerId=intent.provider_id;
@@ -41,11 +49,7 @@ try{
  assert.equal((await fetch(base+'/api/sandbox/auth-email',{method:'POST',body:'{}'})).status,401);
  // Magic links and recovery share GoTrue's recovery_token. Replace the now-stale
  // prior account-access handoff with a newly accepted email, never just invalidate it.
- const handoffPath=root+'dydd-sandbox-email.json',current=JSON.parse(fs.readFileSync(handoffPath));
- current.accessHistory=[...(current.accessHistory||[]),...(current.access?[current.access]:[])];delete current.access;
- fs.writeFileSync(handoffPath,JSON.stringify(current),{mode:0o600});
- const replacement=JSON.parse(execFileSync(process.execPath,['scripts/send-sandbox-email-access.mjs','--send-controlled'],{encoding:'utf8'}));
- assert.equal(replacement.status,'accepted');proof.replacementHandoff={status:replacement.status,providerId:replacement.providerId,getPreviewDoesNotConsume:replacement.getPreviewDoesNotConsume};
+ proof.replacementHandoff=replaceAccess();
  proof.checks.push('New owner access handoff provider-accepted after recovery test; newest access email replaces the earlier link');
  proof.authIntentsBefore=initial.length;proof.authIntentsAfter=countBefore;proof.status='PASS: real owner recovery accepted/session verified; no fresh owner signup recreated';
-}finally{if(browser)await browser.close();fs.writeFileSync('docs/evidence/email-auth-live-2026-11-04.json',JSON.stringify(proof,null,2)+'\n');console.log(JSON.stringify(proof));}
+}finally{if(recoveryRequested&&!proof.replacementHandoff){proof.replacementHandoff=replaceAccess();proof.checks.push('Fail-safe replacement owner handoff accepted after incomplete verification');}if(browser)await browser.close();fs.writeFileSync('docs/evidence/email-auth-live-2026-11-04.json',JSON.stringify(proof,null,2)+'\n');console.log(JSON.stringify(proof));}

@@ -1,0 +1,24 @@
+{
+  "at": "2026-11-04T21:01:20.644Z",
+  "sandboxRef": "atemrshtshxoqnuevvqu",
+  "id": "67b9f564-d1d5-492f-be2e-cefcfbfa2176",
+  "endpoint": "https://dydd-online-school-sandbox.vercel.app/api/webhooks/dydd-email",
+  "events": [
+    "email.sent",
+    "email.delivered",
+    "email.delivery_delayed",
+    "email.bounced",
+    "email.failed",
+    "email.complained"
+  ],
+  "status": "enabled",
+  "signingSecretStored": true,
+  "runtimeKeyStillSendingOnly": true,
+  "unrelatedWebhooksUnchanged": true,
+  "domain": {
+    "name": "mail.discoverdivine.design",
+    "status": "verified"
+  },
+  "secretPrinted": false,
+  "adminCredentialDeployed": false
+}

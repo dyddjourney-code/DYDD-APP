@@ -1,0 +1,75 @@
+{
+  "at": "2026-11-04T21:01:32.155Z",
+  "sandboxRef": "atemrshtshxoqnuevvqu",
+  "messages": [
+    {
+      "provider_id": "01a1a85d-ce97-79f4-8d52-22fe05de6964",
+      "status": "delivered",
+      "last_event_at": "2026-11-04T21:01:24.461+00:00"
+    },
+    {
+      "provider_id": "01a1a85d-e020-7710-94be-c4dd73dee648",
+      "status": "delivered",
+      "last_event_at": "2026-11-04T21:01:28.265+00:00"
+    }
+  ],
+  "events": [
+    {
+      "event_id": "msg_3LestewUzrU722E2cdLfDKm7NEt",
+      "provider_id": "01a1a85d-ce97-79f4-8d52-22fe05de6964",
+      "event_type": "email.sent",
+      "occurred_at": "2026-11-04T21:01:22.862+00:00",
+      "message_id": "1a7a97cd-d48b-4b2b-b17a-2a0e304a862a"
+    },
+    {
+      "event_id": "msg_3LestpOnMAWBpqIpcMfpXSHk2XP",
+      "provider_id": "01a1a85d-ce97-79f4-8d52-22fe05de6964",
+      "event_type": "email.delivered",
+      "occurred_at": "2026-11-04T21:01:24.461+00:00",
+      "message_id": "1a7a97cd-d48b-4b2b-b17a-2a0e304a862a"
+    },
+    {
+      "event_id": "msg_3LesuCBPlBSgtUqoNiGRR2RElOp",
+      "provider_id": "01a1a85d-e020-7710-94be-c4dd73dee648",
+      "event_type": "email.sent",
+      "occurred_at": "2026-11-04T21:01:27.231+00:00",
+      "message_id": "f16e14ff-4210-4315-bf18-a895e53f8ce9"
+    },
+    {
+      "event_id": "msg_3LesuIuIEVxcSt6Oaly7Moytqgx",
+      "provider_id": "01a1a85d-e020-7710-94be-c4dd73dee648",
+      "event_type": "email.delivered",
+      "occurred_at": "2026-11-04T21:01:28.265+00:00",
+      "message_id": "f16e14ff-4210-4315-bf18-a895e53f8ce9"
+    }
+  ],
+  "provider": [
+    {
+      "id": "01a1a85d-ce97-79f4-8d52-22fe05de6964",
+      "lastEvent": "delivered",
+      "toCount": 1,
+      "tags": [
+        {
+          "name": "dydd_environment",
+          "value": "sandbox"
+        }
+      ]
+    },
+    {
+      "id": "01a1a85d-e020-7710-94be-c4dd73dee648",
+      "lastEvent": "delivered",
+      "toCount": 1,
+      "tags": [
+        {
+          "name": "dydd_environment",
+          "value": "sandbox"
+        }
+      ]
+    }
+  ],
+  "realOwnerRecipientCount": 1,
+  "deliveryProven": "recipient mail server accepted; genuine signed provider webhook and independent provider GET agree",
+  "inboxPlacementObserved": false,
+  "syntheticEventsAppliedToRealIds": false,
+  "runtimeSendingKeyUnchanged": true
+}

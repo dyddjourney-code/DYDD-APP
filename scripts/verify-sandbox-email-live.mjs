@@ -36,7 +36,7 @@ try{
  await page.waitForSelector('#email-example',{timeout:60000});
  const user=ok(await db.auth.admin.listUsers({page:1,perPage:1000})).users.find(u=>u.email===email);assert(user?.email_confirmed_at);
  const get=()=>page.evaluate(async()=>{const r=await fetch('/api/sandbox/email-lab');return {status:r.status,body:await r.json()};});
- let state=await get();assert.equal(state.status,200);assert(state.body.catalog.length>=230);assert.equal(state.body.telemetryConfigured,false);assert(state.body.catalog.some(p=>p.id.startsWith('B01-designid')));assert(state.body.catalog.some(p=>p.id.startsWith('B02')));assert(state.body.catalog.some(p=>p.id.startsWith('G02')));
+ let state=await get();assert.equal(state.status,200);assert(state.body.catalog.length>=230);assert.equal(state.body.telemetryConfigured,true);assert(state.body.catalog.some(p=>p.id.startsWith('B01-designid')));assert(state.body.catalog.some(p=>p.id.startsWith('B02')));assert(state.body.catalog.some(p=>p.id.startsWith('G02')));
  evidence.catalogPreviews=state.body.catalog.length;evidence.checks.push('Actual fresh signup and verified password session; report/observer/confirmation/account/Circle/175 Waypoint variants visible');
  for(const width of [390,768,1280]){await page.setViewport({width,height:900});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Lab overflow '+width);await page.screenshot({path:'tmp/email-live-lab-'+width+'.png',fullPage:false});}
  evidence.checks.push('Delivered lab UI fits 390/768/1280; no JavaScript errors');
@@ -69,7 +69,7 @@ try{
  const prefs=ok(await db.from('dydd_email_preferences').select('*').eq('email',email).maybeSingle());assert(!prefs?.learning&&!prefs?.growth&&!prefs?.optional_disabled);
  assert.equal(ok(await db.from('dydd_waypoint_subscriptions').select('id').eq('email',email)).length,0);
  evidence.checks.push('No implicit optional consent or Waypoint subscription; no archive backfill');
- const ledger=ok(await db.from('dydd_email_messages').select('provider_id,status').in('provider_id',evidence.providerAccepted.map(p=>p.providerId)));assert.equal(ledger.length,3);assert(ledger.every(r=>r.status==='accepted'));evidence.ledger=ledger;
+ const ledger=ok(await db.from('dydd_email_messages').select('provider_id,status').in('provider_id',evidence.providerAccepted.map(p=>p.providerId)));assert.equal(ledger.length,3);assert(ledger.every(r=>['accepted','delivered'].includes(r.status)));evidence.ledger=ledger;
  const admin=await page.evaluate(async()=>{const r=await fetch('/api/admin/email');return {status:r.status,body:await r.json()};});assert.equal(admin.status,200);assert(Array.isArray(admin.body.waypoints));evidence.checks.push('Authenticated admin can inspect lifecycle plus dedicated Waypoints history');
  // Separate synthetic verified account proves that a fresh account never grants send authority.
  const outsiderEmail='email-lab-denied-'+crypto.randomUUID()+'@example.test';outsider=ok(await db.auth.admin.createUser({email:outsiderEmail,password:crypto.randomBytes(24).toString('hex'),email_confirm:true})).user;

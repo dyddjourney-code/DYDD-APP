@@ -18,16 +18,26 @@ REVIEW NOW
    Only the exact configured test address can receive real sandbox mail. Every
    outgoing subject begins [SANDBOX]. Limit: 25 deliberate copies per day.
 4. Refresh status. “Accepted” proves the provider accepted the request, NOT
-   delivered, inbox, or read. Provider delivery telemetry is not yet configured.
+   delivered, inbox, or read. Signed provider delivery telemetry is now active;
+   real Delivered events prove mail-server delivery, not inbox placement/read.
 5. /admin/email shows genuine lifecycle events/jobs and weekly Waypoints jobs.
    Do not reset accepted/review jobs to obtain samples; use the copy preview.
 
 REAL FRESH-ACCOUNT WALKTHROUGH
-The owner's fresh sandbox password signup creates the real verified-account
-state/event and once-only account welcome. Sandbox currently auto-confirms
-password signup and has no custom authentication SMTP, so there is no A01
-verification email here. The live school separately uses confirmation plus
-Resend SMTP; it has not been changed.
+The owner's earlier fresh sandbox signup already created its verified-account
+event and once-only welcome. It remains intact. New sandbox signup now requires
+email confirmation through a signed Send Email Hook using the same exact-owner
+allowlist and existing sending-only Resend key. SMTP is not used; non-allowlisted
+new signup cannot send mail. The live school's SMTP/settings remain unchanged.
+
+Forgot password is now active for dyddjourney@gmail.com. Open:
+https://dydd-online-school-sandbox.vercel.app/login?mode=recovery
+The actual hosted reset request, provider acceptance, explicit confirmation,
+authenticated session and reset form were verified without changing your password.
+The verification run consumed its test reset link; request a new link when needed.
+Use the NEWEST account-access email after this verification; it replaces the prior
+one-time link, since Supabase magic links and recovery share a token. Your account
+was not deleted/recreated to force another signup verification challenge.
 
 Learning and growth emails require explicit choices in Email preferences.
 A first saved course workbook now queues day-7/day-35 inactivity intentions even
@@ -80,7 +90,8 @@ DYDD-Sandbox-Email-Catalog-and-Walkthrough-2026-11-04.txt
 Technical release evidence: docs/email-package-release-2026-11-04.md
 Live diagnosis: docs/email-audit-2026-11-04-waypoints.md
 
-Not all 41 planning IDs are live sends: authentication/billing stay provider-owned;
+Not all 41 planning IDs are live sends: auth is requested service (sandbox hook),
+billing stays provider-owned;
 participant FruitLife reminders are deliberately disabled; absent deadline,
 access-expiry and unapproved news/offer campaigns are labeled conditional.
 Editing these TXT files does not change runtime templates.

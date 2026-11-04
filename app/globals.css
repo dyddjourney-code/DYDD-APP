@@ -21908,3 +21908,16 @@ body:has(.mobile-nav-drawer[open]) { overflow: hidden; }
 .contextual-purchases h3 { font-size: 1.2rem; line-height: 1.4; }
 .contextual-purchases p { max-width: 65ch; line-height: 1.6; }
 .contextual-purchases .button { white-space: normal; max-width: 100%; }
+
+/* Customer offers share the real customer layout in owner review. */
+.contextual-purchases .purchase-offer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:18px}
+.contextual-purchases .purchase-offer{display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-width:0;padding:24px;border:1px solid #d9ddcf;border-radius:8px;background:#fffdf7}
+.contextual-purchases .purchase-offer h3,.contextual-purchases .purchase-offer p{margin:0}
+.contextual-purchases .purchase-price{font-size:2rem;font-weight:750;color:var(--green-dark);line-height:1.2}
+.contextual-purchases .purchase-price span{font-size:.9rem;font-weight:450;color:#465347}
+.contextual-purchases ul{padding-left:20px;margin:0;line-height:1.7}
+.contextual-purchases .purchase-fine-print{font-size:.87rem;color:#52604f}
+.contextual-purchases .purchase-offer>.button{margin-top:auto;min-height:44px}
+.contextual-purchases .purchase-related{display:flex;flex-wrap:wrap;gap:12px 24px;margin-top:18px}
+.contextual-purchases .purchase-test-note{display:block;margin-top:18px;color:#697263;font-size:.75rem}
+@media(max-width:480px){.contextual-purchases .purchase-offer{padding:18px}.contextual-purchases .purchase-offer>.button{width:100%}}

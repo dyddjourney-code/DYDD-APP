@@ -5,7 +5,7 @@ const require=createRequire(import.meta.url),load=require('../scripts/fruitlife-
 const base=process.env.CONTEXT_PURCHASE_BASE||'http://localhost:3138',c=JSON.parse(fs.readFileSync('/home/openclaw/.openclaw/secrets/dydd-online-school-sandbox.json'));
 assert.equal(c.ref,'atemrshtshxoqnuevvqu');assert(['localhost','dydd-online-school-sandbox.vercel.app'].includes(new URL(base).hostname));
 const db=createClient(c.project_url,c.service_role_key,{auth:{persistSession:false}}),ok=r=>{assert(!r.error,r.error?.message);return r.data;};let user,browser,client;const snapshots=[],circleIds=[],errors=[],evidence=[];
-const output='../../outputs/dydd-stripe-setup/contextual';fs.mkdirSync(output,{recursive:true});
+const output='../../outputs/dydd-stripe-setup/customer-preview';fs.mkdirSync(output,{recursive:true});
 try{
  const password=crypto.randomBytes(24).toString('hex');user=ok(await db.auth.admin.createUser({email:'dydd-context-qa-'+crypto.randomUUID()+'@example.com',password,email_confirm:true})).user;
  let cookies=[];client=createServerClient(c.project_url,c.anon_key,{cookies:{getAll:()=>cookies,setAll:v=>cookies=v}});ok(await client.auth.signInWithPassword({email:user.email,password}));const headers={cookie:cookies.map(x=>`${x.name}=${x.value}`).join('; ')};
@@ -21,7 +21,7 @@ try{
  let intercepted;await page.setRequestInterception(true);page.on('request',request=>{if(new URL(request.url()).pathname==='/api/stripe/test-checkout'){intercepted=JSON.parse(request.postData());request.respond({status:503,contentType:'application/json',body:JSON.stringify({error:'QA transport interception: no provider purchase submitted.'})});}else request.continue();});
  for(const width of [1280,390,320]){
   await page.setViewport({width,height:1000});
-  for(const [name,path,selector,expected]of [['basecamp','/hq?checkout=returned','.contextual-purchases','$10/month'],['circles','/camp-circle/my-circles?circle='+circleId,'.contextual-purchases','$5 once'],['designpd','/designpd?snapshot='+snapshots[1],'.designpd-shell','$15']]){
+  for(const [name,path,selector,expected]of [['basecamp','/hq?checkout=returned','.contextual-purchases','$10 '],['circles','/camp-circle/my-circles?circle='+circleId,'.contextual-purchases','$5 '],['designpd','/designpd?snapshot='+snapshots[1],'.designpd-shell','$15']]){
    const response=await page.goto(base+path,{waitUntil:'networkidle2',timeout:60000});assert.equal(response.status(),200,name);await page.waitForSelector(selector);if(name!=='designpd')await page.waitForFunction(()=>!document.querySelector('.contextual-purchases')?.textContent.includes('Checking your current access'));
    assert((await page.$eval(selector,e=>e.textContent)).includes(expected),name+' prices');assert(!await page.$('.hq-sidebar a[href="/memberships"]'));
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${name} ${width} overflow`);
@@ -40,7 +40,16 @@ try{
  // Preview remains read-only and prices remain visible without an auth identity.
  const env=Object.fromEntries(fs.readFileSync('.env.local','utf8').split('\n').filter(x=>/^[A-Z_]+=/.test(x)).map(x=>{const i=x.indexOf('=');return[x.slice(0,i),x.slice(i+1).replace(/^"|"$/g,'')]}));
  const reviewToken=env.DYDD_REVIEW_TOKEN;
- if(reviewToken){await browser.deleteCookie(...await browser.cookies());const preview=await browser.newPage();if(proxy)await preview.authenticate({username:decodeURIComponent(proxy.username),password:decodeURIComponent(proxy.password)});await preview.goto(base+'/hq?review=new&key='+encodeURIComponent(reviewToken),{waitUntil:'networkidle2',timeout:60000});await preview.waitForSelector('.contextual-purchases');assert((await preview.$eval('.contextual-purchases',e=>e.textContent)).includes('$10/month'));assert.equal(await preview.$('.contextual-purchases button'),null);assert(await preview.$('.contextual-purchases a[href^="/login"]'));await preview.close();}
+ if(reviewToken){
+  await browser.deleteCookie(...await browser.cookies());const preview=await browser.newPage();if(proxy)await preview.authenticate({username:decodeURIComponent(proxy.username),password:decodeURIComponent(proxy.password)});
+  for(const width of [1280,390,320]){await preview.setViewport({width,height:1000});for(const [name,path,price]of [['basecamp','/hq','$10'],['circles','/camp-circle','$20'],['designpd','/designpd','$15']]){
+   await preview.goto(base+path+'?review=new&key='+encodeURIComponent(reviewToken)+(name==='basecamp'?'#purchases':''),{waitUntil:'networkidle2',timeout:60000});await preview.waitForSelector('.contextual-purchases');
+   assert((await preview.$eval('.contextual-purchases',e=>e.textContent)).includes(price));assert.equal(await preview.$('.contextual-purchases button'),null);
+   assert(await preview.$('.contextual-purchases .button'));assert(await preview.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+   await preview.$eval('.contextual-purchases',e=>e.scrollIntoView({block:'start',behavior:'instant'}));await preview.screenshot({path:`${output}/${new URL(base).hostname}-owner-${name}-${width}.png`});
+   if(name==='basecamp'){await preview.click('.contextual-purchases a[href^="/login"]');await preview.waitForSelector('input[name="email"]');assert(new URL(preview.url()).pathname==='/login');assert.equal(new URL(preview.url()).searchParams.get('next'),'/hq#purchases');}
+  }}await preview.close();}
+
  assert.deepEqual(errors,[]);const receipt={base,evidence,personalButton:true,designpdButtonExactHistoricalScope:true,couplesButtonExactScope:true,previewReadOnly:Boolean(reviewToken),anonymousOptions401:true,foreignCircle403:true,forgedReturnGranted:false,legacyRoute307:true,browserErrors:errors,providerPurchaseSubmitted:false,syntheticAccessFixture:true};fs.writeFileSync(`${output}/${new URL(base).hostname}-verification.json`,JSON.stringify(receipt,null,2));console.log(JSON.stringify(receipt));
 }finally{
  if(browser)await browser.close();if(client)await client.auth.signOut();if(user){ok(await db.from('dydd_test_billing_entitlements').delete().eq('user_id',user.id));ok(await db.from('dydd_test_billing_orders').delete().eq('user_id',user.id));if(snapshots.length)ok(await db.from('assessment_snapshots').delete().in('id',snapshots));if(circleIds.length)ok(await db.from('journey_circle_plans').delete().in('id',circleIds));ok(await db.auth.admin.deleteUser(user.id));}console.log('Synthetic contextual QA account, access fixtures, snapshots and Circles removed; session signed out.');

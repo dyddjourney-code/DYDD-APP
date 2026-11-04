@@ -1,3 +1,5 @@
+import { ContextualPurchases } from "@/components/contextual-purchases";
+import { isReviewRequest, type ReviewSearchParams } from "@/lib/review/heather";
 import { hasTestEntitlement } from "@/lib/commerce/test-entitlements";
 import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
 import { hasIncludedPersonalAccess, hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
@@ -13,7 +15,7 @@ import { saveDesignPdResponse } from "./actions";
 import { DesignPdAssessmentForm } from "./assessment-form";
 
 type DesignPdPageProps = {
-  searchParams?: Promise<{ message?: string; origin?: string; checkout?: string; snapshot?: string }>;
+  searchParams?: Promise<{ message?: string; origin?: string; checkout?: string; snapshot?: string } & ReviewSearchParams>;
 };
 
 export const dynamic = "force-dynamic";
@@ -26,6 +28,10 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
   const {
     data: { user },
   } = await serverSupabase.auth.getUser();
+
+  if (!user && testBillingEnabled() && isReviewRequest(params)) {
+    return <main className="fruitlife-shell fruitlife-public designpd-shell"><h1>Explore your design in motion.</h1><p>DesignPD builds on your DesignID results to explore how you plan, decide, and do.</p><ContextualPurchases area="designpd" preview /></main>;
+  }
 
   if (!user) {
     redirect(`/login?next=${encodeURIComponent(`/designpd?origin=${origin}${params?.snapshot ? `&snapshot=${encodeURIComponent(params.snapshot)}` : ""}`)}`);
@@ -70,6 +76,7 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
         />
       ) : (
         <section className="fruitlife-panel fruitlife-message-card">
+          {testBillingEnabled() && <ContextualPurchases area="designpd" />}
           <img src="/brand/tools/designpd-logo.jpg" alt="DesignPD logo" />
           <p className="section-label">DesignPD prerequisite</p>
           <h1>Complete DesignID first.</h1>

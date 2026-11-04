@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
   const review = request.nextUrl.searchParams.get("review");
   const validQuery = Boolean(token && key === token && (review === "new" || review === "owner"));
   const validCookie = Boolean(token && request.cookies.get("dydd_sandbox_review")?.value === token);
-  const previewPath = /^\/(?:hq|journey|trailheads|ranger-station|field-kit|gear|fireside|waypoints|live|camp-circle|command-center|courses|learn)(?:\/|$)/.test(request.nextUrl.pathname);
+  const previewPath = /^\/(?:hq|designpd|journey|trailheads|ranger-station|field-kit|gear|fireside|waypoints|live|camp-circle|command-center|courses|learn)(?:\/|$)/.test(request.nextUrl.pathname);
   const { anonKey, url } = getSupabaseConfig();
 
   const supabase = createServerClient(url, anonKey, {

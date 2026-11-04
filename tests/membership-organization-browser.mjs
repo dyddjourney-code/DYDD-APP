@@ -38,6 +38,8 @@ try{
    console.log(mode,width,'Base Camp, Passport, Circles and both DesignPD placements');
    await page.setViewport({width,height:1000});
    await navigate('/hq#purchases','.contextual-purchases');
+   // Next streams temporary hidden duplicate segments; wait for the settled page, not staging markup.
+   await page.waitForFunction(()=>document.querySelectorAll('#purchases .purchase-offer').length===1);
    const order=await page.evaluate(()=>{const nodes=['.basecamp-orientation-band','#purchases','#passport','[aria-label="Base Camp account overview"]','#on-the-horizon'].map(s=>document.querySelector(s));return nodes.every(Boolean)&&nodes.every((n,i)=>i===0||Boolean(nodes[i-1].compareDocumentPosition(n)&Node.DOCUMENT_POSITION_FOLLOWING))&&nodes.at(-1).parentElement.lastElementChild===nodes.at(-1);});assert(order,'Ranger > Purchases > Passport > Account > Blazing at bottom');
    const copy=await page.$eval('#purchases',e=>e.innerText);
    for(const text of ['$10','/ month','Discover Your Divine Design (DYDD) Journey','DesignID assessment and class','FruitLife360 assessment and class','Spiritual Gifts assessment and class','Waypoints','Free seats for eligible live virtual events','Not all events are included.'])assert(copy.includes(text),text);

@@ -1,4 +1,5 @@
 import 'server-only';
+import {sandboxJobTransportBlocked} from '@/lib/email/sandbox-policy';
 import {createSupabaseAdminClient} from '@/lib/supabase/admin';
 import {sendResendEmail} from '@/lib/email/resend';
 import {getAssessmentSnapshotsForUser} from '@/lib/assessments/student-context';
@@ -245,7 +246,7 @@ export async function runLifecycleWorker({limit=10}:{limit?:number}={}){
     else {await finish({status:'skipped',error_message:fence.stop});skipped++;}
     continue;
    }
-   if(process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT==='sandbox'){
+   if(sandboxJobTransportBlocked(j.email,j.created_at)){
     await finish({status:'sandbox_ready',error_message:'Eligibility verified; sandbox delivery guard prevented provider request.'});sandboxReady++;continue;
    }
    const text=j.body+(optional?`\n\nEmail preferences / unsubscribe from this category: ${unsubscribe}\nStop all optional email: ${appBase()}/email-preferences?token=${globalToken}`:''),html=lifecycleHtml(j.subject,text);

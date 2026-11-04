@@ -1,3 +1,4 @@
+import {sandboxTransportBlocked} from '@/lib/email/sandbox-policy';
 import { createHash, randomUUID } from 'node:crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 export type SendEmailInput = {
@@ -13,7 +14,7 @@ export function assessmentEmailSender(value?: string) {
   return `Discover Your Divine Design <${address}>`;
 }
 export async function sendResendEmail(input: SendEmailInput): Promise<SendEmailResult> {
-  if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === 'sandbox') return {sent:false,skipped:true,message:'Sandbox email delivery is disabled.'};
+  if (sandboxTransportBlocked(input.to)) return {sent:false,skipped:true,message:'Sandbox email delivery is disabled.'};
   const apiKey = process.env.RESEND_API_KEY ?? process.env.DYDD_RESEND_API_KEY ?? '';
   if (!apiKey) return {sent:false,skipped:true,message:'DYDD email delivery is not configured.'};
   const base = (process.env.DYDD_APP_URL ?? 'https://dydd-online-school.vercel.app').replace(/\/$/,'');
@@ -21,7 +22,7 @@ export async function sendResendEmail(input: SendEmailInput): Promise<SendEmailR
   const notice = `This automated mailbox is unmonitored. For help, use the DYDD Contact form: ${contact}`;
   const footer = `<p style="font-size:13px;color:#667085">This automated mailbox is unmonitored. For help, use the <a href="${contact}">DYDD Contact form</a>.</p>`;
   const html = /<\/body>/i.test(input.html) ? input.html.replace(/<\/body>/i,footer+'</body>') : input.html+footer;
-  const body = {from:assessmentEmailSender(input.from),to:input.to.trim().toLowerCase(),subject:input.subject,html,text:input.text+'\n\n'+notice,...(input.attachments?.length?{attachments:input.attachments}:{}),...(input.headers?{headers:input.headers}:{})};
+  const body = {from:assessmentEmailSender(input.from),to:input.to.trim().toLowerCase(),subject:(process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === 'sandbox' ? '[SANDBOX] ' : '')+input.subject,html,text:input.text+'\n\n'+notice,...(input.attachments?.length?{attachments:input.attachments}:{}),...(input.headers?{headers:input.headers}:{})};
   const key = input.idempotencyKey ?? `dydd-${randomUUID()}`;
   const hash = createHash('sha256').update(JSON.stringify(body)).digest('hex');
   const db = createSupabaseAdminClient();

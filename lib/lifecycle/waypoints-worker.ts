@@ -1,3 +1,4 @@
+import {sandboxJobTransportBlocked} from '@/lib/email/sandbox-policy';
 import { createHash, randomBytes } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import {getSavedWaypointPrimary} from '@/lib/waypoints/user-context';
@@ -53,11 +54,11 @@ export async function runWaypointsWorker(){
    content={subject:`DYDD Waypoint: ${w.title}`,to:s.data.email,from:process.env.DYDD_WAYPOINTS_EMAIL_FROM??process.env.DYDD_EMAIL_FROM??'reports@mail.discoverdivine.design',text:paragraphs.join('\n\n'),html:`<h1>${escape(w.title??'')}</h1>${paragraphs.slice(1,-1).map(p=>`<p style="white-space:pre-wrap">${escape(String(p))}</p>`).join('')}<p><a href="${read}">Read this Waypoint</a> · <a href="${unsubscribe}">Unsubscribe from Waypoints</a>.</p>`,headers:{'List-Unsubscribe':`<${unsubscribe}>`,'List-Unsubscribe-Post':'List-Unsubscribe=One-Click'}};
    const frozen=await db.from('dydd_waypoint_delivery_jobs').update({metadata:{...job.metadata,email_content:content}}).eq('id',job.id).eq('attempts',job.attempts);if(frozen.error)return fail();
   }
-  if(sandbox){if(!await finish('sandbox_ready','Eligibility verified; sandbox prevented provider request.'))return fail();skipped++;continue;}
+  if(sandboxJobTransportBlocked(s.data.email,job.created_at)){if(!await finish('sandbox_ready','Eligibility verified; sandbox prevented provider request.'))return fail();skipped++;continue;}
   const result=await sendResendEmail({...content,idempotencyKey:`dydd-waypoint-${job.id}`});
   if(result.sent){if(!await finish('sent'))return fail();accepted++;}
   else if(result.skipped){if(!await finish('skipped',result.message))return fail();skipped++;}
   else {if(!await finish('error',result.message))return fail();errors++;}
  }
- return NextResponse.json({sandbox,skipped:sandbox,acceptedEmails:accepted,erroredEmails:errors,skippedEmails:skipped,claimedJobs:claimed.data?.length??0});
+ return NextResponse.json({sandbox,skipped:sandbox&&accepted===0,acceptedEmails:accepted,erroredEmails:errors,skippedEmails:skipped,claimedJobs:claimed.data?.length??0});
 }

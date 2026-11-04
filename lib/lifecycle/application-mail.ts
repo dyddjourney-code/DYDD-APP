@@ -1,4 +1,5 @@
 import 'server-only';
+import {sandboxJobTransportBlocked} from '@/lib/email/sandbox-policy';
 import {randomUUID} from 'node:crypto';
 import {sendResendEmail,type SendEmailInput,type SendEmailResult} from '@/lib/email/resend';
 import {createSupabaseAdminClient} from '@/lib/supabase/admin';
@@ -23,7 +24,7 @@ export async function sendApplicationEmail(input:ApplicationEmail):Promise<SendE
   if(!isDeepStrictEqual(row.context.senderInput,JSON.parse(JSON.stringify(senderInput))))return {sent:false,skipped:false,message:'A different email payload already exists for this event. Review before sending.'};
   if(row.status==='accepted')return {sent:true,skipped:false,id:row.provider_id};
   if(['cancelled','skipped','failed','review'].includes(row.status))return {sent:false,skipped:true,message:'This delivery is stopped or needs manual review.'};
-  if(process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT==='sandbox')return {sent:false,skipped:true,message:'Email queued for sandbox eligibility review; no provider request made.'};
+  if(sandboxJobTransportBlocked(input.to,row.created_at))return {sent:false,skipped:true,message:'Email queued for sandbox eligibility review; no provider request made.'};
   const eligibility=await lifecycleEligibility(row);
   if(eligibility.stop){must(await db.from('dydd_lifecycle_jobs').update({status:'skipped',error_message:eligibility.stop}).eq('id',row.id).eq('status','queued'));return {sent:false,skipped:true,message:eligibility.stop};}
   if(eligibility.deferUntil)return {sent:false,skipped:false,message:'Message durably queued while communication is paused.'};

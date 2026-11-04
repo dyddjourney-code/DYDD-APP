@@ -18,5 +18,10 @@ const input={to:'qa@example.com',subject:'QA',html:'<html><body><p>Report</p></b
  storageFailure=true;assert.equal((await sendResendEmail(input)).sent,false);assert.equal(calls,3);storageFailure=false;
  rows=[];mode='persist-fail';assert.equal((await sendResendEmail(input)).sent,false);assert.equal(calls,4);storageFailure=false;mode='ok';assert.equal((await sendResendEmail(input)).sent,true);assert.equal(calls,5);assert.equal(requests[3].headers['Idempotency-Key'],requests[4].headers['Idempotency-Key']);
  process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT='sandbox';assert.equal((await sendResendEmail(input)).skipped,true);assert.equal(calls,5);
+ Object.assign(process.env,{DYDD_SANDBOX_EMAIL_ENABLED:'true',DYDD_SANDBOX_EMAIL_ALLOWLIST:'qa@example.com',NEXT_PUBLIC_DYDD_SANDBOX_SUPABASE_REF:'atemrshtshxoqnuevvqu',NEXT_PUBLIC_SUPABASE_URL:'https://atemrshtshxoqnuevvqu.supabase.co'});
+ rows=[];mode='ok';assert.equal((await sendResendEmail({...input,idempotencyKey:'qa-controlled'})).sent,true);assert.equal(calls,6);assert.equal(JSON.parse(requests.at(-1).body).subject,'[SANDBOX] QA');
+ assert.equal((await sendResendEmail({...input,to:'customer@example.com',idempotencyKey:'qa-blocked'})).skipped,true);assert.equal(calls,6);
+ process.env.NEXT_PUBLIC_SUPABASE_URL='https://laojrzlqbkmirzcbcnyw.supabase.co';assert.equal((await sendResendEmail({...input,idempotencyKey:'qa-wrong-ref'})).skipped,true);assert.equal(calls,6);
+ console.log('PASS exact allowlisted sandbox transport only, visible SANDBOX subject, other recipients and production DB mismatch blocked before provider');
  console.log('PASS transport timeout, provider 500, persistence failure, stable retry payload/key, accepted vs delivered, duplicate prevention, payload conflict, expiry reconciliation, suppression, storage fail-closed, preserved From/help/no Reply-To, sandbox no network');
 })().catch(e=>{console.error(e);process.exitCode=1});

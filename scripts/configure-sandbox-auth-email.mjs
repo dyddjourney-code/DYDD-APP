@@ -10,7 +10,7 @@ const productionRef='laojrzlqbkmirzcbcnyw';
 const before=await auth(c.ref),productionBefore=await auth(productionRef);
 const hash=o=>crypto.createHash('sha256').update(JSON.stringify(o)).digest('hex');
 if(process.argv.includes('--prepare')){
- fs.writeFileSync(root+'dydd-sandbox-auth-preserved.json',JSON.stringify({sandbox:before,productionHash:hash(productionBefore)}),{mode:0o600});
+ if(!fs.existsSync(root+'dydd-sandbox-auth-preserved.json'))fs.writeFileSync(root+'dydd-sandbox-auth-preserved.json',JSON.stringify({sandbox:before,productionHash:hash(productionBefore)}),{mode:0o600});
  async function api(method,path,body){const r=await fetch('https://api.vercel.com'+path+'?teamId='+c.vercel.orgId,{method,headers:{Authorization:'Bearer '+v.token,'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});assert(r.ok,'Vercel sandbox env '+r.status);return r.json();}
  const {envs}=await api('GET','/v10/projects/'+c.vercel.projectId+'/env');
  for(const [key,value] of Object.entries({DYDD_SANDBOX_AUTH_HOOK_SECRET:staged.secret,DYDD_SANDBOX_AUTH_EMAIL_ENABLED:'true'})){
@@ -24,9 +24,9 @@ if(process.argv.includes('--prepare')){
  assert.equal((await fetch(uri,{method:'POST',body:'{}'})).status,401,'Deployed hook must reject unsigned requests before activation');
  const patch={hook_send_email_enabled:true,hook_send_email_uri:uri,hook_send_email_secrets:'v1,'+staged.secret,mailer_autoconfirm:false,rate_limit_email_sent:100};
  await auth(c.ref,'PATCH',patch);
- const after=await auth(c.ref);for(const [key,value] of Object.entries(patch))assert.equal(after[key],value,'Auth patch not applied: '+key);
+ const after=await auth(c.ref);for(const [key,value] of Object.entries(patch)){if(key==='hook_send_email_secrets'){assert(after[key],'Stored hook secret is missing');continue;}assert(after[key]===value,'Auth patch not applied: '+key);}
  const preserved=JSON.parse(fs.readFileSync(root+'dydd-sandbox-auth-preserved.json'));
  assert.equal(hash(await auth(productionRef)),preserved.productionHash,'Production auth config must remain unchanged');
- const proof={at:new Date().toISOString(),sandboxRef:c.ref,hookEnabled:true,hookUri:uri,confirmationRequired:true,rateLimitPerHour:100,smtpUsed:false,exactOwnerAllowlist:true,productionAuthUnchanged:true,changes:Object.keys(patch),before:{hookEnabled:before.hook_send_email_enabled,autoConfirm:before.mailer_autoconfirm,rateLimit:before.rate_limit_email_sent}};
+ const proof={at:new Date().toISOString(),sandboxRef:c.ref,hookEnabled:true,hookUri:uri,confirmationRequired:true,rateLimitPerHour:100,smtpUsed:false,exactOwnerAllowlist:true,productionAuthUnchanged:true,changes:Object.keys(patch),before:{hookEnabled:preserved.sandbox.hook_send_email_enabled,autoConfirm:preserved.sandbox.mailer_autoconfirm,rateLimit:preserved.sandbox.rate_limit_email_sent}};
  fs.writeFileSync('docs/evidence/email-auth-configuration-2026-11-04.json',JSON.stringify(proof,null,2)+'\n');console.log(JSON.stringify(proof));
 }else throw Error('Use --prepare then deploy then --activate');

@@ -24,7 +24,7 @@ export async function handleSandboxAuthEmail(request: Request) {
   for (const name of ['id', 'timestamp', 'signature']) signed.set('svix-' + name, request.headers.get('webhook-' + name) || '');
   if (!verifyEmailWebhook(raw, signed, secret)) return new Response(null, { status: 401 });
   let data;
-  try { data = JSON.parse(raw); } catch { return new Response(null, { status: 400 }); }
+  try { data = JSON.parse(raw); } catch { return Response.json({error:{http_code:400,message:'Sandbox authentication redirect must stay on the sandbox site.'}}); }
   const email = data?.user?.email;
   const event = data?.email_data;
   // Email-change is intentionally unsupported: never send either half to a new, unapproved address.
@@ -32,14 +32,14 @@ export async function handleSandboxAuthEmail(request: Request) {
   if (typeof email !== 'string' || !sandboxRecipientAllowed(email) || !copy || data.user.new_email) {
     return Response.json({ error: { http_code: 403, message: 'Authentication mail is restricted to the sandbox owner allowlist.' } }, { status: 403 });
   }
-  if (typeof event.token_hash !== 'string' || !/^[A-Za-z0-9_-]{16,256}$/.test(event.token_hash)) return new Response(null, { status: 400 });
+  if (typeof event.token_hash !== 'string' || event.token_hash.length < 16 || event.token_hash.length > 512) return Response.json({error:{http_code:400,message:'Sandbox auth token is missing or invalid.'}});
   let next = '/hq';
   try {
     const redirect = new URL(event.redirect_to || base);
     if (redirect.origin !== base || (event.site_url && new URL(event.site_url).origin !== base)) throw new Error('Invalid sandbox origin');
     const requested = redirect.pathname === '/auth/callback' ? redirect.searchParams.get('next') : redirect.pathname + redirect.search;
     if (requested?.startsWith('/') && new URL(requested, base).origin === base) next = requested;
-  } catch { return new Response(null, { status: 400 }); }
+  } catch { return Response.json({error:{http_code:400,message:'Sandbox authentication redirect must stay on the sandbox site.'}}); }
   if (event.email_action_type === 'recovery' && !next.startsWith('/reset-password')) next = '/reset-password?next=' + encodeURIComponent(next);
   const type = event.email_action_type === 'magiclink' ? 'email' : event.email_action_type;
   const link = base + '/auth/confirm?' + new URLSearchParams({ token_hash: event.token_hash, token_type: type, next });

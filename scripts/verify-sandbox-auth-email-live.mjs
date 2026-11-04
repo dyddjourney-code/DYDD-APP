@@ -17,20 +17,20 @@ try{
  await page.goto(base+'/login?mode=recovery&next=%2Fsandbox%2Femail-lab',{waitUntil:'domcontentloaded',timeout:60000});
  await page.waitForSelector('form.auth-form [name=email]');await page.type('form.auth-form [name=email]',email);
  await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded',timeout:60000}),page.click('form.auth-form button[type=submit]')]);
- assert(new URL(page.url()).searchParams.get('message')?.includes('password reset link is on the way'),'Hosted Forgot password must succeed');
+ assert(new URL(page.url()).searchParams.get('message')?.includes('password reset link is on the way'),'Hosted Forgot password must succeed: '+(new URL(page.url()).searchParams.get('message') || 'no status message'));
  const requested=await state();assert(requested.recovery_token,'Real GoTrue recovery token required');
  const key='sandbox-auth-'+crypto.createHash('sha256').update(email+':recovery:'+requested.recovery_token).digest('hex');
  const intent=ok(await db.from('dydd_email_messages').select('id,provider_id,status,recipient').eq('idempotency_key',key).single());assert(intent.provider_id);assert.equal(intent.status,'accepted');assert.equal(intent.recipient,email);proof.providerId=intent.provider_id;
- assert.equal(requested.confirmation_token,before.confirmation_token,'Existing owner handoff must not be invalidated');
- assert.equal(requested.encrypted_password,before.encrypted_password);
+ assert(requested.confirmation_token===before.confirmation_token,'Existing owner handoff must not be invalidated');
+ assert(requested.encrypted_password===before.encrypted_password,'Password must be preserved');
  proof.checks.push('Actual hosted Forgot password → Supabase signed Send Email Hook → exact-owner provider acceptance and durable ledger','Existing owner handoff token and password preserved');
  // The token is read only inside this protected test. Nothing is copied into evidence or logs.
  const confirm=base+'/auth/confirm?'+new URLSearchParams({token_hash:requested.recovery_token,token_type:'recovery',next:'/reset-password?next=/sandbox/email-lab'});
- await page.goto(confirm,{waitUntil:'domcontentloaded',timeout:60000});assert.equal((await state()).recovery_token,requested.recovery_token,'GET preview cannot consume token');
+ await page.goto(confirm,{waitUntil:'domcontentloaded',timeout:60000});assert((await state()).recovery_token===requested.recovery_token,'GET preview cannot consume token');
  await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded',timeout:60000}),page.click('form button')]);
  assert.equal(new URL(page.url()).pathname,'/reset-password');assert((await page.$('form [name=password]')),'Real reset password form required');
  const lab=await page.evaluate(async()=>{const r=await fetch('/api/sandbox/email-lab');return {status:r.status};});assert.equal(lab.status,200,'Recovery must establish genuine owner cookie-backed session');
- const consumed=await state();assert.equal(consumed.recovery_token,'');assert.equal(consumed.encrypted_password,before.encrypted_password);assert.equal(consumed.confirmation_token,before.confirmation_token);
+ const consumed=await state();assert(!consumed.recovery_token,'Recovery token must be consumed');assert(consumed.encrypted_password===before.encrypted_password,'Password unchanged');assert(consumed.confirmation_token===before.confirmation_token,'Owner handoff unchanged');
  proof.checks.push('Real recovery token GET remained unused; explicit POST established owner session and reset form','No owner password changed; previous handoff token still unchanged');
  const countBefore=ok(await db.from('dydd_email_messages').select('id').like('idempotency_key','sandbox-auth-%')).length;
  const outsider='sandbox-auth-denied-'+crypto.randomUUID()+'@example.test';

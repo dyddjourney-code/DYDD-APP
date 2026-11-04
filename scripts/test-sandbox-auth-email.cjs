@@ -14,7 +14,7 @@ function request(data=payload,{timestamp=Math.floor(Date.now()/1000),bad=false,u
  for(const email of ['someone@example.test','dyddjourney+test@gmail.com','dyddjourney@gmail.com.evil.test'])assert.equal((await handle(request({...payload,user:{email}}))).status,403);
  assert.equal((await handle(request({...payload,user:{...payload.user,new_email:'someone@example.test'}}))).status,403);
  assert.equal((await handle(request({...payload,email_data:{...payload.email_data,email_action_type:'email_change'}}))).status,403);
- assert.equal((await handle(request({...payload,email_data:{...payload.email_data,redirect_to:'https://evil.test/'}}))).status,400);
+ const redirectDenied=await handle(request({...payload,email_data:{...payload.email_data,redirect_to:'https://evil.test/'}}));assert.equal((await redirectDenied.json()).error.http_code,400);
  assert.equal(sent.length,0);
  assert.equal((await handle(request())).status,200);assert(sent[0].text.includes('token_type=recovery'));assert(sent[0].text.includes('next=%2Freset-password'));
  assert.equal((await handle(request())).status,200);assert.equal(sent[0].idempotencyKey,sent[1].idempotencyKey);

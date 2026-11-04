@@ -14,7 +14,7 @@ export default async function RenewPersonalMembership({ searchParams }: { search
   if (!user) redirect('/login?' + new URLSearchParams({ next: '/renew?' + new URLSearchParams({ next }) }));
   const state = await getPersonalMembershipState(user.id);
   if (state.phase === 'active' || state.phase === 'lifetime') redirect(next);
-  return <main className="journey-shell hq-standalone-page">
+  return <main className="journey-shell hq-standalone-page membership-renewal-shell">
     <section className="fruitlife-panel">
       <h1>Continue your personal journey</h1>
       <p>{state.phase === "expired" ? "Your personal membership has ended. Renew" : "Start your personal membership"} using this same account to continue your courses, assessments and Waypoints.</p>

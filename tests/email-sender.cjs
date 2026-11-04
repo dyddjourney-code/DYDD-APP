@@ -1,4 +1,4 @@
-const assert=require('node:assert/strict');
+const assert=require('node:assert/strict'),crypto=require('node:crypto');
 const load=require('../scripts/fruitlife-test-load.cjs');
 let rows=[],events=[],suppressed=false,storageFailure=false,calls=0,mode='ok';const requests=[];
 const db={rpc:async(name,args)=>{if(storageFailure)return {error:{message:'offline'}};if(name==='dydd_accept_email_message'){const row=rows.find(r=>r.id===args.message_key);if(!row.provider_id)Object.assign(row,{provider_id:args.email_id,status:'accepted'});}return {data:true}},from(table){let action='select',values,filters=[];const q={select(){return q},upsert(v){action='upsert';values=v;return q},update(v){action='update';values=v;return q},eq(k,v){filters.push([k,v]);return q},is(k,v){filters.push([k,v]);return q},order(){return q},single(){return Promise.resolve(run(true))},maybeSingle(){return Promise.resolve(run(true))},then(a,b){return Promise.resolve(run(false)).then(a,b)}};function run(single){if(storageFailure)return {error:{message:'offline'}};let data=table==='dydd_email_messages'?rows:table==='dydd_email_events'?events:table==='dydd_email_suppressions'?(suppressed?[{email:'qa@example.com'}]:[]):[];if(action==='upsert'){if(!rows.some(r=>r.idempotency_key===values.idempotency_key))rows.push({id:'qa-id',created_at:new Date().toISOString(),status:'pending',provider_id:null,...values});return {data:null,error:null};}data=data.filter(r=>filters.every(([k,v])=>r[k]===v));if(action==='update')data.forEach(r=>Object.assign(r,values));return {data:single?data[0]??null:data,error:null};}return q;}};
@@ -22,6 +22,14 @@ const input={to:'qa@example.com',subject:'QA',html:'<html><body><p>Report</p></b
  rows=[];mode='ok';assert.equal((await sendResendEmail({...input,idempotencyKey:'qa-controlled'})).sent,true);assert.equal(calls,6);assert.equal(JSON.parse(requests.at(-1).body).subject,'[SANDBOX] QA');
  assert.equal((await sendResendEmail({...input,to:'customer@example.com',idempotencyKey:'qa-blocked'})).skipped,true);assert.equal(calls,6);
  process.env.NEXT_PUBLIC_SUPABASE_URL='https://laojrzlqbkmirzcbcnyw.supabase.co';assert.equal((await sendResendEmail({...input,idempotencyKey:'qa-wrong-ref'})).skipped,true);assert.equal(calls,6);
+ // A pre-tag durable sandbox intent must retry its exact legacy payload, not
+ // conflict after activation or acquire changed provider idempotency bytes.
+ process.env.NEXT_PUBLIC_SUPABASE_URL='https://atemrshtshxoqnuevvqu.supabase.co';
+ const tagged=JSON.parse(requests.at(-1).body);assert.deepEqual(tagged.tags,[{name:'dydd_environment',value:'sandbox'}]);
+ const legacy={...tagged};delete legacy.tags;rows[0].payload_hash=crypto.createHash('sha256').update(JSON.stringify(legacy)).digest('hex');rows[0].provider_id=null;
+ assert((await sendResendEmail({...input,idempotencyKey:'qa-controlled'})).sent);assert.equal(requests.at(-1).body,JSON.stringify(legacy));assert.equal(calls,7);
+ assert((await sendResendEmail({...input,idempotencyKey:'qa-controlled'})).sent);assert.equal(calls,7);
+ console.log('PASS sandbox tags plus byte-identical pre-tag durable retry/accepted replay');
  console.log('PASS exact allowlisted sandbox transport only, visible SANDBOX subject, other recipients and production DB mismatch blocked before provider');
  console.log('PASS transport timeout, provider 500, persistence failure, stable retry payload/key, accepted vs delivered, duplicate prevention, payload conflict, expiry reconciliation, suppression, storage fail-closed, preserved From/help/no Reply-To, sandbox no network');
 })().catch(e=>{console.error(e);process.exitCode=1});

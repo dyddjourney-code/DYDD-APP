@@ -22,9 +22,10 @@ export async function sendResendEmail(input: SendEmailInput): Promise<SendEmailR
   const notice = `This automated mailbox is unmonitored. For help, use the DYDD Contact form: ${contact}`;
   const footer = `<p style="font-size:13px;color:#667085">This automated mailbox is unmonitored. For help, use the <a href="${contact}">DYDD Contact form</a>.</p>`;
   const html = /<\/body>/i.test(input.html) ? input.html.replace(/<\/body>/i,footer+'</body>') : input.html+footer;
-  const body = {from:assessmentEmailSender(input.from),to:input.to.trim().toLowerCase(),subject:(process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === 'sandbox' ? '[SANDBOX] ' : '')+input.subject,html,text:input.text+'\n\n'+notice,...(input.attachments?.length?{attachments:input.attachments}:{}),...(input.headers?{headers:input.headers}:{})};
+  const legacyBody = {from:assessmentEmailSender(input.from),to:input.to.trim().toLowerCase(),subject:(process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === 'sandbox' ? '[SANDBOX] ' : '')+input.subject,html,text:input.text+'\n\n'+notice,...(input.attachments?.length?{attachments:input.attachments}:{}),...(input.headers?{headers:input.headers}:{})};
+  let body = {...legacyBody, ...(process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === 'sandbox' ? {tags:[{name:'dydd_environment',value:'sandbox'}]} : {})};
   const key = input.idempotencyKey ?? `dydd-${randomUUID()}`;
-  const hash = createHash('sha256').update(JSON.stringify(body)).digest('hex');
+  let hash = createHash('sha256').update(JSON.stringify(body)).digest('hex');
   const db = createSupabaseAdminClient();
   const fail = (message:string): SendEmailResult => ({sent:false,skipped:false,message});
   const suppressed = await db.from('dydd_email_suppressions').select('email').eq('email',body.to).maybeSingle();
@@ -35,6 +36,12 @@ export async function sendResendEmail(input: SendEmailInput): Promise<SendEmailR
   const loaded = await db.from('dydd_email_messages').select('*').eq('idempotency_key',key).single();
   if(loaded.error) return fail('Unable to load message intent.');
   const message=loaded.data;
+  if(message.payload_hash!==hash && process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === 'sandbox') {
+    // Preserve byte-identical pre-telemetry retries/accepted requests. New intents get a
+    // sandbox tag so account-wide webhooks can isolate pre-response races safely.
+    const legacyHash=createHash('sha256').update(JSON.stringify(legacyBody)).digest('hex');
+    if(message.payload_hash===legacyHash){body=legacyBody;hash=legacyHash;}
+  }
   if(message.payload_hash!==hash) return fail('Idempotency key payload conflict.');
   async function reconcile(providerId:string) {
     const events=await db.from('dydd_email_events').select('*').eq('provider_id',providerId).is('message_id',null).order('occurred_at');

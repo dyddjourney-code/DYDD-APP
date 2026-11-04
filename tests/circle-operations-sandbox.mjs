@@ -106,6 +106,17 @@ end $$;
 select public.dydd_circle_operate('98000000-0000-4000-8000-000000000002','{"action":"withdraw_callout","circleId":"98200000-0000-4000-8000-000000000001","session":"1","lesson":"a","prompt":"p"}');
 do $$ begin if exists(select 1 from public.dydd_circle_callouts where circle_id='98200000-0000-4000-8000-000000000001') then raise exception 'TEST: withdrawal not honored readonly';end if;
 if has_function_privilege('anon','public.dydd_circle_operate(uuid,jsonb,boolean)','execute') or has_function_privilege('authenticated','public.dydd_circle_operate(uuid,jsonb,boolean)','execute') then raise exception 'TEST: RPC publicly accessible';end if;end $$;
+-- Read-only sharing cannot be expanded; existing sharing can be selectively withdrawn via upsert.
+update public.dydd_test_billing_entitlements set paid_through=now()+interval '1 day' where user_id='98000000-0000-4000-8000-000000000001' and capability='circle_leadership';
+select public.dydd_circle_operate('98000000-0000-4000-8000-000000000001','{"action":"consent","circleId":"98200000-0000-4000-8000-000000000002","people":true,"insights":true}');
+update public.dydd_test_billing_entitlements set paid_through=now()-interval '31 days' where user_id='98000000-0000-4000-8000-000000000001' and capability='circle_leadership';
+select public.dydd_circle_operate('98000000-0000-4000-8000-000000000001','{"action":"consent","circleId":"98200000-0000-4000-8000-000000000002","people":false,"insights":true}');
+do $$ declare failed boolean:=false;begin
+ begin perform public.dydd_circle_operate('98000000-0000-4000-8000-000000000001','{"action":"consent","circleId":"98200000-0000-4000-8000-000000000002","people":true,"insights":true}');exception when raise_exception then failed:=true;end;
+ if not failed then raise exception 'TEST: readonly sharing grant allowed';end if;
+ if not exists(select 1 from public.dydd_circle_consents where circle_id='98200000-0000-4000-8000-000000000002' and not people and insights) then raise exception 'TEST: selective withdrawal lost existing consent';end if;
+end $$;
+select public.dydd_circle_operate('98000000-0000-4000-8000-000000000001','{"action":"consent","circleId":"98200000-0000-4000-8000-000000000002","people":false,"insights":false}');
 rollback;
 `);
 console.log('PASS sandbox transaction rollback: migration SQL, verified personal/email acceptance, persisted role, callout dedup/withdrawal, cohort dedup/approval/cap/counts-only, pending seat capacity, creation/invite budgets, paid-only acceptance, subscribed leader transfer, cancellation transition/readonly, service-only RPC');

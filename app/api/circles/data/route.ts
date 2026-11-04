@@ -25,11 +25,14 @@ export async function GET(request: Request) {
     // Only the validated sandbox owner scopes may use the pre-existing private
     // owner report copy. Preview roster names never discover learner records.
     if (!actor.userId) return reply(isSandbox() && ["new", "owner"].includes(actor.previewScope || "") ? await loadOwnerPreviewCircleData(id) : circleDataResponse(id, [], true));
-    if (circleReadBillingEnabled() && data.plan?.format === "Couple") {
-      const billing = await getCircleBillingState(actor.userId,id,"Couple");
-      if (!billing.canOperate) return reply({...circleDataResponse(id,[]),pending:"Both Personal memberships and this couple’s unlock must be current before sharing results."});
+    let snapshotBefore: string | undefined;
+    if (circleReadBillingEnabled()) {
+      const billing = await getCircleBillingState(actor.userId,id,data.plan?.format);
+      if (!billing.personalActive || billing.phase === "unpaid" || data.plan?.format === "Couple" && !billing.canOperate)
+        return reply({...circleDataResponse(id,[]),pending:"Restore the required memberships before sharing new results. Your saved Circle records remain preserved."});
+      if (billing.phase === "read_only") snapshotBefore = billing.transitionEndsAt || billing.paidThrough || undefined;
     }
-    return reply(await loadCircleData(id, actor.userId, data.plan));
+    return reply(await loadCircleData(id, actor.userId, data.plan, undefined, snapshotBefore));
   } catch {
     // Never log or return participant PII, scores, or raw database exceptions.
     return reply({error: "Your Circle’s data could not be loaded. Please try again."}, 503);

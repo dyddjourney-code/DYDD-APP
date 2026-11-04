@@ -30,5 +30,6 @@ await assert.rejects(()=>o.operateCircle(actor,{action:'callout',circleId:id,ses
 await o.operateCircle(actor,{action:'consent',circleId:id,people:false,insights:false,actor:'spoof',owner_actor:true});
 assert.equal(rpcCalls[0].args.actor,actor.userId);assert.equal(rpcCalls[0].args.owner_actor,false);
 await o.operateCircle(actor,{action:'preview_roster',circleId:id,csv:'name,email\nA,a@example.invalid\nA duplicate,A@example.invalid'});assert.equal(rpcCalls[1].args.payload.rows.length,1);assert(!('csv' in rpcCalls[1].args.payload));
+assert.equal(o.parseCircleRoster("name,email\n"+"N".repeat(120)+",valid@example.com").errors.length,0);assert.equal(o.parseCircleRoster("name,email\n"+"N".repeat(121)+",valid@example.com").errors.length,1);
 console.log('PASS CSV quoting/errors/dedup/limits; safe participant allowlist; explicit callouts; cohort unique counts/no text; verified owner; anti-spoof RPC contract');
 })().catch(e=>{console.error(e);process.exit(1)});

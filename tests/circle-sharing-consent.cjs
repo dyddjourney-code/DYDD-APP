@@ -13,5 +13,6 @@ const db={from:table=>new Query(table)},m=load('lib/circles/data.ts',{'@/lib/sup
  consent=consent.filter(c=>c.user_id!=='host');result=await m.loadCircleData('circle','host',{...plan,format:'Couple'},db);assert.equal(result.members[1].designId,null,'Creator withdrawal closes alternate legacy Couple projection');
  consent=[{circle_id:'elsewhere',user_id:'member',people:true,insights:true}];result=await m.loadCircleData('circle','host',plan,db);assert.equal(result.members[1].designId,null,'Other Circle consent cannot publish snapshots');
  consent=[];result=await m.loadCircleData('circle','host',plan,db);assert.equal(result.members[1].designId,null,'Consent withdrawal takes effect immediately');
+ result=await m.loadCircleData('circle','host',plan,db,'2026-11-01T00:00:00Z');assert(result.members.every(m=>m.designId===null&&m.gifts.length===0),'Read-only cutoff excludes post-transition assessment activity');
  console.log('PASS no automatic snapshot/name sharing, consent dimensions independent, exact Circle consent, withdrawal, Couple DesignPD exclusion.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

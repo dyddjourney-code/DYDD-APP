@@ -110,7 +110,7 @@ async function allRows<T>(query: (offset: number) => PromiseLike<{data: T[] | nu
  * Roster email is used ONLY to intersect already accepted memberships, never to
  * discover accounts or attach participants. All result lookups use confirmed IDs.
  */
-export async function loadCircleData(circleId: string, creatorId: string, plan: unknown, db: Db = createSupabaseAdminClient()): Promise<CircleData> {
+export async function loadCircleData(circleId: string, creatorId: string, plan: unknown, db: Db = createSupabaseAdminClient(), snapshotBefore?: string): Promise<CircleData> {
   const roster = object(plan).participants;
   const rosterEmails = new Set((Array.isArray(roster) ? roster : []).map(person => text(object(person).email).toLowerCase()).filter(Boolean));
   const memberships = await allRows(offset => db.from("dydd_circle_memberships")
@@ -142,7 +142,7 @@ export async function loadCircleData(circleId: string, creatorId: string, plan: 
   const direct = userIds.length ? await allRows(offset => db.from("assessment_snapshots").select(select).in("user_id", userIds).in("assessment_type", sharedTypes).order("id").range(offset, offset + 499)) as Snapshot[] : [];
   const linked = participantOwners.size ? await allRows(offset => db.from("assessment_snapshots").select(select).in("participant_id", [...participantOwners.keys()]).in("assessment_type", sharedTypes).order("id").range(offset, offset + 499)) as Snapshot[] : [];
   const snapshots = [...new Map([...direct, ...linked].map(row => [row.id, row])).values()]
-    .filter(completed).sort((a, b) => (Date.parse(b.source_submitted_at || b.created_at) - Date.parse(a.source_submitted_at || a.created_at)) || (Date.parse(b.created_at) - Date.parse(a.created_at)) || b.id.localeCompare(a.id));
+    .filter(completed).filter(row=>!snapshotBefore||(Date.parse(row.created_at)<=Date.parse(snapshotBefore)&&Date.parse(row.source_submitted_at||row.created_at)<=Date.parse(snapshotBefore))).sort((a, b) => (Date.parse(b.source_submitted_at || b.created_at) - Date.parse(a.source_submitted_at || a.created_at)) || (Date.parse(b.created_at) - Date.parse(a.created_at)) || b.id.localeCompare(a.id));
   const latest = new Map<string, Snapshot>();
   for (const snapshot of snapshots) {
     // A participant-linked row MUST have verified ownership; conflicting direct

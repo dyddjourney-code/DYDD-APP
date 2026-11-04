@@ -42,7 +42,7 @@ export function parseCircleRoster(csv: string) {
   const rows: { name: string; email: string }[] = [], errors: { row: number; error: string }[] = [], duplicates: number[] = [], seen = new Set<string>();
   records.forEach((record, i) => {
     const name = (record[headers.indexOf("name")] || "").trim(), email = (record[headers.indexOf("email")] || "").trim().toLowerCase();
-    if (record.length !== 2 || !name || name.length > 160 || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || /[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(name)) { errors.push({ row: i + 2, error: "Provide a valid name and email." }); return; }
+    if (record.length !== 2 || !name || name.length > 120 || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || /[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(name)) { errors.push({ row: i + 2, error: "Provide a valid name and email." }); return; }
     if (seen.has(email)) { duplicates.push(i + 2); return; } seen.add(email); rows.push({ name, email });
   });
   return { rows, errors, duplicates, canInvite: errors.length === 0 && rows.length > 0 };

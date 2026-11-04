@@ -1,6 +1,6 @@
 # Circles complete sandbox implementation — November 4, 2026
 
-State: implementation integrated locally; sandbox schema applied; real HTTP/browser acceptance active. No application deployment yet.
+State: complete implementation pushed and deployed to sandbox; backend hosted acceptance passed24checks twice, actual hosted PDF/history exports passed. Final focused browser-control verification and clean-runtime teardown are underway.
 
 ## Scope and isolation
 John authorized full sandbox completion and deployment on November 4 after accepting the compiled checklist. Source: memory/dydd-circle-operating-rules-2026-11-04.md and sanitized original discussion. Sandbox branch `sandbox`, Vercel project `dydd-online-school-sandbox`, Supabase `atemrshtshxoqnuevvqu`. Production branch, production aliases and production DB are out of scope. Existing untracked `tmp/` retained.
@@ -53,3 +53,11 @@ Application build/deployment and final hosted acceptance still pending; no compl
 
 ## Customer subscription management
 Real server actions now support cancellation at paid-period end and restoring renewal without proration. Provider state is tied back to the user’s own order and trusted metadata. Mocked provider identity/CSRF/cancel/resume tests passed. Optional payment-method/history portal was additionally implemented but the actual sandbox runtime key returned403more_permissions_required for portal configuration; its customer button is withheld, so no unavailable portal is advertised. This was outside the agreed Circles operating scope and does not block the agreed paid-period lifecycle, direct renewal controls or leader transfer. Owner readiness evidence is retained. No fresh completed provider purchase was performed in this build.
+
+## Hosted release checkpoints
+- Runtime9ddd523 deployed READY to dpl_7dawWZHhAPK2c6svYvj8djhaszuX; final runtime refinements0caa693 deployed READY to dpl_3bdhGiztToB6TZYZTGEzhwpD9iMp. Both sandbox aliases verified; production deployment unchanged.
+- Actual hosted owner capacity approval/allowance changes, paid acceptance, concurrent capacity races, CSV, cohorts, privacy, mutual Couples alternate routes, shared spouse edits, renewal/lifecycle and transfer:24backend checks pass. All disposable records cleaned.
+- First browser harness waited for external-asset network idle; second accepted Circle-card readiness before detail readiness. Both harness races are corrected. Focused real-browser follow-up exercises actual count submit/withdrawal, Couple detail/gifts and spouse calendar save at1280/390/320.
+- Temporary synthetic owner account, its credential file and sole sandbox owner-UUID environment entry have been removed. Final redeploy clears its runtime reference. No real owner was impersonated.
+
+Read-only enforcement additionally freezes legacy shared-result projections at the transition boundary, blocks new consent grants, and still allows selective/all consent withdrawal and callout withdrawal. Bulk names use the same120-character bound as the planner, enforced by both CSV validation and PostgreSQL. Real restricted-role rollback regressions and cutoff tests pass.

@@ -22,7 +22,7 @@ try{
  session=ok(await db.from('fruitlife_360_sessions').insert({participant_id:participant,participant_email:email,participant_name:'QA participant',session_status:'waiting_for_observers',report_status:'waiting_for_responses',source_system:'native_app'}).select().single()).id;
  const observerEmail='observer-'+email,link='https://sandbox.example/observer?token=qa-'+suffix;
  const invite=ok(await db.from('fruitlife_360_observer_invites').insert({session_id:session,observer_email:observerEmail,observer_name:'QA observer',invite_status:'invited',invite_token_hash:suffix,metadata:{observerLink:link}}).select().single());
- const initial={templateId:'B02',deliveryContext:{type:'fruitlife_observer',sessionId:session,observerEmail,observerLink:link},to:observerEmail,subject:'FruitLife360 reflection for QA participant',text:'Exact observer invitation with '+link,html:'<p>Exact observer invitation</p>',idempotencyKey:'qa-observer-'+suffix};
+ const initial={templateId:'B02',deliveryContext:{type:'fruitlife_observer',sessionId:session,observerEmail,observerLink:link},to:observerEmail,subject:'Fruitful Life 360 reflection for QA participant',text:'Exact observer invitation with '+link,html:'<p>Exact observer invitation</p>',idempotencyKey:'qa-observer-'+suffix};
  await sendApplicationEmail(initial);await sendApplicationEmail(initial);
  const observerJobs=ok(await db.from('dydd_lifecycle_jobs').select('*').like('event_key','application:qa-observer-'+suffix+'%'));assert.equal(observerJobs.length,2);const reminder=observerJobs.find(j=>j.template_id==='B03');assert(reminder);assert(Date.parse(reminder.scheduled_at)-Date.parse(reminder.created_at)>4.9*86400000);
  assert.deepEqual(await lifecycleEligibility(reminder),{});

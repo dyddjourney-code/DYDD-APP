@@ -19,7 +19,7 @@ for(const name of names) {
 assert.equal(buildPassportBadges({completedAssessments:[],primaryDesign:'Architect'}).find(b=>b.title==='Architect').state,'ahead');
 assert.equal(buildPassportBadges({completedAssessments:['designid'],primaryDesign:'unknown'}).filter(b=>names.includes(b.title)&&b.group==='extension').length,4);
 const complete = buildPassportBadges({completedAssessments:['designid','spiritual_gifts','fruit_360','designpd'],primaryDesign:'Shepherd',completedCourses:['designid-foundations','spiritual-gifts-service','fruitlife-360-formation','designpd-alignment']});
-for (const title of ['DesignID','Spiritual Gifts Assessment','FruitLife360','DesignPD','DesignID Course','Spiritual Gifts Course','FruitLife360 Course','DesignPD Course']) assert.equal(complete.find(b=>b.title===title).state,'earned');
+for (const title of ['DesignID','Spiritual Gifts Assessment','Fruitful Life 360','DesignPD','DesignID Course','Spiritual Gifts Course','Fruitful Life 360 Course','DesignPD Course']) assert.equal(complete.find(b=>b.title===title).state,'earned');
 for (const title of ['DesignPD','DesignPD Course']) assert.equal(fresh.find(b=>b.title===title).state,'locked');
 const idOnly = buildPassportBadges({completedAssessments:['designid'],primaryDesign:'Shepherd'});
 assert.equal(idOnly.find(b=>b.title==='DesignPD').state,'ahead');
@@ -31,7 +31,7 @@ const {DydPassportBook}=load('components/dyd-passport-book.tsx');
 for(const [label,badges] of [['fresh',fresh],['earned',complete]]) {
  const html=renderToStaticMarkup(React.createElement(DydPassportBook,{badges}));
  require('node:fs').writeFileSync(`tmp/passport-${label}-fixture.html`,html);
- for(const name of ['Spiritual Gifts','FruitLife360','DesignID']) assert(html.includes(`aria-label="${name} trail badges"`));
+ for(const name of ['Spiritual Gifts','Fruitful Life 360','DesignID']) assert(html.includes(`aria-label="${name} trail badges"`));
  assert(html.includes('Discover Your Divine Design Journey Badges'));
  assert(html.includes('Dig deeper trails'));
  if(label==='earned') {

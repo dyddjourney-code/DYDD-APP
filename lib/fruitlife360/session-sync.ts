@@ -141,7 +141,7 @@ export async function syncFruitLifeSessionsFromSnapshots({
 
   for (const snapshot of ((snapshots ?? []) as unknown as SnapshotRow[])) {
     if (!snapshot.participant_id) {
-      errors.push({ message: "FruitLife snapshot is missing participant_id.", snapshotId: snapshot.id });
+      errors.push({ message: "Fruitful Life 360 snapshot is missing participant_id.", snapshotId: snapshot.id });
       continue;
     }
 

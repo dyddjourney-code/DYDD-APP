@@ -204,7 +204,7 @@ function buildFruitLifeTrend(snapshots: AssessmentSnapshotSummary[]) {
       date: displayDate(snapshot.source_submitted_at ?? snapshot.created_at),
       id: snapshot.id,
       index,
-      mode: compactValue(snapshotSection(snapshot, "summary").Report_Mode) || "FruitLife",
+      mode: compactValue(snapshotSection(snapshot, "summary").Report_Mode) || "Fruitful Life 360",
       mostVisible:
         compactValue(snapshotSection(snapshot, "summary").Most_Visible_Fruit_List) ||
         "Awaiting ranked fruit",
@@ -566,7 +566,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
                   <h2>Welcome, {welcomeName}.</h2>
                   <p>
                     This is your early DYDD app space for free Spiritual Gifts,
-                    FruitLife360, course support, weekly Waypoints, and your account record.
+                    Fruitful Life 360, course support, weekly Waypoints, and your account record.
                   </p>
                 </div>
               </div>
@@ -596,13 +596,13 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             </article>
             <article>
               <p className="section-label">Formation mirror</p>
-              <h2>FruitLife360</h2>
+              <h2>Fruitful Life 360</h2>
               <p>
-                Start FruitLife360, invite observers, track report progress,
+                Start Fruitful Life 360, invite observers, track report progress,
                 and return for your completed formation artifact.
               </p>
               <Link className="button secondary" href={withReviewQuery("/field-kit?lane=fruitlife", reviewParams)}>
-                Open FruitLife360
+                Open Fruitful Life 360
               </Link>
             </article>
             <article>
@@ -618,7 +618,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             </article>
           </section>
 
-          <section className="basecamp-account-layout basecamp-account-layout-single" aria-label="FruitLife account overview">
+          <section className="basecamp-account-layout basecamp-account-layout-single" aria-label="Fruitful Life 360 account overview">
             <article className="basecamp-account-card profile">
               <div className="card-heading">
                 <p className="section-label">Account</p>

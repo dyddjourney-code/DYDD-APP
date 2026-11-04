@@ -1270,7 +1270,7 @@ const sourceExperiences = [
   { slug: "discover-your-divine-design", title: "DYDD Journey" },
   { slug: "designid-foundations", title: "DesignID" },
   { slug: "spiritual-gifts-service", title: "Spiritual Gifts" },
-  { slug: "fruitlife-360-formation", title: "FruitLife360" },
+  { slug: "fruitlife-360-formation", title: "Fruitful Life 360" },
   { slug: "designpd-alignment", title: "DesignPD" },
 ];
 export function ReflectionNicheBuilder() {

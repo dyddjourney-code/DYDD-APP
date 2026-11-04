@@ -18,7 +18,7 @@ try{
  assert.equal(Math.round((Date.parse(fruit.scheduled_at)-Date.parse(completion.scheduled_at))/86400000),5);
  assert.equal(Math.round((Date.parse(design.scheduled_at)-Date.parse(completion.scheduled_at))/86400000),14);
  assert.equal(Math.round((Date.parse(practice.scheduled_at)-Date.parse(completion.scheduled_at))/86400000),30);
- assert.match((await lifecycleEligibility(fruit)).stop,/No currently usable FruitLife access/);assert.match((await lifecycleEligibility(design)).stop,/DesignPD access is not available/);
+ assert.match((await lifecycleEligibility(fruit)).stop,/No currently usable Fruitful Life 360 access/);assert.match((await lifecycleEligibility(design)).stop,/DesignPD access is not available/);
  const inactive=jobs.find(j=>j.template_id==='A05');assert.match((await lifecycleEligibility(inactive)).stop,/already complete/);
  assert.match((await lifecycleEligibility(jobs.find(j=>j.template_id==='A04'))).stop,/already started/);
  console.log('PASS real lesson-completion DB triggers require full canonical course, Journey single celebration, durable once-only 5/14/30-day drip, missing paid-access suppression, completion stops inactivity help');

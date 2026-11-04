@@ -75,7 +75,7 @@ export function FruitLifeCurrentAssessmentProcess({
         <p className="section-label">Active assessment</p>
         <h2>Current assessment process</h2>
         <p>
-          FruitLife360 is collecting the self reflection and observer feedback before the
+          Fruitful Life 360 is collecting the self reflection and observer feedback before the
           finished report moves into Artifacts.
         </p>
       </div>
@@ -83,13 +83,13 @@ export function FruitLifeCurrentAssessmentProcess({
       {session.metadata?.invitationDeliveryIssue ? <p className="form-message">Some invitation emails were not sent. Your assessment is saved; use Send reminders to retry the unfinished invitations.</p> : null}
       {created ? (
         <p className="journey-save-notice">
-          FruitLife360 started. The assessment tracker is active.
+          Fruitful Life 360 started. The assessment tracker is active.
         </p>
       ) : null}
       <div className="fruitlife-control-grid">
         <article className="fruitlife-status-console">
           <div className="fruitlife-session-summary">
-            <p className="section-label">FruitLife360</p>
+            <p className="section-label">Fruitful Life 360</p>
             <strong>
               {completion.completed} of {completion.required}
             </strong>

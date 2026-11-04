@@ -112,7 +112,7 @@ const assessmentLabels: Record<string, string> = {
   design_pathways: "Design Pathways",
   designid: "DesignID",
   designpd: "DesignPD",
-  fruit_360: "FruitLife360",
+  fruit_360: "Fruitful Life 360",
   spiritual_gifts: "Spiritual Gifts",
 };
 
@@ -437,7 +437,7 @@ function fruitLifeSummary(snapshot: AssessmentSnapshot) {
   return (
     compactValue(summary.Most_Visible_Fruit_List) ||
     compactValue(summary.mostVisibleFruit) ||
-    "FruitLife report saved"
+    "Fruitful Life 360 report saved"
   );
 }
 

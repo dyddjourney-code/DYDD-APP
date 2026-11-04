@@ -25,7 +25,7 @@ export default async function FruitLifeSelfPage({
     return (
       <main className="fruitlife-shell fruitlife-public">
         <section className="fruitlife-panel fruitlife-message-card">
-          <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife360 logo" />
+          <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="Fruitful Life 360 logo" />
           <h1>Reflection link unavailable.</h1>
           <p>This reflection link is missing, no longer valid, or already submitted. Return to Field Kit to see your progress.</p>
         </section>

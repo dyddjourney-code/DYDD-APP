@@ -82,7 +82,7 @@ const route = load("app/api/artifacts/[snapshotId]/download/route.ts", {
         select(){return this},eq(){return this},order(){return this},limit(){return this},
         maybeSingle: async () => ({data: table === "fruitlife_360_sessions" ? {id:"owned-session"} : {
           provider_document_id:"retained-fruit-document",external_url:"https://provider.test/fruit.pdf",metadata:{storage:{
-            bucket:"assessment-report-pdfs",path:`fruit_360/${snapshot.id}/report.pdf`,filename:"FruitLife.pdf"
+            bucket:"assessment-report-pdfs",path:`fruit_360/${snapshot.id}/report.pdf`,filename:"Fruitful Life 360.pdf"
           }}
         }})
       } : q,
@@ -243,7 +243,7 @@ const get = (query = "", id = snapshot.id) =>
   r = await get("?review=new&key=valid&view=snapshot");
   assert((await r.text()).includes("Download PDF"));
   r = await get("?review=new&key=valid");
-  assert.equal(r.status,307,"Legacy FruitLife session PDF is not snapshot-only");
+  assert.equal(r.status,307,"Legacy Fruitful Life 360 session PDF is not snapshot-only");
   assert.equal((await get("?review=new&key=invalid")).status,303);
   console.log(
     "PASS snapshot score/label fidelity, no duplicate highlights or arbitrary gift bars, explicit PDF separation, authorization/foreign denial, real PDF archival, expired-link recovery, origin check and full-template generation without email.",

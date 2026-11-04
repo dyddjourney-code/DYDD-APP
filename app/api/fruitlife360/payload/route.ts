@@ -80,7 +80,7 @@ async function handlePayloadBuild(request: NextRequest) {
         error:
           error instanceof Error
             ? error.message
-            : "Unknown FruitLife payload generation error.",
+            : "Unknown Fruitful Life 360 payload generation error.",
       },
       { status: 500 },
     );

@@ -3,7 +3,7 @@ export const accountMilestones = [
   { key: 'journey', label: 'Journey', course: 'discover-your-divine-design', assessment: null },
   { key: 'designid', label: 'DesignID', course: 'designid-foundations', assessment: 'designid' },
   { key: 'spiritual_gifts', label: 'Spiritual Gifts', course: 'spiritual-gifts-service', assessment: 'spiritual_gifts' },
-  { key: 'fruit_360', label: 'FruitLife360', course: 'fruitlife-360-formation', assessment: 'fruit_360' },
+  { key: 'fruit_360', label: 'Fruitful Life 360', course: 'fruitlife-360-formation', assessment: 'fruit_360' },
 ] as const;
 export type Account = { id: string; email: string; name: string; createdAt: string };
 export type Completion = { user_id: string; course_slug: string; lesson_slug: string; completed_at: string };

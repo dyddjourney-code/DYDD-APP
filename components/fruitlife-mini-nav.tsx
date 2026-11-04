@@ -33,7 +33,7 @@ function appendReviewQuery(href: string, reviewQuery?: string) {
 
 export function FruitLifeMiniNav({ reviewQuery }: FruitLifeMiniNavProps) {
   return (
-    <nav className="fruitlife-mini-nav" aria-label="FruitLife360 navigation">
+    <nav className="fruitlife-mini-nav" aria-label="Fruitful Life 360 navigation">
       {fruitLifeNavItems.map((item) => (
         <Link href={appendReviewQuery(item.href, reviewQuery)} key={item.href}>
           {item.label}

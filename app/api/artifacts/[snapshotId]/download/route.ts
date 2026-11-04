@@ -175,7 +175,7 @@ async function findSnapshot(
   }
   return getOwnedArtifactSnapshot(snapshotId, user.id, normalizeEmail(user.email));
 }
-/** Supplement legacy FruitLife snapshots with their owned session’s retained PDF. */
+/** Supplement legacy Fruitful Life 360 snapshots with their owned session’s retained PDF. */
 async function findAuthorizedSnapshot(request: NextRequest, snapshotId: string) {
   const snapshot = await findSnapshot(request, snapshotId);
   if (!snapshot || snapshot instanceof Response) return snapshot;

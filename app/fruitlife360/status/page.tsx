@@ -83,7 +83,7 @@ export default async function FruitLifeStatusPage({
     return (
       <main className="fruitlife-shell fruitlife-public">
         <section className="fruitlife-hero compact">
-          <p className="section-label">FruitLife360</p>
+          <p className="section-label">Fruitful Life 360</p>
           <h1>Status link not found.</h1>
           <p className="lede">This session link is missing, expired, or no longer valid.</p>
           <Link className="button secondary" href="/fruitlife360">
@@ -108,8 +108,8 @@ export default async function FruitLifeStatusPage({
     <main className="fruitlife-shell fruitlife-public">
       <FruitLifeSessionAutoRefresh enabled={shouldRefresh} />
       <section className="fruitlife-hero compact">
-        <p className="section-label">FruitLife360 Status</p>
-        <h1>{session.participant_name ?? "FruitLife participant"}</h1>
+        <p className="section-label">Fruitful Life 360 Status</p>
+        <h1>{session.participant_name ?? "Fruitful Life 360 participant"}</h1>
         <p className="lede">
           Track self reflection, observer invitations, reminders, and report readiness.
         </p>
@@ -125,7 +125,7 @@ export default async function FruitLifeStatusPage({
             <Link className="button primary" href={reportHref(session.id)} target="_blank" rel="noopener noreferrer" prefetch={false}>Open report</Link>
           ) : null}
           <Link className={`button ${completion.ready ? "secondary" : "primary"}`} href="/courses/fruitlife-360-formation">Take the course</Link>
-          <Link className="button secondary" href="/field-kit#collection-fruitlife-360">FruitLife360 in Field Kit</Link>
+          <Link className="button secondary" href="/field-kit#collection-fruitlife-360">Fruitful Life 360 in Field Kit</Link>
         </div>
       </section>
 

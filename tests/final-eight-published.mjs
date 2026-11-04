@@ -132,8 +132,8 @@ try {
   });
   await go('/hq#passport'); await page.waitForSelector('.passport-badge-button');
   const initialBadge = await page.$$eval('.passport-badge-button',es=>es.map(e=>({title:e.querySelector('strong')?.textContent,earned:e.classList.contains('earned')})));
-  assert(initialBadge.find(b=>b.title==='FruitLife360')?.earned);
-  assert.equal(initialBadge.find(b=>b.title==='FruitLife360 Course')?.earned,false);
+  assert(initialBadge.find(b=>b.title==='Fruitful Life 360')?.earned);
+  assert.equal(initialBadge.find(b=>b.title==='Fruitful Life 360 Course')?.earned,false);
   checks.push('Actual Passport UI shows owned assessment earned before course completion; course badge independent');
   for (const width of [1280, 390, 320]) {
     await page.setViewport({ width, height: 1000 });
@@ -213,7 +213,7 @@ try {
     assert.equal(await page.$eval('form .course-nav a',e=>e.getAttribute('href')),'/field-kit#collection-designpd');
     await go('/hq#passport'); await page.waitForSelector('.passport-badge-button');
     const earned = await page.$$eval('.passport-badge-button.earned strong',es=>es.map(e=>e.textContent));
-    assert(earned.includes('FruitLife360')); assert(earned.includes('FruitLife360 Course'));
+    assert(earned.includes('Fruitful Life 360')); assert(earned.includes('Fruitful Life 360 Course'));
     checks.push({width,actualAssessmentAndExistingCourseBadgesEarned:true,designPdFormOriginAndBack:true});
     await go(`/designpd/thanks?snapshot=${designSnapshot}&origin=field-kit`);
     await page.waitForSelector('main h1');

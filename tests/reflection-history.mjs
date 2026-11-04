@@ -333,7 +333,7 @@ try {
       "Discover Your Divine Design Journey",
       "DesignID",
       "Spiritual Gifts",
-      "FruitLife360",
+      "Fruitful Life 360",
       "DesignPD",
     ]);
     assert.equal(

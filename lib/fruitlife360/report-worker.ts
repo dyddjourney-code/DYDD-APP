@@ -38,9 +38,9 @@ function cleanFilename(value: string) {
 }
 function reportFilename(session: FruitLifeSession, jobId: string) {
   const participant = cleanFilename(
-    session.participant_name ?? "FruitLife Participant",
+    session.participant_name ?? "Fruitful Life 360 Participant",
   );
-  return `FruitLife360 - ${participant} - ${jobId.slice(0, 8)}.pdf`;
+  return `Fruitful Life 360 - ${participant} - ${jobId.slice(0, 8)}.pdf`;
 }
 function reportLink(document: PdfMonkeyDocument) {
   return (
@@ -148,7 +148,7 @@ async function upsertFruitLifeSnapshot({
     .single();
   if (error || !snapshot?.id) {
     throw new Error(
-      error?.message ?? "Unable to save FruitLife assessment snapshot.",
+      error?.message ?? "Unable to save Fruitful Life 360 assessment snapshot.",
     );
   }
   return snapshot.id as string;
@@ -214,16 +214,16 @@ function finalReportEmail({
   participantName: string;
   reportUrl: string;
 }) {
-  const text = `Hi ${participantName},\n\nYour FruitLife360 report is ready.\n\nOpen your report here: ${reportUrl}\n\nReceive it as a formation mirror, not a grade or label.\n\nSincerely,\nDiscover Your Divine Design Team`;
+  const text = `Hi ${participantName},\n\nYour Fruitful Life 360 report is ready.\n\nOpen your report here: ${reportUrl}\n\nReceive it as a formation mirror, not a grade or label.\n\nSincerely,\nDiscover Your Divine Design Team`;
   return {
     html: [
       `<p>Hi ${participantName},</p>`,
-      "<p>Your FruitLife360 report is ready.</p>",
-      `<p><a href="${reportUrl}">Open Your FruitLife360 Report</a></p>`,
+      "<p>Your Fruitful Life 360 report is ready.</p>",
+      `<p><a href="${reportUrl}">Open Your Fruitful Life 360 Report</a></p>`,
       "<p>Receive it as a formation mirror, not a grade or label.</p>",
       "<p>Sincerely,<br>Discover Your Divine Design Team</p>",
     ].join(""),
-    subject: "Your FruitLife360 report is ready",
+    subject: "Your Fruitful Life 360 report is ready",
     text,
   };
 }
@@ -306,7 +306,7 @@ export async function processFruitLifeReportJobs({
         .single();
       if (sessionError || !session) {
         throw new Error(
-          sessionError?.message ?? "FruitLife session was not found.",
+          sessionError?.message ?? "Fruitful Life 360 session was not found.",
         );
       }
       const typedSession = session as FruitLifeSession;
@@ -534,7 +534,7 @@ export async function processFruitLifeReportJobs({
       const message =
         error instanceof Error
           ? error.message
-          : "Unknown FruitLife report worker error.";
+          : "Unknown Fruitful Life 360 report worker error.";
       if (!dryRun) {
         await supabase
           .from("fruitlife_360_report_jobs")

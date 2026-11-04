@@ -11,7 +11,7 @@ const questions = [
   },
   {
     question: "Do I have to take the full Journey?",
-    answer: "No. DesignID, Spiritual Gifts, and FruitLife360 can each be a focused starting point. Choose the full Journey when you want to connect the pieces; choose a short trail when you want to explore one area first.",
+    answer: "No. DesignID, Spiritual Gifts, and Fruitful Life 360 can each be a focused starting point. Choose the full Journey when you want to connect the pieces; choose a short trail when you want to explore one area first.",
     href: "/trailheads", action: "Choose a trail",
   },
   {
@@ -25,9 +25,9 @@ const questions = [
     href: "/trailheads#spiritual-gifts", action: "Find Spiritual Gifts",
   },
   {
-    question: "What is FruitLife360?",
-    answer: "FruitLife360 is a focused path for reflecting on the fruit of the Spirit in everyday life. It brings personal reflection and feedback into a conversation about growth, with a course to help you consider your next practical step.",
-    href: "/trailheads#fruitlife-360", action: "Explore FruitLife360",
+    question: "What is Fruitful Life 360?",
+    answer: "Fruitful Life 360 is a focused path for reflecting on the fruit of the Spirit in everyday life. It brings personal reflection and feedback into a conversation about growth, with a course to help you consider your next practical step.",
+    href: "/trailheads#fruitlife-360", action: "Explore Fruitful Life 360",
   },
   {
     question: "When am I ready for DesignPD?",

@@ -69,7 +69,7 @@ const moments = [
     file: "fl-welcome-dydi.mp3",
     speaker: "Dydi",
     voice: "dydi",
-    text: "FruitLife 360 is not here to grade your spiritual life. It is a mirror for noticing what the Spirit may be forming in you. Begin with grace. Receive encouragement first. Then let the report help you notice one fruit, one ordinary setting, and one practice where you can walk with Jesus more intentionally this week.",
+    text: "Fruitful Life 360 is not here to grade your spiritual life. It is a mirror for noticing what the Spirit may be forming in you. Begin with grace. Receive encouragement first. Then let the report help you notice one fruit, one ordinary setting, and one practice where you can walk with Jesus more intentionally this week.",
   },
   {
     file: "fl-observers-mara.mp3",
@@ -93,7 +93,7 @@ const moments = [
     file: "fl-dydd-miles.mp3",
     speaker: "Miles",
     voice: "miles",
-    text: "Design, gifts, calling, and action all need formation. FruitLife helps keep the center steady. The question is not only, \"What am I designed to do?\" It is also, \"Who am I becoming as I do it?\" Let your next step be both purposeful and faithful. Steward the work, but also steward the heart carrying the work.",
+    text: "Design, gifts, calling, and action all need formation. Fruitful Life 360 helps keep the center steady. The question is not only, \"What am I designed to do?\" It is also, \"Who am I becoming as I do it?\" Let your next step be both purposeful and faithful. Steward the work, but also steward the heart carrying the work.",
   },
   {
     file: "designid-welcome-dydi.mp3",
@@ -167,6 +167,7 @@ if (!process.env.ELEVENLABS_API_KEY && !process.env.XI_API_KEY) {
   throw new Error("Missing ELEVENLABS_API_KEY or XI_API_KEY");
 }
 
-for (const moment of moments) {
+const only = process.argv.find(arg => arg.startsWith("--only="))?.slice(7).split(",");
+for (const moment of moments.filter(moment => !only || only.includes(moment.file))) {
   await generateMoment(moment);
 }

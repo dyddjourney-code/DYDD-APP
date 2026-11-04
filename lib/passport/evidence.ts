@@ -31,7 +31,7 @@ export function savedAssessmentComplete(snapshot: AssessmentSnapshotSummary, all
   // fictitious independent DesignPD assessment is introduced.
   return populated(payload) || populated(scores.summary) || populated(scores.scores);
  }
- return false; // FruitLife requires verified session/observer evidence, below.
+ return false; // Fruitful Life 360 requires verified session/observer evidence, below.
 }
 export const completedFruitReportStatuses = ['ready','success','sent','report_ready','report_sent','completed','email_sent','email_failed','email_skipped'];
 export function completedFruitSession(s: {self_completed_at:string|null;observer_goal:number;observer_completed_count:number;report_status:string;report_mode?:string|null;report_snapshot_id?:string|null;report_url?:string|null;artifacts?:Array<{artifact_type:string;artifact_status:string}>}) {
@@ -42,7 +42,7 @@ export function completedFruitSession(s: {self_completed_at:string|null;observer
   (s.report_snapshot_id || s.report_url || s.artifacts?.some(a=>a.artifact_type==='pdf' && a.artifact_status==='ready')));
 }
 
-/** Older imported completed FruitLife reports predate session self timestamps.
+/** Older imported completed Fruitful Life 360 reports predate session self timestamps.
  * Their retained full-360 report explicitly records response and observer counts.
  * Native reports must instead pass the live session's configured observer goal. */
 export function completedLegacyFruitSnapshot(snapshot: AssessmentSnapshotSummary) {
@@ -55,7 +55,7 @@ export function completedLegacyFruitSnapshot(snapshot: AssessmentSnapshotSummary
   Boolean(summary.Report_Date || summary.Most_Visible_Fruit || summary.Most_Visible_Fruit_List);
 }
 
-/** The assessment milestone is completion of an owned FruitLife report, not a
+/** The assessment milestone is completion of an owned Fruitful Life 360 report, not a
  * claim that observers took part. A valid self-only report also completes the
  * assessment. Keep full-360 observer validation separate and unchanged. Null
  * modes on older native sessions are resolved only from their owned linked

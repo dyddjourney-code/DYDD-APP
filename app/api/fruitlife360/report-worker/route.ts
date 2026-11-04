@@ -55,7 +55,7 @@ async function handleReportWorker(request: NextRequest) {
         error:
           error instanceof Error
             ? error.message
-            : "Unknown FruitLife report worker error.",
+            : "Unknown Fruitful Life 360 report worker error.",
       },
       { status: 500 },
     );

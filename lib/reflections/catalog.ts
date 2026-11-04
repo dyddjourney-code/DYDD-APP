@@ -133,7 +133,7 @@ export const reflectionExperiences: ReflectionExperience[] = [
       title: slug.startsWith("spiritual")
         ? "Spiritual Gifts"
         : slug.startsWith("fruit")
-          ? "FruitLife360"
+          ? "Fruitful Life 360"
           : "DesignPD",
       href: `/courses/${slug}`,
       questions: c.modules.flatMap((m) =>

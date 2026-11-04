@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
       cancel_url: `${appBaseUrl}${returnTo}${returnTo.includes("?") ? "&" : "?"}checkout=cancelled`,
     });
   } catch (error) {
-    console.error("Unable to create FruitLife Stripe checkout session.", error);
+    console.error("Unable to create Fruitful Life 360 Stripe checkout session.", error);
     return NextResponse.redirect(
       new URL("/field-kit?lane=fruitlife&checkout=config-error", request.url),
     );

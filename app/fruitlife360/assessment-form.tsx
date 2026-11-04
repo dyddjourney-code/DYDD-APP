@@ -118,12 +118,12 @@ export function FruitLifeAssessmentForm({
       {message ? <p className="form-message">{message}</p> : null}
       <p className="fruitlife-latest-note">{draftNotice || "Your progress saves on this browser so you can return using the same link."}</p>
 
-      <section aria-label={isSelf ? "FruitLife360 Self Reflection" : "FruitLife360 Observer Reflection"} className={`fruitlife-assessment-card ${isSelf ? "fruitlife-self-header" : ""}`}>
-        <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife360 logo" />
+      <section aria-label={isSelf ? "Fruitful Life 360 Self Reflection" : "Fruitful Life 360 Observer Reflection"} className={`fruitlife-assessment-card ${isSelf ? "fruitlife-self-header" : ""}`}>
+        <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="Fruitful Life 360 logo" />
         {!isSelf ? (
           <div>
             <p className="section-label">Observer path</p>
-            <h2>FruitLife360 Observer Reflection</h2>
+            <h2>Fruitful Life 360 Observer Reflection</h2>
             <p>Reflect on {participantName ?? "this participant"} with clear, gracious feedback.</p>
           </div>
         ) : null}
@@ -139,7 +139,7 @@ export function FruitLifeAssessmentForm({
         {isSelf && invitationNotice ? <p className="journey-save-notice">{invitationNotice}</p> : null}
         <p>
           {isSelf
-            ? "These details connect this reflection to your FruitLife360 report."
+            ? "These details connect this reflection to your Fruitful Life 360 report."
             : `These details connect your feedback to ${participantName ?? "the participant"}'s report.`}
         </p>
         <div className="fruitlife-grid two">
@@ -319,7 +319,7 @@ export function FruitLifeAssessmentForm({
           </button>
         ) : (
           <button className="button primary" disabled={submitting} type="submit">
-            {submitting ? "Saving reflection…" : "Submit FruitLife Reflection"}
+            {submitting ? "Saving reflection…" : "Submit Fruitful Life 360 Reflection"}
           </button>
         )}
       </div>

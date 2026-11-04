@@ -245,10 +245,10 @@ C04 — Fixed lifecycle template
 Source: lib/lifecycle/templates.ts lifecycleCopy; category=growth; Journey completion +5 days; expires +8. Recipient=current verified account; full eligibility/consent above.
 
 SUBJECT
-Your next step: FruitLife 360
+Your next step: Fruitful Life 360
 
 BODY (exact source-rendered text; shared composition layers below)
-As you continue living your design, FruitLife 360 offers a way to reflect on the fruit being formed in your life, with thoughtful input from people you choose.
+As you continue living your design, Fruitful Life 360 offers a way to reflect on the fruit being formed in your life, with thoughtful input from people you choose.
 
 Explore your available next step: {{base}}/fruitlife360
 
@@ -394,12 +394,12 @@ B01-fruitlife — FruitLife participant final report
 Source: lib/fruitlife360/report-worker.ts finalReportEmail; service; genuine ready PDF artifact.
 
 SUBJECT
-Your FruitLife360 report is ready
+Your Fruitful Life 360 report is ready
 
 BODY (exact source-rendered text; shared composition layers below)
 Hi {{participant_name}},
 
-Your FruitLife360 report is ready.
+Your Fruitful Life 360 report is ready.
 
 Open your report here: {{report_url}}
 
@@ -413,14 +413,14 @@ B02 — FruitLife observer invitation
 Source: app/fruitlife360/actions.ts fruitLifeObserverEmail; service; explicit participant invitation to named observer.
 
 SUBJECT
-FruitLife360 reflection for {{participant_name}}
+Fruitful Life 360 reflection for {{participant_name}}
 
 BODY (exact source-rendered text; shared composition layers below)
 Hi {{observer_name}},
 
-{{participant_name}} invited you to complete a FruitLife360 observer reflection.
+{{participant_name}} invited you to complete a Fruitful Life 360 observer reflection.
 
-Complete the FruitLife360 assessment:
+Complete the Fruitful Life 360 assessment:
 {{observer_url}}
 
 This is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.
@@ -433,14 +433,14 @@ B02 — Observer invitation without saved name
 Same source; only greeting changes to Hi,; no extra campaign.
 
 SUBJECT
-FruitLife360 reflection for {{participant_name}}
+Fruitful Life 360 reflection for {{participant_name}}
 
 BODY (exact source-rendered text; shared composition layers below)
 Hi,
 
-{{participant_name}} invited you to complete a FruitLife360 observer reflection.
+{{participant_name}} invited you to complete a Fruitful Life 360 observer reflection.
 
-Complete the FruitLife360 assessment:
+Complete the Fruitful Life 360 assessment:
 {{observer_url}}
 
 This is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.
@@ -453,14 +453,14 @@ B03 — FruitLife observer MANUAL reminder
 Manual explicit day-key deduplicated request; identical copy to B02, not a participant reminder.
 
 SUBJECT
-FruitLife360 reflection for {{participant_name}}
+Fruitful Life 360 reflection for {{participant_name}}
 
 BODY (exact source-rendered text; shared composition layers below)
 Hi {{observer_name}},
 
-{{participant_name}} invited you to complete a FruitLife360 observer reflection.
+{{participant_name}} invited you to complete a Fruitful Life 360 observer reflection.
 
-Complete the FruitLife360 assessment:
+Complete the Fruitful Life 360 assessment:
 {{observer_url}}
 
 This is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.
@@ -473,16 +473,16 @@ B03 — FruitLife observer AUTOMATIC day-five reminder
 Source: lib/lifecycle/application-mail.ts; +5 days, expires +8; incomplete active observer only.
 
 SUBJECT
-Reminder: FruitLife360 reflection for {{participant_name}}
+Reminder: Fruitful Life 360 reflection for {{participant_name}}
 
 BODY (exact source-rendered text; shared composition layers below)
 A gentle reminder:
 
 Hi {{observer_name}},
 
-{{participant_name}} invited you to complete a FruitLife360 observer reflection.
+{{participant_name}} invited you to complete a Fruitful Life 360 observer reflection.
 
-Complete the FruitLife360 assessment:
+Complete the Fruitful Life 360 assessment:
 {{observer_url}}
 
 This is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.

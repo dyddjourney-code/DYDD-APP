@@ -1,3 +1,4 @@
+import {grantCircleFixture,validLifecyclePlan,cleanupCircleFixtures} from './lifecycle-circle-fixtures.mjs';
 import assert from 'node:assert/strict';import fs from 'node:fs';import crypto from 'node:crypto';import {createClient} from '@supabase/supabase-js';import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url),load=require('../scripts/fruitlife-test-load.cjs'),c=JSON.parse(fs.readFileSync('/home/openclaw/.openclaw/secrets/dydd-online-school-sandbox.json'));
 assert.equal(c.ref,'atemrshtshxoqnuevvqu');process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT='sandbox';
@@ -7,12 +8,13 @@ const mocks={'server-only':{},'@/lib/supabase/admin':{createSupabaseAdminClient:
 const {circleMessageDrafts}=load('lib/lifecycle/templates.ts',mocks),{blankCirclePlan}=load('lib/circles/plan.ts',mocks),{processLifecycleEvents,runLifecycleWorker,lifecycleEligibility}=load('lib/lifecycle/worker.ts',mocks),{enqueueCampaignMembers}=load('lib/lifecycle/store.ts',mocks);
 try{
  user=ok(await db.auth.admin.createUser({email,password:crypto.randomBytes(24).toString('hex'),email_confirm:true})).user;
+ await grantCircleFixture(db,user);
  assert(ok(await db.from('dydd_lifecycle_events').select('*').eq('event_key','account-verified:'+user.id).single()));
  await processLifecycleEvents();await processLifecycleEvents();
  let welcomes=ok(await db.from('dydd_lifecycle_jobs').select('*').eq('user_id',user.id).eq('template_id','A03'));assert.equal(welcomes.length,1);
  let run=await runLifecycleWorker({limit:50});assert(run.sandbox);assert.equal(ok(await db.from('dydd_lifecycle_jobs').select('status').eq('id',welcomes[0].id).single()).status,'sandbox_ready');
  console.log('PASS real verified-account trigger → durable once-only welcome → sandbox-ready, with provider transport forbidden');
- const p={...blankCirclePlan(),name:'Lifecycle QA '+suffix,startDate:'2027-01-07',time:'19:00',location:'QA Room',participants:[{name:'Fixture member',email}],meetingCount:3};
+ const p=validLifecyclePlan({...blankCirclePlan(),name:'Lifecycle QA '+suffix,startDate:'2027-01-07',time:'19:00',location:'QA Room',participants:[{name:'Fixture member',email}],meetingCount:3});
  circle=crypto.randomUUID();ok(await db.from('journey_circle_plans').insert({id:circle,user_id:user.id,status:'active',plan:p}));
  campaign=ok(await db.from('dydd_circle_campaigns').insert({circle_id:circle,circle_revision:1,plan_snapshot:p}).select().single()).id;
  const drafts=ok(await db.from('dydd_circle_message_drafts').insert(circleMessageDrafts(p,'https://sandbox.example').map(d=>({...d,campaign_id:campaign}))).select());
@@ -55,9 +57,6 @@ try{
  assert((await anon.rpc('dydd_claim_lifecycle_jobs',{batch_size:1})).error);
  console.log('PASS eight workers claim once, stale leases recover, provider ambiguity expires to manual review, anonymous tables/RPC denied');
 }finally{
- if(campaign)await db.from('dydd_lifecycle_events').delete().eq('kind','circle_finalized').eq('source_id',campaign);
- if(circle)await db.from('journey_circle_plans').delete().eq('id',circle);
- await db.from('dydd_email_preferences').delete().eq('email',email);await db.from('dydd_email_preference_tokens').delete().eq('email',email);
- if(user)await db.auth.admin.deleteUser(user.id);
- console.log('Sandbox-only lifecycle fixtures removed; no email provider calls');
+ await cleanupCircleFixtures(db,{users:user?[user]:[],circles:circle?[circle]:[]});
+ console.log('Synthetic lifecycle fixtures removed; no provider calls');
 }

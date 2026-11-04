@@ -1,12 +1,13 @@
+import {grantCircleFixture,validLifecyclePlan,cleanupCircleFixtures} from './lifecycle-circle-fixtures.mjs';
 import assert from 'node:assert/strict';import fs from 'node:fs';import crypto from 'node:crypto';import {createClient} from '@supabase/supabase-js';import {createServerClient} from '@supabase/ssr';import {createRequire} from 'node:module';import puppeteer from 'puppeteer-core';import chromium from '@sparticuz/chromium';
 const require=createRequire(import.meta.url),load=require('../scripts/fruitlife-test-load.cjs'),{blankCirclePlan}=load('lib/circles/plan.ts');
 const base=process.env.LIFECYCLE_BASE||'http://localhost:3147';assert(['localhost','127.0.0.1','dydd-online-school-sandbox.vercel.app'].includes(new URL(base).hostname),'Sandbox/local only');
 const c=JSON.parse(fs.readFileSync('/home/openclaw/.openclaw/secrets/dydd-online-school-sandbox.json'));assert.equal(c.ref,'atemrshtshxoqnuevvqu');const db=createClient(c.project_url,c.service_role_key,{auth:{persistSession:false}}),ok=r=>{assert(!r.error,r.error?.message);return r.data;},suffix=crypto.randomUUID(),users=[];let circle,browser,otherCircle;
-async function fixture(role){const email=`lifecycle-http-${role}-${suffix}@example.test`,password=crypto.randomBytes(24).toString('hex'),user=ok(await db.auth.admin.createUser({email,password,email_confirm:true})).user;users.push(user);let cookies=[];const s=createServerClient(c.project_url,c.anon_key,{cookies:{getAll:()=>cookies,setAll:cs=>{cookies=cs;}}});ok(await s.auth.signInWithPassword({email,password}));return {...user,cookie:cookies.map(c=>c.name+'='+c.value).join('; '),cookies};}
+async function fixture(role){const email=`lifecycle-http-${role}-${suffix}@example.test`,password=crypto.randomBytes(24).toString('hex'),user=ok(await db.auth.admin.createUser({email,password,email_confirm:true})).user;users.push(user);await grantCircleFixture(db,user);let cookies=[];const s=createServerClient(c.project_url,c.anon_key,{cookies:{getAll:()=>cookies,setAll:cs=>{cookies=cs;}}});ok(await s.auth.signInWithPassword({email,password}));return {...user,cookie:cookies.map(c=>c.name+'='+c.value).join('; '),cookies};}
 const call=async(path,user,body)=>{const r=await fetch(base+path,{method:body?'POST':'GET',headers:{...(user?{cookie:user.cookie}:{}),...(body?{origin:base,'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})});return {status:r.status,body:await r.json()};};
 try{
  const creator=await fixture('creator'),member=await fixture('member'),outsider=await fixture('outsider');
- const p={...blankCirclePlan(),name:'HTTP QA Circle '+suffix,startDate:'2027-01-07',time:'19:00',location:'Sandbox QA room',participants:[{name:'QA Member',email:member.email}],meetingCount:3};
+ const p=validLifecyclePlan({...blankCirclePlan(),name:'HTTP QA Circle '+suffix,startDate:'2027-01-07',time:'19:00',location:'Sandbox QA room',participants:[{name:'QA Member',email:member.email}],meetingCount:3});
  // Keep every canonical lesson assigned within this three-meeting shortened fictional Circle.
  p.assignments=Object.fromEntries(Object.keys(p.assignments).map(slug=>[slug,Math.min(3,p.assignments[slug])]));
  circle=crypto.randomUUID();let r=await call('/api/circles',creator,{id:circle,revision:0,status:'active',plan:p});assert.equal(r.status,200,JSON.stringify(r));
@@ -98,7 +99,7 @@ try{
 
  fs.writeFileSync(`tmp/email-circle-${base.includes('localhost')?'local':'published'}-http-proof.json`,JSON.stringify({checkedAt:new Date().toISOString(),base,widths:[360,390,768,1280],circleFixtureRemoved:true,providerCalls:0,assertions:'authenticated ownership, edit/persistence, stale approval, all-approved gate, invitation acceptance, optouts, sandbox worker, schedule revision'},null,2));
 }finally{
- if(browser)await browser.close();if(circle)await db.from('dydd_lifecycle_events').delete().eq('kind','circle_finalized').contains('payload',{circleId:circle});if(otherCircle)await db.from('journey_circle_plans').delete().eq('id',otherCircle);if(circle)await db.from('journey_circle_plans').delete().eq('id',circle);
- for(const user of users){await db.from('dydd_email_preferences').delete().eq('email',user.email);await db.from('dydd_email_preference_tokens').delete().eq('email',user.email);await db.auth.admin.deleteUser(user.id);}
+ if(browser)await browser.close();
+ await cleanupCircleFixtures(db,{users,circles:[circle,otherCircle].filter(Boolean)});
  console.log('Synthetic sandbox HTTP/browser accounts and Circle cleaned up; no real customer emails');
 }

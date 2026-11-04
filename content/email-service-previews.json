@@ -1,0 +1,79 @@
+[
+  {
+    "id": "B01-designid",
+    "title": "DesignID ready report",
+    "meta": "Source: lib/assessment-reporting.ts sendAssessmentReportEmail; service; explicit report-ready producer; report URL belongs to this participant.",
+    "subject": "Your DesignID report is ready",
+    "body": "Hi {{participant_name}},\n\nYour DesignID report is ready.\n\nOpen your report here: {{report_url}}\n\nSign in with the same account you used to complete DesignID. Your report is also available in Field Kit.\n\nSincerely,\nDiscover Your Divine Design Team"
+  },
+  {
+    "id": "B01-designpd",
+    "title": "DesignPD ready report",
+    "meta": "Source: lib/assessment-reporting.ts sendAssessmentReportEmail; service; explicit report-ready producer; report URL belongs to this participant.",
+    "subject": "Your DesignPD report is ready",
+    "body": "Hi {{participant_name}},\n\nYour DesignPD report is ready.\n\nOpen your report here: {{report_url}}\n\nSign in with the same account you used to complete DesignPD. Your report is also available in Field Kit.\n\nSincerely,\nDiscover Your Divine Design Team"
+  },
+  {
+    "id": "B01-spiritual-gifts",
+    "title": "Spiritual Gifts report link (attachment may also be included)",
+    "meta": "Source: app/spiritual-gifts/actions.ts spiritualGiftsResultEmail; service; real link or attachment required.",
+    "subject": "Your Spiritual Gifts Assessment report is ready",
+    "body": "Hi {{participant_name}},\n\nYour Spiritual Gifts Assessment report is ready.\n\nOpen your PDF report here:\n{{report_url}}\n\nUse this report prayerfully as a confirmation tool. Spiritual gifts are best clarified through Scripture, prayer, faithful service, and trusted people who have seen your life in motion.\n\nSincerely,\nDiscover Your Divine Design Team"
+  },
+  {
+    "id": "B01-spiritual-gifts",
+    "title": "Spiritual Gifts attachment-only variant",
+    "meta": "Source: app/spiritual-gifts/actions.ts spiritualGiftsResultEmail; service; real link or attachment required.",
+    "subject": "Your Spiritual Gifts Assessment report is ready",
+    "body": "Hi {{participant_name}},\n\nYour Spiritual Gifts Assessment report is ready.\n\nYour PDF report is attached to this email.\n\nUse this report prayerfully as a confirmation tool. Spiritual gifts are best clarified through Scripture, prayer, faithful service, and trusted people who have seen your life in motion.\n\nSincerely,\nDiscover Your Divine Design Team"
+  },
+  {
+    "id": "B01-fruitlife",
+    "title": "FruitLife participant final report",
+    "meta": "Source: lib/fruitlife360/report-worker.ts finalReportEmail; service; genuine ready PDF artifact.",
+    "subject": "Your FruitLife360 report is ready",
+    "body": "Hi {{participant_name}},\n\nYour FruitLife360 report is ready.\n\nOpen your report here: {{report_url}}\n\nReceive it as a formation mirror, not a grade or label.\n\nSincerely,\nDiscover Your Divine Design Team"
+  },
+  {
+    "id": "B02",
+    "title": "FruitLife observer invitation",
+    "meta": "Source: app/fruitlife360/actions.ts fruitLifeObserverEmail; service; explicit participant invitation to named observer.",
+    "subject": "FruitLife360 reflection for {{participant_name}}",
+    "body": "Hi {{observer_name}},\n\n{{participant_name}} invited you to complete a FruitLife360 observer reflection.\n\nComplete the FruitLife360 assessment:\n{{observer_url}}\n\nThis is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.\n\nSincerely,\nDiscover Your Divine Design Team"
+  },
+  {
+    "id": "B02",
+    "title": "Observer invitation without saved name",
+    "meta": "Same source; only greeting changes to Hi,; no extra campaign.",
+    "subject": "FruitLife360 reflection for {{participant_name}}",
+    "body": "Hi,\n\n{{participant_name}} invited you to complete a FruitLife360 observer reflection.\n\nComplete the FruitLife360 assessment:\n{{observer_url}}\n\nThis is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.\n\nSincerely,\nDiscover Your Divine Design Team"
+  },
+  {
+    "id": "B03",
+    "title": "FruitLife observer MANUAL reminder",
+    "meta": "Manual explicit day-key deduplicated request; identical copy to B02, not a participant reminder.",
+    "subject": "FruitLife360 reflection for {{participant_name}}",
+    "body": "Hi {{observer_name}},\n\n{{participant_name}} invited you to complete a FruitLife360 observer reflection.\n\nComplete the FruitLife360 assessment:\n{{observer_url}}\n\nThis is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.\n\nSincerely,\nDiscover Your Divine Design Team"
+  },
+  {
+    "id": "B03",
+    "title": "FruitLife observer AUTOMATIC day-five reminder",
+    "meta": "Source: lib/lifecycle/application-mail.ts; +5 days, expires +8; incomplete active observer only.",
+    "subject": "Reminder: FruitLife360 reflection for {{participant_name}}",
+    "body": "A gentle reminder:\n\nHi {{observer_name}},\n\n{{participant_name}} invited you to complete a FruitLife360 observer reflection.\n\nComplete the FruitLife360 assessment:\n{{observer_url}}\n\nThis is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.\n\nSincerely,\nDiscover Your Divine Design Team"
+  },
+  {
+    "id": "G02",
+    "title": "Waypoints explicit subscription confirmation",
+    "meta": "Source: app/api/waypoints/subscribe/route.ts; immediate durable intent; deliberate confirm within 24 hours; no automatic subscription.",
+    "subject": "Confirm your DYDD Waypoints subscription",
+    "body": "You requested the weekly DYDD Waypoint.\n\nConfirm your email to receive a devotional on Friday mornings at 8:00 AM Eastern:\n{{waypoints_confirmation_url}}\n\nThis confirmation link expires in 24 hours. If you did not request this, no action is needed and weekly email will not begin. Joining a Circle or creating an account does not subscribe you. Your other email choices remain unchanged."
+  },
+  {
+    "id": "requested-maps-report",
+    "title": "Requested MAPS PDF export",
+    "meta": "Source: app/api/command-center/maps-report/route.ts sendMapsEmail; service; explicit authorized request with PDF attachment. No stable caller event key: per-call dedup only.",
+    "subject": "Your MAPS Personal Roadmap",
+    "body": "Hi {{recipient_name}},\n\nYour MAPS Personal Roadmap is attached.\n\nSincerely,\nDiscover Your Divine Design Team"
+  }
+]

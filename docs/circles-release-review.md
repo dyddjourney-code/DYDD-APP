@@ -13,3 +13,5 @@ Verification: `docs/evidence/circles-local-acceptance.json` (25actual HTTP/brows
 
 ## Optional provider extension, not advertised
 Hosted runtime portal configuration failed403more_permissions_required. The unrequested payment-method/history portal button was removed rather than exposed as working. Direct subscription cancel-at-period-end/restore-renewal remains implemented and guarded; current hosted Circle acceptance is independent of optional portal configuration. No broader key permissions were requested or altered.
+
+Final actual viewport inspection caught a native header-style context regression: the new workspace lacked the existing `camp-circle-page` class, so inherited mobile pseudo-art duplicated the supplied header image. Restored that native context; targeted hosted browser verification now asserts one image, no pseudo-art and bounded header height, in addition to real saves and modal assertions.

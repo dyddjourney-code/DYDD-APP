@@ -1,0 +1,21 @@
+{
+  "at": "2026-11-04T20:01:53.556Z",
+  "sandbox": true,
+  "counts": {
+    "fixture_users": 0,
+    "preserved_plans": 3,
+    "held_outbox": 0,
+    "callouts": 0,
+    "consents": 0,
+    "operation_events": 0,
+    "operation_limits": 0,
+    "requests": 0,
+    "roster_previews": 0,
+    "couple_bindings": 1
+  },
+  "temporaryOwnerEnvironmentRemoved": true,
+  "temporaryCredentialFileRemoved": true,
+  "syntheticOnly": true,
+  "providerPaymentsInThisBuild": false,
+  "mailSent": false
+}

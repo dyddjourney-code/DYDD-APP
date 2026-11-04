@@ -1,0 +1,18 @@
+{
+  "at": "2026-11-04T20:01:53.556Z",
+  "sandbox": true,
+  "projectId": "prj_5EC6sfJe9DpGYW59L94iwppeMYUg",
+  "deployment": "dpl_4ubq6fHTqm2Sf1yXXW932EizpFyH",
+  "sha": "e8a478dd8d9a8cd34262799c48499848d8b704f1",
+  "url": "https://dydd-online-school-sandbox.vercel.app",
+  "aliases": [
+    "dydd-online-school-sandbox.vercel.app",
+    "dydd-online-school-git-sandbox-dydd-6069s-projects.vercel.app"
+  ],
+  "state": "READY",
+  "temporaryOwnerEnvironmentRemoved": true,
+  "temporaryCredentialFileRemoved": true,
+  "productionUnchanged": true,
+  "productionDeployment": "dpl_2SVLQovgmrpwg1WumY6cM1oWUBFS",
+  "allUnrelatedGitRefsUnchanged": true
+}

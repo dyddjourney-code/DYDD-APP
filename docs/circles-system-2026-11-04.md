@@ -21,7 +21,7 @@ John authorized full sandbox completion and deployment on November 4 after accep
 - [x] Couples consent + pending states + existing DesignID overlay AND detail and SpiritualGifts, not DesignPD/full reports.
 - [x] Deliberate callouts per session/lesson/prompt for small/class; cohort unique-person counts only; withdrawal.
 - [x] Offer/FAQ covers do life together, tools, size paths, prices, cancellation and discounts. Unavailable founder resources not advertised available.
-- [ ] Server/database enforcement, synthetic realistic tests, fixture cleanup, build/typecheck, published sandbox verification.
+- [x] Server/database enforcement, synthetic realistic tests, fixture cleanup, build/typecheck, published sandbox verification.
 
 ## Documented safe implementation defaults
 These implement previously provisional mechanics accepted in the final authorization; not claims of prior exact agreement.
@@ -49,7 +49,7 @@ Integration, QA, migration, commit/push, deployment and release verification: ow
 - Actual lesson reminder now has separate explicit selected-Circle callout control. No private response/note is copied into its request.
 - HTTP acceptance additionally covers both-spouse shared logistics, participant credit selection/opt-out and personal-expiry activity denial.
 
-Application build/deployment and final hosted acceptance still pending; no completion claim yet.
+Production build and typecheck pass. Sandbox release is deployed; final focused browser and cleanup receipts are recorded below.
 
 ## Customer subscription management
 Real server actions now support cancellation at paid-period end and restoring renewal without proration. Provider state is tied back to the user’s own order and trusted metadata. Mocked provider identity/CSRF/cancel/resume tests passed. Optional payment-method/history portal was additionally implemented but the actual sandbox runtime key returned403more_permissions_required for portal configuration; its customer button is withheld, so no unavailable portal is advertised. This was outside the agreed Circles operating scope and does not block the agreed paid-period lifecycle, direct renewal controls or leader transfer. Owner readiness evidence is retained. No fresh completed provider purchase was performed in this build.
@@ -61,3 +61,32 @@ Real server actions now support cancellation at paid-period end and restoring re
 - Temporary synthetic owner account, its credential file and sole sandbox owner-UUID environment entry have been removed. Final redeploy clears its runtime reference. No real owner was impersonated.
 
 Read-only enforcement additionally freezes legacy shared-result projections at the transition boundary, blocks new consent grants, and still allows selective/all consent withdrawal and callout withdrawal. Bulk names use the same120-character bound as the planner, enforced by both CSV validation and PostgreSQL. Real restricted-role rollback regressions and cutoff tests pass.
+
+## Final deployed release
+- Sandbox URL: https://dydd-online-school-sandbox.vercel.app/camp-circle/my-circles
+- Runtime source: `e8a478dd8d9a8cd34262799c48499848d8b704f1` on branch `sandbox`.
+- READY deployment: `dpl_4ubq6fHTqm2Sf1yXXW932EizpFyH`; both canonical and legacy sandbox aliases verified. Evidence-only commits after this runtime do not change deployed application code.
+- All November4 migration source hashes checked against the sandbox ledger, including final shared-calendar finish-date derivation. Applied migration files remain immutable.
+- Native Camp header uses its proper page context: one compact art image, not duplicated mobile pseudo-art. Actual viewport checks cover1280/390/320.
+- Never-purchased saved plans cannot unlock premium Field Guide; previously paid read-only guide history remains available. Participants receive preparation/questions without leader-only flow/help.
+- Shared Couple finish-mode calendar changes derive and persist the correct finish date while retaining narrow patch, accepted-spouse/Personal access checks, and optimistic revision conflict protection.
+
+### Evidence map and limits
+- `docs/evidence/circles-local-acceptance.json`:25/25 full local HTTP checks with actual isolated sandbox DB; fixtures cleaned.
+- `docs/evidence/circles-hosted-initial.json`:24actual hosted backend checks, including synthetic owner approval; original browser harness timeout is preserved honestly, not relabeled a full25/25.
+- `docs/evidence/circles-hosted-browser.json`:focused actual hosted UI/backend follow-up; no network response interception.
+- `docs/evidence/circles-pdf-verification.json`:actual hosted PDF bytes, foreign-scope denial, read-only persisted plan.
+- `docs/evidence/circles-schema-verification.json`:private RLS tables and service-only RPCs, no broad auth.users grant.
+- `docs/evidence/circles-billing-verification.json`:real isolated billing data and signed mocked-provider lifecycle scenarios. Direct cancellation/restore-renewal provider controls additionally pass mocked identity/CSRF tests.
+- `docs/evidence/circles-dc3-test-catalog.json`:actual TEST coupon readback, restricted to Personal.
+- `docs/evidence/circles-final-deployment.json` and `circles-cleanup.json`:published runtime, aliases, production/ref isolation and synthetic residue audit.
+- No fresh provider purchase was completed in this build; no live charges or real customer email. Invitations/approval email remain held in the sandbox outbox. Earlier sandbox payment proof is not presented as a new purchase.
+- Optional payment-method/history Stripe portal is not advertised: runtime setup returned403 insufficient permission. Direct paid-end cancellation and renewal restoration work independently; optional portal is outside the agreed Circles scope.
+- No1000concurrent report/assessment load claim. Existing content, private reflection/scoring/report derivation and preexisting untracked tmp work were preserved.
+
+Final mobile visual review: capacity detail switches to readable labeled stacked rows below600px, retaining the full comparison table on desktop. Actual320/390px screenshot review is part of release verification, not merely a no-overflow assertion.
+
+## Completion status — November4,20:02UTC
+**Complete, pushed and deployed to sandbox for John’s testing. No agreed-scope blocker remains.** Final runtimee8a478d is READY; final actual browser9checks pass at1280/390/320 with no JS errors/overflow, including deliberate callout submit/withdrawal and finish-mode spouse holiday/calendar save. Manual320px capacity detail screenshot is readable after the stacked-label adjustment. Final audit finds0synthetic users,3preexisting plans and1preexisting Couple binding preserved, and0new operations/outbox/consent/callout residue. Temporary owner authority/file absent; production deployment/master/unrelated refs unchanged. Final local QA server is stopped.
+
+For a repeatable release check, run `CIRCLES_QA_COMMIT=<deployed-code-sha> CIRCLES_QA_DEPLOYMENT_ID=<deployment-id> node scripts/verify-circles-release-sandbox.mjs` after the browser harness cleans up. It is read-only and validates the exact sandbox project, both aliases, Git refs, production deployment baseline and synthetic-user residue without emitting customer records or credentials.

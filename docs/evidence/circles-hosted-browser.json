@@ -1,0 +1,63 @@
+{
+  "at": "2026-11-04T20:01:48.917Z",
+  "base": "https://dydd-online-school-sandbox.vercel.app",
+  "commit": "e8a478dd8d9a8cd34262799c48499848d8b704f1",
+  "deployment": "dpl_4ubq6fHTqm2Sf1yXXW932EizpFyH",
+  "checks": [
+    {
+      "view": "real participant",
+      "width": 1280,
+      "noOverflow": true,
+      "privateAdminHidden": true,
+      "sharedGuide": true
+    },
+    {
+      "view": "real participant",
+      "width": 390,
+      "noOverflow": true,
+      "privateAdminHidden": true,
+      "sharedGuide": true
+    },
+    {
+      "view": "real participant",
+      "width": 320,
+      "noOverflow": true,
+      "privateAdminHidden": true,
+      "sharedGuide": true
+    },
+    {
+      "actualUiCountSubmission": true,
+      "privateWritingNotCopied": true
+    },
+    {
+      "actualUiWithdrawal": true
+    },
+    {
+      "view": "real Couple capacity detail+gifts",
+      "width": 1280,
+      "noDesignPd": true
+    },
+    {
+      "view": "real Couple capacity detail+gifts",
+      "width": 390,
+      "noDesignPd": true
+    },
+    {
+      "view": "real Couple capacity detail+gifts",
+      "width": 320,
+      "noDesignPd": true
+    },
+    {
+      "actualSpouseCalendarUiSave": true,
+      "finishModeHolidayDateDerived": true
+    }
+  ],
+  "browserErrors": [],
+  "syntheticOnly": true,
+  "providerPayments": false,
+  "mailSent": false,
+  "cleanup": {
+    "users": 2,
+    "circles": 2
+  }
+}

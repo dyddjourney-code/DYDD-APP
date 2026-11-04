@@ -1,0 +1,58 @@
+{
+  "at": "2026-11-04T20:02:31.161186+00:00",
+  "runtimeCommit": "e8a478dd8d9a8cd34262799c48499848d8b704f1",
+  "deployment": "dpl_4ubq6fHTqm2Sf1yXXW932EizpFyH",
+  "build": "PASS",
+  "typecheck": "PASS",
+  "localActualHttpChecks": {
+    "passed": 25,
+    "total": 25
+  },
+  "hostedActualBackendChecks": {
+    "passed": 24,
+    "note": "Historical combined harness browser timeouts preserved; focused UI follow-up passes separately."
+  },
+  "hostedActualUiChecks": {
+    "passed": 9,
+    "widths": [
+      1280,
+      390,
+      320
+    ],
+    "browserErrors": 0,
+    "noResponseInterception": true,
+    "includes": [
+      "explicit topic submission",
+      "withdrawal",
+      "participant Field Guide",
+      "Couple capacity/detail/SpiritualGifts",
+      "shared finish-mode holiday/calendar save"
+    ]
+  },
+  "manual320pxDetailScreenshot": "readable labeled stacked rows",
+  "focusedTests": [
+    "environment-isolation",
+    "circle-sharing-consent",
+    "circle-operations",
+    "circle-operations-api",
+    "circle-operations-sandbox: real service-role transaction rollback",
+    "circle-subscription-controls: provider mocked",
+    "circle-schedule",
+    "circle-data",
+    "circle-field-guide-gating"
+  ],
+  "hostedPdf": "PASS real PDF bytes, foreign-scope denial and readonly saved plan",
+  "migrationHashAudit": "PASS all November4 migrations including231000",
+  "rlsAndRpcIsolation": "PASS",
+  "productionAndUnrelatedRefs": "unchanged",
+  "syntheticFixtureUsersRemaining": 0,
+  "preexistingPlansPreserved": 3,
+  "preexistingCoupleBindingsPreserved": 1,
+  "temporaryOwnerAuthorityRemoved": true,
+  "liveCharges": false,
+  "realEmails": false,
+  "newCompletedProviderPurchaseInThisBuild": false,
+  "optionalPortal": "withheld from customer UI: provider portal config permission403; outside agreed scope",
+  "load1000Concurrent": "not claimed",
+  "agreedScopeBlockers": []
+}

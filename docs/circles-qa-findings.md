@@ -41,3 +41,10 @@ The local server and all operations migrations are ready. Initial local fetch fa
 
 ## Hosted acceptance checkpoint
 Initial hosted run passed24of25checks, including actual hosted owner approval/allowance changes and all backend workflows. The browser navigation waited for networkidle0 and timed out on external assets; no application runtime error occurred. Harness now waits for DOM content and actual Circle readiness. All7disposable accounts/10Circle fixture IDs cleaned; one explicit synthetic owner fixture is retained solely until hosted acceptance and then removed with its environment authority.
+
+## Final release resolution
+All historical runtime/schema/owner-fixture readiness blockers above are resolved. Full local acceptance passed25/25. Actual hosted backend acceptance passed24checks; a focused actual browser follow-up covers participant preparation, explicit count submission/withdrawal, Couple capacity overlay/detail/SpiritualGifts, spouse calendar edits, and desktop/mobile widths without intercepted backend responses. Runtimee8a478d additionally fixes the native header context, never-paid Field Guide access, and finish-mode shared holiday derivation. Temporary owner account/environment/credential file removed before final deployment. The final published-browser and cleanup JSON receipts are the current outcome; earlier failed harness receipts remain historical evidence.
+
+Manual final screenshot inspection also identified cramped four-column capacity text at320px; replaced narrow-screen cells with labeled stacked rows, and added an actual computed-layout browser regression.
+
+FINAL PASS: runtimee8a478d /dpl_4ubq6fHTqm2Sf1yXXW932EizpFyH actual9UIchecks pass, responsive labeled rows confirmed at320/390, no JS errors/overflow. Subsequent release audit passes with zero synthetic auth fixtures, original3plans/1Couple binding preserved, no new operations/outbox/privacy fixture residue, temporary owner authority removed, production/ref isolation unchanged. No unresolved agreed-scope release blocker.

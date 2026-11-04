@@ -1,0 +1,66 @@
+{
+  "date": "2026-11-04",
+  "scope": "Test fixtures only; current Personal/Circle paid sandbox order contracts, valid plan shape, date-relative exact Waypoints content proof",
+  "sandbox_ref": "atemrshtshxoqnuevvqu",
+  "safety": {
+    "provider_calls": "disabled or throwing mocks",
+    "application_changes": false,
+    "production_changes": false,
+    "committed": false,
+    "sandbox_email_enabled": false,
+    "sandbox_allowlist": [],
+    "real_send": false,
+    "provider_keys_disabled_for_local_server": true,
+    "db_worker_transports": "throwing mocks",
+    "production_build_waited_for": true
+  },
+  "runs": [
+    {
+      "command": "node tests/lifecycle-sandbox.mjs",
+      "exit_code": 0,
+      "duration_seconds": 8.49,
+      "stdout": "PASS real verified-account trigger \u2192 durable once-only welcome \u2192 sandbox-ready, with provider transport forbidden\nPASS creator-only edits, individual approval, stale revisions, edit resets approval, all-approved finalization and concurrent publication dedup\nPASS send-time global/Circle preferences, accepted membership, paused schedule, immutable accepted copy, revision cancels queued jobs but preserves sent history\nPASS eight workers claim once, stale leases recover, provider ambiguity expires to manual review, anonymous tables/RPC denied\nPASS asserted fixture deletions and empty-table readback (24 tables); synthetic auth users absent\nSynthetic lifecycle fixtures removed; no provider calls\n",
+      "stderr": ""
+    },
+    {
+      "command": "node tests/lifecycle-races-sandbox.mjs",
+      "exit_code": 0,
+      "duration_seconds": 4.48,
+      "stdout": "PASS concurrent invitation issuance produces one stable token; accepted membership cannot be reset to invited\nPASS acceptance processed while paused retains complete durable future schedule; resume reconciliation is idempotent\nPASS optout after preflight is caught by atomic send fence; schedule cancellation before fence loses lease and cannot submit\nPASS concurrent optional sends reserve a single recipient cadence slot; already-submitting state is explicit\nPASS active eighth submission survives competing worker; ambiguous retry cap goes to review and retains recipient cadence reservation\nPASS tomorrow reminders cannot survive into meeting-day morning after pause/outage\nPASS asserted fixture deletions and empty-table readback (24 tables); synthetic auth users absent\nSynthetic lifecycle fixtures removed; no provider calls\n",
+      "stderr": ""
+    },
+    {
+      "command": "LIFECYCLE_BASE=http://localhost:3147 node tests/lifecycle-waypoints-sandbox.mjs",
+      "exit_code": 0,
+      "duration_seconds": 2.81,
+      "stdout": "PASS actual signup\u2192durable confirmation email, no implicit subscription, request rate limit, explicit confirmation, used token cannot resubscribe after optout\nPASS dedicated weekly release worker queues exactly once with full exact approved Scripture + verified-owner Primary reflection, actual read link, preserved tokens and sandbox no-provider guard\nPASS all 15 date-relative future authored releases match exact approved content; complete 35-record manifest verified\nPASS Waypoints cleanup deletes asserted with empty readback, release/delivery cascades verified\nSynthetic Waypoints/signup fixtures removed; no provider requests\n",
+      "stderr": ""
+    }
+  ],
+  "modified_files": [
+    "tests/lifecycle-circle-fixtures.mjs",
+    "tests/lifecycle-sandbox.mjs",
+    "tests/lifecycle-races-sandbox.mjs",
+    "tests/lifecycle-waypoints-sandbox.mjs",
+    "tests/lifecycle-http-browser.mjs",
+    "docs/evidence/email-regression-repair-2026-11-04.json"
+  ],
+  "summary": {
+    "passed_suites": 3,
+    "failed_suites": 0,
+    "provider_requests": 0,
+    "asserted_cleanup": true,
+    "future_manifest_records_verified": 15,
+    "total_manifest_records_verified": 35
+  },
+  "cleanup": {
+    "db_suites": "Explicit delete results asserted, immediate empty-table readback across 24 tables per suite; deleted synthetic auth users independently checked absent. Orders, entitlements, operations, Circle and lifecycle ledgers included.",
+    "waypoints": "Explicit deletes asserted; synthetic release and delivery-job cascades independently verified empty; signup confirmation, subscription, lifecycle job/event and synthetic auth user absent.",
+    "local_server": "next start on localhost:3147 after build completion; stopped after passing suite. No dev server used; no build/config files edited."
+  },
+  "hosted_http_harness": {
+    "status": "fixture repair complete; syntax verified; hosted execution delegated to parent",
+    "fixtures": "All three synthetic actors have paid sandbox Personal and Leadership entitlement/order rows. Plan uses Small group capacity and canonical assignments within shortened meetings. Uses shared asserted cleanup."
+  },
+  "completed_at": "2026-11-04T20:18:03.351276+00:00"
+}

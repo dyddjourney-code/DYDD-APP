@@ -1,0 +1,56 @@
+{
+  "at": "2026-11-04T20:28:52.151Z",
+  "ref": "atemrshtshxoqnuevvqu",
+  "projectId": "prj_5EC6sfJe9DpGYW59L94iwppeMYUg",
+  "file": "supabase/migrations/20261104202651_circle_held_invitation_lifecycle_bridge.sql",
+  "migrationSHA256": "96f00fc47012550fb8281f5662ee1ce43595f6a23ba45be3aaf4184d85cfeb60",
+  "beforeSHA256": "a7125c65f328bc87eb80934022c9be32a9faf7886089810d15b45be989e48d7c",
+  "noBackfill": true,
+  "providerCalls": 0,
+  "productionMutations": 0,
+  "applied": true,
+  "afterSHA256": "8979d3bb223c32ce1808937006e121de20295dee2b65d37bc5cf63026092ba9b",
+  "everyOtherFunctionBytePreserved": true,
+  "security": {
+    "security_definer": true,
+    "configuration": [
+      "search_path=\"\""
+    ],
+    "anon_execute": false,
+    "authenticated_execute": false,
+    "trigger_definition": "CREATE TRIGGER dydd_capture_circle_held_invitation AFTER INSERT ON public.dydd_circle_held_outbox FOR EACH ROW WHEN ((new.kind = 'invitation'::text)) EXECUTE FUNCTION dydd_private.capture_circle_held_invitation()"
+  },
+  "circleVerification": {
+    "sameRosterFirstInvite": "pass",
+    "repeatInvite": "pass",
+    "repeatInviteRoster": "pass",
+    "approvedCampaignPreserved": "pass",
+    "unchangedTimestamp": "pass",
+    "changedRosterIncrementsRevision": "pass",
+    "changedRosterSupersedes": "pass",
+    "stableHeldEventOnce": "pass",
+    "invitationOnly": "pass",
+    "rollbackReadback": {
+      "plans": 0,
+      "holds": 0,
+      "events": 0,
+      "memberships": 0,
+      "campaigns": 0,
+      "previews": 0,
+      "jobs": 0
+    }
+  },
+  "authAndEntitlementFixturesCleaned": true,
+  "existingCircleOperationsRegression": {
+    "exitCode": 0,
+    "stdout": "PASS sandbox transaction rollback: migration SQL, verified personal/email acceptance, persisted role, callout dedup/withdrawal, cohort dedup/approval/cap/counts-only, pending seat capacity, creation/invite budgets, paid-only acceptance, subscribed leader transfer, cancellation transition/readonly, service-only RPC\nPASS no persistent synthetic users or deliveries",
+    "stderr": ""
+  },
+  "history": [
+    {
+      "version": "20261104202651",
+      "name": "circle_held_invitation_lifecycle_bridge"
+    }
+  ],
+  "verified": true
+}

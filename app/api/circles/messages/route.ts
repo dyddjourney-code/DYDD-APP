@@ -1,3 +1,4 @@
+import {queueApprovedHeldCircleInvitations} from '@/lib/lifecycle/circle-held-mail';
 import {testBillingEnabled} from "@/lib/commerce/test-billing-config";
 import {getCircleBillingState} from "@/lib/commerce/circle-billing";
 import {hasTestCircleTools} from "@/lib/commerce/test-entitlements";
@@ -84,11 +85,15 @@ export async function POST(request:Request){
  if(b.action==='invite'){
   if(!actor.userId)throw Error('Review mode cannot invite real recipients. Sign in as the Circle creator.');
   if(testBillingEnabled()) {
+   if(campaign.status!=='finalized')throw Error('Review every message and finalize the full schedule before sending invitations.');
+   const approvedInvitation=must(await db.from('dydd_circle_message_drafts').select('approved_at,excluded_at').eq('campaign_id',campaign.id).eq('message_key','invitation').single()) as any;
+   if(!approvedInvitation?.approved_at||approvedInvitation.excluded_at)throw Error('Restore and approve the invitation before inviting people.');
    const state=await getCircleBillingState(actor.userId,circle.id,circle.plan?.format);
    if(!state.canEnroll)throw Error('Renew this Circle before inviting people. Transition permits existing work only.');
    const preview=must(await db.rpc('dydd_circle_operate',{actor:actor.userId,owner_actor:false,payload:{action:'preview_roster',circleId:circle.id,rows:circle.plan.participants,errors:[]}})) as any;
    const result=must(await db.rpc('dydd_circle_operate',{actor:actor.userId,owner_actor:false,payload:{action:'invite_roster',circleId:circle.id,previewId:preview.previewId}}));
-   return reply({...result,queued:circle.plan.participants.length,sandbox:true,delivery:'sandbox_held'});
+   const emails=await queueApprovedHeldCircleInvitations(circle.id);
+   return reply({...result,queued:emails.queued,sandbox:true,delivery:'sandbox_approved_queue'});
   }
   if(campaign.status!=='finalized')throw Error('Review every message and finalize the full schedule before sending invitations.');
   const d=must(await db.from('dydd_circle_message_drafts').select('*').eq('campaign_id',campaign.id).eq('message_key','invitation').single()) as any;if(d.excluded_at)throw Error('The invitation is excluded. Restore and approve it before inviting people.');if(!d.approved_at)throw Error('Approve the invitation first.');

@@ -1,14 +1,14 @@
 DYDD SANDBOX EMAIL CATALOG AND FRESH-ACCOUNT WALKTHROUGH
 Source audit: 4 November 2026 (UTC)
 
-Reviewable source catalog, not permission to activate campaigns. Generated from this checkout's real templates, pure Circle generator and authored Waypoints. No database read/write, account creation, email, PDF-provider request or deployment was performed. Local source is evidence of implemented behavior; runtime settings, published version, provider configuration and inbox delivery are not independently verified here. Parent task's controlled transport allowlist and test console: TBD; do not assume those controls are available from this document.
+Reviewable source catalog, not permission to activate campaigns. Generated from this checkout's real templates, pure Circle generator and authored Waypoints. No database read/write, account creation, email, PDF-provider request or deployment was performed. Local source is evidence of implemented behavior; runtime settings, published version, provider configuration and inbox delivery are not independently verified here. Controlled test console: https://dydd-online-school-sandbox.vercel.app/sandbox/email-lab . Only the explicitly configured owner address can send a copy; all other sandbox recipients remain blocked. See docs/email-package-release-2026-11-04.md and its evidence for actual runtime/provider results.
 
 Read sections 1–4 first. Sections 5–8 contain the exact message copy. Circle names, dates, locations, people and .invalid URLs are visibly fictional review fixtures, never real scheduled mail. {{fields}} are merge-field explanations or symbolic private URLs; do not replace them with somebody else's data. All text outside labeled SUBJECT/BODY blocks is explanation, not proposed new marketing copy. Editing this TXT does not change runtime emails. Regenerate with: node scripts/generate-sandbox-email-catalog.cjs
 
 ==============================================================================
 1. What actually sends, and what does not
 ==============================================================================
-At this audit baseline, sandbox paths fail closed before provider calls: the application adapter queues requested mail, the lifecycle worker can label it sandbox_ready, the shared sender refuses outbound email, and the Waypoints worker uses sandbox_ready. Queued or sandbox_ready is NOT sent, accepted or delivered. Provider acceptance is NOT proof of inbox delivery. Never replay accepted/review messages to obtain a visual sample.
+Sandbox paths fail closed by default. This authorized release enables provider delivery only to one exact owner address, with matching sandbox database ref/URL and an activation cutoff. Old queued jobs do not replay; other recipients become sandbox_ready. The shared sender visibly prefixes actual controlled mail [SANDBOX]. The console renders 231 source-based previews, including 175 Waypoint variants, and offers a deliberate one-copy test capped at 25/day. Queued or sandbox_ready is NOT sent, accepted or delivered. Provider acceptance is NOT proof of inbox delivery. Never replay accepted/review messages to obtain a visual sample.
 
 CRITICAL OCTOBER 28 FRUITLIFE POLICY
 B04 participant assessment-start/self invitations, manual reminders, automatic day-five reminders and pending-observer/status chase emails are DISABLED in BOTH self-only and observer-assisted modes. Old queued/retry participant self/status jobs are permanently ineligible too. Continue the participant self-reflection in the app. This is intentional policy, not missing coverage. B02/B03 observer invitations/reminders and B01 actual participant report delivery plus B05 opt-in use-results follow-up remain. The October 27 catalog's B04-active wording is superseded.
@@ -20,15 +20,15 @@ Optional learning/growth start OFF unless explicitly chosen. Learning, growth/re
 ==============================================================================
 2. Fresh-account walkthrough — realistic observations, no forced sends
 ==============================================================================
-1) Use the sandbox URL and a genuinely new account you control. Sign up and follow the actual authentication provider's verification message (A01). Auth SMTP/provider ownership is separate from app transport. Requested sign-in/reset (A02) is on demand, not an automatic drip. Do not treat an owner/demo/review preview as a verified fresh learner.
+1) Use the sandbox URL and your separate password account. Current sandbox auth auto-confirms password signups and has no custom SMTP, so do NOT expect an A01 verification email there. Production separately uses Resend SMTP with email confirmation; it is unchanged. The controlled owner address was checked against an already verified production account before sandbox test activation. Other fresh sandbox accounts may use the app but cannot send real test email. Requested sign-in/reset (A02) is on demand, not an automatic drip. Do not treat an owner/demo/review preview as a verified fresh learner.
 
 2) After genuine verification, a post-activation account_verified event can queue A03 immediately; it expires after two days. A04 start-help is due day three, expires day five, and requires learning opt-in plus no actual started workbook/lesson. A03 does not subscribe you to optional mail. Sign-ins/reloads do not reissue the account welcome. Events older than the configured activation cutoff are ignored: there is no historical welcome backfill. Global pause can defer all lifecycle communication.
 
 3) Open Email preferences and deliberately choose learning and/or growth if you want to exercise those paths. Set a real timezone. Do not assume choices retroactively resurrect already skipped/expired jobs. Waypoints must be explicitly requested and confirmed separately.
 
-4) Begin a course and persist your first genuine source=course workbook round. That creates C01 for a new first round, not simply opening a course URL. It expires after three days. Journey C01 may be suppressed because A03 already supplies that same starting action. An assessment course must still have the matching saved result/access. A course already underway, or active Circle supplying the same next step, can suppress redundant messages.
+4) Begin a course and persist your first genuine genuine workbook round (source=course or the current Journey source format). That creates C01 for a new first round, not simply opening a course URL. It expires after three days. Journey C01 may be suppressed because A03 already supplies that same starting action. An assessment course must still have the matching saved result/access. A course already underway, or active Circle supplying the same next step, can suppress redundant messages.
 
-5) Use real lesson-completion checkboxes. Viewing/navigating is not completion. A non-final new completion can create one A05 day-seven inactivity invitation (expires day ten) and one G04 day-35 gentle return (expires day 40); fresh activity, completion and active Circle stop these. These are anchored to first recorded completion, not account creation or an arbitrary last-login date. Important coverage limit: merely saving a workbook without ever checking off a lesson does not create A05/G04. Do not wait for a reminder that has no event.
+5) Use real lesson-completion checkboxes. Viewing/navigating is not completion. A genuine first saved genuine workbook round (source=course or the current Journey source format) now queues one A05 day-seven inactivity invitation (expires day ten) and one G04 day-35 gentle return (expires day 40), even with zero completed lessons. A new non-final checklist event uses the same durable keys as fallback if no prior workbook enrollment existed. Recent activity, completion, consent and active Circle stop conditions are rechecked. There is no historical scan or assessment-draft chase.
 
 6) Finish every canonical checklist lesson to create C02 for a non-Journey course OR C03 for the Journey, never both for the same course completion. Celebration expires after three days and still requires learning consent. G05 private feedback is due day five, expires day eight, once per user. Journey-only recommendations: C04 day five/expires day eight, C05 day 14/expires day 18, C06 day 30/expires day 33. Growth opt-in/access are required for C04/C05; C04 requires unused FruitLife entitlement and no cycle/report already underway/complete. C05 checks current DesignPD access, no started DesignPD learning, no FruitLife needing attention and at least seven days after an accepted/sandbox-ready C04. C06 is learning, not growth, and is suppressed if Waypoints already supplies encouragement. Active Circle suppresses overlapping optional next steps. C04 and G05 may share a due date; shared cadence means both should not arrive together.
 
@@ -44,7 +44,7 @@ Optional learning/growth start OFF unless explicitly chosen. Learning, growth/re
 
 12) Waypoints: request subscription, then use the confirmation message G02. The token expires in 24 hours; opening/scanning its GET page alone is not confirmation. Explicit confirm activates weekly mail; used links cannot undo later unsubscribe. Receive only future authored releases after confirmation, ordinarily Friday 08:00 America/New_York. Release freshness is 48 hours; no archive catch-up. Confirming after a release skips that issue. Existing active subscribers are not silently enrolled in another category. Each message contains only the saved verified Primary application OR generic fallback, not all four alternatives. The catalog shows all alternatives for review only. Local collection contains 35 issues through 12 February 2027; later content is not invented.
 
-13) While reviewing, let normal time pass or use the parent's completed controlled test console if/when available. This document does not authorize DB clock edits, worker runs, enabling paused campaigns, production promotion or live sends. The catalog's fictional dates are illustrations, not an instruction to queue a real Circle.
+13) For immediate copy review, open /sandbox/email-lab in the verified allowlisted owner sandbox session. Choose a message, read the fictional/test labeling and deliberately Send this copy to my verified test inbox. Real drips still follow genuine events and time; previews do not mutate progress, entitlements, subscription or consent. Do not edit DB clocks or replay accepted jobs to obtain samples. Production promotion or paused production campaigns are outside this sandbox release. The catalog's fictional dates are illustrations, not an instruction to queue a real Circle.
 
 ==============================================================================
 3. How to inspect /admin/email
@@ -53,7 +53,7 @@ Sign in as an authorized administrator at the sandbox /admin/email. Ordinary acc
 
 Read template ID, subject, recipient, scheduled time, job status, attempts, error/stop reason and provider ID; if present, the linked provider ledger status is separate. queued=waiting; processing=claimed; submitting=authorized submission boundary; retry=not yet reconciled; sandbox_ready=eligible but provider blocked; skipped/cancelled=stopped; failed=permanent error; review=manual reconciliation; accepted=provider acceptance only. delivered/bounce/complaint require actual signed provider events. An already submitted request cannot be recalled by later exclusion/opt-out. Never reset/replay ambiguous or accepted jobs from a catalog audit.
 
-Baseline limitations: body/full merge preview is NOT in /admin/email response; use this source catalog and the Circle Messages editor. Separate Waypoints delivery jobs are NOT listed by the baseline page, nor is provider-owned authentication/billing history. Pending event list is capped at 50. This is not a complete inbox or full historic audit export. Controlled allowlist/test console requested from parent: TBD; do not promise a send button or a test result until that work is verified. No provider dashboard/domain/inbox status was probed for this document.
+Baseline limitations: body/full merge preview is NOT in /admin/email response; use this source catalog and the Circle Messages editor. Dedicated weekly email jobs now appear in a separate Waypoints section, including subscription/release and available provider ledger state. Provider-owned authentication/billing history is not listed. Pending event list is capped at 50. This is not a complete inbox or full historic audit export. Controlled test previews and deliberate send are at /sandbox/email-lab, with own-test history. Exact provider acceptance evidence is in the release record; provider dashboard/domain/delivered/inbox status remains unavailable under the send-only key.
 
 ==============================================================================
 4. All 41 planning IDs — actual implementation/status crosswalk
@@ -66,8 +66,8 @@ A03 | IMPLEMENTED service
   Verified new account → immediate welcome, two-day expiry.
 A04 | IMPLEMENTED learning
   Verified account +3 days, expires +5; only not started.
-A05 | IMPLEMENTED learning; narrower than broad plan
-  First non-final lesson completion +7 days, expiry +10. No assessment-draft/no-lesson start emitter.
+A05 | IMPLEMENTED learning
+  First genuine saved course workbook round +7 days, expiry +10; checklist fallback uses same key. No abandoned-assessment chase.
 A06 | CONDITIONAL / NO APP EVENT
   Provider security notices remain external; no app-specific access-change body/emitter.
 B01 | IMPLEMENTED requested service
@@ -128,8 +128,8 @@ G02 | IMPLEMENTED requested service
   Explicit Waypoints request → 24-hour confirmation intent; deliberate confirm required. Not a generic preference receipt.
 G03 | CONDITIONAL / NO CONTENT OR EVENT
   No approved new-resource/course campaign.
-G04 | IMPLEMENTED growth; narrower than broad plan
-  First non-final lesson completion +35 days (expiry +40); one/user; stop recent activity.
+G04 | IMPLEMENTED growth
+  First genuine saved course workbook round +35 days (expiry +40); checklist fallback uses same key; one/user; stop recent activity.
 G05 | IMPLEMENTED growth
   Course completion +5 days (expiry +8), one/user; private feedback, not permission to publish.
 G06 | CONDITIONAL / NO CONTENT OR EVENT
@@ -178,7 +178,7 @@ If you have already started, keep taking the next faithful step at your own pace
 
 
 A05 — Fixed lifecycle template
-Source: lib/lifecycle/templates.ts lifecycleCopy; category=learning; first non-final lesson completion +7; expires +10. Recipient=current verified account; full eligibility/consent above.
+Source: lib/lifecycle/templates.ts lifecycleCopy; category=learning; first genuine course workbook enrollment/checklist fallback +7; expires +10. Recipient=current verified account; full eligibility/consent above.
 
 SUBJECT
 Your next faithful step is still here
@@ -282,7 +282,7 @@ Revisit your Journey: {{base}}/journey
 
 
 G04 — Fixed lifecycle template
-Source: lib/lifecycle/templates.ts lifecycleCopy; category=growth; first non-final lesson completion +35; expires +40. Recipient=current verified account; full eligibility/consent above.
+Source: lib/lifecycle/templates.ts lifecycleCopy; category=growth; first genuine course workbook enrollment/checklist fallback +35; expires +40. Recipient=current verified account; full eligibility/consent above.
 
 SUBJECT
 A gentle invitation to return to your DYDD Journey
@@ -5492,8 +5492,9 @@ Plain text is the editorial source shown here. Lifecycle HTML uses escaped brand
 10. Genuine gaps, intentional absences, and verification limits
 ==============================================================================
 GENUINE CURRENT COVERAGE LIMITS
-• A05/G04 have no emitter for someone who saves/starts a workbook but never completes a first lesson, or for an abandoned assessment draft. They are created inside non-final lesson_completed handling only. Broad historical inventory language suggested all unfinished work; current product implements only this narrower subset. Do not add participant FruitLife chases to fill that gap: October 28 policy forbids them.
-• /admin/email baseline cannot inspect dedicated weekly Waypoints delivery jobs or full bodies; it is lifecycle recent-status monitoring, not complete email coverage. Parent test console/transport allowlist: TBD.
+• FIXED in this release: new paid-Circle transactional held invitations now emit durable lifecycle events and materialize approved D01/D02 only for the finalized current campaign. Same-roster invitation issuance no longer increments the plan revision and invalidates approval. Actual roster changes still supersede it; every send passes the existing transactional fence.
+• FIXED in this release: the database enrollment trigger now accepts the actual Journey writer’s journey-assessments-v1 source, not only historical source=course. A05/G04 now emit from genuine first course workbook enrollment, even before any checklist completion. Stable existing keys deduplicate fallback checklist events. Consent/recent activity/completion/Circle guards remain. There is intentionally no assessment-draft chase, particularly no prohibited FruitLife participant reminders.
+• FIXED in this release: /admin/email includes dedicated weekly email job/provider status. Source-based full copy previews are at /sandbox/email-lab. This is still not a complete provider-owned auth/billing inbox export.
 • A06 app-specific access-change, B06 real extension/closure and H03 access-expiry have no actual trigger/body. These are conditional product gaps, not evidence users currently need such notices.
 • G03/G06 have no approved content/real campaign event. A resources/feedback preference is not a proven independent ministry-news/offer consent system.
 • All-lifecycle pause OR optional pause also pauses the weekly Waypoints worker, even for confirmed subscribers. There is no dedicated independently selectable Waypoints operational pause in this source. A general optional-campaign pause therefore stops weekly subscribers too; this is an operational coupling, not missing content.
@@ -5504,7 +5505,7 @@ NOT GAPS
 • B04 participant self/status emails intentionally disabled; E03 holiday communication consolidated; D04 replaces duplicate first E01; A01/A02/H01/H02 provider-owned; E05 intentionally authored rather than stock; no per-lesson/badge chase; no historical import/backfill.
 
 UNVERIFIED HERE
-Provider configured auth/billing bodies; auth SMTP; live deployed commit/config; DB scheduler runs/current pause/cutoff; future Waypoints reconciliation; domain/provider dashboard; actual inbox delivery/bounce/spam; parent's in-flight transport/test-console controls. Source audit and mocked tests must not be described as customer delivery. Report readiness integration may require external PDF generation disabled in sandbox; inspect existing eligible test artifacts or parent's supported fixtures instead of bypassing the guard.
+Provider-side billing body/delivery configuration, domain verification/dashboard, actual delivered/bounced/spam/inbox outcomes remain unverified. Sandbox and production auth configuration were read (sandbox auto-confirm/no SMTP; production Resend SMTP/confirmation); production untouched. Hosted deployment, recurring scheduler, test-console controls, future Waypoints reconciliation and controlled acceptance are separately verified in the release evidence. Source audit and mocked tests must not be described as customer delivery. Report readiness integration may require external PDF generation disabled in sandbox; inspect existing eligible test artifacts or parent's supported fixtures instead of bypassing the guard.
 
 ==============================================================================
 11. Repeatable coverage checks and source map

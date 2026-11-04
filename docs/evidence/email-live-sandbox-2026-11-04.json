@@ -1,0 +1,78 @@
+{
+  "checkedAt": "2026-11-04T20:29:53.698Z",
+  "base": "https://dydd-online-school-sandbox.vercel.app",
+  "sandboxRef": "atemrshtshxoqnuevvqu",
+  "recipient": "one existing verified owner address",
+  "freshAccountCreated": false,
+  "freshAccountCreatedAt": "2026-11-04T20:28:37.008662Z",
+  "providerAccepted": [
+    {
+      "type": "A03 catalog copy",
+      "providerId": "01a1a83f-e398-7ad6-8d24-78e6a6a1d5c0"
+    },
+    {
+      "type": "October30 Waypoint explicit catalog preview (not backlog delivery)",
+      "providerId": "01a1a83f-e853-7d04-a2cd-ab49160e66cc"
+    },
+    {
+      "type": "Actual account_verified → A03 welcome",
+      "providerId": "01a1a841-17dc-75c7-83bd-cc4b426d0ae3"
+    }
+  ],
+  "delivered": false,
+  "inboxVerified": false,
+  "webhookConfigured": false,
+  "checks": [
+    "Anonymous lab denied",
+    "Actual fresh signup and verified password session; report/observer/confirmation/account/Circle/175 Waypoint variants visible",
+    "Delivered lab UI fits 390/768/1280; no JavaScript errors",
+    "Same real request replay returns same provider ID with no duplicate intent",
+    "Actual UI selected preview send accepted; copy explicitly labeled fictional/test, not a subscription",
+    "Controlled new-account A03 safely requeued after non-sending QA drain; original event/key retained and zero provider intent proven",
+    "Actual fresh account verified event → once-only hosted worker → provider-accepted A03, repeated tick no duplicate",
+    "No implicit optional consent or Waypoint subscription; no archive backfill",
+    "Authenticated admin can inspect lifecycle plus dedicated Waypoints history",
+    "Unallowlisted verified account with a genuine cookie session cannot view or send test mail"
+  ],
+  "catalogPreviews": 231,
+  "tick": {
+    "events": {
+      "processed": 0,
+      "errors": 0
+    },
+    "claimed": 1,
+    "accepted": 1,
+    "sandboxReady": 0,
+    "skipped": 0,
+    "retries": 0,
+    "deferred": 0,
+    "sandbox": true,
+    "waypoints": {
+      "sandbox": true,
+      "skipped": true,
+      "acceptedEmails": 0,
+      "erroredEmails": 0,
+      "skippedEmails": 0,
+      "claimedJobs": 0
+    }
+  },
+  "ledger": [
+    {
+      "provider_id": "01a1a83f-e398-7ad6-8d24-78e6a6a1d5c0",
+      "status": "accepted"
+    },
+    {
+      "provider_id": "01a1a83f-e853-7d04-a2cd-ab49160e66cc",
+      "status": "accepted"
+    },
+    {
+      "provider_id": "01a1a841-17dc-75c7-83bd-cc4b426d0ae3",
+      "status": "accepted"
+    }
+  ],
+  "providerInspection": {
+    "httpStatus": 401,
+    "name": "restricted_api_key"
+  },
+  "status": "PASS; accepted is proven, delivery/inbox unverified"
+}

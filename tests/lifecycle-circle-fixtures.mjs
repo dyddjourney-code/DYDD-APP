@@ -14,7 +14,8 @@ export function validLifecyclePlan(plan){return {...plan,format:'Small group',ex
 export async function cleanupCircleFixtures(db,{users=[],circles=[]}){
  const ids=users.map(u=>u.id),emails=users.map(u=>u.email),proof=[];
  async function remove(table,key,values){if(!values.length)return;check(await db.from(table).delete().in(key,values));const remaining=check(await db.from(table).select(key).in(key,values));assert.equal(remaining.length,0,'Cleanup failed: '+table);proof.push(table);}
- if(circles.length){const campaigns=check(await db.from('dydd_circle_campaigns').select('id').in('circle_id',circles));await remove('dydd_lifecycle_events','source_id',campaigns.map(c=>c.id));}
+ if(circles.length){for(const circleId of circles){check(await db.from('dydd_lifecycle_events').delete().contains('payload',{circleId}));assert.equal(check(await db.from('dydd_lifecycle_events').select('id').contains('payload',{circleId})).length,0);}
+ const campaigns=check(await db.from('dydd_circle_campaigns').select('id').in('circle_id',circles));await remove('dydd_lifecycle_events','source_id',campaigns.map(c=>c.id));}
  for(const table of ['dydd_lifecycle_jobs','dydd_circle_held_outbox','dydd_circle_callouts','dydd_circle_consents','dydd_circle_roster_previews','dydd_circle_cohort_requests','dydd_circle_email_preferences','dydd_circle_memberships','dydd_circle_announcements','dydd_circle_campaigns'])await remove(table,'circle_id',circles);
  await remove('journey_circle_plans','id',circles);
  for(const table of ['dydd_test_couple_bindings','dydd_circle_operation_events','dydd_circle_operation_limits'])await remove(table,'user_id',ids);

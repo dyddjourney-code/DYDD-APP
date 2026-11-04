@@ -59,7 +59,7 @@ function getAppBaseUrl(requestHeaders: Headers) {
 
 export async function signInWithMagicLink(formData: FormData) {
   if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox") {
-    loginRedirect("Email delivery is off in this sandbox. Use your separate sandbox password account.", safeNextPath(formData.get("next")), "signin");
+    loginRedirect("Authentication-link email is off in this sandbox. Use your separate sandbox password account.", safeNextPath(formData.get("next")), "signin");
   }
   const next = safeNextPath(formData.get("next"));
   const email = String(formData.get("email") ?? "")
@@ -230,7 +230,7 @@ export async function signInWithPassword(formData: FormData) {
 
 export async function requestPasswordReset(formData: FormData) {
   if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox") {
-    loginRedirect("Email delivery is off in this sandbox. Use your separate sandbox password account.", safeNextPath(formData.get("next")), "signin");
+    loginRedirect("Authentication-link email is off in this sandbox. Use your separate sandbox password account.", safeNextPath(formData.get("next")), "signin");
   }
   const next = safeNextPath(formData.get("next"));
   const email = String(formData.get("email") ?? "").trim().toLowerCase();

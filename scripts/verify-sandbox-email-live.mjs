@@ -21,15 +21,17 @@ const password=staged.testAccountPassword||crypto.randomBytes(24).toString('base
 const runId=staged.verificationRunId||crypto.randomUUID();
 fs.writeFileSync(secretPath,JSON.stringify({...staged,testAccountPassword:password,verificationRunId:runId}),{mode:0o600});
 let browser,outsider;
-const evidence={checkedAt:new Date().toISOString(),base,sandboxRef:c.ref,recipient:'one existing verified owner address',freshAccountCreated:!existing,providerAccepted:[],delivered:false,inboxVerified:false,webhookConfigured:false,checks:[]};
+const evidence={checkedAt:new Date().toISOString(),base,sandboxRef:c.ref,recipient:'one existing verified owner address',freshAccountCreated:!existing,freshAccountCreatedAt:existing?.created_at||null,providerAccepted:[],delivered:false,inboxVerified:false,webhookConfigured:false,checks:[]};
 try{
  const unauth=await fetch(base+'/api/sandbox/email-lab');assert.equal(unauth.status,403);evidence.checks.push('Anonymous lab denied');
- browser=await puppeteer.launch({args:chromium.args,executablePath:await chromium.executablePath(),headless:true});
- const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.goto(base+'/login?mode='+(existing?'signin':'signup')+'&next=%2Fsandbox%2Femail-lab',{waitUntil:'networkidle2',timeout:60000});
+ const proxy=process.env.HTTPS_PROXY?new URL(process.env.HTTPS_PROXY):null;
+ browser=await puppeteer.launch({args:[...chromium.args,...(proxy?['--proxy-server='+proxy.protocol+'//'+proxy.hostname+':'+proxy.port]:[])],acceptInsecureCerts:Boolean(proxy),executablePath:await chromium.executablePath(),headless:true});
+ const page=await browser.newPage(),errors=[];if(proxy?.username)await page.authenticate({username:decodeURIComponent(proxy.username),password:decodeURIComponent(proxy.password)});page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(base+'/login?mode='+(existing?'signin':'signup')+'&next=%2Fsandbox%2Femail-lab',{waitUntil:'domcontentloaded',timeout:60000});
+ await page.waitForSelector('form.auth-form [name=email]',{timeout:60000});
  if(!existing){await page.type('[name=full_name]','John — fresh sandbox email walkthrough');await page.type('[name=confirm_password]',password);}
  await page.type('form.auth-form [name=email]',email);await page.type('form.auth-form [name=password]',password);
- await Promise.all([page.waitForNavigation({waitUntil:'networkidle2',timeout:60000}),page.click('form.auth-form button[type=submit]')]);
+ await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded',timeout:60000}),page.click('form.auth-form button[type=submit]')]);
  assert(new URL(page.url()).pathname==='/sandbox/email-lab','Fresh signup/password login should reach lab, not silently use owner preview');
  await page.waitForSelector('#email-example',{timeout:60000});
  const user=ok(await db.auth.admin.listUsers({page:1,perPage:1000})).users.find(u=>u.email===email);assert(user?.email_confirmed_at);
@@ -51,6 +53,14 @@ try{
  await page.evaluate(()=>[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Send this copy')).click());
  const clicked=await buttonResponse;response={status:clicked.status(),body:await clicked.json()};assert.equal(response.status,200,JSON.stringify(response));assert(response.body.sent,JSON.stringify(response));evidence.providerAccepted.push({type:'October30 Waypoint explicit catalog preview (not backlog delivery)',providerId:response.body.id});
  evidence.checks.push('Actual UI selected preview send accepted; copy explicitly labeled fictional/test, not a subscription');
+ // Only this newly created controlled account can be recovered from a non-sending QA drain.
+ // No accepted/ambiguous intent is reset and no historical recipient/backlog is touched.
+ const natural=ok(await db.from('dydd_lifecycle_jobs').select('*').eq('user_id',user.id).eq('template_id','A03').single());
+ if(natural.status==='sandbox_ready'&&!natural.provider_id&&Date.parse(natural.created_at)>=Date.parse(staged.activatedAt)){
+  const prior=ok(await db.from('dydd_email_messages').select('provider_id').eq('idempotency_key','dydd-lifecycle-'+natural.id));assert.equal(prior.length,0,'Never reset any provider-attempted welcome');
+  ok(await db.from('dydd_lifecycle_jobs').update({status:'queued',next_attempt_at:new Date().toISOString(),error_message:'Controlled new-account test only: non-sending QA run held this welcome; no provider intent exists.'}).eq('id',natural.id).eq('status','sandbox_ready').is('provider_id',null));
+  evidence.checks.push('Controlled new-account A03 safely requeued after non-sending QA drain; original event/key retained and zero provider intent proven');
+ }
  const tick=await fetch(base+'/api/cron/lifecycle',{headers:{Authorization:'Bearer '+cron.secret}});assert.equal(tick.status,200,await tick.clone().text());evidence.tick=await tick.json();assert(evidence.tick.sandbox);
  const welcomes=ok(await db.from('dydd_lifecycle_jobs').select('id,status,provider_id').eq('user_id',user.id).eq('template_id','A03'));assert.equal(welcomes.length,1);assert.equal(welcomes[0].status,'accepted',JSON.stringify(welcomes));evidence.providerAccepted.push({type:'Actual account_verified → A03 welcome',providerId:welcomes[0].provider_id});
  await fetch(base+'/api/cron/lifecycle',{headers:{Authorization:'Bearer '+cron.secret}});

@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-11-04T20:31:26.740Z",
+  "ref": "atemrshtshxoqnuevvqu",
+  "httpStatus": 200,
+  "totalExistingAdvisories": 38,
+  "newPrivateFunctionsMentioned": [],
+  "newFunctionsPrivateSchema": true,
+  "executeAnon": false,
+  "executeAuthenticated": false,
+  "searchPathEmpty": true
+}

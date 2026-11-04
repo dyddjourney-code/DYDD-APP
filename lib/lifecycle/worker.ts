@@ -9,6 +9,7 @@ import {passportCurriculum,courseCompleted,journeySlug} from '@/lib/passport/cur
 import {completedFruitSessionsForEmail} from '@/lib/passport/state';
 import {completedLegacyFruitSnapshot,savedAssessmentComplete} from '@/lib/passport/evidence';
 import {appBase,enqueue,enqueueCampaignMembers,must,tokenHash} from './store';
+import {queueApprovedHeldCircleInvitations} from './circle-held-mail';
 import {fruitLifeSelfEmailStop,suppressFruitLifeSelfEmail} from './fruitlife-email-policy';
 import {renderLifecycle,lifecycleHtml,localParts,localInstant,type LifecycleTemplate} from './templates';
 const iso=(n:number)=>new Date(n).toISOString(),day=86400000;
@@ -28,13 +29,16 @@ export async function processLifecycleEvents(limit=50){
  for(const e of events)try{
   if(e.occurred_at<settings.activated_at){must(await db.from('dydd_lifecycle_events').update({processed_at:iso(Date.now()),error_message:'Historical event ignored; no backfill.'}).eq('id',e.id));continue;}
   const t=Date.parse(e.occurred_at),user=e.user_id?await userById(e.user_id):e.email?await profileUser(e.email):null;
-  if(e.kind==='circle_accepted'){
+  if(e.kind==='circle_invited'){
+   await queueApprovedHeldCircleInvitations(e.payload.circleId,e.source_id);
+  } else if(e.kind==='circle_accepted'){
    const cs=must(await db.from('dydd_circle_campaigns').select('id').eq('circle_id',e.payload.circleId).in('status',['finalized','paused'])) as any[];
    for(const c of cs)await enqueueCampaignMembers(c.id,e.source_id);
   } else if(e.kind==='circle_finalized'){
    await enqueueCampaignMembers(e.source_id);
    const campaign=must(await db.from('dydd_circle_campaigns').select('circle_id').eq('id',e.source_id).maybeSingle()) as any;
    const circle=campaign?must(await db.from('journey_circle_plans').select('user_id').eq('id',campaign.circle_id).maybeSingle()) as any:null;
+   if(campaign?.circle_id)await queueApprovedHeldCircleInvitations(campaign.circle_id);
    if(circle?.user_id){const leader=await userById(circle.user_id);if(leader?.email)must(await db.rpc('dydd_queue_circle_leader_messages',{campaign_key:e.source_id,creator_user:leader.id,creator_email:leader.email}));}
   } else if(e.kind==='fruitlife_self_completed'&&e.email){
    // Consume the event without queuing participant reminder/status mail.
@@ -45,6 +49,9 @@ export async function processLifecycleEvents(limit=50){
     await queueTemplate('A04',`start-help:${user.id}`,user,t+3*day,t+5*day,{courseSlug:journeySlug});
    } else if(e.kind==='course_enrolled'){
     await queueTemplate('C01',`course-ready:${user.id}:${e.payload.courseSlug}`,user,t,t+3*day,{courseSlug:e.payload.courseSlug});
+    // A genuine saved first workbook round is learning activity even before the first checklist tick.
+    await queueTemplate('A05',`course-inactivity:${user.id}:${e.payload.courseSlug}`,user,t+7*day,t+10*day,{courseSlug:e.payload.courseSlug});
+    await queueTemplate('G04',`gentle-return:${user.id}`,user,t+35*day,t+40*day,{courseSlug:e.payload.courseSlug});
    } else if(e.kind==='lesson_completed'){
     const slug=e.payload.courseSlug,progress=must(await db.from('passport_lesson_completions').select('lesson_slug,completed_at').eq('user_id',user.id).eq('course_slug',slug)) as any[];
     // A real new checklist event is required. Imported historical award rows do not trigger mail.
@@ -58,7 +65,7 @@ export async function processLifecycleEvents(limit=50){
       await queueTemplate('C06',`journey-practice:${user.id}`,user,finished+30*day,finished+33*day,{courseSlug:slug});
      }
     } else {
-     // Exactly one inactivity invitation per course; not a repeating chase on each lesson.
+     // Legacy/new checklist events retain the same keys; enrollment already queued these for saved workbook starts.
      const earliest=Math.min(...progress.map(p=>Date.parse(p.completed_at)));
      await queueTemplate('A05',`course-inactivity:${user.id}:${slug}`,user,earliest+7*day,earliest+10*day,{courseSlug:slug});
      await queueTemplate('G04',`gentle-return:${user.id}`,user,earliest+35*day,earliest+40*day,{courseSlug:slug});
@@ -246,7 +253,7 @@ export async function runLifecycleWorker({limit=10}:{limit?:number}={}){
     else {await finish({status:'skipped',error_message:fence.stop});skipped++;}
     continue;
    }
-   if(sandboxJobTransportBlocked(j.email,j.created_at)){
+   if(sandboxJobTransportBlocked(j.email,j.context.sourceCreatedAt||j.created_at)){
     await finish({status:'sandbox_ready',error_message:'Eligibility verified; sandbox delivery guard prevented provider request.'});sandboxReady++;continue;
    }
    const text=j.body+(optional?`\n\nEmail preferences / unsubscribe from this category: ${unsubscribe}\nStop all optional email: ${appBase()}/email-preferences?token=${globalToken}`:''),html=lifecycleHtml(j.subject,text);

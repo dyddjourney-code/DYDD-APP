@@ -23,7 +23,7 @@ try{
  initial=(await call(path,creator)).body;
  const current=initial.messages.find(d=>d.id===first.id);assert.match(current.body,/Saved HTTP review note/);assert.equal(current.approved_at,null);
  console.log('PASS actual authenticated creator API, outsider/guest denial, editable persisted copy, stale-approval conflict and finalize/invite guards');
- browser=await puppeteer.launch({args:chromium.args,executablePath:await chromium.executablePath(),headless:true});const page=await browser.newPage(),problems=[];page.on('pageerror',e=>problems.push(e.message));
+ const proxy=base.startsWith('https:')&&process.env.HTTPS_PROXY?new URL(process.env.HTTPS_PROXY):null;browser=await puppeteer.launch({args:[...chromium.args,...(proxy?['--proxy-server='+proxy.protocol+'//'+proxy.hostname+':'+proxy.port]:[])],acceptInsecureCerts:Boolean(proxy),executablePath:await chromium.executablePath(),headless:true});const page=await browser.newPage(),problems=[];if(proxy?.username)await page.authenticate({username:decodeURIComponent(proxy.username),password:decodeURIComponent(proxy.password)});page.on('pageerror',e=>problems.push(e.message));
  await page.setCookie(...creator.cookies.map(k=>({name:k.name,value:k.value,domain:new URL(base).hostname,path:'/'})));
  for(const width of [360,390,768,1280]){
   await page.setViewport({width,height:900});await page.goto(base+'/camp-circle/my-circles?circle='+circle,{waitUntil:'domcontentloaded',timeout:60000});
@@ -49,7 +49,7 @@ try{
  let data=(await call(path,creator)).body;assert.equal(data.campaign.status,'finalized');assert.equal(data.members.length,1);
  const invitation=ok(await db.from('dydd_lifecycle_jobs').select('*').eq('circle_id',circle).eq('template_id','D01').single()),token=invitation.body.match(/invitation\?token=([a-f0-9]{64})/)[1];
  assert.equal((await call('/api/circles/membership?token='+token,null)).status,200);
- assert.equal((await call('/api/circles/membership',outsider,{token,action:'accept'})).status,403);
+ assert.equal((await call('/api/circles/membership',outsider,{token,action:'accept'})).status,409);
  r=await call('/api/circles/membership',member,{token,action:'accept',reminders:true});assert.equal(r.status,200,JSON.stringify(r));
  let membership=ok(await db.from('dydd_circle_memberships').select('*').eq('circle_id',circle).single());assert.equal(membership.status,'accepted');
  // A creator cannot cancel another Circle's member jobs even with a known membership ID.

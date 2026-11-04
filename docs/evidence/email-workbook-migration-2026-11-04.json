@@ -1,0 +1,12 @@
+{
+  "at": "2026-11-04T20:24:10.177Z",
+  "ref": "atemrshtshxoqnuevvqu",
+  "file": "supabase/migrations/20261104202321_journey_lifecycle_first_workbook_source.sql",
+  "sha256": "3257fd9a18c198f662d7d7efc552dbede3f507b52bc5d4037f3609a231ec39da",
+  "changed": true,
+  "verified": true,
+  "anonExecute": false,
+  "authenticatedExecute": false,
+  "noBackfill": true,
+  "productionMutations": 0
+}

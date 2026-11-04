@@ -19,8 +19,9 @@ export default function RootLayout({
       <body>
         {process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox" ? (
           <div role="note" style={{ padding: "10px 20px", background: "#f0d99e", color: "#3f381d", fontSize: 14, textAlign: "center" }}>
-            DYDD Sandbox — separate test accounts and data. No real charges. Email and external report delivery are off.{" "}
+            DYDD Sandbox — separate test accounts and data. No real charges. {process.env.DYDD_SANDBOX_EMAIL_ENABLED === "true" ? "Email is restricted to the configured test inbox. External report delivery is off." : "Email and external report delivery are off."}{" "}
             <a href="/base-camp" style={{ color: "inherit", textDecoration: "underline", whiteSpace: "nowrap" }}>Sandbox Base Camp</a>
+            {process.env.DYDD_SANDBOX_EMAIL_ENABLED === "true" && <>{" · "}<a href="/sandbox/email-lab" style={{color:"inherit",textDecoration:"underline",whiteSpace:"nowrap"}}>Email walkthrough</a></>}
             {" · "}<a href="/sandbox-review" style={{ color: "inherit", textDecoration: "underline", whiteSpace: "nowrap" }}>Preview all courses</a>
           </div>
         ) : null}

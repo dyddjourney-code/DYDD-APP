@@ -29,7 +29,8 @@ export const circleSizes: Record<
 > = {
   Couple: { min: 2, max: 2, label: "2 people" },
   "Small group": { min: 3, max: 19, label: "3–19 people" },
-  Class: { min: 20, max: Infinity, label: "20+ people" },
+  Class: { min: 20, max: 49, label: "20–49 people" },
+  Cohort: { min: 50, max: 100000, label: "50+ people · owner approval" },
 };
 export type CirclePlan = {
   name: string;

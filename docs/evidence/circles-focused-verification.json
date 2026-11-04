@@ -1,0 +1,16 @@
+{
+  "at": "2026-11-04T19:11:26.430596+00:00",
+  "checks": [
+    "environment-isolation",
+    "circle-sharing-consent",
+    "circle-subscription-controls (mocked provider)",
+    "circle-operations-api",
+    "circle-operations",
+    "circle-schedule",
+    "typecheck",
+    "production-build"
+  ],
+  "localActualHttpChecks": 25,
+  "localActualPdf": true,
+  "noProviderPurchase": true
+}

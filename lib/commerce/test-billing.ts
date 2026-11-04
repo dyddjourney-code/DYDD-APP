@@ -11,9 +11,9 @@ async function orderFor(id:string|null|undefined) {
  if(!order || testCatalog[order.capability]?.price!==order.price_id)throw new Error("Unrecognized TEST order.");
  return order;
 }
-async function saveEntitlement(order:TestOrder,sourceId:string,active:boolean,paid:boolean,expiresAt:string|null,checkedAt:string) {
+async function saveEntitlement(order:TestOrder,sourceId:string,active:boolean,paid:boolean,expiresAt:string|null,checkedAt:string,invalidated=false) {
  must(await createSupabaseAdminClient().rpc("dydd_test_save_entitlement",{p_order:order.id,p_source:sourceId,
- p_active:active,p_paid:paid,p_expires:expiresAt,p_checked:checkedAt}));
+ p_active:active,p_paid:paid,p_expires:expiresAt,p_checked:checkedAt,p_invalidated:invalidated}));
 }
 async function invoiceIsUnrefunded(stripe:Stripe,invoice:Stripe.Invoice) {
  const payments=await stripe.invoicePayments.list({invoice:invoice.id!,status:"paid",limit:100});
@@ -61,11 +61,11 @@ export async function fulfillTestSubscription(stripe:Stripe,subscriptionId:strin
  const invoice=typeof sub.latest_invoice==="object"?sub.latest_invoice:null;
  const end=sub.items.data[0].current_period_end;
  const paid=invoice?.status==="paid" && (order.capability!=="personal" || invoice.amount_paid>0) && await invoiceIsUnrefunded(stripe,invoice);
- const active=sub.status==="active" && paid && end>Date.now()/1000;
+ const active=["active","canceled"].includes(sub.status) && paid && end>Date.now()/1000;
  if(order.capability==="circle_leadership" && paid && sub.discounts?.length)
  await stripe.subscriptions.update(sub.id,{discounts:"",proration_behavior:"none"},{idempotencyKey:`dydd-test-initial-discount-clear-${sub.id}`});
  must(await createSupabaseAdminClient().from("dydd_test_billing_orders").update({subscription_id:sub.id,status:order.status==="revoked"?"revoked":"paid",updated_at:new Date().toISOString()}).eq("id",order.id).neq("status","revoked"));
- await saveEntitlement(order,sub.id,active,paid,new Date(end*1000).toISOString(),checkedAt);
+ await saveEntitlement(order,sub.id,active,paid,new Date(end*1000).toISOString(),checkedAt,invoice?.status==="paid"&&!paid);
 }
 export async function fulfillTestCheckout(stripe:Stripe,sessionId:string) {
  assertTestBilling();const checkedAt=new Date().toISOString();

@@ -1,0 +1,10 @@
+"use client";
+import {useEffect,useState} from 'react';
+type Credit={explicit:boolean;leaderId:string|null;leaders:{leaderId:string;circleName:string}[]};
+export function CircleLeaderCredit(){
+ const [credit,setCredit]=useState<Credit|null>(null),[selected,setSelected]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState('');
+ useEffect(()=>{let live=true;fetch('/api/commerce/leader-credit',{cache:'no-store'}).then(async r=>{const b=await r.json();if(r.ok&&live){setCredit(b);setSelected(b.leaderId||(!b.explicit?b.leaders?.[0]?.leaderId:'')||'');}}).catch(()=>{if(live)setError('Your leader-credit choice could not be loaded.');});return()=>{live=false;};},[]);
+ if(!credit?.leaders.length)return null;
+ async function save(){setBusy(true);setError('');setMessage('');try{const r=await fetch('/api/commerce/leader-credit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({leaderId:selected||null})}),b=await r.json();if(!r.ok)throw Error(b.error||'Leader credit could not be saved.');setMessage('Your choice applies at the next Leadership renewal. Your own membership is unchanged.');}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
+ return <section className="email-workspace" aria-label="Your credited Circle leader"><h2>Choose your credited leader</h2><p>Your current paid Personal membership can count toward one Circle leader's next renewal discount, even when you participate in several Circles. Free grants and pending invitations do not count. You can change this choice or opt out.</p><label>Credit one accepted Circle leader<select value={selected} onChange={e=>setSelected(e.target.value)}><option value="">Do not credit a leader</option>{credit.leaders.map(l=><option key={l.leaderId} value={l.leaderId}>{l.circleName} leader</option>)}</select></label><button type="button" disabled={busy} onClick={()=>void save()}>Save my leader-credit choice</button>{error&&<p role="alert">{error}</p>}{message&&<p role="status">{message}</p>}</section>;
+}

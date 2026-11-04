@@ -1,0 +1,118 @@
+{
+  "runId": "circles-qa-e0450836-9350-454c-9629-62b21bbea6ae",
+  "base": "http://localhost:3138",
+  "at": "2026-11-04T18:59:46.830Z",
+  "sandboxRef": "atemrshtshxoqnuevvqu",
+  "syntheticOnly": true,
+  "providerPayments": false,
+  "mailSent": false,
+  "preflightOnly": false,
+  "results": [
+    {
+      "name": "Read-only sandbox HTTP/schema preflight",
+      "status": "pass"
+    },
+    {
+      "name": "Unpaid account cannot activate Circle",
+      "status": "pass"
+    },
+    {
+      "name": "Cross-origin mutation blocked",
+      "status": "pass"
+    },
+    {
+      "name": "Wrong-email invite acceptance denied",
+      "status": "pass"
+    },
+    {
+      "name": "Personal access required on acceptance, retry succeeds only after fixture grant",
+      "status": "pass"
+    },
+    {
+      "name": "Participant sees accepted Circle, not unrelated Circle or creator management",
+      "status": "pass"
+    },
+    {
+      "name": "CSV parser quotes, malformed rows, normalized dedup and no invitation until commit",
+      "status": "pass"
+    },
+    {
+      "name": "Invitations reserve capacity transactionally; concurrent final seat accepts only one",
+      "status": "pass"
+    },
+    {
+      "name": "Actual private note fixture never appears in leader, participant, data, field guide or export",
+      "status": "pass"
+    },
+    {
+      "name": "Callout unique participant count, explicit selected text only, withdrawal",
+      "status": "pass"
+    },
+    {
+      "name": "Cohort request before activation, dedup, exact owner approval and held notification",
+      "status": "pass"
+    },
+    {
+      "name": "Cohort rejects text even for explicitly opted-in sharing; counts only",
+      "status": "pass"
+    },
+    {
+      "name": "Consent roster explicit opt-in, no emails, revocable",
+      "status": "pass"
+    },
+    {
+      "name": "Cancellation preserves paid-through; 30-day transition forbids invites; read-only preserves history; renewal restores",
+      "status": "pass"
+    },
+    {
+      "name": "Transfer requires accepted personally + leadership entitled member; old owner loses creator role",
+      "status": "pass"
+    },
+    {
+      "name": "Couple exact persistent binding, intended partner, pending privacy and consent",
+      "status": "pass"
+    },
+    {
+      "name": "Mutual Couples consent protects primary AND alternate data routes",
+      "status": "pass"
+    },
+    {
+      "name": "Both spouses can edit shared dates/holidays; no roster/private edits; stale and foreign denied",
+      "status": "pass"
+    },
+    {
+      "name": "Participant controls one credited leader and may opt out; future renewal only",
+      "status": "pass"
+    },
+    {
+      "name": "Expired participant Personal blocks new callouts; privacy withdrawal and history preserved",
+      "status": "pass"
+    },
+    {
+      "name": "Participant actual authenticated UI 1280/390/320, no overflow/private data or runtime errors",
+      "status": "pass"
+    },
+    {
+      "name": "Service-only ledgers/RPC cannot be called directly by participant",
+      "status": "pass"
+    },
+    {
+      "name": "Account creation ledger survives Circle deletion and supports explicit override",
+      "status": "pass"
+    },
+    {
+      "name": "Couple permanent identity cannot be recycled and partner personal expiry removes shared tools",
+      "status": "pass"
+    },
+    {
+      "name": "Held sandbox outbox only, never lifecycle delivery jobs",
+      "status": "pass"
+    }
+  ],
+  "cleanup": {
+    "users": 8,
+    "circles": 10,
+    "errors": []
+  },
+  "browserErrors": []
+}

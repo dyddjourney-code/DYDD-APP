@@ -1,3 +1,5 @@
+import { claimCoupleCircle } from "@/lib/commerce/circle-billing";
+import { dc3PersonalCoupon } from "@/lib/commerce/dc3";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -42,6 +44,13 @@ export async function POST(request:Request) {
  if(["circle_leadership","couples_circle"].includes(capability) && !await hasLifetimePersonalAccess(user.id) && !await hasTestEntitlement(user.id,"personal"))return reply("Start your separate personal membership first.",402);
  if(await hasTestEntitlement(user.id,capability,scopeId))return reply("This membership or add-on is already active.",409);
  const stripe=getTestStripe(),spec=testCatalog[capability];
+ let dc3:string|null=null;
+ try { dc3=await dc3PersonalCoupon(stripe,capability,body.discountCode); }
+ catch(error) { return reply(error instanceof Error?error.message:"Invalid discount",400); }
+ if(capability==="couples_circle") {
+ try { await claimCoupleCircle(user.id,scopeId); }
+ catch(error) { return reply(error instanceof Error?error.message:"Couples binding unavailable",409); }
+ }
  // Do not start a second recurring subscription while an existing one is unpaid/past-due.
  if(spec.recurring){
  const existing=await db.from("dydd_test_billing_orders").select("subscription_id").eq("user_id",user.id).eq("capability",capability).not("subscription_id","is",null);
@@ -55,6 +64,7 @@ export async function POST(request:Request) {
  const {data:prior,error:priorError}=await db.from("dydd_test_billing_orders").select("*").eq("user_id",user.id).eq("capability",capability).eq("scope_id",scopeId).eq("status","open").maybeSingle();
  if(priorError)throw Error("TEST billing storage unavailable");
  let order=prior;
+ if(prior && capability==="personal" && prior.coupon_id!==dc3)return reply("An existing checkout uses a different Personal price. Complete or let it expire before changing the discount.",409);
  if(prior?.checkout_session_id){
  const session=await stripe.checkout.sessions.retrieve(prior.checkout_session_id);
  if(session.livemode!==false)throw Error("Non-TEST checkout refused");
@@ -63,7 +73,7 @@ export async function POST(request:Request) {
  const expired=await db.from("dydd_test_billing_orders").update({status:"expired"}).eq("id",prior.id);if(expired.error)throw Error("TEST billing storage unavailable");order=null;
  }
  if(!order){
- const coupon=capability==="circle_leadership"?leadershipCoupon(await qualifyingTestParticipants(user.id)):null;
+ const coupon=capability==="circle_leadership"?leadershipCoupon(await qualifyingTestParticipants(user.id)):dc3;
  const inserted=await db.from("dydd_test_billing_orders").insert({user_id:user.id,capability,scope_id:scopeId,price_id:spec.price,coupon_id:coupon}).select("*").single();
  if(inserted.error?.code==="23505")return reply("Checkout is already starting in another tab. Retry in a moment.",409);
  if(inserted.error)throw Error("TEST billing storage unavailable");order=inserted.data;

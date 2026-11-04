@@ -1,0 +1,30 @@
+{
+  "sandbox": true,
+  "ref": "atemrshtshxoqnuevvqu",
+  "migration": "20261104220000",
+  "sha256": "145bc5ecbaf6dfdecc8a9d322f8da601f9d15a95680863962f7c2cfdabd8508d",
+  "tables": [
+    {
+      "relname": "dydd_test_couple_bindings",
+      "relrowsecurity": true,
+      "anon_read": false,
+      "authenticated_read": false,
+      "service_read": true
+    },
+    {
+      "relname": "dydd_test_leader_credits",
+      "relrowsecurity": true,
+      "anon_read": false,
+      "authenticated_read": false,
+      "service_read": true
+    }
+  ],
+  "tests": [
+    "node tests/circle-billing-rules.cjs: PASS real DB synthetic billing evidence",
+    "node tests/test-billing.cjs: PASS real DB, signed webhooks, mocked Stripe including DC3 $5 Personal",
+    "node tests/environment-isolation.cjs: PASS"
+  ],
+  "productionChanges": false,
+  "livePayments": false,
+  "sends": false
+}

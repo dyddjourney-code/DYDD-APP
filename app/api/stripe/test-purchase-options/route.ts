@@ -1,3 +1,4 @@
+import { getCircleBillingState, getAccountCircleBillingState } from "@/lib/commerce/circle-billing";
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -26,6 +27,7 @@ export async function GET(request: Request) {
   ]);
   const renewals = await createSupabaseAdminClient().from("dydd_test_billing_renewals").select("invoice_id,dydd_test_billing_orders!inner(user_id)").eq("dydd_test_billing_orders.user_id",user.id).eq("status","review");
   if (renewals.error) throw Error("Renewal status unavailable");
-  return reply({renewalReview:Boolean(renewals.data?.length),personal:personal || lifetime,lifetime,leadership,count,couples,verified:Boolean(user.email_confirmed_at),circleFormat:circle?.plan?.format});
+  const billing=circle?await getCircleBillingState(user.id,circle.id,circle.plan?.format):await getAccountCircleBillingState(user.id);
+  return reply({billing,upcomingLeadershipAmount:count>=20?0:count>=10?1000:2000,renewalReview:Boolean(renewals.data?.length),personal:personal || lifetime,lifetime,leadership,count,couples,verified:Boolean(user.email_confirmed_at),circleFormat:circle?.plan?.format});
  } catch { return reply({error:"Your access could not be checked. Please refresh before purchasing."},503); }
 }

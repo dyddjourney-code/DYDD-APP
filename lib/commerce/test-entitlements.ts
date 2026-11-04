@@ -18,7 +18,6 @@ export async function qualifyingTestParticipants(userId:string) {
 /** Existing creator/member authorization must run first. Payments never grant Circle ownership. */
 export async function hasTestCircleTools(userId:string|null,circleId:string,format:string) {
  if(!testBillingEnabled()||!userId)return true; // Validated private owner-preview remains a non-purchasing preview.
- const {hasLifetimePersonalAccess}=await import("./personal-access");
- if(!await hasLifetimePersonalAccess(userId)&&!await hasTestEntitlement(userId,"personal"))return false;
- return hasTestEntitlement(userId,format==="Couple"?"couples_circle":"circle_leadership",format==="Couple"?circleId:"account");
+ const {getCircleBillingState}=await import("./circle-billing");
+ return (await getCircleBillingState(userId,circleId,format)).canOperate;
 }

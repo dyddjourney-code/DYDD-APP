@@ -2,6 +2,7 @@
 import { journeySlug, journeyAssessmentTypes, sourcesForJourneyRound } from "@/lib/reflections/journey-assessments";
 import { retiredPathfinderCanonical } from "@/lib/journey/pathfinder";
 import { isSandbox } from '@/lib/environment';
+import { CircleLessonCallout } from '@/components/circle-lesson-callout';
 import { careDiscussionIds, discussionCourse, type DiscussionReminder } from '@/lib/reflections/discussion-catalog';
 import { ReviewAwareLink } from "@/components/review-aware-link";
 import {
@@ -871,6 +872,7 @@ function DiscussionControl({ questionId }: { questionId: string }) {
     </> : null}
     {status ? <small role="status">{status}</small> : null}
     {status && !['Saved', 'Saving…', 'Unsaved changes'].includes(status) ? <button type="button" onClick={() => void (s.automatic ? s.flush() : s.saveReminder(questionId))}>Try saving reminder again</button> : null}
+    <CircleLessonCallout questionId={questionId} disabled={s.readOnly || s.savingLesson} />
   </div>;
 }
 export function ReflectionWorkbook() {

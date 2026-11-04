@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import { circleActor, sameOrigin } from "@/lib/circles/server";
+import { circleActor, circleQuery, sameOrigin } from "@/lib/circles/server";
+import { testBillingEnabled, validUuid } from "@/lib/commerce/test-billing-config";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { getCircleBillingState } from "@/lib/commerce/circle-billing";
 import { validatePlan } from "@/lib/circles/plan";
 import { circlePlanHtml } from "@/lib/circles/pdf";
 export const runtime = "nodejs";
@@ -13,7 +16,8 @@ const fail = (error: string, status: number) =>
 export async function POST(request: Request) {
   if (!sameOrigin(request))
     return fail("Open your Circle page to download a plan.", 403);
-  if (!(await circleActor(request)))
+  const actor = await circleActor(request);
+  if (!actor)
     return fail("Sign in to download your Circle plan.", 401);
   const raw = await request.text();
   if (raw.length > 250000) return fail("This plan is too large.", 413);
@@ -25,6 +29,18 @@ export async function POST(request: Request) {
   }
   const invalid = validatePlan(body?.plan);
   if (invalid) return fail(invalid, 400);
+  if (testBillingEnabled() && actor.userId) {
+    if (!validUuid(body.circleId)) return fail("Save your Circle before downloading its plan.", 400);
+    const saved = await circleQuery(actor).eq("id", body.circleId).maybeSingle();
+    if (saved.error) return fail("Your saved plan could not be checked.", 503);
+    if (!saved.data) return fail("Choose a Circle saved in your account.", 404);
+    try {
+      const billing = await getCircleBillingState(actor.userId, body.circleId, saved.data.plan.format);
+      if (!billing.canOperate) body.plan = saved.data.plan; // Preserve historical export, never mutate read-only work.
+      const budget = await createSupabaseAdminClient().rpc("dydd_circle_report_budget", {who: actor.userId});
+      if (budget.error) return fail("Your plan PDF budget has been reached. Try later or ask the owner for help.", 429);
+    } catch { return fail("Your Circle access could not be checked.", 503); }
+  }
   let browser;
   try {
     const chromium = await import("@sparticuz/chromium"),

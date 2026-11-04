@@ -1,0 +1,21 @@
+{
+  "sandbox": true,
+  "created": true,
+  "id": "dydd_dc3_personal_50_v1",
+  "livemode": false,
+  "percent_off": 50,
+  "duration": "forever",
+  "applies_to": {
+    "products": [
+      "prod_VZFrqe69t5RxtC"
+    ]
+  },
+  "beforeCounts": {
+    "products": 11,
+    "prices": 5,
+    "coupons": 2,
+    "promotion_codes": 0
+  },
+  "publicPromotionCodesCreated": 0,
+  "noCustomersOrPayments": true
+}

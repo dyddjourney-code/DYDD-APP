@@ -1,0 +1,16 @@
+{
+  "syntheticTransport": true,
+  "realAuthenticatedSandboxUser": true,
+  "widths": [
+    1280,
+    390,
+    320
+  ],
+  "participantPrivacy": true,
+  "consentPayload": true,
+  "calloutPayload": true,
+  "cohortNoText": true,
+  "couplesPending": true,
+  "transitionNoInvites": true,
+  "browserErrors": []
+}

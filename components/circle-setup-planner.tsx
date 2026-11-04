@@ -229,7 +229,7 @@ export function CircleSetupPlanner({ renderDashboard, testPurchases = false }: {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ plan }),
+          body: JSON.stringify({ plan, circleId: selected?.id }),
         },
       );
       if (!response.ok) {

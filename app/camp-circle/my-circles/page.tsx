@@ -1,13 +1,7 @@
+import { Suspense } from "react";
+import CircleOperationsWorkspace from "@/components/circle-operations-workspace";
 import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
-import MyCirclesWorkspace from "@/components/my-circles-workspace";
-import { BaseCampProfile } from "@/components/basecamp-profile";
 import { isSandbox } from "@/lib/environment";
-import { isNewReviewRequest, reviewQuery, type ReviewSearchParams } from "@/lib/review/heather";
-
+import MyCirclesWorkspace from "@/components/my-circles-workspace";
 export const dynamic = "force-dynamic";
-export default async function MyCirclesPage({ searchParams }: { searchParams?: Promise<ReviewSearchParams> }) {
-  const params = await searchParams;
-  const profile = isSandbox() && isNewReviewRequest(params)
-    ? <BaseCampProfile initialName="John" preview previewQuery={reviewQuery(params)} readOnly /> : null;
-  return <MyCirclesWorkspace testPurchases={testBillingEnabled()} profilePreview={profile} />;
-}
+export default function MyCirclesPage(){return <Suspense fallback={<main className="journey-shell"><p>Loading your Circles…</p></main>}>{isSandbox()?<CircleOperationsWorkspace testPurchases={testBillingEnabled()}/>:<MyCirclesWorkspace testPurchases={testBillingEnabled()}/>}</Suspense>;}

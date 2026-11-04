@@ -1,0 +1,22 @@
+// Actual planner PDF route, synthetic sandbox records only, no provider calls.
+import fs from 'node:fs';import crypto from 'node:crypto';import assert from 'node:assert/strict';import {createRequire} from 'node:module';
+import {createClient} from '@supabase/supabase-js';import {createServerClient} from '@supabase/ssr';
+const load=createRequire(import.meta.url)('../scripts/fruitlife-test-load.cjs'),plans=load('lib/circles/plan.ts');
+const c=JSON.parse(fs.readFileSync('/home/openclaw/.openclaw/secrets/dydd-online-school-sandbox.json'));assert.equal(c.ref,'atemrshtshxoqnuevvqu');
+const base=process.env.CIRCLES_QA_BASE||'http://localhost:3138';assert(['localhost','dydd-online-school-sandbox.vercel.app'].includes(new URL(base).hostname));
+const db=createClient(c.project_url,c.service_role_key,{auth:{persistSession:false}}),ok=r=>{assert(!r.error,r.error?.message);return r.data;};let user,client;const id=crypto.randomUUID(),orders=[];
+try{
+ const password=crypto.randomBytes(24).toString('hex');user=ok(await db.auth.admin.createUser({email:'circle-pdf-'+crypto.randomUUID()+'@example.com',password,email_confirm:true})).user;
+ let cookies=[];client=createServerClient(c.project_url,c.anon_key,{cookies:{getAll:()=>cookies,setAll:v=>cookies=v}});ok(await client.auth.signInWithPassword({email:user.email,password}));const headers={cookie:cookies.map(c=>`${c.name}=${c.value}`).join('; '),origin:base,'content-type':'application/json'};
+ for(const capability of ['personal','circle_leadership']){const order=ok(await db.from('dydd_test_billing_orders').insert({user_id:user.id,capability,scope_id:'account',price_id:'synthetic_pdf_fixture',status:'paid'}).select('id').single());orders.push(order.id);const until=new Date(Date.now()+86400000).toISOString();ok(await db.from('dydd_test_billing_entitlements').insert({source_id:'qa_pdf_'+order.id,order_id:order.id,user_id:user.id,capability,scope_id:'account',active:true,paid:true,expires_at:until,paid_through:until}));}
+ const plan={...plans.blankCirclePlan(),name:'Synthetic PDF plan',startDate:'2026-12-01',time:'18:00'};const create=await fetch(base+'/api/circles',{method:'POST',headers,body:JSON.stringify({id,status:'active',revision:0,plan})});assert.equal(create.status,200,await create.text());
+ async function exportPlan(circleId,planValue){return fetch(base+'/api/circles/export',{method:'POST',headers,body:JSON.stringify({circleId,plan:planValue})});}
+ assert.equal((await exportPlan(crypto.randomUUID(),plan)).status,404);
+ const full=await exportPlan(id,plan);assert.equal(full.status,200);assert(full.headers.get('content-type').includes('application/pdf'));assert.equal(Buffer.from(await full.arrayBuffer()).subarray(0,5).toString(),'%PDF-');
+ const past=new Date(Date.now()-31*86400000).toISOString();ok(await db.from('dydd_test_billing_entitlements').update({active:false,expires_at:past,paid_through:past}).eq('user_id',user.id).eq('capability','circle_leadership'));
+ const state=await(await fetch(base+'/api/commerce/circles?circleId='+id,{headers})).json();assert.equal(state.billing?.phase,'read_only',JSON.stringify(state));
+ const history=await exportPlan(id,{...plan,name:'UNSAVED CANNOT CHANGE READONLY EXPORT'});assert.equal(history.status,200);assert(history.headers.get('content-disposition').includes('synthetic-pdf-plan-plan.pdf'),history.headers.get('content-disposition'));assert.equal(Buffer.from(await history.arrayBuffer()).subarray(0,5).toString(),'%PDF-');
+ const receipt={base,at:new Date().toISOString(),actualPdf:true,foreignCircleDenied:true,readonlySavedExportPreserved:true,syntheticOnly:true,providerCalls:false};fs.mkdirSync('docs/evidence',{recursive:true});fs.writeFileSync('docs/evidence/circles-pdf-verification.json',JSON.stringify(receipt,null,2));console.log('PASS actual owned plan PDF, foreign scope denial, read-only saved-history PDF; no provider calls.');
+}finally{
+ if(client)await client.auth.signOut();if(user){ok(await db.from('journey_circle_plans').delete().eq('id',id));ok(await db.from('dydd_circle_operation_events').delete().eq('user_id',user.id));ok(await db.from('dydd_test_billing_entitlements').delete().eq('user_id',user.id));ok(await db.from('dydd_test_billing_orders').delete().eq('user_id',user.id));ok(await db.from('dydd_lifecycle_jobs').delete().eq('user_id',user.id));ok(await db.from('dydd_lifecycle_events').delete().eq('user_id',user.id));ok(await db.auth.admin.deleteUser(user.id));}console.log('Synthetic PDF account/plan/orders/usage removed.');
+}

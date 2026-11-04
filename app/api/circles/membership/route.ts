@@ -22,7 +22,19 @@ export async function POST(request:Request){
  const b=await request.json(),s=await createSupabaseServerClient(),user=(await s.auth.getUser()).data.user;
  if(!user?.email || !user.email_confirmed_at)return reply({error:'Sign in with your verified invited email address to respond.'},401);
  if(!['accept','decline','leave','reminders'].includes(b.action))return reply({error:'Choose a valid membership action.'},400);
- const db=createSupabaseAdminClient();let q=db.from('dydd_circle_memberships').select('*').eq('email',user.email.toLowerCase());
+ const db=createSupabaseAdminClient();
+ if(testBillingEnabled() && ['accept','decline','leave'].includes(b.action)) {
+  let payload:Record<string,unknown>;
+  if(b.action==='leave') {
+   const found=await db.from('dydd_circle_memberships').select('circle_id').eq('id',b.membershipId).eq('user_id',user.id).eq('status','accepted').maybeSingle();
+   if(found.error||!found.data)return reply({error:'Membership not active.'},409);
+   payload={action:'leave',circleId:found.data.circle_id};
+  } else payload={action:b.action==='accept'?'accept_invite':'decline_invite',token:String(b.token||'')};
+  const result=await db.rpc('dydd_circle_operate',{actor:user.id,payload,owner_actor:false});
+  if(result.error)return reply({error:result.error.message||'Your invitation could not be accepted. Check membership and Circle availability.'},409);
+  return reply(result.data);
+ }
+ let q=db.from('dydd_circle_memberships').select('*').eq('email',user.email.toLowerCase());
  q=b.action==='leave'||b.action==='reminders'?q.eq('id',b.membershipId):q.eq('token_hash',tokenHash(String(b.token||'')));
  const m=must(await q.maybeSingle()) as any;if(!m)return reply({error:'This invitation belongs to a different email address or has expired.'},403);
  if(b.action==='leave'||b.action==='reminders'){

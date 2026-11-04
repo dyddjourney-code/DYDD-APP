@@ -1,5 +1,7 @@
 import "server-only";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { isSandbox } from "@/lib/environment";
+import { eligibleCoupleCapacity } from "@/lib/circles/couples-shared";
 
 export type CircleDataMember = {
   id: string;
@@ -113,13 +115,19 @@ export async function loadCircleData(circleId: string, creatorId: string, plan: 
   const rosterEmails = new Set((Array.isArray(roster) ? roster : []).map(person => text(object(person).email).toLowerCase()).filter(Boolean));
   const memberships = await allRows(offset => db.from("dydd_circle_memberships")
     .select("id,user_id,email,display_name").eq("circle_id", circleId).eq("status", "accepted").order("id").range(offset, offset + 499));
+  // Accepted membership is identity authorization, not consent to publish results.
+  // Explicit selected-Circle opt-in is mandatory in the new sandbox system.
+  const consentRows = isSandbox() ? checked(await db.from("dydd_circle_consents")
+    .select("user_id,people,insights").eq("circle_id", circleId)) : [];
+  const consents = new Map(consentRows.map(row => [row.user_id, row]));
   const eligible = new Map<string, {name: string; role: "Host" | "Member"}>([[creatorId, {name: "Circle host", role: "Host"}]]);
   for (const member of memberships) {
     if (member.user_id && member.user_id !== creatorId && rosterEmails.has(text(member.email).toLowerCase()))
-      eligible.set(member.user_id, {name: text(member.display_name) || "Circle member", role: "Member"});
+      eligible.set(member.user_id, {name: !isSandbox() || consents.get(member.user_id)?.people ? text(member.display_name) || "Circle member" : "Private Circle participant", role: "Member"});
   }
-  const userIds = [...eligible.keys()];
-  const participants = checked(await db.from("assessment_participants").select("id,user_id,display_name").in("user_id", userIds));
+  const mutualCoupleConsent = !isSandbox() || object(plan).format !== "Couple" || (eligible.size === 2 && [...eligible.keys()].every(id => consents.get(id)?.insights === true));
+  const userIds = mutualCoupleConsent ? [...eligible.keys()].filter(id => !isSandbox() || id === creatorId || consents.get(id)?.insights === true) : [];
+  const participants = userIds.length ? checked(await db.from("assessment_participants").select("id,user_id,display_name").in("user_id", userIds)) : [];
   const participantOwners = new Map<string, string>();
   for (const participant of participants) {
     if (!participant.user_id || !eligible.has(participant.user_id)) continue;
@@ -130,8 +138,9 @@ export async function loadCircleData(circleId: string, creatorId: string, plan: 
   const profiles = checked(await db.from("school_profiles").select("id,full_name").eq("id", creatorId));
   if (text(profiles[0]?.full_name)) eligible.get(creatorId)!.name = text(profiles[0].full_name);
   const select = "id,user_id,participant_id,assessment_type,scores,created_at,source_submitted_at";
-  const direct = await allRows(offset => db.from("assessment_snapshots").select(select).in("user_id", userIds).in("assessment_type", ["designid", "designpd", "spiritual_gifts"]).order("id").range(offset, offset + 499)) as Snapshot[];
-  const linked = participantOwners.size ? await allRows(offset => db.from("assessment_snapshots").select(select).in("participant_id", [...participantOwners.keys()]).in("assessment_type", ["designid", "designpd", "spiritual_gifts"]).order("id").range(offset, offset + 499)) as Snapshot[] : [];
+  const sharedTypes = isSandbox() ? ["designid", "spiritual_gifts"] : ["designid", "designpd", "spiritual_gifts"];
+  const direct = userIds.length ? await allRows(offset => db.from("assessment_snapshots").select(select).in("user_id", userIds).in("assessment_type", sharedTypes).order("id").range(offset, offset + 499)) as Snapshot[] : [];
+  const linked = participantOwners.size ? await allRows(offset => db.from("assessment_snapshots").select(select).in("participant_id", [...participantOwners.keys()]).in("assessment_type", sharedTypes).order("id").range(offset, offset + 499)) as Snapshot[] : [];
   const snapshots = [...new Map([...direct, ...linked].map(row => [row.id, row])).values()]
     .filter(completed).sort((a, b) => (Date.parse(b.source_submitted_at || b.created_at) - Date.parse(a.source_submitted_at || a.created_at)) || (Date.parse(b.created_at) - Date.parse(a.created_at)) || b.id.localeCompare(a.id));
   const latest = new Map<string, Snapshot>();
@@ -147,8 +156,10 @@ export async function loadCircleData(circleId: string, creatorId: string, plan: 
   }
   const members = [...eligible].map(([id, identity]): CircleDataMember => {
     const designId = latest.get(`${id}:designid`), pd = latest.get(`${id}:designpd`), gifts = latest.get(`${id}:spiritual_gifts`);
-    return {id, ...identity, ...(designId ? savedDesignId(designId.scores) : {designId: null, primary: null}),
-      designPd: pd ? savedDesignPd(pd.scores) : null, gifts: gifts ? savedGifts(gifts.scores) : []};
+    const parsedId = designId ? savedDesignId(designId.scores) : {designId:null,primary:null};
+    if (isSandbox() && object(plan).format === "Couple") parsedId.designId = eligibleCoupleCapacity(parsedId.designId);
+    return {id, ...identity, ...parsedId,
+      designPd: isSandbox() ? null : pd ? savedDesignPd(pd.scores) : null, gifts: gifts ? savedGifts(gifts.scores) : []};
   });
   return circleDataResponse(circleId, members);
 }

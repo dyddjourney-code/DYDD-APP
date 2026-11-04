@@ -6,19 +6,16 @@ import { ReviewAwareLink } from "@/components/review-aware-link";
 export const dynamic = "force-dynamic";
 
 const formats = [
-  { label: "Couple", detail: "Make time to listen, understand your differences, and see how God has designed each of you. Let what you discover draw you closer as you live out your purpose together." },
-  { label: "Small group", detail: "Gather friends, a home group, or a ministry team. Share what you are learning, pray for one another, and make room for honest conversations about faith and everyday life." },
-  { label: "Class", detail: "Walk through the journey with your church or a larger group. A facilitator helps guide the conversations while each person has room to discover and apply their own design." },
+  { label: "Couple · 2 people", detail: "Make time to listen, understand your differences, and see how God has designed each of you. Let what you discover draw you closer as you live out your purpose together." },
+  { label: "Small group · 3–19 people", detail: "Gather friends, a home group, or a ministry team. Share what you are learning, pray for one another, and make room for honest conversations about faith and everyday life." },
+  { label: "Class · 20–49 people", detail: "Walk through the journey with your church or a larger group. A facilitator helps guide the conversations while each person has room to discover and apply their own design." },
 ];
 
 export default function CampCirclePage() {
   return (
     <main className="journey-shell hq-standalone-page camp-circle-page camp-circle-overview">
       <CirclePageHeader title="Camp Circles">
-        A parallel leader workspace for people walking through DYDD together.
-        The course stays clean for the learner. The circle gives the host
-        progress, pacing, shared discussion, and the Field Guide beside the
-        Journey without crowding it.
+        Do life together. A shared place for your next gathering, preparation, and the discoveries you choose to share—while your personal Journey stays yours.
       </CirclePageHeader>
 
       <section className="circle-overview-intro" aria-labelledby="circle-invitation">
@@ -38,7 +35,7 @@ export default function CampCirclePage() {
 
       <section className="circle-overview-section" aria-labelledby="circle-formats">
         <h2 id="circle-formats">Start a purposeful journey.</h2>
-        <p>Choose the kind of Circle that fits the people you want to walk with.</p>
+        <p>Choose the kind of Circle that fits the people you want to walk with. Cohorts of 50 or more need owner approval for that specific Circle and its seat cap; bulk CSV rosters are validated before controlled invitations.</p>
         <div className="circle-overview-cards circle-format-cards">{formats.map((format, i) => <article className={`circle-tile circle-tile-${["sage", "sand", "moss"][i]}`} key={format.label}><h3>{format.label}</h3><p>{format.detail}</p></article>)}</div>
       </section>
 
@@ -60,7 +57,7 @@ export default function CampCirclePage() {
       <section className="circle-overview-section" aria-labelledby="circle-how">
         <h2 id="circle-how">A journey together.</h2>
         <ol className="circle-overview-cards circle-simple-steps">
-          <li className="circle-tile"><span aria-hidden="true">01</span><h3>Name your Circle</h3><p>Give it a name and choose Couple, Small Group, or Class.</p></li>
+          <li className="circle-tile"><span aria-hidden="true">01</span><h3>Name your Circle</h3><p>Give it a name and choose Couple, Small Group, Class, or request an approved Cohort.</p></li>
           <li className="circle-tile"><span aria-hidden="true">02</span><h3>Invite your people</h3><p>Choose who you want to walk with. Each person joins through their own invitation.</p></li>
           <li className="circle-tile"><span aria-hidden="true">03</span><h3>Begin together</h3><p>Choose when to start, make time to gather, and take the journey one step at a time.</p></li>
         </ol>
@@ -70,6 +67,18 @@ export default function CampCirclePage() {
         <h2 id="circle-privacy">A shared journey doesn’t mean sharing everything.</h2>
         <p>Your private reflections stay yours. Share what you are ready to share; being in a Circle does not open your workbook answers or assessment details to everyone else.</p>
         <div className="circle-privacy-details"><article><h3>Invitation-only</h3><p>Your Circle is for the people you invite. There is no public directory or open joining.</p></article><article><h3>Individual accounts</h3><p>Each person, including the leader, needs their own account and active paid journey subscription. New participants create an account and subscribe before entering.</p></article></div>
+      </section>
+
+      <section className="circle-overview-section" aria-labelledby="circle-faq"><h2 id="circle-faq">Circle questions, clearly answered.</h2>
+        <details><summary>What does it cost?</summary><p>Each participant and leader keeps a separate Personal membership: $10/month, or $5/month for DC3 Personal members. Circle Leadership is an additional $20/month, reduced at renewal to $10 with 10–19 qualifying paid accepted participants, or $0 with 20+. Personal stays paid; the Leadership waiver does not cancel leadership access. DC3 does not discount Leadership or Couples.</p><p>A Couples Circle is $5 once for one two-person Circle; both people retain Personal memberships. This does not unlock general group creation, a second couple, or extra seats.</p><ReviewAwareLink href="/hq#purchases">Personal membership in Base Camp</ReviewAwareLink></details>
+        <details><summary>Do invited participants need to buy Leadership?</summary><p>No. An accepted invitation and your own active Personal membership open participant My Circles. Existing paid subscribers do not buy Personal again. You can participate in several Circles and lead another without exposing one Circle’s activity to another.</p></details>
+        <details><summary>Who counts toward a Leadership discount?</summary><p>Distinct current paid, accepted participants across your Circles count once. Your own account, pending invites, trials, free grants and expired paid access do not count. One participant credits one leader at a time. Counts are checked for the next monthly renewal; the price does not churn mid-month.</p></details>
+        <details><summary>What happens if I cancel Leadership?</summary><p>Full tools remain through your paid period. At period end, no new Circles, participants or invitations can be added. A 30-day transition allows existing work, renewal or transfer to an accepted subscribed leader. After that, group activity pauses and the Circle is read-only. Records and personal work are preserved; renewal restores operation. The one-time Couples unlock is separate.</p></details>
+        <details><summary>How do university or large-cohort invitations work?</summary><p>Request owner approval with your organization, purpose, enrollment and launch plan. Approval is for one Cohort with a specific cap. Preview a CSV roster, correct validation errors and deduplicate, then create controlled email-bound invitations. Each invitee signs in with their intended email and maintains Personal membership. Capacity approval is not free membership or a claim of simultaneous assessment/report processing capacity.</p></details>
+        <details><summary>What is shared, and what stays private?</summary><p>Reflections, full reports and discussion reminder notes are private by default. Choose people visibility and insight sharing separately in each Circle. Small Group and Class Callouts share only a question or request you explicitly submit for a particular session, lesson and prompt. Cohorts collect unique-person topic counts only, with no written submissions or leader inbox. Sub-Circle writing is not aggregated into a cohort.</p></details>
+        <details><summary>What do Couples see together?</summary><p>When both accepted partners explicitly consent, the shared journey shows saved DesignID capacity overlay and detail, plus Spiritual Gifts. Useful pending states appear while either person is not ready. It does not publish either full private report. DesignPD is not included in the shared Couples journey.</p></details>
+        <details><summary>What materials and tools are available?</summary><p>Gathering calendars, location/link, participant preparation, the eight-session Field Guide and leader planning tools support the main DYDD Journey. Teaching slides and founder resources will be advertised as available only after supplied and ready. Social chat and messaging are not part of this release.</p></details>
+        <details><summary>Are there creation and invitation limits?</summary><p>Yes. Account-wide creation and invitation budgets protect the shared service; pending invitations reserve seats, and deleting a Circle does not reset creation counters. The organizer occupies one seat. Owners can approve higher account allowances; new Cohorts or increased caps need their own approval.</p></details>
       </section>
 
       <section className="circle-overview-closing" aria-labelledby="circle-next"><div><h2 id="circle-next">Who will you walk with?</h2><p>Plan a Circle for the people already on your heart, or return to the Circles you are part of.</p></div><div className="circle-action-row"><ReviewAwareLink className="button" href="/camp-circle/my-circles#start-circle">Start a Circle</ReviewAwareLink><ReviewAwareLink className="button secondary" href="/camp-circle/my-circles">My Circles</ReviewAwareLink></div><p className="circle-invitation-note">Already invited? Follow the link in your invitation email.</p></section>

@@ -1,3 +1,5 @@
+import { getCircleBillingState } from "@/lib/commerce/circle-billing";
+import { testBillingEnabled as circleReadBillingEnabled } from "@/lib/commerce/test-billing-config";
 import { hasTestCircleTools } from "@/lib/commerce/test-entitlements";
 import "server-only";
 import { NextResponse } from "next/server";
@@ -19,10 +21,14 @@ export async function GET(request: Request) {
     const {data, error} = await circleQuery(actor).eq("id", id).maybeSingle();
     if (error) return reply({error: "Your Circle’s data could not be loaded. Please try again."}, 503);
     if (!data) return reply({error: "Circle data is available only to this Circle’s creator."}, 404);
-    if (!await hasTestCircleTools(actor.userId,id,data.plan?.format)) return reply({error:"Your Circle tools need an active membership or this couple’s unlock.",checkoutUrl:"/camp-circle/my-circles"},402);
+    if (!circleReadBillingEnabled() && !await hasTestCircleTools(actor.userId,id,data.plan?.format)) return reply({error:"Your Circle tools need an active membership or this couple’s unlock.",checkoutUrl:"/camp-circle/my-circles"},402);
     // Only the validated sandbox owner scopes may use the pre-existing private
     // owner report copy. Preview roster names never discover learner records.
     if (!actor.userId) return reply(isSandbox() && ["new", "owner"].includes(actor.previewScope || "") ? await loadOwnerPreviewCircleData(id) : circleDataResponse(id, [], true));
+    if (circleReadBillingEnabled() && data.plan?.format === "Couple") {
+      const billing = await getCircleBillingState(actor.userId,id,"Couple");
+      if (!billing.canOperate) return reply({...circleDataResponse(id,[]),pending:"Both Personal memberships and this couple’s unlock must be current before sharing results."});
+    }
     return reply(await loadCircleData(id, actor.userId, data.plan));
   } catch {
     // Never log or return participant PII, scores, or raw database exceptions.

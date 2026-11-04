@@ -1,0 +1,185 @@
+{
+  "sandbox": true,
+  "ref": "atemrshtshxoqnuevvqu",
+  "at": "2026-11-04T18:59:36.518Z",
+  "tables": [
+    {
+      "relname": "dydd_circle_callouts",
+      "relrowsecurity": true,
+      "anon_read": false,
+      "authenticated_read": false,
+      "service_read": true
+    },
+    {
+      "relname": "dydd_circle_cohort_requests",
+      "relrowsecurity": true,
+      "anon_read": false,
+      "authenticated_read": false,
+      "service_read": true
+    },
+    {
+      "relname": "dydd_circle_consents",
+      "relrowsecurity": true,
+      "anon_read": false,
+      "authenticated_read": false,
+      "service_read": true
+    },
+    {
+      "relname": "dydd_circle_held_outbox",
+      "relrowsecurity": true,
+      "anon_read": false,
+      "authenticated_read": false,
+      "service_read": true
+    },
+    {
+      "relname": "dydd_circle_operation_events",
+      "relrowsecurity": true,
+      "anon_read": false,
+      "authenticated_read": false,
+      "service_read": true
+    },
+    {
+      "relname": "dydd_circle_operation_limits",
+      "relrowsecurity": true,
+      "anon_read": false,
+      "authenticated_read": false,
+      "service_read": true
+    },
+    {
+      "relname": "dydd_circle_prompt_catalog",
+      "relrowsecurity": true,
+      "anon_read": false,
+      "authenticated_read": false,
+      "service_read": true
+    },
+    {
+      "relname": "dydd_circle_roster_previews",
+      "relrowsecurity": true,
+      "anon_read": false,
+      "authenticated_read": false,
+      "service_read": true
+    },
+    {
+      "relname": "dydd_test_couple_bindings",
+      "relrowsecurity": true,
+      "anon_read": false,
+      "authenticated_read": false,
+      "service_read": true
+    },
+    {
+      "relname": "dydd_test_leader_credits",
+      "relrowsecurity": true,
+      "anon_read": false,
+      "authenticated_read": false,
+      "service_read": true
+    }
+  ],
+  "functions": [
+    {
+      "proname": "dydd_circle_actor_email",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "dydd_circle_billing_state",
+      "prosecdef": false,
+      "proconfig": [
+        "search_path=public, pg_temp"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "dydd_circle_operate",
+      "prosecdef": false,
+      "proconfig": [
+        "search_path=public, pg_temp"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "dydd_circle_report_budget",
+      "prosecdef": false,
+      "proconfig": [
+        "search_path=public, pg_temp"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "dydd_circle_require_billing",
+      "prosecdef": false,
+      "proconfig": [
+        "search_path=public, pg_temp"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "dydd_circle_save_shared_plan",
+      "prosecdef": false,
+      "proconfig": [
+        "search_path=public, pg_temp"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "dydd_circle_set_report_limits",
+      "prosecdef": false,
+      "proconfig": [
+        "search_path=public, pg_temp"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "dydd_circle_verified_actor",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=\"\""
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "dydd_cohort_conversion_guard",
+      "prosecdef": false,
+      "proconfig": [
+        "search_path=public, pg_temp"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    },
+    {
+      "proname": "dydd_cohort_count_only_guard",
+      "prosecdef": false,
+      "proconfig": [
+        "search_path=public, pg_temp"
+      ],
+      "anon_execute": false,
+      "authenticated_execute": false,
+      "service_execute": true
+    }
+  ],
+  "identity": [
+    {
+      "service_auth_select": false
+    }
+  ],
+  "productionTouched": false
+}

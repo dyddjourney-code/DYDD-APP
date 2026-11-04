@@ -1,0 +1,12 @@
+{
+  "sandbox": true,
+  "ref": "atemrshtshxoqnuevvqu",
+  "at": "2026-11-04T18:57:08.474Z",
+  "evidence": [
+    {
+      "version": "20261104227000",
+      "sha256": "62be8156eeb1b2fee9436c3422cedd0b1ea49563cdd71821bf63751bc0bc8c45",
+      "applied": true
+    }
+  ]
+}

@@ -1,4 +1,6 @@
 import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
+import { requireCircleBillingAction } from "@/lib/commerce/circle-billing";
+import { operationActor, listCircleOperations } from "@/lib/circles/operations";
 import { hasTestEntitlement } from "@/lib/commerce/test-entitlements";
 import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import { isDeepStrictEqual } from "node:util";
@@ -19,6 +21,13 @@ export async function GET(request: Request) {
       { error: "Sign in to open your Circles.", signedIn: false },
       401,
     );
+  if (actor.userId && testBillingEnabled()) {
+    try {
+      const verified = await operationActor();
+      if (!verified) return reply({error:"Verify your email before opening My Circles."},401);
+      return reply({...await listCircleOperations(verified),preview:false});
+    } catch { return reply({error:"Your Circles could not be loaded. Please try again."},503); }
+  }
   const { data, error } = await circleQuery(actor)
     .order("updated_at", { ascending: false })
     .limit(200);
@@ -56,15 +65,26 @@ export async function POST(request: Request) {
     return reply({ error: "Choose a valid Circle." }, 400);
   const invalid = validatePlan(b.plan, b.status === "active");
   if (invalid) return reply({ error: invalid }, 400);
-  // TEST billing only. Drafts/history/owner-preview remain available; money never grants data-sharing roles.
-  if (testBillingEnabled() && actor.userId && b.status === "active") {
+  // Commercial access never grants ownership. The DB independently enforces lifecycle,
+  // reserved seats and immutable rolling account budgets on every write path.
+  if (testBillingEnabled() && actor.userId) {
     try {
-      const personal = await hasLifetimePersonalAccess(actor.userId) || await hasTestEntitlement(actor.userId,"personal");
-      const capability = b.plan.format === "Couple" ? "couples_circle" : "circle_leadership";
-      const scope = capability === "couples_circle" ? b.id : "account";
-      if (!personal || !await hasTestEntitlement(actor.userId,capability,scope))
-        return reply({error:"Activate your personal membership and this Circle’s unlock here in My Circles. Save a draft first.",checkoutUrl:"/camp-circle/my-circles"},402);
-    } catch {return reply({error:"Your TEST access could not be checked. Your draft is preserved."},503);}
+      const verified = await operationActor();
+      if (!verified || verified.userId !== actor.userId) return reply({error:"Verify your email before saving a Circle."},401);
+      if (b.revision === 0) {
+        const personal = await hasLifetimePersonalAccess(actor.userId) || await hasTestEntitlement(actor.userId,"personal");
+        if (!personal) return reply({error:"Your own Personal membership is required. Activate it in Base Camp.",checkoutUrl:"/hq#purchases"},402);
+        // A single bound Couple draft must exist before its scoped one-time checkout.
+        if (!(b.plan.format === "Couple" && b.status === "draft"))
+          await requireCircleBillingAction(actor.userId,null,b.plan.format,"create");
+      } else {
+        const prior = await circleQuery(actor).eq("id",b.id).maybeSingle();
+        if (prior.error) return reply({error:"Your Circle could not be checked."},503);
+        if (!prior.data) return reply({error:"Circle creator permission required."},403);
+        if (!(b.status === "draft" && prior.data.status === "draft" && b.plan.format === "Couple"))
+          await requireCircleBillingAction(actor.userId,b.id,prior.data.plan.format,"operate");
+      }
+    } catch(error) { return reply({error:error instanceof Error ? error.message : "Your Circle access could not be checked.",checkoutUrl:"/camp-circle/my-circles"},402); }
   }
   const db = createSupabaseAdminClient();
   if (b.revision === 0) {
@@ -80,6 +100,7 @@ export async function POST(request: Request) {
       .select("id,status,plan,revision,updated_at")
       .single();
     if (error) {
+      if (error.code === "P0001") return reply({error:error.message},409);
       // Retrying a timed-out create must not create a second Circle.
       if (error.code === "23505") {
         const existing = await circleQuery(actor).eq("id", b.id).maybeSingle();
@@ -128,6 +149,7 @@ export async function POST(request: Request) {
   const { data, error } = await query
     .select("id,status,plan,revision,updated_at")
     .maybeSingle();
+  if (error?.code === "P0001") return reply({error:error.message},409);
   if (error)
     return reply(
       { error: "Your changes could not be saved. Please try again." },

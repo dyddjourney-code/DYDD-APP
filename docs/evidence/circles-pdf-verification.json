@@ -1,0 +1,9 @@
+{
+  "base": "http://localhost:3138",
+  "at": "2026-11-04T19:02:58.811Z",
+  "actualPdf": true,
+  "foreignCircleDenied": true,
+  "readonlySavedExportPreserved": true,
+  "syntheticOnly": true,
+  "providerCalls": false
+}

@@ -21941,3 +21941,58 @@ body:has(.mobile-nav-drawer[open]) { overflow: hidden; }
 .designpd-trail-offer .button{justify-self:start;min-height:44px}
 .passport-book-toggle:focus-visible,.designpd-trail-offer a:focus-visible{outline:3px solid var(--green-dark);outline-offset:4px}
 @media(max-width:680px){.passport-book-heading{align-items:stretch;flex-direction:column;gap:14px}.passport-book-toggle{width:100%;justify-content:space-between}.designpd-trail-offer{padding:16px}.designpd-trail-offer .button{width:100%}}
+
+/* Sandbox Base Camp cleanup: scoped to the standard dashboard, not mini lanes. */
+.basecamp-clean-layout { padding-top:18px; }
+.basecamp-clean-layout > .hq-content { max-width:1400px; margin-inline:auto; }
+.basecamp-clean-layout .basecamp-hero { display:grid; min-height:clamp(300px,32vw,430px); width:100%; margin:0 0 18px; border-radius:12px; }
+.basecamp-clean-layout .basecamp-hero::before { display:block; background:linear-gradient(180deg,rgba(18,31,19,.65),transparent 55%),linear-gradient(0deg,rgba(18,31,19,.65),transparent 55%); }
+.basecamp-clean-layout .basecamp-scene { position:absolute; inset:0; order:initial; }
+.basecamp-clean-layout .basecamp-scene img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 58%; }
+.basecamp-image-header { position:absolute; z-index:2; inset:24px 28px auto; display:flex; justify-content:space-between; align-items:flex-start; gap:12px; color:#fff; }
+.basecamp-image-header p { margin:0; }
+.basecamp-image-header .basecamp-image-label { color:#fff; font-size:.9rem; font-weight:750; letter-spacing:.04em; }
+.basecamp-image-header .basecamp-image-purpose { margin-top:7px; color:#fff; font-size:1.05rem; font-weight:600; }
+.basecamp-image-header .button { min-height:44px; padding:10px 16px; color:#fff; border-color:rgba(255,255,255,.5); background:rgba(25,44,29,.55); }
+.basecamp-image-header .button:hover { background:#304c31; }
+.basecamp-clean-layout .basecamp-copy { min-height:0; padding:28px; align-self:end; width:auto; }
+.basecamp-clean-layout .basecamp-copy h1 { margin:0; font-size:clamp(1.5rem,3vw,2.35rem); color:#fff; line-height:1.2; }
+.basecamp-next-profile { display:grid; grid-template-columns:minmax(240px,.7fr) minmax(0,1.3fr); gap:18px; align-items:start; margin-bottom:24px; }
+.basecamp-clean-layout .basecamp-ranger-launch-card { min-height:0; padding:22px 24px; gap:10px; border-radius:12px; box-shadow:none; background:#304c31; }
+.basecamp-clean-layout .basecamp-ranger-launch-card h2 { font-size:1.75rem; }
+.basecamp-clean-layout .basecamp-ranger-launch-card p { font-size:.95rem; font-weight:450; }
+.basecamp-clean-layout .basecamp-ranger-launch-card .button { width:fit-content; margin-top:4px; font-weight:800; min-height:44px; }
+.basecamp-clean-layout .purchases { padding:0; gap:14px; margin-bottom:24px; border:0; background:none; box-shadow:none; }
+.basecamp-clean-layout .card-heading h2 { margin:0; font-size:1.25rem; }
+.basecamp-clean-layout .personal-membership-offer { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); column-gap:32px; row-gap:10px; padding:24px; border-radius:12px; align-items:start; }
+.basecamp-clean-layout .personal-membership-offer > .section-label,
+.basecamp-clean-layout .personal-membership-offer > h3,
+.basecamp-clean-layout .personal-membership-offer > .purchase-price,
+.basecamp-clean-layout .personal-membership-offer > p:not(.purchase-fine-print):not(.purchase-active) { grid-column:1; }
+.basecamp-clean-layout .personal-membership-offer > ul { grid-column:2; grid-row:1 / span 4; font-size:.94rem; }
+.basecamp-clean-layout .personal-membership-offer > .purchase-fine-print { grid-column:2; }
+.basecamp-clean-layout .personal-membership-offer > .button,
+.basecamp-clean-layout .personal-membership-offer > .purchase-active { grid-column:1; grid-row:5; margin-top:4px; justify-self:start; }
+.basecamp-clean-layout .basecamp-account-card.profile { gap:14px; padding:20px 24px; border-radius:12px; box-shadow:none; }
+.basecamp-clean-layout .account-detail-list { grid-template-columns:minmax(0,1fr) minmax(0,2fr); gap:24px; }
+.basecamp-clean-layout .account-detail-list > div { min-width:0; padding:0; border:0; background:none; }
+.basecamp-clean-layout .account-detail-list dd { overflow-wrap:anywhere; }
+.basecamp-clean-layout .button:active { transform:scale(.98); }
+@media(max-width:760px) {
+  .basecamp-clean-layout .basecamp-hero { min-height:280px; }
+  .basecamp-image-header { inset:18px 18px auto; }
+  .basecamp-image-header .basecamp-image-label { font-size:.8rem; }
+  .basecamp-image-header .basecamp-image-purpose { font-size:.88rem; }
+  .basecamp-image-header .button { padding:9px 12px; font-size:.85rem; }
+  .basecamp-clean-layout .basecamp-copy { padding:18px; }
+  .basecamp-next-profile { grid-template-columns:minmax(0,1fr); gap:14px; }
+  .basecamp-clean-layout .basecamp-ranger-launch-card { padding:18px; }
+  .basecamp-clean-layout .personal-membership-offer { grid-template-columns:minmax(0,1fr); padding:18px; gap:12px; }
+  .basecamp-clean-layout .personal-membership-offer > * { grid-column:1 !important; grid-row:auto !important; }
+  .basecamp-clean-layout .personal-membership-offer > .button { width:100%; }
+  .basecamp-clean-layout .basecamp-account-card.profile { padding:18px; }
+  .basecamp-clean-layout .account-detail-list { grid-template-columns:minmax(0,1fr); gap:12px; }
+}
+.basecamp-clean-layout .contextual-purchases { margin:0; padding:0; border:0; }
+.basecamp-clean-layout .hq-grid { grid-template-columns:minmax(0,1fr); }
+.basecamp-clean-layout .admin-panel { min-width:0; overflow-wrap:anywhere; }

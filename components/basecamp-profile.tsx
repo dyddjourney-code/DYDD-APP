@@ -20,7 +20,7 @@ async function preparePhoto(file: File): Promise<Blob> {
   } finally { bitmap.close(); }
 }
 
-export function BaseCampProfile({ initialName, preview = false, previewQuery = '', readOnly = false }: { initialName: string; preview?: boolean; previewQuery?: string; readOnly?: boolean }) {
+export function BaseCampProfile({ initialName, preview = false, previewQuery = '', readOnly = false, compact = false }: { initialName: string; preview?: boolean; previewQuery?: string; readOnly?: boolean; compact?: boolean }) {
   const router = useRouter();
   const canPersist = !preview || Boolean(previewQuery);
   const endpoint = '/api/profile' + previewQuery;
@@ -82,8 +82,8 @@ export function BaseCampProfile({ initialName, preview = false, previewQuery = '
   const shown = editing ? draft : profile;
   const image = editing && photoUrl ? photoUrl : shown.has_photo && !(editing && removePhoto) ? `/api/profile/photo${previewQuery || "?"}${previewQuery ? "&" : ""}v=${profile.revision}` : '';
   const initials = (shown.display_name || initialName).split(/\s+/).filter(Boolean).slice(0,2).map(word => word[0]).join('').toUpperCase();
-  return <section className={styles.panel} aria-label="Your Base Camp profile" id={readOnly ? "circle-profile-preview" : "your-profile"}>
-    <div className={styles.heading}><div><p className="section-label">Your profile</p><h2>A little about you.</h2><p>An introduction for the people walking alongside you.</p></div>{!readOnly && !editing && !loading && !loadFailed && <button className="button secondary" onClick={() => { setDraft(profile); setEditing(true); setMessage(''); }}> {profile.revision ? 'Edit profile' : 'Set up profile'}</button>}</div>
+  return <section className={`${styles.panel} ${compact ? styles.compact : ""}`} aria-label="Your Base Camp profile" id={readOnly ? "circle-profile-preview" : "your-profile"}>
+    <div className={styles.heading}><div>{compact ? <h2>Your profile</h2> : <><p className="section-label">Your profile</p><h2>A little about you.</h2><p>An introduction for the people walking alongside you.</p></>}</div>{!readOnly && !editing && !loading && !loadFailed && <button className="button secondary" onClick={() => { setDraft(profile); setEditing(true); setMessage(''); }}> {compact || profile.revision ? 'Edit profile' : 'Set up profile'}</button>}</div>
     {loading ? <div className={styles.skeleton} aria-label="Loading your profile" /> : <>
       <div className={styles.introduction}>
         <div className={styles.avatar}>{image ? <img src={image} alt={`${shown.display_name || initialName}'s profile`} /> : <span aria-label="Your initials">{initials}</span>}</div>

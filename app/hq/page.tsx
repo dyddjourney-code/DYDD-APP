@@ -16,7 +16,6 @@ import {
   sendFruitLifeReminder,
 } from "@/app/fruitlife360/actions";
 import { DydPassportBook } from "@/components/dyd-passport-book";
-import { DyddOrientationSlider } from "@/components/dydd-orientation-slider";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 import { FruitLifeCurrentAssessmentProcess } from "@/components/fruitlife-current-assessment-process";
@@ -648,64 +647,41 @@ export default async function HqPage({ searchParams }: HqPageProps) {
   }
 
   return (
-    <main className="hq-shell hq-app-shell">
+    <main className="hq-shell hq-app-shell basecamp-clean-layout">
       <div className="hq-content">
-        <header className="hq-topbar">
+      <section className="basecamp-hero" id="basecamp" aria-label="DYDD Base Camp">
+        <div className="basecamp-scene" aria-hidden="true">
+          <img src="/brand/dydd-cabin-hut-only.png" alt="" />
+        </div>
+        <header className="basecamp-image-header">
           <div>
-            <p className="eyebrow">DYDD Base Camp</p>
-            <h1>{displayName}</h1>
+            <p className="basecamp-image-label">DYDD Base Camp</p>
+            <p className="basecamp-image-purpose">On purpose. For purpose.</p>
           </div>
           <form action={signOut}>
             <button className="button secondary" type="submit">Sign out</button>
           </form>
         </header>
-
-      <section className="basecamp-hero" id="basecamp" aria-label="DYDD Base Camp">
         <div className="basecamp-copy">
-          <p className="section-label basecamp-purpose-pill">On Purpose, For Purpose</p>
-          <div className="basecamp-identity-lockup">
-            <div>
-              <h2>Welcome, {welcomeName}.</h2>
-            </div>
-          </div>
-        </div>
-        <div className="basecamp-scene" aria-hidden="true">
-          <img src="/brand/dydd-cabin-hut-only.png" alt="" />
-          <div className="camp-sign">
-            <span>DYDD</span>
-            <strong>Base Camp</strong>
-          </div>
+          <h1>Welcome, {welcomeName}.</h1>
         </div>
       </section>
 
-      <BaseCampProfile initialName={displayName} preview={Boolean(reviewReport)} previewQuery={isSandbox() && newPreview ? reviewQuery(reviewParams) : ""} />
-
-      <section className="basecamp-orientation-band" aria-label="DYDD Base Camp next step">
+      <section className="basecamp-next-profile" aria-label="Your next step and profile">
         <div className="basecamp-ranger-launch-card">
-          <p className="section-label">Next</p>
-          <h2>Open Ranger Station.</h2>
-          <p>
-            Start with the guide station, then choose the first trail that fits your season.
-            Ranger Station holds the map, trailheads, quick tracks, and next-step choices.
-          </p>
+          <h2>Next</h2>
+          <p>Open Ranger Station</p>
           <Link className="button primary" href={withReviewQuery("/ranger-station", reviewParams)}>
             Go to Ranger Station
           </Link>
         </div>
-        <DyddOrientationSlider />
+        <BaseCampProfile compact initialName={displayName} preview={Boolean(reviewReport)} previewQuery={isSandbox() && newPreview ? reviewQuery(reviewParams) : ""} />
       </section>
 
-      <section className="basecamp-account-card purchases" id="purchases" aria-label="Purchase history">
-        <div className="card-heading">
-          <p className="section-label">Purchases</p>
-          <h2>{lifetimeAccess ? "Your access is active." : testBillingEnabled() ? "Choose your next step." : "Nothing purchased yet."}</h2>
-          <p>
-            {lifetimeAccess ? "Free lifetime personal all-access · No expiry · No payment required." : testBillingEnabled() ? "Make room to discover your God-given design and put it into practice." : "After you begin a tool, course, or guided journey, access will appear here."}
-          </p>
-        </div>
+      <section className="basecamp-account-card purchases" id="purchases" aria-label="Purchases">
+        <div className="card-heading"><h2>Purchases</h2></div>
         {!testBillingEnabled() && <p className="empty-account-note">
-          Ranger Station will help you decide whether to start with the free Spiritual Gifts
-          assessment, FruitLife360, DesignID, or the full Discover Your Divine Design journey.
+          {lifetimeAccess ? "Free lifetime personal all-access · No expiry · No payment required." : "Your purchased access will appear here."}
         </p>}
         {testBillingEnabled() ? <ContextualPurchases area="personal" preview={Boolean(reviewReport)} /> : null}
         {user && !reviewReport ? <BetaAccess active={lifetimeAccess} verified={Boolean(user.email_confirmed_at)} /> : null}
@@ -716,11 +692,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
       <section className="basecamp-account-layout basecamp-account-layout-single" aria-label="Base Camp account overview">
         <article className="basecamp-account-card profile">
           <div className="card-heading">
-            <p className="section-label">Account</p>
-            <h2>Your starting record.</h2>
-            <p>
-              Base Camp stays simple until you choose a path.
-            </p>
+            <h2>Account details</h2>
           </div>
           <dl className="account-detail-list">
             <div>

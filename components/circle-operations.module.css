@@ -2,3 +2,6 @@
 
 /* Long real Circle names, prompt keys and form options must fit narrow screens. */
 .workspace{overflow-wrap:anywhere}.workspace button,.workspace input,.workspace select,.workspace textarea{max-width:100%;box-sizing:border-box}.workspace form,.workspace section,.workspace nav{min-width:0}
+
+/* Keep capacity detail readable on phones without splitting every table word. */
+@media(max-width:600px){.dialog .table thead{display:none}.dialog .table,.dialog .table tbody{display:block;width:100%}.dialog .table tr{display:block;padding:12px 0;border-bottom:1px solid #dce3d8}.dialog .table th{display:block;padding:8px 0;border:0;overflow-wrap:normal;word-break:normal}.dialog .table td{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;padding:8px 0;border:0;overflow-wrap:normal;word-break:normal}.dialog .table td::before{content:attr(data-label);font-weight:600}.dialog .table th p{line-height:1.5}}

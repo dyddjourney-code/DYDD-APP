@@ -36,7 +36,7 @@ export async function handleSandboxAuthEmail(request: Request) {
   let next = '/hq';
   try {
     const redirect = new URL(event.redirect_to || base);
-    if (redirect.origin !== base || (event.site_url && new URL(event.site_url).origin !== base)) throw new Error('Invalid sandbox origin');
+    if (redirect.origin !== base || (event.site_url && ![base, 'https://atemrshtshxoqnuevvqu.supabase.co'].includes(new URL(event.site_url).origin))) throw new Error('Invalid sandbox origin');
     const requested = redirect.pathname === '/auth/callback' ? redirect.searchParams.get('next') : redirect.pathname + redirect.search;
     if (requested?.startsWith('/') && new URL(requested, base).origin === base) next = requested;
   } catch { return Response.json({error:{http_code:400,message:'Sandbox authentication redirect must stay on the sandbox site.'}}); }

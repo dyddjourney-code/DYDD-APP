@@ -5,11 +5,13 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const escape = (value: string) => value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]!);
+  const tokenType = ['email', 'signup', 'recovery', 'invite'].includes(url.searchParams.get('token_type') || '') ? url.searchParams.get('token_type')! : 'email';
+  const recovery = tokenType === 'recovery';
   const emailLab = url.searchParams.get('next')?.includes('/sandbox/email-lab') ?? false;
-  const heading = emailLab ? 'Your sandbox email walkthrough' : 'Ready to explore your design?';
-  const button = emailLab ? 'Open email walkthrough' : 'Open assessment';
+  const heading = recovery ? 'Reset your sandbox password' : emailLab ? 'Your sandbox email walkthrough' : 'Ready to explore your design?';
+  const button = recovery ? 'Continue to reset password' : emailLab ? 'Open email walkthrough' : 'Open assessment';
   // Link previews must never consume the one-time credential.
-  return new NextResponse(`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${emailLab ? 'Sandbox email walkthrough' : 'Open DesignID'}</title><body style="font:20px system-ui;max-width:34rem;margin:12vh auto;padding:24px;background:#faf7ed;color:#243f27"><h1>${heading}</h1><p>Continue to sign in securely.</p><form method="post" action="/auth/confirm"><input type="hidden" name="token_hash" value="${escape(url.searchParams.get("token_hash") ?? "")}"><input type="hidden" name="next" value="${escape(url.searchParams.get("next") ?? "/field-kit")}"><button style="font:inherit;padding:16px 24px;border:0;border-radius:8px;background:#243f27;color:white">${button}</button></form></body></html>`, {
+  return new NextResponse(`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${emailLab ? 'Sandbox email walkthrough' : 'Open DesignID'}</title><body style="font:20px system-ui;max-width:34rem;margin:12vh auto;padding:24px;background:#faf7ed;color:#243f27"><h1>${heading}</h1><p>Continue to sign in securely.</p><form method="post" action="/auth/confirm"><input type="hidden" name="token_type" value="${escape(tokenType)}"><input type="hidden" name="token_hash" value="${escape(url.searchParams.get("token_hash") ?? "")}"><input type="hidden" name="next" value="${escape(url.searchParams.get("next") ?? "/field-kit")}"><button style="font:inherit;padding:16px 24px;border:0;border-radius:8px;background:#243f27;color:white">${button}</button></form></body></html>`, {
     headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store", "Referrer-Policy": "no-referrer", "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'" },
   });
 }
@@ -24,9 +26,11 @@ export async function POST(request: NextRequest) {
     ? `${target.pathname}${target.search}`
     : "/field-kit";
 
+  const candidateType = String(form.get("token_type") ?? "email");
+  const tokenType = candidateType === "signup" || candidateType === "recovery" || candidateType === "invite" ? candidateType : "email";
   if (tokenHash) {
     const supabase = await createSupabaseServerClient();
-    const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: "email" });
+    const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: tokenType });
     if (!error) {
       const response = NextResponse.redirect(new URL(next, url.origin));
       response.headers.set("Cache-Control", "no-store");

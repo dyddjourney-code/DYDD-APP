@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { sandboxRecipientAllowed } from "@/lib/email/sandbox-policy";
 
 const productionAppUrl = "https://dydd-online-school.vercel.app";
 
@@ -58,8 +59,9 @@ function getAppBaseUrl(requestHeaders: Headers) {
 }
 
 export async function signInWithMagicLink(formData: FormData) {
-  if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox") {
-    loginRedirect("Authentication-link email is off in this sandbox. Use your separate sandbox password account.", safeNextPath(formData.get("next")), "signin");
+  if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox" &&
+      (process.env.DYDD_SANDBOX_AUTH_EMAIL_ENABLED !== "true" || !sandboxRecipientAllowed(String(formData.get("email") ?? "")))) {
+    loginRedirect("Sandbox email is restricted to the configured test inbox. Use your separate sandbox password account.", safeNextPath(formData.get("next")), "signin");
   }
   const next = safeNextPath(formData.get("next"));
   const email = String(formData.get("email") ?? "")
@@ -229,8 +231,9 @@ export async function signInWithPassword(formData: FormData) {
 }
 
 export async function requestPasswordReset(formData: FormData) {
-  if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox") {
-    loginRedirect("Authentication-link email is off in this sandbox. Use your separate sandbox password account.", safeNextPath(formData.get("next")), "signin");
+  if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox" &&
+      (process.env.DYDD_SANDBOX_AUTH_EMAIL_ENABLED !== "true" || !sandboxRecipientAllowed(String(formData.get("email") ?? "")))) {
+    loginRedirect("Sandbox email is restricted to the configured test inbox. Use your separate sandbox password account.", safeNextPath(formData.get("next")), "signin");
   }
   const next = safeNextPath(formData.get("next"));
   const email = String(formData.get("email") ?? "").trim().toLowerCase();

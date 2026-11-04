@@ -1,3 +1,4 @@
+import { signedInAccountDestination } from "@/lib/commerce/account-access";
 import { NextResponse, type NextRequest } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -62,5 +63,6 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  return NextResponse.redirect(new URL(next, requestUrl.origin));
+  const user = (await (await createSupabaseServerClient()).auth.getUser()).data.user;
+  return NextResponse.redirect(new URL(await signedInAccountDestination(user, next), requestUrl.origin));
 }

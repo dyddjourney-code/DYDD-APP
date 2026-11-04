@@ -1,6 +1,7 @@
+import { requirePersonalMembershipContent } from "@/lib/commerce/account-access";
 import { redirect } from "next/navigation";
 import { PageHelp } from "@/components/page-help";
-import { userHasFruitLifeEntitlement } from "@/lib/commerce/fruitlife-entitlements";
+import { getActiveFruitLifeEntitlement, userHasFruitLifeEntitlement } from "@/lib/commerce/fruitlife-entitlements";
 import { getFruitLifeDashboardSessions, fruitLifeIsActive } from "@/lib/fruitlife360/dashboard";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -39,6 +40,7 @@ export default async function FruitLifeSignupPage({
     redirect(`/login?next=${encodeURIComponent(`/fruitlife360?return_to=${returnTo}`)}`);
   }
 
+  if (!await getActiveFruitLifeEntitlement(user.id)) await requirePersonalMembershipContent(user, "/fruitlife360");
   const hasAccess = legacyLane ? await userHasFruitLifeEntitlement(user.id) : true;
 
   if (legacyLane && !hasAccess && !isFruitLifeAdmin(user.email)) {

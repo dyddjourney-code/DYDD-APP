@@ -1,3 +1,4 @@
+import { signedInAccountDestination } from "@/lib/commerce/account-access";
 import { NextResponse, type NextRequest } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -32,7 +33,8 @@ export async function POST(request: NextRequest) {
     const supabase = await createSupabaseServerClient();
     const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: tokenType });
     if (!error) {
-      const response = NextResponse.redirect(new URL(next, url.origin));
+      const user = (await supabase.auth.getUser()).data.user;
+      const response = NextResponse.redirect(new URL(await signedInAccountDestination(user, next), url.origin));
       response.headers.set("Cache-Control", "no-store");
       response.headers.set("Referrer-Policy", "no-referrer");
       return response;

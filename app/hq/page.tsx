@@ -1,3 +1,4 @@
+import { AccountPurchases } from "@/components/account-purchases";
 import { ContextualPurchases } from "@/components/contextual-purchases";
 import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
 import { BetaAccess } from "@/components/beta-access";
@@ -689,7 +690,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
 
       <DydPassportBook badges={passportBadges} firstName={welcomeName} />
 
-      <section className="basecamp-account-layout basecamp-account-layout-single" aria-label="Base Camp account overview">
+      <section className="basecamp-account-layout basecamp-account-billing-layout" aria-label="Base Camp account overview">
         <article className="basecamp-account-card profile">
           <div className="card-heading">
             <h2>Account details</h2>
@@ -704,6 +705,9 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               <dd>{user?.email ?? fruitLifeDashboardEmail ?? "Preview account"}</dd>
             </div>
           </dl>
+        </article>
+        <article className="basecamp-account-card account-billing-records" aria-label="Your purchases and subscription">
+          {testBillingEnabled() ? <AccountPurchases preview={Boolean(reviewReport)} lifetime={Boolean(lifetimeAccess)} /> : <p>Your purchased access stays connected to this account.</p>}
         </article>
       </section>
 

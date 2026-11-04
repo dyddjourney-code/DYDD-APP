@@ -1,3 +1,4 @@
+import { membershipBackedCourse, personalMembershipExpired, personalRenewalPath } from "@/lib/commerce/account-access";
 import { journeySlug, journeyAssessmentTypes, encodeJourneySources, latestJourneySources, sourcesForJourneyRound } from "@/lib/reflections/journey-assessments";
 import { missingPathfinderEntries, retiredPathfinderCanonical } from '@/lib/journey/pathfinder';
 import type { ReflectionEntry } from '@/lib/reflections/types';
@@ -181,6 +182,8 @@ export async function POST(request: Request) {
     !getReflectionExperience(b.courseSlug)
   )
     return json({ error: "Unknown course." }, 400);
+  if (membershipBackedCourse(b.courseSlug) && await personalMembershipExpired(user))
+    return json({ error: "Renew your personal membership to continue. Saved reflections are preserved.", renewalUrl: personalRenewalPath('/courses/' + b.courseSlug) }, 402);
   if (b.action === "ensure-round") {
     if (b.courseSlug !== "discover-your-divine-design")
       return json({ error: "Automatic setup is only available for the Journey." }, 400);

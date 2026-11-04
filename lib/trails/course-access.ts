@@ -1,3 +1,5 @@
+import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
+import { membershipBackedCourse, requirePersonalMembershipContent } from "@/lib/commerce/account-access";
 import { getLearningLesson } from "@/lib/courses/course-catalog";
 import { courseCardHref, courseOrigin } from "./course-origin";
 import { isOwnerCoursePreview } from "./course-preview";
@@ -26,6 +28,11 @@ export async function requireTrailCourseAssessment({
   const trail = trailDefinitions.find((t) => t.courseSlug === slug);
   if (!trail) return;
   if (isOwnerCoursePreview(params)) return;
+  if (signedIn && testBillingEnabled() && membershipBackedCourse(slug)) {
+    const db = await createSupabaseServerClient();
+    const { data: { user } } = await db.auth.getUser();
+    await requirePersonalMembershipContent(user, `/courses/${slug}`);
+  }
   const mini = params?.lane === "fruitlife";
   const tracksOrigin = trail.id === "designpd" || trail.id === "fruitlife-360" || trail.id === "spiritual-gifts";
   const origin = (trail.id === "fruitlife-360" || trail.id === "spiritual-gifts") ? "field-kit" : courseOrigin(params?.origin);

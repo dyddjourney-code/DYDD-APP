@@ -1,3 +1,5 @@
+import { membershipArtifactExpired } from "@/lib/commerce/account-artifact-access";
+import { personalRenewalPath } from "@/lib/commerce/account-access";
 import { NextResponse, type NextRequest } from "next/server";
 import { nativeDesignPdRecoveryPayload } from "@/lib/assessments/native-designpd-recovery";
 import {
@@ -173,7 +175,13 @@ async function findSnapshot(
     login.searchParams.set("next", target.pathname + target.search);
     return NextResponse.redirect(login, { status: 303, headers });
   }
-  return getOwnedArtifactSnapshot(snapshotId, user.id, normalizeEmail(user.email));
+  const snapshot = await getOwnedArtifactSnapshot(snapshotId, user.id, normalizeEmail(user.email));
+  // Membership-backed report bytes stop at the same server-verified boundary as
+  // member content. Records stay intact; paid DesignPD and free Gifts keep their rules.
+  if (snapshot && await membershipArtifactExpired(user, snapshot)) {
+    return NextResponse.redirect(new URL(personalRenewalPath(request.nextUrl.pathname + request.nextUrl.search), request.url), {status:303, headers});
+  }
+  return snapshot;
 }
 /** Supplement legacy Fruitful Life 360 snapshots with their owned session’s retained PDF. */
 async function findAuthorizedSnapshot(request: NextRequest, snapshotId: string) {

@@ -1,3 +1,4 @@
+import { personalMembershipExpired } from "@/lib/commerce/account-access";
 import {sandboxJobTransportBlocked} from '@/lib/email/sandbox-policy';
 import { createHash, randomBytes } from 'node:crypto';
 import { NextResponse } from 'next/server';
@@ -28,6 +29,19 @@ export async function runWaypointsWorker(){
   const s=await db.from('dydd_waypoint_subscriptions').select('id,email,status,user_id,confirmed_at').eq('id',job.subscription_id).single();
   const r=await db.from('dydd_waypoint_releases').select('status,release_at,dydd_waypoints(*)').eq('id',job.release_id).single();
   if(s.error||r.error){if(!await finish('error','Unable to load delivery context.'))return fail();errors++;continue;}
+  // A confirmed email subscription does not extend an ended paid membership.
+  // Keep the subscription and release history intact so renewal resumes future releases.
+  if (s.data.user_id) {
+   try {
+    if (await personalMembershipExpired({ id: s.data.user_id, email: s.data.email })) {
+     if (!await finish('skipped','Personal membership ended; saved subscription retained for renewal.')) return fail();
+     skipped++; continue;
+    }
+   } catch {
+    if (!await finish('error','Unable to verify personal membership.')) return fail();
+    errors++; continue;
+   }
+  }
   const preferences=await db.from('dydd_email_preferences').select('optional_disabled').eq('email',s.data.email).maybeSingle();
   if(preferences.error){if(!await finish('error','Unable to check global optional-email preference.'))return fail();errors++;continue;}
   if(preferences.data?.optional_disabled){if(!await finish('skipped','All optional email is disabled.'))return fail();skipped++;continue;}

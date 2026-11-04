@@ -1,3 +1,5 @@
+import { requirePersonalMembershipContent } from "@/lib/commerce/account-access";
+import { isOwnerCoursePreview } from "@/lib/trails/course-preview";
 import { getSavedWaypointPrimary } from "@/lib/waypoints/user-context";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
@@ -88,6 +90,10 @@ async function getWaypointSubscriptionState() {
 
 export default async function WaypointsPage({ searchParams }: WaypointsPageProps) {
   const params = await searchParams;
+  if (!isOwnerCoursePreview(params)) {
+    const { data: { user } } = await (await createSupabaseServerClient()).auth.getUser();
+    await requirePersonalMembershipContent(user, "/waypoints");
+  }
   const fruitLifeLane = params?.lane === "fruitlife";
   const fruitLifeReviewQuery = reviewQuery(params);
   const releasedScheduledWaypoints = getReleasedWaypoints();

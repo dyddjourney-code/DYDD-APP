@@ -1,3 +1,4 @@
+import { membershipBackedCourse, personalMembershipExpired, personalRenewalPath } from "@/lib/commerce/account-access";
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
@@ -39,6 +40,7 @@ export async function POST(request:Request){
  const b=await request.json().catch(()=>null);
  if(!b || !passportCurriculum.some(c=>c.slug===b.courseSlug))return reply({error:'Unknown course.'},400);
  try {
+  if(membershipBackedCourse(b.courseSlug) && await personalMembershipExpired(user))return reply({error:'Renew your personal membership to continue. Saved progress is preserved.',renewalUrl:personalRenewalPath('/courses/'+b.courseSlug)},402);
   const state=await readPassportState(user),db=createSupabaseAdminClient();
   if(b.action==='declare-niche'){
    if(b.courseSlug!==journeySlug)return reply({error:'Open the Journey to complete your declaration.'},400);

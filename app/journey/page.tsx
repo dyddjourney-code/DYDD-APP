@@ -1,3 +1,4 @@
+import { requirePersonalMembershipContent } from "@/lib/commerce/account-access";
 import { journeySpiritualGiftsSnapshot } from "@/lib/journey/spiritual-gifts-snapshot";
 import { journeySlug, latestJourneySources, sourcesForJourneyRound, type JourneyAssessmentSource } from "@/lib/reflections/journey-assessments";
 import { courseAssessmentEligibility, reportCompletedAt } from "@/lib/trails/course-eligibility";
@@ -7,7 +8,7 @@ import { getAssessmentSnapshotsForUser } from "@/lib/assessments/student-context
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { normalizeEmail } from "@/lib/identity/email";
 import { getHeatherReviewReport, getNewReviewReport, type ReviewSearchParams } from "@/lib/review/heather";
-import { designIdCourseReviewParams } from "@/lib/trails/course-preview";
+import { isOwnerCoursePreview, designIdCourseReviewParams } from "@/lib/trails/course-preview";
 import { ReflectionCourseShell } from "@/components/reflection-course-shell";
 import { ReflectionAnswer } from "@/components/reflection-session";
 import {
@@ -38,6 +39,7 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   const reviewParams = designIdCourseReviewParams(params);
+  if (!isOwnerCoursePreview(reviewParams)) await requirePersonalMembershipContent(user, "/journey");
   const allAssessmentReport = (await getHeatherReviewReport(reviewParams)) ?? (await getNewReviewReport(reviewParams)) ?? (user ? await getAssessmentSnapshotsForUser(user.id, normalizeEmail(user.email)) : {all: [], latest: []});
   // Teaching personalization and saved writing use the same round-specific sources.
   const eligibleSources: JourneyAssessmentSource[] = (await Promise.all((["designid", "spiritual_gifts"] as const).map(async assessmentType => {

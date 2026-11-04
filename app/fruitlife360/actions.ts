@@ -1,4 +1,6 @@
 "use server";
+import { requireFruitLifeSelfMembership, requirePersonalMembershipContent } from "@/lib/commerce/account-access";
+
 
 import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import crypto from "node:crypto";
@@ -425,6 +427,7 @@ async function saveResponse({
     path,
     responseType,
   );
+  if (responseType === "self") await requireFruitLifeSelfMembership(session.id);
   const reviewerName = getString(formData, "reviewer_name");
   const reviewerEmail = normalizeEmail(getString(formData, "reviewer_email"));
   const relationship = getString(formData, "relationship_label");
@@ -525,6 +528,7 @@ export async function createFruitLifeSession(formData: FormData) {
     Boolean(user?.id && (lifetimeAccess || activeEntitlement)) || isFruitLifeAdmin(user?.email);
 
   if (!user) redirect(`/login?next=${encodeURIComponent("/fruitlife360")}`);
+  if (!activeEntitlement) await requirePersonalMembershipContent(user, "/fruitlife360");
   // Participant identity comes from the signed-in account, never editable form data.
   const { data: profile } = await serverSupabase.from("school_profiles")
     .select("full_name").eq("id", user.id).maybeSingle();

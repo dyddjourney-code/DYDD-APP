@@ -1,4 +1,5 @@
 "use server";
+import { signedInAccountDestination } from "@/lib/commerce/account-access";
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -122,7 +123,7 @@ export async function verifyEmailCode(formData: FormData) {
     loginRedirect(error.message, next);
   }
 
-  redirect(next);
+  redirect(await signedInAccountDestination((await supabase.auth.getUser()).data.user, next));
 }
 
 async function upsertSchoolProfile(userId: string, email: string, fullName?: string | null) {
@@ -186,7 +187,7 @@ export async function createPasswordAccount(formData: FormData) {
 
   if (data.user && data.session) {
     await upsertSchoolProfile(data.user.id, email, fullName);
-    redirect(next);
+    redirect(await signedInAccountDestination((await supabase.auth.getUser()).data.user, next));
   }
 
   loginRedirect(
@@ -227,7 +228,7 @@ export async function signInWithPassword(formData: FormData) {
     await upsertSchoolProfile(data.user.id, email, fullName);
   }
 
-  redirect(next);
+  redirect(await signedInAccountDestination((await supabase.auth.getUser()).data.user, next));
 }
 
 export async function requestPasswordReset(formData: FormData) {

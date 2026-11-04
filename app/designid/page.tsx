@@ -1,3 +1,4 @@
+import { requirePersonalMembershipContent } from "@/lib/commerce/account-access";
 import Link from "next/link";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import { getDesignIdEligibility } from "@/lib/designid/retake";
@@ -27,6 +28,7 @@ export default async function DesignIdPage({ searchParams }: DesignIdPageProps) 
     redirect(`/login?next=${encodeURIComponent("/designid")}`);
   }
 
+  await requirePersonalMembershipContent(user, "/designid");
   const admin = createSupabaseAdminClient();
   const { data: profile } = await admin
     .from("school_profiles")

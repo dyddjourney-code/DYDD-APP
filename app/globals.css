@@ -21996,3 +21996,26 @@ body:has(.mobile-nav-drawer[open]) { overflow: hidden; }
 .basecamp-clean-layout .contextual-purchases { margin:0; padding:0; border:0; }
 .basecamp-clean-layout .hq-grid { grid-template-columns:minmax(0,1fr); }
 .basecamp-clean-layout .admin-panel { min-width:0; overflow-wrap:anywhere; }
+
+/* Base Camp: compact identity beside retained billing records. */
+.basecamp-account-billing-layout { display:grid; grid-template-columns:minmax(240px,.8fr) minmax(0,1.6fr); gap:20px; align-items:start; }
+.basecamp-account-billing-layout .profile { min-width:0; }
+.basecamp-account-billing-layout .account-detail-list { display:grid; grid-template-columns:1fr; gap:14px; }
+.basecamp-account-billing-layout .account-detail-list div { min-width:0; }
+.basecamp-account-billing-layout .account-detail-list dd { overflow-wrap:anywhere; }
+.account-purchases h3,.account-subscription-status h3 { margin:0 0 14px; font-size:1.12rem; }
+.account-purchase-history { list-style:none; margin:0; padding:0; }
+.account-purchase-history li { display:grid; gap:5px; padding:14px 0; border-bottom:1px solid #d7dfd6; }
+.account-purchase-history span,.account-purchase-history small { color:#536254; font-size:.9rem; overflow-wrap:anywhere; }
+.account-subscription-status { margin-top:24px; padding-top:20px; border-top:1px solid #d7dfd6; }
+.account-subscription-record { padding:0 0 16px; }
+.account-subscription-record p,.account-purchases>p { font-size:.94rem; line-height:1.55; }
+.membership-cancel-dialog { width:min(580px,calc(100% - 32px)); max-height:calc(100dvh - 40px); overflow-y:auto; border:1px solid #b5c5b4; border-radius:16px; padding:28px; color:#233c30; background:#fffdf7; }
+.membership-cancel-dialog::backdrop { background:rgb(20 35 27 / .6); }
+.membership-cancel-dialog h2 { font-size:1.45rem; margin-top:0; }
+.membership-cancel-dialog p { font-size:.98rem; line-height:1.6; }
+.membership-dialog-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; }
+.membership-dialog-actions .button { min-height:44px; }
+@media(max-width:760px) { .basecamp-account-billing-layout { grid-template-columns:minmax(0,1fr); } .membership-cancel-dialog { padding:20px; } .membership-dialog-actions { flex-direction:column; } }
+
+.basecamp-account-billing-layout .account-detail-list dd { font-size:.95rem; line-height:1.45; font-weight:600; }

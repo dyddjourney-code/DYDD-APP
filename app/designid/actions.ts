@@ -1,4 +1,5 @@
 "use server";
+import { requirePersonalMembershipContent } from "@/lib/commerce/account-access";
 import crypto from "node:crypto";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import {
@@ -76,6 +77,7 @@ export async function saveDesignIdResponse(formData: FormData) {
   if (!user) {
     redirect(`/login?next=${encodeURIComponent("/designid")}`);
   }
+  await requirePersonalMembershipContent(user, "/designid");
   const supabase = createSupabaseAdminClient();
   const { data: profile } = await supabase
     .from("school_profiles")

@@ -1,3 +1,4 @@
+import { requireFruitLifeSelfMembership } from "@/lib/commerce/account-access";
 import { FruitLifeAssessmentForm } from "../assessment-form";
 import { getFruitLifeSessionStatus, saveFruitLifeSelfResponse } from "../actions";
 
@@ -21,7 +22,7 @@ export default async function FruitLifeSelfPage({
     : null;
   const session = status?.session;
 
-  if (!status || status.session.self_completed_at) {
+  if (!status || !session || session.self_completed_at) {
     return (
       <main className="fruitlife-shell fruitlife-public">
         <section className="fruitlife-panel fruitlife-message-card">
@@ -32,6 +33,8 @@ export default async function FruitLifeSelfPage({
       </main>
     );
   }
+
+  await requireFruitLifeSelfMembership(session.id);
 
   return (
     <main className="fruitlife-shell fruitlife-public">

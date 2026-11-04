@@ -1,4 +1,5 @@
 "use server";
+import { requirePersonalMembershipContent } from "@/lib/commerce/account-access";
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -132,6 +133,8 @@ export async function saveJourneyStageResponses(formData: FormData) {
   if (!user) {
     redirect("/login?message=Sign in to save your DYDD workbook responses.");
   }
+
+  await requirePersonalMembershipContent(user, "/journey");
 
   await supabase.from("journey_enrollments").upsert(
     {

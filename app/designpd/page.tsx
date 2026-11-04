@@ -13,7 +13,7 @@ import { saveDesignPdResponse } from "./actions";
 import { DesignPdAssessmentForm } from "./assessment-form";
 
 type DesignPdPageProps = {
-  searchParams?: Promise<{ message?: string; origin?: string; snapshot?: string }>;
+  searchParams?: Promise<{ message?: string; origin?: string; checkout?: string; snapshot?: string }>;
 };
 
 export const dynamic = "force-dynamic";
@@ -28,7 +28,7 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
   } = await serverSupabase.auth.getUser();
 
   if (!user) {
-    redirect(`/login?next=${encodeURIComponent(`/designpd?origin=${origin}`)}`);
+    redirect(`/login?next=${encodeURIComponent(`/designpd?origin=${origin}${params?.snapshot ? `&snapshot=${encodeURIComponent(params.snapshot)}` : ""}`)}`);
   }
 
   const supabase = createSupabaseAdminClient();
@@ -52,6 +52,7 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
 
   return (
     <main className="fruitlife-shell fruitlife-public designid-shell designpd-shell">
+      {params?.checkout === "returned" ? <p role="status">You returned from Stripe. Your result unlock appears after the verified payment notification. <Link href={`/designpd?snapshot=${encodeURIComponent(params.snapshot || "")}`}>Refresh this result</Link>.</p> : params?.checkout === "cancelled" ? <p role="status">Checkout cancelled. No new access was granted.</p> : null}
       {params?.message ? <p className="fruitlife-form-error designid-page-message">{params.message}</p> : null}
       {hasDesignId ? (
         <DesignPdAssessmentForm

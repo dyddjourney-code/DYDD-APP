@@ -19,8 +19,9 @@ import { CircleTimePicker } from "./circle-time-picker";
 import { CircleScheduleEditor } from "./circle-schedule-editor";
 import { CircleMessages } from "@/components/circle-messages";
 import { CircleFieldGuide } from "@/components/circle-field-guide";
+import { ContextualPurchases } from "@/components/contextual-purchases";
 const stages = ["Circle details", "Meeting schedule", "People", "Review"];
-export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (plan: CirclePlan, tab: string, samples: boolean, circleId?: string) => ReactNode }) {
+export function CircleSetupPlanner({ renderDashboard, testPurchases = false }: { testPurchases?: boolean; renderDashboard?: (plan: CirclePlan, tab: string, samples: boolean, circleId?: string) => ReactNode }) {
   const params = useSearchParams();
   const query = new URLSearchParams();
   for (const key of ["review", "key"])
@@ -378,6 +379,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
               to save or create your Circle.
             </p>
           )}
+          {testPurchases && <ContextualPurchases area="circles" circleId={showSetup && selected?.status !== "archived" ? selected?.id : undefined} format={showSetup ? plan.format : undefined} />}
           {showSetup && (workspace ? (
             <>
               <div className="circle-workspace-meta">

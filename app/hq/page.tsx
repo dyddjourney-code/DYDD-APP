@@ -1,3 +1,5 @@
+import { ContextualPurchases } from "@/components/contextual-purchases";
+import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
 import { BetaAccess } from "@/components/beta-access";
 import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import { syncPassportAwards } from "@/lib/passport/state";
@@ -719,10 +721,10 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         </article>
       </section>
 
-      <section className="basecamp-account-card purchases" aria-label="Purchase history">
+      <section className="basecamp-account-card purchases" id="purchases" aria-label="Purchase history">
         <div className="card-heading">
           <p className="section-label">Purchases</p>
-          <h2>{lifetimeAccess ? "Your access is active." : "Nothing purchased yet."}</h2>
+          <h2>{lifetimeAccess ? "Your access is active." : testBillingEnabled() ? "Your purchases and access." : "Nothing purchased yet."}</h2>
           <p>
             {lifetimeAccess ? "Free lifetime personal all-access · No expiry · No payment required." : "After you begin a tool, course, or guided journey, access will appear here."}
           </p>
@@ -731,6 +733,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           Ranger Station will help you decide whether to start with the free Spiritual Gifts
           assessment, FruitLife360, DesignID, or the full Discover Your Divine Design journey.
         </p>
+        {testBillingEnabled() ? <ContextualPurchases area="personal" preview={Boolean(reviewReport)} /> : null}
         {user && !reviewReport ? <BetaAccess active={lifetimeAccess} verified={Boolean(user.email_confirmed_at)} /> : null}
       </section>
 

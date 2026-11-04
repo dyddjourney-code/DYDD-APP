@@ -8,6 +8,12 @@ import { getTestStripe,testBillingOrigin,testCatalog,leadershipCoupon,validUuid,
 import { hasTestEntitlement,qualifyingTestParticipants } from "@/lib/commerce/test-entitlements";
 export const runtime="nodejs";
 const reply=(error:string,status:number)=>NextResponse.json({error},{status,headers:{"Cache-Control":"private, no-store"}});
+function returnPath(capability: TestCapability, scopeId: string, status: string) {
+ if(capability === "designpd") return `/designpd?snapshot=${encodeURIComponent(scopeId)}&checkout=${status}`;
+ if(capability === "couples_circle") return `/camp-circle/my-circles?circle=${encodeURIComponent(scopeId)}&checkout=${status}`;
+ if(capability === "circle_leadership") return `/camp-circle/my-circles?checkout=${status}`;
+ return `/hq?checkout=${status}#purchases`;
+}
 export async function POST(request:Request) {
  try {
  const origin=testBillingOrigin();
@@ -53,7 +59,7 @@ export async function POST(request:Request) {
  const session=await stripe.checkout.sessions.retrieve(prior.checkout_session_id);
  if(session.livemode!==false)throw Error("Non-TEST checkout refused");
  if(session.status==="open"&&session.url)return NextResponse.json({url:session.url});
- if(session.status==="complete")return reply("Payment received. Your access is being confirmed; refresh your memberships shortly.",409);
+ if(session.status==="complete")return reply("Payment received. Your access is being confirmed; refresh access on your purchase page shortly.",409);
  const expired=await db.from("dydd_test_billing_orders").update({status:"expired"}).eq("id",prior.id);if(expired.error)throw Error("TEST billing storage unavailable");order=null;
  }
  if(!order){
@@ -67,7 +73,7 @@ export async function POST(request:Request) {
  customer_email:user.email,metadata,line_items:[{price:spec.price,quantity:1}],payment_method_types:["card"],
  ...(spec.recurring?{subscription_data:{metadata}}:{payment_intent_data:{metadata}}),
  ...(order.coupon_id?{discounts:[{coupon:order.coupon_id}]}:{}),
- success_url:`${origin}/memberships?checkout=returned&session_id={CHECKOUT_SESSION_ID}`,cancel_url:`${origin}/memberships?checkout=cancelled`,
+ success_url:`${origin}${returnPath(capability,scopeId,"returned")}`,cancel_url:`${origin}${returnPath(capability,scopeId,"cancelled")}`,
  },{idempotencyKey:`dydd-test-checkout-${order.id}`});
  if(session.livemode!==false||!session.url)throw Error("TEST checkout URL unavailable");
  const saved=await db.from("dydd_test_billing_orders").update({checkout_session_id:session.id}).eq("id",order.id);if(saved.error)throw Error("Checkout could not be saved; retry");

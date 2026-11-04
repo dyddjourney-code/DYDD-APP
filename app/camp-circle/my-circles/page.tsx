@@ -1,3 +1,4 @@
+import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
 import MyCirclesWorkspace from "@/components/my-circles-workspace";
 import { BaseCampProfile } from "@/components/basecamp-profile";
 import { isSandbox } from "@/lib/environment";
@@ -8,5 +9,5 @@ export default async function MyCirclesPage({ searchParams }: { searchParams?: P
   const params = await searchParams;
   const profile = isSandbox() && isNewReviewRequest(params)
     ? <BaseCampProfile initialName="John" preview previewQuery={reviewQuery(params)} readOnly /> : null;
-  return <MyCirclesWorkspace profilePreview={profile} />;
+  return <MyCirclesWorkspace testPurchases={testBillingEnabled()} profilePreview={profile} />;
 }

@@ -1,3 +1,5 @@
+import { ContextualPurchases } from "@/components/contextual-purchases";
+import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
 import { CirclePageHeader } from "@/components/circle-page-header";
 import { ReviewAwareLink } from "@/components/review-aware-link";
 
@@ -39,6 +41,8 @@ export default function CampCirclePage() {
         <p>Choose the kind of Circle that fits the people you want to walk with.</p>
         <div className="circle-overview-cards circle-format-cards">{formats.map((format, i) => <article className={`circle-tile circle-tile-${["sage", "sand", "moss"][i]}`} key={format.label}><h3>{format.label}</h3><p>{format.detail}</p></article>)}</div>
       </section>
+
+      {testBillingEnabled() ? <ContextualPurchases area="circles" /> : null}
 
       <section className="circle-before-start" aria-labelledby="circle-before-start">
         <div><p className="eyebrow">Thinking about leading?</p><h2 id="circle-before-start">Before you start a Circle</h2><p>You don’t need to arrive with every answer. A Circle leader creates space for people to listen, reflect, and discover how God has shaped their lives for purpose.</p><p>Start with people you care about, a rhythm you can sustain, and a willingness to walk alongside them.</p><div className="circle-preview-sample"><strong>A glimpse inside the Field Guide</strong><p>For your first gathering, begin with grace—not pressure to find an impressive calling. Ask: “What if God has been shaping my life on purpose?” Then give people time to think before they speak.</p></div><div className="circle-action-row"><ReviewAwareLink className="button" href="/camp-circle/my-circles#start-circle">Start a Circle</ReviewAwareLink></div></div>

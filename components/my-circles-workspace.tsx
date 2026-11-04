@@ -514,6 +514,6 @@ export function CircleProgressDashboard({ plan, tab, samples, circleId }: { plan
   </section>;
 }
 
-export default function MyCirclesWorkspace({ profilePreview }: { profilePreview?: ReactNode }) {
-  return <main className="journey-shell hq-standalone-page camp-circle-page"><CirclePageHeader title="My Circles">Your people, your next meeting, and your Journey together.</CirclePageHeader>{profilePreview}<CircleSetupPlanner renderDashboard={(plan, tab, samples, circleId) => <CircleProgressDashboard plan={plan} tab={tab} samples={samples} circleId={circleId} />} /></main>;
+export default function MyCirclesWorkspace({ profilePreview, testPurchases = false }: { profilePreview?: ReactNode; testPurchases?: boolean }) {
+  return <main className="journey-shell hq-standalone-page camp-circle-page"><CirclePageHeader title="My Circles">Your people, your next meeting, and your Journey together.</CirclePageHeader>{profilePreview}<CircleSetupPlanner testPurchases={testPurchases} renderDashboard={(plan, tab, samples, circleId) => <CircleProgressDashboard plan={plan} tab={tab} samples={samples} circleId={circleId} />} /></main>;
 }

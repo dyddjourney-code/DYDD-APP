@@ -26,7 +26,7 @@ export async function POST(request:Request){
  let b:any;try{b=JSON.parse(raw);}catch{return reply({error:'Check your message details.'},400);}
  try{
  const {actor,circle}=await owned(request,b.circleId),db=createSupabaseAdminClient();
- if(!['pause','revoke','announcement-cancel'].includes(b.action) && !await hasTestCircleTools(actor.userId,circle.id,circle.plan?.format))return reply({error:'Your Circle tools need an active membership or this couple’s unlock.',checkoutUrl:'/memberships'},402);
+ if(!['pause','revoke','announcement-cancel'].includes(b.action) && !await hasTestCircleTools(actor.userId,circle.id,circle.plan?.format))return reply({error:'Your Circle tools need an active membership or this couple’s unlock.',checkoutUrl:'/camp-circle/my-circles'},402);
  if(b.action==='generate'){
   if(circle.status!=='active')throw Error('Create your Circle workspace before reviewing its communication schedule.');
   const invalid=validatePlan(circle.plan,true);if(invalid)throw Error(invalid);

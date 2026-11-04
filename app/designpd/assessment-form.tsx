@@ -3,6 +3,7 @@
 import type { CourseOrigin } from "@/lib/trails/course-origin";
 import { useState } from "react";
 import Link from "next/link";
+import { TestCheckoutButton } from "@/app/memberships/checkout-button";
 
 type Props = {
   action: (formData: FormData) => void | Promise<void>;
@@ -36,10 +37,10 @@ export function DesignPdAssessmentForm({action, participantEmail, participantNam
         <p>No additional assessment questions are needed.</p>
         <p><strong>{paidAccess ? "Your DesignPD result is unlocked" : lifetimeAccess ? "DesignPD is included in your lifetime personal all-access" : "Unlock your DesignPD report · $15"}</strong></p>
         <p>{lifetimeAccess ? "Create your report from your completed DesignID results, then explore the connected course. No payment is needed." : "A one-time add-on for this DesignID result, including the supporting course. Your purchased report stays available to reopen and download. A new DesignID result can be unlocked separately."}</p>
-        {!ownerAccess ? <p>{testCheckoutAvailable ? <Link className="button primary" href="/memberships">Unlock this DesignID result · $15 TEST checkout</Link> : "Checkout is coming soon. No payment will be taken here."}</p> : <p>{paidAccess ? "This saved DesignID result is unlocked in TEST mode." : lifetimeAccess ? "Lifetime personal access: no payment will be taken." : "Owner access: you can generate a report without payment."}</p>}
+        {!ownerAccess ? <div>{testCheckoutAvailable ? <TestCheckoutButton capability="designpd" scopeId={designIdSnapshotId} label="Unlock this DesignID result · $15 TEST checkout"/> : "Checkout is coming soon. No payment will be taken here."}</div> : <p>{paidAccess ? "This saved DesignID result is unlocked in TEST mode." : lifetimeAccess ? "Lifetime personal access: no payment will be taken." : "Owner access: you can generate a report without payment."}</p>}
         {ownerAccess ? <label className="fruitlife-checkbox-row"><input type="checkbox" name="emailReport" value="yes" /> Email me a link to this report</label> : null}
         {savedReportHref ? <p><Link className="button secondary" href={savedReportHref}>Open saved DesignPD report</Link></p> : null}
-        <button className="button primary" type="submit" disabled={isSubmitting || !ownerAccess}>{isSubmitting ? "Preparing your report..." : ownerAccess ? "Create my DesignPD report" : testCheckoutAvailable ? "Choose your result in Memberships & add-ons" : "Unlock DesignPD · $15 (coming soon)"}</button>
+        {ownerAccess ? <button className="button primary" type="submit" disabled={isSubmitting}>{isSubmitting ? "Preparing your report..." : "Create my DesignPD report"}</button> : null}
       </section>
     </form>
   );

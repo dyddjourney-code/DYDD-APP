@@ -63,7 +63,7 @@ export async function POST(request: Request) {
       const capability = b.plan.format === "Couple" ? "couples_circle" : "circle_leadership";
       const scope = capability === "couples_circle" ? b.id : "account";
       if (!personal || !await hasTestEntitlement(actor.userId,capability,scope))
-        return reply({error:"Open Memberships & add-ons to activate your personal membership and this Circle’s required unlock.",checkoutUrl:"/memberships"},402);
+        return reply({error:"Activate your personal membership and this Circle’s unlock here in My Circles. Save a draft first.",checkoutUrl:"/camp-circle/my-circles"},402);
     } catch {return reply({error:"Your TEST access could not be checked. Your draft is preserved."},503);}
   }
   const db = createSupabaseAdminClient();

@@ -8,5 +8,5 @@ export function TestCheckoutButton({capability,scopeId,label}:{capability:string
  const url=new URL(result.url);if(url.protocol!=="https:"||url.hostname!=="checkout.stripe.com")throw Error("Checkout URL could not be verified.");
  window.location.assign(url.toString());
  }catch(e){setError((e as Error).message);setBusy(false);}}
- return <><button className="button primary" disabled={busy} onClick={checkout}>{busy?"Opening secure test checkout…":label}</button>{error?<p role="alert">{error}</p>:null}</>;
+ return <><button type="button" className="button primary" disabled={busy} onClick={checkout}>{busy?"Opening secure test checkout…":label}</button>{error?<p role="alert">{error}</p>:null}</>;
 }

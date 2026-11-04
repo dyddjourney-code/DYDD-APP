@@ -21911,7 +21911,7 @@ body:has(.mobile-nav-drawer[open]) { overflow: hidden; }
 
 /* Customer offers share the real customer layout in owner review. */
 .contextual-purchases .purchase-offer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:18px}
-.contextual-purchases .purchase-offer{display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-width:0;padding:24px;border:1px solid #d9ddcf;border-radius:8px;background:#fffdf7}
+.contextual-purchases .purchase-offer{text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-width:0;padding:24px;border:1px solid #d9ddcf;border-radius:8px;background:#fffdf7}
 .contextual-purchases .purchase-offer h3,.contextual-purchases .purchase-offer p{margin:0}
 .contextual-purchases .purchase-price{font-size:2rem;font-weight:750;color:var(--green-dark);line-height:1.2}
 .contextual-purchases .purchase-price span{font-size:.9rem;font-weight:450;color:#465347}

@@ -1,6 +1,6 @@
 # Customer-visible purchase preview correction
 
-Owner review is not a purchasing identity. The first contextual implementation hid every checkout CTA in preview (`canBuy` only for ready + verified), led with a technical test label and retained long empty-state copy. DesignPD independently redirected owner review to login; fresh accounts without DesignID never saw its offer. Old verification checked text presence, not useful visible actions; its preview test also contained a broken URL line, now repaired.
+Owner review is not a purchasing identity. The first contextual implementation hid every checkout CTA in preview (`canBuy` only for ready + verified), led with a technical test label and retained long empty-state copy. DesignPD independently redirected owner review to login; fresh accounts without DesignID never saw its offer. Old verification checked text presence, not useful visible actions.
 
 The same customer offer layout now renders in owner review and genuine empty accounts:
 

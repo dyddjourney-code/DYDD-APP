@@ -76,8 +76,8 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
         />
       ) : (
         <section className="fruitlife-panel fruitlife-message-card">
-          {testBillingEnabled() && <ContextualPurchases area="designpd" />}
           <img src="/brand/tools/designpd-logo.jpg" alt="DesignPD logo" />
+          {testBillingEnabled() ? <><h1>Explore your design in motion.</h1><ContextualPurchases area="designpd" /></> : <>
           <p className="section-label">DesignPD prerequisite</p>
           <h1>Complete DesignID first.</h1>
           <p>
@@ -91,7 +91,7 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
             <Link className="button secondary" href={cardHref}>
               Back to Field Kit
             </Link>
-          </div>
+          </div></>}
         </section>
       )}
     </main>

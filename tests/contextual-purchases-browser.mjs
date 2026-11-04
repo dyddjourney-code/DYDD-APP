@@ -22,7 +22,7 @@ try{
  for(const width of [1280,390,320]){
   await page.setViewport({width,height:1000});
   for(const [name,path,selector,expected]of [['basecamp','/hq?checkout=returned','.contextual-purchases','$10 '],['circles','/camp-circle/my-circles?circle='+circleId,'.contextual-purchases','$5 '],['designpd','/designpd?snapshot='+snapshots[1],'.designpd-shell','$15']]){
-   const response=await page.goto(base+path,{waitUntil:'networkidle2',timeout:60000});assert.equal(response.status(),200,name);await page.waitForSelector(selector);if(name!=='designpd')await page.waitForFunction(()=>!document.querySelector('.contextual-purchases')?.textContent.includes('Checking your current access'));
+   const response=await page.goto(base+path,{waitUntil:'domcontentloaded',timeout:60000});assert.equal(response.status(),200,name);await page.waitForSelector(selector);if(name!=='designpd')await page.waitForFunction(()=>!document.querySelector('.contextual-purchases')?.textContent.includes('Checking your current access'));
    assert((await page.$eval(selector,e=>e.textContent)).includes(expected),name+' prices');assert(!await page.$('.hq-sidebar a[href="/memberships"]'));
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),`${name} ${width} overflow`);
    if(name==='basecamp'||name==='designpd'){
@@ -33,7 +33,7 @@ try{
  }
  // Seed only a synthetic QA access fixture, never claim it is a paid purchase.
  const order=ok(await db.from('dydd_test_billing_orders').insert({user_id:user.id,capability:'personal',scope_id:'account',price_id:'qa_fixture',status:'paid'}).select('id').single());ok(await db.from('dydd_test_billing_entitlements').insert({source_id:'qa_context_'+crypto.randomUUID(),order_id:order.id,user_id:user.id,capability:'personal',scope_id:'account',active:true,paid:false,expires_at:new Date(Date.now()+3600000).toISOString()}));
- await page.goto(base+'/camp-circle/my-circles?circle='+circleId,{waitUntil:'networkidle2',timeout:60000});await page.waitForFunction(()=>[...document.querySelectorAll('.contextual-purchases button')].some(e=>e.textContent.includes('Unlock this Couples')));intercepted=null;await page.$eval('.contextual-purchases button',e=>e.click());await page.waitForFunction(()=>[...document.querySelectorAll('[role="alert"]')].some(e=>e.textContent.includes('QA transport interception')));assert.equal(intercepted.capability,'couples_circle');assert.equal(intercepted.scopeId,circleId);
+ await page.goto(base+'/camp-circle/my-circles?circle='+circleId,{waitUntil:'domcontentloaded',timeout:60000});await page.waitForFunction(()=>[...document.querySelectorAll('.contextual-purchases button')].some(e=>e.textContent.includes('Unlock this Couples')));intercepted=null;await page.$eval('.contextual-purchases button',e=>e.click());await page.waitForFunction(()=>[...document.querySelectorAll('[role="alert"]')].some(e=>e.textContent.includes('QA transport interception')));assert.equal(intercepted.capability,'couples_circle');assert.equal(intercepted.scopeId,circleId);
  // Forged return cannot mint DesignPD access.
  const forged=await fetch(base+'/api/stripe/test-access?capability=designpd&scopeId='+snapshots[1],{headers});assert.equal((await forged.json()).active,false);
  const old=await fetch(base+'/memberships',{headers,redirect:'manual'});assert.equal(old.status,307);assert(old.headers.get('location').includes('/hq'));
@@ -43,7 +43,7 @@ try{
  if(reviewToken){
   await browser.deleteCookie(...await browser.cookies());const preview=await browser.newPage();if(proxy)await preview.authenticate({username:decodeURIComponent(proxy.username),password:decodeURIComponent(proxy.password)});
   for(const width of [1280,390,320]){await preview.setViewport({width,height:1000});for(const [name,path,price]of [['basecamp','/hq','$10'],['circles','/camp-circle','$20'],['designpd','/designpd','$15']]){
-   await preview.goto(base+path+'?review=new&key='+encodeURIComponent(reviewToken)+(name==='basecamp'?'#purchases':''),{waitUntil:'networkidle2',timeout:60000});await preview.waitForSelector('.contextual-purchases');
+   await preview.goto(base+path+'?review=new&key='+encodeURIComponent(reviewToken)+(name==='basecamp'?'#purchases':''),{waitUntil:'domcontentloaded',timeout:60000});await preview.waitForSelector('.contextual-purchases');await preview.waitForFunction(()=>!document.querySelector('.contextual-purchases')?.textContent.includes('Checking your current access'));
    assert((await preview.$eval('.contextual-purchases',e=>e.textContent)).includes(price));assert.equal(await preview.$('.contextual-purchases button'),null);
    assert(await preview.$('.contextual-purchases .button'));assert(await preview.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
    await preview.$eval('.contextual-purchases',e=>e.scrollIntoView({block:'start',behavior:'instant'}));await preview.screenshot({path:`${output}/${new URL(base).hostname}-owner-${name}-${width}.png`});

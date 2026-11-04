@@ -10,7 +10,7 @@ Read sections 1–4 first. Sections 5–8 contain the exact message copy. Circle
 ==============================================================================
 Sandbox paths fail closed by default. This authorized release enables provider delivery only to one exact owner address, with matching sandbox database ref/URL and an activation cutoff. Old queued jobs do not replay; other recipients become sandbox_ready. The shared sender visibly prefixes actual controlled mail [SANDBOX]. The console renders 231 source-based previews, including 175 Waypoint variants, and offers a deliberate one-copy test capped at 25/day. Queued or sandbox_ready is NOT sent, accepted or delivered. Provider acceptance is NOT proof of inbox delivery. Never replay accepted/review messages to obtain a visual sample.
 
-CRITICAL OCTOBER 28 FRUITLIFE POLICY
+CRITICAL OCTOBER 28 FRUITFUL LIFE 360 POLICY
 B04 participant assessment-start/self invitations, manual reminders, automatic day-five reminders and pending-observer/status chase emails are DISABLED in BOTH self-only and observer-assisted modes. Old queued/retry participant self/status jobs are permanently ineligible too. Continue the participant self-reflection in the app. This is intentional policy, not missing coverage. B02/B03 observer invitations/reminders and B01 actual participant report delivery plus B05 opt-in use-results follow-up remain. The October 27 catalog's B04-active wording is superseded.
 
 No per-lesson or per-badge notification is implemented or recommended. Imports do not become new course/report/welcome email events. E03 pause/resume is intentionally combined into real schedule/welcome/preparation messages, not a missing extra holiday campaign. E05 is an authored Circle-specific note, not a general mailing tool. Production authentication and billing copy is provider-owned and not reproduced here. Sandbox authentication now uses the signed, exact-owner Send Email Hook in lib/email/sandbox-auth.ts; its confirmation/reset prose is separate from the 231 editorial copy previews.
@@ -30,11 +30,11 @@ Optional learning/growth start OFF unless explicitly chosen. Learning, growth/re
 
 5) Use real lesson-completion checkboxes. Viewing/navigating is not completion. A genuine first saved genuine workbook round (source=course or the current Journey source format) now queues one A05 day-seven inactivity invitation (expires day ten) and one G04 day-35 gentle return (expires day 40), even with zero completed lessons. A new non-final checklist event uses the same durable keys as fallback if no prior workbook enrollment existed. Recent activity, completion, consent and active Circle stop conditions are rechecked. There is no historical scan or assessment-draft chase.
 
-6) Finish every canonical checklist lesson to create C02 for a non-Journey course OR C03 for the Journey, never both for the same course completion. Celebration expires after three days and still requires learning consent. G05 private feedback is due day five, expires day eight, once per user. Journey-only recommendations: C04 day five/expires day eight, C05 day 14/expires day 18, C06 day 30/expires day 33. Growth opt-in/access are required for C04/C05; C04 requires unused FruitLife entitlement and no cycle/report already underway/complete. C05 checks current DesignPD access, no started DesignPD learning, no FruitLife needing attention and at least seven days after an accepted/sandbox-ready C04. C06 is learning, not growth, and is suppressed if Waypoints already supplies encouragement. Active Circle suppresses overlapping optional next steps. C04 and G05 may share a due date; shared cadence means both should not arrive together.
+6) Finish every canonical checklist lesson to create C02 for a non-Journey course OR C03 for the Journey, never both for the same course completion. Celebration expires after three days and still requires learning consent. G05 private feedback is due day five, expires day eight, once per user. Journey-only recommendations: C04 day five/expires day eight, C05 day 14/expires day 18, C06 day 30/expires day 33. Growth opt-in/access are required for C04/C05; C04 requires unused Fruitful Life 360 entitlement and no cycle/report already underway/complete. C05 checks current DesignPD access, no started DesignPD learning, no Fruitful Life 360 needing attention and at least seven days after an accepted/sandbox-ready C04. C06 is learning, not growth, and is suppressed if Waypoints already supplies encouragement. Active Circle suppresses overlapping optional next steps. C04 and G05 may share a due date; shared cadence means both should not arrive together.
 
-7) Complete an assessment through its real flow. B01 report mail needs a real ready artifact, not just form submission. Native DesignID/DesignPD/Spiritual Gifts ready transitions (not imported history) and a real FruitLife report-ready transition can queue B05 three days later, expires day six. B05 requires learning consent, matching available result/course access, no matching course progress, and no recent C01 already giving that step. Sandbox external PDF guard may stop a fresh end-to-end report artifact; that does not establish a missing mail trigger. Never regenerate a real report merely to inspect copy.
+7) Complete an assessment through its real flow. B01 report mail needs a real ready artifact, not just form submission. Native DesignID/DesignPD/Spiritual Gifts ready transitions (not imported history) and a real Fruitful Life 360 report-ready transition can queue B05 three days later, expires day six. B05 requires learning consent, matching available result/course access, no matching course progress, and no recent C01 already giving that step. Sandbox external PDF guard may stop a fresh end-to-end report artifact; that does not establish a missing mail trigger. Never regenerate a real report merely to inspect copy.
 
-8) FruitLife participant: start/continue self reflection IN APP; expect NO self invitation or status reminders. With observer-assisted mode, explicitly issue each real observer invitation for B02. A still-incomplete observer can receive one automatic B03 on day five (expires day eight); manual reminder is deliberate and day-key deduplicated, not another participant email. Completion/decline/removal/cancelled cycle/ready report/replaced or expired link stops it. A real ready report can still notify the participant once via B01. Do not invent response thresholds or deadlines for the test.
+8) Fruitful Life 360 participant: start/continue self reflection IN APP; expect NO self invitation or status reminders. With observer-assisted mode, explicitly issue each real observer invitation for B02. A still-incomplete observer can receive one automatic B03 on day five (expires day eight); manual reminder is deliberate and day-key deduplicated, not another participant email. Completion/decline/removal/cancelled cycle/ready report/replaced or expired link stops it. A real ready report can still notify the participant once via B01. Do not invent response thresholds or deadlines for the test.
 
 9) Circle creator: save a real plan, timezone, location, assignments, moved dates and pauses; then Messages → generate → review each included message → edit/approve individually → finalize. Exclude intentionally omits a message. Restore/edit resets approval; a material revision replaces old unsubmitted jobs and needs review. Saving a roster is NOT sending invitations or granting membership. Explicitly issue invitations. D01 is immediate; D02 is only generated if four days from generation is still before the first meeting and pending at send time.
 
@@ -71,9 +71,9 @@ A05 | IMPLEMENTED learning
 A06 | CONDITIONAL / NO APP EVENT
   Provider security notices remain external; no app-specific access-change body/emitter.
 B01 | IMPLEMENTED requested service
-  Actual ready DesignID, DesignPD, Spiritual Gifts or FruitLife report; variants below. MAPS is a separate explicitly requested export.
+  Actual ready DesignID, DesignPD, Spiritual Gifts or Fruitful Life 360 report; variants below. MAPS is a separate explicitly requested export.
 B02 | IMPLEMENTED requested service
-  Explicit FruitLife observer invitation; participant is not the recipient.
+  Explicit Fruitful Life 360 observer invitation; participant is not the recipient.
 B03 | IMPLEMENTED requested service
   One observer +5-day automatic reminder, expiry +8; deliberate manual reminder retains initial copy.
 B04 | DISABLED BY OCTOBER 28 POLICY
@@ -89,7 +89,7 @@ C02 | IMPLEMENTED learning
 C03 | IMPLEMENTED learning
   Canonical Journey completion instead of C02, three-day expiry.
 C04 | IMPLEMENTED growth
-  Journey completion +5 days (expiry +8); available unused FruitLife access only.
+  Journey completion +5 days (expiry +8); available unused Fruitful Life 360 access only.
 C05 | IMPLEMENTED growth
   Journey completion +14 (expiry +18); available DesignPD step, checks attention/cadence.
 C06 | IMPLEMENTED learning
@@ -390,7 +390,7 @@ Sincerely,
 Discover Your Divine Design Team
 
 
-B01-fruitlife — FruitLife participant final report
+B01-fruitlife — Fruitful Life 360 participant final report
 Source: lib/fruitlife360/report-worker.ts finalReportEmail; service; genuine ready PDF artifact.
 
 SUBJECT
@@ -409,7 +409,7 @@ Sincerely,
 Discover Your Divine Design Team
 
 
-B02 — FruitLife observer invitation
+B02 — Fruitful Life 360 observer invitation
 Source: app/fruitlife360/actions.ts fruitLifeObserverEmail; service; explicit participant invitation to named observer.
 
 SUBJECT
@@ -449,7 +449,7 @@ Sincerely,
 Discover Your Divine Design Team
 
 
-B03 — FruitLife observer MANUAL reminder
+B03 — Fruitful Life 360 observer MANUAL reminder
 Manual explicit day-key deduplicated request; identical copy to B02, not a participant reminder.
 
 SUBJECT
@@ -469,7 +469,7 @@ Sincerely,
 Discover Your Divine Design Team
 
 
-B03 — FruitLife observer AUTOMATIC day-five reminder
+B03 — Fruitful Life 360 observer AUTOMATIC day-five reminder
 Source: lib/lifecycle/application-mail.ts; +5 days, expires +8; incomplete active observer only.
 
 SUBJECT
@@ -5493,7 +5493,7 @@ Plain text is the editorial source shown here. Lifecycle HTML uses escaped brand
 ==============================================================================
 GENUINE CURRENT COVERAGE LIMITS
 • FIXED in this release: new paid-Circle transactional held invitations now emit durable lifecycle events and materialize approved D01/D02 only for the finalized current campaign. Same-roster invitation issuance no longer increments the plan revision and invalidates approval. Actual roster changes still supersede it; every send passes the existing transactional fence.
-• FIXED in this release: the database enrollment trigger now accepts the actual Journey writer’s journey-assessments-v1 source, not only historical source=course. A05/G04 now emit from genuine first course workbook enrollment, even before any checklist completion. Stable existing keys deduplicate fallback checklist events. Consent/recent activity/completion/Circle guards remain. There is intentionally no assessment-draft chase, particularly no prohibited FruitLife participant reminders.
+• FIXED in this release: the database enrollment trigger now accepts the actual Journey writer’s journey-assessments-v1 source, not only historical source=course. A05/G04 now emit from genuine first course workbook enrollment, even before any checklist completion. Stable existing keys deduplicate fallback checklist events. Consent/recent activity/completion/Circle guards remain. There is intentionally no assessment-draft chase, particularly no prohibited Fruitful Life 360 participant reminders.
 • FIXED in this release: /admin/email includes dedicated weekly email job/provider status. Source-based full copy previews are at /sandbox/email-lab. This is still not a complete provider-owned auth/billing inbox export.
 • A06 app-specific access-change, B06 real extension/closure and H03 access-expiry have no actual trigger/body. These are conditional product gaps, not evidence users currently need such notices.
 • G03/G06 have no approved content/real campaign event. A resources/feedback preference is not a proven independent ministry-news/offer consent system.

@@ -29,14 +29,14 @@
   },
   {
     "id": "B01-fruitlife",
-    "title": "FruitLife participant final report",
+    "title": "Fruitful Life 360 participant final report",
     "meta": "Source: lib/fruitlife360/report-worker.ts finalReportEmail; service; genuine ready PDF artifact.",
     "subject": "Your Fruitful Life 360 report is ready",
     "body": "Hi {{participant_name}},\n\nYour Fruitful Life 360 report is ready.\n\nOpen your report here: {{report_url}}\n\nReceive it as a formation mirror, not a grade or label.\n\nSincerely,\nDiscover Your Divine Design Team"
   },
   {
     "id": "B02",
-    "title": "FruitLife observer invitation",
+    "title": "Fruitful Life 360 observer invitation",
     "meta": "Source: app/fruitlife360/actions.ts fruitLifeObserverEmail; service; explicit participant invitation to named observer.",
     "subject": "Fruitful Life 360 reflection for {{participant_name}}",
     "body": "Hi {{observer_name}},\n\n{{participant_name}} invited you to complete a Fruitful Life 360 observer reflection.\n\nComplete the Fruitful Life 360 assessment:\n{{observer_url}}\n\nThis is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.\n\nSincerely,\nDiscover Your Divine Design Team"
@@ -50,14 +50,14 @@
   },
   {
     "id": "B03",
-    "title": "FruitLife observer MANUAL reminder",
+    "title": "Fruitful Life 360 observer MANUAL reminder",
     "meta": "Manual explicit day-key deduplicated request; identical copy to B02, not a participant reminder.",
     "subject": "Fruitful Life 360 reflection for {{participant_name}}",
     "body": "Hi {{observer_name}},\n\n{{participant_name}} invited you to complete a Fruitful Life 360 observer reflection.\n\nComplete the Fruitful Life 360 assessment:\n{{observer_url}}\n\nThis is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.\n\nSincerely,\nDiscover Your Divine Design Team"
   },
   {
     "id": "B03",
-    "title": "FruitLife observer AUTOMATIC day-five reminder",
+    "title": "Fruitful Life 360 observer AUTOMATIC day-five reminder",
     "meta": "Source: lib/lifecycle/application-mail.ts; +5 days, expires +8; incomplete active observer only.",
     "subject": "Reminder: Fruitful Life 360 reflection for {{participant_name}}",
     "body": "A gentle reminder:\n\nHi {{observer_name}},\n\n{{participant_name}} invited you to complete a Fruitful Life 360 observer reflection.\n\nComplete the Fruitful Life 360 assessment:\n{{observer_url}}\n\nThis is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.\n\nSincerely,\nDiscover Your Divine Design Team"

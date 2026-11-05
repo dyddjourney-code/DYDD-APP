@@ -1,0 +1,14 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';import crypto from 'node:crypto';
+import {sandboxSql,credentials as c} from './assessment-timing-sandbox-db.mjs';
+const names=fs.readdirSync('supabase/migrations').filter(x=>/20261105.*(?:fruitlife_timing|fruitlife_completion_identity|fruitlife_trusted_owner|fruitlife_imported_completion|designpd_generation|assessment_(?:early_retake|timing))/.test(x));
+const versions=names.map(x=>"'"+x.split('_')[0]+"'").join(',');let rows=await sandboxSql(`select version,name,statements from supabase_migrations.schema_migrations where version in (${versions}) order by version`,true);const repairs=[];
+for(const file of names){const row=rows.find(r=>r.version===file.split('_')[0]);assert(row,'Missing migration '+file);const source=fs.readFileSync('supabase/migrations/'+file,'utf8');if(row.statements?.[0]!==source){
+ assert.equal(row.statements?.[0],source.replaceAll('$$','$'),'Unexpected history drift '+file);
+ if(!process.argv.includes('--repair-history'))throw Error('Own migration history dollar-escape mismatch '+file+'; use --repair-history after inspection.');
+ fs.writeFileSync('tmp/assessment-timing/history-before-'+row.version+'.json',JSON.stringify(row,null,2));assert(!source.includes('$exact_record$'));
+ await sandboxSql(`update supabase_migrations.schema_migrations set statements=array[$exact_record$${source}$exact_record$] where version='${row.version}'`);repairs.push(file);
+}}
+rows=await sandboxSql(`select version,name,statements from supabase_migrations.schema_migrations where version in (${versions}) order by version`,true);
+for(const file of names)assert.equal(rows.find(r=>r.version===file.split('_')[0]).statements[0],fs.readFileSync('supabase/migrations/'+file,'utf8'));
+const cleanup=(await sandboxSql("select (select count(*) from auth.users where email like 'timing-browser-%@example.invalid' or email like 'timing-learner-%@example.invalid' or email like 'timing-foreign-%@example.invalid' or email like 'fruitlife-%@example.invalid' or email like 'retake-%@example.invalid' or email like 'foreign-%@example.invalid' or email like 'designpd-owner-%@example.invalid' or email like 'designpd-foreign-%@example.invalid') synthetic_users,(select count(*) from public.dydd_assessment_retake_requests) requests,(select count(*) from public.dydd_assessment_retake_grants) grants,(select count(*) from public.dydd_assessment_retake_outbox) outbox,(select count(*) from public.designpd_generation_reservations) reservations",true))[0];
+const proof={at:new Date().toISOString(),ref:c.ref,migrations:names.map(f=>({file:f,sha256:crypto.createHash('sha256').update(fs.readFileSync('supabase/migrations/'+f)).digest('hex')})),exactRecordedSourceMatch:true,metadataOnlyRepairs:repairs,cleanup};fs.writeFileSync('tmp/assessment-timing/schema-and-cleanup-proof.json',JSON.stringify(proof,null,2));console.log(proof);

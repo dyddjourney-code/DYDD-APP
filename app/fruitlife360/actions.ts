@@ -4,6 +4,7 @@ import { requireFruitLifeSelfMembership, requirePersonalMembershipContent } from
 
 import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import crypto from "node:crypto";
+import { requireFruitLifeSelfEligibility, refreshFruitLifeRound } from "@/lib/fruitlife360/timing";
 import legacyInstrument from "@/lib/fruitlife360/legacy-instrument.json";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import { headers } from "next/headers";
@@ -24,7 +25,7 @@ import {
 } from "@/lib/fruitlife360/intake";
 import { buildFruitLifePayloadForSession } from "@/lib/fruitlife360/payload";
 import { processFruitLifeReportJobs } from "@/lib/fruitlife360/report-worker";
-import { normalizeEmail } from "@/lib/identity/email";
+import { normalizeEmail, canonicalizeParticipantEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -40,6 +41,8 @@ type SessionLookup = {
   participant_email: string | null;
   participant_name: string | null;
   self_completed_at?: string | null;
+  created_by_user_id?: string | null;
+  observer_round_started_at?: string | null;
 };
 
 type ObserverSeed = {
@@ -224,7 +227,7 @@ async function getSessionForToken(
   const { data: session, error } = await supabase
     .from("fruitlife_360_sessions")
     .select(
-      "id,intake_token_hash,metadata,observer_completed_count,observer_goal,participant_id,participant_email,participant_name,self_completed_at",
+      "id,intake_token_hash,metadata,observer_completed_count,observer_goal,participant_id,participant_email,participant_name,self_completed_at,created_by_user_id,observer_round_started_at",
     )
     .eq("id", sessionId)
     .single();
@@ -237,8 +240,19 @@ async function getSessionForToken(
   let observerInviteId: string | null = null;
 
   if (responseType === "self" && typedSession.intake_token_hash === hashToken(token)) {
-    if (typedSession.self_completed_at) fail(path, "This self reflection has already been submitted. Open Field Kit to view progress.");
-    return { observerInviteId, session: typedSession, supabase };
+    const authClient = await createSupabaseServerClient();
+    const { data: { user } } = await authClient.auth.getUser();
+    const { data: participant } = await supabase.from("assessment_participants").select("user_id").eq("id", typedSession.participant_id).maybeSingle();
+    if (!user || (typedSession.created_by_user_id !== user.id && participant?.user_id !== user.id)) fail(path, "Sign in to the account that owns this reflection.");
+    if (!typedSession.observer_round_started_at && !typedSession.self_completed_at) {
+      try { await requireFruitLifeSelfEligibility(user.id, user.email ?? "", isFruitLifeAdmin(user.email)); }
+      catch (error) { fail(path, error instanceof Error ? error.message : "Assessment timing could not be checked."); }
+    }
+    if (typedSession.self_completed_at) {
+      await refreshFruitLifeCompletion(supabase, typedSession.id);
+      redirect("/field-kit#current-assessment-process");
+    }
+    return { observerInviteId, session: typedSession, supabase, ownerExemption: isFruitLifeAdmin(user.email) };
   }
 
   if (responseType === "observer") {
@@ -250,12 +264,13 @@ async function getSessionForToken(
       .maybeSingle();
 
     if (invite?.id) {
-      if (!["invited", "draft", "opened"].includes(invite.invite_status)) fail(path, "This observer link is no longer active.");
       if (invite.invite_status === "completed") {
-        fail(path, "This observer reflection link has already been submitted.");
+        await refreshFruitLifeCompletion(supabase, typedSession.id);
+        redirect(`/fruitlife360/thanks?${new URLSearchParams({ session: typedSession.id, token, type: "observer", message: "Observer reflection already submitted. Thank you." }).toString()}`);
       }
+      if (!["invited", "draft", "opened"].includes(invite.invite_status)) fail(path, "This observer link is no longer active.");
       observerInviteId = String(invite.id);
-      return { observerInviteId, session: typedSession, supabase };
+      return { observerInviteId, session: typedSession, supabase, ownerExemption: false };
     }
   }
 
@@ -263,7 +278,7 @@ async function getSessionForToken(
     fail(path, "This Fruitful Life 360 link is not valid.");
   }
 
-  return { observerInviteId, session: typedSession, supabase };
+  return { observerInviteId, session: typedSession, supabase, ownerExemption: false };
 }
 
 async function queuePayloadJob(supabase: ReturnType<typeof createSupabaseAdminClient>, sessionId: string) {
@@ -303,23 +318,7 @@ async function queuePayloadJob(supabase: ReturnType<typeof createSupabaseAdminCl
 }
 
 async function refreshFruitLifeCompletion(supabase: ReturnType<typeof createSupabaseAdminClient>, sessionId: string) {
-  const [{ data: responses, error: responseError }, { data: invites, error: inviteError }] = await Promise.all([
-    supabase.from("fruitlife_360_responses").select("response_type,submitted_at,observer_invite_id").eq("session_id", sessionId),
-    supabase.from("fruitlife_360_observer_invites").select("id,invite_status").eq("session_id", sessionId)
-      .in("invite_status", ["invited", "draft", "opened", "completed"]),
-  ]);
-  if (responseError || inviteError) throw new Error(responseError?.message ?? inviteError?.message);
-  const self = responses?.find(response => response.response_type === "self");
-  const observerCount = new Set((responses ?? []).filter(response => response.response_type === "observer").map(response => response.observer_invite_id)).size;
-  const observerGoal = invites?.length ?? 0;
-  const ready = Boolean(self && observerCount >= observerGoal);
-  const { error } = await supabase.from("fruitlife_360_sessions").update({
-    observer_goal: observerGoal, observer_completed_count: observerCount,
-    response_count: (self ? 1 : 0) + observerCount, self_completed_at: self?.submitted_at ?? null,
-    report_status: ready ? "queued" : "waiting_for_responses",
-    session_status: ready ? "ready_for_report" : self ? "waiting_for_observers" : "waiting_for_self",
-  }).eq("id", sessionId).not("session_status", "in", "(report_ready,report_sent,completed,sent,archived)");
-  if (error) throw new Error(error.message);
+  const ready = await refreshFruitLifeRound(sessionId);
   if (ready) { await queuePayloadJob(supabase, sessionId); await processQueuedFruitLifeReport(); }
 }
 
@@ -421,7 +420,7 @@ async function saveResponse({
   const sessionId = getString(formData, "session_id");
   const token = getString(formData, "token");
   path = `${path}?session=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(token)}`;
-  const { observerInviteId, session, supabase } = await getSessionForToken(
+  const { observerInviteId, session, supabase, ownerExemption } = await getSessionForToken(
     sessionId,
     token,
     path,
@@ -429,7 +428,12 @@ async function saveResponse({
   );
   if (responseType === "self") await requireFruitLifeSelfMembership(session.id);
   const reviewerName = getString(formData, "reviewer_name");
-  const reviewerEmail = normalizeEmail(getString(formData, "reviewer_email"));
+  let reviewerEmail = normalizeEmail(responseType === "self" ? session.participant_email : getString(formData, "reviewer_email"));
+  if (observerInviteId) {
+    const { data: invite, error } = await supabase.from("fruitlife_360_observer_invites").select("observer_email").eq("id", observerInviteId).eq("session_id", session.id).single();
+    if (error || !invite?.observer_email) fail(path, "This observer invitation could not be verified.");
+    reviewerEmail = normalizeEmail(invite.observer_email);
+  }
   const relationship = getString(formData, "relationship_label");
   const reflectionStrength = getString(formData, "reflection_strength");
   const reflectionGrowth = getString(formData, "reflection_growth");
@@ -480,12 +484,14 @@ async function saveResponse({
     reviewer_name: reviewerName,
     session_id: session.id,
     source_response_id: sourceResponseId,
-    metadata: { instrumentVersion: session.metadata?.instrumentVersion ?? legacyInstrument.version, scoringVersion: session.metadata?.instrumentVersion === fruitLifeInstrumentVersion ? "fruitlife-workbook-display-rank-v1" : "fruitlife-native-v0", instrument: session.metadata?.instrumentVersion === fruitLifeInstrumentVersion ? { questions: fruitLifeQuestionBank, pressureQuestions: fruitLifePressureQuestions } : legacyInstrument },
+    metadata: { timingOwnerExemption: ownerExemption, instrumentVersion: session.metadata?.instrumentVersion ?? legacyInstrument.version, scoringVersion: session.metadata?.instrumentVersion === fruitLifeInstrumentVersion ? "fruitlife-workbook-display-rank-v1" : "fruitlife-native-v0", instrument: session.metadata?.instrumentVersion === fruitLifeInstrumentVersion ? { questions: fruitLifeQuestionBank, pressureQuestions: fruitLifePressureQuestions } : legacyInstrument },
     submitted_at: submittedAt,
   });
 
-  if (responseError) {
-    fail(path, responseError.message);
+  if (responseError && responseError.code !== "23505") fail(path, responseError.message);
+  if (responseError?.code === "23505") {
+    const { data: saved } = await supabase.from("fruitlife_360_responses").select("id").eq("session_id", session.id).eq("source_response_id", sourceResponseId).maybeSingle();
+    if (!saved) fail(path, "This respondent has already completed this round.");
   }
 
   if (observerInviteId) {
@@ -536,7 +542,7 @@ export async function createFruitLifeSession(formData: FormData) {
   const participantEmail = normalizeEmail(user.email);
   if (!participantName) fail("/fruitlife360", "Add your name to your app account profile before starting your reflection.");
   assertEmail(participantEmail, "/fruitlife360");
-  if (new Set(observerSeeds.map(observer => observer.email)).size !== observerSeeds.length || observerSeeds.some(observer => observer.email === participantEmail)) {
+  if (new Set(observerSeeds.map(observer => canonicalizeParticipantEmail(observer.email))).size !== observerSeeds.length || observerSeeds.some(observer => canonicalizeParticipantEmail(observer.email) === canonicalizeParticipantEmail(participantEmail))) {
     fail("/fruitlife360", "Use a different email for each observer, separate from your own email.");
   }
   if (legacyLane && !canCreatePaidSession) {
@@ -545,10 +551,26 @@ export async function createFruitLifeSession(formData: FormData) {
     );
   }
 
-  if (!legacyLane) {
-    const { data: active } = await supabase.from("fruitlife_360_sessions").select("id")
-      .eq("created_by_user_id", user.id).not("session_status", "in", "(report_ready,report_sent,completed,sent,archived)").limit(1).maybeSingle();
-    if (active) redirect("/field-kit#current-assessment-process");
+  const resumeSessionId = getString(formData, "resume_session_id");
+  if (resumeSessionId) {
+    const { data: draft, error } = await supabase.from("fruitlife_360_sessions").select("id,metadata,self_completed_at").eq("id", resumeSessionId).eq("created_by_user_id", user.id).single();
+    if (error || !draft || draft.self_completed_at) fail("/fruitlife360", "This draft could not be resumed.");
+    const selfLink = String(draft.metadata?.selfLink ?? "");
+    if (!selfLink) fail("/fruitlife360", "This draft link is unavailable.");
+    const target = new URL(selfLink);
+    redirect(`/fruitlife360/self?${target.searchParams.toString()}`);
+  }
+  if (!observerSeeds.length) {
+    try { await requireFruitLifeSelfEligibility(user.id, user.email ?? "", isFruitLifeAdmin(user.email)); }
+    catch (error) { fail("/fruitlife360", error instanceof Error ? error.message : "Assessment timing could not be checked."); }
+  }
+  const creationId = getString(formData, "creation_id");
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(creationId)) fail("/fruitlife360", "Reopen assessment setup and try again.");
+  const { data: existingRound } = await supabase.from("fruitlife_360_sessions").select("id,created_by_user_id,metadata").eq("id", creationId).maybeSingle();
+  if (existingRound) {
+    if (existingRound.created_by_user_id !== user.id) fail("/fruitlife360", "This round belongs to another account.");
+    const target = new URL(String(existingRound.metadata?.selfLink));
+    redirect(`/fruitlife360/self?${target.searchParams.toString()}`);
   }
 
   const { data: linkedParticipant } = user
@@ -559,29 +581,16 @@ export async function createFruitLifeSession(formData: FormData) {
         .maybeSingle()
     : { data: null };
 
+  const { data: emailParticipant } = await supabase.from("assessment_participants").select("id,user_id").eq("normalized_email", participantEmail).maybeSingle();
+  if (emailParticipant?.user_id && emailParticipant.user_id !== user.id) fail("/fruitlife360", "This participant is already linked to another account.");
   const participantResult = linkedParticipant?.id
-    ? await supabase
-        .from("assessment_participants")
-        .update({
-          display_name: participantName,
-          updated_at: now,
-        })
-        .eq("id", linkedParticipant.id)
-        .select("id")
-        .single()
-    : await supabase
-        .from("assessment_participants")
-        .upsert(
-          {
-            display_name: participantName,
-            normalized_email: participantEmail,
-            ...(user?.id ? { user_id: user.id } : {}),
-            updated_at: now,
-          },
-          { onConflict: "normalized_email" },
-        )
-        .select("id")
-        .single();
+    ? await supabase.from("assessment_participants").update({ display_name: participantName, updated_at: now })
+        .eq("id", linkedParticipant.id).eq("user_id", user.id).select("id").single()
+    : emailParticipant?.id
+      ? await supabase.from("assessment_participants").update({ display_name: participantName, user_id: user.id, updated_at: now })
+          .eq("id", emailParticipant.id).is("user_id", null).select("id").single()
+      : await supabase.from("assessment_participants").insert({ display_name: participantName,
+          normalized_email: participantEmail, user_id: user.id, updated_at: now }).select("id").single();
 
   const { data: participant, error: participantError } = participantResult;
 
@@ -590,95 +599,40 @@ export async function createFruitLifeSession(formData: FormData) {
   }
 
   const selfToken = makeToken();
-  const sourceParticipantId = `FL360-V-${crypto.randomUUID()}`;
   const baseUrl = await getAppBaseUrl();
-  const { data: session, error: sessionError } = await supabase
-    .from("fruitlife_360_sessions")
-    .insert({
-      intake_token_hash: hashToken(selfToken),
-      metadata: {
-        observerSeedCount: observerSeeds.length,
-        source: "native_fruitlife_intake",
-        instrumentVersion: fruitLifeInstrumentVersion,
-      },
-      observer_goal: observerSeeds.length,
-      participant_email: participantEmail,
-      participant_id: participant.id,
-      participant_name: participantName,
-      created_by_user_id: user?.id ?? null,
-      report_status: "waiting_for_responses",
-      session_status: "waiting_for_self",
-      signup_source: signupSource,
-      source_participant_id: sourceParticipantId,
-      source_system: "vercel_intake",
-      source_synced_at: now,
-    })
-    .select("id")
-    .single();
-
-  if (sessionError || !session) {
-    fail("/fruitlife360", sessionError?.message ?? "Unable to create Fruitful Life 360 session.");
-  }
-
-  if (!lifetimeAccess && legacyLane && user?.id && activeEntitlement) {
-    try {
-      await consumeFruitLifeEntitlement(user.id, session.id);
-    } catch (error) {
-      fail(
-        "/fruitlife360",
-        error instanceof Error
-          ? error.message
-          : "Unable to connect your Fruitful Life 360 purchase to this session.",
-      );
-    }
-  }
-
-  const selfLink = `${baseUrl}/fruitlife360/self?session=${session.id}&token=${selfToken}`;
-  const observerLinks = observerSeeds.map((observer) => ({
-    ...observer,
-    link: `${baseUrl}/fruitlife360/observer?session=${session.id}&token=${makeToken()}`,
+  const selfLink = `${baseUrl}/fruitlife360/self?session=${creationId}&token=${selfToken}`;
+  const observerLinks = observerSeeds.map(observer => ({ ...observer,
+    link: `${baseUrl}/fruitlife360/observer?session=${creationId}&token=${makeToken()}`,
   }));
-
-  const inviteRows = observerLinks.map((observer) => {
-    const token = new URL(observer.link).searchParams.get("token") ?? "";
-
-    return {
-      invite_status: observer.email ? "invited" : "draft",
-      invite_token_hash: hashToken(token),
-      invited_at: observer.email ? now : null,
-      metadata: {
-        observerLink: observer.link,
-        sharedObserverLink: !observer.email,
-      },
-      observer_email: observer.email || null,
-      observer_name: observer.name || null,
-      relationship_label: observer.relationship || null,
-      session_id: session.id,
-    };
+  const { data: sessionId, error: sessionError } = await supabase.rpc("dydd_fruitlife_create_round", {
+    p_user_id: user.id,
+    p_session: {
+      id: creationId, participant_id: participant.id, created_by_user_id: user.id,
+      participant_name: participantName, participant_email: participantEmail,
+      intake_token_hash: hashToken(selfToken), source_participant_id: `FL360-V-${creationId}`,
+      signup_source: signupSource, observer_goal: observerSeeds.length,
+      metadata: { observerLinks, selfLink, observerSeedCount: observerSeeds.length, timingOwnerExemption: isFruitLifeAdmin(user.email),
+        source: "native_fruitlife_intake", instrumentVersion: fruitLifeInstrumentVersion,
+        channel: legacyLane ? "legacy_lane" : "current_app" },
+    },
+    p_invites: observerLinks.map(observer => ({ observer_name: observer.name, observer_email: observer.email,
+      relationship_label: observer.relationship, invite_token_hash: hashToken(new URL(observer.link).searchParams.get("token") ?? ""),
+      metadata: { observerLink: observer.link, sharedObserverLink: false },
+    })),
   });
-
-  if (inviteRows.length) {
-    const { error: inviteError } = await supabase
-      .from("fruitlife_360_observer_invites")
-      .insert(inviteRows);
-
-    if (inviteError) {
-      fail("/fruitlife360", inviteError.message);
-    }
+  if (sessionError || !sessionId) fail("/fruitlife360", sessionError?.message ?? "Unable to create Fruitful Life 360 session.");
+  const session = { id: String(sessionId) };
+  // A concurrent retry may have created this id with its own tokens. Resume the
+  // persisted round; never resend different tokens or replace stored metadata.
+  const { data: persistedRound } = await supabase.from("fruitlife_360_sessions").select("intake_token_hash,metadata").eq("id", session.id).single();
+  if (persistedRound?.intake_token_hash !== hashToken(selfToken)) {
+    const target = new URL(String(persistedRound?.metadata?.selfLink));
+    redirect(`/fruitlife360/self?${target.searchParams.toString()}`);
   }
-
-  await supabase
-    .from("fruitlife_360_sessions")
-    .update({
-      metadata: {
-        observerLinks,
-        selfLink,
-        source: "native_fruitlife_intake",
-        instrumentVersion: fruitLifeInstrumentVersion,
-        channel: legacyLane ? "legacy_lane" : "current_app",
-      },
-    })
-    .eq("id", session.id);
+  if (!lifetimeAccess && legacyLane && activeEntitlement) {
+    try { await consumeFruitLifeEntitlement(user.id, session.id); }
+    catch (error) { fail("/fruitlife360", error instanceof Error ? error.message : "Unable to connect your purchase to this session."); }
+  }
 
   // The participant continues in-app; only observers receive invitations.
   const observerInviteResult = await recordAndSendObserverEmails({

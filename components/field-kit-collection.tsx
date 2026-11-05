@@ -1,3 +1,4 @@
+import { AssessmentTimingStatus, type AssessmentTimingMap, type TimedAssessment } from "@/components/assessment-timing-status";
 import { DesignPdTrailOffer } from "@/components/designpd-trail-offer";
 import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
 import Link from "next/link";
@@ -57,7 +58,9 @@ export function FieldKitCollection({
   artifacts,
   rounds,
   reviewParams,
+  timing,
 }: {
+  timing?: AssessmentTimingMap;
   artifacts: CollectedArtifact[];
   rounds: Array<{
     course_slug: string;
@@ -84,11 +87,17 @@ export function FieldKitCollection({
     const trail = trailDefinitions.find((t) => t.courseSlug === slug);
     const needsDesignId = trail?.id === "designpd" && !artifacts.some((a) => a.experienceSlug === "designid-foundations");
     const path = (href: string) => withReviewQuery(href, reviewParams);
+    const timingKey: TimedAssessment | null = trail?.id === "designid" ? "designid"
+      : trail?.id === "spiritual-gifts" ? "spiritual_gifts"
+      : trail?.id === "fruitlife-360" ? "fruitful_self" : null;
+    const assessmentTiming = timingKey ? timing?.[timingKey] : null;
+    const cooldown = assessmentTiming?.allowed === false;
+    const canStart = !cooldown || trail?.id === "fruitlife-360";
     const designPdOffer = trail?.id === "designpd" && testBillingEnabled();
-    const assessmentEntry = !designPdOffer && !main && !reports.length && trail ? (
+    const assessmentEntry = !designPdOffer && !main && (!reports.length || isSandbox()) && trail && canStart ? (
       <div className="fieldkit-assessment-entry">
         <Link className="button primary" href={path(trail.id === "designpd" && !needsDesignId ? withCourseOrigin(trail.assessmentHref, "field-kit") : needsDesignId ? "/designid" : trail.assessmentHref)}>
-          Take assessment
+          {cooldown ? "Explore observer rounds" : reports.length ? "Take assessment again" : "Take assessment"}
         </Link>
         {needsDesignId ? <p>Complete DesignID first to open DesignPD.</p> : null}
       </div>
@@ -133,7 +142,6 @@ export function FieldKitCollection({
               ) : (
                 <>
                   <p>{designPdOffer ? "Your DesignPD report will collect here after you unlock it for a saved DesignID result." : "No completed report yet. Take the assessment to begin; your completed report will collect here."}</p>
-                  {assessmentEntry}
                 </>
               )}
             </section>
@@ -208,9 +216,10 @@ export function FieldKitCollection({
           ) : <h3>{name}</h3>}
           <p className="trail-description">{description}</p>
           {designPdOffer ? <DesignPdTrailOffer designIdSnapshotId={artifacts.filter(a => a.experienceSlug === "designid-foundations").sort((a,b) => new Date(b.completedAt ?? 0).getTime() - new Date(a.completedAt ?? 0).getTime())[0]?.id} origin="field-kit" reviewParams={reviewParams} /> : null}
+          {timingKey ? <AssessmentTimingStatus assessment={timingKey} timing={assessmentTiming} /> : null}
+          {assessmentEntry}
           <div className="fieldkit-mobile-summary">
             <p className="fieldkit-mobile-status">{main ? "Journey workbook" : reports.length ? `${reports.length} completed ${reports.length === 1 ? "report" : "reports"}` : "No completed report yet"} · {saved.length ? `${saved.length} reflection ${saved.length === 1 ? "round" : "rounds"}` : "No reflection rounds yet"}</p>
-            {assessmentEntry}
             <Link className="button secondary" href={path(`/field-kit/reflections/${slug}`)}>Review my reflections</Link>
           </div>
           <details className="fieldkit-mobile-details">

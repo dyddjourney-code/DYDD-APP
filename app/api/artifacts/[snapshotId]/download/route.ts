@@ -1,3 +1,4 @@
+import { usesDesignPdGenerationReservation } from "@/lib/designpd/generation";
 import { membershipArtifactExpired } from "@/lib/commerce/account-artifact-access";
 import { personalRenewalPath } from "@/lib/commerce/account-access";
 import { NextResponse, type NextRequest } from "next/server";
@@ -328,6 +329,14 @@ export async function POST(
   if (archived.path === `${snapshot.assessment_type}/${snapshot.id}/report.pdf`) {
     const url = await storedReportUrl(archived as StoredReport, true);
     if (url) return NextResponse.redirect(url, { status: 303, headers });
+  }
+  // The generic recovery creator has a different lock. Derived DesignPD must
+  // use its source/version reservation, or a download POST could create a second job.
+  if (usesDesignPdGenerationReservation(snapshot)) {
+    return new NextResponse(recoveryHtml(snapshot, request.nextUrl,
+      "Your saved DesignPD result is preserved. Reopen it to check an existing document. For a failed generation, return to DesignPD and select the same DesignID result to retry. If its status is uncertain, contact support; no duplicate report was created."), {
+      status: 409, headers: { ...headers, "Content-Type": "text/html; charset=utf-8" },
+    });
   }
   const report = recoveryReport(snapshot);
   if (report) {

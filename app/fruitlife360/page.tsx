@@ -1,7 +1,11 @@
 import { requirePersonalMembershipContent } from "@/lib/commerce/account-access";
 import { redirect } from "next/navigation";
+import { isDyddAdminEmail as isFruitLifeAdmin } from "@/lib/admin-access";
 import { PageHelp } from "@/components/page-help";
 import { getActiveFruitLifeEntitlement, userHasFruitLifeEntitlement } from "@/lib/commerce/fruitlife-entitlements";
+import crypto from "node:crypto";
+import { getAssessmentEligibility } from "@/lib/assessment-timing/policy";
+import { AssessmentTimingStatus } from "@/components/assessment-timing-status";
 import { getFruitLifeDashboardSessions, fruitLifeIsActive } from "@/lib/fruitlife360/dashboard";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -17,13 +21,6 @@ type FruitLifeSignupPageProps = {
 
 export const dynamic = "force-dynamic";
 
-function isFruitLifeAdmin(email: string | null | undefined) {
-  const configured = (process.env.DYDD_ADMIN_EMAILS ?? "")
-    .split(",")
-    .map((value) => normalizeEmail(value))
-    .filter(Boolean);
-  return new Set(["dyddjourney@gmail.com", ...configured]).has(normalizeEmail(email));
-}
 
 export default async function FruitLifeSignupPage({
   searchParams,
@@ -49,15 +46,23 @@ export default async function FruitLifeSignupPage({
     );
   }
 
-  if (!legacyLane) {
-    const sessions = await getFruitLifeDashboardSessions({ email: normalizeEmail(user.email), enabled: true });
-    if (sessions.some(fruitLifeIsActive)) redirect("/field-kit#current-assessment-process");
-  }
+  const sessions = await getFruitLifeDashboardSessions({ email: normalizeEmail(user.email), enabled: true });
+  const drafts = sessions.filter(session => fruitLifeIsActive(session) && !session.self_completed_at);
+  const selfTiming = await getAssessmentEligibility(user.id, user.email ?? "", "fruitful_self", isFruitLifeAdmin(user.email));
   const { data: profile } = await supabase.from("school_profiles").select("full_name").eq("id", user.id).maybeSingle();
 
   return (
     <main className="fruitlife-shell fruitlife-public">
+      {drafts.length ? <section className="fruitlife-panel">
+        <h2>Continue an existing round</h2>
+        {drafts.map(draft => <form action={createFruitLifeSession} key={draft.id}>
+          <input type="hidden" name="resume_session_id" value={draft.id} />
+          <input type="hidden" name="return_to" value={returnTo} />
+          <button className="button secondary" type="submit">Resume reflection from {new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(new Date(draft.created_at))} · {draft.invites.map(invite => invite.observer_name || invite.observer_email).filter(Boolean).slice(0, 2).join(", ") || "Self-only"}</button>
+        </form>)}
+      </section> : null}
       <form action={createFruitLifeSession} className="fruitlife-form fruitlife-signup">
+        <input name="creation_id" type="hidden" value={crypto.randomUUID()} />
         <input name="signup_source" type="hidden" value="vercel-fruitlife-intake" />
         <input name="return_to" type="hidden" value={returnTo} />
         {params?.message ? <p className="form-message">{params.message}</p> : null}
@@ -96,6 +101,7 @@ export default async function FruitLifeSignupPage({
           </div>
         </section>
 
+        <AssessmentTimingStatus assessment="fruitful_self" timing={selfTiming} />
         <section className="fruitlife-panel">
           <h2>Optional observers</h2>
           <p>If desired, add trusted observers for a full 360 report.</p>

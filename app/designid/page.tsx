@@ -1,3 +1,6 @@
+import { AssessmentTimingStatus } from "@/components/assessment-timing-status";
+import { getAssessmentEligibility } from "@/lib/assessment-timing/policy";
+import { isSandbox } from "@/lib/environment";
 import { requirePersonalMembershipContent } from "@/lib/commerce/account-access";
 import Link from "next/link";
 import { isDyddAdminEmail } from "@/lib/admin-access";
@@ -41,12 +44,15 @@ export default async function DesignIdPage({ searchParams }: DesignIdPageProps) 
     name: profile?.full_name?.trim() || authDisplayName || user.email?.split("@")[0] || "DesignID Participant",
   };
 
-  const eligibility = await getDesignIdEligibility(user.id, reviewer.email, isDyddAdminEmail(user.email));
+  const eligibility = isSandbox()
+    ? await getAssessmentEligibility(user.id, reviewer.email, "designid", isDyddAdminEmail(user.email))
+    : await getDesignIdEligibility(user.id, reviewer.email, isDyddAdminEmail(user.email));
   if (!eligibility.allowed) return <main className="fruitlife-shell fruitlife-public designid-shell"><section className="fruitlife-panel fruitlife-message-card">
     <h1>Keep exploring your design.</h1>
-    <p>Your design is something to understand and live out—not continually retest. Explore your report and put its insights into practice.</p>
-    <p>Your next assessment is available on <strong>{eligibility.nextEligibleLabel}</strong>.</p>
-    <Link className="button primary" href="/field-kit">Open Field Kit</Link>
+    <p>Your saved results and course remain available.</p>
+    {isSandbox() ? <AssessmentTimingStatus assessment="designid" timing={eligibility} /> : <p>Your next assessment is available on <strong>{eligibility.nextEligibleLabel}</strong>.</p>}
+    <Link className="button primary" href="/field-kit">View your results</Link>
+    <Link className="button secondary" href="/courses/designid-foundations">Explore course</Link>
   </section></main>;
 
   return (

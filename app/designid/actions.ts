@@ -1,6 +1,8 @@
 "use server";
 import { requirePersonalMembershipContent } from "@/lib/commerce/account-access";
 import crypto from "node:crypto";
+import { isSandbox } from "@/lib/environment";
+import { claimTimingParticipant } from "@/lib/assessment-timing/participant";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import {
   applyDesignIdPresentation,
@@ -92,7 +94,7 @@ export async function saveDesignIdResponse(formData: FormData) {
     authDisplayName ||
     user.email?.split("@")[0] ||
     "DesignID Participant";
-  const participantEmail = normalizeEmail(profile?.email ?? user.email);
+  const participantEmail = normalizeEmail(isSandbox() ? user.email : (profile?.email ?? user.email));
   if (!participantEmail) {
     fail("Your account needs an email address before starting DesignID.");
   }
@@ -124,7 +126,13 @@ export async function saveDesignIdResponse(formData: FormData) {
   }
   const now = new Date().toISOString();
   const sourceResponseId = `designid_app:${user.id}:${crypto.randomUUID()}`;
-  const { data: participant, error: participantError } = await supabase
+  let participant: { id: string } | null = null;
+  if (isSandbox()) {
+    if (!user.email_confirmed_at) fail("Verify your account email before completing DesignID.");
+    try { participant = await claimTimingParticipant(user.id, participantEmail, participantName); }
+    catch (error) { fail(error instanceof Error ? error.message : "Unable to connect your DesignID record."); }
+  } else {
+  const { data: legacyParticipant, error: participantError } = await supabase
     .from("assessment_participants")
     .upsert(
       {
@@ -137,11 +145,14 @@ export async function saveDesignIdResponse(formData: FormData) {
     )
     .select("id")
     .single();
-  if (participantError || !participant?.id) {
+  if (participantError || !legacyParticipant?.id) {
     fail(
       participantError?.message ?? "Unable to connect your DesignID record.",
     );
   }
+    participant = legacyParticipant;
+  }
+  if (!participant) fail("Unable to connect your DesignID record.");
   const sections = designIdSnapshotSections(result);
   const reportPayload = buildDesignIdReportPayload({
     participantEmail,

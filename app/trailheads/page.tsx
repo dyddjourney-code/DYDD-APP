@@ -1,3 +1,7 @@
+import { AssessmentTimingStatus, type TimedAssessment } from "@/components/assessment-timing-status";
+import { getAssessmentTimingForUser } from "@/lib/assessment-timing/policy";
+import { isDyddAdminEmail } from "@/lib/admin-access";
+import { isSandbox } from "@/lib/environment";
 import { DesignPdTrailOffer } from "@/components/designpd-trail-offer";
 import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
 import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
@@ -71,6 +75,9 @@ export default async function TrailheadsPage({ searchParams }: Props) {
     (user
       ? await getAssessmentSnapshotsForUser(user.id, email)
       : { all: [], latest: [] });
+  const timing = isSandbox() && user && !preview && !isHeatherReviewRequest(params) && !isNewReviewRequest(params)
+    ? await getAssessmentTimingForUser(user.id, normalizeEmail(user.email), isDyddAdminEmail(user.email))
+    : null;
   const snapshots = latestByAssessment(report.all);
   const ownPdReport =
     preview && user
@@ -215,6 +222,13 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                   hasDesignPdCourseAccess(user.email, ownPdReport.all),
               );
             const ready = complete && pdAccess;
+            const timingKey: TimedAssessment | null = trail.id === "designid" ? "designid"
+              : trail.id === "spiritual-gifts" ? "spiritual_gifts"
+              : trail.id === "fruitlife-360" ? "fruitful_self" : null;
+            const assessmentTiming = timingKey ? timing?.[timingKey] : null;
+            const cooldown = assessmentTiming?.allowed === false;
+            // A self-only cooldown must not hide distinct observer-group starts.
+            const canStart = !cooldown || trail.id === "fruitlife-360";
             const designIdReady = snapshots.some(
               (s) => s.assessment_type === "designid",
             );
@@ -266,7 +280,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                     trail.id === "designpd"
                       ? complete
                         ? "Expansion unlocked"
-                        : "$15 optional expansion"
+                        : isSandbox() ? "Optional one-time unlock · details pending" : "$15 optional expansion"
                       : mini && trail.id === "fruitlife-360"
                         ? fruitPermit
                           ? "Unlocked"
@@ -312,6 +326,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                           : trail.prerequisite}
                   </p>
                   {trail.id === "designpd" && testBillingEnabled() ? <DesignPdTrailOffer designIdSnapshotId={snapshots.find(s => s.assessment_type === "designid")?.id} origin="trailheads" reviewParams={params} /> : null}
+                  {timingKey ? <AssessmentTimingStatus assessment={timingKey} timing={assessmentTiming} /> : null}
                   <div className="trail-guide-route-actions">
                     {isOwnerCoursePreview(params) ? (
                       <Link className="button secondary" href={courseHref}>
@@ -325,13 +340,15 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                         startLabel="Start the Course"
                         continueLabel="Continue the Course"
                       />
-                    ) : trail.id === "designpd" && testBillingEnabled() ? null : (
-                      <Link className="button primary" href={path(startHref)}>
+                    ) : (trail.id === "designpd" && testBillingEnabled()) || !canStart ? null : (
+                      <Link className="button primary" href={path(cooldown && trail.id === "fruitlife-360" ? "/fruitlife360" : startHref)}>
                         {trail.id === "designpd"
                           ? designIdReady
                             ? "Explore DesignPD Expansion"
                             : "Complete DesignID First"
-                          : inProgress
+                          : cooldown && trail.id === "fruitlife-360"
+                            ? "Explore observer rounds"
+                            : inProgress
                             ? "Continue Assessment"
                             : mini &&
                                 trail.id === "fruitlife-360" &&
@@ -346,6 +363,11 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                         href={`${fieldKit}#artifacts`}
                       >
                         View My Results
+                      </Link>
+                    ) : null}
+                    {ready && trail.id !== "designpd" && canStart ? (
+                      <Link className="button secondary" href={path(trail.id === "fruitlife-360" ? "/fruitlife360" : startHref)}>
+                        {cooldown ? "Explore observer rounds" : `Take ${trail.name} again`}
                       </Link>
                     ) : null}
                     {ready && inProgress ? (

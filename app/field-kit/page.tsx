@@ -1,3 +1,7 @@
+import { AssessmentTimingStatus } from "@/components/assessment-timing-status";
+import { getAssessmentTimingForUser } from "@/lib/assessment-timing/policy";
+import { isDyddAdminEmail } from "@/lib/admin-access";
+import { isSandbox } from "@/lib/environment";
 import { TrailAnchor } from "@/components/trail-anchor";
 import { hasFullReport } from "@/lib/assessments/report-recovery";
 import { previewParams, previewReflectionRounds } from "@/lib/reflections/preview";
@@ -134,6 +138,9 @@ export default async function FieldKitPage({
       participantEmail,
       reviewParams,
     )) ?? { all: [], latest: [] };
+  const timing = isSandbox() && user && !reviewReport && !preview && !isHeatherReviewRequest(reviewParams) && !isNewReviewRequest(reviewParams)
+    ? await getAssessmentTimingForUser(user.id, normalizeEmail(profile?.email ?? user.email), isDyddAdminEmail(user.email))
+    : undefined;
   const snapshotHistory = assessmentReport.all;
   const snapshotArtifactSources = fruitLifeLane
     ? snapshotHistory.filter((s) => s.assessment_type !== "fruit_360")
@@ -303,6 +310,7 @@ export default async function FieldKitPage({
           {checkoutMessage ? (
             <p className="form-message">{checkoutMessage}</p>
           ) : null}
+          <AssessmentTimingStatus assessment="fruitful_self" timing={timing?.fruitful_self} />
           <div className="trail-fieldkit-note">
             <div>
               <h2>Your next step starts at Trailheads.</h2>
@@ -453,6 +461,7 @@ export default async function FieldKitPage({
         </aside>
       ) : null}
       <FieldKitCollection
+        timing={timing}
         artifacts={artifacts}
         rounds={reflectionRounds ?? []}
         reviewParams={reviewParams}

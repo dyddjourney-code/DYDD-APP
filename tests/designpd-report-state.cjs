@@ -1,9 +1,19 @@
 const assert = require('node:assert/strict');
 const load = require('../scripts/fruitlife-test-load.cjs');
 let scores, events, sendFailure, persistFailure, pdfStatus, participantId, participantConflict;
+let reservationStatus="reserved", included=true, adminAccess=true, entitlement=false, saved=[];
 let source={id:'source-designid',assessment_type:'designid',scores:{}};
 const redirect = location => { throw Object.assign(Error('redirect'),{location}); };
-const db = { from(table) {
+const db = { async rpc(name,args) {
+  if(name==='reserve_designpd_generation'){
+    events.push('reserve');
+    if(reservationStatus==='reserved') scores=structuredClone(args.p_scores);
+    return {data:{status:reservationStatus,snapshotId:'saved-pd',token:reservationStatus==='reserved'?'reservation-token':undefined}};
+  }
+  assert.equal(name,'finish_designpd_generation');events.push('persist');
+  if(persistFailure)return {error:{message:'storage down'}};
+  scores={...scores,pdfMonkey:args.p_pdf,reportAccessUrl:args.p_report_url};return {data:true};
+}, from(table) {
   let operation='read', values, filters={};
   return {
     select(){return this;},eq(k,v){filters[k]=v;return this;},
@@ -32,10 +42,12 @@ const db = { from(table) {
 }};
 const actions=load('app/designpd/actions.ts',{
   'next/navigation':{redirect}, 'next/headers':{headers:async()=>new Headers({origin:'https://school.invalid'})},
-  '@/lib/environment':{isFreeBeta:()=>true}, '@/lib/admin-access':{isDyddAdminEmail:()=>true},
+  '@/lib/commerce/personal-access':{hasIncludedPersonalAccess:async()=>included},
+  '@/lib/commerce/test-entitlements':{hasTestEntitlement:async(uid,cap,sourceId)=>{assert.equal(sourceId,source.id);return entitlement;}},
+  '@/lib/environment':{isFreeBeta:()=>true}, '@/lib/admin-access':{isDyddAdminEmail:()=>adminAccess},
   '@/lib/supabase/server':{createSupabaseServerClient:async()=>({auth:{getUser:async()=>({data:{user:{id:'owner',email:'owner@example.invalid'}}})}})},
   '@/lib/supabase/admin':{createSupabaseAdminClient:()=>db},
-  '@/lib/assessments/student-context':{getAssessmentSnapshotsForUser:async()=>({all:[source]}),latestByAssessment:a=>a,findOrAttachParticipant:async()=>participantId},
+  '@/lib/assessments/student-context':{getAssessmentSnapshotsForUser:async()=>({all:[source,...saved]}),latestByAssessment:a=>a,findOrAttachParticipant:async()=>participantId},
   '@/lib/designpd/engine':{designPdScoringVersion:'test',scoreDesignPd:()=>({axisScores:{plan:2},ratings:{}})},
   '@/lib/designpd/report':{buildDesignPdReportPayload:()=>({name:'Safe Test'}),designPdSnapshotSections:()=>({summary:{},profileLanguage:{}}),designPdContentVersion:'test',designPdTemplateId:'template'},
   '@/lib/assessment-reporting':{
@@ -55,24 +67,35 @@ const actions=load('app/designpd/actions.ts',{
     }
   }
 });
-async function run({email=true,sendFails=false,persistFails=false,status='success',linked='participant',conflict=false,origin='field-kit'}={}){
+async function run({email=true,sendFails=false,persistFails=false,status='success',linked='participant',conflict=false,origin='field-kit',selected=''}={}){
   events=[];scores=null;sendFailure=sendFails;persistFailure=persistFails;pdfStatus=status;participantId=linked;participantConflict=conflict;
-  const form=new FormData();form.set('origin',origin);if(email)form.set('emailReport','yes');
+  const form=new FormData();form.set('origin',origin);if(selected)form.set('designIdSnapshotId',selected);if(email)form.set('emailReport','yes');
   try {await actions.saveDesignPdResponse(form);assert.fail('Expected redirect');}
   catch(error){assert(error.location,error.stack);return error.location;}
 }
 (async()=>{
   assert.equal(await run(),'/designpd/thanks?snapshot=saved-pd&origin=field-kit');
-  assert.deepEqual(events,['snapshot','pdf','persist','email','persist']);
+  assert.deepEqual(events,['reserve','pdf','persist','email','persist']);
   assert.equal(await run({origin:'trailheads'}),'/designpd/thanks?snapshot=saved-pd&origin=trailheads');
   assert.equal(scores.resultEmail.sent,true);
   assert.equal(scores.pdfRecovery.documentId,'concurrent-recovery','email status update preserves download lifecycle changes');
   await run({email:false});assert(!events.includes('email'));assert.equal(scores.resultEmail.reason,'owner_review_without_email');
   await run({sendFails:true});assert.equal(scores.pdfMonkey.status,'success');assert.equal(scores.resultEmail.sent,false);assert.equal(scores.resultEmail.error,'email unavailable');
-  const failed=await run({persistFails:true});assert(failed.startsWith('/designpd?origin=field-kit&message='));assert(!events.includes('email'),'no delivery of an unpersisted artifact URL');
+  const failed=await run({persistFails:true});assert(failed.startsWith('/designpd?origin=field-kit&snapshot=&message='));assert(!events.includes('email'),'no delivery of an unpersisted artifact URL');
   await run({status:'pending'});assert(!events.includes('email'));assert.equal(scores.pdfMonkey.status,'pending');
   await run({linked:null});assert(events.includes('participant-insert'));
-  const conflict=await run({linked:null,conflict:true});assert(conflict.startsWith('/designpd?origin=field-kit&message='));assert.deepEqual(events,['participant-insert'],'foreign email conflict cannot steal participant or create report');
+  const conflict=await run({linked:null,conflict:true});assert(conflict.startsWith('/designpd?origin=field-kit&snapshot=&message='));assert.deepEqual(events,['participant-insert'],'foreign email conflict cannot steal participant or create report');
+  reservationStatus='running'; await run();assert.deepEqual(events,['reserve']);
+  reservationStatus='uncertain';await run();assert.deepEqual(events,['reserve']);
+  reservationStatus='ready';assert.equal(await run(),'/designpd/report?snapshot=saved-pd');assert.deepEqual(events,['reserve']);
+  reservationStatus='reserved';included=false;adminAccess=false;
+  await run();assert.deepEqual(events,[],'ordinary gated account cannot reserve or generate');
+  saved=[{id:'earlier-ready',assessment_type:'designpd',scores:{designIdSnapshotId:source.id,contentVersion:'test',pdfMonkey:{status:'success'}}}];
+  assert.equal(await run(),'/designpd/report?snapshot=earlier-ready');assert.deepEqual(events,[],'existing ready report opens even without current purchase');
+  saved[0].scores.pdfMonkey={status:'pending'};saved[0].scores.reportArtifact={path:'designpd/earlier-ready/report.pdf'};
+  assert.equal(await run(),'/designpd/report?snapshot=earlier-ready');assert.deepEqual(events,[],'known document archived during recovery reopens without a new generation');
+  saved=[];entitlement=true;await run();assert(events.includes('pdf'),'exact legacy TEST unlock remains functional');
+  await run({selected:'not-an-owned-designid'});assert.deepEqual(events,[],'foreign or missing selected source cannot generate');
   let mail;
   const reporting=load('lib/assessment-reporting.ts',{
     '@/lib/lifecycle/application-mail':{sendApplicationEmail:async input=>{mail=input;return {sent:false,skipped:true};}}

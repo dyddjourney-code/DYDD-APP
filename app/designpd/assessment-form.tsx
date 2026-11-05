@@ -3,7 +3,7 @@
 import type { CourseOrigin } from "@/lib/trails/course-origin";
 import { useState } from "react";
 import Link from "next/link";
-import { TestCheckoutButton } from "@/app/memberships/checkout-button";
+import { designPdPendingUnlockMessage } from "@/lib/designpd/generation";
 
 type Props = {
   action: (formData: FormData) => void | Promise<void>;
@@ -13,13 +13,12 @@ type Props = {
   lifetimeAccess?: boolean;
   designIdSnapshotId?: string;
   paidAccess?: boolean;
-  testCheckoutAvailable?: boolean;
   savedReportHref?: string;
   origin?: CourseOrigin;
   cardHref?: string;
 };
 
-export function DesignPdAssessmentForm({action, participantEmail, participantName, ownerAccess, lifetimeAccess = false, paidAccess = false, testCheckoutAvailable = false, designIdSnapshotId, savedReportHref, origin = "field-kit", cardHref = "/field-kit#collection-designpd"}: Props) {
+export function DesignPdAssessmentForm({action, participantEmail, participantName, ownerAccess, lifetimeAccess = false, paidAccess = false, designIdSnapshotId, savedReportHref, origin = "field-kit", cardHref = "/field-kit#collection-designpd"}: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   return (
     <form action={action} onSubmit={() => setIsSubmitting(true)} className="designid-form">
@@ -35,12 +34,12 @@ export function DesignPdAssessmentForm({action, participantEmail, participantNam
           <div><span>Email</span><strong>{participantEmail}</strong></div>
         </div>
         <p>No additional assessment questions are needed.</p>
-        <p><strong>{paidAccess ? "Your DesignPD result is unlocked" : lifetimeAccess ? "DesignPD is included in your lifetime personal all-access" : "Unlock your DesignPD report · $15"}</strong></p>
-        <p>{lifetimeAccess ? "Create your report from your completed DesignID results, then explore the connected course. No payment is needed." : "A one-time add-on for this DesignID result, including the supporting course. Your purchased report stays available to reopen and download. A new DesignID result can be unlocked separately."}</p>
-        {!ownerAccess ? <div>{testCheckoutAvailable ? <TestCheckoutButton capability="designpd" scopeId={designIdSnapshotId} label="Unlock this DesignID result · $15"/> : "Checkout is coming soon. No payment will be taken here."}</div> : <p>{paidAccess ? "This saved DesignID result is unlocked in TEST mode." : lifetimeAccess ? "Lifetime personal access: no payment will be taken." : "Owner access: you can generate a report without payment."}</p>}
+        <p><strong>{paidAccess ? "This DesignID result is unlocked in TEST mode" : lifetimeAccess ? "DesignPD is included in your lifetime personal all-access" : ownerAccess ? "DesignPD is included in your current access" : "One-time DesignPD unlock: pending"}</strong></p>
+        <p>{ownerAccess ? "Create or update DesignPD from the selected eligible DesignID result. Earlier reports stay saved. Reopening or downloading a ready report does not generate another report." : designPdPendingUnlockMessage}</p>
+        {paidAccess ? <p>Your existing TEST purchase covers only this DesignID result. It has not been converted into an account-wide unlock.</p> : null}
         {ownerAccess ? <label className="fruitlife-checkbox-row"><input type="checkbox" name="emailReport" value="yes" /> Email me a link to this report</label> : null}
-        {savedReportHref ? <p><Link className="button secondary" href={savedReportHref}>Open saved DesignPD report</Link></p> : null}
-        {ownerAccess ? <button className="button primary" type="submit" disabled={isSubmitting}>{isSubmitting ? "Preparing your report..." : "Create my DesignPD report"}</button> : null}
+        {savedReportHref ? <p><Link className="button secondary" href={savedReportHref}>Open saved report or status</Link></p> : null}
+        {ownerAccess ? <button className="button primary" type="submit" disabled={isSubmitting}>{isSubmitting ? "Preparing your report..." : "Prepare or reopen my DesignPD report"}</button> : null}
       </section>
     </form>
   );

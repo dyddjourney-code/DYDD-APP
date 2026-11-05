@@ -4,6 +4,10 @@ import {
   type StoredReport,
 } from "@/lib/assessments/report-storage";
 import crypto from "node:crypto";
+import { isSandbox } from "@/lib/environment";
+import { isDyddAdminEmail } from "@/lib/admin-access";
+import { getAssessmentEligibility } from "@/lib/assessment-timing/policy";
+import { claimTimingParticipant } from "@/lib/assessment-timing/participant";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import {
@@ -279,7 +283,7 @@ async function saveCompletedSpiritualGiftsResponse({
   const nextStep = getString(formData, "next_step");
   const submittedAt = new Date().toISOString();
   const scores = buildSpiritualGiftScores(formData);
-  const sourceResponseId = `vercel:spiritual_gifts:self:${sessionId}:${crypto.randomUUID()}`;
+  const sourceResponseId = isSandbox() ? `vercel:spiritual_gifts:self:${sessionId}` : `vercel:spiritual_gifts:self:${sessionId}:${crypto.randomUUID()}`;
   const statusHref = `/spiritual-gifts/status?session=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(token)}`;
   const resultUrl = `${await getAppBaseUrl()}${statusHref}`;
   const reportHref = `/spiritual-gifts/report?session=${encodeURIComponent(sessionId)}&token=${encodeURIComponent(token)}`;
@@ -360,6 +364,29 @@ async function saveCompletedSpiritualGiftsResponse({
     topGifts: topGiftPayload,
     totals: scores.giftScores,
   };
+  let snapshot: { id: string } | null = null;
+  if (isSandbox()) {
+    if (!userId) throw Error("Sign in before completing this assessment.");
+    const identity = await supabase.auth.admin.getUserById(userId);
+    if (identity.error || !identity.data.user?.email_confirmed_at) throw Error("A verified assessment account is required.");
+    const saved = await supabase.rpc("save_spiritual_gifts_attempt", {
+      p_user_id: userId, p_participant_id: participantId, p_session_id: sessionId,
+      p_owner_exemption: isDyddAdminEmail(identity.data.user.email),
+      p_response: {
+        answers: { giftRatings: scores.answers, reflections: { nextStep } },
+        derived_scores: { deepDiveGifts: deepDivePayload, giftPercents: scores.giftPercents,
+          giftScores: scores.giftScores, questionScores: scores.questionScores, rankedGifts: rankedGiftPayload,
+          tieSummary: scores.tieSummary, tiers: tierPayload, topGifts: topGiftPayload },
+        gift_rank: scores.rankedGiftKeys,
+      },
+      p_scores: snapshotScorePayload,
+    });
+    if (saved.error || !saved.data?.id) throw Error(saved.error?.message ?? "Your assessment could not be saved. Please retry.");
+    snapshot = { id: String(saved.data.id) };
+    // Successful retry is the same saved attempt, never another PDF/email generation.
+    if (saved.data.replayed) return { sessionId, statusHref, submittedAt, token,
+      resultEmail: { sent: false, skipped: true, message: "This assessment is already saved. Open its existing result." } };
+  } else {
   const { data: response, error: responseError } = await supabase
     .from("spiritual_gifts_responses")
     .insert({
@@ -394,7 +421,7 @@ async function saveCompletedSpiritualGiftsResponse({
       responseError?.message ?? "Unable to save Spiritual Gifts response.",
     );
   }
-  const { data: snapshot, error: snapshotError } = await supabase
+  const { data: legacySnapshot, error: snapshotError } = await supabase
     .from("assessment_snapshots")
     .insert({
       assessment_type: "spiritual_gifts",
@@ -407,9 +434,12 @@ async function saveCompletedSpiritualGiftsResponse({
     })
     .select("id")
     .maybeSingle();
-  if (snapshotError || !snapshot?.id) {
+  if (snapshotError || !legacySnapshot?.id) {
     throw new Error("Your response was saved, but the report record could not be saved. No report email was sent.");
   }
+    snapshot = legacySnapshot;
+  }
+  if (!snapshot) throw Error("Your assessment could not be saved.");
   const pdfFilename = pdfReportFilename(participantName, sessionId);
   let pdfMetadata: {
     storage?: StoredReport;
@@ -476,8 +506,10 @@ async function saveCompletedSpiritualGiftsResponse({
   }
   // The email locator resolves through session.metadata.pdfMonkey. Save both
   // artifact records before exposing that locator to an email recipient.
+  const storedPolicy = isSandbox() ? await supabase.from("assessment_snapshots").select("scores").eq("id", snapshot.id).single() : null;
+  if (storedPolicy?.error) throw Error("Your result is saved; report metadata needs retry in Field Kit.");
   const snapshotSaved = await supabase.from("assessment_snapshots").update({
-    scores: {...snapshotScorePayload, pdfMonkey: pdfMetadata, reportAccessUrl},
+    scores: {...(storedPolicy?.data?.scores ?? {}), ...snapshotScorePayload, pdfMonkey: pdfMetadata, reportAccessUrl},
   }).eq("id", snapshot.id).select("id").single();
   if (snapshotSaved.error || !snapshotSaved.data) {
     throw new Error("Your response was saved, but report metadata could not be saved. No report email was sent.");
@@ -562,8 +594,8 @@ async function saveCompletedSpiritualGiftsResponse({
   };
 }
 export async function createSpiritualGiftsSession(formData: FormData) {
-  const participantName = getString(formData, "participant_name");
-  const participantEmail = normalizeEmail(
+  let participantName = getString(formData, "participant_name");
+  let participantEmail = normalizeEmail(
     getString(formData, "participant_email"),
   );
   const signupSource =
@@ -579,7 +611,19 @@ export async function createSpiritualGiftsSession(formData: FormData) {
   } = await serverSupabase.auth.getUser();
   const token = makeToken();
   const baseUrl = await getAppBaseUrl();
-  const { data: participant, error: participantError } = await supabase
+  let participant: { id: string } | null = null;
+  if (isSandbox()) {
+    if (!user?.email_confirmed_at || !user.email) fail("/spiritual-gifts", "Sign in with a verified email before starting this assessment.");
+    participantEmail = normalizeEmail(user.email);
+    participantName = String(user.user_metadata?.full_name ?? user.user_metadata?.name ?? user.email.split("@")[0]).trim();
+    const eligibility = await getAssessmentEligibility(user.id, participantEmail, "spiritual_gifts", isDyddAdminEmail(user.email));
+    if (!eligibility.allowed) fail("/spiritual-gifts", `Available again on ${eligibility.nextEligibleLabel}. Your saved results remain in Field Kit.`);
+    const recent = await supabase.from("spiritual_gifts_sessions").select("id", {count:"exact",head:true}).eq("created_by_user_id",user.id).gte("created_at",new Date(Date.now()-86400000).toISOString());
+    if (recent.error || (recent.count ?? 0) >= 8) fail("/spiritual-gifts", "Please resume your existing assessment, or try again tomorrow.");
+    try { participant = await claimTimingParticipant(user.id, participantEmail, participantName); }
+    catch (error) { fail("/spiritual-gifts", error instanceof Error ? error.message : "Unable to connect your assessment record."); }
+  } else {
+  const { data: legacyParticipant, error: participantError } = await supabase
     .from("assessment_participants")
     .upsert(
       {
@@ -591,12 +635,15 @@ export async function createSpiritualGiftsSession(formData: FormData) {
     )
     .select("id")
     .single();
-  if (participantError || !participant?.id) {
+  if (participantError || !legacyParticipant?.id) {
     fail(
       "/spiritual-gifts",
       participantError?.message ?? "Unable to create participant.",
     );
   }
+    participant = legacyParticipant;
+  }
+  if (!participant) fail("/spiritual-gifts", "Unable to connect your assessment record.");
   const sessionMetadata = {
     channel: "native_app",
     liveProcessTouched: false,
@@ -676,9 +723,10 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
       "Sign in before starting your app-linked Spiritual Gifts assessment.",
     );
   }
+  if (isSandbox() && (!user || !user.email_confirmed_at)) fail("/spiritual-gifts", "Sign in with a verified email before completing this assessment.");
   const participantEmail = normalizeEmail(
     user
-      ? (profile?.email ?? user.email)
+      ? (isSandbox() ? user.email : (profile?.email ?? user.email))
       : (reviewIdentity?.email ??
           signedAppIdentity?.email ??
           getString(formData, "reviewer_email")),
@@ -698,17 +746,16 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
     fail("/spiritual-gifts", "Enter your name.");
   }
   assertEmail(participantEmail, "/spiritual-gifts");
-  const linkedUserId =
-    user?.id ??
-    (
-      await supabase
-        .from("school_profiles")
-        .select("id")
-        .ilike("email", participantEmail)
-        .maybeSingle()
-    ).data?.id ??
-    null;
-  const { data: participant, error: participantError } = await supabase
+  const linkedUserId = isSandbox() ? user!.id :
+    user?.id ?? (await supabase.from("school_profiles").select("id").ilike("email", participantEmail).maybeSingle()).data?.id ?? null;
+  let participant: { id: string } | null = null;
+  if (isSandbox()) {
+    const eligibility = await getAssessmentEligibility(user!.id, participantEmail, "spiritual_gifts", isDyddAdminEmail(user!.email));
+    if (!eligibility.allowed) fail("/spiritual-gifts", `Available again on ${eligibility.nextEligibleLabel}. Your saved results remain in Field Kit.`);
+    try { participant = await claimTimingParticipant(user!.id, participantEmail, participantName); }
+    catch (error) { fail("/spiritual-gifts", error instanceof Error ? error.message : "Unable to connect your assessment record."); }
+  } else {
+  const { data: legacyParticipant, error: participantError } = await supabase
     .from("assessment_participants")
     .upsert(
       {
@@ -720,12 +767,15 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
     )
     .select("id")
     .single();
-  if (participantError || !participant?.id) {
+  if (participantError || !legacyParticipant?.id) {
     fail(
       "/spiritual-gifts",
       participantError?.message ?? "Unable to create participant.",
     );
   }
+    participant = legacyParticipant;
+  }
+  if (!participant) fail("/spiritual-gifts", "Unable to connect your assessment record.");
   const sessionMetadata = {
     channel: isAppChannel ? "native_app" : "public_assessment",
     liveProcessTouched: false,
@@ -796,11 +846,17 @@ export async function saveSpiritualGiftsSelfResponse(formData: FormData) {
     token,
     path,
   );
+  if (isSandbox()) {
+    const caller = await createSupabaseServerClient();
+    const { data: { user } } = await caller.auth.getUser();
+    if (!user?.email_confirmed_at || session.created_by_user_id !== user.id)
+      fail(path, "Sign in to the verified account that started this assessment before submitting.");
+  }
   try {
     await saveCompletedSpiritualGiftsResponse({
-      participantEmail: reviewerEmail,
+      participantEmail: isSandbox() ? (session.participant_email ?? "") : reviewerEmail,
       participantId: session.participant_id,
-      participantName: reviewerName,
+      participantName: isSandbox() ? (session.participant_name ?? "Participant") : reviewerName,
       sessionId: session.id,
       token,
       userId: session.created_by_user_id,

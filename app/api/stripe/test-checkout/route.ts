@@ -1,10 +1,9 @@
+import { designPdPendingUnlockMessage } from "@/lib/designpd/generation";
 import { claimCoupleCircle } from "@/lib/commerce/circle-billing";
 import { dc3PersonalCoupon } from "@/lib/commerce/dc3";
-import { isDyddAdminEmail } from "@/lib/admin-access";
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { getAssessmentSnapshotsForUser } from "@/lib/assessments/student-context";
 import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import { getTestStripe,testBillingOrigin,testCatalog,leadershipCoupon,validUuid,type TestCapability } from "@/lib/commerce/test-billing-config";
 import { hasTestEntitlement,qualifyingTestParticipants } from "@/lib/commerce/test-entitlements";
@@ -25,16 +24,13 @@ export async function POST(request:Request) {
  if(Number(request.headers.get("content-length")||0)>4096)return reply("Checkout request is too large.",413);
  const body=await request.json(),capability=body.capability as TestCapability;
  if(!Object.hasOwn(testCatalog,capability))return reply("Choose a valid membership or add-on.",400);
+ // New legacy per-result sales pause while the approved one-time commercial unlock is finalized.
+ // Existing signed payment fulfillment, saved unlocks and included access are unchanged.
+ if(capability==="designpd")return reply(designPdPendingUnlockMessage,409);
  const lifetime=await hasLifetimePersonalAccess(user.id);
  if(capability==="personal" && lifetime)return reply("Personal access is already included in your lifetime grant. No payment is needed.",409);
- if(capability==="designpd" && (lifetime||isDyddAdminEmail(user.email)))return reply("DesignPD is already included in your authorized access. No payment is needed.",409);
  const db=createSupabaseAdminClient();let scopeId="account";
- if(capability==="designpd") {
- if(!validUuid(body.scopeId))return reply("Choose your saved DesignID result.",400);
- const snapshots=await getAssessmentSnapshotsForUser(user.id,user.email || "");
- if(!snapshots.all.some(s=>s.id===body.scopeId&&s.assessment_type==="designid"))return reply("This DesignID result is not available to your account.",403);
- scopeId=body.scopeId;
- } else if(capability==="couples_circle") {
+ if(capability==="couples_circle") {
  if(!validUuid(body.scopeId))return reply("Save a two-person Circle first.",400);
  const {data:circle,error}=await db.from("journey_circle_plans").select("plan,status").eq("id",body.scopeId).eq("user_id",user.id).maybeSingle();
  if(error)throw Error("Circle storage unavailable");

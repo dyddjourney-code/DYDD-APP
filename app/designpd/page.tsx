@@ -1,4 +1,5 @@
-import { ContextualPurchases } from "@/components/contextual-purchases";
+import { designPdPendingUnlockMessage } from "@/lib/designpd/generation";
+import { designPdContentVersion } from "@/lib/designpd/report";
 import { isReviewRequest, type ReviewSearchParams } from "@/lib/review/heather";
 import { hasTestEntitlement } from "@/lib/commerce/test-entitlements";
 import { testBillingEnabled } from "@/lib/commerce/test-billing-config";
@@ -30,7 +31,7 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
   } = await serverSupabase.auth.getUser();
 
   if (!user && testBillingEnabled() && isReviewRequest(params)) {
-    return <main className="fruitlife-shell fruitlife-public designpd-shell"><h1>Explore your design in motion.</h1><p>DesignPD builds on your DesignID results to explore how you plan, decide, and do.</p><ContextualPurchases area="designpd" preview /></main>;
+    return <main className="fruitlife-shell fruitlife-public designpd-shell"><h1>Explore your design in motion.</h1><p>DesignPD builds on your DesignID results to explore how you plan, decide, and do.</p><p>{designPdPendingUnlockMessage}</p></main>;
   }
 
   if (!user) {
@@ -43,7 +44,7 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
     .select("full_name,email")
     .eq("id", user.id)
     .maybeSingle();
-  const participantEmail = normalizeEmail(profile?.email ?? user.email);
+  const participantEmail = normalizeEmail(user.email);
   const participantName =
     profile?.full_name?.trim() ||
     String(user.user_metadata?.full_name ?? user.user_metadata?.name ?? "").trim() ||
@@ -54,12 +55,16 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
   const designId = params?.snapshot ? assessmentReport.all.find((snapshot) => snapshot.assessment_type === "designid" && snapshot.id === params.snapshot) : latest.find((snapshot) => snapshot.assessment_type === "designid");
   const hasDesignId = Boolean(designId);
   const paidAccess = Boolean(designId && await hasTestEntitlement(user.id,"designpd",designId.id));
-  const savedDesignPd = assessmentReport.all.find((snapshot) => snapshot.assessment_type === "designpd" && snapshot.scores.designIdSnapshotId === designId?.id) ?? (!params?.snapshot ? latest.find((snapshot) => snapshot.assessment_type === "designpd") : undefined);
+  const savedDesignPd = assessmentReport.all.find((snapshot) => snapshot.assessment_type === "designpd" && snapshot.scores.designIdSnapshotId === designId?.id && snapshot.scores.contentVersion === designPdContentVersion);
 
   return (
     <main className="fruitlife-shell fruitlife-public designid-shell designpd-shell">
       {params?.checkout === "returned" ? <p role="status">You returned from Stripe. Your result unlock appears after the verified payment notification. <Link href={`/designpd?snapshot=${encodeURIComponent(params.snapshot || "")}`}>Refresh this result</Link>.</p> : params?.checkout === "cancelled" ? <p role="status">Checkout cancelled. No new access was granted.</p> : null}
       {params?.message ? <p className="fruitlife-form-error designid-page-message">{params.message}</p> : null}
+      {hasDesignId ? <details><summary>DesignID source and earlier results</summary>
+        <p>DesignPD uses the selected saved DesignID, not a separate retake timer. Changing the source does not create a report or grant access.</p>
+        <ul>{assessmentReport.all.filter(s => s.assessment_type === "designid").map(s => <li key={s.id}><Link href={`/designpd?origin=${origin}&snapshot=${encodeURIComponent(s.id)}`}>{s.id === designId?.id ? "Selected: " : "Use DesignID from "}{new Date(s.source_submitted_at || s.created_at).toLocaleDateString("en-US", { timeZone: "UTC" })}</Link></li>)}</ul>
+      </details> : null}
       {hasDesignId ? (
         <DesignPdAssessmentForm
           action={saveDesignPdResponse}
@@ -70,14 +75,13 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
           ownerAccess={paidAccess || await hasIncludedPersonalAccess(user.id) || isDyddAdminEmail(user.email)}
           designIdSnapshotId={designId?.id}
           paidAccess={paidAccess}
-          testCheckoutAvailable={testBillingEnabled()}
           lifetimeAccess={await hasLifetimePersonalAccess(user.id)}
           savedReportHref={savedDesignPd ? `/designpd/report?snapshot=${encodeURIComponent(savedDesignPd.id)}` : undefined}
         />
       ) : (
         <section className="fruitlife-panel fruitlife-message-card">
           <img src="/brand/tools/designpd-logo.jpg" alt="DesignPD logo" />
-          {testBillingEnabled() ? <><h1>Explore your design in motion.</h1><ContextualPurchases area="designpd" /></> : <>
+          <>
           <p className="section-label">DesignPD prerequisite</p>
           <h1>Complete DesignID first.</h1>
           <p>
@@ -91,7 +95,7 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
             <Link className="button secondary" href={cardHref}>
               Back to Field Kit
             </Link>
-          </div></>}
+          </div></>
         </section>
       )}
     </main>

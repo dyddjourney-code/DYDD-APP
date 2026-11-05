@@ -1,7 +1,7 @@
 "use server";
 import { hasTestEntitlement } from "@/lib/commerce/test-entitlements";
 import { hasIncludedPersonalAccess } from "@/lib/commerce/personal-access";
-import crypto from "node:crypto";
+import { matchingReadyDesignPd, designPdPendingUnlockMessage, type DesignPdReservation } from "@/lib/designpd/generation";
 import { courseOrigin } from "@/lib/trails/course-origin";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import { headers } from "next/headers";
@@ -64,7 +64,7 @@ export async function saveDesignPdResponse(formData: FormData) {
     .select("full_name,email")
     .eq("id", user.id)
     .maybeSingle();
-  const participantEmail = normalizeEmail(profile?.email ?? user.email);
+  const participantEmail = normalizeEmail(user.email);
   const authDisplayName = String(
     user.user_metadata?.full_name ?? user.user_metadata?.name ?? "",
   ).trim();
@@ -86,26 +86,13 @@ export async function saveDesignPdResponse(formData: FormData) {
   if (!designIdSnapshot) {
     fail("Complete DesignID before starting DesignPD.");
   }
-  // Existing reports remain accessible; generating for a new DesignID requires
-  // a per-result unlock; the separate TEST ledger is consulted only in the isolated sandbox.
+  // Reopening never creates a job, sends mail, or consumes an unlock.
+  const existing = matchingReadyDesignPd(assessmentReport.all, designIdSnapshot.id, designPdContentVersion);
+  if (existing) redirect(`/designpd/report?snapshot=${encodeURIComponent(existing.id)}`);
+  // Legacy TEST entitlements remain exact-source scoped. A future account unlock
+  // needs an explicit commercial migration; never infer it from a prior payment.
   if (!await hasIncludedPersonalAccess(user.id) && !isDyddAdminEmail(user.email) && !await hasTestEntitlement(user.id,"designpd",designIdSnapshot.id)) {
-    const existing = assessmentReport.all.find(
-      (snapshot) =>
-        snapshot.assessment_type === "designpd" &&
-        snapshot.scores.designIdSnapshotId === designIdSnapshot.id &&
-        snapshot.scores.contentVersion === designPdContentVersion &&
-        ["success", "ready"].includes(
-          String(
-            (snapshot.scores.pdfMonkey as Record<string, unknown> | undefined)
-              ?.status,
-          ),
-        ),
-    );
-    if (existing)
-      redirect(`/designpd/report?snapshot=${encodeURIComponent(existing.id)}`);
-    fail(
-      "DesignPD is a $15 add-on for each DesignID result. Open Memberships & add-ons to unlock this result.",
-    );
+    fail(designPdPendingUnlockMessage);
   }
   let result;
   let reportPayload;
@@ -125,7 +112,6 @@ export async function saveDesignPdResponse(formData: FormData) {
     );
   }
   const now = new Date().toISOString();
-  const sourceResponseId = `designpd_app:${user.id}:${crypto.randomUUID()}`;
   let participantId = await findOrAttachParticipant(user.id, participantEmail);
   if (!participantId) {
     // Never upsert user_id on email conflict: that can reassign another account's
@@ -154,26 +140,21 @@ export async function saveDesignPdResponse(formData: FormData) {
     scoringVersion: designPdScoringVersion,
     movement: result.movement,
     ratings: result.ratings,
-    sourceResponseId,
     summary: sections.summary,
   };
-  const { data: snapshot, error: snapshotError } = await supabase
-    .from("assessment_snapshots")
-    .insert({
-      assessment_type: "designpd",
-      participant_id: participantId,
-      scores: snapshotScores,
-      source: "designpd_app",
-      source_response_id: sourceResponseId,
-      source_submitted_at: now,
-      sync_batch_id: "native-app",
-      user_id: user.id,
-    })
-    .select("id")
-    .single();
-  if (snapshotError || !snapshot?.id) {
-    fail(snapshotError?.message ?? "Unable to save your DesignPD result.");
+  const { data: reservationData, error: reservationError } = await supabase.rpc("reserve_designpd_generation", {
+    p_user: user.id, p_source: designIdSnapshot.id, p_version: designPdContentVersion,
+    p_participant: participantId, p_scores: snapshotScores,
+  });
+  if (reservationError || !reservationData) fail("Your report could not be reserved. Please retry; no new generation was started.");
+  const reservation = reservationData as DesignPdReservation;
+  if (reservation.status === "ready") redirect(`/designpd/report?snapshot=${encodeURIComponent(reservation.snapshotId)}`);
+  if (reservation.status !== "reserved" || !reservation.token) {
+    fail(reservation.status === "retry_later" ? "This report failed. Wait one minute before retrying the same saved report."
+      : reservation.status === "exhausted" ? "This report has reached its technical retry limit. Your saved result is preserved; contact support."
+      : "This report is already being prepared or needs technical recovery. Open the saved report in Field Kit; no duplicate generation was started.");
   }
+  const snapshot = { id: reservation.snapshotId };
   const reportAccessUrl = `${await getAppBaseUrl()}/designpd/report?snapshot=${encodeURIComponent(snapshot.id)}`;
   const pdfFilename = `DesignPD Report - ${cleanReportFilename(participantName)} - ${snapshot.id.slice(0, 8)}.pdf`;
   let pdfMetadata: Record<string, unknown> = {
@@ -209,20 +190,21 @@ export async function saveDesignPdResponse(formData: FormData) {
   }
   const savedSnapshotId = snapshot.id;
   const ownerId = user.id;
-  async function persistReportState(includeReport = true) {
+  // Atomically save artifact metadata and close the reservation BEFORE email.
+  const { data: finished, error: finishError } = await supabase.rpc("finish_designpd_generation", {
+    p_user: user.id, p_source: designIdSnapshot.id, p_version: designPdContentVersion,
+    p_token: reservation.token, p_pdf: pdfMetadata, p_report_url: reportAccessUrl,
+  });
+  if (finishError || finished !== true) fail("Your result is saved, but its report status needs recovery. Open Field Kit or contact support; do not create another report.");
+  async function persistEmailState() {
     const { data: current, error: readError } = await supabase.from("assessment_snapshots")
       .select("scores").eq("id", savedSnapshotId).eq("user_id", ownerId).single();
-    if (readError || !current) fail("Your result is saved, but its report status could not be read. Open Field Kit or contact support.");
+    if (readError || !current) fail("Your report is saved, but its email status could not be read.");
     const { data, error } = await supabase.from("assessment_snapshots")
-      .update({ scores: { ...current.scores,
-        ...(includeReport ? { pdfMonkey: pdfMetadata, reportAccessUrl } : {}),
-        resultEmail: emailMetadata } })
+      .update({ scores: { ...current.scores, resultEmail: emailMetadata } })
       .eq("id", savedSnapshotId).eq("user_id", ownerId).select("id").single();
-    if (error || !data) fail("Your result is saved, but its report status could not be saved. Open Field Kit or contact support.");
+    if (error || !data) fail("Your report is saved, but its email status could not be saved.");
   }
-  // Persist the ready artifact BEFORE enqueueing/sending its URL. An immediate
-  // click or a deferred lifecycle send must see the same durable saved report.
-  await persistReportState();
   if (["ready", "success"].includes(String(pdfMetadata.status))) {
     if (!isDyddAdminEmail(user.email) || formData.get("emailReport") === "yes") {
       try {
@@ -238,7 +220,7 @@ export async function saveDesignPdResponse(formData: FormData) {
     } else {
       emailMetadata = { sent: false, skipped: true, reason: "owner_review_without_email" };
     }
-    await persistReportState(false);
+    await persistEmailState();
   }
   redirect(`/designpd/thanks?snapshot=${encodeURIComponent(snapshot.id)}&origin=${origin}`);
 }

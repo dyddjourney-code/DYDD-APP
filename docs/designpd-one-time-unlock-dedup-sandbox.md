@@ -1,0 +1,32 @@
+# DesignPD source updates and generation reservations — sandbox only
+
+## Scope / commercial decision boundary
+
+This change implements the *direction*, not a new paid product. DesignPD remains derived from the exact selected eligible saved DesignID. No standalone questionnaire, scoring changes, retake clock, checkout price change, upgrade charge or account-wide paid grant was introduced.
+
+Existing lifetime/included/admin access is preserved. Existing TEST DesignPD entitlements remain exact `DesignID snapshot ID` scope; they are **not** silently promoted to a one-time account unlock. An ordinary account without access sees a truthful pending one-time-unlock/update explanation. The local DesignPD form no longer initiates a per-result checkout. The old TEST SKU remains unchanged. Enclosing integration removed stale per-result prospective copy and paused new legacy DesignPD checkout before order/provider creation, while preserving signed fulfillment, existing exact-result unlocks and included access. A commercial decision and explicit fulfillment migration are necessary before selling/activating the new account-wide unlock. No promise of free future updates or invented update price is made.
+
+## Contracts
+
+- `app/designpd/actions.ts`: authenticate with `auth.getUser`; use verified auth email, never mutable profile email, for participant lookup. Reject an unavailable/foreign selected source. Run existing DesignPD scorer before new reservation. Existing ready same-source/current-content report redirects immediately, even without current purchase, with no generation or new email.
+- `lib/designpd/generation.ts`: matching-ready helper, pending commercial copy, reservation response type and derived-report discriminator.
+- `app/designpd/page.tsx` / `assessment-form.tsx`: select a historical DesignID deliberately, preserve selected ID in submit, explain optional update/history, preserve existing result-specific access honestly. No automatic generation when choosing source.
+- `reserve_designpd_generation(uuid,uuid,text,uuid,jsonb)`: service-role-only RPC. Proves DesignID ownership (direct owner, linked participant owner, or exact unclaimed legacy email), validates participant/source/content, and serializes `(owner, exact source snapshot, content version)` using an advisory transaction lock. Inserts the reservation **and snapshot in one transaction**. Concurrent requests receive one `reserved` token and the same snapshot ID. Ready legacy/current matching snapshots reopen. Existing ambiguous native pending/error records are adopted, not cloned.
+- `finish_designpd_generation(uuid,uuid,text,uuid,jsonb,text)`: matching running-token-only completion; atomically merges report metadata into the snapshot and closes reservation before optional email. Wrong/replayed tokens cannot overwrite the result.
+- Reservation states: `running`, `ready`, `failed`, `uncertain`. A confirmed terminal provider failure with a saved document ID permits retry after one minute, reusing the **same** result, maximum three generation attempts total. Unknown transport/provider outcomes and interrupted running workers do **not** automatically expire or regenerate: inspect/recover the saved document or contact support. This deliberately avoids duplicate paid jobs after an ambiguous timeout. Existing artifact GET can retrieve/archive a known provider document without creating another.
+- Minimal integration fence in `app/api/artifacts/[snapshotId]/download/route.ts`: native derived DesignPD POST must not bypass this ledger through generic PDF regeneration (that endpoint has a separate per-snapshot Storage lock). GET/download/known-document retrieval and other assessments remain unchanged. This tiny shared-route conditional is necessary to make DesignPD dedup effective across entry points.
+- Old ready snapshots and older content versions are never deleted or overwritten. A later selected source/current content version receives its own reservation; this is not an entitlement grant.
+
+## Migration / environment evidence
+
+Additive migration `supabase/migrations/20261105231031_designpd_generation_reservations.sql` applied only to isolated Supabase `atemrshtshxoqnuevvqu`, verified against sandbox credential URL and Vercel metadata `prj_5EC6sfJe9DpGYW59L94iwppeMYUg` before writes. Uses empty `search_path`, RLS on ledger, no anon/authenticated table or function privileges, service-role-only execution. No changes to commerce tables, prices, customer entitlements, production data, providers, or deployment.
+
+## Verification
+
+- `node tests/designpd-generation-sandbox.mjs` — actual isolated DB, two synthetic accounts, 12 concurrent reservations: one job / one snapshot; ready reopen; source/version independence; earlier ready report retained; wrong token/replayed completion/foreign and missing sources rejected; terminal failure retry/backoff/three-attempt cap; linked imported source; uncertain outcome blocks replacement; pre-migration error adoption; anon/authenticated RPC execute revoked, anon ledger read denied. All synthetic users/participants/snapshots/reservations cleaned in `finally`.
+- `node tests/designpd-report-state.cjs` — action lifecycle with intercepted providers: reservation precedes generation, durable ready state before email, send-failure isolation, email suppression, metadata preservation, participant conflict safety, ready/running/uncertain behavior, exact legacy TEST entitlement, ordinary gate, foreign/missing selected source rejection.
+- `node tests/designpd-artifact-lifecycle.cjs` — saved locator/login/ownership/privacy/read-only behaviors, plus generic recovery bypass rejected for derived DesignPD.
+- `node tests/designpd-unlock-ui.cjs` — pending gate/no local checkout, exact hidden source, legacy entitlement scope, lifetime inclusion and saved-report rendering.
+- `node tests/native-designpd-recovery.cjs` — existing saved scoring/source recovery parity preserved.
+
+No paid PDF or real email was called. Sandbox PDF transport remains disabled by the preexisting provider fence; this is DB/action-contract verification, **not** a real paid-provider generation or inbox-delivery test. No commit, push, deployment or production promotion. Browser/layout verification belongs to the enclosing sandbox integration; not claimed here. Whole-tree `npm run typecheck` PASS after sibling timing/360 changes settled. Enclosing integrator still owns final build and browser verification.

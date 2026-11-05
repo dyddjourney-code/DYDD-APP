@@ -1,0 +1,29 @@
+.status {
+  margin-block: 12px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.status p {
+  margin-block: 6px;
+}
+.disclosure {
+  margin-block: 14px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.disclosure > p {
+  margin-block: 8px;
+}
+.disclosure summary {
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.disclosure ul {
+  padding-inline-start: 20px;
+}
+.disclosure li + li {
+  margin-block-start: 7px;
+}

@@ -64,6 +64,11 @@ const loginNext = response => new URL(response.headers.get('location')).searchPa
   assert.equal((await get()).status,404,'delivery aliases are not ownership');
   snapshot.user_id='owner'; snapshot.participant_id=null;
   assert.equal((await get()).status,307,'native snapshot ownership is sufficient even without participant linkage');
+  snapshot.source='designpd_app';
+  snapshot.scores={designIdSnapshotId:'selected-source',contentVersion:'v1',reportPayload:{name:'Synthetic'},pdfMonkey:{status:'error'}};
+  r=await route.POST(new NextRequest(req().url,{method:'POST',headers:{origin:'https://school.invalid'}}),{params:Promise.resolve({snapshotId:id})});
+  assert.equal(r.status,409,'generic recovery cannot bypass the derived source/version generation reservation');
+  assert((await r.text()).includes('no duplicate report was created'));
   snapshot=null;
   assert.equal((await get()).status,404,'missing ID remains indistinguishable from denied ID');
   user=null;

@@ -1,3 +1,7 @@
+import { AssessmentTimingStatus } from "@/components/assessment-timing-status";
+import { getAssessmentEligibility } from "@/lib/assessment-timing/policy";
+import { isSandbox } from "@/lib/environment";
+import { isDyddAdminEmail } from "@/lib/admin-access";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
@@ -158,6 +162,23 @@ export default async function SpiritualGiftsPage({ searchParams }: SpiritualGift
         name: profile?.full_name?.trim() || authDisplayName || user.email?.split("@")[0] || "",
       }
     : reviewIdentity ?? appIdentity ?? undefined;
+
+  // Only verified auth determines personal timing and owner exemptions. Review
+  // identities never acquire a personal date or an administrative exemption.
+  const timing = isSandbox() && user && !reviewIdentity
+    ? await getAssessmentEligibility(user.id, participantEmail, "spiritual_gifts", isDyddAdminEmail(user.email))
+    : null;
+  if (timing && !timing.allowed) return (
+    <main className="fruitlife-shell fruitlife-public spiritual-gifts-shell">
+      <section className="fruitlife-panel fruitlife-message-card">
+        <h1>Keep exploring your gifts.</h1>
+        <p>Your saved results and course remain available.</p>
+        <AssessmentTimingStatus assessment="spiritual_gifts" timing={timing} />
+        <Link className="button primary" href={spiritualGiftsReportHref}>View your results</Link>
+        <Link className="button secondary" href={withReviewQuery("/courses/spiritual-gifts-service", params)}>Explore course</Link>
+      </section>
+    </main>
+  );
 
   if (fruitLifeLane && channel !== "app") {
     return (

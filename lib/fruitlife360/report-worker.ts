@@ -320,6 +320,13 @@ export async function processFruitLifeReportJobs({
             .eq("artifact_type", "pdf")
             .limit(1)
             .maybeSingle();
+      if (!dryRun && !priorPdf?.provider_document_id) {
+        const reservation = await supabase.rpc("dydd_fruitlife_claim_provider_creation", {
+          p_job_id: job.id, p_worker_id: workerId,
+        });
+        if (reservation.error) throw new Error(reservation.error.message);
+        if (reservation.data !== true) throw new Error("This generation was already reserved. Provider creation outcome requires reconciliation; automatic duplicate creation is blocked.");
+      }
       const createdDocument = dryRun
         ? {
             filename,

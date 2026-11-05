@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict');
+const React=require('react');
+const {renderToStaticMarkup}=require('react-dom/server');
+const load=require('../scripts/fruitlife-test-load.cjs');
+const {DesignPdAssessmentForm}=load('app/designpd/assessment-form.tsx');
+const base={action:()=>{},participantEmail:'qa@example.invalid',participantName:'Synthetic QA',designIdSnapshotId:'exact-source-id',ownerAccess:false};
+const render=props=>renderToStaticMarkup(React.createElement(DesignPdAssessmentForm,{...base,...props}));
+const gated=render({});assert(gated.includes('One-time DesignPD unlock: pending'));assert(!gated.includes('$15'));assert(!gated.includes('type="submit"'));assert(!gated.includes('checkout'));
+const legacy=render({ownerAccess:true,paidAccess:true});assert(legacy.includes('covers only this DesignID result'));assert(legacy.includes('value="exact-source-id"'));assert(legacy.includes('type="submit"'));
+const lifetime=render({ownerAccess:true,lifetimeAccess:true,savedReportHref:'/designpd/report?snapshot=retained'});assert(lifetime.includes('lifetime personal all-access'));assert(lifetime.includes('/designpd/report?snapshot=retained'));assert(lifetime.includes('does not generate another report'));
+console.log('PASS DesignPD gated pending direction, no local per-result checkout, exact source hidden field, legacy scope, lifetime and saved-report UI');

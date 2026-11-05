@@ -126,3 +126,31 @@ Evidence is consolidated under `outputs/assessment-timing-2026-11-05/` at releas
 Physical iOS/Safari and human inbox/read placement are separate, unclaimed checks.
 External paid PDF transports stay disabled in sandbox; scoring/action/provider
 contracts are checked without spending on new PDF jobs.
+
+## Controlled hosted acceptance — November 5
+
+Application commit `00c0367df2df9c4594a9081ded2469394eb45fbf` was deployed
+READY as `dpl_CdtTjvHUoUm3EEDQ2p1uDpkrJDGk` to the exact sandbox project and
+both established aliases. Local actual-auth flow passed 27 checks; published
+actual-auth flow passed 28, including desktop/390/320 views, owner-only approval
+and decline, one-use completion, original history, foreign/replay denial, and a
+byte-identical existing private PDF download plus course access during cooldown.
+No browser runtime errors. The PDF was an explicitly synthetic saved-object
+fixture, not a newly generated provider report. All QA objects/accounts removed.
+
+Four deliberate transactional messages (two owner review notices, approval and
+decline to two Resend QA sinks) were accepted and received genuine signed
+`email.sent`/`email.delivered` telemetry. No synthetic webhook events were written.
+This proves provider/mail-server delivery, not human inbox/read/spam placement;
+Resend QA sinks are simulated delivery destinations. No real learner was emailed.
+The exact temporary three-recipient sandbox allowlist was restored to the original
+owner-only value before the final release deployment. No cron or messaging
+automation changed. Final exact alias/SHA receipt and post-restore authenticated
+read-only screenshots are saved in workspace release outputs.
+
+One legacy standalone `designid-maps-confirmation.cjs` invocation reports existing
+TypeScript inference errors in unchanged report source when compiled outside the
+project tsconfig. Project typecheck/optimized build and the full unchanged-source
+allocation/scoring parity suite (80 statements, 40 legal patterns, 130,931
+DesignPD vectors) pass. No current private historical workbook fixture was
+available for a fresh historical-input replay (0 rows); no such claim is made.

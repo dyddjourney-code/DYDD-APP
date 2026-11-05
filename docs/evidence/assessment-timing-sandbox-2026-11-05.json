@@ -1,0 +1,52 @@
+{
+  "at": "2026-11-05T23:50:51.751Z",
+  "scope": "sandbox only",
+  "projectId": "prj_5EC6sfJe9DpGYW59L94iwppeMYUg",
+  "supabaseRef": "atemrshtshxoqnuevvqu",
+  "applicationCommit": "00c0367df2df9c4594a9081ded2469394eb45fbf",
+  "controlledQaDeployment": "dpl_CdtTjvHUoUm3EEDQ2p1uDpkrJDGk",
+  "localBrowserChecks": 27,
+  "hostedBrowserChecks": 28,
+  "browserErrors": [],
+  "providerControlledMessages": 4,
+  "genuineDeliveredTelemetry": true,
+  "humanInboxVerified": false,
+  "realLearnerEmails": 0,
+  "instrumentFilesUnchanged": 11,
+  "migrationsExactSource": true,
+  "migrationCount": 11,
+  "temporaryAllowlistRestoration": {
+    "at": "2026-11-05T23:50:51.671Z",
+    "projectId": "prj_5EC6sfJe9DpGYW59L94iwppeMYUg",
+    "ref": "atemrshtshxoqnuevvqu",
+    "mode": "restored original owner-only",
+    "recipientCount": 1,
+    "recipientPolicy": "existing designated owner only",
+    "envId": "JsZ7eV201MBVjudg",
+    "targets": [
+      "production",
+      "preview",
+      "development"
+    ],
+    "requiresRedeploy": true,
+    "otherEnvironmentChanges": 0,
+    "providerSends": 0,
+    "productionMutations": 0
+  },
+  "productionBaseline": {
+    "at": "2026-11-05T23:40:31.595Z",
+    "alias": "dydd-online-school.vercel.app",
+    "deploymentId": "dpl_DGHy2Sw68PphSdBo6UCYfDbA8ARu",
+    "projectId": "prj_YO15mYTp64EHk0wlg6QmBTxNeV5k",
+    "sha": "023b48020ea886a86e74299383cccaa4dd84b2f7",
+    "branch": "master",
+    "state": "READY"
+  },
+  "commercialDecision": "One-time DesignPD price/fulfillment and legacy conversion remain unactivated; new obsolete per-result checkout paused, existing entitlements/fulfillment retained.",
+  "limitations": [
+    "No physical iOS/Safari test",
+    "No new paid PDF-provider generation",
+    "No human inbox/read/spam claim",
+    "No fresh historical private workbook fixture replay"
+  ]
+}

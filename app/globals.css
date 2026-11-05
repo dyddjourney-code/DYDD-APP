@@ -12534,6 +12534,10 @@ body:has(.fruitlife-release-shell) .mobile-app-nav,
   gap: 18px;
 }
 
+.gear-books-cta {
+  justify-self: start;
+}
+
 .gear-book-card {
   display: grid;
   grid-template-columns: minmax(130px, 0.38fr) minmax(0, 1fr);

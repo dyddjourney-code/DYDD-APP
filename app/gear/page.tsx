@@ -9,8 +9,6 @@ const bookResources = [
     alt: "Discover Your Divine Design book cover",
     description:
       "The theological and conceptual foundation of the DYDD journey, exploring identity in Christ, personal design, and faithful living with clarity and grace.",
-    cta: "Purchase book",
-    href: "https://www.amazon.com/s?k=Discover+Your+Divine+Design+Workbook+John+Willoughby",
   },
   {
     title: "Discover Your Divine Design Workbook",
@@ -19,8 +17,6 @@ const bookResources = [
     alt: "Discover Your Divine Design workbook cover",
     description:
       "A guided companion to the book created to support prayerful engagement, personal reflection, and faithful application. The workbook is included digitally inside the Discover Your Divine Design Journey; this paper copy is for people who prefer something they can hold, write in, and keep nearby.",
-    cta: "Purchase workbook",
-    href: "https://www.amazon.com/s?k=Discover+Your+Divine+Design+Workbook+John+Willoughby",
   },
 ];
 
@@ -95,13 +91,18 @@ export default async function GearPage({ searchParams }: GearPageProps) {
               <div className="gear-book-copy">
                 <h3>{book.title}</h3>
                 <p>{book.description}</p>
-                <a className="button secondary" href={book.href} target="_blank" rel="noreferrer">
-                  {book.cta}
-                </a>
               </div>
             </article>
           ))}
         </div>
+        <a
+          className="button secondary gear-books-cta"
+          href="https://www.amazon.com/author/john-willoughby"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Get The Books
+        </a>
       </section>
 
       <section className="gear-panel gear-workshops-panel" id="workshops">

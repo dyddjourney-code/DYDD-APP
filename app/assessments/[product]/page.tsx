@@ -4,6 +4,10 @@ import { notFound } from "next/navigation";
 import { getAssessmentSnapshotsForUser } from "@/lib/assessments/student-context";
 import { scoreDesignPd } from "@/lib/designpd/engine";
 import { normalizeEmail } from "@/lib/identity/email";
+import { standaloneDesignIdAccess } from "@/lib/public-assessments/access";
+import { hasIncludedPersonalAccess } from "@/lib/commerce/personal-access";
+import { hasTestEntitlement } from "@/lib/commerce/test-entitlements";
+import { isDyddAdminEmail } from "@/lib/admin-access";
 import { hasPublicAssessmentEntitlement } from "@/lib/public-assessments/ledger";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { beginAssessmentCheckout, generatePurchasedDesignPd, redeemAssessmentWaiver } from "../actions";
@@ -59,7 +63,10 @@ export default async function PublicAssessmentProductPage({ params, searchParams
   const savedReport = snapshots.find(snapshot => snapshot.assessment_type === (slug === "spiritual-gifts" ? "spiritual_gifts" : slug)
     && (slug !== "designpd" || snapshot.scores.designIdSnapshotId === source?.id));
   const owned = verifiedUser && slug !== "spiritual-gifts" && (slug !== "designpd" || source)
-    ? await hasPublicAssessmentEntitlement(verifiedUser.id, slug, source?.id)
+    ? slug === "designid" ? (await standaloneDesignIdAccess(verifiedUser)).allowed
+      : isDyddAdminEmail(verifiedUser.email) || await hasIncludedPersonalAccess(verifiedUser.id)
+        || await hasTestEntitlement(verifiedUser.id, "designpd", source!.id)
+        || await hasPublicAssessmentEntitlement(verifiedUser.id, "designpd", source!.id)
     : false;
   // Never echo arbitrary query content: a submitted code or personal detail must
   // not become part of the page's status message.

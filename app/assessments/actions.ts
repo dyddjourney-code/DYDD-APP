@@ -1,6 +1,9 @@
 'use server';
 import { redirect } from 'next/navigation';
 import { createPublicAssessmentCheckout } from '@/lib/public-assessments/payments';
+import { isDyddAdminEmail } from '@/lib/admin-access';
+import { hasIncludedPersonalAccess } from '@/lib/commerce/personal-access';
+import { hasTestEntitlement } from '@/lib/commerce/test-entitlements';
 import { isSandbox } from '@/lib/environment';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { getAssessmentSnapshotsForUser } from '@/lib/assessments/student-context';
@@ -52,7 +55,7 @@ export async function beginAssessmentCheckout(form:FormData) {
 }
 export async function generatePurchasedDesignPd(form:FormData) {
  const user=await identity('designpd');const source=await sourceFor(user,form);
- if(!await hasPublicAssessmentEntitlement(user.id,'designpd',source.id))redirect('/assessments/designpd?message='+encodeURIComponent('Unlock this DesignPD report before generating it.'));
+ if(!isDyddAdminEmail(user.email) && !await hasIncludedPersonalAccess(user.id) && !await hasTestEntitlement(user.id,'designpd',source.id) && !await hasPublicAssessmentEntitlement(user.id,'designpd',source.id))redirect('/assessments/designpd?message='+encodeURIComponent('Unlock this DesignPD report before generating it.'));
  const derived=new FormData();derived.set('designIdSnapshotId',source.id);derived.set('emailReport','yes');
  await saveDesignPdResponse(derived);
 }

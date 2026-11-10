@@ -1,0 +1,81 @@
+{
+  "recordedAt": "2026-11-10T14:39:16.611Z",
+  "sandboxRef": "atemrshtshxoqnuevvqu",
+  "migration": "supabase/migrations/20261110143159_public_assessments_ledger_sandbox.sql",
+  "migrationSha256": "b995b4a06817d27b56bc9d0859c43bb2311cf122e2bef5d9253c9a17a2aedf99",
+  "recordedMigrationSourceMatches": true,
+  "tests": {
+    "sandboxRef": "atemrshtshxoqnuevvqu",
+    "events": [
+      "12 concurrent same-user redemptions create exactly one order/entitlement; idempotent retry; foreign replay/wrong product denied",
+      "12 competing-identity redemptions permit exactly one identity, one order, one entitlement",
+      "PD missing/foreign/invalid/unverified prerequisite denied without consuming code; exact-source binding and retry verified",
+      "Current verified Auth email links unowned imported source; explicit foreign snapshot ownership wins over matching email",
+      "Pending/failed/cancelled/refunded/paid-without-verified-fulfillment create no access; payment fulfillment RPC and forged fulfilled state fail closed",
+      "Expired/revoked codes denied; consumed attempt unavailable for new entry but redemption retry retains identity; revoked access fails closed",
+      "All 3 tables RLS enabled; anon/authenticated read denied; all 4 RPCs execute denied; actual authenticated/anonymous Data API attacks denied"
+    ],
+    "syntheticFixturesCleaned": true,
+    "noCustomerLookup": true,
+    "noProviderCalls": true,
+    "operationalBatchPreserved": [
+      {
+        "product": "designid",
+        "total": 25,
+        "unused": 25
+      },
+      {
+        "product": "designpd",
+        "total": 25,
+        "unused": 25
+      }
+    ]
+  },
+  "workbook": {
+    "path": "/home/openclaw/.openclaw/workspace/outputs/dydd-public-assessments-2026-11-10/waiver-codes.xlsx",
+    "sheets": [
+      "DesignID SANDBOX",
+      "DesignPD SANDBOX"
+    ],
+    "columns": [
+      "Code",
+      "Assigned person's name",
+      "Status",
+      "Redeemed at",
+      "Order ID"
+    ],
+    "codesPerProduct": 25,
+    "zipXmlValidated": true,
+    "everyWorkbookCodeMatchesPersistedProductBoundHash": true,
+    "permissions": "0600; enclosing output directory 0700",
+    "rawCodesInRepository": false
+  },
+  "securityAdvisors": [
+    {
+      "name": "rls_enabled_no_policy",
+      "level": "INFO",
+      "table": "dydd_public_assessment_codes"
+    },
+    {
+      "name": "rls_enabled_no_policy",
+      "level": "INFO",
+      "table": "dydd_public_assessment_entitlements"
+    },
+    {
+      "name": "rls_enabled_no_policy",
+      "level": "INFO",
+      "table": "dydd_public_assessment_orders"
+    }
+  ],
+  "paymentFulfillment": "Disabled RPC always raises; paid alone cannot fulfill or grant access",
+  "productionTouched": false,
+  "committed": false,
+  "deployed": false,
+  "typecheck": {
+    "status": "blocked outside owned files",
+    "errors": [
+      "app/assessments/submit-button.tsx: missing react-dom declaration",
+      "lib/public-assessments/report-preview.ts: implicit any match parameter"
+    ]
+  }
+}

@@ -1,4 +1,5 @@
 "use server";
+import { standaloneDesignIdAccess } from "@/lib/public-assessments/access";
 import { requirePersonalMembershipContent } from "@/lib/commerce/account-access";
 import crypto from "node:crypto";
 import { isSandbox } from "@/lib/environment";
@@ -79,7 +80,9 @@ export async function saveDesignIdResponse(formData: FormData) {
   if (!user) {
     redirect(`/login?next=${encodeURIComponent("/designid")}`);
   }
-  await requirePersonalMembershipContent(user, "/designid");
+  const standaloneAccess = await standaloneDesignIdAccess(user);
+  if (!standaloneAccess.allowed) redirect("/assessments/designid");
+  if (!standaloneAccess.standalone) await requirePersonalMembershipContent(user, "/designid");
   const supabase = createSupabaseAdminClient();
   const { data: profile } = await supabase
     .from("school_profiles")
@@ -160,7 +163,7 @@ export async function saveDesignIdResponse(formData: FormData) {
     result,
   });
   const { data: snapshotId, error: snapshotError } = await supabase.rpc(
-    "save_designid_attempt",
+    standaloneAccess.standalone ? "save_public_designid_attempt" : "save_designid_attempt",
     {
       p_user_id: user.id,
       p_participant_id: participant.id,
@@ -231,20 +234,7 @@ export async function saveDesignIdResponse(formData: FormData) {
       reportAccessUrl,
       status: report.document.status ?? null,
     };
-    if (report.ready) {
-      const email = await sendAssessmentReportEmail({
-        assessmentName: "DesignID",
-        participantEmail,
-        participantName,
-        reportUrl: reportAccessUrl,
-      });
-      emailMetadata = {
-        error: email.message ?? null,
-        resendId: email.id ?? null,
-        sent: email.sent,
-        skipped: email.skipped,
-      };
-    }
+
   } catch (error) {
     pdfMetadata = {
       ...pdfMetadata,
@@ -299,5 +289,14 @@ export async function saveDesignIdResponse(formData: FormData) {
     fail(
       "Your assessment was saved, but delivery status could not be updated. Find your report in Field Kit.",
     );
+  // Artifact state must be durable BEFORE a report-ready email can be opened.
+  if (["ready", "success"].includes(String(pdfMetadata.status))) {
+    try {
+      const email = await sendAssessmentReportEmail({ assessmentName: "DesignID", participantEmail, participantName, reportUrl: reportAccessUrl });
+      emailMetadata = { error: email.message ?? null, resendId: email.id ?? null, sent: email.sent, skipped: email.skipped };
+    } catch { emailMetadata = { sent: false, skipped: false, error: "Report is saved; delivery needs retry." }; }
+    const { data: saved } = await supabase.from("assessment_snapshots").select("scores").eq("id", snapshot.id).eq("user_id", user.id).single();
+    if (saved) await supabase.from("assessment_snapshots").update({scores:{...saved.scores,resultEmail:emailMetadata}}).eq("id",snapshot.id).eq("user_id",user.id);
+  }
   redirect(`/designid/thanks?snapshot=${encodeURIComponent(snapshot.id)}`);
 }

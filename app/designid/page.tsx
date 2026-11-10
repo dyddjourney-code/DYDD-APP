@@ -1,3 +1,4 @@
+import { standaloneDesignIdAccess } from "@/lib/public-assessments/access";
 import { AssessmentTimingStatus } from "@/components/assessment-timing-status";
 import { getAssessmentEligibility } from "@/lib/assessment-timing/policy";
 import { isSandbox } from "@/lib/environment";
@@ -31,7 +32,9 @@ export default async function DesignIdPage({ searchParams }: DesignIdPageProps) 
     redirect(`/login?next=${encodeURIComponent("/designid")}`);
   }
 
-  await requirePersonalMembershipContent(user, "/designid");
+  const standaloneAccess = await standaloneDesignIdAccess(user);
+  if (!standaloneAccess.allowed) redirect("/assessments/designid");
+  if (!standaloneAccess.standalone) await requirePersonalMembershipContent(user, "/designid");
   const admin = createSupabaseAdminClient();
   const { data: profile } = await admin
     .from("school_profiles")

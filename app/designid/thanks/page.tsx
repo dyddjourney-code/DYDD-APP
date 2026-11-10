@@ -1,3 +1,4 @@
+import { isSandbox } from "@/lib/environment";
 import { ClearDesignIdDraft } from "./clear-draft";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -29,7 +30,7 @@ export default async function DesignIdThanksPage({ searchParams }: DesignIdThank
     reportReady = ['ready', 'success'].includes(data.scores?.pdfMonkey?.status);
   }
   const reportHref = params?.snapshot
-    ? `/designid/report?snapshot=${encodeURIComponent(params.snapshot)}`
+    ? isSandbox() ? `/assessments/report/${encodeURIComponent(params.snapshot)}` : `/designid/report?snapshot=${encodeURIComponent(params.snapshot)}`
     : "/field-kit";
 
   return (
@@ -40,7 +41,7 @@ export default async function DesignIdThanksPage({ searchParams }: DesignIdThank
         <p className="section-label">Submitted</p>
         <h1>{reportReady ? "Your DesignID report is ready." : "Your DesignID assessment is submitted."}</h1>
         <p>
-          {reportReady
+          {isSandbox() ? "Your assessment is saved. Open the full source-template sandbox preview below. Provider PDF generation and report email are not connected in this environment." : reportReady
             ? emailSent
               ? "You can find it in your Field Kit, and a link has been emailed to you."
               : "You can find it in your Field Kit. We couldn’t confirm the email send; you can still open your report here."

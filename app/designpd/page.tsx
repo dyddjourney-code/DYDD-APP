@@ -1,3 +1,5 @@
+import { isSandbox } from "@/lib/environment";
+import { hasPublicAssessmentEntitlement } from "@/lib/public-assessments/ledger";
 import { designPdPendingUnlockMessage } from "@/lib/designpd/generation";
 import { designPdContentVersion } from "@/lib/designpd/report";
 import { isReviewRequest, type ReviewSearchParams } from "@/lib/review/heather";
@@ -54,6 +56,7 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
   const latest = latestByAssessment(assessmentReport.all);
   const designId = params?.snapshot ? assessmentReport.all.find((snapshot) => snapshot.assessment_type === "designid" && snapshot.id === params.snapshot) : latest.find((snapshot) => snapshot.assessment_type === "designid");
   const hasDesignId = Boolean(designId);
+  const publicAccess = Boolean(designId && await hasPublicAssessmentEntitlement(user.id,"designpd",designId.id));
   const paidAccess = Boolean(designId && await hasTestEntitlement(user.id,"designpd",designId.id));
   const savedDesignPd = assessmentReport.all.find((snapshot) => snapshot.assessment_type === "designpd" && snapshot.scores.designIdSnapshotId === designId?.id && snapshot.scores.contentVersion === designPdContentVersion);
 
@@ -72,11 +75,11 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
           cardHref={cardHref}
           participantEmail={participantEmail}
           participantName={participantName}
-          ownerAccess={paidAccess || await hasIncludedPersonalAccess(user.id) || isDyddAdminEmail(user.email)}
+          ownerAccess={publicAccess || paidAccess || await hasIncludedPersonalAccess(user.id) || isDyddAdminEmail(user.email)}
           designIdSnapshotId={designId?.id}
           paidAccess={paidAccess}
           lifetimeAccess={await hasLifetimePersonalAccess(user.id)}
-          savedReportHref={savedDesignPd ? `/designpd/report?snapshot=${encodeURIComponent(savedDesignPd.id)}` : undefined}
+          savedReportHref={savedDesignPd ? isSandbox() ? `/assessments/report/${encodeURIComponent(savedDesignPd.id)}` : `/designpd/report?snapshot=${encodeURIComponent(savedDesignPd.id)}` : undefined}
         />
       ) : (
         <section className="fruitlife-panel fruitlife-message-card">

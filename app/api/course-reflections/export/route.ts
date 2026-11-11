@@ -1,3 +1,4 @@
+import { hasAssessmentCourseCapability } from '@/lib/public-assessments/course-capability';
 import { previewParams, previewExport } from "@/lib/reflections/preview";
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -29,6 +30,8 @@ async function prepare(request: Request) {
     return {
       error: fail("Choose a valid saved workbook or walkthrough.", 400),
     };
+  if (scope !== "all" && !await hasAssessmentCourseCapability(user.id, slug))
+    return { error: fail("This standalone report does not include course access.", 403) };
   let query = s
     .from("reflection_rounds")
     .select("*")
@@ -39,13 +42,23 @@ async function prepare(request: Request) {
   if (scope !== "all") query = query.eq("course_slug", slug);
   if (scope === "round") query = query.eq("id", roundId);
   const rounds: ReflectionRound[] = [];
+  const capabilities = new Map<string, boolean>();
+  const canExportCourse = async (courseSlug: string) => {
+    if (!capabilities.has(courseSlug))
+      capabilities.set(courseSlug, await hasAssessmentCourseCapability(user.id, courseSlug));
+    return capabilities.get(courseSlug)!;
+  };
   for (let from = 0; ; from += 1000) {
     const page = await query.range(from, from + 999);
     if (page.error)
       return {
         error: fail("Could not load your saved work. Please try again.", 500),
       };
-    rounds.push(...page.data);
+    // An all-workbooks export must enforce the same boundary as a single-course
+    // export; otherwise requesting scope=all bypasses its course check.
+    for (const round of page.data) {
+      if (await canExportCourse(round.course_slug)) rounds.push(round);
+    }
     if (page.data.length < 1000) break;
   }
   if (scope === "round" && !rounds.length)

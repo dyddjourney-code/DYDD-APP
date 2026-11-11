@@ -1,4 +1,8 @@
-import { hasIncludedPersonalAccess, hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
+import { hasIncludedAssessmentAccess } from "@/lib/public-assessments/included-access";
+import { hasPublicAssessmentEntitlement } from "@/lib/public-assessments/ledger";
+import { getOwnedAssessmentSnapshots } from "@/lib/public-assessments/identity";
+import { designPdContentVersion } from "@/lib/designpd/report";
+import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import { courseCardHref, courseOrigin } from "@/lib/trails/course-origin";
 import Link from "next/link";
 import { isDyddAdminEmail } from "@/lib/admin-access";
@@ -11,7 +15,7 @@ import { saveDesignPdResponse } from "./actions";
 import { DesignPdAssessmentForm } from "./assessment-form";
 
 type DesignPdPageProps = {
-  searchParams?: Promise<{ message?: string; origin?: string }>;
+  searchParams?: Promise<{ message?: string; origin?: string; snapshot?: string }>;
 };
 
 export const dynamic = "force-dynamic";
@@ -29,6 +33,7 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
     redirect(`/login?next=${encodeURIComponent(`/designpd?origin=${origin}`)}`);
   }
 
+  if (!user.email_confirmed_at) redirect("/assessments/designpd?message=Verify+your+account+email+before+continuing.");
   const supabase = createSupabaseAdminClient();
   const { data: profile } = await supabase
     .from("school_profiles")
@@ -41,10 +46,13 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
     String(user.user_metadata?.full_name ?? user.user_metadata?.name ?? "").trim() ||
     user.email?.split("@")[0] ||
     "DesignPD Participant";
-  const assessmentReport = await getAssessmentSnapshotsForUser(user.id, participantEmail);
+  const assessmentReport = {all:await getOwnedAssessmentSnapshots(user)};
   const latest = latestByAssessment(assessmentReport.all);
-  const hasDesignId = latest.some((snapshot) => snapshot.assessment_type === "designid");
-  const savedDesignPd = latest.find((snapshot) => snapshot.assessment_type === "designpd");
+  const source = params?.snapshot ? assessmentReport.all.find(s=>s.assessment_type==='designid' && s.id===params.snapshot) : latest.find(s=>s.assessment_type==='designid');
+  const hasDesignId = Boolean(source);
+  const publicAccess = Boolean(source && await hasPublicAssessmentEntitlement(user.id,'designpd',source.id));
+  const includedAccess = await hasIncludedAssessmentAccess(user.id);
+  const savedDesignPd = assessmentReport.all.find(s=>s.assessment_type==='designpd' && s.scores.designIdSnapshotId===source?.id && s.scores.contentVersion===designPdContentVersion);
 
   return (
     <main className="fruitlife-shell fruitlife-public designid-shell designpd-shell">
@@ -56,7 +64,10 @@ export default async function DesignPdPage({ searchParams }: DesignPdPageProps) 
           cardHref={cardHref}
           participantEmail={participantEmail}
           participantName={participantName}
-          ownerAccess={await hasIncludedPersonalAccess(user.id) || isDyddAdminEmail(user.email)}
+          ownerAccess={publicAccess || includedAccess || isDyddAdminEmail(user.email)}
+          includedAccess={includedAccess}
+          reportOnlyAccess={publicAccess}
+          designIdSnapshotId={source?.id}
           lifetimeAccess={await hasLifetimePersonalAccess(user.id)}
           savedReportHref={savedDesignPd ? `/designpd/report?snapshot=${encodeURIComponent(savedDesignPd.id)}` : undefined}
         />

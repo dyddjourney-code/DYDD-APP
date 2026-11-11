@@ -1,3 +1,4 @@
+import { hasAssessmentCourseCapability } from "@/lib/public-assessments/course-capability";
 import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import { withCourseOrigin } from "@/lib/trails/course-origin";
 import { isFreeBeta } from "@/lib/environment";
@@ -102,6 +103,10 @@ export default async function TrailheadsPage({ searchParams }: Props) {
   const trails = trailDefinitions.filter(
     (trail) => !mini || ["spiritual-gifts", "fruitlife-360"].includes(trail.id),
   );
+  const paidCourseCapabilities = {
+    designid: Boolean(user && await hasAssessmentCourseCapability(user.id,'designid-foundations')),
+    designpd: Boolean(user && await hasAssessmentCourseCapability(user.id,'designpd-alignment')),
+  };
   return (
     <main
       className={`journey-shell hq-standalone-page trailhead-renewal${mini ? " fruitlife-release-shell" : ""}`}
@@ -213,7 +218,8 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                   isTrailAssessmentComplete("designpd", ownPdReport.all) &&
                   hasDesignPdCourseAccess(user.email, ownPdReport.all),
               );
-            const ready = complete && pdAccess;
+            const courseIncluded = trail.id === 'designid' || trail.id === 'designpd' ? paidCourseCapabilities[trail.id] : true;
+            const ready = complete && pdAccess && courseIncluded;
             const designIdReady = snapshots.some(
               (s) => s.assessment_type === "designid",
             );
@@ -261,7 +267,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                   terrain={trail.terrain}
                   gear={trail.gear}
                   bestFor={trail.bestFor}
-                  permit={lifetimeAccess ? "Lifetime personal access · Included" : isFreeBeta() ? "Free beta · Included" :
+                  permit={!courseIncluded ? 'Standalone report · Course not included' : lifetimeAccess ? "Lifetime personal access · Included" : isFreeBeta() ? "Free beta · Included" :
                     trail.id === "designpd"
                       ? complete
                         ? "Expansion unlocked"
@@ -297,7 +303,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                     <li className={ready ? "current" : ""}>
                       <span>03</span>Take the course
                       <small>
-                        {ready ? "Ready to explore" : "Results required"}
+                        {ready ? "Ready to explore" : !courseIncluded ? "Included course access required" : "Results required"}
                       </small>
                     </li>
                   </ol>

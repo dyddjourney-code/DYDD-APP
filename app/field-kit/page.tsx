@@ -1,3 +1,4 @@
+import { hasAssessmentCourseCapability } from "@/lib/public-assessments/course-capability";
 import { TrailAnchor } from "@/components/trail-anchor";
 import { isSandbox } from "@/lib/environment";
 import { hasFullReport } from "@/lib/assessments/report-recovery";
@@ -159,8 +160,9 @@ export default async function FieldKitPage({
   const fruitLifeReportSessions = fruitLifeSessions.filter((session) =>
     Boolean(fruitLifeReportArtifact(session)),
   );
+  const designIdCourseIncluded = Boolean(user && await hasAssessmentCourseCapability(user.id,'designid-foundations'));
   const designPdUnlocked = Boolean(
-    user && hasDesignPdCourseAccess(user.email, snapshotHistory),
+    user && await hasAssessmentCourseCapability(user.id,'designpd-alignment') && hasDesignPdCourseAccess(user.email, snapshotHistory),
   );
   const artifacts: FieldKitArtifact[] = [
     ...snapshotArtifactSources
@@ -194,17 +196,17 @@ export default async function FieldKitPage({
               | undefined
           )?.storage,
         ),
-        courseAction: "Explore course",
+        courseAction: (snapshot.assessment_type === 'designid' && !designIdCourseIncluded) || (snapshot.assessment_type === 'designpd' && !designPdUnlocked) ? 'Assessment access' : 'Explore course',
         courseHref:
           snapshot.assessment_type === "designid"
-            ? "/courses/designid-foundations"
+            ? designIdCourseIncluded ? "/courses/designid-foundations" : "/assessments/designid"
             : snapshot.assessment_type === "spiritual_gifts"
               ? "/courses/spiritual-gifts-service?origin=field-kit"
               : snapshot.assessment_type === "fruit_360"
                 ? "/courses/fruitlife-360-formation?origin=field-kit"
                 : snapshot.assessment_type === "designpd" && designPdUnlocked
                   ? "/courses/designpd-alignment?origin=field-kit"
-                  : "/trailheads",
+                  : snapshot.assessment_type === "designpd" ? "/assessments/designpd" : "/trailheads",
         detail: `Completed ${displayDateTime(snapshot.source_submitted_at ?? snapshot.created_at)}.`,
         href: withReviewQuery(
           `/api/artifacts/${encodeURIComponent(snapshot.id)}/download?view=snapshot`,

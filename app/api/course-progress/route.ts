@@ -1,3 +1,4 @@
+import { hasAssessmentCourseCapability } from '@/lib/public-assessments/course-capability';
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
@@ -27,7 +28,7 @@ export async function GET(request:Request){
  const user=await actor();if(!user)return reply({signedIn:false,completed:[],awards:[]},401);
  const slug=new URL(request.url).searchParams.get('courseSlug')??'';
  if(!passportCurriculum.some(c=>c.slug===slug))return reply({error:'Unknown course.'},400);
- try{return reply({signedIn:true,...courseView(await syncPassportAwards(user),slug)});}catch(e){return reply({error:(e as Error).message},503);}
+ try{if(!await hasAssessmentCourseCapability(user.id,slug))return reply({error:'This standalone report does not include course access.'},403);return reply({signedIn:true,...courseView(await syncPassportAwards(user),slug)});}catch(e){return reply({error:(e as Error).message},503);}
 }
 export async function POST(request:Request){
  const origin=request.headers.get('origin');
@@ -39,6 +40,7 @@ export async function POST(request:Request){
  const b=await request.json().catch(()=>null);
  if(!b || !passportCurriculum.some(c=>c.slug===b.courseSlug))return reply({error:'Unknown course.'},400);
  try {
+  if(!await hasAssessmentCourseCapability(user.id,b.courseSlug))return reply({error:'This standalone report does not include course access.'},403);
   const state=await readPassportState(user),db=createSupabaseAdminClient();
   if(b.action==='declare-niche'){
    if(b.courseSlug!==journeySlug)return reply({error:'Open the Journey to complete your declaration.'},400);

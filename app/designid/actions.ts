@@ -1,5 +1,7 @@
 "use server";
+import { standaloneDesignIdAccess } from "@/lib/public-assessments/access";
 import crypto from "node:crypto";
+import { claimVerifiedAssessmentParticipant } from "@/lib/public-assessments/identity";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import {
   applyDesignIdPresentation,
@@ -76,6 +78,8 @@ export async function saveDesignIdResponse(formData: FormData) {
   if (!user) {
     redirect(`/login?next=${encodeURIComponent("/designid")}`);
   }
+  const standaloneAccess = await standaloneDesignIdAccess(user);
+  if (!standaloneAccess.allowed) redirect("/assessments/designid");
   const supabase = createSupabaseAdminClient();
   const { data: profile } = await supabase
     .from("school_profiles")
@@ -122,24 +126,10 @@ export async function saveDesignIdResponse(formData: FormData) {
   }
   const now = new Date().toISOString();
   const sourceResponseId = `designid_app:${user.id}:${crypto.randomUUID()}`;
-  const { data: participant, error: participantError } = await supabase
-    .from("assessment_participants")
-    .upsert(
-      {
-        display_name: participantName,
-        normalized_email: participantEmail,
-        user_id: user.id,
-        updated_at: now,
-      },
-      { onConflict: "normalized_email" },
-    )
-    .select("id")
-    .single();
-  if (participantError || !participant?.id) {
-    fail(
-      participantError?.message ?? "Unable to connect your DesignID record.",
-    );
-  }
+  if (!user.email_confirmed_at) fail("Verify your account email before completing DesignID.");
+  let participant: { id: string };
+  try { participant = await claimVerifiedAssessmentParticipant(user.id, participantEmail, participantName); }
+  catch { fail("Unable to connect your verified assessment identity. Please contact support."); }
   const sections = designIdSnapshotSections(result);
   const reportPayload = buildDesignIdReportPayload({
     participantEmail,
@@ -147,7 +137,7 @@ export async function saveDesignIdResponse(formData: FormData) {
     result,
   });
   const { data: snapshotId, error: snapshotError } = await supabase.rpc(
-    "save_designid_attempt",
+    standaloneAccess.standalone ? "save_public_designid_attempt" : "save_designid_attempt",
     {
       p_user_id: user.id,
       p_participant_id: participant.id,
@@ -200,9 +190,19 @@ export async function saveDesignIdResponse(formData: FormData) {
     status: "not_started",
   };
   let emailMetadata: Record<string, unknown> = {};
+  // Persist ambiguity fence before the provider call: a crash must not permit a second PDF.
+  const starting = await supabase.from('assessment_snapshots').update({scores:{...savedSnapshot.scores,pdfMonkey:{...pdfMetadata,status:'uncertain',reportAccessUrl}}}).eq('id',snapshot.id).eq('user_id',user.id);
+  if (starting.error) fail('Your assessment is saved. Report creation needs recovery in Field Kit; do not repurchase.');
   try {
     const report = await createReadyPdfMonkeyReport({
       archiveKey: `designid/${snapshot.id}`,
+      onCreated: async (document) => {
+        pdfMetadata = { ...pdfMetadata, documentId: document.id, status: document.status || 'pending', reportAccessUrl };
+        const persisted = await supabase.from('assessment_snapshots').select('scores').eq('id',snapshot.id).eq('user_id',user.id).single();
+        if (persisted.error || !persisted.data) throw Error('Report creation evidence needs recovery.');
+        const saved = await supabase.from('assessment_snapshots').update({scores:{...persisted.data.scores,pdfMonkey:pdfMetadata}}).eq('id',snapshot.id).eq('user_id',user.id);
+        if (saved.error) throw Error('Report creation evidence needs recovery.');
+      },
       filename: pdfFilename,
       payload: reportPayload,
       templateId: designIdTemplateId,
@@ -218,20 +218,7 @@ export async function saveDesignIdResponse(formData: FormData) {
       reportAccessUrl,
       status: report.document.status ?? null,
     };
-    if (report.ready) {
-      const email = await sendAssessmentReportEmail({
-        assessmentName: "DesignID",
-        participantEmail,
-        participantName,
-        reportUrl: reportAccessUrl,
-      });
-      emailMetadata = {
-        error: email.message ?? null,
-        resendId: email.id ?? null,
-        sent: email.sent,
-        skipped: email.skipped,
-      };
-    }
+
   } catch (error) {
     pdfMetadata = {
       ...pdfMetadata,
@@ -286,5 +273,14 @@ export async function saveDesignIdResponse(formData: FormData) {
     fail(
       "Your assessment was saved, but delivery status could not be updated. Find your report in Field Kit.",
     );
+  // Artifact state must be durable BEFORE a report-ready email can be opened.
+  if (["ready", "success"].includes(String(pdfMetadata.status)) && pdfMetadata.storage) {
+    try {
+      const email = await sendAssessmentReportEmail({ assessmentName: "DesignID", participantEmail, participantName, reportUrl: reportAccessUrl });
+      emailMetadata = { error: email.message ?? null, resendId: email.id ?? null, sent: email.sent, skipped: email.skipped };
+    } catch { emailMetadata = { sent: false, skipped: false, error: "Report is saved; delivery needs retry." }; }
+    const { data: saved } = await supabase.from("assessment_snapshots").select("scores").eq("id", snapshot.id).eq("user_id", user.id).single();
+    if (saved) await supabase.from("assessment_snapshots").update({scores:{...saved.scores,resultEmail:emailMetadata}}).eq("id",snapshot.id).eq("user_id",user.id);
+  }
   redirect(`/designid/thanks?snapshot=${encodeURIComponent(snapshot.id)}`);
 }

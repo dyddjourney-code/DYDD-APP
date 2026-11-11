@@ -1,3 +1,4 @@
+import { hasAssessmentCourseCapability } from '@/lib/public-assessments/course-capability';
 import { journeySlug, journeyAssessmentTypes, encodeJourneySources, latestJourneySources, sourcesForJourneyRound } from "@/lib/reflections/journey-assessments";
 import { missingPathfinderEntries, retiredPathfinderCanonical } from '@/lib/journey/pathfinder';
 import type { ReflectionEntry } from '@/lib/reflections/types';
@@ -77,6 +78,8 @@ export async function GET(request: Request) {
       reports: [],
       canStart: false,
     });
+  if (!await hasAssessmentCourseCapability(user.id, courseSlug))
+    return json({ error: "This standalone report does not include course access." }, 403);
   const ctx = await context(courseSlug, user);
   if (!ctx) return json({ error: "Unknown course." }, 400);
   const { data: rounds, error } = await s
@@ -184,6 +187,9 @@ export async function POST(request: Request) {
     !getReflectionExperience(b.courseSlug)
   )
     return json({ error: "Unknown course." }, 400);
+  // Guard every action, including position updates and saves to a known round ID.
+  if (!await hasAssessmentCourseCapability(user.id, b.courseSlug))
+    return json({ error: "This standalone report does not include course access." }, 403);
   if (b.action === "ensure-round") {
     if (b.courseSlug !== "discover-your-divine-design")
       return json({ error: "Automatic setup is only available for the Journey." }, 400);

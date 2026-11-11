@@ -1,3 +1,4 @@
+import { hasAssessmentCourseCapability } from '@/lib/public-assessments/course-capability';
 import { previewParams } from "@/lib/reflections/preview";
 import { withReviewQuery, type ReviewSearchParams } from "@/lib/review/heather";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -30,6 +31,8 @@ export default async function ReflectionWorkbookPage({
     );
   const experience = getReflectionExperience(courseSlug);
   if (!experience) notFound();
+  if (user && !preview && !await hasAssessmentCourseCapability(user.id, courseSlug))
+    redirect("/field-kit");
   const journey = courseSlug === "discover-your-divine-design";
   const logo =
     learningCourses.find((course) => course.slug === courseSlug)?.logo ??

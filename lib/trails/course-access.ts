@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import type { AssessmentSnapshotSummary } from "@/lib/assessments/student-context";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { courseAssessmentEligibility } from "./course-eligibility";
+import { hasAssessmentCourseCapability } from "@/lib/public-assessments/course-capability";
 import { hasDesignPdCourseAccess } from "@/lib/designpd/access";
 import { trailDefinitions, isTrailAssessmentComplete } from "./catalog";
 import { withReviewQuery, type ReviewSearchParams } from "@/lib/review/heather";
@@ -40,6 +41,14 @@ export async function requireTrailCourseAssessment({
     redirect(`/login?next=${encodeURIComponent(loginReturn)}`);
   if (!signedIn && !preview)
     redirect(`/login?next=${encodeURIComponent(loginReturn)}`);
+  if (trail.id === "designid" || trail.id === "designpd") {
+    // Always authenticate this boundary: caller email and review snapshots cannot
+    // confer a paid/legacy course capability.
+    const db = await createSupabaseServerClient();
+    const { data: { user } } = await db.auth.getUser();
+    if (!user) redirect(`/login?next=${encodeURIComponent(loginReturn)}`);
+    if (!(await hasAssessmentCourseCapability(user.id, slug))) redirect(trailHref);
+  }
   let completed = isTrailAssessmentComplete(trail.assessmentType, snapshots);
   if (trail.id === "fruitlife-360" && signedIn) {
     // Re-authenticate here rather than accepting a caller's email or preview snapshots.

@@ -1,3 +1,4 @@
+import { standaloneDesignIdAccess } from "@/lib/public-assessments/access";
 import Link from "next/link";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import { getDesignIdEligibility } from "@/lib/designid/retake";
@@ -27,6 +28,8 @@ export default async function DesignIdPage({ searchParams }: DesignIdPageProps) 
     redirect(`/login?next=${encodeURIComponent("/designid")}`);
   }
 
+  if (!user.email_confirmed_at) redirect("/assessments/designid?message=Verify+your+account+email+before+continuing.");
+  if (!(await standaloneDesignIdAccess(user)).allowed) redirect("/assessments/designid");
   const admin = createSupabaseAdminClient();
   const { data: profile } = await admin
     .from("school_profiles")

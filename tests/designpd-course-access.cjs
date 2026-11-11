@@ -11,6 +11,7 @@ assert.equal(hasDesignPdCourseAccess('john@discoverdivine.design', []), true);
 let user = null, all = [], preview = null;
 const redirect = location => {throw new Error(`REDIRECT:${location}`)};
 const mocks = {
+ '@/lib/public-assessments/course-capability': {hasAssessmentCourseCapability:async()=>true},
  'next/navigation': {redirect, notFound:()=>{throw Error('404')}},
  '@/lib/supabase/server': {createSupabaseServerClient:async()=>({auth:{getUser:async()=>({data:{user}})},from:()=>({select:()=>{const q={eq:()=>q,then:fn=>Promise.resolve(fn({data:[]}))};return q;}})})},
  '@/lib/review/heather': {getHeatherReviewReport:async()=>preview,getNewReviewReport:async()=>null,reviewQuery:()=>'',withReviewQuery:x=>x},

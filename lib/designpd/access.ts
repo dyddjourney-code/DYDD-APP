@@ -1,9 +1,10 @@
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import type { AssessmentSnapshotSummary } from "@/lib/assessments/student-context";
 
-/** Existing DesignPD reports retain course access; DesignID alone is not an unlock.
- * Native failed/pending PDF records are not completed reports. Stripe fulfillment
- * will attach the paid expansion entitlement here when checkout is implemented.
+/** Completed-report prerequisite used by existing cards and lifecycle messages.
+ * This is NOT a course capability: standalone reports satisfy this prerequisite
+ * but course pages and APIs must also check hasAssessmentCourseCapability.
+ * Native failed/pending PDF records are not completed reports.
  */
 export function hasDesignPdCourseAccess(
   email: string | null | undefined,

@@ -44,17 +44,20 @@ export async function createReadyPdfMonkeyReport({
   payload,
   templateId,
   archiveKey,
+  onCreated,
 }: {
   filename: string;
   payload: Record<string, unknown>;
   templateId: string;
   archiveKey?: string;
+  onCreated?: (document: PdfMonkeyDocument) => Promise<void>;
 }) {
   const createdDocument = await createPdfMonkeyDocument({
     filename,
     payload,
     templateId,
   });
+  await onCreated?.(createdDocument);
   const readyDocument = await waitForPdfMonkeyDocument(createdDocument.id);
   const providerUrl = pdfMonkeyReportLink(readyDocument);
   let storage: StoredReport | undefined;

@@ -1,3 +1,5 @@
+import { hasPublicAssessmentEntitlement } from "@/lib/public-assessments/ledger";
+import { usesDesignPdGenerationReservation } from "@/lib/designpd/generation";
 import { NextResponse, type NextRequest } from "next/server";
 import { nativeDesignPdRecoveryPayload } from "@/lib/assessments/native-designpd-recovery";
 import {
@@ -259,7 +261,8 @@ async function pdfResponse(
         `${snapshot.assessment_type}/${snapshot.id}`,
         String(pdf.filename ?? `${snapshot.assessment_type}-report.pdf`),
       );
-      await persist(snapshot, { reportArtifact });
+      await persist(snapshot, { reportArtifact, pdfMonkey:{...pdf,status:'ready'} });
+      await reconcileSavedDerivedArtifact(snapshot);
       const url = await storedReportUrl(
         reportArtifact,
         request.nextUrl.searchParams.get("download") === "1",
@@ -294,6 +297,16 @@ export async function GET(
     });
   return pdfResponse(snapshot, request);
 }
+async function reconcileSavedDerivedArtifact(snapshot: AssessmentSnapshotSummary) {
+  if (!usesDesignPdGenerationReservation(snapshot)) return;
+  const server = await createSupabaseServerClient();
+  const {data:{user}} = await server.auth.getUser();
+  if (!user?.email_confirmed_at) return; // Existing report reads remain independent of new sales.
+  const source=String(snapshot.scores.designIdSnapshotId||'');
+  if (!await hasPublicAssessmentEntitlement(user.id,'designpd',source)) return;
+  const reconciled = await createSupabaseAdminClient().rpc('reconcile_designpd_generation_artifact',{p_user:user.id,p_snapshot:snapshot.id});
+  if (reconciled.error || reconciled.data !== true) throw Error('Your archived report is safe. Its access ledger needs reconciliation; no repurchase is required.');
+}
 export async function POST(
   request: NextRequest,
   context: {
@@ -319,7 +332,11 @@ export async function POST(
   const archived = object(snapshot.scores.reportArtifact ?? object(snapshot.scores.pdfMonkey).storage);
   if (archived.path === `${snapshot.assessment_type}/${snapshot.id}/report.pdf`) {
     const url = await storedReportUrl(archived as StoredReport, true);
-    if (url) return NextResponse.redirect(url, { status: 303, headers });
+    if (url) {
+      try { await reconcileSavedDerivedArtifact(snapshot); }
+      catch { return new NextResponse('Your report is archived. Access-ledger reconciliation needs retry; no repurchase is required.',{status:503,headers}); }
+      return NextResponse.redirect(url, { status: 303, headers });
+    }
   }
   const report = recoveryReport(snapshot);
   if (report) {
@@ -374,13 +391,17 @@ export async function POST(
       },
     );
   try {
-    let documentId = String(
-      object(snapshot.scores.pdfRecovery).documentId ?? "",
-    );
+    const priorRecovery = object(snapshot.scores.pdfRecovery);
+    let documentId = String(priorRecovery.documentId ?? object(snapshot.scores.pdfMonkey).documentId ?? "");
+    if (!documentId && (priorRecovery.creationUncertain === true || ['uncertain','error'].includes(String(object(snapshot.scores.pdfMonkey).status))))
+      throw Error('Your saved result is safe. Report creation needs technical reconciliation; no duplicate PDF or purchase was started.');
     let document = documentId
       ? await getPdfMonkeyDocument(documentId).catch(() => null)
       : null;
+    if (documentId && !document) throw Error('The existing PDF could not be checked. Retry later; no new PDF was created.');
     if (!document || document.status === "failure" || document.status === "failed") {
+      if (usesDesignPdGenerationReservation(snapshot)) throw Error('Return to DesignPD and retry this same DesignID result. Its generation reservation prevents duplicate reports; no repurchase is required.');
+      await persist(snapshot, {pdfRecovery:{creationUncertain:true,startedAt:new Date().toISOString()}});
       document = await createPdfMonkeyDocument({
         templateId: report.templateId,
         payload: report.payload,
@@ -424,6 +445,9 @@ export async function POST(
         source: "saved-assessment-report-data",
       },
     });
+    if (usesDesignPdGenerationReservation(snapshot)) {
+      await reconcileSavedDerivedArtifact(snapshot);
+    }
     const target = new URL(request.url);
     target.searchParams.delete("view");
     target.searchParams.set("download", "1");

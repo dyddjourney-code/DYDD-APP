@@ -16,7 +16,7 @@ export const trailDefinitions = [
     gear: "Your completed DesignID results for the course",
     bestFor: "Anyone exploring how they naturally contribute",
     prerequisite:
-      "Begin with DesignID. Your completed assessment opens the connected course.",
+      "Begin with DesignID. The connected course also requires included course access; a standalone report does not include it.",
   },
   {
     id: "spiritual-gifts",
@@ -70,7 +70,7 @@ export const trailDefinitions = [
     gear: "DesignID first, then your unlocked DesignPD report",
     bestFor: "Travelers ready to turn design insight into action",
     prerequisite:
-      "DesignID comes first. Unlock your DesignPD report to open its connected course.",
+      "DesignID comes first. The connected course requires a completed DesignPD report and included course access; standalone reports do not include it.",
   },
 ] as const;
 export function isTrailAssessmentComplete(

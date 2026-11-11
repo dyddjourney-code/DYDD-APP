@@ -19,7 +19,10 @@ export function publicPaymentRuntime(purpose: 'checkout' | 'webhook' = 'checkout
  if ((mode === 'test') !== isSandbox() || !publicAssessmentLedgerEnabled()) throw Error('Assessment environment mismatch.');
  if (process.env[purpose === 'checkout' ? 'DYDD_PUBLIC_ASSESSMENT_PAYMENTS_ENABLED' : 'DYDD_PUBLIC_ASSESSMENT_WEBHOOKS_ENABLED'] !== 'true'
   || (mode === 'live' && process.env.DYDD_PUBLIC_ASSESSMENT_PRODUCTION_PAYMENTS_ENABLED !== 'true')) throw Error('Assessment payments disabled.');
- const secret = process.env[mode === 'test' ? 'STRIPE_DYDD_TEST_KEY' : 'DYDD_PUBLIC_ASSESSMENT_STRIPE_LIVE_KEY'] || '';
+ // Dedicated LIVE override wins, including when invalid; never cross test/live modes.
+ const secret = mode === 'test'
+  ? process.env.STRIPE_DYDD_TEST_KEY || ''
+  : process.env.DYDD_PUBLIC_ASSESSMENT_STRIPE_LIVE_KEY || process.env.STRIPE_SECRET_KEY || '';
  if (!new RegExp('^(sk|rk)_' + mode + '_').test(secret)) throw Error('Stripe key mode mismatch.');
  const origin = process.env[mode === 'test' ? 'DYDD_PUBLIC_ASSESSMENT_TEST_ORIGIN' : 'DYDD_PUBLIC_ASSESSMENT_LIVE_ORIGIN'] || '';
  const url = new URL(origin);

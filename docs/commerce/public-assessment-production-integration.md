@@ -25,14 +25,16 @@ explicit `dydd_assessment_grandfathered_access` row; owner assessment exemptions
 This selector persists independently of pausing checkout/ledger connectivity: do not remove it
 after launch. No checkout, code, completion or historical report creates a grandfather row.
 
-**Do not activate with an empty/unreviewed cohort.** The migration intentionally creates an
-empty table. Production read-only inventory found8 existing verified Auth accounts,7 profiles,
-3 personal-access records,272 participants and1099 snapshots. A private candidate list was
-written under workspace launch outputs; no grant was inferred or seeded. Review the exact
-existing included/beta/course cohort (including every current learner/admin and any external
-recurring rights) before cutover. Whether to retain *all current beta accounts* or a narrower
-explicit cohort is a business-policy decision; this implementation does not silently choose.
-Historical artifact reading is independent of buying another assessment.
+**Do not activate with an empty/unseeded cohort.** Parent release direction now explicitly
+preserves **ALL 8 current verified beta accounts**, including all3 existing lifetime grants;
+no narrower cohort remains pending. Fresh hosted read-only Auth inventory matches every exact
+private candidate UUID. The migration intentionally creates an empty table; a reviewed explicit,
+idempotent all-eight seed is prepared separately under workspace launch outputs
+`outputs/dydd-public-assessment-launch-2026-11-11/runtime-release/002-grandfather-all-eight.private.sql`.
+It aborts if the current account set or verification/cutoff changes; refresh the complete inventory
+rather than excluding an account. No hosted grants were seeded by this preparation. Existing
+3 personal-access records,272 participants,1099 snapshots and all other current/history rights
+remain unchanged. Historical artifact reading is independent of buying another assessment.
 
 Course authorization is separate from assessment completion: both DesignID/PD course pages,
 redirected lessons, progress GET/POST, reflection page/read/write and individual/all workbook
@@ -98,7 +100,10 @@ New production readiness:
 - `DYDD_PUBLIC_ASSESSMENT_PAYMENTS_ENABLED=true` (new sales; set false to pause only sales)
 - `DYDD_PUBLIC_ASSESSMENT_WEBHOOKS_ENABLED=true` (keep active for existing payments/refunds)
 - `DYDD_PUBLIC_ASSESSMENT_LIVE_ORIGIN` explicit canonical HTTPS origin, no slash/path
-- `DYDD_PUBLIC_ASSESSMENT_STRIPE_LIVE_KEY`, `DYDD_PUBLIC_ASSESSMENT_STRIPE_LIVE_WEBHOOK_SECRET`
+- Server-only LIVE key: prefer `DYDD_PUBLIC_ASSESSMENT_STRIPE_LIVE_KEY`, otherwise existing
+  `STRIPE_SECRET_KEY`. An invalid dedicated override fails closed; TEST still exclusively uses
+  `STRIPE_DYDD_TEST_KEY`. Never alias/copy/extract the sensitive existing LIVE value.
+- Dedicated `DYDD_PUBLIC_ASSESSMENT_STRIPE_LIVE_WEBHOOK_SECRET` (never FruitLife whsec)
 - For DESIGNID and DESIGNPD: `DYDD_PUBLIC_{PRODUCT}_LIVE_STRIPE_PRICE_ID`,
   `DYDD_PUBLIC_{PRODUCT}_LIVE_STRIPE_PRODUCT_ID`, `DYDD_PUBLIC_{PRODUCT}_LIVE_AMOUNT_CENTS=1999`
 - Separately reviewed DB singleton payment_mode=live; application cannot switch it.
@@ -135,3 +140,48 @@ The old standalone `tests/designid-research-retakes.cjs` harness fails identical
 023b480 because its temporary transpilation cannot resolve `@/lib/supabase/admin`; it is not
 reported as passing. The real SQL suite independently verifies six-month calendar boundaries,
 one-use approved overrides, denied early retakes and unchanged baseline save definition.
+
+## Hosted prerequisite follow-up (read-only, 2026-11-11)
+
+Correct production `laojrzlqbkmirzcbcnyw` has28 baseline migrations, PostgreSQL17.6, no new
+ledger/reservation objects or conflicting new helper; existing six-month save and service grants
+confirmed through hosted catalogs. Both hosted advisors succeeded (pre-existing WARNs documented,
+no ERRORs). Existing Management credential supports the prepared SQL route; no new DB credential
+is needed. Exact generated migration/history batch and all-eight seed passed disposable PostgreSQL
+verification, including idempotent seed metadata and preservation of existing lifetime/history rows.
+
+Actual production PDFMonkey key and both exact default template reads succeeded HTTP200. Resend
+recognized the production send-only key and denied management GETs for that restricted scope;
+that is not invalid authentication. Earlier generic HTTP403s were Cloudflare1010 from default
+Python User-Agent, resolved by explicit application User-Agent. No PDF generation or mail sent.
+
+Existing Vercel sensitive Stripe/env values are present but intentionally not retrievable; no
+missing-provider claim follows. Dedicated new assessment LIVE key/webhook aliases are absent.
+Available protected Stripe key is TEST (provider-proven), cannot validate/operate LIVE catalog
+or prove live webhook readiness. Exact live catalog is verified by separate parent browser evidence.
+Bind accepted live key and dedicated endpoint signing secret, not a FruitLife secret.
+DYDD_RESEND_WEBHOOK_SECRET is absent, so delivered-status verification is not ready. No automatic
+lifecycle retry invoker was found in checked Vercel/Supabase/local schedules; external invoker
+remains unverified, not globally declared absent. Never invoke workers casually: they may send mail.
+
+Concrete parent release instructions, executable operator, paused-sales env manifest, exact webhook
+payload, read-only live verifier, private evidence and proven remaining gaps are in workspace
+`outputs/dydd-public-assessment-launch-2026-11-11/runtime-release/README.md`. No hosted writes,
+configuration changes, push, deploy, charge, mail, or publication were performed in this follow-up.
+
+## Paused runtime integration — 2026-11-11
+
+The server-only fallback reuses the existing runtime LIVE key without changing FruitLife.
+`GET /api/ops/public-assessment-catalog` requires the existing `CRON_SECRET` Bearer credential,
+sets private/no-store and returns booleans only. It performs exactly two fixed Stripe Price
+GETs and independently checks exact price/product, live, active, one-time, USD and1999cents.
+It works while sales are paused and the grandfathered policy remains inactive. Missing/wrong
+LIVE key, catalog mismatch or provider failure never disclose provider objects or secrets.
+A pass establishes only catalog READ permission, not Checkout/PaymentIntent/Charge permissions.
+
+For the paused diagnostic deployment, explicitly keep sales, production payments, ledger and
+webhook flags FALSE and do not set `grandfathered-v1` yet. Stage only exact live catalog/origin
+and production DB pin. Full `release-operator.py env-paused` remains separately guarded by the
+dedicated assessment webhook-secret binding plus either existing or dedicated Stripe key.
+Do not activate the access policy until cohort verification and every runtime flag are ready.
+The parent owns dedicated webhook masked capture and final acceptance/sales activation.

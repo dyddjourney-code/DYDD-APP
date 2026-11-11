@@ -1,15 +1,15 @@
 import 'server-only';
 import Stripe from 'stripe';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
-import { publicPaymentRuntime } from './config';
+import { publicPaymentRuntime, type VerifiedCheckoutUser } from './config';
 import type { PublicAssessmentProduct } from './ledger';
 import { getOwnedArtifactSnapshot } from '@/lib/assessments/artifact-access';
 import { normalizeEmail } from '@/lib/identity/email';
 import { scoreDesignPd } from '@/lib/designpd/engine';
 
 /** Deliberate cutover switch. No runtime key/catalog is created or connected by this build. */
-export function publicPaymentConfiguration(product: PublicAssessmentProduct) {
- const runtime=publicPaymentRuntime();
+export function publicPaymentConfiguration(product: PublicAssessmentProduct, verifiedUser?: VerifiedCheckoutUser) {
+ const runtime=publicPaymentRuntime('checkout',verifiedUser);
  if(product!=='designid'&&product!=='designpd')throw Error('Unknown assessment product.');
  const prefix=product==='designid'?'DESIGNID':'DESIGNPD';
  const price=process.env[`DYDD_PUBLIC_${prefix}_${runtime.mode.toUpperCase()}_STRIPE_PRICE_ID`]||'';
@@ -18,14 +18,14 @@ export function publicPaymentConfiguration(product: PublicAssessmentProduct) {
  if(!/^price_/.test(price)||!/^prod_/.test(productId)||!Number.isSafeInteger(amount)||amount!==1999)throw Error('The approved one-off price is not configured.');
  return {...runtime,stripe:new Stripe(runtime.secret),price,productId,amount,currency:'usd'};
 }
-export async function createPublicAssessmentCheckout(user:{id:string;email?:string},product:PublicAssessmentProduct,sourceId?:string) {
+export async function createPublicAssessmentCheckout(user:VerifiedCheckoutUser & {email?:string},product:PublicAssessmentProduct,sourceId?:string) {
  // Verify prerequisite before even constructing an order or contacting Stripe.
  if(product==='designpd'){
   const source=sourceId?await getOwnedArtifactSnapshot(sourceId,user.id,normalizeEmail(user.email)):null;
   if(!source)throw Error('Complete a valid DesignID first.');scoreDesignPd(source);
  }
  if(product==='designid'&&sourceId)throw Error('DesignID cannot have a source.');
- const config=publicPaymentConfiguration(product),db=createSupabaseAdminClient();
+ const config=publicPaymentConfiguration(product,user),db=createSupabaseAdminClient();
  const price=await config.stripe.prices.retrieve(config.price);
  const priceProduct=typeof price.product==='string'?price.product:price.product.id;
  if(price.livemode!==config.livemode||!price.active||price.type!=='one_time'||price.currency!==config.currency||price.unit_amount!==config.amount||priceProduct!==config.productId)throw Error('Approved Stripe catalog mismatch.');

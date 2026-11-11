@@ -13,11 +13,27 @@ export function publicAssessmentLedgerEnabled() {
   && !!expected && /^https:\/\/[a-z0-9]+\.supabase\.co$/.test(expected)
   && expected !== sandboxAssessmentDatabase && expected === process.env.NEXT_PUBLIC_SUPABASE_URL;
 }
-export function publicPaymentRuntime(purpose: 'checkout' | 'webhook' = 'checkout') {
+export type VerifiedCheckoutUser = { id: string; email_confirmed_at?: string };
+/** Server-only input: the caller must obtain this user from auth.getUser(), never FormData.
+ * This is checkout permission only, not an assessment/course entitlement or owner role.
+ * A malformed list disables the entire exception; absent configuration is disabled.
+ */
+export function isProductionAssessmentCanary(user?: VerifiedCheckoutUser) {
+ if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT !== 'production' || isSandbox()
+  || !user?.email_confirmed_at || !Number.isFinite(Date.parse(user.email_confirmed_at))) return false;
+ const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+ if (!uuid.test(user.id)) return false;
+ const ids = (process.env.DYDD_PUBLIC_ASSESSMENT_PRODUCTION_CANARY_USER_IDS || '').split(',').map(id => id.trim());
+ return ids.every(id => uuid.test(id)) && ids.includes(user.id);
+}
+export function publicPaymentRuntime(purpose: 'checkout' | 'webhook' = 'checkout', verifiedUser?: VerifiedCheckoutUser) {
  const mode = process.env.DYDD_PUBLIC_ASSESSMENT_STRIPE_MODE;
  if (mode !== 'test' && mode !== 'live') throw Error('Explicit assessment Stripe mode required.');
  if ((mode === 'test') !== isSandbox() || !publicAssessmentLedgerEnabled()) throw Error('Assessment environment mismatch.');
- if (process.env[purpose === 'checkout' ? 'DYDD_PUBLIC_ASSESSMENT_PAYMENTS_ENABLED' : 'DYDD_PUBLIC_ASSESSMENT_WEBHOOKS_ENABLED'] !== 'true'
+ const enabled = purpose === 'checkout'
+  ? process.env.DYDD_PUBLIC_ASSESSMENT_PAYMENTS_ENABLED === 'true' || (mode === 'live' && isProductionAssessmentCanary(verifiedUser))
+  : process.env.DYDD_PUBLIC_ASSESSMENT_WEBHOOKS_ENABLED === 'true';
+ if (!enabled
   || (mode === 'live' && process.env.DYDD_PUBLIC_ASSESSMENT_PRODUCTION_PAYMENTS_ENABLED !== 'true')) throw Error('Assessment payments disabled.');
  // Dedicated LIVE override wins, including when invalid; never cross test/live modes.
  const secret = mode === 'test'

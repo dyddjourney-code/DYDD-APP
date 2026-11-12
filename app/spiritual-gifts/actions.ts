@@ -350,7 +350,7 @@ async function saveCompletedSpiritualGiftsResponse({
   const snapshotScorePayload = {
     reportPayload,
     reportPayloadFormat: "template-v1",
-    channel: "native_app",
+    channel: sessionMetadata?.channel ?? "native_app",
     deepDiveGifts: deepDivePayload,
     rankedGifts: rankedGiftPayload,
     statusHref,
@@ -698,28 +698,23 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
     fail("/spiritual-gifts", "Enter your name.");
   }
   assertEmail(participantEmail, "/spiritual-gifts");
-  const linkedUserId =
-    user?.id ??
-    (
-      await supabase
-        .from("school_profiles")
-        .select("id")
-        .ilike("email", participantEmail)
-        .maybeSingle()
-    ).data?.id ??
-    null;
-  const { data: participant, error: participantError } = await supabase
-    .from("assessment_participants")
-    .upsert(
-      {
-        display_name: participantName,
-        normalized_email: participantEmail,
-        user_id: linkedUserId,
-      },
-      { onConflict: "normalized_email" },
-    )
-    .select("id")
-    .single();
+  // A typed contact address (including a signed review address) is not ownership.
+  // Public results are connected only by the explicit verified-account claim.
+  const linkedUserId = isAppChannel ? user?.id ?? null : null;
+  const participantRecord = {
+    display_name: participantName,
+    normalized_email: participantEmail,
+    ...(linkedUserId ? { user_id: linkedUserId } : {}),
+  };
+  // Anonymous/public submissions must never clear or reassign an existing identity.
+  const participantWrite = await supabase.from("assessment_participants").upsert(
+    participantRecord,
+    { onConflict: "normalized_email", ignoreDuplicates: !linkedUserId },
+  );
+  const { data: participant, error: participantError } = participantWrite.error
+    ? { data: null, error: participantWrite.error }
+    : await supabase.from("assessment_participants").select("id")
+        .eq("normalized_email", participantEmail).single();
   if (participantError || !participant?.id) {
     fail(
       "/spiritual-gifts",
@@ -777,6 +772,8 @@ export async function saveSpiritualGiftsPublicResponse(formData: FormData) {
   if (isAppChannel) redirect("/field-kit#collection-spiritual-gifts");
   const resultParams = new URLSearchParams({
     channel: "public",
+    session: session.id,
+    token,
     message: "Your Spiritual Gifts assessment has been submitted. Your PDF report is being delivered to your email.",
   });
   redirect(`/spiritual-gifts/thanks?${resultParams.toString()}`);

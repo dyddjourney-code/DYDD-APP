@@ -36,7 +36,7 @@ export async function createGuestCheckout(session:GuestSession,token:string,prod
  try{
   const metadata={app:config.app,ownership:'guest-v1',order_id:order.id,guest_session_id:session.id,product,source_id:sourceId||''};
   const recovery=config.origin+guestRecoveryPath(session.id,token);
-  const checkout=await config.stripe.checkout.sessions.create({mode:'payment',client_reference_id:session.id,customer_email:session.participant_email,line_items:[{price:config.price,quantity:1}],metadata,payment_intent_data:{metadata},success_url:recovery,cancel_url:recovery},{idempotencyKey:'dydd-guest-'+order.id});
+  const checkout=await config.stripe.checkout.sessions.create({mode:'payment',payment_method_types:['card'],client_reference_id:session.id,customer_email:session.participant_email,line_items:[{price:config.price,quantity:1}],metadata,payment_intent_data:{metadata},success_url:recovery+'&product='+product,cancel_url:recovery+'&product='+product},{idempotencyKey:'dydd-guest-'+order.id});
   if(!checkout.url||checkout.livemode!==config.livemode)throw Error('Checkout mode mismatch.');
   const saved=await db.from('dydd_guest_orders').update({payment_reference:checkout.id}).eq('id',order.id).eq('status','pending').select('id').single();
   if(saved.error||!saved.data)throw Error('Checkout linkage failed.');

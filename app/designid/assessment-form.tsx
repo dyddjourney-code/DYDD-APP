@@ -1,6 +1,7 @@
 "use client";
 
-import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import guestStyles from "@/app/assessments/public-assessments.module.css";
 import { MapsConfirmationSort } from "./maps-confirmation-sort";
 import { mapsConfirmationField, mapsConfirmationBuckets, type MapsAssignments } from "@/lib/designid/maps-confirmation";
 import { designIdQuestionBlocks, designIdAllocationField } from "@/lib/designid/intake";
@@ -27,6 +28,7 @@ export function DesignIdAssessmentForm({
   draftNamespace,
   fulfillment = "app",
 }: DesignIdAssessmentFormProps) {
+  const formRef = useRef<HTMLFormElement>(null);
   const totalSteps = designIdQuestionBlocks.length + 2;
   const [stepIndex, setStepIndex] = useState(startAtSort ? totalSteps - 1 : 0);
   const [pointValues, setPointValues] = useState<Record<string, string>>({});
@@ -89,16 +91,27 @@ export function DesignIdAssessmentForm({
     return true;
   }
 
+  function showStep() {
+    if (fulfillment === "guest") {
+      requestAnimationFrame(() => {
+        formRef.current?.scrollIntoView({ block: "start", behavior: "instant" });
+        formRef.current?.focus({ preventScroll: true });
+      });
+    } else {
+      window.scrollTo({ behavior: "auto", top: 0 });
+    }
+  }
+
   function goNext() {
     if (!validateCurrentBlock()) return;
     setStepIndex((index) => Math.min(totalSteps, index + 1));
-    window.scrollTo({ behavior: "auto", top: 0 });
+    showStep();
   }
 
   function goBack() {
     setError("");
     setStepIndex((index) => Math.max(0, index - 1));
-    window.scrollTo({ behavior: "auto", top: 0 });
+    showStep();
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -122,7 +135,7 @@ export function DesignIdAssessmentForm({
   }
 
   return (
-    <form noValidate action={action} className="designid-form" onSubmit={handleSubmit}>
+    <form ref={formRef} tabIndex={fulfillment === "guest" ? -1 : undefined} noValidate action={action} className={`designid-form ${fulfillment === "guest" ? guestStyles.guestForm : ""}`} onSubmit={handleSubmit}>
       {Object.entries(mapsAssignments).map(([id, value]) => (
         <input key={id} name={mapsConfirmationField(id)} type="hidden" value={value} />
       ))}
@@ -215,7 +228,7 @@ export function DesignIdAssessmentForm({
         <p className="section-label">Ready to Submit</p>
         <h2>Submit your DesignID assessment.</h2>
         <p>
-          {fulfillment === "guest" ? "Your report will be available to download and emailed to you. Keep your private recovery link; no account or login is needed." : "Your report will be saved in Field Kit."}
+          {fulfillment === "guest" ? "Your report will be available here to download. We will also email you a private link so you can return without signing in." : "Your report will be saved in Field Kit."}
         </p>
       </section>
 

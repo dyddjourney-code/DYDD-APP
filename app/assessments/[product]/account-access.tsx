@@ -52,18 +52,18 @@ export default async function PublicAssessmentProductPage({ params, searchParams
   const next = `/assessments/${slug}`;
   // Identity is established by Supabase, never by an email entered on this page.
   const snapshots = verifiedUser
-    ? await getOwnedAssessmentSnapshots(verifiedUser)
+    ? await getOwnedAssessmentSnapshots(verifiedUser,{includeGuest:true})
     : [];
   // The trusted snapshot reader returns newest first. Invalid or incomplete results
   // cannot become a DesignPD source, even if they are newer than a valid result.
   const requestedSource = verifiedUser && query?.sourceId ? await getOwnedArtifactSnapshot(query.sourceId,verifiedUser.id,normalizeEmail(verifiedUser.email)) : null;
   const sourceCandidates = query?.sourceId ? requestedSource ? [requestedSource] : [] : snapshots;
   const source = slug === "designpd" ? sourceCandidates.find((snapshot) => {
-    if (snapshot.assessment_type !== "designid" || (query?.sourceId && snapshot.id !== query.sourceId)) return false;
+    if (snapshot.source === "public_guest" || snapshot.assessment_type !== "designid" || (query?.sourceId && snapshot.id !== query.sourceId)) return false;
     try { scoreDesignPd(snapshot); return true; } catch { return false; }
   }) : undefined;
   const savedReport = snapshots.find(snapshot => snapshot.assessment_type === (slug === "spiritual-gifts" ? "spiritual_gifts" : slug)
-    && (slug !== "designpd" || snapshot.scores.designIdSnapshotId === source?.id));
+    && (slug !== "designpd" || snapshot.owned_report_href || snapshot.scores.designIdSnapshotId === source?.id));
   const owned = verifiedUser && slug !== "spiritual-gifts" && (slug !== "designpd" || source)
     ? slug === "designid" ? (await standaloneDesignIdAccess(verifiedUser)).allowed
       : isDyddAdminEmail(verifiedUser.email) || await hasIncludedAssessmentAccess(verifiedUser.id)
@@ -106,8 +106,8 @@ export default async function PublicAssessmentProductPage({ params, searchParams
       <aside className={styles.accessPanel} aria-labelledby="assessment-access-heading">
         <p className={styles.eyebrow}>{slug === "spiritual-gifts" ? "Free access" : owned ? "Access available" : "Your assessment access"}</p>
         <h2 id="assessment-access-heading">{slug === "spiritual-gifts" ? "A gift worth exploring." : owned ? "Your next step is ready." : "Make room for discovery."}</h2>
-        {savedReport && slug !== "spiritual-gifts" ? <p><Link className={styles.secondary} href={`/api/artifacts/${encodeURIComponent(savedReport.id)}/download`}>Open my saved {product.name} report</Link></p> : null}
-        {savedReport && verifiedUser && slug !== 'spiritual-gifts' ? <form action={retrySavedAssessmentEmail}>
+        {savedReport && slug !== "spiritual-gifts" ? <p><Link className={styles.secondary} href={savedReport.owned_report_href || `/api/artifacts/${encodeURIComponent(savedReport.id)}/download`}>Open my saved {product.name} report</Link></p> : null}
+        {savedReport && !savedReport.owned_report_href && verifiedUser && slug !== 'spiritual-gifts' ? <form action={retrySavedAssessmentEmail}>
           <AccessFields product={slug} /><input type="hidden" name="snapshotId" value={savedReport.id} />
           <AssessmentSubmitButton secondary pendingLabel="Checking delivery…">Retry saved report email</AssessmentSubmitButton>
           <p className={styles.helper}>Uses your saved report; no purchase or assessment retake is required.</p>
@@ -124,6 +124,9 @@ export default async function PublicAssessmentProductPage({ params, searchParams
         </> : !verifiedUser ? <>
           <p>Please confirm your account email before connecting assessment results or using a waiver.</p>
           <Link className={styles.secondary} href={`/login?${new URLSearchParams({ next })}`}>Return to account access</Link>
+        </> : savedReport?.owned_report_href ? <>
+          <p>Your original report is saved in your account. Open it above; no new purchase is required.</p>
+          <Link className={styles.secondary} href="/assessments/account">View all my saved reports</Link>
         </> : slug === "designpd" && !source ? <>
           <p className={styles.prerequisite}>Complete an eligible DesignID first.</p>
           <p>We couldn’t find a completed DesignID result that can be used for this report. Start there, then return here to continue. No new questionnaire is needed for DesignPD.</p>

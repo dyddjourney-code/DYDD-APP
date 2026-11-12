@@ -6,28 +6,28 @@ export const publicAssessmentProducts = {
   designid: {
     name: "DesignID",
     eyebrow: "Identity & contribution",
-    heading: "Begin with the way you were designed.",
+    heading: "Discover your DesignID.",
     description: "Discover how God’s design is reflected in the way you create, relate, think, and serve. Give language to your identity and contribution, without reducing yourself to a label.",
     short: "A clearer lens for identity, grace, and contribution.",
     logo: "/brand/tools/designid-logo.webp",
     image: "/brand/designid-course-cartoon-hero.png",
     step: "Start here",
     details: [
-      ["Reflect on your design", "Complete the canonical DesignID questionnaire without creating an account."],
+      ["Reflect on your design", "Complete the DesignID questionnaire without creating an account."],
       ["Keep your results connected", "Return to your saved report and use it as the foundation for DesignPD."],
     ],
   },
   designpd: {
     name: "DesignPD",
     eyebrow: "Plan. Decide. Do.",
-    heading: "Put your design into everyday motion.",
+    heading: "Your design. In everyday motion.",
     description: "Explore how you naturally Plan, Decide, and Do. DesignPD builds directly on a completed, eligible DesignID result to bring your design into leadership, teamwork, and everyday life.",
     short: "Build on DesignID to understand how you Plan, Decide, and Do.",
     logo: "/brand/tools/designpd-logo.jpg",
     image: "/brand/designpd-course-cartoon-hero.jpg",
     step: "After DesignID",
     details: [
-      ["Your DesignID is the starting point", "We use the exact completed DesignID result connected to your private recovery link."],
+      ["Your DesignID is the starting point", "We use the exact completed DesignID result connected to your private access link."],
       ["A report, not another questionnaire", "Once access is available, generate your derived DesignPD report from that saved result."],
     ],
   },
@@ -49,19 +49,19 @@ export const publicAssessmentProducts = {
 
 export type PublicAssessmentProduct = keyof typeof publicAssessmentProducts;
 
-export function AssessmentPublicShell({ children }: { children: ReactNode }) {
-  return <main className={styles.shell}>
+export function AssessmentPublicShell({ children, owned = false }: { children: ReactNode; owned?: boolean }) {
+  return <main className={`${styles.shell} ${owned ? styles.ownedShell : ""}`}>
     <header className={styles.header}>
       <Link href="/assessments" className={styles.brand} aria-label="DYDD assessments home">
         <img src="/brand/dydd-logo-transparent.webp" alt="Discover Your Divine Design" />
       </Link>
-      <span className={styles.sandboxBadge}>Assessments</span>
+      <nav className={styles.headerNav} aria-label="Assessment navigation"><a href="https://www.discoverdivine.design">Journey website</a><span className={styles.sandboxBadge}>{owned ? "Your assessments" : "Assessments"}</span></nav>
     </header>
-    <p className={styles.sandboxNote}>DesignID and DesignPD reports are $19.99 USD each, one time. Spiritual Gifts is free. Assessment purchases do not include school membership or courses.</p>
     {children}
     <footer className={styles.footer}>
       <span>Discover Your Divine Design</span>
       <span>Reflection and development tools, not diagnoses or limitations.</span>
+      <Link href="/assessments/spiritual-gifts">Optional: explore your Spiritual Gifts — free</Link>
     </footer>
   </main>;
 }

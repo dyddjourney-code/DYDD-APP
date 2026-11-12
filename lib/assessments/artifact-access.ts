@@ -1,3 +1,4 @@
+import { filterPublicGiftsSnapshots } from "@/lib/public-assessments/gifts-account";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { AssessmentSnapshotSummary } from "./student-context";
@@ -17,6 +18,15 @@ export async function getOwnedArtifactSnapshot(
     .eq("id", snapshotId).maybeSingle();
   if (error || !snapshot) return null;
   if (snapshot.user_id) return snapshot.user_id === userId ? snapshot : null;
+  if (snapshot.assessment_type === "spiritual_gifts") {
+    const allowed = await filterPublicGiftsSnapshots([snapshot], userId);
+    if (!allowed.length) return null;
+    // A public Gifts immutable link may authorize a snapshot with no participant owner.
+    const { data: link, error: linkError } = await db.from("dydd_gifts_account_links")
+      .select("snapshot_id").eq("snapshot_id", snapshot.id).eq("user_id", userId).maybeSingle();
+    if (linkError) return null;
+    if (link) return snapshot;
+  }
   if (!snapshot.participant_id) return null;
   const { data: participant, error: participantError } = await db.from("assessment_participants")
     .select("id,user_id,normalized_email").eq("id", snapshot.participant_id).maybeSingle();

@@ -1,3 +1,4 @@
+import { PublicGiftsAccountLink } from "../account-link";
 import Link from "next/link";
 import { spiritualGifts } from "@/lib/spiritual-gifts/intake";
 import { getSpiritualGiftsSessionStatus } from "../actions";
@@ -116,6 +117,7 @@ export default async function SpiritualGiftsStatusPage({ searchParams }: Spiritu
               the report is delivered by email as a PDF instead of being shown as an app page.
             </p>
           </div>
+          {session.submitted_at ? <PublicGiftsAccountLink sessionId={session.id} token={token} /> : null}
         </section>
       </main>
     );

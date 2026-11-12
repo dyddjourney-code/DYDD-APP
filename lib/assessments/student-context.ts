@@ -1,9 +1,11 @@
+import { filterPublicGiftsSnapshots, getLinkedPublicGiftsSnapshots } from '@/lib/public-assessments/gifts-account';
 import { savedDesignPdTendencies } from "@/lib/designpd/tendencies";
 import { canonicalDesignIdShadow } from "@/lib/designid/shadow";
 import { normalizeEmail, participantEmailCandidates } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export type AssessmentSnapshotSummary = {
+  owned_report_href?: string;
   assessment_type: string;
   created_at: string;
   id: string;
@@ -303,7 +305,7 @@ export async function getAssessmentSnapshotsForUser(
   const supabaseAdmin = createSupabaseAdminClient();
   const query = supabaseAdmin
     .from("assessment_snapshots")
-    .select("id,assessment_type,created_at,scores,source,source_submitted_at")
+    .select("id,user_id,assessment_type,created_at,scores,source,source_submitted_at")
     .order("source_submitted_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false });
 
@@ -311,7 +313,9 @@ export async function getAssessmentSnapshotsForUser(
     ? await query.or(`user_id.eq.${userId},and(participant_id.eq.${participantId},user_id.is.null)`)
     : await query.eq("user_id", userId);
 
-  const all = (data ?? []) as AssessmentSnapshotSummary[];
+  const native = await filterPublicGiftsSnapshots((data ?? []) as AssessmentSnapshotSummary[], userId);
+  const linked = await getLinkedPublicGiftsSnapshots(userId);
+  const all = [...new Map([...native, ...linked].map(snapshot => [snapshot.id, snapshot])).values()].sort((a,b)=>Date.parse(b.source_submitted_at||b.created_at)-Date.parse(a.source_submitted_at||a.created_at)) as AssessmentSnapshotSummary[];
 
   return {
     all,

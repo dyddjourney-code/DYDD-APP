@@ -1,4 +1,6 @@
 import 'server-only';
+import { filterPublicGiftsSnapshots, getLinkedPublicGiftsSnapshots } from './gifts-account';
+import { getLinkedGuestSnapshots } from './guest-account';
 import { normalizeEmail } from '@/lib/identity/email';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import type { AssessmentSnapshotSummary } from '@/lib/assessments/student-context';
@@ -6,7 +8,7 @@ import type { AssessmentSnapshotSummary } from '@/lib/assessments/student-contex
 export async function claimVerifiedAssessmentParticipant(userId: string, email: string, displayName: string) {
  const db = createSupabaseAdminClient();
  const identity = await db.auth.admin.getUserById(userId);
- if (identity.error || !identity.data.user?.email_confirmed_at || normalizeEmail(identity.data.user.email) !== normalizeEmail(email)) throw Error('Verified account required.');
+ if (identity.error || !identity.data.user?.email_confirmed_at || identity.data.user.is_anonymous || normalizeEmail(identity.data.user.email) !== normalizeEmail(email)) throw Error('Verified account required.');
  const owned = await db.from('assessment_participants').select('id,user_id').eq('user_id',userId).limit(1).maybeSingle();
  if (owned.error) throw Error('Unable to check assessment identity.');
  if (owned.data) return owned.data as {id:string};
@@ -21,11 +23,12 @@ export async function claimVerifiedAssessmentParticipant(userId: string, email: 
  if (created.error || !created.data) throw Error('Assessment identity could not be created. Please retry.');
  return created.data as {id:string};
 }
-/** Read-only native launch listing uses the same exact ownership rule as artifact downloads. */
-export async function getOwnedAssessmentSnapshots(user:{id:string;email?:string|null}) {
+/** Native generation keeps its original sources. Display callers may opt into linked guest
+ * summaries, whose dedicated archive routes never masquerade as native snapshot IDs. */
+export async function getOwnedAssessmentSnapshots(user:{id:string;email?:string|null}, options:{includeGuest?:boolean}={}):Promise<AssessmentSnapshotSummary[]> {
  const db=createSupabaseAdminClient();
  const identity=await db.auth.admin.getUserById(user.id);
- if(identity.error || !identity.data.user?.email_confirmed_at || normalizeEmail(identity.data.user.email)!==normalizeEmail(user.email)) throw Error('Verified account required.');
+ if(identity.error || !identity.data.user?.email_confirmed_at || identity.data.user.is_anonymous || normalizeEmail(identity.data.user.email)!==normalizeEmail(user.email)) throw Error('Verified account required.');
  const address=normalizeEmail(identity.data.user.email);
  const [ownedParticipants,emailParticipants]=await Promise.all([
   db.from('assessment_participants').select('id,user_id,normalized_email').eq('user_id',user.id),
@@ -37,5 +40,8 @@ export async function getOwnedAssessmentSnapshots(user:{id:string;email?:string|
   .or(`user_id.eq.${user.id}${ids.length?`,and(user_id.is.null,participant_id.in.(${ids.join(',')}))`:''}`)
   .order('source_submitted_at',{ascending:false,nullsFirst:false}).order('created_at',{ascending:false});
  if(result.error)throw Error('Saved assessments could not be checked.');
- return (result.data||[]) as AssessmentSnapshotSummary[];
+ const linked=options.includeGuest ? await getLinkedGuestSnapshots(user.id) : [];
+ const native=await filterPublicGiftsSnapshots((result.data||[]) as AssessmentSnapshotSummary[],user.id);
+ const gifts=await getLinkedPublicGiftsSnapshots(user.id);
+ return [...new Map([...native,...gifts,...linked].map(snapshot=>[snapshot.id,snapshot])).values()].sort((a,b)=>Date.parse(b.source_submitted_at||b.created_at)-Date.parse(a.source_submitted_at||a.created_at));
 }

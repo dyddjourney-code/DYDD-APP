@@ -1,3 +1,4 @@
+import { appendPublicOverviewResults } from "@/lib/public-assessments/owner-overview";
 import { DesignIdResearchPanel } from "@/components/designid-research";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -40,6 +41,7 @@ type AssessmentParticipant = {
 };
 
 type AssessmentSnapshot = {
+  provenance?: Record<string, unknown>;
   assessment_participants: AssessmentParticipant | AssessmentParticipant[] | null;
   assessment_type: string;
   created_at: string;
@@ -481,6 +483,12 @@ function snapshotSummary(snapshot: AssessmentSnapshot) {
 }
 
 function reportHref(snapshot: AssessmentSnapshot, params?: CommandCenterSearchParams | null) {
+  if (snapshot.source === 'public_guest') {
+    const query = new URLSearchParams();
+    if (isOwnerPreviewRequest(params)) { query.set('review','owner'); query.set('key',params?.key || ''); }
+    return `/command-center/guest-report/${snapshot.id}${query.size ? '?'+query : ''}`;
+  }
+  if (snapshot.provenance?.snapshot_missing) return '';
   const scores = snapshot.scores ?? {};
   const reportAccessUrl = compactValue(scores.reportAccessUrl);
   const ownerQuery = new URLSearchParams();
@@ -519,6 +527,7 @@ function reportHref(snapshot: AssessmentSnapshot, params?: CommandCenterSearchPa
 }
 
 function artifactHref(snapshot: AssessmentSnapshot, params?: CommandCenterSearchParams | null) {
+  if (snapshot.source === "public_guest") return reportHref(snapshot, params);
   const query = new URLSearchParams();
 
   if (isOwnerPreviewRequest(params)) {
@@ -652,7 +661,8 @@ function groupParticipants(
     const currentPrimaryCount = snapshotIdsByParticipant.get(record.id)?.size ?? 0;
     const candidateCount = snapshotIdsByParticipant.get(participant.id)?.size ?? 0;
 
-    if (candidateCount > currentPrimaryCount) {
+    if ((record.id.startsWith("guest:") && !participant.id.startsWith("guest:")) ||
+        (candidateCount > currentPrimaryCount && (record.id.startsWith("guest:") || !participant.id.startsWith("guest:")))) {
       record.id = participant.id;
     }
 
@@ -741,6 +751,7 @@ function mergeParticipantRecords(target: ParticipantRecord, source: ParticipantR
 }
 
 function snapshotOverlapKey(snapshot: AssessmentSnapshot) {
+  if (snapshot.provenance) return `saved-result:${snapshot.id}`;
   const scores = snapshot.scores ?? {};
   const sourceResponseId =
     compactValue(scores.sourceResponseId) ||
@@ -820,6 +831,7 @@ function collapseOverlappingParticipantRecords(records: ParticipantRecord[], gro
 }
 
 function snapshotDedupeKey(snapshot: AssessmentSnapshot) {
+  if (snapshot.provenance) return `saved-result:${snapshot.id}`;
   const participantKey =
     snapshot.participant_canonical_key ?? snapshot.participant_id ?? "unknown-participant";
   return [
@@ -1398,7 +1410,7 @@ async function fetchAssessmentSnapshots({
     return snapshots;
   }
 
-  for (let page = 0; page < 10; page += 1) {
+  for (let page = 0; ; page += 1) {
     let query = supabase
       .from("assessment_snapshots")
       .select(
@@ -1406,13 +1418,15 @@ async function fetchAssessmentSnapshots({
       )
       .order("source_submitted_at", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false })
+      .order("id")
       .range(page * pageSize, page * pageSize + pageSize - 1);
 
     if (!isAdmin) {
       query = query.in("participant_id", participantIds);
     }
 
-    const { data } = await query;
+    const { data, error } = await query;
+    if (error) throw Error("Saved assessment overview could not be read.");
     const pageSnapshots = (data ?? []) as AssessmentSnapshot[];
     snapshots.push(...pageSnapshots);
 
@@ -1452,7 +1466,8 @@ async function getCommandCenterData({
   const participantIds = ((memberships ?? []) as AssessmentGroupMember[]).map(
     (membership) => membership.participant_id,
   );
-  const snapshots = await fetchAssessmentSnapshots({ isAdmin, participantIds });
+  const nativeSnapshots = await fetchAssessmentSnapshots({ isAdmin, participantIds });
+  const snapshots = isAdmin ? await appendPublicOverviewResults(nativeSnapshots) : nativeSnapshots;
 
   return {
     groups: visibleGroups,
@@ -2298,7 +2313,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                 <div className="command-center-check-list">
                   {filteredMainParticipants.map((participant) => (
                     <label key={participant.id}>
-                      <input name="participant_id" type="checkbox" value={participant.id} />
+                      <input name="participant_id" type="checkbox" value={participant.id} disabled={participant.id.startsWith("guest:")} />
                       <span>
                         <strong>{participant.name}</strong>
                         <small>
@@ -2322,7 +2337,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                       <h3>{participant.name}</h3>
                       <p>{participant.email}</p>
                     </div>
-                    <form action={assignParticipantToAssessmentGroup}>
+                    {!participant.id.startsWith("guest:") ? <form action={assignParticipantToAssessmentGroup}>
                       <input name="participant_id" type="hidden" value={participant.id} />
                       <input name="assessment" type="hidden" value={params?.assessment ?? ""} />
                       <input name="current_group" type="hidden" value={params?.group ?? ""} />
@@ -2349,7 +2364,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                       <button className="button secondary" type="submit">
                         Add
                       </button>
-                    </form>
+                    </form> : <small>Guest contact · not an app participant</small>}
                   </div>
 
                   {participant.groups.length ? (
@@ -2390,6 +2405,17 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                               {displayDate(snapshot.source_submitted_at ?? snapshot.created_at)}
                               {snapshot.source ? ` | ${snapshot.source}` : ""}
                             </small>
+                            {snapshot.provenance ? <small>
+                              {String(snapshot.provenance.channel || snapshot.provenance.pipeline || '')}
+                              {snapshot.provenance.purchase_status ? ` · ${snapshot.provenance.purchase_status}` : ''}
+                              {snapshot.provenance.payment_provider ? ` · ${snapshot.provenance.payment_provider}` : ''}
+                              {snapshot.provenance.access_name ? ` · Access: ${snapshot.provenance.access_name}` : ''}
+                              {snapshot.provenance.coupon_code ? ` · Coupon: ${snapshot.provenance.coupon_code}` : ''}
+                              {snapshot.provenance.original_contact_email ? ` · Contact: ${snapshot.provenance.original_contact_name || ''} <${snapshot.provenance.original_contact_email}>` : ''}
+                              {snapshot.provenance.order_id ? ` · Order ${snapshot.provenance.order_id}` : ''}
+                              {snapshot.provenance.source_result_id ? ` · Source ${snapshot.provenance.source_result_id}` : ''}
+                              {snapshot.provenance.session_id ? ` · Session ${snapshot.provenance.session_id}` : ''}
+                            </small> : null}
                             {details.length ? (
                               <dl className="command-center-score-list">
                                 {details.map((detail) => (
@@ -2408,14 +2434,14 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                             ) : (
                               <em>No report link saved yet</em>
                             )}
-                            <Link
+                            {!snapshot.provenance?.snapshot_missing ? <Link
                               className="button text"
                               href={artifactHref(snapshot, params)}
                               target="_blank"
                               rel="noreferrer"
                             >
-                              Download Snapshot
-                            </Link>
+                              {snapshot.source === "public_guest" ? "Download PDF" : "Download Snapshot"}
+                            </Link> : <small>Saved response · no report snapshot was created</small>}
                           </section>
                         );
                       })
@@ -2490,7 +2516,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                   <div className="command-center-check-list">
                     {activeGroupCandidates.map((participant) => (
                       <label key={participant.id}>
-                        <input name="participant_id" type="checkbox" value={participant.id} />
+                        <input name="participant_id" type="checkbox" value={participant.id} disabled={participant.id.startsWith("guest:")} />
                         <span>
                         <strong>{participant.name}</strong>
                         <small>

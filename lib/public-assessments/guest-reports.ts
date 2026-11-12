@@ -75,18 +75,36 @@ export async function prepareGuestReport(session:GuestSession,resultId:string) {
  result=await ownedGuestResult(session.id,resultId);
  return result;
 }
-/** Guest-specific copy; never reuse account-login instructions. Original outbox event is immutable. */
-export async function emailGuestReport(session:GuestSession,token:string,resultId:string) {
+/** Original notification is immutable; an explicit resend gets a separately bounded durable intent. */
+export async function emailGuestReport(session:GuestSession,token:string,resultId:string,explicitResend=false) {
  const result=await ownedGuestResult(session.id,resultId);
- guestStoredReport(result); // validate exact private guest archive locator before notify
- if(process.env.DYDD_GUEST_EMAIL_ENABLED!=='true')throw Error('Your PDF is saved. Report email is paused; use your private download and recovery link.');
- const reportUrl=origin()+guestRecoveryPath(session.id,token),name=result.product==='designid'?'DesignID':'DesignPD';
- const sent=await sendApplicationEmail({templateId:'guest-'+result.product+'-report',idempotencyKey:'guest-report-'+result.id,
+ const artifact=guestStoredReport(result); // archive BEFORE any email intent/provider request
+ if(process.env.DYDD_GUEST_EMAIL_ENABLED!=='true')throw Error('Your PDF is saved. Report email is paused; use Download PDF.');
+ if(!explicitResend&&result.email.sent)return {sent:true,skipped:false,id:String(result.email.id||'')};
+ const db=createSupabaseAdminClient();
+ // Load only the exact validated private original, never regenerate/recalculate for email.
+ const downloaded=await db.storage.from(artifact.bucket).download(artifact.path);
+ if(downloaded.error||!downloaded.data)throw Error('Your PDF is saved, but its attachment could not be loaded. Please retry later.');
+ const bytes=Buffer.from(await downloaded.data.arrayBuffer());
+ if(bytes.length>20*1024*1024||bytes.subarray(0,5).toString()!=='%PDF-')throw Error('The original PDF attachment is unavailable. Use Download PDF or contact support.');
+ let intent:string|undefined;
+ if(explicitResend){
+  const reserved=await db.rpc('dydd_guest_reserve_email_resend',{p_session_id:session.id,p_result_id:result.id});
+  if(reserved.error||!reserved.data)throw Error(reserved.error?.message||'Please wait before requesting another copy. Your PDF remains downloadable.');
+  intent=String(reserved.data);
+ }
+ const reportUrl=origin()+guestRecoveryPath(session.id,token)+'&report='+encodeURIComponent(result.id),name=result.product==='designid'?'DesignID':'DesignPD';
+ const sent=await sendApplicationEmail({templateId:'guest-'+result.product+'-report',idempotencyKey:intent?'guest-report-resend-'+intent:'guest-report-v2-'+result.id,
   deliveryContext:{type:'guest_assessment_report',guestResultId:result.id,guestSessionId:session.id,reportUrl},
   to:session.participant_email,subject:`Your ${name} report is ready`,
-  text:`Hi ${session.participant_name},\n\nYour ${name} report is ready. Open your private report and recovery link: ${reportUrl}\n\nNo account or sign-in is needed. Keep this link private.`,
-  html:`<p>Hi ${escaped(session.participant_name)},</p><p>Your ${name} report is ready.</p><p><a href="${escaped(reportUrl)}">Open your report</a></p><p>No account or sign-in is needed. Keep this private link to return to your reports.</p>`});
- const saved=await createSupabaseAdminClient().from('dydd_guest_results').update({email:{sent:sent.sent,skipped:sent.skipped,id:sent.id||null,message:sent.message||null}}).eq('id',result.id).eq('session_id',session.id);
+  attachments:[{filename:artifact.filename,content:bytes.toString('base64')}],
+  text:`Hi ${session.participant_name},\n\nYour ${name} PDF is attached. Open or download your saved report: ${reportUrl}\n\nNo account or sign-in is needed. This private link provides access to your report; keep it private.`,
+  html:`<p>Hi ${escaped(session.participant_name)},</p><p>Your ${name} PDF is attached.</p><p><a href="${escaped(reportUrl)}" style="display:inline-block;padding:14px 22px;background:#273b35;color:#fff;border-radius:8px;font-weight:bold">Open your ${name} report</a></p><p>No account or sign-in is needed. This private link provides access to your saved report. Keep it private.</p>`});
+ if(intent&&sent.sent){
+  const accepted=await db.from('dydd_guest_email_resends').update({accepted_at:new Date().toISOString(),provider_id:sent.id||null}).eq('id',intent).eq('session_id',session.id);
+  if(accepted.error)throw Error('Email was accepted; status needs reconciliation. Please wait before retrying.');
+ }
+ const saved=await db.from('dydd_guest_results').update({email:{...result.email,sent:sent.sent||!!result.email.sent,skipped:sent.skipped,id:sent.id||result.email.id||null,message:sent.message||null,...(intent?{lastResendIntent:intent,lastResendAt:new Date().toISOString()}:{}),attachmentIncluded:true}}).eq('id',result.id).eq('session_id',session.id);
  if(saved.error)throw Error('Your PDF is saved; email status needs reconciliation.');
  return sent;
 }

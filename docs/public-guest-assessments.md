@@ -1,3 +1,5 @@
+> November 12 follow-up: the later fully authorized cleanup/release supersedes this paused correction baseline. See [guest cleanup and release](dydd-guest-cleanup-2026-11-12.md) for additive ownership/group/Gifts migrations, actual John attachment tests and deployment evidence.
+
 # Standalone guest DesignID / DesignPD correction
 
 Baseline: production checkout `2e621d9`, NOT the stale school-release checkout. Public purchases are separate from app accounts, courses and their existing assessment rights.

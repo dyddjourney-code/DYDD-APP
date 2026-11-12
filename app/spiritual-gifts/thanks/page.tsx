@@ -1,3 +1,4 @@
+import { PublicGiftsAccountLink } from "../account-link";
 import Link from "next/link";
 import { getSpiritualGiftsSessionStatus } from "../actions";
 
@@ -43,6 +44,7 @@ export default async function SpiritualGiftsThanksPage({ searchParams }: Spiritu
                 "Your Spiritual Gifts assessment has been submitted. Your PDF report is being delivered to the email address you provided."}
           </p>
         </div>
+        {!isAppChannel && status?.session.submitted_at ? <PublicGiftsAccountLink sessionId={status.session.id} token={status.token} /> : null}
         {!isAppChannel ? (
           <div className="spiritual-gifts-thanks-cta">
             <p className="section-label">Keep exploring</p>

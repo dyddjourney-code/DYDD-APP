@@ -7,7 +7,7 @@ import type { AssessmentSnapshotSummary } from '@/lib/assessments/student-contex
 export class GuestReadUnavailableError extends Error {}
 export class GuestAccessDeniedError extends Error {}
 export type GuestSession = {id:string;participant_name:string;participant_email:string;expires_at:string;capability_hash:string};
-export type GuestOrder = {id:string;session_id:string;product:'designid'|'designpd';source_result_id:string|null;status:string;payment_provider:string;payment_reference:string;expected_product_id:string;expected_price_id:string;expected_amount:number;currency:string};
+export type GuestOrder = {id:string;session_id:string;product:'designid'|'designpd';source_result_id:string|null;status:string;payment_provider:string;payment_reference:string;expected_product_id:string;expected_price_id:string;expected_amount:number;currency:string;access_grant_id?:string|null;access_name?:string|null;coupon_code?:string|null};
 export type GuestResult = {id:string;order_id:string;session_id:string;product:'designid'|'designpd';source_result_id:string|null;scores:Record<string,unknown>;created_at:string;report_state:string;pdf:Record<string,unknown>;email:Record<string,unknown>;report_lease:string|null};
 export async function verifyGuestCapability(id:string,token:string) {
  if (!publicAssessmentLedgerEnabled()) throw new GuestReadUnavailableError('Assessment service is unavailable. Your saved results are preserved.');
@@ -42,7 +42,7 @@ export async function paidGuestOrder(sessionId:string,orderId:string) {
  const found=await db.from('dydd_guest_orders').select('*').eq('id',guestSessionId(orderId)).eq('session_id',sessionId).eq('status','paid').maybeSingle();
  if(found.error)throw new GuestReadUnavailableError('Guest purchase storage is unavailable.');
  if(!found.data)throw new GuestAccessDeniedError('This purchase is not paid or is no longer available.');
- const mode=await db.rpc('dydd_public_assessment_provider_allowed',{p_provider:found.data.payment_provider});
+ const mode=await db.rpc('dydd_guest_order_entitled',{p_order_id:found.data.id});
  if(mode.error)throw new GuestReadUnavailableError('Guest purchase configuration could not be read.');
  if(mode.data!==true)throw new GuestAccessDeniedError('Purchase environment mismatch.');
  if(found.data.source_result_id){
@@ -52,6 +52,9 @@ export async function paidGuestOrder(sessionId:string,orderId:string) {
   const paid=await db.from('dydd_guest_orders').select('id').eq('id',source.data.order_id).eq('session_id',sessionId).eq('status','paid').maybeSingle();
   if(paid.error)throw new GuestReadUnavailableError('Guest source purchase could not be read.');
   if(!paid.data)throw new GuestAccessDeniedError('The source purchase is no longer available.');
+  const sourceRight=await db.rpc('dydd_guest_order_entitled',{p_order_id:paid.data.id});
+  if(sourceRight.error)throw new GuestReadUnavailableError('The source access could not be checked.');
+  if(sourceRight.data!==true)throw new GuestAccessDeniedError('The source purchase is no longer available.');
  }
  return found.data as GuestOrder;
 }

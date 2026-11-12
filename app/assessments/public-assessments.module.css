@@ -61,3 +61,81 @@
 @media (max-width: 1050px) { .detailGrid { grid-template-columns: minmax(0,1fr); } .story { max-width: 720px; } .accessPanel { max-width: 720px; width: 100%; } .heroImage { max-width: 620px; } .productRow { grid-template-columns: 100px minmax(0,1fr); gap: 22px; } .productRow > a { grid-column: 2; justify-self: start; } .productIdentity { grid-template-columns: 1fr; gap: 10px; } }
 @media (max-width: 600px) { .shell { padding: 22px 18px; } .brand img { width: 140px; } .sandboxBadge { font-size: .64rem; padding: 6px 9px; } .catalogIntro { padding-top: 14px; padding-bottom: 25px; } .productRow { grid-template-columns: minmax(0,1fr); gap: 16px; padding: 28px 0; } .productRow > a { grid-column: 1; width: 100%; } .productIdentity { grid-template-columns: 25px 1fr; } .catalogLogo { width: 125px; height: 58px; object-position: left center; } .expectations { grid-template-columns: minmax(0,1fr); gap: 28px; } .productLogo { width: 180px; height: 82px; margin-bottom: 20px; } .accessPanel { padding: 24px 20px; } .shell h1 { font-size: 2.25rem; } .footer { margin-top: 38px; } }
 @media (prefers-reduced-motion: reduce) { .primary,.secondary { transition: none; } }
+
+/* Public assessment branding; the native signed-in app keeps its own shell. */
+.headerNav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 12px; }
+.headerNav > a { color: var(--green-dark); font-size: .78rem; text-decoration: underline; text-underline-offset: 3px; }
+.shell > .breadcrumb { margin-top: 22px; margin-bottom: 22px; }
+.shell > .catalogIntro { padding-top: 28px; }
+.detailGrid .story h1 { font-size: clamp(1.8rem, 3vw, 2.65rem); margin-bottom: 18px; max-width: 23ch; }
+.detailGrid .productLogo { width: 160px; height: 68px; margin-bottom: 18px; }
+.ownedShell { max-width: 1080px; padding-block: 18px 30px; }
+.ownedShell .header { padding-bottom: 12px; }
+.ownedShell .brand img { width: 128px; max-height: 56px; }
+.sessionIntro { padding: 20px 0 16px; }
+.shell .sessionIntro h1 { font-size: clamp(1.35rem, 2.8vw, 1.9rem); max-width: none; margin: 0 0 8px; }
+.sessionIntro .eyebrow { margin-bottom: 6px; }
+.shell .sessionIntro > p:last-child { font-size: .84rem; line-height: 1.5; margin-bottom: 0; max-width: 80ch; }
+.sessionIntro a,.textLink { text-decoration: underline; text-underline-offset: 3px; }
+.reportList { display: grid; gap: 20px; }
+.reportList > * { min-width: 0; }
+.reportList .accessPanel { max-width: none; }
+.reportList .accessPanel h2 { margin-bottom: 14px; }
+.reportDownload { font-size: 1rem; min-height: 54px; }
+.emailTools { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 24px; margin-top: 20px; border-top: 1px solid var(--line); padding-top: 16px; }
+.emailTools .helper { flex: 1 1 280px; margin: 0; }
+.emailTools .secondary { width: auto; min-height: 40px; padding: 9px 14px; font-size: .8rem; }
+.textLink { display: inline-block; margin-top: 16px; font-size: .85rem; }
+.assessmentSection { min-width: 0; }
+
+/* Guest-only density overrides. All question fields, sort controls and scoring remain native. */
+.guestForm { width: 100%; max-width: 980px; margin: 0 auto; padding: 0 0 12px; gap: 10px; scroll-margin-top: 12px; outline: none; }
+.guestForm :global(.designid-progress-card) { grid-template-columns: 80px minmax(0, 1fr) 130px; gap: 12px; padding: 8px 14px; min-height: 56px; }
+.guestForm :global(.designid-progress-card img) { width: 80px; height: 40px; }
+.guestForm :global(.designid-progress-card h2) { font-size: 1rem; }
+.guestForm :global(.designid-progress-card .section-label) { display: none; }
+.guestForm :global(.spiritual-gifts-step-meter) { grid-template-columns: 1fr auto; gap: 4px; font-size: .73rem; }
+.guestForm :global(.spiritual-gifts-step-meter > div) { grid-column: 1 / -1; height: 6px; }
+.guestForm :global(.designid-question-panel) { min-inline-size: 0; margin: 0; padding: 18px; box-shadow: none; }
+.guestForm :global(.designid-question-panel.active) { gap: 10px; }
+.guestForm :global(.designid-question-panel h2) { max-width: none; font-size: 1.15rem; margin: 0; line-height: 1.3; }
+.guestForm :global(.designid-question-panel > p) { font-size: .84rem; line-height: 1.45; margin: 0; }
+.guestForm :global(.designid-question-panel .section-label) { font-size: .65rem; margin: 0; }
+.guestForm :global(.designid-allocation-total) { gap: 6px 14px; padding: 8px 12px; font-size: .78rem; }
+.guestForm :global(.designid-allocation-total strong) { font-size: .95rem; }
+.guestForm :global(.designid-rank-list) { gap: 8px; }
+.guestForm :global(.designid-rank-row) { grid-template-columns: minmax(0, 1fr) 202px; align-items: center; gap: 12px; padding: 8px 12px; }
+.guestForm :global(.designid-rank-row > span) { font-size: .9rem; line-height: 1.4; }
+.guestForm :global(.designid-point-choices) { grid-template-columns: repeat(4, minmax(44px, 1fr)); gap: 6px; }
+.guestForm :global(.designid-point-choices label) { min-height: 44px; }
+.guestForm :global(.fruitlife-step-controls) { position: sticky; bottom: 8px; z-index: 6; padding: 8px; background: #fffef9; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 3px 14px rgba(62, 66, 41, .08); }
+.guestForm :global(.fruitlife-step-controls button) { min-height: 44px; padding-block: 10px; }
+.guestForm :global(.spiritual-gifts-start-card) { gap: 14px; padding: 22px; text-align: left; background: #fffef9; }
+.guestForm :global(.spiritual-gifts-start-brand) { justify-self: start; width: auto; }
+.guestForm :global(.spiritual-gifts-start-brand img) { width: 145px; max-height: 70px; object-fit: contain; filter: none; }
+.guestForm :global(.spiritual-gifts-start-copy) { justify-items: start; }
+.guestForm :global(.spiritual-gifts-start-card h1) { max-width: none; font-size: 1.5rem; line-height: 1.2; margin: 0; }
+.guestForm :global(.spiritual-gifts-locked-identity) { gap: 10px; padding: 12px; font-size: .85rem; overflow-wrap: anywhere; }
+.guestForm :global(.maps-confirmation-sort) { gap: 10px; }
+.guestForm :global(.maps-sort-intro p) { font-size: .85rem; line-height: 1.45; margin: 6px 0; }
+.guestForm :global(.maps-sort-word-grid) { gap: 8px; }
+.guestForm :global(.maps-sort-word) { padding: 8px; }
+.guestForm :global(.maps-sort-word p) { font-size: .8rem; }
+.guestForm :global(.form-message) { margin: 0; }
+@media (max-width: 600px) {
+  .ownedShell { padding: 14px 14px 26px; }
+  .headerNav { gap: 8px; }
+  .headerNav > a { font-size: .7rem; }
+  .ownedShell .brand img { width: 108px; }
+  .sessionIntro { padding: 16px 0; }
+  .guestForm :global(.designid-progress-card) { grid-template-columns: 60px minmax(0, 1fr) 80px; padding: 8px 10px; gap: 8px; }
+  .guestForm :global(.designid-progress-card img) { width: 60px; height: 34px; }
+  .guestForm :global(.designid-progress-card .spiritual-gifts-step-meter) { grid-column: auto; width: auto; }
+  .guestForm :global(.designid-progress-card h2) { font-size: .85rem; }
+  .guestForm :global(.designid-question-panel) { padding: 12px; }
+  .guestForm :global(.designid-rank-row) { grid-template-columns: minmax(0, 1fr); gap: 7px; padding: 9px; }
+  .guestForm :global(.designid-point-choices) { width: 100%; }
+  .guestForm :global(.spiritual-gifts-start-card) { padding: 18px; }
+  .emailTools { align-items: flex-start; }
+  .emailTools .helper { flex-basis: 100%; }
+}

@@ -68,7 +68,7 @@ export async function recoverGuestReport(sessionId:string,resultId:string) {
 }
 export async function retryGuestEmail(sessionId:string,resultId:string) {
  let message='';
- try{const {session,token}=await requireGuest(sessionId);const result=await emailGuestReport(session,token,resultId);message=result.sent?'Email provider accepted your report email. Inbox delivery is not yet confirmed.':'Your report remains downloadable. Email is pending or needs review.';}
+ try{const {session,token}=await requireGuest(sessionId);const result=await emailGuestReport(session,token,resultId,true);message=result.sent?'Your new email copy, including the PDF attachment, was accepted by the email provider. Inbox delivery is not yet confirmed.':'Your report remains downloadable. Email is pending or needs review.';}
  catch(error){message=problem(error);}
  redirect(guestSessionPath(sessionId)+'?message='+encodeURIComponent(message));
 }

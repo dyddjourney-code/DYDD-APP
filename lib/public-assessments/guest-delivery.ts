@@ -7,7 +7,7 @@ export async function guestReportDeliveryEligibility(job:{email:string;context?:
  try{
   const c=job.context?.deliveryContext||{},url=new URL(String(c.reportUrl||''));
   const expected=new URL(process.env.DYDD_APP_URL||'');
-  if(url.origin!==expected.origin||url.pathname!=='/assessments/recover'||url.username||url.password||url.hash||url.searchParams.getAll('key').length!==1||url.searchParams.getAll('session').length!==1||url.searchParams.get('session')!==c.guestSessionId)return {stop:'Guest recovery link is invalid.'};
+  if(url.origin!==expected.origin||url.pathname!=='/assessments/recover'||url.username||url.password||url.hash||url.searchParams.getAll('key').length!==1||url.searchParams.getAll('session').length!==1||url.searchParams.get('session')!==c.guestSessionId||(url.searchParams.has('report')&&(url.searchParams.getAll('report').length!==1||url.searchParams.get('report')!==c.guestResultId)))return {stop:'Guest recovery link is invalid.'};
   try{guestSessionId(String(c.guestSessionId||''));guestSessionId(String(c.guestResultId||''));guestCapabilityHash(url.searchParams.get('key')||'');}catch{return {stop:'Guest recovery capability is invalid.'};}
   const session=await verifyGuestCapability(String(c.guestSessionId||''),url.searchParams.get('key')||'');
   if(session.participant_email!==job.email.trim().toLowerCase())return {stop:'Guest report recipient changed.'};

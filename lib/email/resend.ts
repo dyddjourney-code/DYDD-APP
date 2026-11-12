@@ -16,8 +16,8 @@ export async function sendResendEmail(input: SendEmailInput): Promise<SendEmailR
   if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === 'sandbox') return {sent:false,skipped:true,message:'Sandbox email delivery is disabled.'};
   const apiKey = process.env.RESEND_API_KEY ?? process.env.DYDD_RESEND_API_KEY ?? '';
   if (!apiKey) return {sent:false,skipped:true,message:'DYDD email delivery is not configured.'};
-  const base = (process.env.DYDD_APP_URL ?? 'https://dydd-online-school.vercel.app').replace(/\/$/,'');
-  const contact = `${base}/contact`;
+  // Help belongs on the public marketing site, independently of private app links.
+  const contact = 'https://www.discoverdivine.design/discover-your-divine-design-contact';
   const notice = `This automated mailbox is unmonitored. For help, use the DYDD Contact form: ${contact}`;
   const footer = `<p style="font-size:13px;color:#667085">This automated mailbox is unmonitored. For help, use the <a href="${contact}">DYDD Contact form</a>.</p>`;
   const html = /<\/body>/i.test(input.html) ? input.html.replace(/<\/body>/i,footer+'</body>') : input.html+footer;

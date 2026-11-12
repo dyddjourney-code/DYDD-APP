@@ -1,0 +1,20 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const load=require('../scripts/fruitlife-test-load.cjs');
+const native=[{id:'gift-snapshot',assessment_type:'spiritual_gifts',created_at:'2026-11-12',participant_id:'app-person',scores:{sourceResponseId:'source-gift',topGifts:[{label:'Wisdom'}]},source:'spiritual_gifts_app',source_submitted_at:'2026-11-12',assessment_participants:{id:'app-person',display_name:'Current name',normalized_email:'current@example.test'}}];
+const guests=Array.from({length:1002},(_,i)=>({id:`guest-${String(i).padStart(5,'0')}`,session_id:'guest-session',order_id:`order-${i}`,product:i%2?'designpd':'designid',source_result_id:i%2?'guest-00000':null,scores:{saved:i},created_at:'2026-11-12',contact:{id:'guest-session',participant_name:'Original guest',participant_email:'original@example.test'},purchase:{status:i===1001?'refunded':'paid',payment_provider:i%3?'stripe_live':'group_free',access_grant_id:i%3?null:'grant-1',access_name:i%3?null:'Workshop access',coupon_code:i%3?null:'WORKSHOP',expected_amount:i%3?1999:0,payment_reference:`payment-${i}`,paid_at:'2026-11-12'}}));
+const tables={dydd_guest_results:guests,spiritual_gifts_sessions:[{id:'gift-session',result_snapshot_id:'gift-snapshot',participant_id:'app-person',participant_name:'Original Gifts Contact',participant_email:'gift-contact@example.test',metadata:{channel:'public_assessment'},signup_source:'public',source_system:'spiritual_gifts_app',submitted_at:'2026-11-12'}, {id:'orphan-gift-session',result_snapshot_id:null,participant_id:'orphan-person',participant_name:'Orphan gift',participant_email:'orphan@example.test',metadata:{channel:'public_assessment'}}],spiritual_gifts_responses:[{id:'gift-response',session_id:'gift-session',source_response_id:'source-gift',derived_scores:{topGifts:[{label:'Wisdom'}]},created_at:'2026-11-12',submitted_at:'2026-11-12'}, {id:'orphan-response',session_id:'orphan-gift-session',source_response_id:'orphan-source',derived_scores:{topGifts:[{label:'Service',score:20}]},created_at:'2026-11-12',submitted_at:'2026-11-12'}]};
+let fail=false,pages=[];
+const client={from(table){const q={select(){return q},order(){return q},range:async(a,b)=>{pages.push([table,a]);return fail?{error:Error('storage offline')}:{data:tables[table].slice(a,b+1),error:null}}};return q}};
+const {appendPublicOverviewResults}=load('lib/public-assessments/owner-overview.ts',{'@/lib/supabase/admin':{createSupabaseAdminClient:()=>client}});
+(async()=>{
+ const before=JSON.stringify(native),all=await appendPublicOverviewResults(native);
+ assert.equal(all.length,1004);assert(pages.some(([t,a])=>t==='dydd_guest_results'&&a===1000));
+ assert.equal(all.filter(s=>s.id==='gift-snapshot').length,1);assert.equal(all[0].scores,native[0].scores);assert.equal(all[0].provenance.channel,'public_assessment');assert.equal(all[0].provenance.original_contact_email,'gift-contact@example.test');
+ const coupon=all.find(s=>s.provenance?.payment_provider==='group_free');assert(coupon);assert.equal(coupon.provenance.access_name,'Workshop access');assert.equal(coupon.provenance.coupon_code,'WORKSHOP');assert.equal(coupon.scores,guests[0].scores);assert.equal(coupon.provenance.original_contact_email,'original@example.test');
+ assert(all.some(s=>s.provenance?.purchase_status==='refunded'));
+ assert.equal(all.find(s=>s.id==='orphan-response').scores,tables.spiritual_gifts_responses[1].derived_scores);assert.equal(JSON.stringify(native),before);
+ fail=true;await assert.rejects(()=>appendPublicOverviewResults(native));
+ const page=fs.readFileSync('app/command-center/page.tsx','utf8');assert(page.includes('isAdmin ? await appendPublicOverviewResults(nativeSnapshots) : nativeSnapshots'));
+ console.log('PASS all 1,002 guest results across pagination incl paid/coupon/reversed, exact score retention, existing public Gifts dedup+original contact provenance, orphan saved-response overlay, non-admin excluded, storage failure explicit');
+})().catch(e=>{console.error(e);process.exitCode=1});

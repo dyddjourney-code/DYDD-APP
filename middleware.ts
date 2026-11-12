@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
     if (path === "/" || path === "/owner") return NextResponse.redirect(new URL("/command-center", request.url));
     const savedReport = /^\/(?:designid|designpd|spiritual-gifts)\/report$/.test(path) || /^\/api\/artifacts\/[0-9a-f-]{36}\/download$/i.test(path);
-    const allowed = savedReport || /^\/(?:command-center(?:\/|$)|api\/command-center(?:\/|$)|_next(?:\/|$)|brand(?:\/|$))/.test(path);
+    const allowed = path === "/owner/guest-access" || savedReport || /^\/(?:command-center(?:\/|$)|api\/command-center(?:\/|$)|_next(?:\/|$)|brand(?:\/|$))/.test(path);
     if (!allowed) return new NextResponse("Not found", { status: 404 });
     if (!["GET", "HEAD", "OPTIONS"].includes(request.method)) {
       const origin = request.headers.get("origin");

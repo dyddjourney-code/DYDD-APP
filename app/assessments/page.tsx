@@ -29,7 +29,7 @@ export default function PublicAssessmentsPage() {
         </div>
         <div className={styles.catalogActions}>
           <Link className={styles.primary} href={slug === "spiritual-gifts" ? "/spiritual-gifts" : `/assessments/${slug}?guest=1`}>{slug === "spiritual-gifts" ? "Start free assessment" : `Purchase ${product.name} now`}</Link>
-          <a className={styles.textLink} href={`https://www.discoverdivine.design/${slug === "spiritual-gifts" ? "reflections-gifts" : slug}`} target="_blank" rel="noopener noreferrer">Explore {product.name} (opens in a new tab)</a>
+          <a className={styles.textLink} href={`https://www.discoverdivine.design/${slug === "spiritual-gifts" ? "spiritual-gifts-test" : slug}`} target="_blank" rel="noopener noreferrer">Explore {product.name}</a>
         </div>
       </article>)}
     </section>

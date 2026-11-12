@@ -1,5 +1,7 @@
 # Private guest discovery invitation — November 12, 2026
 
+> Superseded by the results-footer correction below. Earlier account/app invitation evidence is historical, not the current approved UI.
+
 ## Scope
 
 Presentation-only follow-up to the guest release. The user confirms receipt/resend and report downloads work. Report boxes, ordering, downloads, resend and preparation code remain untouched; invitation remains below reports and the existing group panel. Journey website navigation opens a new tab with `noopener noreferrer` and an accessible new-tab hint. Main Squarespace four blocks remain drafts. No domain/DNS/configuration changes.
@@ -28,5 +30,5 @@ Actual async invitation/shell components rendered with synthetic auth at 1280/39
 2. Enter name and chosen report email, continue to Checkout, confirm **DesignID $19.99 USD**, and complete payment yourself. If an existing-purchase/timing message appears, do not repeatedly pay; use its existing private link or an unused review mailbox.
 3. Return to the paid session and complete the native 21-step DesignID flow (20 allocation sets, then confirmation sort/review). Submit once. Download the saved DesignID PDF and check its report email/attachment/private access link. Existing resend is optional; no resend is needed just to test this new invitation.
 4. From that same private session choose **Explore DesignPD**. Confirm the separate **$19.99 USD** human payment. On return, DesignPD derives from that exact saved DesignID; no second questionnaire. Download its saved PDF and check the report email. Reports stay above the new invitation.
-5. Below reports, inspect the optional app invitation. Choose create account or sign in only if you want the account connection; verify the account, return to the original private link in a browser holding its capability (reopen the private email link if needed), then explicitly select **Connect these results to my account**. Account creation/sign-in alone never claims reports. Reopen connected reports at `/assessments/account`.
+5. Below completed reports, inspect the logo-led **Explore the Discover Your Divine Design journey** invitation. Its only main website link is `https://www.discoverdivine.design/`. A separate Spiritual Gifts callout links to `https://www.discoverdivine.design/spiritual-gifts-test`. No app, signup/signin, course, Trailheads or subscription promotion appears in this footer.
 6. Journey website opens separately; free Gifts remains optional. No domain/DNS or Squarespace changes are part of this review.

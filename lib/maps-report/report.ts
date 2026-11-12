@@ -1,3 +1,4 @@
+import { appOrigin } from "@/lib/app-origin";
 import { mapsPhases, type MapsSubcategory } from "./content";
 
 export type MapsAssessmentParticipant = {
@@ -56,7 +57,7 @@ const designPdAxes = [
   },
 ];
 
-const assetBaseUrl = "https://dydd-online-school.vercel.app";
+const assetBaseUrl = appOrigin();
 const brandLogoPath = "/brand/dydd-logo-white-correct.png";
 const resourcesUrl = "https://www.discoverdivine.design/resources";
 

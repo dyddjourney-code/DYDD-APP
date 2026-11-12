@@ -1,5 +1,7 @@
 "use server";
 
+import { appOrigin } from "@/lib/app-origin";
+
 import { isFreeBeta } from "@/lib/environment";
 import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import crypto from "node:crypto";
@@ -27,7 +29,7 @@ import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-const productionAppUrl = "https://dydd-online-school.vercel.app";
+const productionAppUrl = appOrigin();
 
 type SessionLookup = {
   id: string;

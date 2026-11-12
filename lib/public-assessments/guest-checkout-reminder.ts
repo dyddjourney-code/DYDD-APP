@@ -1,3 +1,4 @@
+import { appOrigin, isDeliveryAppOrigin } from "@/lib/app-origin";
 import 'server-only';
 import Stripe from 'stripe';
 import {createSupabaseAdminClient} from '@/lib/supabase/admin';
@@ -19,7 +20,7 @@ export async function registerGuestCheckoutReminder(orderId:string,token:string)
  const db=createSupabaseAdminClient(),id=guestSessionId(orderId);
  const order=must(await db.from('dydd_guest_orders').select('*').eq('id',id).single());
  const session=await verifyGuestCapability(order.session_id,token);
- const base=new URL(process.env.DYDD_APP_URL||'https://dydd-online-school.vercel.app');
+ const base=new URL(process.env.DYDD_APP_URL||appOrigin());
  if(base.protocol!=='https:')throw Error('Secure app origin required.');
  const url=base.origin+guestRecoveryPath(session.id,token)+'&product='+order.product;
  const copy=guestCheckoutReminderCopy(session.participant_name,order.product,url);
@@ -41,8 +42,8 @@ export async function runGuestCheckoutReminderWorker(limit=10) {
    const stop=async()=>{await finish({status:'skipped',error_message:'Checkout completed, resumed, expired, suppressed or unavailable.'});skipped++;};
    const sender=j.sender_input as SendEmailInput,link=sender?.text?.split('\n\n').find(v=>v.startsWith('https://'));
    if(!link){await stop();continue;}
-   const url=new URL(link),base=new URL(process.env.DYDD_APP_URL||'https://dydd-online-school.vercel.app');
-   if(url.origin!==base.origin||url.pathname!=='/assessments/recover'||url.searchParams.get('session')!==j.session_id||url.searchParams.getAll('key').length!==1||url.searchParams.getAll('session').length!==1||url.hash||url.username||url.password){await stop();continue;}
+   const url=new URL(link);
+   if(!isDeliveryAppOrigin(url)||url.pathname!=='/assessments/recover'||url.searchParams.get('session')!==j.session_id||url.searchParams.getAll('key').length!==1||url.searchParams.getAll('session').length!==1||url.hash||url.username||url.password){await stop();continue;}
    const session=await verifyGuestCapability(j.session_id,url.searchParams.get('key')||'');
    if(session.capability_hash!==j.capability_hash||session.participant_email.trim().toLowerCase()!==sender.to||sender.idempotencyKey!=='dydd-guest-checkout-reminder-'+j.order_id){await stop();continue;}
    const order=must(await db.from('dydd_guest_orders').select('*').eq('id',j.order_id).single());

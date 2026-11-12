@@ -1,4 +1,6 @@
 "use server";
+
+import { appOrigin } from "@/lib/app-origin";
 import { standaloneDesignIdAccess } from "@/lib/public-assessments/access";
 import crypto from "node:crypto";
 import { claimVerifiedAssessmentParticipant } from "@/lib/public-assessments/identity";
@@ -38,7 +40,7 @@ import { designIdQuestionBlocks } from "@/lib/designid/intake";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-const productionAppUrl = "https://dydd-online-school.vercel.app";
+const productionAppUrl = appOrigin();
 const designIdTemplateId =
   process.env.DESIGNID_PDFMONKEY_TEMPLATE_ID ??
   "346a0595-80fa-48c3-a9e2-29f0c0312e6e";

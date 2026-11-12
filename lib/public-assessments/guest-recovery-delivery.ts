@@ -1,3 +1,4 @@
+import { isDeliveryAppOrigin } from "@/lib/app-origin";
 import 'server-only';
 import {createHmac} from 'node:crypto';
 import {createSupabaseAdminClient} from '@/lib/supabase/admin';
@@ -13,8 +14,7 @@ export async function guestRecoveryDeliveryEligibility(job:any,now=Date.now()):P
  try{
   id=guestSessionId(String(context.recoveryRequestId||''));
   url=new URL(sender?.text?.match(/https:\/\/\S+/)?.[0]||'');
-  const origin=new URL(process.env.DYDD_APP_URL||'');
-  if(origin.protocol!=='https:'||url.origin!==origin.origin||url.pathname!=='/assessments/recover/email'||url.username||url.password||url.hash||url.searchParams.size!==2||url.searchParams.getAll('request').length!==1||url.searchParams.get('request')!==id||url.searchParams.getAll('key').length!==1||sender.to!==job.email||sender.idempotencyKey!=='guest-recovery-'+id||job.event_key!=='application:guest-recovery-'+id)return stop;
+  if(!isDeliveryAppOrigin(url)||url.pathname!=='/assessments/recover/email'||url.username||url.password||url.hash||url.searchParams.size!==2||url.searchParams.getAll('request').length!==1||url.searchParams.get('request')!==id||url.searchParams.getAll('key').length!==1||sender.to!==job.email||sender.idempotencyKey!=='guest-recovery-'+id||job.event_key!=='application:guest-recovery-'+id)return stop;
   guestCapabilityHash(url.searchParams.get('key')||'');
  }catch{return stop;}
  const db=createSupabaseAdminClient(),intent=must(await db.from('dydd_guest_recovery_requests').select('*').eq('id',id).maybeSingle()) as any;

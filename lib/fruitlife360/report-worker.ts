@@ -1,3 +1,4 @@
+import { appOrigin } from "@/lib/app-origin";
 import {
   archiveReportPdf,
   type StoredReport,
@@ -56,7 +57,7 @@ function appBaseUrl() {
     process.env.NEXT_PUBLIC_APP_URL ??
     process.env.VERCEL_PROJECT_PRODUCTION_URL ??
     process.env.VERCEL_URL ??
-    "https://dydd-online-school.vercel.app";
+    appOrigin();
   return configuredUrl.startsWith("http")
     ? configuredUrl
     : `https://${configuredUrl}`;

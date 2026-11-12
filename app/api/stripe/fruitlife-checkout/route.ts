@@ -1,3 +1,4 @@
+import { appOrigin } from "@/lib/app-origin";
 import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import { isFreeBeta } from "@/lib/environment";
 import { headers } from "next/headers";
@@ -13,7 +14,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
-const productionAppUrl = "https://dydd-online-school.vercel.app";
+const productionAppUrl = appOrigin();
 
 async function getAppBaseUrl(request: NextRequest) {
   const requestHeaders = await headers();

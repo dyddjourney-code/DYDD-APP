@@ -1,12 +1,14 @@
 "use server";
 
+import { appOrigin } from "@/lib/app-origin";
+
 import { isSandbox } from "@/lib/environment";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-const productionAppUrl = "https://dydd-online-school.vercel.app";
+const productionAppUrl = appOrigin();
 
 function safeNextPath(value: FormDataEntryValue | string | null | undefined) {
   const next = String(value ?? "").trim();

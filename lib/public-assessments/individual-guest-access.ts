@@ -1,3 +1,4 @@
+import { appOrigin } from "@/lib/app-origin";
 import 'server-only';
 import { createHmac } from 'node:crypto';
 import { guestSessionId } from './guest-capability';
@@ -30,7 +31,7 @@ export function individualGuestToken(grantId: string) {
  return createHmac('sha256', secret).update('dydd-individual-guest-pass-v1:' + guestSessionId(grantId)).digest('base64url');
 }
 export function guestGrantLink(token: string) {
- const fallback=process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT==='sandbox'?'https://dydd-online-school-sandbox.vercel.app':'https://dydd-online-school.vercel.app';
+ const fallback=process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT==='sandbox'?'https://dydd-online-school-sandbox.vercel.app':appOrigin();
  const origin = new URL(process.env.DYDD_APP_URL || (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT==='sandbox'?process.env.DYDD_PUBLIC_ASSESSMENT_TEST_ORIGIN:process.env.DYDD_PUBLIC_ASSESSMENT_LIVE_ORIGIN) || fallback);
  if (origin.protocol !== 'https:' || origin.username || origin.password) throw Error('Guest access origin is unavailable.');
  return origin.origin + '/assessments/group?' + new URLSearchParams({ key: token });

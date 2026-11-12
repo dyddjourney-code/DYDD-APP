@@ -1,3 +1,4 @@
+import { appOrigin } from "@/lib/app-origin";
 import { reconcileKnownDesignPdFailure } from "@/lib/designpd/generation-recovery";
 import { getOwnedArtifactSnapshot } from "@/lib/assessments/artifact-access";
 import { getOwnedAssessmentSnapshots } from "@/lib/public-assessments/identity";
@@ -29,7 +30,7 @@ import {
 } from "@/lib/designpd/report";
 import { normalizeEmail } from "@/lib/identity/email";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-const productionAppUrl = "https://dydd-online-school.vercel.app";
+const productionAppUrl = appOrigin();
 async function getAppBaseUrl() {
   const requestHeaders = await headers();
   const configuredUrl =

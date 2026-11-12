@@ -1,4 +1,6 @@
 "use server";
+
+import { appOrigin } from "@/lib/app-origin";
 import {
   archiveReportPdf,
   type StoredReport,
@@ -30,7 +32,7 @@ import { verifySpiritualGiftsAppIdentity } from "@/lib/spiritual-gifts/app-ident
 import { buildSpiritualGiftsPdfMonkeyPayload } from "@/lib/spiritual-gifts/pdfmonkey-payload";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-const productionAppUrl = "https://dydd-online-school.vercel.app";
+const productionAppUrl = appOrigin();
 const spiritualGiftsTemplateId =
   process.env.SPIRITUAL_GIFTS_PDFMONKEY_TEMPLATE_ID ??
   "1c56c723-1210-4690-968f-a1aa5e5faeb5";

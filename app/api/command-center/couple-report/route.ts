@@ -1,3 +1,4 @@
+import { appOrigin } from "@/lib/app-origin";
 import { isSandbox } from "@/lib/environment";
 import { NextResponse, type NextRequest } from "next/server";
 import { isDyddAdminEmail } from "@/lib/admin-access";
@@ -41,7 +42,7 @@ type ReportSections = {
 
 const colors = ["#4a6239", "#8a5f2d"];
 const resourcesUrl = "https://www.discoverdivine.design/resources";
-const assetBaseUrl = "https://dydd-online-school.vercel.app";
+const assetBaseUrl = appOrigin();
 const brandLogoPath = "/brand/dydd-logo-white-correct.png";
 const resourceLogoPath = "/brand/dydd-logo-full-color-white-bg.jpg";
 const sectionIconPaths = {

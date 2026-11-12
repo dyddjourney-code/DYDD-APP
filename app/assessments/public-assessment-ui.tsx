@@ -13,7 +13,7 @@ export const publicAssessmentProducts = {
     image: "/brand/designid-course-cartoon-hero.png",
     step: "Start here",
     details: [
-      ["Reflect on your design", "Complete the existing DesignID assessment in your own account."],
+      ["Reflect on your design", "Complete the canonical DesignID questionnaire without creating an account."],
       ["Keep your results connected", "Return to your saved report and use it as the foundation for DesignPD."],
     ],
   },
@@ -27,7 +27,7 @@ export const publicAssessmentProducts = {
     image: "/brand/designpd-course-cartoon-hero.jpg",
     step: "After DesignID",
     details: [
-      ["Your DesignID is the starting point", "We use your latest eligible completed DesignID result, securely connected to your account."],
+      ["Your DesignID is the starting point", "We use the exact completed DesignID result connected to your private recovery link."],
       ["A report, not another questionnaire", "Once access is available, generate your derived DesignPD report from that saved result."],
     ],
   },
@@ -35,14 +35,14 @@ export const publicAssessmentProducts = {
     name: "Spiritual Gifts",
     eyebrow: "Gifts & faithful service",
     heading: "Discover gifts you can put into service.",
-    description: "Reflect on the ways you may be equipped to serve, encourage, and strengthen others. Begin the free Spiritual Gifts experience and keep your report connected to your DYDD account.",
+    description: "Reflect on the ways you may be equipped to serve, encourage, and strengthen others. Begin the free Spiritual Gifts experience and receive your report without an account.",
     short: "Explore your gifts and the ways you can serve others. Free to begin.",
     logo: "/brand/tools/spiritual-gifts-logo.jpg",
     image: "/brand/spiritual-gifts-course-cartoon-hero.webp",
     step: "Always free",
     details: [
       ["Start with reflection", "Use the existing Spiritual Gifts assessment, with no purchase or waiver required."],
-      ["Continue your discovery", "Return to your account to explore your saved results and next steps."],
+      ["Continue your discovery", "Keep your private report link to revisit your results."],
     ],
   },
 } as const;

@@ -14,6 +14,8 @@ type DesignIdAssessmentFormProps = {
   message?: string;
   preview?: boolean;
   startAtSort?: boolean;
+  draftNamespace?: string;
+  fulfillment?: "app" | "guest";
 };
 
 export function DesignIdAssessmentForm({
@@ -22,6 +24,8 @@ export function DesignIdAssessmentForm({
   message,
   preview = false,
   startAtSort = false,
+  draftNamespace,
+  fulfillment = "app",
 }: DesignIdAssessmentFormProps) {
   const totalSteps = designIdQuestionBlocks.length + 2;
   const [stepIndex, setStepIndex] = useState(startAtSort ? totalSteps - 1 : 0);
@@ -30,7 +34,7 @@ export function DesignIdAssessmentForm({
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [draftLoaded, setDraftLoaded] = useState(false);
-  const draftKey = `designid-draft-approved-2026-10-15:${initialReviewer.email}`;
+  const draftKey = `designid-draft-approved-2026-10-15:${draftNamespace ?? initialReviewer.email}`;
   useEffect(() => {
     if (!preview) {
       try {
@@ -150,7 +154,7 @@ export function DesignIdAssessmentForm({
         <div className="spiritual-gifts-start-copy">
           <h1>Begin your DesignID assessment.</h1>
         </div>
-        <div className="spiritual-gifts-locked-identity" aria-label="Assessment account identity">
+        <div className="spiritual-gifts-locked-identity" aria-label={fulfillment === "guest" ? "Assessment report recipient" : "Assessment account identity"}>
           <div>
             <span>Name</span>
             <strong>{initialReviewer.name}</strong>
@@ -211,7 +215,7 @@ export function DesignIdAssessmentForm({
         <p className="section-label">Ready to Submit</p>
         <h2>Submit your DesignID assessment.</h2>
         <p>
-          Your report will be saved in Field Kit.
+          {fulfillment === "guest" ? "Your report will be available to download and emailed to you. Keep your private recovery link; no account or login is needed." : "Your report will be saved in Field Kit."}
         </p>
       </section>
 

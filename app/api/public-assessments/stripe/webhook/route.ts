@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { publicPaymentRuntime } from '@/lib/public-assessments/config';
+import { fulfillGuestCheckout, reverseGuestPayment } from '@/lib/public-assessments/guest-payments';
 import { fulfillPublicAssessmentSession } from '@/lib/public-assessments/payments';
 import { generateDesignPdForUser } from '@/lib/designpd/service';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
@@ -20,6 +21,10 @@ export async function POST(request:NextRequest) {
    const session=event.data.object;
    if(session.metadata?.app!==config.app)return NextResponse.json({received:true,ignored:true});
    if(session.payment_status!=='paid')return NextResponse.json({received:true,fulfilled:false});
+   if(session.metadata?.ownership==='guest-v1'){
+    await fulfillGuestCheckout(session.id);
+    return NextResponse.json({received:true});
+   }
    const entitlement=await fulfillPublicAssessmentSession(session.id);
    if(entitlement.product==='designpd'){
     const db=createSupabaseAdminClient();const identity=await db.auth.admin.getUserById(entitlement.user_id);
@@ -31,7 +36,7 @@ export async function POST(request:NextRequest) {
   }else if(event.type==='checkout.session.async_payment_failed'||event.type==='checkout.session.expired'){
    const session=event.data.object;
    if(session.metadata?.app!==config.app)return NextResponse.json({received:true,ignored:true});
-   const saved=await createSupabaseAdminClient().from('dydd_public_assessment_orders').update({status:event.type.endsWith('expired')?'cancelled':'failed'}).eq('payment_reference',session.id).eq('payment_provider',config.provider).eq('status','pending');
+   const saved=await createSupabaseAdminClient().from(session.metadata?.ownership==='guest-v1'?'dydd_guest_orders':'dydd_public_assessment_orders').update({status:event.type.endsWith('expired')?'cancelled':'failed'}).eq('payment_reference',session.id).eq('payment_provider',config.provider).eq('status','pending');
    if(saved.error)throw Error('Order update needs recovery.');
   }else if(event.type==='charge.refunded'||event.type==='charge.dispute.created'){
    const object=event.data.object;const payment='payment_intent' in object?object.payment_intent:null;
@@ -39,14 +44,18 @@ export async function POST(request:NextRequest) {
     // Shared Stripe account: foreign refunds/disputes cannot create assessment tombstones.
     // Session evidence also supports refund-before-first-fulfillment, before intent is stored locally.
     const sessions=await stripe.checkout.sessions.list({payment_intent:payment,limit:100});
-    let belongs=false;
+    let belongs=false,guestBelongs=false;
     for(const session of sessions.data){
      if(session.livemode!==config.livemode||session.metadata?.app!==config.app)continue;
+     if(session.metadata?.ownership==='guest-v1'){
+      guestBelongs=await reverseGuestPayment(config.provider,payment,session)||guestBelongs;
+      continue;
+     }
      const order=await createSupabaseAdminClient().from('dydd_public_assessment_orders').select('id,user_id,product,source_snapshot_id').eq('payment_reference',session.id).eq('payment_provider',config.provider).maybeSingle();
      if(order.error)throw Error('Reversal ownership lookup needs recovery.');
      if(order.data && session.metadata?.order_id===order.data.id && session.metadata?.user_id===order.data.user_id && session.metadata?.product===order.data.product && (session.metadata?.source_id||'')===(order.data.source_snapshot_id||''))belongs=true;
     }
-    if(!belongs)return NextResponse.json({received:true,ignored:true});
+    if(!belongs)return NextResponse.json({received:true,...(!guestBelongs?{ignored:true}:{})});
     const revoked=await createSupabaseAdminClient().rpc('dydd_revoke_public_assessment_payment',{p_payment_intent:payment,p_provider:config.provider});
     if(revoked.error||revoked.data!==true)throw Error('Payment reversal needs recovery.');
    }

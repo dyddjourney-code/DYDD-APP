@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, usePathname } from "next/navigation";
 import { Suspense } from "react";
 import { AppMobileNav } from "@/components/app-mobile-nav";
 import { AppSidebar } from "@/components/app-sidebar";
@@ -12,9 +12,10 @@ type AppChromeProps = {
 
 function AppChromeFrame({ children }: AppChromeProps) {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const fruitLifeLane = searchParams.get("lane") === "fruitlife";
 
-  if (fruitLifeLane) {
+  if (fruitLifeLane || pathname === "/assessments" || pathname.startsWith("/assessments/")) {
     return <>{children}</>;
   }
 

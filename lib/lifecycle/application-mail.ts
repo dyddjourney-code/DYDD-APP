@@ -35,6 +35,13 @@ export async function sendApplicationEmail(input:ApplicationEmail):Promise<SendE
    if(!fence.lostClaim)must(await db.from('dydd_lifecycle_jobs').update({status:fence.defer?'queued':'skipped',error_message:fence.reason||fence.stop,next_attempt_at:new Date(Date.now()+3600000).toISOString(),attempts:row.attempts,first_attempt_at:row.first_attempt_at}).eq('id',row.id).eq('claim_token',claim).eq('status','processing'));
    return {sent:false,skipped:!fence.defer,message:fence.reason||fence.stop||'Delivery lease changed before submission.'};
   }
+  if(deliveryContext?.type==='guest_assessment_report'){
+   const final=await lifecycleEligibility(row);
+   if(final.stop||final.deferUntil){
+    must(await db.from('dydd_lifecycle_jobs').update({status:final.stop?'skipped':'queued',error_message:final.stop||final.reason,next_attempt_at:final.deferUntil||new Date(Date.now()+3600000).toISOString()}).eq('id',row.id).eq('claim_token',claim));
+    return {sent:false,skipped:!!final.stop,message:final.stop||final.reason};
+   }
+  }
   const result=await sendResendEmail(senderInput);
   const permanent=!result.sent&&/Provider HTTP (400|401|403|404|413|422)\b/.test(result.message||'');
   must(await db.from('dydd_lifecycle_jobs').update(result.sent?{status:'accepted',provider_id:result.id,accepted_at:new Date().toISOString(),error_message:null}:{status:result.skipped?'skipped':permanent?'failed':'retry',error_message:result.message,next_attempt_at:new Date(Date.now()+120000).toISOString()}).eq('id',row.id).eq('claim_token',claim));

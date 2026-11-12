@@ -5,7 +5,7 @@ import styles from "./public-assessments.module.css";
 
 export const metadata: Metadata = {
   title: "Explore Assessments | DYDD",
-  description: "Explore DesignID, DesignPD, and the free Spiritual Gifts experience with your DYDD account.",
+  description: "Explore DesignID, DesignPD, and the free Spiritual Gifts experience without an account.",
   robots: { index: false, follow: false },
 };
 
@@ -14,7 +14,7 @@ export default function PublicAssessmentsPage() {
     <section className={styles.catalogIntro}>
       <p className={styles.eyebrow}>Your next step in discovery</p>
       <h1>Know your design.<br />Find your next step.</h1>
-      <p>Begin with identity, explore your gifts, or put an existing DesignID result into practice. Your account keeps your assessment journey connected.</p>
+      <p>Begin with identity, explore your gifts, or put an existing DesignID result into practice. Purchase, reflect, and receive your report — no account or app signup required.</p>
     </section>
     <section className={styles.productList} aria-label="Choose an assessment">
       {Object.entries(publicAssessmentProducts).map(([slug, product], index) => <article className={styles.productRow} key={slug}>
@@ -27,12 +27,12 @@ export default function PublicAssessmentsPage() {
           <h2>{product.name}</h2>
           <p>{product.short}</p>
         </div>
-        <Link className={styles.secondary} href={`/assessments/${slug}`}>Explore {product.name}<span aria-hidden="true"> →</span></Link>
+        <Link className={styles.secondary} href={slug === "spiritual-gifts" ? "/spiritual-gifts" : `/assessments/${slug}?guest=1`}>Explore {product.name}<span aria-hidden="true"> →</span></Link>
       </article>)}
     </section>
     <section className={styles.accountNote} aria-labelledby="assessment-account-heading">
-      <h2 id="assessment-account-heading">One account. Your own discovery.</h2>
-      <p>Sign in or create an account from your chosen assessment. Access and saved reports are connected to your signed-in account, never retrieved through a public email search.</p>
+      <h2 id="assessment-account-heading">Your report. Your private link.</h2>
+      <p>DesignID and DesignPD purchases use a private recovery link. Download your report and return to it without signing in. An email address alone can never retrieve your saved results.</p>
     </section>
   </AssessmentPublicShell>;
 }

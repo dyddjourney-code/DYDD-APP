@@ -1,4 +1,5 @@
 import 'server-only';
+import {guestReportDeliveryEligibility} from '@/lib/public-assessments/guest-delivery';
 import {createSupabaseAdminClient} from '@/lib/supabase/admin';
 import {sendResendEmail} from '@/lib/email/resend';
 import {getAssessmentSnapshotsForUser} from '@/lib/assessments/student-context';
@@ -88,6 +89,7 @@ export async function lifecycleEligibility(job:any,now=Date.now()):Promise<{stop
  }
  if(job.context.kind==='application'){
   const context=job.context.deliveryContext||{},type=context.type;
+  if(type==='guest_assessment_report')return guestReportDeliveryEligibility(job,now);
   if(type==='waypoint_confirmation'){const confirmation=must(await db.from('dydd_waypoint_confirmations').select('email,expires_at,used_at').eq('id',context.confirmationId).maybeSingle()) as any;if(!confirmation||confirmation.email!==job.email||confirmation.used_at||confirmation.expires_at<=iso(now))return {stop:'Waypoint confirmation used, replaced or expired.'};}
   if(type==='account_service'){const account=await userById(context.userId);if(!account?.email_confirmed_at||account.email?.toLowerCase()!==job.email)return {stop:'Verified account or requested export recipient changed.'};}
   if(type==='fruitlife_observer'||type==='fruitlife_report'){
@@ -250,6 +252,11 @@ export async function runLifecycleWorker({limit=10}:{limit?:number}={}){
     await finish({status:'sandbox_ready',error_message:'Eligibility verified; sandbox delivery guard prevented provider request.'});sandboxReady++;continue;
    }
    const text=j.body+(optional?`\n\nEmail preferences / unsubscribe from this category: ${unsubscribe}\nStop all optional email: ${appBase()}/email-preferences?token=${globalToken}`:''),html=lifecycleHtml(j.subject,text);
+   if(j.context?.deliveryContext?.type==='guest_assessment_report'){
+    const final=await lifecycleEligibility(j);
+    if(final.stop){await finish({status:'skipped',error_message:final.stop});skipped++;continue;}
+    if(final.deferUntil){await finish({status:'queued',next_attempt_at:final.deferUntil,error_message:final.reason,attempts:j.attempts-1,first_attempt_at:j.attempts===1?null:j.first_attempt_at});deferred++;continue;}
+   }
    const result=j.context.kind==='application'?await sendResendEmail(j.context.senderInput):await sendResendEmail({to:j.email,subject:j.subject,text,html,idempotencyKey:'dydd-lifecycle-'+j.id,...(optional?{headers:{'List-Unsubscribe':`<${oneClick}>`,'List-Unsubscribe-Post':'List-Unsubscribe=One-Click'}}:{})});
    if(result.sent){if(await finish({status:'accepted',provider_id:result.id,accepted_at:iso(Date.now()),error_message:null}))accepted++;}
    else if(result.skipped){await finish({status:'skipped',error_message:result.message});skipped++;}

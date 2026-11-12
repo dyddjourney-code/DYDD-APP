@@ -26,12 +26,24 @@ export function isProductionAssessmentCanary(user?: VerifiedCheckoutUser) {
  const ids = (process.env.DYDD_PUBLIC_ASSESSMENT_PRODUCTION_CANARY_USER_IDS || '').split(',').map(id => id.trim());
  return ids.every(id => uuid.test(id)) && ids.includes(user.id);
 }
-export function publicPaymentRuntime(purpose: 'checkout' | 'webhook' = 'checkout', verifiedUser?: VerifiedCheckoutUser) {
+/** Server-read guest capability hash ONLY. Never an Auth UUID or a typed email.
+ * Missing/malformed configuration disables this exception. The caller must verify
+ * the matching opaque capability against its unexpired guest session first.
+ */
+export function isProductionGuestAssessmentCanary(capabilityHash?:string) {
+ if(process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT!=='production'||isSandbox()||!capabilityHash||!/^[0-9a-f]{64}$/.test(capabilityHash))return false;
+ const hashes=(process.env.DYDD_PUBLIC_ASSESSMENT_GUEST_CANARY_HASHES||'').split(',').map(x=>x.trim());
+ return hashes.every(x=>/^[0-9a-f]{64}$/.test(x))&&hashes.includes(capabilityHash);
+}
+export function guestCheckoutAvailable(capabilityHash?:string) {
+ return process.env.DYDD_PUBLIC_ASSESSMENT_PAYMENTS_ENABLED==='true'||isProductionGuestAssessmentCanary(capabilityHash);
+}
+export function publicPaymentRuntime(purpose: 'checkout' | 'webhook' = 'checkout', verifiedUser?: VerifiedCheckoutUser, verifiedGuestCapabilityHash?:string) {
  const mode = process.env.DYDD_PUBLIC_ASSESSMENT_STRIPE_MODE;
  if (mode !== 'test' && mode !== 'live') throw Error('Explicit assessment Stripe mode required.');
  if ((mode === 'test') !== isSandbox() || !publicAssessmentLedgerEnabled()) throw Error('Assessment environment mismatch.');
  const enabled = purpose === 'checkout'
-  ? process.env.DYDD_PUBLIC_ASSESSMENT_PAYMENTS_ENABLED === 'true' || (mode === 'live' && isProductionAssessmentCanary(verifiedUser))
+  ? process.env.DYDD_PUBLIC_ASSESSMENT_PAYMENTS_ENABLED === 'true' || (mode === 'live' && (isProductionAssessmentCanary(verifiedUser)||isProductionGuestAssessmentCanary(verifiedGuestCapabilityHash)))
   : process.env.DYDD_PUBLIC_ASSESSMENT_WEBHOOKS_ENABLED === 'true';
  if (!enabled
   || (mode === 'live' && process.env.DYDD_PUBLIC_ASSESSMENT_PRODUCTION_PAYMENTS_ENABLED !== 'true')) throw Error('Assessment payments disabled.');

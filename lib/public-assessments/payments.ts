@@ -8,8 +8,8 @@ import { normalizeEmail } from '@/lib/identity/email';
 import { scoreDesignPd } from '@/lib/designpd/engine';
 
 /** Deliberate cutover switch. No runtime key/catalog is created or connected by this build. */
-export function publicPaymentConfiguration(product: PublicAssessmentProduct, verifiedUser?: VerifiedCheckoutUser) {
- const runtime=publicPaymentRuntime('checkout',verifiedUser);
+export function publicPaymentConfiguration(product: PublicAssessmentProduct, verifiedUser?: VerifiedCheckoutUser, verifiedGuestCapabilityHash?:string) {
+ const runtime=publicPaymentRuntime('checkout',verifiedUser,verifiedGuestCapabilityHash);
  if(product!=='designid'&&product!=='designpd')throw Error('Unknown assessment product.');
  const prefix=product==='designid'?'DESIGNID':'DESIGNPD';
  const price=process.env[`DYDD_PUBLIC_${prefix}_${runtime.mode.toUpperCase()}_STRIPE_PRICE_ID`]||'';

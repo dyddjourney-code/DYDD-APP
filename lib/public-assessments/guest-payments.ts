@@ -1,0 +1,74 @@
+import 'server-only';
+import Stripe from 'stripe';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { publicPaymentRuntime } from './config';
+import { publicPaymentConfiguration, validatePublicAssessmentSession } from './payments';
+import { guestRecoveryPath } from './guest-capability';
+import { guestRecords, guestSourceSnapshot, paidGuestOrder, type GuestSession, type GuestOrder } from './guest';
+import { scoreDesignPd } from '@/lib/designpd/engine';
+
+export function validateGuestPayment(order:GuestOrder,session:Stripe.Checkout.Session) {
+ if(session.metadata?.ownership!=='guest-v1'||session.metadata?.guest_session_id!==order.session_id||session.metadata?.user_id)throw Error('Guest payment ownership mismatch.');
+ // Reuse the exact catalog/amount/session verifier without changing account validation.
+ return validatePublicAssessmentSession({...order,user_id:order.session_id,source_snapshot_id:order.source_result_id},
+  {...session,metadata:{...session.metadata,user_id:session.metadata.guest_session_id}});
+}
+export async function createGuestCheckout(session:GuestSession,token:string,product:'designid'|'designpd',sourceId?:string) {
+ // No Auth identity accepted. Only an exact verified guest capability canary may bypass paused PUBLIC sales.
+ const config=publicPaymentConfiguration(product,undefined,session.capability_hash);
+ const records=await guestRecords(session.id);
+ if(product==='designpd'){
+  const source=records.results.find(r=>r.id===sourceId&&r.product==='designid');
+  if(!source)throw Error('Open the private recovery link for your completed DesignID first.');
+  await paidGuestOrder(session.id,source.order_id);scoreDesignPd(guestSourceSnapshot(source));
+  if(records.orders.some(o=>o.product==='designpd'&&o.source_result_id===source.id&&['pending','paid'].includes(o.status)))throw Error('DesignPD already has a purchase in progress. Return to your saved session.');
+ }else{
+  if(sourceId)throw Error('DesignID cannot have a source.');
+  if(records.orders.some(o=>o.product==='designid'&&['pending','paid'].includes(o.status)))throw Error('DesignID already has a purchase in progress. Return to your saved session.');
+ }
+ const price=await config.stripe.prices.retrieve(config.price);
+ const productId=typeof price.product==='string'?price.product:price.product.id;
+ if(price.livemode!==config.livemode||!price.active||price.type!=='one_time'||price.currency!=='usd'||price.unit_amount!==1999||productId!==config.productId)throw Error('Approved Stripe catalog mismatch.');
+ const db=createSupabaseAdminClient();
+ const reserved=await db.rpc('dydd_guest_reserve_order',{p_session_id:session.id,p_product:product,p_source:sourceId||null,p_provider:config.provider,p_product_id:config.productId,p_price:config.price});
+ if(reserved.error||!reserved.data)throw Error('A purchase or assessment timing check needs recovery. Use your existing private link or contact support before repurchasing.');
+ const order={id:String(reserved.data)};
+ try{
+  const metadata={app:config.app,ownership:'guest-v1',order_id:order.id,guest_session_id:session.id,product,source_id:sourceId||''};
+  const recovery=config.origin+guestRecoveryPath(session.id,token);
+  const checkout=await config.stripe.checkout.sessions.create({mode:'payment',client_reference_id:session.id,customer_email:session.participant_email,line_items:[{price:config.price,quantity:1}],metadata,payment_intent_data:{metadata},success_url:recovery,cancel_url:recovery},{idempotencyKey:'dydd-guest-'+order.id});
+  if(!checkout.url||checkout.livemode!==config.livemode)throw Error('Checkout mode mismatch.');
+  const saved=await db.from('dydd_guest_orders').update({payment_reference:checkout.id}).eq('id',order.id).eq('status','pending').select('id').single();
+  if(saved.error||!saved.data)throw Error('Checkout linkage failed.');
+  return checkout.url;
+ }catch{
+  // An ambiguous provider response must not invite a second charge. Keep pending for reconciliation.
+  throw Error('Checkout needs recovery. Return to this session or contact support; do not start another purchase.');
+ }
+}
+export async function fulfillGuestCheckout(sessionId:string) {
+ const config=publicPaymentRuntime('webhook'),db=createSupabaseAdminClient(),stripe=new Stripe(config.secret);
+ const found=await db.from('dydd_guest_orders').select('*').eq('payment_reference',sessionId).eq('payment_provider',config.provider).maybeSingle();
+ if(found.error||!found.data)throw Error('Unknown guest purchase.');
+ const order=found.data as GuestOrder;
+ const session=await stripe.checkout.sessions.retrieve(sessionId,{expand:['line_items']});
+ validateGuestPayment(order,session);
+ const intentId=typeof session.payment_intent==='string'?session.payment_intent:session.payment_intent?.id;
+ if(!intentId)throw Error('Payment intent is missing.');
+ const intent=await stripe.paymentIntents.retrieve(intentId,{expand:['latest_charge']});
+ const charge=typeof intent.latest_charge==='string'?await stripe.charges.retrieve(intent.latest_charge):intent.latest_charge;
+ if(intent.livemode!==config.livemode||intent.status!=='succeeded'||intent.amount!==1999||intent.amount_received!==1999||intent.currency!=='usd'||!charge||charge.livemode!==config.livemode||!charge.paid||charge.refunded||charge.amount_refunded>0||charge.disputed||charge.amount!==1999||charge.currency!=='usd'||charge.payment_intent!==intentId)throw Error('Payment is not currently successful.');
+ const applied=await db.rpc('dydd_guest_apply_payment',{p_order_id:order.id,p_provider:config.provider,p_reference:session.id,p_intent:intentId,p_amount:session.amount_total,p_currency:session.currency,p_price:order.expected_price_id});
+ if(applied.error||applied.data!==true)throw Error('Guest payment needs recovery.');
+ return order;
+}
+export async function reverseGuestPayment(provider:string,intent:string,session:Stripe.Checkout.Session) {
+ const db=createSupabaseAdminClient();
+ const found=await db.from('dydd_guest_orders').select('*').eq('payment_reference',session.id).eq('payment_provider',provider).maybeSingle();
+ if(found.error)throw Error('Reversal lookup failed.');
+ const o=found.data as GuestOrder|null;
+ if(!o||session.metadata?.ownership!=='guest-v1'||session.metadata.order_id!==o.id||session.metadata.guest_session_id!==o.session_id||session.metadata.product!==o.product||(session.metadata.source_id||'')!==(o.source_result_id||''))return false;
+ const saved=await db.rpc('dydd_guest_reverse_payment',{p_provider:provider,p_intent:intent,p_reference:session.id});
+ if(saved.error||saved.data!==true)throw Error('Guest reversal needs recovery.');
+ return true;
+}

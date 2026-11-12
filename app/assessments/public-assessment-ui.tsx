@@ -55,7 +55,7 @@ export function AssessmentPublicShell({ children, owned = false }: { children: R
       <Link href="/assessments" className={styles.brand} aria-label="DYDD assessments home">
         <img src="/brand/dydd-logo-transparent.webp" alt="Discover Your Divine Design" />
       </Link>
-      <nav className={styles.headerNav} aria-label="Assessment navigation"><a href="https://www.discoverdivine.design">Journey website</a><span className={styles.sandboxBadge}>{owned ? "Your assessments" : "Assessments"}</span></nav>
+      <nav className={styles.headerNav} aria-label="Assessment navigation"><a href="https://www.discoverdivine.design" target="_blank" rel="noopener noreferrer">Journey website<span className={styles.newTabHint}> (opens in a new tab)</span></a><span className={styles.sandboxBadge}>{owned ? "Your assessments" : "Assessments"}</span></nav>
     </header>
     {children}
     <footer className={styles.footer}>

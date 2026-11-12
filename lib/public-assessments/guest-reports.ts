@@ -33,29 +33,45 @@ export async function prepareGuestReport(session:GuestSession,resultId:string) {
  const name=result.product==='designid'?'DesignID':'DesignPD';
  const filename=`${name} Report - ${cleanReportFilename(session.participant_name)} - ${result.id.slice(0,8)}.pdf`;
  let pdf:Record<string,unknown>={...result.pdf,filename,startedAt:new Date().toISOString()};
+ let retryMessage='';
+ async function createAttempt(){
+  await ownedGuestResult(session.id,resultId);
+  pdf={...pdf,documentId:null,status:'uncertain',attempts:Number(pdf.attempts||0)+1,lastCreationAt:new Date().toISOString(),storage:null};
+  await patch(result,lease,{pdf}); // Fence this creation BEFORE provider IO, even after a known failed attempt.
+  const report=await createReadyPdfMonkeyReport({filename,archiveKey:`guest/${result.id}`,payload:result.scores.reportPayload as Record<string,unknown>,
+   templateId:result.product==='designid'?(process.env.DESIGNID_PDFMONKEY_TEMPLATE_ID||'346a0595-80fa-48c3-a9e2-29f0c0312e6e'):designPdTemplateId,
+   onCreated:async document=>{
+    pdf={...pdf,documentId:document.id,status:document.status};
+    await patch(result,lease,{pdf}); // durable provider ID BEFORE polling/archive/email
+   }});
+  pdf={...pdf,documentId:report.document.id,status:report.document.status,storage:report.storage||null,archiveError:report.archiveError||null};
+ }
  try{
   // Also recheck paid ownership immediately before any provider request.
   await ownedGuestResult(session.id,resultId);
   if(pdf.documentId){
    const document=await waitForPdfMonkeyDocument(String(pdf.documentId));
-   const link=pdfMonkeyReportLink(document);
-   const storage=link&&['ready','success'].includes(String(document.status))
-    ?await archiveReportPdf(document.download_url||link,`guest/${result.id}`,filename):null;
-   pdf={...pdf,status:document.status,storage,documentId:document.id};
-  }else{
-   const report=await createReadyPdfMonkeyReport({filename,archiveKey:`guest/${result.id}`,payload:result.scores.reportPayload as Record<string,unknown>,
-    templateId:result.product==='designid'?(process.env.DESIGNID_PDFMONKEY_TEMPLATE_ID||'346a0595-80fa-48c3-a9e2-29f0c0312e6e'):designPdTemplateId,
-    onCreated:async document=>{
-     pdf={...pdf,documentId:document.id,status:document.status};
-     await patch(result,lease,{pdf}); // durable provider ID BEFORE polling/archive/email
-    }});
-   pdf={...pdf,documentId:report.document.id,status:report.document.status,storage:report.storage||null,archiveError:report.archiveError||null};
-  }
+   if(document.status==='failure'){
+    pdf={...pdf,status:'failure',storage:null};
+    if(Number(pdf.attempts||1)>=3)retryMessage='This saved report has reached its technical retry limit. Contact support; do not repurchase.';
+    else if(Date.now()-Date.parse(String(pdf.lastCreationAt||result.pdf.startedAt||new Date().toISOString()))<60000)retryMessage='The provider confirmed this report failed. Wait one minute, then retry this same saved report; no new purchase or answers are needed.';
+    else{
+     pdf={...pdf,previousDocumentIds:[...(Array.isArray(pdf.previousDocumentIds)?pdf.previousDocumentIds:[]),document.id]};
+     await createAttempt(); // ONLY explicit original-document failure permits bounded regeneration.
+    }
+   }else{
+    const link=pdfMonkeyReportLink(document);
+    const storage=link&&['ready','success'].includes(String(document.status))
+     ?await archiveReportPdf(document.download_url||link,`guest/${result.id}`,filename):null;
+    pdf={...pdf,status:document.status,storage,documentId:document.id};
+   }
+  }else await createAttempt();
   await patch(result,lease,{pdf,report_state:pdf.storage?'ready':'uncertain'});
  }catch{
   await patch(result,lease,{pdf,report_state:'uncertain'});
   throw Error('Your result is saved. The original report needs recovery; no repurchase or resubmission is required.');
  }
+ if(retryMessage)throw Error(retryMessage);
  result=await ownedGuestResult(session.id,resultId);
  return result;
 }

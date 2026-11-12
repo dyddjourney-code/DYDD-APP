@@ -4,7 +4,7 @@ function harness(){
  delete require.cache[require.resolve('../scripts/fruitlife-test-load.cjs')];
  const load=require('../scripts/fruitlife-test-load.cjs');
  const tables={dydd_guest_sessions:[],dydd_guest_orders:[],dydd_guest_results:[]},jar=new Map(),events=[];
- let serial=0,creates=0,emails=0,checkouts=0,failCreate=false,failAfterCreated=false,dbOffline=false;
+ let serial=0,creates=0,emails=0,checkouts=0,failCreate=false,failAfterCreated=false,dbOffline=false,knownFailure=false;
  const id=()=>`00000000-0000-4000-8000-${String(++serial).padStart(12,'0')}`;
  function query(table){if(dbOffline)throw Error('synthetic storage timeout');let operation='select',value,filters=[],single=false;
   const q={select(){return q},eq(k,v){filters.push(r=>r[k]===v);return q},gt(k,v){filters.push(r=>r[k]>v);return q},order(){return q},filter(k,op,v){filters.push(r=>op==='is'?r[k]==null:r[k]===v);return q},insert(v){operation='insert';value=v;return q},update(v){operation='update';value=v;return q},single(){single=true;return q},maybeSingle(){single=true;return q},then(resolve,reject){try{let rows=tables[table].filter(r=>filters.every(f=>f(r)));if(operation==='insert'){const row={id:id(),created_at:new Date().toISOString(),...value};tables[table].push(row);rows=[row]}if(operation==='update')for(const row of rows)Object.assign(row,value);resolve({data:single?(rows[0]?structuredClone(rows[0]):null):structuredClone(rows),error:null});}catch(e){reject(e)}}};return q;
@@ -30,7 +30,7 @@ function harness(){
   '@/lib/assessment-reporting':{
    cleanReportFilename:s=>s.replace(/[^\w .'-]+/g,' '),
    createReadyPdfMonkeyReport:async p=>{creates++;events.push('create_pdf');if(failCreate)throw Error('transport ambiguous');await p.onCreated({id:'doc_fixture',status:'pending'});if(failAfterCreated)throw Error('poll offline');return {document:{id:'doc_fixture',status:'success'},storage:{bucket:'assessment-report-pdfs',path:p.archiveKey+'/report.pdf',filename:p.filename,bytes:1000,archivedAt:'2026-11-11'}}},
-   waitForPdfMonkeyDocument:async id=>{events.push('poll_original');assert.equal(id,'doc_fixture');return {id,status:'success',download_url:'https://pdfmonkey.io/original.pdf'}},pdfMonkeyReportLink:d=>d.download_url,
+   waitForPdfMonkeyDocument:async id=>{events.push('poll_original');assert.equal(id,'doc_fixture');if(knownFailure)return {id,status:'failure'};return {id,status:'success',download_url:'https://pdfmonkey.io/original.pdf'}},pdfMonkeyReportLink:d=>d.download_url,
   },
   '@/lib/assessments/report-storage':{archiveReportPdf:async(url,key,filename)=>({bucket:'assessment-report-pdfs',path:key+'/report.pdf',filename,bytes:1000,archivedAt:'2026-11-11'})},
   '@/lib/lifecycle/application-mail':{sendApplicationEmail:async p=>{emails++;const r=tables.dydd_guest_results.find(r=>p.idempotencyKey==='guest-report-'+r.id);assert.equal(r.report_state,'ready');assert.ok(r.pdf.storage,'archive persisted before mail');events.push({mail:p});return {sent:true,skipped:false,id:'email_fixture'}}}
@@ -40,7 +40,7 @@ function harness(){
  const order=(product='designid',source=null)=>{const row={id:id(),session_id:session.id,product,source_result_id:source,status:'paid',payment_provider:'stripe_live',expected_product_id:'prod_fixture',expected_price_id:'price_fixture',expected_amount:1999,currency:'usd'};tables.dydd_guest_orders.push(row);return row};
  function form(){const f=new FormData(),{designIdQuestionBlocks}=load('lib/designid/intake.ts',mocks),{mapsConfirmationItems}=load('lib/designid/maps-confirmation.ts',mocks);for(const b of designIdQuestionBlocks)for(const [i,s]of b.statements.entries())f.set('designid_points_'+s.code,String([3,2,0,0][i]));for(const [i,item]of mapsConfirmationItems.entries())f.set('designid_maps_'+item.id,['most','often','sometimes','least'][Math.floor(i/3)]);return f;}
  Object.assign(process.env,{DYDD_GUEST_REPORT_GENERATION_ENABLED:'true',DYDD_GUEST_EMAIL_ENABLED:'true',DYDD_APP_URL:'https://guest.invalid'});
- return {load,mocks,tables,session,token,order,form,capability,guest,results,reports,payments,events,counts:()=>({creates,emails,checkouts}),failCreate:()=>{failCreate=true},failAfterCreated:()=>{failAfterCreated=true},setDbOffline:v=>{dbOffline=v}};
+ return {load,mocks,tables,session,token,order,form,capability,guest,results,reports,payments,events,counts:()=>({creates,emails,checkouts}),failCreate:()=>{failCreate=true},failAfterCreated:()=>{failAfterCreated=true},setDbOffline:v=>{dbOffline=v},setKnownFailure:v=>{knownFailure=v}};
 }
 test('capabilities are256bit/hashed, cookies scoped; typed email, foreign/expired token cannot access',async()=>{
  const h=harness();assert.equal(h.token.length,43);assert.equal(h.session.capability_hash.length,64);assert.notEqual(h.token,h.session.capability_hash);
@@ -104,4 +104,11 @@ test('public default anonymous page has no signup/login requirement; authenticat
  assert.match(texts(anon),/No account, app signup/);assert.doesNotMatch(texts(anon),/Create your account|Sign in first/);assert.equal(identityReads,1);
  user={id:crypto.randomUUID(),email:'account@example.invalid',email_confirmed_at:'2026-10-01'};const account=await page.default(props);assert.equal(account.type.name,'PublicAssessmentProductPage');assert.equal(identityReads,2);
  const signedGuest=await page.default({...props,searchParams:Promise.resolve({guest:'1'})});assert.match(texts(signedGuest),/No account, app signup/);assert.notEqual(signedGuest.type.name,'PublicAssessmentProductPage');
+});
+
+test('only explicit provider failure permits bounded cooldown retry using original immutable scores/order',async()=>{
+ const h=harness(),o=h.order(),rid=await h.results.saveGuestResult(h.session,o.id,h.form());h.failAfterCreated();await assert.rejects(h.reports.prepareGuestReport(h.session,rid));h.setKnownFailure(true);
+ await assert.rejects(h.reports.prepareGuestReport(h.session,rid),/Wait one minute/);assert.equal(h.counts().creates,1);
+ const r=h.tables.dydd_guest_results[0],scores=structuredClone(r.scores);r.pdf.lastCreationAt=new Date(Date.now()-61000).toISOString();await assert.rejects(h.reports.prepareGuestReport(h.session,rid),/needs recovery/);assert.equal(h.counts().creates,2);assert.deepEqual(r.scores,scores);assert.equal(h.tables.dydd_guest_orders.length,1);assert.equal(h.tables.dydd_guest_results.length,1);assert.deepEqual(r.pdf.previousDocumentIds,['doc_fixture']);
+ r.pdf.attempts=3;r.pdf.lastCreationAt=new Date(Date.now()-61000).toISOString();await assert.rejects(h.reports.prepareGuestReport(h.session,rid),/technical retry limit/);assert.equal(h.counts().creates,2);
 });

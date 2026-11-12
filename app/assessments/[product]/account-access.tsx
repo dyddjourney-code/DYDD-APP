@@ -1,3 +1,4 @@
+import { DigitalPurchaseDisclosure } from "@/components/digital-product-disclosure";
 import { getOwnedArtifactSnapshot } from "@/lib/assessments/artifact-access";
 import { getOwnedAssessmentSnapshots } from "@/lib/public-assessments/identity";
 import type { Metadata } from "next";
@@ -151,6 +152,7 @@ export default async function PublicAssessmentProductPage({ params, searchParams
           <div className={styles.checkout}>
             <p className={styles.eyebrow}>Prefer to purchase?</p>
             <p>$19.99 USD once · report only. No subscription, school membership, or course access is included.</p>
+            <DigitalPurchaseDisclosure />
             <form action={beginAssessmentCheckout}>
               <AccessFields product={slug} sourceId={source?.id} />
               <AssessmentSubmitButton secondary pendingLabel="Checking availability…">Purchase report · $19.99 USD</AssessmentSubmitButton>

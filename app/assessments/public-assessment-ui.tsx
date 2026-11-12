@@ -1,3 +1,4 @@
+import { DigitalProductFooter } from "@/components/digital-product-disclosure";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import styles from "./public-assessments.module.css";
@@ -63,6 +64,7 @@ export function AssessmentPublicShell({ children, owned = false, focused = false
       <span>Reflection and development tools, not diagnoses or limitations.</span>
       <a href="https://www.discoverdivine.design/spiritual-gifts-test" target="_blank" rel="noopener noreferrer">Explore Spiritual Gifts</a>
     </footer>}
+    <DigitalProductFooter />
   </main>;
 }
 

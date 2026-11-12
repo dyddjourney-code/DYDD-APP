@@ -1,3 +1,4 @@
+import { DigitalProductFooter, DigitalPurchaseDisclosure } from "@/components/digital-product-disclosure";
 import Link from "next/link";
 import styles from "./login.module.css";
 import {
@@ -249,6 +250,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             your reports and courses are ready when you return.
           </p>
         ) : null}
+        <DigitalPurchaseDisclosure />
+        <DigitalProductFooter />
       </section>
       <Link className={styles.homeLink} href="/">Back to Discover Your Divine Design</Link>
     </main>

@@ -1,0 +1,5 @@
+.purchase { font-size: .82rem; line-height: 1.6; color: #43513e; margin: 14px 0; }
+.footer { margin: 32px 0 0; padding: 20px 0 4px; border-top: 1px solid #dce0d4; color: #56614f; font-size: .76rem; line-height: 1.7; overflow-wrap: anywhere; }
+.footer p { margin: 0 0 8px; font-size: inherit; }
+.footer a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.footer a:focus-visible { outline: 3px solid #9b7739; outline-offset: 3px; }

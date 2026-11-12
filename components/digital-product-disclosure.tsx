@@ -1,6 +1,6 @@
 import styles from "./digital-product-disclosure.module.css";
 
-export const digitalPurchaseDisclosure = "Digital assessment/report. All sales are final; no refunds except as required by law.";
+export const digitalPurchaseDisclosure = "Digital assessment and report. All sales are final.";
 export const dyddSupportEmail = "support@discoverdivine.design";
 
 export function DigitalPurchaseDisclosure() {

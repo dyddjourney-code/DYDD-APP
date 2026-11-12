@@ -1,5 +1,5 @@
 import styles from './public-assessments.module.css';
-/** Shown only after the guest has completed all current assessment purchases. */
+/** Saved-results invitation stays visible with an unpaid optional add-on; not during an active assessment. */
 export function GuestJourneyInvitation() {
  return <div className={styles.discoveryInvitation}>
   <footer className={styles.discoveryCopy} aria-labelledby="guest-journey-heading">

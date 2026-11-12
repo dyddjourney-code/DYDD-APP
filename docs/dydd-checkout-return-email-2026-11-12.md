@@ -1,0 +1,22 @@
+# Results return footer and checkout reminder audit — 2026-11-12
+
+## Shipped correction
+Saved results retain the approved logo-led Journey invitation and separate Spiritual Gifts link when an optional unpaid DesignPD checkout is pending, including return and resume-payment screens. A pending order is not an active assessment. An unfinished paid assessment/report preparation still hides the invitation. Existing group-session panel gating is unchanged. Main link remains https://www.discoverdivine.design/ and Gifts remains exact https://www.discoverdivine.design/spiritual-gifts-test . No account/course promotion.
+
+Shared purchase/sign-in/terms disclosure now reads exactly **Digital assessment and report. All sales are final.** Newly created guest and account Stripe Checkouts use this wording with existing personal-use/support copy. Already-created Stripe Checkout sessions are reused without mutation and may retain their creation-time copy. No prices, scoring, schema or receipt settings changed.
+
+## Existing implemented reminder, not a proposed campaign
+- `vercel.json` and production Vercel project/deployment cron definitions: authenticated `/api/cron/guest-checkout-reminders`, every five minutes, UTC.
+- `supabase/migrations/20261112155246_guest_checkout_reminder.sql`: new pending paid-order insert only, immutable queue row/order, no backfill. Due one hour after order creation; absolute cutoff 24 hours. Checkout registration requires persisted provider reference and verified private capability.
+- `lib/public-assessments/guest-checkout-reminder.ts`: requires production/non-sandbox and guest-email enabled; limit10 (SQL clamps1–25), provider open/unpaid and exact ownership verified independently. Final database fence rechecks pending, entitlement/source, no result, unchanged/unexpired capability and suppression.
+- Stop: payment/completion, any verified private session return or Resume, invalid/expired/rotated capability, grant/free access, ineligible/refunded original ID source, invalid provider tuple or suppression. Return suppression is session-wide, permanent for existing reminder rows; a later pending order gets its own row. Merely leaving Stripe without returning is distinct from pressing Back.
+- Existing SKIP LOCKED leases reclaim after10min; max8 attempts, original provider idempotency key,24h absolute cutoff and23h first-attempt ambiguity limit. Worker provider failure retries exponentially (up to1h); verification exception retries2min. Accepted is not delivered; webhook telemetry is separate. A paid/resumed-after-final-fence race can leave one already-in-flight message.
+- Subject `{First name}, your DesignID/DesignPD checkout is still here`; one private resume link, concise Ephesians2:10 encouragement, no-pressure/only-reminder closing. Existing automated-mail Contact footer preserved.
+
+## Owner Back/wait/purchase test
+**No reminder should send.** Back/return to a verified private results screen calls `markGuestCheckoutResumed`; `/assessments/recover` and explicit Resume do likewise. The queue is marked skipped before its one-hour due time, and paying later independently stops it. Waiting on the returned results screen does not re-enable it. To exercise the existing reminder, a genuinely new eligible unpaid checkout must be left without returning/resuming for about60–65min. No such test, mail send or campaign activation was initiated.
+
+Read-only production audit found two reminder rows, both skipped with zero attempts/no provider acceptance. The16:35:43 UTC intent was due17:35:43 and resumed16:38:13; payment later left reason “Checkout is no longer pending.” The16:45:06 intent was due17:45:06 and resumed16:45:11, reason “Guest resumed checkout.” Current orders were six paid (three each product). No broken existing send behavior identified; suppression matches configured rules. Raw guest IDs, recipient addresses, bearer links and tokens are omitted.
+
+## Verification evidence
+Sanitized output: `outputs/dydd-checkout-return-email-2026-11-12/` (workspace output, outside repository).31 focused tests pass: actual async results page with pending PD across return/query/resume contexts; initial purchase/active assessment exclusion; completed PD inclusion; approved links/copy; existing concurrent/open/expired/paid checkout and reminder eligibility guards. Typecheck and optimized build pass. Hosted private Stripe/browser purchase and inbox delivery not re-exercised. Live runtime/scheduler/alias proof retained separately.

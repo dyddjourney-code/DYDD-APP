@@ -40,6 +40,11 @@ export default async function GuestAssessment({ params, searchParams }: { params
   const primaryOrderId = (explicitOrder || productOrder || latestPaid)?.id;
   const orders = [...records.orders].reverse().sort((a, b) => Number(b.id === primaryOrderId) - Number(a.id === primaryOrderId));
 
+  // An unpaid add-on is not an active assessment. Keep saved-results discovery
+  // visible after Stripe Back/cancel and on the resume-payment screen.
+  const hasUnfinishedPaidAssessment = orders.some(o => o.status === 'paid' && !records.results.some(r => r.order_id === o.id));
+  const showResultsInvitation = records.results.length > 0 && !hasUnfinishedPaidAssessment;
+
   return <AssessmentPublicShell owned focused welcomeName={session.participant_name}>
     {message ? <p className={styles.status} role="status">{message}</p> : null}
     <div className={styles.reportList}>
@@ -64,7 +69,8 @@ export default async function GuestAssessment({ params, searchParams }: { params
         </section>;
       })}
     </div>
-    {records.results.length > 0 && !orders.some(o => o.status === 'pending' || o.status === 'paid' && !records.results.some(r => r.order_id === o.id)) ? <><GuestGroupSessionPanel sessionId={sessionId}/><GuestJourneyInvitation/></> : null}
+    {showResultsInvitation && !orders.some(o => o.status === 'pending') ? <GuestGroupSessionPanel sessionId={sessionId}/> : null}
+    {showResultsInvitation ? <GuestJourneyInvitation/> : null}
     {!records.orders.length ? <section className={styles.accessPanel}><h2>Start your DesignID</h2><p>Your details are saved. Continue to secure checkout to begin.</p><DigitalPurchaseDisclosure /><form action={buyGuestDesignId.bind(null, sessionId)}><AssessmentSubmitButton disabled={paused} pendingLabel="Opening secure checkout…">{paused ? 'Purchases are paused' : 'Continue to DesignID checkout'}</AssessmentSubmitButton></form><a className={styles.textLink} href="https://www.discoverdivine.design/designid" target="_blank" rel="noopener noreferrer">Explore DesignID</a></section> : null}
   </AssessmentPublicShell>;
 }

@@ -25,7 +25,7 @@ export async function sendApplicationEmail(input:ApplicationEmail):Promise<SendE
   if(['cancelled','skipped','failed','review'].includes(row.status))return {sent:false,skipped:true,message:'This delivery is stopped or needs manual review.'};
   if(process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT==='sandbox')return {sent:false,skipped:true,message:'Email queued for sandbox eligibility review; no provider request made.'};
   const eligibility=await lifecycleEligibility(row);
-  if(eligibility.stop){must(await db.from('dydd_lifecycle_jobs').update({status:'skipped',error_message:eligibility.stop}).eq('id',row.id).eq('status','queued'));return {sent:false,skipped:true,message:eligibility.stop};}
+  if(eligibility.stop){must(await db.from('dydd_lifecycle_jobs').update({status:'skipped',error_message:eligibility.stop}).eq('id',row.id).in('status',['queued','retry']));return {sent:false,skipped:true,message:eligibility.stop};}
   if(eligibility.deferUntil)return {sent:false,skipped:false,message:'Message durably queued while communication is paused.'};
   if(['processing','submitting'].includes(row.status))return {sent:false,skipped:false,message:'Message is already processing; the durable worker will reconcile its result.'};
   const claim=randomUUID(),saved=must(await db.from('dydd_lifecycle_jobs').update({status:'processing',claim_token:claim,claimed_at:new Date().toISOString(),attempts:row.attempts+1,first_attempt_at:row.first_attempt_at||new Date().toISOString()}).eq('id',row.id).eq('status',row.status).eq('attempts',row.attempts).select('id').maybeSingle());
@@ -35,7 +35,7 @@ export async function sendApplicationEmail(input:ApplicationEmail):Promise<SendE
    if(!fence.lostClaim)must(await db.from('dydd_lifecycle_jobs').update({status:fence.defer?'queued':'skipped',error_message:fence.reason||fence.stop,next_attempt_at:new Date(Date.now()+3600000).toISOString(),attempts:row.attempts,first_attempt_at:row.first_attempt_at}).eq('id',row.id).eq('claim_token',claim).eq('status','processing'));
    return {sent:false,skipped:!fence.defer,message:fence.reason||fence.stop||'Delivery lease changed before submission.'};
   }
-  if(deliveryContext?.type==='guest_assessment_report'){
+  if(['guest_assessment_report','guest_recovery'].includes(String(deliveryContext?.type))){
    const final=await lifecycleEligibility(row);
    if(final.stop||final.deferUntil){
     must(await db.from('dydd_lifecycle_jobs').update({status:final.stop?'skipped':'queued',error_message:final.stop||final.reason,next_attempt_at:final.deferUntil||new Date(Date.now()+3600000).toISOString()}).eq('id',row.id).eq('claim_token',claim));

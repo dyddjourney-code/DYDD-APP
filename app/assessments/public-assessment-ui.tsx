@@ -49,20 +49,20 @@ export const publicAssessmentProducts = {
 
 export type PublicAssessmentProduct = keyof typeof publicAssessmentProducts;
 
-export function AssessmentPublicShell({ children, owned = false }: { children: ReactNode; owned?: boolean }) {
+export function AssessmentPublicShell({ children, owned = false, focused = false, welcomeName }: { children: ReactNode; owned?: boolean; focused?: boolean; welcomeName?: string }) {
   return <main className={`${styles.shell} ${owned ? styles.ownedShell : ""}`}>
     <header className={styles.header}>
-      <Link href="/assessments" className={styles.brand} aria-label="DYDD assessments home">
+      {focused ? <span className={styles.brand}><img src="/brand/dydd-logo-transparent.webp" alt="Discover Your Divine Design" /></span> : <Link href="/assessments" className={styles.brand} aria-label="DYDD assessments home">
         <img src="/brand/dydd-logo-transparent.webp" alt="Discover Your Divine Design" />
-      </Link>
-      <nav className={styles.headerNav} aria-label="Assessment navigation"><a href="https://www.discoverdivine.design" target="_blank" rel="noopener noreferrer">Journey website<span className={styles.newTabHint}> (opens in a new tab)</span></a><span className={styles.sandboxBadge}>{owned ? "Your assessments" : "Assessments"}</span></nav>
+      </Link>}
+      {focused ? (welcomeName ? <p className={styles.welcome}>Welcome, {welcomeName}.</p> : null) : <nav className={styles.headerNav} aria-label="Assessment navigation"><a href="https://www.discoverdivine.design" target="_blank" rel="noopener noreferrer">Journey website<span className={styles.newTabHint}> (opens in a new tab)</span></a><span className={styles.sandboxBadge}>{owned ? "Your assessments" : "Assessments"}</span></nav>}
     </header>
     {children}
-    <footer className={styles.footer}>
+    {!focused && <footer className={styles.footer}>
       <span>Discover Your Divine Design</span>
       <span>Reflection and development tools, not diagnoses or limitations.</span>
-      <Link href="/assessments/spiritual-gifts">Optional: explore your Spiritual Gifts — free</Link>
-    </footer>
+      <a href="https://www.discoverdivine.design/reflections-gifts" target="_blank" rel="noopener noreferrer">Explore Spiritual Gifts (opens in a new tab)</a>
+    </footer>}
   </main>;
 }
 

@@ -3,8 +3,9 @@ import Stripe from 'stripe';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { publicPaymentRuntime } from './config';
 import { publicPaymentConfiguration, validatePublicAssessmentSession } from './payments';
-import { guestRecoveryPath } from './guest-capability';
+import { guestRecoveryPath, guestSessionPath } from './guest-capability';
 import { guestRecords, guestSourceSnapshot, paidGuestOrder, type GuestSession, type GuestOrder } from './guest';
+import { registerGuestCheckoutReminder, markGuestCheckoutResumed } from './guest-checkout-reminder';
 import { scoreDesignPd } from '@/lib/designpd/engine';
 
 export function validateGuestPayment(order:GuestOrder,session:Stripe.Checkout.Session) {
@@ -21,31 +22,73 @@ export async function createGuestCheckout(session:GuestSession,token:string,prod
   const source=records.results.find(r=>r.id===sourceId&&r.product==='designid');
   if(!source)throw Error('Open the private recovery link for your completed DesignID first.');
   await paidGuestOrder(session.id,source.order_id);scoreDesignPd(guestSourceSnapshot(source));
-  if(records.orders.some(o=>o.product==='designpd'&&o.source_result_id===source.id&&['pending','paid'].includes(o.status)))throw Error('DesignPD already has a purchase in progress. Return to your saved session.');
- }else{
-  if(sourceId)throw Error('DesignID cannot have a source.');
-  if(records.orders.some(o=>o.product==='designid'&&['pending','paid'].includes(o.status)))throw Error('DesignID already has a purchase in progress. Return to your saved session.');
- }
+ }else if(sourceId)throw Error('DesignID cannot have a source.');
+ const existing=records.orders.find(o=>o.product===product&&(o.source_result_id||null)===(sourceId||null)&&['pending','paid'].includes(o.status));
+ if(existing)return resumeGuestCheckout(session,token,existing.id);
  const price=await config.stripe.prices.retrieve(config.price);
  const productId=typeof price.product==='string'?price.product:price.product.id;
  if(price.livemode!==config.livemode||!price.active||price.type!=='one_time'||price.currency!=='usd'||price.unit_amount!==1999||productId!==config.productId)throw Error('Approved Stripe catalog mismatch.');
  const db=createSupabaseAdminClient();
  const reserved=await db.rpc('dydd_guest_reserve_order',{p_session_id:session.id,p_product:product,p_source:sourceId||null,p_provider:config.provider,p_product_id:config.productId,p_price:config.price});
  if(reserved.error||!reserved.data)throw Error('A purchase or assessment timing check needs recovery. Use your existing private link or contact support before repurchasing.');
- const order={id:String(reserved.data)};
+ const order={id:String(reserved.data),session_id:session.id,product,source_result_id:sourceId||null,status:'pending',payment_provider:config.provider,expected_product_id:config.productId,expected_price_id:config.price,expected_amount:1999,currency:'usd',payment_reference:''} as GuestOrder;
+ return openGuestCheckout(session,token,order,config);
+}
+/** Resume one intent. Never replace an open or completed provider session. */
+export async function resumeGuestCheckout(session:GuestSession,token:string,orderId:string) {
+ const records=await guestRecords(session.id),order=records.orders.find(o=>o.id===orderId);
+ if(!order)throw Error('This purchase is not available through your private link.');
+ await markGuestCheckoutResumed(session.id);
+ if(order.status==='paid')return guestSessionPath(session.id);
+ if(order.status!=='pending')throw Error('This purchase is no longer payable. Contact DYDD if you need help.');
+ if(order.product==='designpd'){
+  const source=records.results.find(r=>r.id===order.source_result_id&&r.product==='designid');
+  if(!source)throw Error('The completed DesignID for this purchase is unavailable.');
+  await paidGuestOrder(session.id,source.order_id);scoreDesignPd(guestSourceSnapshot(source));
+ }
+ const config=publicPaymentConfiguration(order.product,undefined,session.capability_hash);
+ if(order.payment_provider!==config.provider||order.expected_product_id!==config.productId||order.expected_price_id!==config.price)throw Error('Purchase configuration needs review; do not start another payment.');
+ if(order.payment_reference){
+  const checkout=await config.stripe.checkout.sessions.retrieve(order.payment_reference);
+  // Bind provider identity before any reuse, fulfillment or replacement.
+  if(checkout.id!==order.payment_reference||checkout.livemode!==config.livemode||checkout.mode!=='payment'||checkout.client_reference_id!==session.id||checkout.metadata?.ownership!=='guest-v1'||checkout.metadata.order_id!==order.id||checkout.metadata.guest_session_id!==session.id||checkout.metadata.product!==order.product||(checkout.metadata.source_id||'')!==(order.source_result_id||''))throw Error('Checkout identity needs review. Your purchase is preserved.');
+  if(checkout.status==='complete'){
+   if(checkout.payment_status==='paid'){await fulfillGuestCheckout(checkout.id);return guestSessionPath(session.id);}
+   throw Error('Payment is processing. Do not pay again. Return shortly to check your saved purchase.');
+  }
+  if(checkout.status==='open'){
+   if(!checkout.url)throw Error('Secure checkout is temporarily unavailable. Please retry this purchase.');
+   return checkout.url;
+  }
+  if(checkout.status!=='expired'||checkout.payment_status!=='unpaid')throw Error('Payment status needs review. Do not pay again.');
+ }
+ return openGuestCheckout(session,token,order,config);
+}
+async function openGuestCheckout(session:GuestSession,token:string,order:GuestOrder,config:ReturnType<typeof publicPaymentConfiguration>) {
+ const db=createSupabaseAdminClient();
  try{
-  const metadata={app:config.app,ownership:'guest-v1',order_id:order.id,guest_session_id:session.id,product,source_id:sourceId||''};
+  const metadata={app:config.app,ownership:'guest-v1',order_id:order.id,guest_session_id:session.id,product:order.product,source_id:order.source_result_id||''};
   const recovery=config.origin+guestRecoveryPath(session.id,token);
-  const checkout=await config.stripe.checkout.sessions.create({mode:'payment',payment_method_types:['card'],client_reference_id:session.id,customer_email:session.participant_email,line_items:[{price:config.price,quantity:1}],metadata,payment_intent_data:{metadata},success_url:recovery+'&product='+product,cancel_url:recovery+'&product='+product},{idempotencyKey:'dydd-guest-'+order.id});
+  // Same order + previous expired reference => same replacement in concurrent requests.
+  const checkout=await config.stripe.checkout.sessions.create({mode:'payment',payment_method_types:['card'],wallet_options:{link:{display:'never'}},client_reference_id:session.id,customer_email:session.participant_email,line_items:[{price:order.expected_price_id,quantity:1}],metadata,payment_intent_data:{metadata},success_url:recovery+'&product='+order.product,cancel_url:recovery+'&product='+order.product},{idempotencyKey:'dydd-guest-'+order.id+(order.payment_reference?'-after-'+order.payment_reference:'')});
   if(!checkout.url||checkout.livemode!==config.livemode)throw Error('Checkout mode mismatch.');
-  const saved=await db.from('dydd_guest_orders').update({payment_reference:checkout.id}).eq('id',order.id).eq('status','pending').select('id').single();
-  if(saved.error||!saved.data)throw Error('Checkout linkage failed.');
+  let update=db.from('dydd_guest_orders').update({payment_reference:checkout.id}).eq('id',order.id).eq('session_id',session.id).eq('status','pending');
+  if(order.payment_reference)update=update.eq('payment_reference',order.payment_reference);
+  const saved=await update.select('id').maybeSingle();
+  if(saved.error)throw Error('Checkout linkage failed.');
+  if(!saved.data){
+   const current=(await guestRecords(session.id)).orders.find(o=>o.id===order.id);
+   if(current?.status==='paid')return guestSessionPath(session.id);
+   if(current?.status!=='pending'||current.payment_reference!==checkout.id)throw Error('Checkout linkage changed.');
+  }
+  // Queue registration is durable only: never sends during checkout.
+  try{await registerGuestCheckoutReminder(order.id,token);}catch{/* Never strand an already created secure checkout on an optional reminder failure. */}
   return checkout.url;
  }catch{
-  // An ambiguous provider response must not invite a second charge. Keep pending for reconciliation.
-  throw Error('Checkout needs recovery. Return to this session or contact support; do not start another purchase.');
+  throw Error('Your purchase is saved, but secure checkout could not be opened. Retry Resume secure checkout. If you have paid, check payment status instead; do not start a new purchase.');
  }
 }
+
 export async function fulfillGuestCheckout(sessionId:string) {
  const config=publicPaymentRuntime('webhook'),db=createSupabaseAdminClient(),stripe=new Stripe(config.secret);
  const found=await db.from('dydd_guest_orders').select('*').eq('payment_reference',sessionId).eq('payment_provider',config.provider).maybeSingle();

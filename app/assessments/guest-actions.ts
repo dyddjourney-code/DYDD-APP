@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { publicPaymentConfiguration } from '@/lib/public-assessments/payments';
-import { createGuestCheckout } from '@/lib/public-assessments/guest-payments';
+import { createGuestCheckout, resumeGuestCheckout } from '@/lib/public-assessments/guest-payments';
 import { newGuestCapability, guestCapabilityHash, guestSessionPath } from '@/lib/public-assessments/guest-capability';
 import { addSixCalendarMonths } from '@/lib/designid/retake-policy';
 import { requireGuest, rememberGuest, guestRecords, type GuestSession } from '@/lib/public-assessments/guest';
@@ -71,4 +71,11 @@ export async function retryGuestEmail(sessionId:string,resultId:string) {
  try{const {session,token}=await requireGuest(sessionId);const result=await emailGuestReport(session,token,resultId,true);message=result.sent?'Your new email copy, including the PDF attachment, was accepted by the email provider. Inbox delivery is not yet confirmed.':'Your report remains downloadable. Email is pending or needs review.';}
  catch(error){message=problem(error);}
  redirect(guestSessionPath(sessionId)+'?message='+encodeURIComponent(message));
+}
+
+export async function resumeGuestPurchase(sessionId:string,orderId:string) {
+ let destination=guestSessionPath(sessionId);
+ try{const {session,token}=await requireGuest(sessionId);destination=await resumeGuestCheckout(session,token,orderId);}
+ catch(error){destination+='?message='+encodeURIComponent(problem(error));}
+ redirect(destination);
 }

@@ -27,7 +27,10 @@ export default function PublicAssessmentsPage() {
           <h2>{product.name}</h2>
           <p>{product.short}</p>
         </div>
-        <Link className={styles.secondary} href={slug === "spiritual-gifts" ? "/spiritual-gifts" : `/assessments/${slug}?guest=1`}>Explore {product.name}<span aria-hidden="true"> →</span></Link>
+        <div className={styles.catalogActions}>
+          <Link className={styles.primary} href={slug === "spiritual-gifts" ? "/spiritual-gifts" : `/assessments/${slug}?guest=1`}>{slug === "spiritual-gifts" ? "Start free assessment" : `Purchase ${product.name} now`}</Link>
+          <a className={styles.textLink} href={`https://www.discoverdivine.design/${slug === "spiritual-gifts" ? "reflections-gifts" : slug}`} target="_blank" rel="noopener noreferrer">Explore {product.name} (opens in a new tab)</a>
+        </div>
       </article>)}
     </section>
     <section className={styles.accountNote} aria-labelledby="assessment-account-heading">

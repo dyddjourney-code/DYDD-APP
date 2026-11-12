@@ -27,6 +27,6 @@ export async function GuestAccountLink({sessionId}:{sessionId:string}) {
    </div>}
    <p className={styles.helper}>Connecting is your choice. Sign in to a verified account, then return to this private link and choose to connect. Your original contact details, purchases and results stay unchanged. A connection cannot be moved to another account.</p>
   </div>
-  <div className={styles.discoveryGifts}><span>Another way to explore</span><Link href="/assessments/spiritual-gifts">Discover your Spiritual Gifts — free</Link></div>
+  <div className={styles.discoveryGifts}><span>Another way to explore</span><a href="https://www.discoverdivine.design/reflections-gifts" target="_blank" rel="noopener noreferrer">Explore Spiritual Gifts (opens in a new tab)</a></div>
  </section>;
 }

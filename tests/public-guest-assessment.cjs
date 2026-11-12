@@ -40,6 +40,8 @@ function harness(){
  }};
  const stripe={prices:{retrieve:async()=>({livemode:true,active:true,type:'one_time',currency:'usd',unit_amount:1999,product:'prod_fixture'})},checkout:{sessions:{create:async(body)=>{checkouts++;events.push({checkout:body});return {id:'cs_fixture',url:'https://checkout.stripe.invalid/synthetic',livemode:true}}}}};
  const mocks={
+  './guest-checkout-reminder':{registerGuestCheckoutReminder:async()=>true,markGuestCheckoutResumed:async()=>{}},
+  '@/lib/public-assessments/guest-checkout-reminder':{registerGuestCheckoutReminder:async()=>true,markGuestCheckoutResumed:async()=>{}},
   'next/headers':{cookies:async()=>({get:k=>jar.has(k)?{value:jar.get(k)}:undefined,set:(k,v)=>jar.set(k,v)})},
   '@/lib/supabase/admin':{createSupabaseAdminClient:()=>db},
   './config':{publicAssessmentLedgerEnabled:()=>true,publicPaymentRuntime:()=>({})},
@@ -203,7 +205,7 @@ test('foreign private storage bucket/path never downloads or consumes resend int
 test('recovery honors owned report/product focus, strips capability from redirect, rejects foreign report',async()=>{
  const h=harness(),o=h.order(),rid=await h.results.saveGuestResult(h.session,o.id,h.form());
  class Response {constructor(body,options={}){this.body=body;this.status=options.status||200;this.headers=new Headers();this.cookies={set:(...args)=>{this.cookie=args}}}static redirect(url,status){const response=new Response(null,{status});response.headers.set('location',String(url));return response}}
- const route=h.load('app/assessments/recover/route.ts',{'next/server':{NextResponse:Response},'@/lib/public-assessments/guest':h.guest,'@/lib/public-assessments/guest-capability':h.capability});
+ const route=h.load('app/assessments/recover/route.ts',{'next/server':{NextResponse:Response},'@/lib/public-assessments/guest':h.guest,'@/lib/public-assessments/guest-checkout-reminder':{markGuestCheckoutResumed:async()=>{}},'@/lib/public-assessments/guest-capability':h.capability});
  const invoke=async suffix=>{const url='https://guest.invalid'+h.capability.guestRecoveryPath(h.session.id,h.token)+suffix;return route.GET({url,nextUrl:new URL(url)})};
  const focused=await invoke('&report='+rid+'&product=designid');assert.equal(focused.status,303);const target=new URL(focused.headers.get('location'));assert.equal(target.pathname,h.capability.guestSessionPath(h.session.id));assert.equal(target.searchParams.get('result'),rid);assert.equal(target.searchParams.get('product'),'designid');assert.equal(target.searchParams.has('key'),false);
  assert.equal(focused.cookie[0],h.capability.guestCookie(h.session.id));assert.equal(focused.cookie[1],h.token);assert.equal(focused.cookie[2].httpOnly,true);assert.equal(focused.headers.get('Referrer-Policy'),'no-referrer');assert.equal(focused.headers.get('Cache-Control'),'private, no-store');
@@ -215,7 +217,7 @@ test('guest page puts requested owned report first and auto-prepares only target
  const h=harness(),o=h.order(),rid=await h.results.saveGuestResult(h.session,o.id,h.form());await h.reports.prepareGuestReport(h.session,rid);const pd=h.order('designpd',rid);
  const actions=Object.fromEntries(['completeGuestAssessment','buyGuestDesignId','buyGuestDesignPd','recoverGuestReport','retryGuestEmail'].map(k=>[k,()=>{}]));
  const page=h.load('app/assessments/session/[sessionId]/page.tsx',{...h.mocks,
-  '@/lib/public-assessments/guest':h.guest,'@/lib/public-assessments/guest-capability':h.capability,'@/lib/public-assessments/config':{guestCheckoutAvailable:()=>true},
+  '@/lib/public-assessments/guest':h.guest,'@/lib/public-assessments/guest-checkout-reminder':{markGuestCheckoutResumed:async()=>{}},'@/lib/public-assessments/guest-capability':h.capability,'@/lib/public-assessments/config':{guestCheckoutAvailable:()=>true},
   '../../guest-actions':actions,'../../public-assessments.module.css':{},'./public-assessments.module.css':{},'@/app/designid/assessment-form':{DesignIdAssessmentForm:function DesignIdAssessmentForm(){}},'../../public-assessment-ui':{AssessmentPublicShell:function AssessmentPublicShell(){}},'./prepare-designpd':{PrepareDesignPd:function PrepareDesignPd(){}}
  });
  function allNodes(node){if(!node||typeof node!=='object')return [];if(Array.isArray(node))return node.flatMap(allNodes);return [node,...allNodes(node.props?.children)]}
@@ -235,4 +237,14 @@ test('worker-accepted pending resend is reconciled before a new post-cooldown ex
  h.setMailAmbiguous(false);await h.reports.emailGuestReport(h.session,h.token,rid,true);
  assert.equal(prior.accepted_at,acceptedAt);assert.equal(prior.provider_id,'worker_accepted');assert.equal(h.tables.dydd_guest_email_resends.length,2);assert.equal(h.counts().emails,1);
  const mail=h.events.filter(e=>e.mail).at(-1).mail;assert.equal(mail.idempotencyKey,'guest-report-resend-'+h.tables.dydd_guest_email_resends[1].id);
+});
+
+
+test('Stripe old-token return after email recovery uses only valid same-session browser capability',async()=>{
+ const h=harness(),newToken=h.capability.newGuestCapability();h.session.capability_hash=h.capability.guestCapabilityHash(newToken);await h.guest.rememberGuest(h.session.id,newToken);
+ class Response {constructor(body,options={}){this.body=body;this.status=options.status||200;this.headers=new Headers();this.cookies={set:(...args)=>{this.cookie=args}}}static redirect(url,status){const r=new Response(null,{status});r.headers.set('location',String(url));return r}}
+ const route=h.load('app/assessments/recover/route.ts',{'next/server':{NextResponse:Response},'@/lib/public-assessments/guest':h.guest,'@/lib/public-assessments/guest-checkout-reminder':{markGuestCheckoutResumed:async()=>{throw Error('Synthetic optional reminder storage outage')}},'@/lib/public-assessments/guest-capability':h.capability});
+ const url='https://guest.invalid'+h.capability.guestRecoveryPath(h.session.id,h.token),invoke=()=>route.GET({url,nextUrl:new URL(url)});
+ const returned=await invoke();assert.equal(returned.status,303);assert.equal(returned.cookie[1],newToken);assert(!returned.headers.get('location').includes('key='));
+ await h.guest.rememberGuest(h.session.id,h.token);assert.equal((await invoke()).status,403,'Revoked URL + revoked/no valid cookie cannot grant access');
 });

@@ -30,6 +30,7 @@ try:
  assert q("select to_regclass('public.dydd_guest_access_grants') is null")=='t'
  print('PASS additive migration rollback rehearsal')
  q(migration)
+ q((root/'supabase/migrations/20261112172236_paid_standalone_designid_repeats.sql').read_text())
  q((root/'supabase/tests/guest_group_access.sql').read_text())
  assert q("select count(*) from public.dydd_guest_access_grants")=='0'
  print('PASS rollback-only synthetic verification leaves zero group fixtures')
@@ -64,6 +65,21 @@ try:
  print('PASS DesignID scoring contract and immutable replay; PD derives exact source without second enrollment')
  other=session('other@example.test');fails(redeem(other,token,rid),'completed DesignID')
  same_email=session(' FIXTURE@example.test ');fails(redeem(same_email,token),'timing needs recovery')
+ # Paid repeats bypass completed-history timing, but never pending-payment recovery.
+ paid=session(' FIXTURE@example.test ')
+ reserve=lambda s: f"select public.dydd_guest_reserve_order('{s}','designid',null,'stripe_test','prod_fixture','price_fixture');"
+ po=q(reserve(paid)).splitlines()[0]
+ fails(f"select public.dydd_guest_save_result('{paid}','{po}','{points}')",'valid paid guest order')
+ duplicate=session('fixture@example.test');fails(reserve(duplicate),'existing purchase needs recovery')
+ q(f"update public.dydd_guest_orders set status='paid',payment_reference='cs_repeat',payment_intent_id='pi_repeat',paid_at=now() where id='{po}'")
+ pr=q(f"select public.dydd_guest_save_result('{paid}','{po}','{points}')")
+ assert pr!=rid
+ assert q(f"select public.dydd_guest_save_result('{paid}','{po}','{{}}')")==pr
+ another=session('fixture@example.test');assert q(reserve(another))
+ q(f"update public.dydd_guest_orders set status='cancelled' where session_id='{another}'")
+ fails(redeem(duplicate,token),'timing needs recovery')
+ print('PASS paid repeat inside six months; unpaid save denied; incomplete duplicate blocked; paid result immutable; free timing retained')
+ q(f"update public.dydd_guest_results set created_at=now()-interval '6 months 1 second' where id='{pr}'")
  q(f"update public.dydd_guest_results set created_at=now()-interval '6 months 1 second' where id='{rid}'")
  assert attempt(redeem(same_email,token)).returncode==0
  print('PASS foreign source rejected; normalized guest email six-month timing before redemption; eligible retake allowed')

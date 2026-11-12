@@ -5,7 +5,6 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { publicPaymentConfiguration } from '@/lib/public-assessments/payments';
 import { createGuestCheckout, resumeGuestCheckout } from '@/lib/public-assessments/guest-payments';
 import { newGuestCapability, guestCapabilityHash, guestSessionPath } from '@/lib/public-assessments/guest-capability';
-import { addSixCalendarMonths } from '@/lib/designid/retake-policy';
 import { requireGuest, rememberGuest, guestRecords, type GuestSession } from '@/lib/public-assessments/guest';
 import { saveGuestResult } from '@/lib/public-assessments/guest-results';
 import { prepareGuestReport, emailGuestReport } from '@/lib/public-assessments/guest-reports';
@@ -17,10 +16,12 @@ export async function startGuestDesignId(form:FormData) {
   publicPaymentConfiguration('designid'); // fail closed before any guest session/provider write when sales are paused
   const name=String(form.get('name')||'').trim(),email=String(form.get('email')||'').trim().toLowerCase();
   if(name.length<2||name.length>120||!/^\S+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)throw Error('Enter your name and a valid email address.');
-  // Resume only the private browser capability, never discover a session by a typed email.
+  // Resume unfinished purchases only through the private browser capability.
+  // A completed report is immutable; an explicit new purchase gets a fresh paid session.
+  // Never discover or reopen another session by a typed email.
   const current=(await cookies()).get('dydd_guest_current')?.value;
   let session:GuestSession|undefined,token='';
-  if(current){try{const existing=await requireGuest(current);if(existing.session.participant_email===email){const history=await guestRecords(current);const completed=history.results.find(r=>r.product==='designid');if(!completed||addSixCalendarMonths(completed.created_at).getTime()>Date.now()){session=existing.session;token=existing.token;}}}catch{/* expired/invalid browser link must not reveal another session */}}
+  if(current){try{const existing=await requireGuest(current);if(existing.session.participant_email===email){const history=await guestRecords(current);const completed=history.results.find(r=>r.product==='designid');if(!completed){session=existing.session;token=existing.token;}}}catch{/* expired/invalid browser link must not reveal another session */}}
   if(!session){
    token=newGuestCapability();
    const saved=await createSupabaseAdminClient().from('dydd_guest_sessions').insert({capability_hash:guestCapabilityHash(token),participant_name:name,participant_email:email}).select('*').single();

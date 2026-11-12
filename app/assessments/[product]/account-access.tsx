@@ -164,6 +164,7 @@ export default async function PublicAssessmentProductPage({ params, searchParams
           <p>Latest eligible completed result{Number.isFinite(Date.parse(source.source_submitted_at || source.created_at)) ? ` · ${new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeZone: "UTC" }).format(new Date(source.source_submitted_at || source.created_at))}` : ""}</p>
           <p className={styles.helper}>Access and report generation apply to this saved result. No additional questions.</p>
         </div> : null}
+        {slug === 'designid' ? <p className={styles.helper}>Want a separate new assessment? <Link href="/assessments/designid?guest=1">Purchase a new DesignID report · $19.99</Link>. Standalone purchases are available at any time, including to subscribers; app-included assessment timing is unchanged. Reopening your saved report does not require a purchase.</p> : null}
         <p className={styles.support}>Need a hand? <Link href="/contact">Contact DYDD</Link></p>
       </aside>
     </div>

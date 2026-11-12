@@ -71,7 +71,7 @@ function artifactDownloadHref(
   reviewParams?: ReviewSearchParams | null,
 ) {
   return withReviewQuery(
-    `/api/artifacts/${encodeURIComponent(snapshot.id)}/download?download=1`,
+    snapshot.owned_report_href || `/api/artifacts/${encodeURIComponent(snapshot.id)}/download?download=1`,
     reviewParams,
   );
 }
@@ -182,12 +182,12 @@ export default async function FieldKitPage({
           } as Record<string, string>
         )[snapshot.assessment_type],
         action: "View snapshot",
-        pdfHref: hasFullReport(snapshot) ? artifactDownloadHref(snapshot, reviewParams) :
+        pdfHref: snapshot.owned_report_href ? (snapshot.owned_report_ready ? snapshot.owned_report_href : undefined) : (hasFullReport(snapshot) ? artifactDownloadHref(snapshot, reviewParams) :
           snapshot.assessment_type === "fruit_360" && fruitLifeReportSessions.some(s => s.report_snapshot_id === snapshot.id)
             ? artifactDownloadHref(snapshot, reviewParams)
-            : undefined,
+            : undefined),
         pdfReady: Boolean(
-          snapshot.scores.reportArtifact ||
+          snapshot.owned_report_href ? snapshot.owned_report_ready : snapshot.scores.reportArtifact ||
           (
             snapshot.scores.pdfMonkey as
               | {

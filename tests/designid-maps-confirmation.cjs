@@ -1,16 +1,11 @@
 // Run: node tests/designid-maps-confirmation.cjs. No database/email writes.
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const os = require('node:os');
-const path = require('node:path');
-const { execFileSync } = require('node:child_process');
-const output = fs.mkdtempSync(path.join(os.tmpdir(), 'designid-maps-'));
-try {
-  execFileSync(process.execPath, ['node_modules/typescript/bin/tsc', 'lib/designid/engine.ts', 'lib/designid/intake.ts', 'lib/designid/maps-confirmation.ts', 'lib/designid/report.ts', '--outDir', output, '--module', 'commonjs', '--target', 'es2022', '--skipLibCheck']);
-  const { designIdQuestionBlocks } = require(path.join(output, 'intake.js'));
-  const { parseDesignIdAllocationAnswers, scoreDesignId } = require(path.join(output, 'engine.js'));
-  const { mapsConfirmationItems: items, parseMapsConfirmation, scoreMapsConfirmation } = require(path.join(output, 'maps-confirmation.js'));
-  const { buildDesignIdReportPayload } = require(path.join(output, 'report.js'));
+const load = require('../scripts/fruitlife-test-load.cjs');
+{
+  const { designIdQuestionBlocks } = load('lib/designid/intake.ts');
+  const { parseDesignIdAllocationAnswers, scoreDesignId } = load('lib/designid/engine.ts');
+  const { mapsConfirmationItems: items, parseMapsConfirmation, scoreMapsConfirmation } = load('lib/designid/maps-confirmation.ts');
+  const { buildDesignIdReportPayload } = load('lib/designid/report.ts');
   const form = new FormData();
   for (const block of designIdQuestionBlocks) for (const [i, statement] of block.statements.entries()) form.set(`designid_points_${statement.code}`, String([3, 2, 0, 0][i]));
   const main = scoreDesignId(parseDesignIdAllocationAnswers(form));
@@ -42,4 +37,4 @@ try {
   assert(!report.Integrative_Summary.includes('MAPS'), 'Private research language must not leak into customer summary');
   assert.equal(report.MAPS_Confirmation.version, confirmation.version);
   console.log('PASS: MAPS validation, balanced buckets, mean normalization, primary-score invariance, tie clues/no forced tie-break, report integration.');
-} finally { fs.rmSync(output, { recursive:true, force:true }); }
+}

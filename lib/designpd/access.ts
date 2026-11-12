@@ -12,6 +12,7 @@ export function hasDesignPdCourseAccess(
 ) {
   return isDyddAdminEmail(email) || snapshots.some((snapshot) => {
     if (snapshot.assessment_type !== "designpd") return false;
+    if(snapshot.source==='public_guest')return snapshot.owned_report_ready===true;
     const pdf = snapshot.scores?.pdfMonkey as Record<string, unknown> | undefined;
     return snapshot.source !== "designpd_app" ||
       ["ready", "success"].includes(String(pdf?.status));

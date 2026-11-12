@@ -1,4 +1,5 @@
 import "server-only";
+import { filterGuestBridgeServiceSnapshots } from "@/lib/public-assessments/guest-account";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export type CircleDataMember = {
@@ -18,7 +19,7 @@ export type CircleData = {
   counts: { members: number; designId: number; designPd: number; gifts: number };
 };
 type Json = Record<string, unknown>;
-type Snapshot = { id: string; user_id: string | null; participant_id: string | null; assessment_type: string; scores: unknown; created_at: string; source_submitted_at: string | null };
+type Snapshot = { source?: string | null; id: string; user_id: string | null; participant_id: string | null; assessment_type: string; scores: unknown; created_at: string; source_submitted_at: string | null };
 type Db = ReturnType<typeof createSupabaseAdminClient>;
 const object = (value: unknown): Json => value && typeof value === "object" && !Array.isArray(value) ? value as Json : {};
 const text = (value: unknown) => typeof value === "string" ? value.trim() : "";
@@ -129,10 +130,10 @@ export async function loadCircleData(circleId: string, creatorId: string, plan: 
   // Do not resolve host identity through email or auth-admin account listings.
   const profiles = checked(await db.from("school_profiles").select("id,full_name").eq("id", creatorId));
   if (text(profiles[0]?.full_name)) eligible.get(creatorId)!.name = text(profiles[0].full_name);
-  const select = "id,user_id,participant_id,assessment_type,scores,created_at,source_submitted_at";
+  const select = "id,user_id,participant_id,assessment_type,scores,created_at,source,source_submitted_at";
   const direct = await allRows(offset => db.from("assessment_snapshots").select(select).in("user_id", userIds).in("assessment_type", ["designid", "designpd", "spiritual_gifts"]).order("id").range(offset, offset + 499)) as Snapshot[];
   const linked = participantOwners.size ? await allRows(offset => db.from("assessment_snapshots").select(select).in("participant_id", [...participantOwners.keys()]).in("assessment_type", ["designid", "designpd", "spiritual_gifts"]).order("id").range(offset, offset + 499)) as Snapshot[] : [];
-  const snapshots = [...new Map([...direct, ...linked].map(row => [row.id, row])).values()]
+  const snapshots = (await filterGuestBridgeServiceSnapshots([...new Map([...direct, ...linked].map(row => [row.id, row])).values()], db))
     .filter(completed).sort((a, b) => (Date.parse(b.source_submitted_at || b.created_at) - Date.parse(a.source_submitted_at || a.created_at)) || (Date.parse(b.created_at) - Date.parse(a.created_at)) || b.id.localeCompare(a.id));
   const latest = new Map<string, Snapshot>();
   for (const snapshot of snapshots) {

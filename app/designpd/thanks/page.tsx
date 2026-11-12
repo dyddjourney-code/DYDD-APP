@@ -3,7 +3,8 @@ import { courseCardHref, courseOrigin, withCourseOrigin } from "@/lib/trails/cou
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { getOwnedArtifactSnapshot } from "@/lib/assessments/artifact-access";
+import { normalizeEmail } from "@/lib/identity/email";
 
 type DesignPdThanksPageProps = {
   searchParams?: Promise<{ snapshot?: string; origin?: string }>;
@@ -23,13 +24,12 @@ export default async function DesignPdThanksPage({ searchParams }: DesignPdThank
     const client = await createSupabaseServerClient();
     const { data: { user } } = await client.auth.getUser();
     if (!user) redirect(`/login?next=${encodeURIComponent(`/designpd/thanks?snapshot=${params.snapshot}&origin=${origin}`)}`);
-    const { data } = await createSupabaseAdminClient().from("assessment_snapshots")
-      .select("id,scores").eq("id", params.snapshot).eq("user_id", user.id).eq("assessment_type", "designpd").maybeSingle();
-    if (!data) redirect(cardHref);
+    const data = await getOwnedArtifactSnapshot(params.snapshot,user.id,normalizeEmail(user.email));
+    if (!data || data.assessment_type!=='designpd') redirect(cardHref);
     tendencies = savedDesignPdTendencies(data);
-    reportReady = ["ready", "success"].includes(data.scores?.pdfMonkey?.status);
-    emailSent = data.scores?.resultEmail?.sent === true;
-    ownerReview = data.scores?.resultEmail?.reason === "owner_review_without_email";
+    reportReady = data.source==='public_guest' ? data.owned_report_ready===true : ['ready', 'success'].includes(String((data.scores?.pdfMonkey as Record<string,unknown>|undefined)?.status));
+    emailSent = (data.scores?.resultEmail as Record<string,unknown>|undefined)?.sent === true;
+    ownerReview = (data.scores?.resultEmail as Record<string,unknown>|undefined)?.reason === "owner_review_without_email";
   }
   const reportHref = params?.snapshot
     ? `/designpd/report?snapshot=${encodeURIComponent(params.snapshot)}`

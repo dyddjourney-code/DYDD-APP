@@ -17,6 +17,18 @@ export async function getOwnedArtifactSnapshot(
     .select("id,user_id,participant_id,assessment_type,created_at,scores,source,source_submitted_at")
     .eq("id", snapshotId).maybeSingle();
   if (error || !snapshot) return null;
+  if (snapshot.source === 'public_guest') {
+    const {getAccountGuestResult,guestAccountSnapshot}=await import('@/lib/public-assessments/guest-account');
+    try {return guestAccountSnapshot(await getAccountGuestResult(userId,snapshot.id));} catch {return null;}
+  }
+  if (snapshot.source === 'designpd_app' && typeof snapshot.scores.designIdSnapshotId === 'string') {
+    const {data:source,error:sourceError}=await db.from('assessment_snapshots').select('id,source').eq('id',snapshot.scores.designIdSnapshotId).maybeSingle();
+    if(sourceError)return null;
+    if(source?.source==='public_guest') {
+      const {getAccountGuestResult}=await import('@/lib/public-assessments/guest-account');
+      try {await getAccountGuestResult(userId,source.id);} catch {return null;}
+    }
+  }
   if (snapshot.user_id) return snapshot.user_id === userId ? snapshot : null;
   if (snapshot.assessment_type === "spiritual_gifts") {
     const allowed = await filterPublicGiftsSnapshots([snapshot], userId);

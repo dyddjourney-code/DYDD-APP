@@ -1,3 +1,6 @@
+import { buildDesignIdContext, type AssessmentSnapshotSummary } from "@/lib/assessments/student-context";
+import { getOwnedAssessmentSnapshots } from "@/lib/public-assessments/identity";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { fruitLifeFruits, fruitLifeInstrumentVersion } from "./intake";
 import { buildFruitLifePayload as buildLegacyFruitLifePayload } from "./legacy-payload";
 import source from "./source-libraries.json";
@@ -306,7 +309,7 @@ export async function buildFruitLifePayloadForSession(supabase: SupabaseLike, se
   const { data: session, error: sessionError } = await supabase
     .from("fruitlife_360_sessions")
     .select(
-      "id,participant_id,metadata,source_participant_id,participant_name,participant_email,observer_goal,observer_completed_count",
+      "id,created_by_user_id,participant_id,metadata,source_participant_id,participant_name,participant_email,observer_goal,observer_completed_count",
     )
     .eq("id", sessionId)
     .single();
@@ -329,12 +332,33 @@ export async function buildFruitLifePayloadForSession(supabase: SupabaseLike, se
 
   if (session.metadata?.instrumentVersion !== fruitLifeInstrumentVersion) return buildLegacyFruitLifePayload(session, responses ?? []);
 
-  const { data: designId } = await supabase.from("assessment_snapshots").select("scores")
-    .eq("participant_id", session.participant_id).eq("assessment_type", "designid")
-    .order("source_submitted_at", { ascending: false }).limit(1).maybeSingle();
-  const summary = designId?.scores?.summary ?? {};
+  // A typed session email is contact data, never an account identity.
+  const participantResult = session.participant_id ? await supabase.from("assessment_participants")
+    .select("id,user_id").eq("id", session.participant_id).maybeSingle() : { data: null, error: null };
+  if (participantResult.error) throw new Error("Assessment ownership could not be checked.");
+  const participant = participantResult.data;
+  const accountId = session.created_by_user_id || participant?.user_id;
+  let all: AssessmentSnapshotSummary[] = [];
+  if (accountId) {
+    const identity = await createSupabaseAdminClient().auth.admin.getUserById(accountId);
+    const user = identity.data.user;
+    if (identity.error || !user?.email_confirmed_at || !user.email || user.is_anonymous)
+      throw new Error("Verified account required.");
+    all = await getOwnedAssessmentSnapshots({ id: user.id, email: user.email });
+  } else if (participant && !participant.user_id) {
+    // Preserve legacy unowned native reports only within this exact participant.
+    const saved = await supabase.from("assessment_snapshots")
+      .select("id,assessment_type,created_at,scores,source,source_submitted_at")
+      .eq("participant_id", participant.id).is("user_id", null).eq("assessment_type", "designid")
+      .or("source.is.null,source.neq.public_guest")
+      .order("source_submitted_at", { ascending: false, nullsFirst: false })
+      .order("created_at", { ascending: false }).limit(1);
+    if (saved.error) throw new Error("Saved assessments could not be checked.");
+    all = (saved.data ?? []) as AssessmentSnapshotSummary[];
+  }
+  const context = buildDesignIdContext({ all, latest: all });
   return buildFruitLifePayload(
-    { ...session, designIdPrimary: String(summary.Primary ?? ""), designIdSecondary: String(summary.Secondary ?? "") } as FruitLifeSession,
+    { ...session, designIdPrimary: context.primary, designIdSecondary: context.secondary } as FruitLifeSession,
     ((responses ?? []) as FruitLifeResponse[]),
   );
 }

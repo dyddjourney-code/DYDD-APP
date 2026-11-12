@@ -60,7 +60,7 @@ export default async function PublicAssessmentProductPage({ params, searchParams
   const requestedSource = verifiedUser && query?.sourceId ? await getOwnedArtifactSnapshot(query.sourceId,verifiedUser.id,normalizeEmail(verifiedUser.email)) : null;
   const sourceCandidates = query?.sourceId ? requestedSource ? [requestedSource] : [] : snapshots;
   const source = slug === "designpd" ? sourceCandidates.find((snapshot) => {
-    if (snapshot.source === "public_guest" || snapshot.assessment_type !== "designid" || (query?.sourceId && snapshot.id !== query.sourceId)) return false;
+    if (snapshot.assessment_type !== "designid" || (query?.sourceId && snapshot.id !== query.sourceId)) return false;
     try { scoreDesignPd(snapshot); return true; } catch { return false; }
   }) : undefined;
   const savedReport = snapshots.find(snapshot => snapshot.assessment_type === (slug === "spiritual-gifts" ? "spiritual_gifts" : slug)

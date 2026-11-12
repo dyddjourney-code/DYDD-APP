@@ -35,7 +35,7 @@ export async function sendApplicationEmail(input:ApplicationEmail):Promise<SendE
    if(!fence.lostClaim)must(await db.from('dydd_lifecycle_jobs').update({status:fence.defer?'queued':'skipped',error_message:fence.reason||fence.stop,next_attempt_at:new Date(Date.now()+3600000).toISOString(),attempts:row.attempts,first_attempt_at:row.first_attempt_at}).eq('id',row.id).eq('claim_token',claim).eq('status','processing'));
    return {sent:false,skipped:!fence.defer,message:fence.reason||fence.stop||'Delivery lease changed before submission.'};
   }
-  if(['guest_assessment_report','guest_recovery'].includes(String(deliveryContext?.type))){
+  if(['guest_assessment_report','guest_recovery','guest_invitation'].includes(String(deliveryContext?.type))){
    const final=await lifecycleEligibility(row);
    if(final.stop||final.deferUntil){
     must(await db.from('dydd_lifecycle_jobs').update({status:final.stop?'skipped':'queued',error_message:final.stop||final.reason,next_attempt_at:final.deferUntil||new Date(Date.now()+3600000).toISOString()}).eq('id',row.id).eq('claim_token',claim));

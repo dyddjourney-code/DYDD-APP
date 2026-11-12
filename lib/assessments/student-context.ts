@@ -1,3 +1,4 @@
+import { carryOverVerifiedGuestResults, getLinkedGuestSnapshots, filterGuestBridgeSnapshots, filterGuestBridgeServiceSnapshots } from '@/lib/public-assessments/guest-account';
 import { filterPublicGiftsSnapshots, getLinkedPublicGiftsSnapshots } from '@/lib/public-assessments/gifts-account';
 import { savedDesignPdTendencies } from "@/lib/designpd/tendencies";
 import { canonicalDesignIdShadow } from "@/lib/designid/shadow";
@@ -6,6 +7,8 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export type AssessmentSnapshotSummary = {
   owned_report_href?: string;
+  owned_report_ready?: boolean;
+  owned_designid_source_id?: string;
   assessment_type: string;
   created_at: string;
   id: string;
@@ -301,6 +304,7 @@ export async function getAssessmentSnapshotsForUser(
   userId: string,
   email: string,
 ) {
+  await carryOverVerifiedGuestResults(userId);
   const participantId = await findOrAttachParticipant(userId, email);
   const supabaseAdmin = createSupabaseAdminClient();
   const query = supabaseAdmin
@@ -313,9 +317,9 @@ export async function getAssessmentSnapshotsForUser(
     ? await query.or(`user_id.eq.${userId},and(participant_id.eq.${participantId},user_id.is.null)`)
     : await query.eq("user_id", userId);
 
-  const native = await filterPublicGiftsSnapshots((data ?? []) as AssessmentSnapshotSummary[], userId);
-  const linked = await getLinkedPublicGiftsSnapshots(userId);
-  const all = [...new Map([...native, ...linked].map(snapshot => [snapshot.id, snapshot])).values()].sort((a,b)=>Date.parse(b.source_submitted_at||b.created_at)-Date.parse(a.source_submitted_at||a.created_at)) as AssessmentSnapshotSummary[];
+  const native = await filterGuestBridgeServiceSnapshots(await filterPublicGiftsSnapshots((data ?? []) as AssessmentSnapshotSummary[], userId));
+  const linked = [...await getLinkedPublicGiftsSnapshots(userId), ...await getLinkedGuestSnapshots(userId)];
+  const all = [...new Map([...filterGuestBridgeSnapshots(native,linked), ...linked].map(snapshot => [snapshot.id, snapshot])).values()].sort((a,b)=>Date.parse(b.source_submitted_at||b.created_at)-Date.parse(a.source_submitted_at||a.created_at)) as AssessmentSnapshotSummary[];
 
   return {
     all,

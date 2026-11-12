@@ -80,6 +80,7 @@ export function isTrailAssessmentComplete(
   if (!type) return true;
   return snapshots.some((snapshot) => {
     if (snapshot.assessment_type !== type) return false;
+    if(type==='designpd' && snapshot.source==='public_guest')return snapshot.owned_report_ready===true;
     if (type === "designpd" && snapshot.source === "designpd_app") {
       const pdf = snapshot.scores?.pdfMonkey as
         | Record<string, unknown>

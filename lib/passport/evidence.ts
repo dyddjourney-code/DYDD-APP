@@ -23,6 +23,10 @@ export function savedAssessmentComplete(snapshot: AssessmentSnapshotSummary, all
  if (snapshot.assessment_type === 'spiritual_gifts')
   return Boolean(populated(payload) || populated(scores.summary) || (Array.isArray(scores.topGifts) && scores.topGifts.length));
  if (snapshot.assessment_type === 'designpd') {
+  if(snapshot.source==='public_guest') {
+   const source=all.find(s=>s.id===snapshot.owned_designid_source_id && s.assessment_type==='designid');
+   return Boolean(snapshot.owned_report_ready && source && savedAssessmentComplete(source,all));
+  }
   if (snapshot.source === 'designpd_app' || scores.channel === 'native_app') {
    const source=all.find(s => s.id === scores.designIdSnapshotId && s.assessment_type === 'designid');
    return Boolean(source && savedAssessmentComplete(source,all) && populated(payload) && ['ready','success'].includes(String(object(scores.pdfMonkey).status)));

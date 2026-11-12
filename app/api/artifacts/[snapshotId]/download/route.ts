@@ -291,6 +291,8 @@ export async function GET(
       { error: "Artifact not found." },
       { status: 404, headers },
     );
+  if (snapshot.source === 'public_guest' && request.nextUrl.searchParams.get('view') !== 'snapshot')
+    return NextResponse.redirect(new URL(`/assessments/account/report/${snapshot.id}`,request.nextUrl),{status:303,headers});
   if (request.nextUrl.searchParams.get("view") === "snapshot")
     return new NextResponse(snapshotHtml(snapshot, request.nextUrl), {
       headers: { ...headers, "Content-Type": "text/html; charset=utf-8" },
@@ -329,6 +331,9 @@ export async function POST(
       { error: "Artifact not found." },
       { status: 404, headers },
     );
+  if (snapshot.source === 'public_guest')
+    return NextResponse.redirect(new URL(`/assessments/account/report/${snapshot.id}`,request.nextUrl),{status:303,headers});
+
   const archived = object(snapshot.scores.reportArtifact ?? object(snapshot.scores.pdfMonkey).storage);
   if (archived.path === `${snapshot.assessment_type}/${snapshot.id}/report.pdf`) {
     const url = await storedReportUrl(archived as StoredReport, true);

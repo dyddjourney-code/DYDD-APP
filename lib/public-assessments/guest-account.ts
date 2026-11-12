@@ -20,9 +20,38 @@ export async function linkCurrentGuestToAccount(sessionId:string) {
  if(error || data!==sessionId)throw Error('This guest session could not be linked. It may already belong to another account.');
  return sessionId;
 }
+/** Internal server boundary: the database independently checks verified Auth identity.
+ * No supplied contact address or browser identity can select another email. */
+export async function carryOverVerifiedGuestResults(userId:string) {
+ const {error}=await createSupabaseAdminClient().rpc('dydd_guest_link_matching_verified_account',{p_user:userId});
+ if(error)throw Error('Your completed public assessments could not be connected. Please retry.');
+}
+/** Filter server-role snapshot reads as strictly as the SQL restrictive policy. */
+export function filterGuestBridgeSnapshots<T extends AssessmentSnapshotSummary>(snapshots:T[],linked:AssessmentSnapshotSummary[]):T[] {
+ const eligible=new Set(linked.map(s=>s.id));
+ const projected=new Set(snapshots.filter(s=>s.source==='public_guest').map(s=>s.id));
+ return snapshots.filter(s=>s.source!=='public_guest' && !(s.source==='designpd_app' &&
+  projected.has(String(s.scores.designIdSnapshotId)) && !eligible.has(String(s.scores.designIdSnapshotId))));
+}
+/** Apply the same original entitlement fence to privileged cross-account school
+ * consumers after their independent circle/membership authorization. */
+export async function filterGuestBridgeServiceSnapshots<T extends {id:string;source?:string|null}>(snapshots:T[],db=createSupabaseAdminClient()):Promise<T[]> {
+ const candidates=snapshots.filter(s=>s.source==='public_guest'||s.source==='designpd_app');
+ if(!candidates.length)return snapshots;
+ const allowed=new Set<string>();
+ for(let i=0;i<candidates.length;i+=500){
+  const {data,error}=await db.rpc('dydd_guest_school_snapshot_ids',{p_ids:candidates.slice(i,i+500).map(s=>s.id)});
+  if(error)throw Error('Shared assessment ownership could not be checked.');
+  for(const row of data||[])allowed.add(String(row.snapshot_id));
+ }
+ const checked=new Set(candidates.map(s=>s.id));
+ return snapshots.filter(s=>!checked.has(s.id)||allowed.has(s.id));
+}
 export function guestAccountSnapshot(result:GuestResult):AssessmentSnapshotSummary {
+ const storage=result.pdf?.storage as {bucket?:string;path?:string}|undefined;
+ const originalReady=result.report_state==='ready' && storage?.bucket==='assessment-report-pdfs' && storage?.path===`guest/${result.id}/report.pdf`;
  return {id:result.id,assessment_type:result.product,created_at:result.created_at,source_submitted_at:result.created_at,
-  source:'public_guest',scores:result.scores,owned_report_href:`/assessments/account/report/${result.id}`};
+  source:'public_guest',scores:result.scores,owned_designid_source_id:result.source_result_id || undefined,owned_report_ready:originalReady,owned_report_href:`/assessments/account/report/${result.id}`};
 }
 /** Link is permanent; expired guest cookies do not revoke account ownership.
  * Paid status, source revocations and environment fences remain authoritative. */
@@ -34,7 +63,11 @@ export async function getLinkedGuestSnapshots(userId:string) {
  for(const link of links||[]) {
   const {results}=await guestRecords(link.session_id);
   for(const result of results) {
-   try { snapshots.push(guestAccountSnapshot(await ownedGuestResult(link.session_id,result.id))); }
+   try {
+    const snapshot=guestAccountSnapshot(await ownedGuestResult(link.session_id,result.id));
+    if(result.product==='designpd' && !snapshot.owned_report_ready)continue;
+    snapshots.push(snapshot);
+   }
    catch(error) {
     const {GuestAccessDeniedError}=await import('./guest');
     if(!(error instanceof GuestAccessDeniedError))throw error;

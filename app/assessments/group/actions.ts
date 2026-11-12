@@ -10,8 +10,9 @@ export async function enrollGuestAccess(form:FormData) {
  const token=String(form.get('key')||'');
  try {
   const grant=await readGuestGrant(token); // Unknown capabilities fail before session creation.
-  const name=String(form.get('name')||'').trim(),email=String(form.get('email')||'').trim().toLowerCase();
-  if(name.length<2||name.length>120||email.length>254||!/^\S+@[^\s@]+\.[^\s@]+$/.test(email))throw Error('Enter your name and a valid email address.');
+  const name=String(form.get('name')||'').trim()||(grant.kind==='individual'?grant.recipient_name||'Guest':''),email=String(form.get('email')||'').trim().toLowerCase();
+  if(name.length<(grant.kind==='individual'?1:2)||name.length>120||email.length>254||!/^\S+@[^\s@]+\.[^\s@]+$/.test(email))throw Error('Enter your name and a valid email address.');
+  if(grant.kind==='individual'&&email!==grant.recipient_email)throw Error('Use the exact recipient email assigned to this individual guest pass.');
   const jar=await cookies(),current=jar.get('dydd_guest_current')?.value;
   let sourceId:string|undefined;
   const retake=form.get('retake')==='yes'&&grant.products.includes('designid');

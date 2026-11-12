@@ -1,4 +1,5 @@
 import 'server-only';
+import {lifecycleMailConfigurationError} from './mail-runtime';
 import {guestInvitationDeliveryEligibility} from '@/lib/public-assessments/guest-invitation';
 import {createSupabaseAdminClient} from '@/lib/supabase/admin';
 import {sendResendEmail} from '@/lib/email/resend';
@@ -240,6 +241,7 @@ export async function runLifecycleWorker({limit=10}:{limit?:number}={}){
    const optional=j.category!=='service',unsubscribe=appBase()+'/email-preferences?token='+j.unsubscribe_token,oneClick=appBase()+'/api/email/preferences?token='+j.unsubscribe_token;
    const globalToken=tokenHash(j.unsubscribe_token+':all');
    if(optional)must(await db.from('dydd_email_preference_tokens').upsert([{token_hash:tokenHash(j.unsubscribe_token),email:j.email,category:j.category,circle_id:j.circle_id},{token_hash:tokenHash(globalToken),email:j.email,category:'all'}],{onConflict:'token_hash',ignoreDuplicates:true}));
+   if(process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT!=='sandbox'){const configurationError=lifecycleMailConfigurationError(j.context?.senderInput?.from);if(configurationError)throw Error(configurationError);}
    const fence=must(await db.rpc('dydd_authorize_lifecycle_send',{job_key:j.id,lease_token:j.claim_token})) as any;
    if(!fence.authorized){
     if(fence.lostClaim)continue;

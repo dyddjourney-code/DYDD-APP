@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict');
+const {lifecycleMailConfigurationError:check}=require('../scripts/fruitlife-test-load.cjs')('lib/lifecycle/mail-runtime.ts');
+const valid={DYDD_RESEND_API_KEY:'re_synthetic_not_a_credential',DYDD_EMAIL_FROM:'Discover Your Divine Design <reports@mail.example.test>'};
+assert.equal(check(undefined,valid),null);
+const envelope=Buffer.from(JSON.stringify({v:'v2',c:'encrypted-value',k:[1,2,3]})).toString('base64');
+for(const env of [{...valid,DYDD_RESEND_API_KEY:envelope},{...valid,FRUITLIFE_EMAIL_FROM:envelope},{...valid,RESEND_API_KEY:''},{}])assert.match(check(undefined,env),/configuration is invalid/);
+assert.equal(check('reports@mail.example.test',valid),null);
+assert.match(check(envelope,valid),/configuration is invalid/);
+assert.equal(check(undefined,{...valid,FRUITLIFE_EMAIL_FROM:'reports@mail.example.test'}),null);
+console.log('PASS real credential precedence, encrypted-envelope rejection, missing credentials, sender override and safe configuration diagnostics');

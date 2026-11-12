@@ -1,5 +1,6 @@
 import 'server-only';
 import {randomUUID} from 'node:crypto';
+import {lifecycleMailConfigurationError} from './mail-runtime';
 import {sendResendEmail,type SendEmailInput,type SendEmailResult} from '@/lib/email/resend';
 import {createSupabaseAdminClient} from '@/lib/supabase/admin';
 import {isDeepStrictEqual} from 'node:util';
@@ -28,6 +29,8 @@ export async function sendApplicationEmail(input:ApplicationEmail):Promise<SendE
   if(eligibility.stop){must(await db.from('dydd_lifecycle_jobs').update({status:'skipped',error_message:eligibility.stop}).eq('id',row.id).in('status',['queued','retry']));return {sent:false,skipped:true,message:eligibility.stop};}
   if(eligibility.deferUntil)return {sent:false,skipped:false,message:'Message durably queued while communication is paused.'};
   if(['processing','submitting'].includes(row.status))return {sent:false,skipped:false,message:'Message is already processing; the durable worker will reconcile its result.'};
+  const configurationError=lifecycleMailConfigurationError(senderInput.from);
+  if(configurationError)return {sent:false,skipped:false,message:configurationError};
   const claim=randomUUID(),saved=must(await db.from('dydd_lifecycle_jobs').update({status:'processing',claim_token:claim,claimed_at:new Date().toISOString(),attempts:row.attempts+1,first_attempt_at:row.first_attempt_at||new Date().toISOString()}).eq('id',row.id).eq('status',row.status).eq('attempts',row.attempts).select('id').maybeSingle());
   if(!saved)return {sent:false,skipped:false,message:'Message is already queued or processing.'};
   const fence=must(await db.rpc('dydd_authorize_lifecycle_send',{job_key:row.id,lease_token:claim})) as any;

@@ -44,3 +44,7 @@ Host is an operational desk: quick create/review actions, visibility + title/top
 No backend contracts, RLS/auth, schema, provider state, production or Camp Circles changes. Existing branding settings remain the product-brand boundary; this refinement deliberately does not introduce tenancy.
 
 Focused regression scripts: `scripts/fireside-refinement-host-qa.mjs` (local process-only synthetic admin allowlist; never deploy it) and `scripts/fireside-refinement-visitor-qa.mjs` (real temporary sandbox account/event, registration persistence/cancellation/timezones/actual ICS). Both clean up fixtures. Evidence and user handoff: workspace `outputs/fireside-refinement-2026-11-13/`.
+
+
+## Routing correction — 2026-11-13
+`/fireside` is the original illustrated jump-off landing (restored from b399847), not the event application. Its Waypoints and Live cards retain their original design and destinations. `/live` is the existing canonical Live Fireside event/library application; calendar and preview-email links remain there. Verified administrators see Manage Live Fireside on the landing, Live navigation, and Command Center views. Guests and private owner-review links receive no host capability. Host stays `/command-center/fireside`; it requires verified admin authentication. Integrations remain inactive.

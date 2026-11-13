@@ -25,6 +25,8 @@ export function DydPassportBook({
     [badges, selectedTitle],
   );
   const detailId = useId();
+  const bookletId = useId();
+  const [expanded, setExpanded] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const [mobile, setMobile] = useState(false);
@@ -105,9 +107,15 @@ export function DydPassportBook({
 
   return (
     <section className="passport-book" id="passport" aria-label="DYDD Passport Book">
+      <header className="passport-book-heading">
+        <div><h2>DYDD Passport Book</h2><p>Your journey record · badges and milestones, not course navigation.</p></div>
+        <button type="button" className="button secondary passport-book-toggle" aria-expanded={expanded} aria-controls={bookletId} onClick={() => setExpanded(!expanded)}>{expanded ? "Close journey record" : "Open journey record"}<span aria-hidden="true">{expanded ? "−" : "+"}</span></button>
+      </header>
+      <p className="passport-record-notice"><strong>This is a record of your journey—not a way to access courses or assessments.</strong></p>
+      <div id={bookletId} hidden={!expanded} className="passport-book-content">
       <div className="passport-book-cover">
         <div>
-          <h2>DYDD Passport Book</h2>
+          <h3>Your milestones, collected.</h3>
           <p>
             Badges collect here as milestones are earned. Each marker shows what it means,
             how it is earned, and which part of the journey it belongs to.
@@ -218,6 +226,7 @@ export function DydPassportBook({
           </div>
         </dialog>
       ) : null}
+      </div>
     </section>
   );
 }

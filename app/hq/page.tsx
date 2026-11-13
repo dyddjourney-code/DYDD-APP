@@ -1,3 +1,7 @@
+import { getPersonalSubscription } from "@/lib/commerce/personal-subscription";
+import { PersonalSubscriptionControls } from "@/components/personal-subscription-controls";
+import { getAccountPurchases } from "@/lib/basecamp/account-purchases";
+import { BaseCampPurchaseHistory } from "@/components/basecamp-purchase-history";
 import { BetaAccess } from "@/components/beta-access";
 import { hasLifetimePersonalAccess } from "@/lib/commerce/personal-access";
 import { syncPassportAwards } from "@/lib/passport/state";
@@ -14,7 +18,6 @@ import {
   sendFruitLifeReminder,
 } from "@/app/fruitlife360/actions";
 import { DydPassportBook } from "@/components/dyd-passport-book";
-import { DyddOrientationSlider } from "@/components/dydd-orientation-slider";
 import { FruitLifeMiniNav } from "@/components/fruitlife-mini-nav";
 import { FruitLifeMiniFooter } from "@/components/fruitlife-mini-footer";
 import { FruitLifeCurrentAssessmentProcess } from "@/components/fruitlife-current-assessment-process";
@@ -645,69 +648,58 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     );
   }
 
-  return (
-    <main className="hq-shell hq-app-shell">
-      <div className="hq-content">
-        <header className="hq-topbar">
-          <div>
-            <p className="eyebrow">DYDD Base Camp</p>
-            <h1>{displayName}</h1>
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
-            {isAdmin ? <a className="button secondary" href="https://dydd-private-owner-console.vercel.app/command-center" referrerPolicy="no-referrer">Owner Command Center</a> : null}
-            <form action={signOut}>
-              <button className="button secondary" type="submit">Sign out</button>
-            </form>
-          </div>
-        </header>
+  const [accountPurchases, personalSubscription] = await Promise.all([
+    user && !reviewReport ? getAccountPurchases(user.id) : Promise.resolve({ records: [], unavailable: false }),
+    user && !reviewReport ? getPersonalSubscription(user.id) : Promise.resolve({ state: "none" as const }),
+  ]);
 
+  return (
+    <main className="hq-shell hq-app-shell basecamp-clean-layout">
+      <div className="hq-content">
       <section className="basecamp-hero" id="basecamp" aria-label="DYDD Base Camp">
-        <div className="basecamp-copy">
-          <p className="section-label basecamp-purpose-pill">On Purpose, For Purpose</p>
-          <div className="basecamp-identity-lockup">
-            <div>
-              <h2>Welcome, {welcomeName}.</h2>
-            </div>
-          </div>
-        </div>
         <div className="basecamp-scene" aria-hidden="true">
           <img src="/brand/dydd-cabin-hut-only.png" alt="" />
-          <div className="camp-sign">
-            <span>DYDD</span>
-            <strong>Base Camp</strong>
+        </div>
+        <header className="basecamp-image-header">
+          <div>
+            <p className="basecamp-image-label">DYDD Base Camp</p>
+            <p className="basecamp-image-purpose">On purpose. For purpose.</p>
           </div>
+          <div className="basecamp-image-actions">
+          {isAdmin ? <a className="button secondary" href="https://dydd-private-owner-console.vercel.app/command-center" referrerPolicy="no-referrer">Owner Command Center</a> : null}
+          <form action={signOut}>
+            <button className="button secondary" type="submit">Sign out</button>
+          </form>
+          </div>
+        </header>
+        <div className="basecamp-copy">
+          <h1>Welcome, {welcomeName}.</h1>
         </div>
       </section>
 
-      <BaseCampProfile initialName={displayName} preview={Boolean(reviewReport)} previewQuery={isSandbox() && newPreview ? reviewQuery(reviewParams) : ""} />
-
-      <section className="basecamp-orientation-band" aria-label="DYDD Base Camp next step">
+      <section className="basecamp-next-profile" aria-label="Your next step and profile">
         <div className="basecamp-ranger-launch-card">
-          <p className="section-label">Next</p>
-          <h2>Open Ranger Station.</h2>
-          <p>
-            Start with the guide station, then choose the first trail that fits your season.
-            Ranger Station holds the map, trailheads, quick tracks, and next-step choices.
-          </p>
+          <h2>Next</h2>
+          <p>Open Ranger Station</p>
           <Link className="button primary" href={withReviewQuery("/ranger-station", reviewParams)}>
             Go to Ranger Station
           </Link>
         </div>
-        <DyddOrientationSlider />
+        <BaseCampProfile compact initialName={displayName} preview={Boolean(reviewReport)} previewQuery={isSandbox() && newPreview ? reviewQuery(reviewParams) : ""} />
+      </section>
+
+      <section className="basecamp-account-card purchases" id="purchases" aria-label="Purchases">
+        <div className="card-heading"><h2>Purchases</h2></div>
+        <PersonalSubscriptionControls summary={personalSubscription} betaIncluded={!isSandbox()} lifetime={lifetimeAccess} />
+        {user && !reviewReport ? <BetaAccess active={lifetimeAccess} verified={Boolean(user.email_confirmed_at)} /> : null}
       </section>
 
       <DydPassportBook badges={passportBadges} firstName={welcomeName} />
 
-      <OnTheHorizon />
-
-      <section className="basecamp-account-layout basecamp-account-layout-single" aria-label="Base Camp account overview">
+      <section className="basecamp-account-layout basecamp-account-billing-layout" aria-label="Base Camp account overview">
         <article className="basecamp-account-card profile">
           <div className="card-heading">
-            <p className="section-label">Account</p>
-            <h2>Your starting record.</h2>
-            <p>
-              Base Camp stays simple until you choose a path.
-            </p>
+            <h2>Account details</h2>
           </div>
           <dl className="account-detail-list">
             <div>
@@ -720,21 +712,11 @@ export default async function HqPage({ searchParams }: HqPageProps) {
             </div>
           </dl>
         </article>
-      </section>
-
-      <section className="basecamp-account-card purchases" aria-label="Purchase history">
-        <div className="card-heading">
-          <p className="section-label">Purchases</p>
-          <h2>{lifetimeAccess ? "Your access is active." : "Nothing purchased yet."}</h2>
-          <p>
-            {lifetimeAccess ? "Free lifetime personal all-access · No expiry · No payment required." : "After you begin a tool, course, or guided journey, access will appear here."}
-          </p>
-        </div>
-        <p className="empty-account-note">
-          Ranger Station will help you decide whether to start with the free Spiritual Gifts
-          assessment, Fruitful Life 360, DesignID, or the full Discover Your Divine Design journey.
-        </p>
-        {user && !reviewReport ? <BetaAccess active={lifetimeAccess} verified={Boolean(user.email_confirmed_at)} /> : null}
+        <article className="basecamp-account-card account-billing-records" aria-label="Your purchases and subscription">
+          <BaseCampPurchaseHistory {...accountPurchases} />
+          <p>Your purchases, reports, workbook and journey history stay connected to this account.</p>
+          {lifetimeAccess ? <p>Free lifetime Personal access · No expiry · No payment required.</p> : <p>Your existing access is unchanged.</p>}
+        </article>
       </section>
 
       {isAdmin && adminReport ? (
@@ -813,6 +795,8 @@ export default async function HqPage({ searchParams }: HqPageProps) {
           </article>
         </section>
       ) : null}
+
+      <OnTheHorizon />
 
       </div>
     </main>

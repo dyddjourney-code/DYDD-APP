@@ -41,7 +41,7 @@ export async function courseAssessmentEligibility(type: string, user: {id: strin
   const participants = await (email
     ? identity.or(`user_id.eq.${user.id},and(normalized_email.eq.${JSON.stringify(email)},user_id.is.null)`)
     : identity.eq('user_id', user.id));
-  if (participants.error) throw Error('Your FruitLife report identity could not be checked. Please try again.');
+  if (participants.error) throw Error('Your Fruitful Life 360 report identity could not be checked. Please try again.');
   const ids = (participants.data ?? []).map(p => p.id);
   const sessionOwnership = [`created_by_user_id.eq.${user.id}`, ...ids.map(id => `and(participant_id.eq.${id},created_by_user_id.is.null)`)];
   const snapshotOwnership = [`user_id.eq.${user.id}`, ...ids.map(id => `and(participant_id.eq.${id},user_id.is.null)`)];
@@ -49,7 +49,7 @@ export async function courseAssessmentEligibility(type: string, user: {id: strin
     db.from('fruitlife_360_sessions').select('id,self_completed_at,observer_goal,observer_completed_count,report_status,report_mode,report_snapshot_id,report_url,artifacts:fruitlife_360_report_artifacts(artifact_type,artifact_status)').or(sessionOwnership.join(',')),
     db.from('assessment_snapshots').select('id,assessment_type,created_at,scores,source,source_submitted_at').eq('assessment_type', type).or(snapshotOwnership.join(',')),
   ]);
-  if (sessions.error || owned.error) throw Error('Your completed FruitLife reports could not be checked. Please try again.');
+  if (sessions.error || owned.error) throw Error('Your completed Fruitful Life 360 reports could not be checked. Please try again.');
   // Earlier native workers saved the payload mode in the owned snapshot, but
   // left the session column null. Recover only from that exact owned linked report.
   const ownedById = new Map((owned.data ?? []).map(s => [s.id, s]));

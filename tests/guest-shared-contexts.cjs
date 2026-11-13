@@ -68,5 +68,5 @@ const session = { id: 'session', created_by_user_id: 'account', participant_id: 
   assert.equal(legacy.design_id_primary, 'Architect'); assert.equal(ownedCalls.length, callsBefore, 'unowned legacy never resolves contact email');
   rows.assessment_participants = [];
   assert.equal((await fruit.buildFruitLifePayloadForSession(db, 'session')).design_id_primary, '', 'missing participant cannot select snapshots');
-  console.log('PASS shared contexts: newer guest, revoked native fallback, exact verified Auth identity, native/legacy ownership, unchanged FruitLife scores and approved language');
+  console.log('PASS shared contexts: newer guest, revoked native fallback, exact verified Auth identity, native/legacy ownership, unchanged Fruitful Life 360 scores and approved language');
 })().catch(error => { console.error(error); process.exitCode = 1; });

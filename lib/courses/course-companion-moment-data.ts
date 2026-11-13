@@ -121,7 +121,7 @@ export const fruitLifeCompanionMoments = {
     transcript: [
       {
         speaker: "Dydi",
-        text: "FruitLife360 is not here to grade your spiritual life. It is a mirror for noticing what the Spirit may be forming in you. Begin with grace. Receive encouragement first. Then let the report help you notice one fruit, one ordinary setting, and one practice where you can walk with Jesus more intentionally this week.",
+        text: "Fruitful Life 360 is not here to grade your spiritual life. It is a mirror for noticing what the Spirit may be forming in you. Begin with grace. Receive encouragement first. Then let the report help you notice one fruit, one ordinary setting, and one practice where you can walk with Jesus more intentionally this week.",
       },
     ],
   },
@@ -173,7 +173,7 @@ export const fruitLifeCompanionMoments = {
     transcript: [
       {
         speaker: "Miles",
-        text: "Design, gifts, calling, and action all need formation. FruitLife helps keep the center steady. The question is not only, \"What am I designed to do?\" It is also, \"Who am I becoming as I do it?\" Let your next step be both purposeful and faithful. Steward the work, but also steward the heart carrying the work.",
+        text: "Design, gifts, calling, and action all need formation. Fruitful Life 360 helps keep the center steady. The question is not only, \"What am I designed to do?\" It is also, \"Who am I becoming as I do it?\" Let your next step be both purposeful and faithful. Steward the work, but also steward the heart carrying the work.",
       },
     ],
   },

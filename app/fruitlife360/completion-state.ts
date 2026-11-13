@@ -24,7 +24,7 @@ export function fruitLifeCompletionState(status: CompletionStatus) {
     submitted,
     waitingForObservers,
     ready,
-    heading: !submitted ? "Continue your FruitLife360 reflection." : ready ? "Your FruitLife360 report is ready." : "Your FruitLife360 reflection is saved.",
+    heading: !submitted ? "Continue your Fruitful Life 360 reflection." : ready ? "Your Fruitful Life 360 report is ready." : "Your Fruitful Life 360 reflection is saved.",
     description: !submitted
       ? "Your self reflection has not been submitted yet. Check your session progress to continue."
       : waitingForObservers

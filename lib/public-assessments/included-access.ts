@@ -5,7 +5,7 @@ import { isSandbox } from '@/lib/environment';
 /** Prior production behavior remains until an explicit assessed launch cutover.
  * Once selected, the scoped policy survives sales/ledger pauses. Never roll it back after launch.
  * Cutover requires a separately reviewed grandfather inventory; never infer membership from a report.
- * This scope affects assessment creation only, not historical artifacts or FruitLife/subscriptions.
+ * This scope affects assessment creation only, not historical artifacts or Fruitful Life 360/subscriptions.
  */
 export async function hasIncludedAssessmentAccess(userId: string): Promise<boolean> {
  if (!userId) return false;

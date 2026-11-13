@@ -315,7 +315,7 @@ export async function buildFruitLifePayloadForSession(supabase: SupabaseLike, se
     .single();
 
   if (sessionError || !session) {
-    throw new Error(sessionError?.message ?? "FruitLife session was not found.");
+    throw new Error(sessionError?.message ?? "Fruitful Life 360 session was not found.");
   }
 
   const { data: responses, error: responsesError } = await supabase

@@ -78,11 +78,11 @@ export default async function TrailheadsPage({ searchParams }: Props) {
       : report;
   const checkoutNotice =
     params?.checkout === "success"
-      ? "FruitLife360 is unlocked. You can start your assessment now."
+      ? "Fruitful Life 360 is unlocked. You can start your assessment now."
       : params?.checkout === "cancelled"
         ? "Checkout was cancelled. You can return when you are ready."
         : params?.checkout === "required"
-          ? "Unlock FruitLife360 to begin your assessment."
+          ? "Unlock Fruitful Life 360 to begin your assessment."
           : params?.checkout
             ? "Your checkout could not be confirmed. Please return to your Field Kit or try again."
             : null;
@@ -340,7 +340,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                             : mini &&
                                 trail.id === "fruitlife-360" &&
                                 !fruitPermit
-                              ? "Unlock FruitLife360"
+                              ? "Unlock Fruitful Life 360"
                               : `Take ${trail.name}`}
                       </Link>
                     )}

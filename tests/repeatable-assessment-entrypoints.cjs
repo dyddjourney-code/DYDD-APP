@@ -4,12 +4,13 @@ const load=require('../scripts/fruitlife-test-load.cjs');
 let all=[],sessions=[],owner=false;
 const link=({children,href})=>React.createElement('a',{href},children),empty=()=>null;
 const mocks={
+ '@/lib/public-assessments/course-capability':{hasAssessmentCourseCapability:async()=>true},
  'next/link':link,
  '@/components/trail-anchor':{TrailAnchor:empty},
  '@/components/trail-placard':{TrailPlacard:({children})=>React.createElement('div',null,children)},
  '@/components/trail-resume-link':{TrailResumeLink:({href,startLabel})=>React.createElement('a',{href},startLabel)},
  '@/components/fruitlife-mini-nav':{FruitLifeMiniNav:empty},'@/components/fruitlife-mini-footer':{FruitLifeMiniFooter:empty},
- '@/lib/commerce/personal-access':{hasLifetimePersonalAccess:async()=>false},
+ '@/lib/commerce/personal-access':{hasLifetimePersonalAccess:async()=>false,hasIncludedPersonalAccess:async()=>false},
  '@/lib/environment':{isFreeBeta:()=>true,isSandbox:()=>false},
  '@/lib/trails/course-preview':{designIdCourseReviewParams:x=>x,isOwnerCoursePreview:()=>false},
  '@/lib/assessments/student-context':{getAssessmentSnapshotsForUser:async()=>({all}),latestByAssessment:x=>x},
@@ -29,7 +30,7 @@ const artifacts=()=>['designid-foundations','spiritual-gifts-service','fruitlife
  for(owner of [false,true])for(const lane of [undefined,'fruitlife']){
   all=snapshots();sessions=[];
   let html=renderToStaticMarkup(await page({searchParams:Promise.resolve({lane})}));
-  assert(html.includes('>Take FruitLife360 Again</a>'),'completed FruitLife must retain native retake action');
+  assert(html.includes('>Take Fruitful Life 360 Again</a>'),'completed Fruitful Life 360 must retain native retake action');
   assert(html.includes('>Take Spiritual Gifts Again</a>'),'completed Gifts must retain native retake action');
   assert(!html.includes('Take DesignID Again'),'never expose unrestricted DesignID retake');
   fixtures[`trailheads-${owner?'owner':'beta'}-${lane?'mini':'main'}`]=html;
@@ -37,7 +38,7 @@ const artifacts=()=>['designid-foundations','spiritual-gifts-service','fruitlife
   sessions=[{session_status:'waiting_for_self'}];
   html=renderToStaticMarkup(await page({searchParams:Promise.resolve({lane})}));
   fixtures[`active-${owner?'owner':'beta'}-${lane?'mini':'main'}`]=html;
-  assert(!html.includes('Take FruitLife360 Again'),'active session must be resumed instead');assert(html.includes('Track Current Assessment'));
+  assert(!html.includes('Take Fruitful Life 360 Again'),'active session must be resumed instead');assert(html.includes('Track Current Assessment'));
  }
  for(const populated of [false,true]){
   const reports=populated?artifacts():[];
@@ -52,7 +53,7 @@ const artifacts=()=>['designid-foundations','spiritual-gifts-service','fruitlife
  assert.equal(addSixCalendarMonths('2026-08-31T12:00:00Z').toISOString(),'2027-02-28T12:00:00.000Z');
  assert.equal(addSixCalendarMonths('2023-08-31T12:00:00Z').toISOString(),'2024-02-29T12:00:00.000Z');
  const db={from:table=>{const q={select:()=>q,or:()=>q,eq:()=>q,order:()=>Promise.resolve({data:[{id:'prior',created_at:new Date().toISOString()}]}),in:()=>q,is:()=>q,gt:()=>q,limit:()=>Promise.resolve({data:[]}),then:resolve=>resolve({data:table==='assessment_participants'?[{id:'participant'}]:[]})};return q;}};
- const {getDesignIdEligibility}=load('lib/designid/retake.ts',{'../supabase/admin':{createSupabaseAdminClient:()=>db},'../identity/email':{participantEmailCandidates:()=>['fixture@example.invalid']}});
+ const {getDesignIdEligibility}=load('lib/designid/retake.ts',{'../public-assessments/identity':{getOwnedAssessmentSnapshots:async()=>[{id:'prior',assessment_type:'designid',created_at:new Date().toISOString()}]},'../supabase/admin':{createSupabaseAdminClient:()=>db},'../identity/email':{normalizeEmail:x=>x,participantEmailCandidates:()=>['fixture@example.invalid']}});
  assert.equal((await getDesignIdEligibility('beta','fixture@example.invalid',false)).allowed,false,'recent DesignID still restricted');
  assert.equal((await getDesignIdEligibility('owner','fixture@example.invalid',true)).allowed,true,'owner DesignID exemption preserved');
  if(process.env.RETAKE_BROWSER==='1'){
@@ -78,5 +79,5 @@ const artifacts=()=>['designid-foundations','spiritual-gifts-service','fruitlife
    console.log(`PASS ${checks.length} browser fixture states at 1280/390/320: visible native entrypoints and unfinished-session tracking`);
   }finally{await browser?.close();await new Promise(resolve=>server.close(resolve));}
  }
- console.log('PASS beta/owner, normal/mini Trailheads, completed/active FruitLife, repeatable Gifts, empty/populated Field Kit, preserved history/PDF/course/reflections and DesignID isolation.');
-})().catch(e=>{console.error(e.message);process.exitCode=1});
+ console.log('PASS beta/owner, normal/mini Trailheads, completed/active Fruitful Life 360, repeatable Gifts, empty/populated Field Kit, preserved history/PDF/course/reflections and DesignID isolation.');
+})().catch(e=>{console.error(e.stack);process.exitCode=1});

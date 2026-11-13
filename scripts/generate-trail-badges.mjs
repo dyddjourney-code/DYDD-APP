@@ -1,3 +1,4 @@
+import { refreshTrailBadgePreviews } from "./refresh-trail-badge-previews.mjs";
 import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { extname, join } from "node:path";
 import sharp from "sharp";
@@ -344,7 +345,7 @@ const badges = [
   ["spiritual-gifts", "Spiritual Gifts", "DYDD trail badge for Spiritual Gifts", baseBadge({ title: "Spiritual Gifts", desc: "DYDD trail badge for Spiritual Gifts", bodyFill: pine, ribbonFill: moss, shape: "hex", center: toolCenter("spiritual-gifts", spiritualGiftsIcon, 158) })],
   ["design-pathways", "Design Pathways", "DYDD trail badge for Design Pathways", baseBadge({ title: "Design Pathways", desc: "DYDD trail badge for Design Pathways", bodyFill: dyddGreen, ribbonFill: black, shape: "hex", center: toolCenter("design-pathways", designPathwaysIcon, 158) })],
   ["designpd", "DesignPD", "DYDD trail badge for DesignPD", baseBadge({ title: "DesignPD", desc: "DYDD trail badge for DesignPD", bodyFill: pine, ribbonFill: moss, shape: "circle", center: toolCenter("designpd", designPdIcon, 158) })],
-  ["fruitlife-360", "FruitLife 360", "DYDD trail badge for FruitLife 360", baseBadge({ title: "FruitLife 360", desc: "DYDD trail badge for FruitLife 360", bodyFill: dyddGreen, ribbonFill: black, shape: "rounded", center: toolCenter("fruitlife-360", fruitLifeIcon, 158) })],
+  ["fruitlife-360", "Fruitful Life 360", "DYDD trail badge for Fruitful Life 360", baseBadge({ title: "Fruitful Life 360", desc: "DYDD trail badge for Fruitful Life 360", bodyFill: dyddGreen, ribbonFill: black, shape: "rounded", center: toolCenter("fruitlife-360", fruitLifeIcon, 158) })],
   ["shepherd", "Shepherd", "DYDD Reflection badge for Shepherd", baseBadge({ title: "Shepherd", desc: "DYDD Reflection badge for Shepherd", bodyFill: shepherdGreen, ribbonFill: black, shape: "rounded", center: reflectionCenter({ type: "shepherd", color: shepherdGreen, icon: shepherdIcon }) })],
   ["artisan", "Artisan", "DYDD Reflection badge for Artisan", baseBadge({ title: "Artisan", desc: "DYDD Reflection badge for Artisan", bodyFill: blue, ribbonFill: black, shape: "circle", center: reflectionCenter({ type: "artisan", color: blue, icon: artisanIcon }) })],
   ["architect", "Architect", "DYDD Reflection badge for Architect", baseBadge({ title: "Architect", desc: "DYDD Reflection badge for Architect", bodyFill: gold, ribbonFill: black, shape: "hex", center: reflectionCenter({ type: "architect", color: gold, icon: architectIcon }) })],
@@ -374,35 +375,5 @@ for (const [slug, , , svg] of badges) {
   writeFileSync(join(outDir, `${slug}-badge.png`), png);
 }
 
-const cell = 230;
-const labelHeight = 42;
-const cols = 5;
-const rows = Math.ceil(badges.length / cols);
-const composites = [];
-
-for (let index = 0; index < badges.length; index += 1) {
-  const [slug, label] = badges[index];
-  const left = (index % cols) * cell;
-  const top = Math.floor(index / cols) * (cell + labelHeight);
-  const badgePng = await sharp(join(outDir, `${slug}-badge.png`)).resize(176, 176).png().toBuffer();
-  const labelSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${cell}" height="${labelHeight}">
-<text x="${cell / 2}" y="28" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="800" fill="${black}">${titleCase(label)}</text>
-</svg>`;
-  composites.push({ input: badgePng, left: left + 27, top: top + 18 });
-  composites.push({ input: Buffer.from(labelSvg), left, top: top + 194 });
-}
-
-const preview = await sharp({
-  create: {
-    width: cols * cell,
-    height: rows * (cell + labelHeight),
-    channels: 4,
-    background: "#fbfaf4",
-  },
-})
-  .composite(composites)
-  .png()
-  .toBuffer();
-
-writeFileSync(join(outDir, "dydd-trail-badges-preview.png"), preview);
-console.log(`Generated ${badges.length} badge SVGs and preview image.`);
+await refreshTrailBadgePreviews(badges.map(([slug, label]) => [slug, label]));
+console.log(`Generated ${badges.length} badge SVGs, preview image and PDF.`);

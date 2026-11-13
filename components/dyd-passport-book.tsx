@@ -70,7 +70,7 @@ export function DydPassportBook({
   const reflectionNames = ["Architect", "Artisan", "Shepherd", "Steward"];
   const shortTrails = [
     { title: "Spiritual Gifts", titles: ["Spiritual Gifts Assessment", "Spiritual Gifts Course"] },
-    { title: "FruitLife360", titles: ["FruitLife360", "FruitLife360 Course"] },
+    { title: "Fruitful Life 360", titles: ["Fruitful Life 360", "Fruitful Life 360 Course"] },
     { title: "DesignID", titles: ["DesignID", ...reflectionNames, "DesignID Course"] },
   ];
   const badgesFor = (titles: string[]) => titles.flatMap((title) => badges.filter((badge) => badge.title === title));

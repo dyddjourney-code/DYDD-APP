@@ -417,7 +417,7 @@ export const spiritualGiftsCourse = {
         {
           body: [
             "Spiritual gifts connect with the broader DYDD pathway by helping participants serve from grace, design, fruit, and purpose.",
-            "DesignID helps you understand identity reflections. Spiritual Gifts helps you notice Spirit-empowered contribution. FruitLife360 helps you remain grounded in Christlike formation. DesignPD helps you apply design through planning, deciding, and doing.",
+            "DesignID helps you understand identity reflections. Spiritual Gifts helps you notice Spirit-empowered contribution. Fruitful Life 360 helps you remain grounded in Christlike formation. DesignPD helps you apply design through planning, deciding, and doing.",
             "A gift is not only for formal ministry. Gifts may appear in homes, workplaces, churches, friendships, creative work, leadership, and ordinary service.",
             "Humility keeps gifts from becoming pride. Courage keeps gifts from being buried. Love teaches when and how to offer what God has given.",
           ],

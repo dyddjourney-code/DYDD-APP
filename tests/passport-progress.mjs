@@ -58,7 +58,7 @@ try {
  await snapshot(a,'fruit_360',{summary:{Report_Mode:'FULL_360'},scores:{Observer_Count:0,Response_Count:1}});
  assert.deepEqual((await request(a)).body.awards,[]);
  for(const course of passportCurriculum.filter(c=>['designid-foundations','spiritual-gifts-service','fruitlife-360-formation','designpd-alignment'].includes(c.slug)))assert.equal((await request(a,{action:'complete-lesson',lessonSlug:course.lessons[0].slug},course.slug)).status,403,'Draft/incomplete report cannot authorize '+course.slug);
- record('draft DesignID, pending derived DesignPD, empty Gifts, self-only/incomplete FruitLife do not award');
+ record('draft DesignID, pending derived DesignPD, empty Gifts, self-only/incomplete Fruitful Life 360 do not award');
  browser=await puppeteer.launch({args:chromium.args.filter(x=>x!=='--single-process'),executablePath:await chromium.executablePath(),headless:true});
  const context=await browser.createBrowserContext(),page=await context.newPage(),errors=[];page.on('pageerror',e=>{errors.push(e.message);console.error('Browser runtime error:',e.message)});await page.setViewport({width:390,height:1000});await page.setCookie(...a.cookies.map(c=>({name:c.name,value:c.value,url:base})));
  await page.goto(base+'/journey?lesson='+journey.lessons.at(-1).slug,{waitUntil:'domcontentloaded'});
@@ -104,7 +104,7 @@ try {
  assert(!(await request(a)).body.awards.includes('fruit_360'));
  check(await db.from('fruitlife_360_sessions').update({observer_completed_count:2}).eq('id',session.id));
  assert((await request(a)).body.awards.includes('fruit_360'));
- record('FruitLife ready report with missing required observer stays unearned; all required responses + completed report awards');
+ record('Fruitful Life 360 ready report with missing required observer stays unearned; all required responses + completed report awards');
  // Finish canonical checklists through the real sequential API; opening final
  // lesson alone was already proved negative above.
  for(const course of passportCurriculum.filter(c=>c.slug!== 'design-pathways-discernment')) {
@@ -150,7 +150,7 @@ try {
   assert.equal(await page.$eval('.passport-book-cover h2',e=>e.textContent),'DYDD Passport Book');
   assert(!await page.$eval('.passport-book-cover',e=>/trail record/.test(e.textContent)));
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No horizontal overflow '+width);
-  for(const title of ['Niche Declared','Niche','DesignPD','DesignID Course','FruitLife360 Course']){
+  for(const title of ['Niche Declared','Niche','DesignPD','DesignID Course','Fruitful Life 360 Course']){
    await clickBadge(page,title);
    const earn=await page.$eval('.passport-badge-popover dd',e=>e.textContent);
    if(title.endsWith('Course'))assert(/every lesson.*checklist/.test(earn));

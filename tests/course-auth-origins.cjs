@@ -1,5 +1,7 @@
 const assert=require('node:assert/strict');const load=require('../scripts/fruitlife-test-load.cjs');
 const {requireTrailCourseAssessment}=load('lib/trails/course-access.ts',{
+ '@/lib/supabase/server':{createSupabaseServerClient:async()=>({auth:{getUser:async()=>({data:{user:{id:'fixture'}}})}})},
+ '@/lib/public-assessments/course-capability':{hasAssessmentCourseCapability:async()=>false},
  'next/navigation':{redirect:href=>{throw {href}}},
  '@/lib/trails/course-preview':{isOwnerCoursePreview:()=>false},
  '@/lib/review/heather':{withReviewQuery:p=>p},

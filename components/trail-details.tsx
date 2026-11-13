@@ -35,13 +35,13 @@ const details = {
     access: "The Spiritual Gifts assessment and its connected course are included in your app access.",
   },
   "fruitlife-360": {
-    name: "FruitLife360",
-    about: "Prayerfully notice how the fruit of the Spirit is becoming visible in everyday life. FruitLife360 brings self-reflection and trusted-observer feedback into a gentle formation process focused on growth in Christ, not performance or comparison.",
+    name: "Fruitful Life 360",
+    about: "Prayerfully notice how the fruit of the Spirit is becoming visible in everyday life. Fruitful Life 360 brings self-reflection and trusted-observer feedback into a gentle formation process focused on growth in Christ, not performance or comparison.",
     bestFor: "Anyone ready to receive honest perspective, notice both encouragement and growth opportunities, and practice a more Christlike response in daily life.",
-    before: "Complete the FruitLife360 assessment process and receive your report before entering FruitLife360 Formation. If responses are still being collected, follow the active assessment in Field Kit.",
+    before: "Complete the Fruitful Life 360 assessment process and receive your report before entering Fruitful Life 360 Formation. If responses are still being collected, follow the active assessment in Field Kit.",
     experience: "Explore your report, the nine fruit of the Spirit, differences between your own view and others' observations, and the ways pressure affects your responses. Choose small practices rooted in grace and prayer.",
     outcome: "Name one area for intentional growth, choose a Spirit-led practice, and use feedback as a helpful mirror rather than a verdict about your worth or standing before God.",
-    access: "The FruitLife360 assessment and connected course are included in your monthly subscription.",
+    access: "The Fruitful Life 360 assessment and connected course are included in your monthly subscription.",
   },
   designpd: {
     name: "DesignPD",

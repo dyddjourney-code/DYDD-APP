@@ -61,7 +61,7 @@ export default async function FruitLifeSignupPage({
         {params?.message ? <p className="form-message">{params.message}</p> : null}
         <section className="fruitlife-flow-header">
           <div>
-            <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="FruitLife360 logo" />
+            <img src="/brand/tools/fruitful-life-360-logo.jpg" alt="Fruitful Life 360 logo" />
             <div>
               <h1>Set up your assessment</h1>
               <p>

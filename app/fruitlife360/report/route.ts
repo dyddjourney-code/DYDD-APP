@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
   const sessionId = request.nextUrl.searchParams.get("session") ?? "";
   if (!sessionId) {
     return NextResponse.json(
-      { error: "Missing FruitLife session." },
+      { error: "Missing Fruitful Life 360 session." },
       { status: 400 },
     );
   }
@@ -144,7 +144,7 @@ export async function GET(request: NextRequest) {
   }
   if (!artifact?.external_url) {
     return NextResponse.json(
-      { error: "FruitLife report is not ready yet." },
+      { error: "Fruitful Life 360 report is not ready yet." },
       { status: 404 },
     );
   }

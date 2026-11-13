@@ -553,7 +553,7 @@ export function buildAssessmentCourseInsights(
     connected: true,
     note:
       assessmentType === "fruit_360"
-        ? "This data represents the most recent FruitLife360 submission."
+        ? "This data represents the most recent Fruitful Life 360 submission."
         : "",
     rows: assessmentType === "designpd" ? [
       ...savedDesignPdTendencies(snapshot),

@@ -17,7 +17,7 @@ for(const slug of ['designid-foundations','designpd-alignment']){
  assert.equal(await capability('',slug),false,'missing account denied');
  dbError=true;await assert.rejects(capability('buyer',slug),/verified/);dbError=false;
 }
-const before=queries;assert.equal(await capability('buyer','spiritual-gifts-service'),true);assert.equal(await capability('buyer','fruitlife-360-formation'),true);assert.equal(queries,before,'Gifts/FruitLife do not consult new policy');
+const before=queries;assert.equal(await capability('buyer','spiritual-gifts-service'),true);assert.equal(await capability('buyer','fruitlife-360-formation'),true);assert.equal(queries,before,'Gifts/Fruitful Life 360 do not consult new policy');
 delete process.env.DYDD_PUBLIC_ASSESSMENT_PRODUCTION_ACCESS_POLICY;assert.equal(await capability('existing','designid-foundations'),true,'pre-cutover legacy policy preserved');process.env.DYDD_PUBLIC_ASSESSMENT_PRODUCTION_ACCESS_POLICY='grandfathered-v1';
 const user={id:'buyer',email:'buyer@example.com'};
 const guard=load('lib/trails/course-access.ts',{

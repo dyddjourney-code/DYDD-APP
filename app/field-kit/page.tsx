@@ -247,16 +247,16 @@ export default async function FieldKitPage({
         pdfReady: true,
         courseAction: "Explore course",
         courseHref: "/courses/fruitlife-360-formation?origin=field-kit",
-        detail: `Your ${fruitLifeReportModeLabel(session).toLowerCase()} FruitLife360 report is ready to review.`,
+        detail: `Your ${fruitLifeReportModeLabel(session).toLowerCase()} Fruitful Life 360 report is ready to review.`,
         href: withReviewQuery(fruitLifeReportHref(session), reviewParams),
         logo: "/brand/tools/fruitful-life-360-logo.jpg",
         meta: [
           ["Status", "Completed"],
           ["Report type", fruitLifeReportModeLabel(session)],
           ["Completed", displayDateTime(reportTimestamp)],
-          ["Source", "FruitLife360"],
+          ["Source", "Fruitful Life 360"],
         ] as Array<[string, string]>,
-        title: `FruitLife360 Report · ${fruitLifeReportModeLabel(session)}`,
+        title: `Fruitful Life 360 Report · ${fruitLifeReportModeLabel(session)}`,
       };
     }),
   ];
@@ -270,30 +270,30 @@ export default async function FieldKitPage({
       : "/field-kit?lane=fruitlife#current-assessment-process";
     const fruitLifeArtifacts = artifacts.filter((artifact) =>
       artifact.meta.some(
-        ([label, value]) => label === "Source" && value === "FruitLife360",
+        ([label, value]) => label === "Source" && value === "Fruitful Life 360",
       ),
     );
     const checkoutMessage =
       reviewParams?.checkout === "success"
-        ? "FruitLife360 is unlocked. You can start your assessment now."
+        ? "Fruitful Life 360 is unlocked. You can start your assessment now."
         : reviewParams?.checkout === "required"
-          ? "Purchase FruitLife360 to start a new assessment."
+          ? "Purchase Fruitful Life 360 to start a new assessment."
           : reviewParams?.checkout === "cancelled"
             ? "Checkout was cancelled. You can return whenever you are ready."
             : reviewParams?.checkout === "unverified"
               ? "Stripe did not verify that checkout yet. If payment completed, refresh in a moment."
               : reviewParams?.checkout === "config-error"
-                ? "FruitLife360 checkout is not fully configured yet."
+                ? "Fruitful Life 360 checkout is not fully configured yet."
                 : null;
     return (
       <main className="journey-shell hq-standalone-page fruitlife-release-shell">
         <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} />
         <header className="standalone-hero fieldkit-hero fruitlife-fieldkit-hero">
           <div>
-            <p className="eyebrow">FruitLife360</p>
+            <p className="eyebrow">Fruitful Life 360</p>
             <h1>Your report process.</h1>
             <p className="lede">
-              Start your FruitLife360, track self and observer responses, send
+              Start your Fruitful Life 360, track self and observer responses, send
               reminders, and return for your completed report.
             </p>
           </div>
@@ -301,7 +301,7 @@ export default async function FieldKitPage({
 
         <section
           className="fieldkit-assessments-section"
-          aria-label="FruitLife360 access"
+          aria-label="Fruitful Life 360 access"
         >
           {checkoutMessage ? (
             <p className="form-message">{checkoutMessage}</p>
@@ -310,7 +310,7 @@ export default async function FieldKitPage({
             <div>
               <h2>Your next step starts at Trailheads.</h2>
               <p>
-                Begin FruitLife360 or open its connected course there. Track
+                Begin Fruitful Life 360 or open its connected course there. Track
                 your responses and collect your report here.
               </p>
             </div>
@@ -321,7 +321,7 @@ export default async function FieldKitPage({
                 reviewParams,
               )}
             >
-              Open FruitLife360 Trailhead
+              Open Fruitful Life 360 Trailhead
             </Link>
           </div>
         </section>
@@ -337,7 +337,7 @@ export default async function FieldKitPage({
         <section className="artifact-panel artifact-workbench" id="artifacts">
           <div className="card-heading">
             <p className="section-label">Reports</p>
-            <h2>FruitLife360 artifacts</h2>
+            <h2>Fruitful Life 360 artifacts</h2>
           </div>
           <div className="artifact-download-list">
             {fruitLifeArtifacts.length ? (
@@ -384,10 +384,10 @@ export default async function FieldKitPage({
                 <div className="fieldkit-artifact-title">
                   <img
                     src="/brand/tools/fruitful-life-360-logo.jpg"
-                    alt="FruitLife360 logo"
+                    alt="Fruitful Life 360 logo"
                   />
                   <div>
-                    <span>No FruitLife360 report yet</span>
+                    <span>No Fruitful Life 360 report yet</span>
                     <p>
                       Your completed report will appear here when it is ready.
                     </p>
@@ -399,7 +399,7 @@ export default async function FieldKitPage({
         </section>
         <section className="reflection-round-bar">
           <p className="section-label">Course Reflections</p>
-          <h2>Your FruitLife360 reflection history.</h2>
+          <h2>Your Fruitful Life 360 reflection history.</h2>
           <p>
             Read your dated reflections, continue your current workbook, or
             begin a new round without replacing earlier answers.

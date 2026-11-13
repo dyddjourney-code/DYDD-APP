@@ -34,12 +34,12 @@ const out=fs.mkdtempSync(path.join(os.tmpdir(),'designid-policy-'));
  for(const [from,to] of [['2026-08-31T12:00:00Z','2027-02-28T12:00:00.000Z'],['2023-08-31T12:00:00Z','2024-02-29T12:00:00.000Z'],['2026-10-15T16:00:00Z','2027-04-15T16:00:00.000Z']])assert.equal(addSixCalendarMonths(from).toISOString(),to);
  fs.writeFileSync(path.join(out,'email.js'),ts.transpileModule(fs.readFileSync('lib/email/resend.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText);
  const {assessmentEmailSender,sendResendEmail}=require(path.join(out,'email.js'));
- assert.equal(assessmentEmailSender('FruitLife360 <reports@mail.discoverdivine.design>'),'Discover Your Divine Design <reports@mail.discoverdivine.design>');
+ assert.equal(assessmentEmailSender('Fruitful Life 360 <reports@mail.discoverdivine.design>'),'Discover Your Divine Design <reports@mail.discoverdivine.design>');
  assert.equal(assessmentEmailSender('reports@mail.discoverdivine.design'),'Discover Your Divine Design <reports@mail.discoverdivine.design>');
  let sentPayload;
  const realFetch=global.fetch;
  process.env.DYDD_RESEND_API_KEY='local-mock-not-a-real-key';
- process.env.FRUITLIFE_EMAIL_FROM='FruitLife360 <reports@mail.discoverdivine.design>';
+ process.env.FRUITLIFE_EMAIL_FROM='Fruitful Life 360 <reports@mail.discoverdivine.design>';
  global.fetch=async(url,options)=>{assert.equal(url,'https://api.resend.com/emails');sentPayload=JSON.parse(options.body);return {ok:true,json:async()=>({id:'mock-send'})};};
  try {
    assert.equal((await sendResendEmail({html:'<p>Report</p>',text:'Report',subject:'Your DesignID report is ready',to:'qa@example.invalid'})).sent,true);

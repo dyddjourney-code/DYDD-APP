@@ -61,7 +61,7 @@ async function handleSessionSync(request: NextRequest) {
         error:
           error instanceof Error
             ? error.message
-            : "Unknown FruitLife session sync error.",
+            : "Unknown Fruitful Life 360 session sync error.",
       },
       { status: 500 },
     );

@@ -211,7 +211,7 @@ try {
  await page.goto(base+'/designpd',{waitUntil:'networkidle2',timeout:60000});
  assert.match(await page.$eval('main',e=>e.textContent),/Complete DesignID first/i);
  assert.equal(await page.$('button[type="submit"]'),null);
- pass('actual FruitLife checkout redirects locally without a payment URL; DesignPD prerequisite and real course-progress 403 remain enforced');
+ pass('actual Fruitful Life 360 checkout redirects locally without a payment URL; DesignPD prerequisite and real course-progress 403 remain enforced');
 
  // Provide an engine-scored disposable DesignID prerequisite only. Do NOT
  // submit DesignPD, generate a PDF/report, or invoke payment/email providers.

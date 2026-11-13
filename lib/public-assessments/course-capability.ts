@@ -7,7 +7,7 @@ import { hasIncludedAssessmentAccess } from './included-access';
  * policy preserves pre-cutover production behavior until explicit grandfathered-v1 selection;
  * launch must freeze the grandfather inventory BEFORE enabling public sales.
  * Neither checkout, waiver redemption nor report completion may add that right.
- * Gifts and FruitLife retain their existing course policy.
+ * Gifts and Fruitful Life 360 retain their existing course policy.
  */
 export async function hasAssessmentCourseCapability(
   userId: string,

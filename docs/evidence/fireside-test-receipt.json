@@ -1,7 +1,7 @@
 {
   "sandbox": true,
   "ref": "atemrshtshxoqnuevvqu",
-  "at": "2026-11-13T22:36:16.221Z",
+  "at": "2026-11-13T22:47:09.212Z",
   "tests": [
     "durable confirmation/waitlist/cancellation/change/event_cancelled intents",
     "idempotent followup preview",
@@ -11,6 +11,9 @@
     "FIFO waitlist",
     "cancel promotion",
     "due reminder previews",
+    "missed24hnotreplayednearstart",
+    "day-before reminder window",
+    "one-hour reminder not early",
     "cancel and re-register reminder cycle",
     "reminder deduplication",
     "stale revision rejected",

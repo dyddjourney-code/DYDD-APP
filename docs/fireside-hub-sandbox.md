@@ -21,7 +21,7 @@ Existing lifetime personal access and canonical active personal membership autho
 
 ## Email and scheduling
 
-Durable outbox intents cover confirmation, waitlist, promotion, cancellation, changes, event cancellation, 24-hour/1-hour reminders and post-event followup. Revision and registration-cycle dedupe keys protect retries. Rendered HTML/text previews are escaped and inspected in a script-disabled iframe. States are pending/previewed/cancelled, never falsely reported sent or delivered.
+Durable outbox intents cover confirmation, waitlist, promotion, cancellation, changes, event cancellation, 24-hour/1-hour reminders and post-event followup. Revision and registration-cycle dedupe keys protect retries. Day-before reminders run only in the 24-to-23-hour window, so late registrations or scheduler recovery do not receive a stale “tomorrow” message near event time. Rendered HTML/text previews are escaped and inspected in a script-disabled iframe. States are pending/previewed/cancelled, never falsely reported sent or delivered.
 
 `runFiresidePreviewWorker` is invoked only in the sandbox branch of the existing authenticated `/api/cron/lifecycle` endpoint. Existing sandbox Supabase `dydd-sandbox-lifecycle` job already runs every five minutes. No new scheduler/configuration/production cron changes. Fireside worker never imports an email provider. Existing unrelated lifecycle behavior remains intact; do not manually trigger the combined worker merely for UI screenshots.
 

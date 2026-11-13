@@ -2,8 +2,8 @@
   "sandbox": true,
   "ref": "atemrshtshxoqnuevvqu",
   "productionUntouched": true,
-  "sha256": "24ca977da07b23bc5f4fc97ef3ce2bf3c0ec3077bf8d350158016954c80fae36",
-  "at": "2026-11-13T22:35:06.403Z",
+  "sha256": "94656e49e32d50df7c35c5e55b36742eb17ad0f77e95d631b6ece82b26ee65bf",
+  "at": "2026-11-13T22:47:08.739Z",
   "security": [
     {
       "relname": "fireside_events",

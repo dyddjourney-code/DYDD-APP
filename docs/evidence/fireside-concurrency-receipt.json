@@ -1,0 +1,16 @@
+{
+  "sandbox": true,
+  "ref": "atemrshtshxoqnuevvqu",
+  "at": "2026-11-13T22:36:17.262Z",
+  "concurrentRegistrations": 8,
+  "capacity": 2,
+  "concurrentDuplicateCancellations": 5,
+  "assertions": [
+    "never overbooked",
+    "all excess waitlisted",
+    "FIFO promotion",
+    "duplicate cancel promotes only once",
+    "one lifecycle intent per real transition under concurrency"
+  ],
+  "passed": true
+}

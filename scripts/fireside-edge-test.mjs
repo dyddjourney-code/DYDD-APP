@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import {sql} from './fireside-db.mjs';
+const rows=await sql(`begin;
+insert into auth.users(id,email,aud,role) values('f15e0000-0000-4000-8000-000000000021','fireside-edge-1@example.invalid','authenticated','authenticated'),('f15e0000-0000-4000-8000-000000000022','fireside-edge-2@example.invalid','authenticated','authenticated');
+insert into fireside_events(id,title,starts_at,ends_at,capacity,status,format) values('f15e0000-0000-4000-8000-000000000023','Drop-in rollback QA',now()-interval '30 minutes',now()+interval '30 minutes',1,'published','drop_in');
+do $$ declare r jsonb;begin
+r=fireside_registration('f15e0000-0000-4000-8000-000000000021','f15e0000-0000-4000-8000-000000000023','register','qa-dropin-1');if r->>'status'<>'confirmed' then raise exception 'dropin active registration';end if;
+r=fireside_registration('f15e0000-0000-4000-8000-000000000022','f15e0000-0000-4000-8000-000000000023','register','qa-dropin-2');if r->>'status'<>'waitlisted' then raise exception 'dropin active waitlist';end if;
+perform fireside_registration('f15e0000-0000-4000-8000-000000000021','f15e0000-0000-4000-8000-000000000023','cancel','qa-dropin-cancel');if not exists(select 1 from fireside_registrations where event_id='f15e0000-0000-4000-8000-000000000023' and user_id='f15e0000-0000-4000-8000-000000000022' and status='confirmed') then raise exception 'dropin active promotion';end if;
+update fireside_events set ends_at=now()-interval '1 minute' where id='f15e0000-0000-4000-8000-000000000023';
+begin perform fireside_registration('f15e0000-0000-4000-8000-000000000021','f15e0000-0000-4000-8000-000000000023','register','qa-dropin-ended');raise exception 'ended dropin opened';exception when others then if sqlerrm not like '%Registration is closed%' then raise;end if;end;
+end $$;select true passed;rollback;`);assert(rows.some(r=>r.passed));const proof={at:new Date().toISOString(),passed:true,checks:['drop-in window allows midwindow reservation','drop-in capacity enforced while in progress','cancellation promotes while drop-in active','ended drop-in rejects reservation','rollback removes all fixtures']};fs.writeFileSync('docs/evidence/fireside-edge-receipt.json',JSON.stringify(proof,null,2));console.log(JSON.stringify(proof));

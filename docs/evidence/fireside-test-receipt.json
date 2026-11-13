@@ -1,0 +1,58 @@
+{
+  "sandbox": true,
+  "ref": "atemrshtshxoqnuevvqu",
+  "at": "2026-11-13T22:36:16.221Z",
+  "tests": [
+    "durable confirmation/waitlist/cancellation/change/event_cancelled intents",
+    "idempotent followup preview",
+    "confirmed capacity",
+    "idempotent retry",
+    "idempotency misuse rejected",
+    "FIFO waitlist",
+    "cancel promotion",
+    "due reminder previews",
+    "cancel and re-register reminder cycle",
+    "reminder deduplication",
+    "stale revision rejected",
+    "capacity floor",
+    "capacity increase promotion",
+    "event cancellation",
+    "stale reminder cancellation",
+    "closed registration rejected",
+    "paid-disabled never grants ticket",
+    "browser RPC denied",
+    "fixtures rolled back"
+  ],
+  "functions": [
+    {
+      "proname": "fireside_event_counts",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "proname": "fireside_preview_reminders",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "proname": "fireside_registration",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "proname": "fireside_registration_intent",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "proname": "fireside_save_event",
+      "prosecdef": false,
+      "anon_execute": false,
+      "authenticated_execute": false
+    }
+  ]
+}

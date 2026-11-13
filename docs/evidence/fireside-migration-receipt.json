@@ -1,0 +1,51 @@
+{
+  "sandbox": true,
+  "ref": "atemrshtshxoqnuevvqu",
+  "productionUntouched": true,
+  "sha256": "24ca977da07b23bc5f4fc97ef3ce2bf3c0ec3077bf8d350158016954c80fae36",
+  "at": "2026-11-13T22:35:06.403Z",
+  "security": [
+    {
+      "relname": "fireside_events",
+      "relrowsecurity": true,
+      "anon_select": false,
+      "authenticated_select": false
+    },
+    {
+      "relname": "fireside_inquiries",
+      "relrowsecurity": true,
+      "anon_select": false,
+      "authenticated_select": false
+    },
+    {
+      "relname": "fireside_media",
+      "relrowsecurity": true,
+      "anon_select": false,
+      "authenticated_select": false
+    },
+    {
+      "relname": "fireside_outbox",
+      "relrowsecurity": true,
+      "anon_select": false,
+      "authenticated_select": false
+    },
+    {
+      "relname": "fireside_registrations",
+      "relrowsecurity": true,
+      "anon_select": false,
+      "authenticated_select": false
+    },
+    {
+      "relname": "fireside_requests",
+      "relrowsecurity": true,
+      "anon_select": false,
+      "authenticated_select": false
+    },
+    {
+      "relname": "fireside_settings",
+      "relrowsecurity": true,
+      "anon_select": false,
+      "authenticated_select": false
+    }
+  ]
+}

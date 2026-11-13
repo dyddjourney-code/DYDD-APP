@@ -1,0 +1,15 @@
+{
+  "sandbox": true,
+  "at": "2026-11-13T22:33:31.634Z",
+  "bucket": "fireside-sandbox-private",
+  "passed": true,
+  "tests": [
+    "bucket private",
+    "host-signed upload accepted",
+    "anonymous direct download denied",
+    "anonymous signing denied",
+    "public URL denied",
+    "120-second signed playback accepted"
+  ],
+  "fixtureDeleted": true
+}

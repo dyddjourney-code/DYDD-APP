@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { getSupabaseConfig } from "./lib/supabase/config";
 
 export async function middleware(request: NextRequest) {
-  if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox" && request.method === "GET" && /^\/command-center(?:\/|$)/.test(request.nextUrl.pathname)) {
+  if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox" && request.method === "GET" && /^\/command-center(?:\/|$)/.test(request.nextUrl.pathname) && !/^\/command-center\/fireside(?:\/|$)/.test(request.nextUrl.pathname)) {
     const destination = new URL(request.nextUrl.pathname, "https://dydd-private-owner-console.vercel.app");
     for (const key of ["assessment", "from", "group", "message", "q", "sort", "to"]) {
       const value = request.nextUrl.searchParams.get(key);

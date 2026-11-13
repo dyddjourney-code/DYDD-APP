@@ -1,0 +1,11 @@
+{
+  "at": "2026-11-13T22:36:48.951Z",
+  "passed": true,
+  "checks": [
+    "drop-in window allows midwindow reservation",
+    "drop-in capacity enforced while in progress",
+    "cancellation promotes while drop-in active",
+    "ended drop-in rejects reservation",
+    "rollback removes all fixtures"
+  ]
+}

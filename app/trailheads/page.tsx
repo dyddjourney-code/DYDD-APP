@@ -161,11 +161,6 @@ export default async function TrailheadsPage({ searchParams }: Props) {
               />
             </div>
             <div className="trail-showcase-content">
-              <img
-                className="trail-dydd-logo"
-                src="/brand/dydd-logo-trailheads.webp"
-                alt="Discover Your Divine Design"
-              />
               <TrailPlacard
                 number="01"
                 name="Discover Your Divine Design Journey"

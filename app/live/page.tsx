@@ -51,7 +51,7 @@ export default function LivePage() {
       <header className="fireside-image-header live-fireside-header">
         <img
           alt="Illustrated Live Fireside gathering around a campfire"
-          src="/brand/dydd-live-fireside-banner-concept.png"
+          src="/brand/dydd-live-fireside-compact.webp"
         />
         <div className="live-header-copy">
           <p>Live Fireside</p>

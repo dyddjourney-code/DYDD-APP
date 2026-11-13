@@ -196,13 +196,6 @@ export function FieldKitCollection({
           <span>{number}</span>
         </div>
         <div className="trail-placard-body">
-          {main ? (
-            <img
-              className="trail-dydd-logo"
-              src="/brand/dydd-logo-trailheads.webp"
-              alt="Discover Your Divine Design"
-            />
-          ) : null}
           {assessmentIcons[slug] ? (
             <div className="fieldkit-collection-heading">
               <h3>{name}</h3>

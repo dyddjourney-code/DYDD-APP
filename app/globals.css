@@ -22035,9 +22035,21 @@ body:has(.mobile-nav-drawer[open]) { overflow: hidden; }
 .gear-workshop-contact .button:hover { background:#f8e4ad; }
 .gear-workshop-contact .button:focus-visible { outline:3px solid #fffdf4; outline-offset:4px; }
 .gear-workshop-contact .button:active { transform:translateY(1px); }
-/* The whole original frame remains visible: faces above, fire below. */
-.fireside-page .fireside-page-hero { display:flex; flex-direction:column; align-items:stretch; gap:0; min-height:0; padding:0; overflow:hidden; background:#f7f6ee; color:#243f27; }
-.fireside-page .fireside-page-hero::before { content:''; display:block; position:static; flex:0 0 auto; width:100%; aspect-ratio:1742 / 903; background:url('/brand/dydd-fireside-campfire-banner.png') center / contain no-repeat; }
-.fireside-page .fireside-page-hero > div { padding:clamp(20px,3vw,36px); max-width:none; margin:0; }
-.fireside-page .fireside-page-hero :is(h1,.eyebrow,.lede) { max-width:none; color:#243f27; }
+/* Compact, art-directed Fireside: retain the face without full-frame height. */
+.fireside-page .fireside-page-hero { display:flex; flex-direction:row; align-items:center; min-height:clamp(280px,30vw,380px); padding:24px 30px; overflow:hidden; background:linear-gradient(90deg,rgba(19,29,22,.88),rgba(19,29,22,.7) 31%,transparent 58%),url('/brand/dydd-fireside-compact.webp') center / cover no-repeat; color:#fffdf4; }
+.fireside-page .fireside-page-hero::before { display:none; }
+.fireside-page .fireside-page-hero > div { padding:0; max-width:440px; margin:0; }
+.fireside-page .fireside-page-hero :is(h1,.eyebrow,.lede) { color:#fffdf4; }
+.fireside-page .fireside-page-hero h1 { max-width:12ch; font-size:clamp(32px,4vw,46px); line-height:1.1; }
+.fireside-page .fireside-page-hero .lede { max-width:38ch; font-size:18px; line-height:1.55; }
+.fireside-image-header.live-fireside-header img { width:100%; height:auto; aspect-ratio:1672 / 440; max-height:320px; object-fit:cover; }
+.fireside-page .fireside-preview-image img { height:auto; aspect-ratio:18 / 7; object-fit:cover; }
+@media(max-width:640px) {
+ .fireside-page .fireside-page-hero { flex-direction:column; align-items:stretch; min-height:0; padding:0; background:#f7f6ee; color:#243f27; }
+ .fireside-page .fireside-page-hero::before { content:''; display:block; width:100%; aspect-ratio:2342 / 800; background:url('/brand/dydd-fireside-compact.webp') center / cover no-repeat; }
+ .fireside-page .fireside-page-hero > div { padding:16px; max-width:none; }
+ .fireside-page .fireside-page-hero :is(h1,.eyebrow,.lede) { color:#243f27; max-width:none; }
+ .fireside-page .fireside-page-hero h1 { font-size:26px; line-height:1.15; margin-bottom:12px; }
+ .fireside-page .fireside-page-hero .lede { font-size:16px; line-height:1.5; }
+}
 @media(max-width:640px) { .gear-workshop-contact { flex-direction:column; align-items:stretch; padding:22px 18px; gap:18px; } }

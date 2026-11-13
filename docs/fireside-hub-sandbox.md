@@ -48,3 +48,5 @@ Focused regression scripts: `scripts/fireside-refinement-host-qa.mjs` (local pro
 
 ## Routing correction — 2026-11-13
 `/fireside` is the original illustrated jump-off landing (restored from b399847), not the event application. Its Waypoints and Live cards retain their original design and destinations. `/live` is the existing canonical Live Fireside event/library application; calendar and preview-email links remain there. Verified administrators see Manage Live Fireside on the landing, Live navigation, and Command Center views. Guests and private owner-review links receive no host capability. Host stays `/command-center/fireside`; it requires verified admin authentication. Integrations remain inactive.
+
+The existing sandbox middleware normally forwards Command Center to the separate private console. A narrow exception lets **verified sandbox admins only** open the local `/command-center` overview and its Live Fireside entry. Other users, owner-preview links, and other Command Center routes keep the existing forwarding behavior. No private-console project was deployed.

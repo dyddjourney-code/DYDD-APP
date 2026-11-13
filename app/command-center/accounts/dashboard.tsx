@@ -7,7 +7,7 @@ import styles from './dashboard.module.css';
 const date = (value: string) => new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(value));
 const monthLabel = (month: string) => new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(month+'-01T12:00:00Z'));
 const count = (value: number) => new Intl.NumberFormat('en-US').format(value);
-export function AccountsDashboard({ data, overviewHref }: { data: AccountsDashboardData; overviewHref: string }) {
+export function AccountsDashboard({ data, overviewHref, showPreviewNavigation }: { data: AccountsDashboardData; overviewHref: string; showPreviewNavigation: boolean }) {
   const currentMonth = monthKey(data.fetchedAt);
   const [month, setMonth] = useState(currentMonth), [query, setQuery] = useState(''), [access, setAccess] = useState('all'), [completion, setCompletion] = useState('all'), [signupScope, setSignupScope] = useState('all'), [page, setPage] = useState(1);
   const [scenario, setScenario] = useState('');
@@ -21,7 +21,7 @@ export function AccountsDashboard({ data, overviewHref }: { data: AccountsDashbo
   const scenarioNumber = scenario.trim() && /^\d{1,7}$/.test(scenario) ? Number(scenario) : null;
   function chooseMonth(value: string) { if (/^\d{4}-(0[1-9]|1[0-2])$/.test(value) && value <= currentMonth) { setMonth(value); setPage(1); } }
   return <main className={`${styles.shell} command-center-shell`}>
-    <nav className={styles.tabs} aria-label="Command Center views"><Link href={overviewHref}>Assessments & groups</Link><span aria-current="page">Accounts</span></nav>
+    {showPreviewNavigation && <nav className={styles.tabs} aria-label="Command Center views"><Link href={overviewHref}>Assessments & groups</Link><span aria-current="page">Accounts</span></nav>}
     <header className={styles.hero}>
       <div><p className={styles.eyebrow}>Command Center / Owner only</p><h1>Accounts</h1><p>Signups, access and completed milestones.<br />A clear view of your sandbox community.</p><span className={styles.tag}>SANDBOX DATA ONLY</span></div>
       <img src="/brand/dydd-ranger-station-header.png" alt="Illustrated DYDD ranger station in a green mountain landscape" />

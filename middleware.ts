@@ -37,9 +37,10 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Verified sandbox admins need the local overview to discover the Fireside host.
-  // Keep every other existing private-console redirect unchanged.
-  if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox" && request.method === "GET" && /^\/command-center(?:\/|$)/.test(request.nextUrl.pathname) && !/^\/command-center\/fireside(?:\/|$)/.test(request.nextUrl.pathname) && !(request.nextUrl.pathname === "/command-center" && user?.email_confirmed_at && isDyddAdminEmail(user.email))) {
+  // Verified sandbox admins stay in the complete isolated Command Center.
+  // All tabs share this origin and its existing Supabase session; never send
+  // sandbox-admin navigation to the live-data private owner deployment.
+  if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox" && request.method === "GET" && /^\/command-center(?:\/|$)/.test(request.nextUrl.pathname) && !/^\/command-center\/fireside(?:\/|$)/.test(request.nextUrl.pathname) && !(user?.email_confirmed_at && isDyddAdminEmail(user.email))) {
     const destination = new URL(request.nextUrl.pathname, "https://dydd-private-owner-console.vercel.app");
     for (const key of ["assessment", "from", "group", "message", "q", "sort", "to"]) {
       const value = request.nextUrl.searchParams.get(key);

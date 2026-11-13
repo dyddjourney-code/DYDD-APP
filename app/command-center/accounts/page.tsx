@@ -12,7 +12,7 @@ export default async function AccountsPage({ searchParams }: { searchParams: Pro
   const overviewHref = '/command-center' + (params.review === 'owner' && params.key ? '?' + new URLSearchParams({ review: 'owner', key: params.key }) : '');
   try {
     const data = await readAccountsDashboard(params);
-    return <AccountsDashboard data={data} overviewHref={overviewHref} />;
+    return <AccountsDashboard data={data} overviewHref={overviewHref} showPreviewNavigation={Boolean(params.review === 'owner' && params.key)} />;
   } catch {
     return <main className="command-center-shell"><p className="section-label">Sandbox / Private owner accounts</p><h1>Accounts unavailable</h1><p role="alert">The saved account records could not be loaded. No partial totals are displayed.</p><p><a href="">Try loading again</a> · <a href={overviewHref}>Command Center</a></p></main>;
   }

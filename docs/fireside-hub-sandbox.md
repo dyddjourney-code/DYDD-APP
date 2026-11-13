@@ -50,3 +50,33 @@ Focused regression scripts: `scripts/fireside-refinement-host-qa.mjs` (local pro
 `/fireside` is the original illustrated jump-off landing (restored from b399847), not the event application. Its Waypoints and Live cards retain their original design and destinations. `/live` is the existing canonical Live Fireside event/library application; calendar and preview-email links remain there. Verified administrators see Manage Live Fireside on the landing, Live navigation, and Command Center views. Guests and private owner-review links receive no host capability. Host stays `/command-center/fireside`; it requires verified admin authentication. Integrations remain inactive.
 
 The existing sandbox middleware normally forwards Command Center to the separate private console. A narrow exception lets **verified sandbox admins only** open the local `/command-center` overview and its Live Fireside entry. Other users, owner-preview links, and other Command Center routes keep the existing forwarding behavior. No private-console project was deployed.
+
+## Command Center top-tab correction — November 13
+
+The actual existing owner console is `dydd-private-owner-console.vercel.app`,
+project `prj_Aw8o5xjiMpVY9NaGvFBsamRIM4Aq`. Its current live revision is
+`3fd0f126dd5fab4f09751b848fb246049de0c4f3`, branch
+`fix/owner-fruitful-life-360-live-2026-11-13`, implemented by
+`projects/dydd-owner-fruitful-live-2026-11-13` (original full-console architecture
+from `projects/dydd-owner-full`). Its own deployment documentation pins
+it to **production**, original-school live Supabase data, and Vercel SSO on ALL
+ deployments. It cannot be modified/deployed under sandbox-only authorization.
+The archived `dydd-owner-console` prototype must never be redeployed.
+
+The concrete isolated counterpart is the sandbox's existing full Command Center
+at `/command-center`. Its shared layout now renders persistent **top-level tabs**:
+Assessments & groups, Accounts, **Fireside** (the original two-tab pattern plus
+the requested new tab). Existing sidebar subnavigation remains untouched.
+Verified confirmed sandbox admins remain on the sandbox origin for every tab,
+using the same existing Supabase cookies, with no second login or cross-origin
+handoff. Original page/API authorization remains authoritative. Review-token-only
+access does not reveal this private tab bar or grant Fireside host privileges.
+Other users retain existing private-owner forwarding. `/fireside` remains the
+restored original landing; `/live` remains the public event hub. No live console,
+production app, database configuration or Camp Circles changes are included.
+
+Remaining release boundary: inserting Fireside into John's **actual live owner
+console** requires explicit authorization to change that production private
+console, plus a production-versus-sandbox Fireside backend/session design. Vercel
+SSO there is not a sandbox Supabase user session; no token transfer or bypass was
+introduced. Do not describe the sandbox counterpart as the live console change.

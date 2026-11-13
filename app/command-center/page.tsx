@@ -1597,10 +1597,9 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
         </div>
       </section>
 
-      {isAdmin && isSandbox() ? (
+      {isAdmin && isSandbox() && isOwnerPreview ? (
         <nav aria-label="Command Center views" style={{ display: 'flex', gap: 16, flexWrap: 'wrap', padding: '16px 0' }}>
           <span aria-current="page">Assessments &amp; groups</span>
-          {user?.email_confirmed_at && isDyddAdminEmail(user.email) ? <Link href="/command-center/fireside">Manage Live Fireside</Link> : null}
           <Link href={'/command-center/accounts' + (isOwnerPreview ? '?' + new URLSearchParams({ review: 'owner', key: params?.key ?? '' }) : '')}>Accounts</Link>
         </nav>
       ) : null}

@@ -2,7 +2,7 @@
 
 UI-only refinement shared surgically between live and sandbox; environment-specific billing, timing, course access, owner previews and Circles remain intact.
 
-- Trailheads completed-assessment actions target `/field-kit#results-designid`, `#results-spiritual-gifts`, `#results-fruitlife-360` and `#results-designpd`, retaining existing review/lane query parameters. Journey has a matching `#results-journey` collection destination (no invented Journey assessment report).
+- Trailheads completed-assessment actions target `/field-kit#results-designid`, `#results-spiritual-gifts`, `#results-fruitlife-360` and `#results-designpd`, retaining existing review query parameters. Fruitful Life standalone results retain their lane; Spiritual Gifts from that lane opens the full Field Kit, because the standalone collection contains only Fruitful Life reports. Journey has a matching `#results-journey` collection destination (no invented Journey assessment report).
 - The shared `TrailAnchor` aligns the visible **Reports** panel in the named collection, opens its mobile disclosure, reserves at least 100px for navigation, and settles initial load, client navigation, same-page hash navigation and browser history. It stops correction on deliberate user input. Existing `#collection-*` links remain supported.
 - Fruitful Life standalone lane has the corresponding results anchor while retaining its legacy `#artifacts` marker.
 - Journey placard uses the exact existing DYDD puzzle emblem cropped from the approved transparent brand logo; desktop placement matches other placard icons, and existing compact mobile signpost treatment is retained.

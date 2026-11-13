@@ -15,7 +15,7 @@ export function SuggestedTrailRoute() {
         <h2 id="suggested-trail-route-title">Suggested Trail Route</h2>
         <p>A suggested order, not a set of locks. You can also begin with a focused path.</p>
       </header>
-      <img className={styles.banner} src="/brand/suggested-trail-route-photo.webp" width={1800} height={1202} alt="Five numbered wooden signposts follow a real winding woodland trail, from DYDD Journey in the foreground through DesignID, Spiritual Gifts, Fruitful Life 360 and DesignPD in the distance." loading="lazy" />
+      <img className={styles.banner} src="/brand/suggested-trail-route.webp" width={1800} height={460} alt="" loading="lazy" />
       <ol className={styles.stops} aria-label="Suggested trail order">
         {stops.map((stop, index) => (
           <li key={stop.name}>

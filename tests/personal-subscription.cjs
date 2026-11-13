@@ -18,5 +18,8 @@ const service=load('lib/commerce/personal-subscription.ts',{stripe:Stripe});
  const result=await service.cancelPersonalSubscription(user,summary.paidThrough);assert.equal(result.cancelAtPeriodEnd,true);assert.equal(result.nextBillAt,null);assert.equal(result.paidThrough,summary.paidThrough);assert.match(lastOptions.idempotencyKey,/^[a-f0-9]{64}$/);
  await service.cancelPersonalSubscription(user,summary.paidThrough);assert.equal(mutations,1);
  delete process.env.STRIPE_PERSONAL_PRICE_ID;assert.equal((await service.getPersonalSubscription(user)).state,'unavailable');
+ delete process.env.STRIPE_PERSONAL_PRODUCT_ID;assert.equal((await service.getPersonalSubscription(user)).state,'current');
+ mode='circle';assert.equal((await service.getPersonalSubscription(user)).state,'unavailable');
+ delete process.env.STRIPE_SECRET_KEY;assert.equal((await service.getPersonalSubscription(user)).state,'unavailable');
  console.log('PASS Personal catalog, live mode, user/customer ownership, scope, ambiguity, paid invoice boundary, stale confirmation, cancellation and idempotency');
 })().catch(e=>{console.error(e);process.exitCode=1});

@@ -12,7 +12,10 @@ function configuration() {
  const key = process.env.STRIPE_SECRET_KEY;
  const price = process.env.STRIPE_PERSONAL_PRICE_ID;
  const product = process.env.STRIPE_PERSONAL_PRODUCT_ID;
- if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT !== 'production' || !key || !/^(sk|rk)_live_/.test(key) || !price?.startsWith('price_') || !product?.startsWith('prod_')) return null;
+ if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT !== 'production' || !key || !/^(sk|rk)_live_/.test(key)) return null;
+ // Optional explicit pins must be complete. Without pins, discover only a positively
+ // owned subscription, then verify its provider-controlled Personal catalog.
+ if ((price || product) && (!price?.startsWith('price_') || !product?.startsWith('prod_'))) return null;
  return { stripe: new Stripe(key), price, product };
 }
 const objectId = (value: string | { id: string } | null | undefined) => typeof value === 'string' ? value : value?.id;
@@ -25,10 +28,7 @@ const iso = (seconds: number) => Number.isSafeInteger(seconds) && seconds > 0 ? 
 async function owned(userId: string) {
  const config = configuration();
  if (!config || !/^[0-9a-f-]{36}$/i.test(userId)) return null;
- const { stripe, price, product } = config;
- const catalog = await stripe.prices.retrieve(price, { expand: ['product'] });
- const itemProduct = catalog.product;
- if (!catalog.livemode || !catalog.active || catalog.unit_amount !== 1000 || catalog.currency !== 'usd' || catalog.type !== 'recurring' || catalog.recurring?.interval !== 'month' || catalog.recurring.interval_count !== 1 || catalog.recurring.usage_type !== 'licensed' || objectId(itemProduct) !== product || typeof itemProduct === 'string' || itemProduct.deleted || !itemProduct.active || !itemProduct.livemode || itemProduct.metadata.app !== 'dydd' || itemProduct.metadata.capability !== 'personal') throw Error('Personal catalog verification failed');
+ const { stripe } = config;
  const found = await stripe.subscriptions.search({ query: `metadata['app']:'dydd' AND metadata['capability']:'personal' AND metadata['user_id']:'${userId}'`, limit: 100 });
  if (found.has_more) throw Error('Ambiguous membership');
  const candidates = found.data.filter(s => !['canceled', 'incomplete_expired'].includes(s.status));
@@ -37,6 +37,12 @@ async function owned(userId: string) {
  // Search is discovery only; retrieve and reverify immediately before any mutation.
  const sub = await stripe.subscriptions.retrieve(candidates[0].id);
  const item = sub.items.data[0];
+ if (sub.items.has_more || sub.items.data.length !== 1 || !item) throw Error('Personal scope verification failed');
+ const price = config.price || item.price.id;
+ const catalog = await stripe.prices.retrieve(price, { expand: ['product'] });
+ const itemProduct = catalog.product;
+ const product = config.product || objectId(itemProduct);
+ if (!catalog.livemode || !catalog.active || catalog.unit_amount !== 1000 || catalog.currency !== 'usd' || catalog.type !== 'recurring' || catalog.recurring?.interval !== 'month' || catalog.recurring.interval_count !== 1 || catalog.recurring.usage_type !== 'licensed' || objectId(itemProduct) !== product || typeof itemProduct === 'string' || itemProduct.deleted || !itemProduct.active || !itemProduct.livemode || itemProduct.metadata.app !== 'dydd' || itemProduct.metadata.capability !== 'personal') throw Error('Personal catalog verification failed');
  const customer = await stripe.customers.retrieve(objectId(sub.customer)!);
  if (!sub.livemode || sub.metadata.app !== 'dydd' || sub.metadata.capability !== 'personal' || sub.metadata.user_id !== userId || customer.deleted || !customer.livemode || customer.metadata.app !== 'dydd' || customer.metadata.user_id !== userId || sub.items.has_more || sub.items.data.length !== 1 || item.quantity !== 1 || item.price.id !== price || objectId(item.price.product) !== product || sub.schedule || sub.collection_method !== 'charge_automatically') throw Error('Personal ownership verification failed');
  let paidThrough: string | null = null;

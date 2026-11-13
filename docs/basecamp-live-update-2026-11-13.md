@@ -25,8 +25,11 @@ presentation reference, never wholesale deployed.
 ## Genuine Personal subscription contract
 
 `getPersonalSubscription` is server-only. Configuration must explicitly provide
-production mode, a LIVE `STRIPE_SECRET_KEY`, `STRIPE_PERSONAL_PRICE_ID`, and
-`STRIPE_PERSONAL_PRODUCT_ID`. Exact catalog validation requires live, active USD
+production mode and a LIVE `STRIPE_SECRET_KEY`. Optional explicit pins
+`STRIPE_PERSONAL_PRICE_ID` and `STRIPE_PERSONAL_PRODUCT_ID` must be supplied together.
+Without pins, discovery begins only with the positively owned Personal subscription,
+then retrieves and independently verifies its real provider-controlled catalog.
+Exact catalog validation requires live, active USD
 1000/month licensed quantity-one product and price, `app=dydd` and
 `capability=personal` metadata. Subscription must have identical fixed product /
 price and metadata `app=dydd, capability=personal, user_id=<verified auth UUID>`;
@@ -59,17 +62,20 @@ replacement account or charging for access already included in this LIVE beta.
 
 ## Important activation boundary (not a completed LIVE cancellation claim)
 
-Production currently has **no Personal product/price configuration keys**. Its
+Production currently has **no explicit Personal product/price pins**. The code
+therefore discovers only positively owned subscriptions with the exact trusted
+Personal metadata contract; it never identifies a plan by amount/name/email alone. Its
 existing sensitive LIVE payment key is not exported by Vercel. The inherited
 protected Stripe key successfully reads TEST objects only (`livemode:false`);
 legacy local key probe returns401. TEST Personal subscriptions cannot be promoted
 or represented as LIVE memberships. No live catalog or subscription was created,
 charged, changed or canceled. No customer cancellation was attempted.
 
-Consequently genuine paid billing currently fails closed, and beta/lifetime
-members retain their normal access card. Cancellation implementation is ready
-for a positively configured/owned LIVE Personal subscription, but activation and
-real LIVE provider acceptance are **not verified**. Existing one-time production
+Consequently unconfigured/absent/unverifiable paid memberships fail closed, while
+beta/lifetime members retain their normal access card. The existing LIVE runtime
+key can manage a positively owned LIVE Personal subscription after full catalog
+verification, with no new customer/catalog/subscription creation. Actual LIVE
+Personal provider acceptance is **not verified**. Existing one-time production
 assessment billing is unchanged. Do not enable a paid membership checkout or
 expiry gate merely to make a visual subscription card appear.
 

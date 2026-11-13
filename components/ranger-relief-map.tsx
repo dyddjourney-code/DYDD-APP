@@ -202,11 +202,11 @@ const mapPoints: MapPoint[] = [
 ];
 
 const legendTrails = [
-  { id: "dydd-journey", label: "Main DYDD Journey" },
+  { id: "dydd-journey", label: "DYDD Journey" },
+  { id: "designid", label: "DesignID" },
   { id: "spiritual-gifts", label: "Spiritual Gifts" },
   { id: "fruitlife-360", label: "Fruitful Life 360" },
-  { id: "designpd", label: "DesignPD Trail" },
-  { id: "designid", label: "DesignID" },
+  { id: "designpd", label: "DesignPD" },
 ];
 
 const trailLines = [

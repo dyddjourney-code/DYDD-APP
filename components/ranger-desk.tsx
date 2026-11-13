@@ -6,7 +6,7 @@ import { Suspense, useState } from "react";
 const questions = [
   {
     question: "Where should I begin?",
-    answer: "For the whole picture, begin with the Discover Your Divine Design Journey. It brings identity, design, gifting, and purpose together. If you want a smaller beginning, choose a focused short trail at Trailheads.",
+    answer: "For the whole picture, begin with the DYDD Journey, which launches DesignID and then Spiritual Gifts along the way. Continue with the independent Fruitful Life 360 path, then DesignPD. This is a suggested order; a focused path can also be your starting point.",
     href: "/trailheads", action: "Explore Trailheads",
   },
   {

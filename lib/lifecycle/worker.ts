@@ -95,9 +95,9 @@ export async function lifecycleEligibility(job:any,now=Date.now()):Promise<{stop
   if(type==='account_service'){const account=await userById(context.userId);if(!account?.email_confirmed_at||account.email?.toLowerCase()!==job.email)return {stop:'Verified account or requested export recipient changed.'};}
   if(type==='fruitlife_observer'||type==='fruitlife_report'){
    const session=must(await db.from('fruitlife_360_sessions').select('*').eq('id',context.sessionId).maybeSingle()) as any;
-   if(!session||['archived','cancelled'].includes(session.session_status))return {stop:'FruitLife session is no longer active.'};
+   if(!session||['archived','cancelled'].includes(session.session_status))return {stop:'Fruitful Life 360 session is no longer active.'};
    if(type==='fruitlife_observer'){
-    if(['ready','sent'].includes(session.report_status))return {stop:'FruitLife cycle is complete.'};
+    if(['ready','sent'].includes(session.report_status))return {stop:'Fruitful Life 360 cycle is complete.'};
     const invite=must(await db.from('fruitlife_360_observer_invites').select('*').eq('session_id',context.sessionId).eq('observer_email',job.email).maybeSingle()) as any;
     if(!invite||!['invited','draft','opened'].includes(invite.invite_status)||invite.completed_at)return {stop:'Observer already completed, declined or was removed.'};
     if(context.observerLink&&invite.metadata?.observerLink!==context.observerLink)return {stop:'Observer invitation link was replaced.'};
@@ -197,11 +197,11 @@ export async function lifecycleEligibility(job:any,now=Date.now()):Promise<{stop
  if(job.template_id==='C04'){
   if(activeCircle)return {stop:'Optional recommendation suppressed during active Circle.'};
   const snapshots=await getAssessmentSnapshotsForUser(user.id,user.email);
-  if(snapshots.all.some(s=>s.assessment_type==='fruit_360'&&completedLegacyFruitSnapshot(s))||(await completedFruitSessionsForEmail(user.email,user.id)).length)return {stop:'FruitLife report already complete.'};
+  if(snapshots.all.some(s=>s.assessment_type==='fruit_360'&&completedLegacyFruitSnapshot(s))||(await completedFruitSessionsForEmail(user.email,user.id)).length)return {stop:'Fruitful Life 360 report already complete.'};
   const sessions=must(await db.from('fruitlife_360_sessions').select('session_status').eq('participant_email',job.email).not('session_status','in','(archived,cancelled)')) as any[];
-  if(sessions.length)return {stop:'FruitLife already underway or complete.'};
+  if(sessions.length)return {stop:'Fruitful Life 360 already underway or complete.'};
   const entitlements=must(await db.from('fruitlife_360_entitlements').select('id').eq('user_id',user.id).eq('status','active').is('consumed_at',null).limit(1)) as any[];
-  if(!entitlements.length)return {stop:'No currently usable FruitLife access; no purchase recommendation sent.'};
+  if(!entitlements.length)return {stop:'No currently usable Fruitful Life 360 access; no purchase recommendation sent.'};
  }
  if(job.template_id==='C05'){
   if(activeCircle)return {stop:'Optional recommendation suppressed during active Circle.'};
@@ -209,7 +209,7 @@ export async function lifecycleEligibility(job:any,now=Date.now()):Promise<{stop
   if(!hasDesignPdCourseAccess(user.email,snapshots.all))return {stop:'DesignPD access is not available; no unavailable checkout invitation.'};
   if(progress.some(p=>p.course_slug==='designpd-alignment'))return {stop:'DesignPD learning already underway or complete.'};
   const sessions=must(await db.from('fruitlife_360_sessions').select('id').eq('participant_email',job.email).in('session_status',['waiting_for_self','waiting_for_observers','ready_for_report'])) as any[];
-  if(sessions.length)return {stop:'FruitLife still needs attention; do not add another recommendation.'};
+  if(sessions.length)return {stop:'Fruitful Life 360 still needs attention; do not add another recommendation.'};
   const recent=must(await db.from('dydd_lifecycle_jobs').select('id').eq('user_id',user.id).eq('template_id','C04').in('status',['accepted','sandbox_ready']).gte('scheduled_at',iso(now-7*day)).limit(1)) as any[];
   if(recent.length)return {deferUntil:iso(now+day),reason:'Keep at least seven days between next-step recommendations.'};
  }

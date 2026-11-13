@@ -38,7 +38,7 @@ export const trailDefinitions = [
   },
   {
     id: "fruitlife-360",
-    name: "FruitLife360",
+    name: "Fruitful Life 360",
     assessmentType: "fruit_360",
     courseSlug: "fruitlife-360-formation",
     courseHref: "/courses/fruitlife-360-formation",
@@ -49,10 +49,10 @@ export const trailDefinitions = [
     rating: "Easy",
     ratingNote: "Gentle reflection and simple practices; allow time for observer feedback.",
     terrain: "Self-reflection, feedback, and everyday formation",
-    gear: "Your completed FruitLife360 report for the course",
+    gear: "Your completed Fruitful Life 360 report for the course",
     bestFor: "Those ready for honest feedback and intentional growth",
     prerequisite:
-      "Complete your FruitLife360 assessment and report before starting the course.",
+      "Complete your Fruitful Life 360 assessment and report before starting the course.",
   },
   {
     id: "designpd",

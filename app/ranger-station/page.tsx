@@ -38,7 +38,7 @@ const pathGroups = [
       },
       {
         image: "/brand/badges/fruitlife-360-badge.png",
-        label: "FruitLife360",
+        label: "Fruitful Life 360",
         status: "Can stand alone",
         text:
           "Use fruit, feedback, and honest reflection to see visible growth and where grace can deepen.",

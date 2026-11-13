@@ -215,7 +215,7 @@ async function getSessionForToken(
   responseType: FruitLifeResponseType,
 ) {
   if (!sessionId || !token) {
-    fail(path, "This FruitLife link is missing its session token.");
+    fail(path, "This Fruitful Life 360 link is missing its session token.");
   }
 
   const supabase = createSupabaseAdminClient();
@@ -228,7 +228,7 @@ async function getSessionForToken(
     .single();
 
   if (error || !session) {
-    fail(path, "This FruitLife session was not found.");
+    fail(path, "This Fruitful Life 360 session was not found.");
   }
 
   const typedSession = session as SessionLookup;
@@ -258,7 +258,7 @@ async function getSessionForToken(
   }
 
   if (!observerInviteId) {
-    fail(path, "This FruitLife link is not valid.");
+    fail(path, "This Fruitful Life 360 link is not valid.");
   }
 
   return { observerInviteId, session: typedSession, supabase };
@@ -324,7 +324,7 @@ async function refreshFruitLifeCompletion(supabase: ReturnType<typeof createSupa
 async function processQueuedFruitLifeReport() {
   after(async () => {
     try { await processFruitLifeReportJobs({ limit: 1 }); }
-    catch (error) { console.error("FruitLife report worker will retry on its next scheduled run.", error); }
+    catch (error) { console.error("Fruitful Life 360 report worker will retry on its next scheduled run.", error); }
   });
 }
 
@@ -340,17 +340,17 @@ function fruitLifeObserverEmail({
   const greeting = observerName ? `Hi ${observerName},` : "Hi,";
   const safeGreeting = escapeHtml(greeting);
   const safeParticipantName = escapeHtml(participantName);
-  const text = `${greeting}\n\n${participantName} invited you to complete a FruitLife360 observer reflection.\n\nComplete the FruitLife360 assessment:\n${observerLink}\n\nThis is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.\n\nSincerely,\nDiscover Your Divine Design Team`;
+  const text = `${greeting}\n\n${participantName} invited you to complete a Fruitful Life 360 observer reflection.\n\nComplete the Fruitful Life 360 assessment:\n${observerLink}\n\nThis is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.\n\nSincerely,\nDiscover Your Divine Design Team`;
 
   return {
     html: `
       <p>${safeGreeting}</p>
-      <p>${safeParticipantName} invited you to complete a FruitLife360 observer reflection.</p>
-      <p><a href="${observerLink}">Complete the FruitLife360 assessment</a></p>
+      <p>${safeParticipantName} invited you to complete a Fruitful Life 360 observer reflection.</p>
+      <p><a href="${observerLink}">Complete the Fruitful Life 360 assessment</a></p>
       <p>This is designed as a formation mirror, not a grade or label. Your feedback should be clear, kind, and useful.</p>
       <p>Sincerely,<br>Discover Your Divine Design Team</p>
     `,
-    subject: `FruitLife360 reflection for ${participantName}`,
+    subject: `Fruitful Life 360 reflection for ${participantName}`,
     text,
   };
 }
@@ -497,7 +497,7 @@ async function saveResponse({
     message:
       responseType === "self"
         ? "Your self reflection has been submitted."
-        : "Observer reflection submitted. Thank you for helping with this FruitLife360 report.",
+        : "Observer reflection submitted. Thank you for helping with this Fruitful Life 360 report.",
     return_to: "/field-kit#current-assessment-process",
     session: session.id,
     token,
@@ -613,7 +613,7 @@ export async function createFruitLifeSession(formData: FormData) {
     .single();
 
   if (sessionError || !session) {
-    fail("/fruitlife360", sessionError?.message ?? "Unable to create FruitLife session.");
+    fail("/fruitlife360", sessionError?.message ?? "Unable to create Fruitful Life 360 session.");
   }
 
   if (!lifetimeAccess && legacyLane && user?.id && activeEntitlement) {
@@ -624,7 +624,7 @@ export async function createFruitLifeSession(formData: FormData) {
         "/fruitlife360",
         error instanceof Error
           ? error.message
-          : "Unable to connect your FruitLife purchase to this session.",
+          : "Unable to connect your Fruitful Life 360 purchase to this session.",
       );
     }
   }
@@ -760,7 +760,7 @@ export async function sendFruitLifeReminder(formData: FormData) {
       };
     })
     .filter((observer) => observer.email && observer.link);
-  const participantName = String(session.participant_name ?? "your FruitLife participant");
+  const participantName = String(session.participant_name ?? "your Fruitful Life 360 participant");
   // Self participants are never chased by email, even while observers are pending.
   const observerResult = await recordAndSendObserverEmails({
     reminder:true,

@@ -5,9 +5,9 @@ export const fruitLife360Course = {
   accent: "red",
   assessmentType: "fruit_360",
   companionNote:
-    "Dydi should read FruitLife as a gentle formation mirror: encouragement first, pressure awareness without shame, and one Spirit-led next practice.",
+    "Dydi should read Fruitful Life 360 as a gentle formation mirror: encouragement first, pressure awareness without shame, and one Spirit-led next practice.",
   description:
-    "A formation course for reading FruitLife360 results through prayer, humility, trusted perspective, and small practices.",
+    "A formation course for reading Fruitful Life 360 results through prayer, humility, trusted perspective, and small practices.",
   logo: "/brand/tools/fruitful-life-360-logo.jpg",
   modules: [
     {
@@ -16,13 +16,13 @@ export const fruitLife360Course = {
       lessons: [
         {
           body: [
-            "FruitLife360 is a gentle mirror for growth in Christ. It helps you prayerfully notice what is becoming visible in daily life through love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, and self-control.",
+            "Fruitful Life 360 is a gentle mirror for growth in Christ. It helps you prayerfully notice what is becoming visible in daily life through love, joy, peace, patience, kindness, goodness, faithfulness, gentleness, and self-control.",
             "This course is about growth in Christ, not performance. The fruit of the Spirit is evidence of the Spirit's work in us. The goal is not to become impressive; the goal is to become more like Jesus.",
-            "A mirror helps us notice what is true. FruitLife360 reflects what appears visible in this season, but it does not define your worth, maturity, or standing before God.",
+            "A mirror helps us notice what is true. Fruitful Life 360 reflects what appears visible in this season, but it does not define your worth, maturity, or standing before God.",
             "Self-reflection helps you begin with prayerful honesty. Trusted observers can help you notice grace, growth, and blind spots. Receive the process with humility, hope, and discernment.",
           ],
           image: {
-            alt: "FruitLife360 logo for course orientation",
+            alt: "Fruitful Life 360 logo for course orientation",
             caption: [
               "But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness, gentleness and self-control.",
               "Galatians 5:22-23",
@@ -38,8 +38,8 @@ export const fruitLife360Course = {
             "When you think about the fruit of the Spirit, which fruit do you most long to see formed more deeply in your life right now?",
           slug: "welcome-to-fruitlife-360",
           summary:
-            "Introduces FruitLife360 as a gentle mirror for noticing grace, growth, and one faithful next step.",
-          title: "Welcome to FruitLife360",
+            "Introduces Fruitful Life 360 as a gentle mirror for noticing grace, growth, and one faithful next step.",
+          title: "Welcome to Fruitful Life 360",
           companionMoment: fruitLifeCompanionMoments.welcome,
         },
       ],
@@ -55,7 +55,7 @@ export const fruitLife360Course = {
             "Pressure notes show where fruit may feel less steady under stress, conflict, fatigue, disappointment, temptation, uncertainty, or delay. Pressure does not create the whole story; it reveals places where support, prayer, and practice may be needed.",
           ],
           image: {
-            alt: "FruitLife360 report review image",
+            alt: "Fruitful Life 360 report review image",
             src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/21593100-0e06-4060-a22f-cae3d78c0cdf/2026-09-17_16-53-11.jpg?format=2500w",
           },
           focus: [
@@ -89,7 +89,7 @@ export const fruitLife360Course = {
             "What would it look like to use your report as a formation guide rather than a personal evaluation?",
           slug: "how-to-use-the-report",
           summary:
-            "Turns FruitLife insight into prayer, conversation, practice, and a repeatable formation rhythm.",
+            "Turns Fruitful Life 360 insight into prayer, conversation, practice, and a repeatable formation rhythm.",
           title: "How to Use the Report",
         },
         {
@@ -517,19 +517,19 @@ export const fruitLife360Course = {
             "What fruit do you want to revisit in three months with prayerful attention?",
           slug: "develop-over-time",
           summary:
-            "Builds a gentle rhythm for revisiting FruitLife results and practices over time.",
+            "Builds a gentle rhythm for revisiting Fruitful Life 360 results and practices over time.",
           title: "Develop Over Time",
         },
         {
           body: [
-            "FruitLife360 connects with the broader DYDD journey by keeping identity, gifts, design, purpose, and action rooted in Christlike formation.",
+            "Fruitful Life 360 connects with the broader DYDD journey by keeping identity, gifts, design, purpose, and action rooted in Christlike formation.",
             {
               kind: "list",
               items: [
                 "DesignID helps describe design reflections.",
                 "DesignPD helps describe how design plans, decides, and acts.",
                 "Spiritual Gifts helps notice Spirit-empowered contribution.",
-                "FruitLife360 helps keep the whole journey rooted in Christlike formation.",
+                "Fruitful Life 360 helps keep the whole journey rooted in Christlike formation.",
               ],
             },
             "Gifts need fruit. Leadership needs love, discernment needs gentleness, service needs joy and faithfulness, and courage needs self-control.",
@@ -540,7 +540,7 @@ export const fruitLife360Course = {
             src: "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/8bf5c368-8caf-4050-b0fa-3f6d022209eb/20260817_1901432.jpg?format=2500w",
           },
           focus: [
-            "FruitLife grounds the whole DYDD journey in Christlike formation.",
+            "Fruitful Life 360 grounds the whole DYDD journey in Christlike formation.",
             "Gifts and design become healthier when shaped by fruit.",
             "The final invitation is grace, practice, trusted community, and one next step.",
           ],
@@ -548,7 +548,7 @@ export const fruitLife360Course = {
             "How does fruit formation shape the way you use your gifts and live your design?",
           slug: "dydd-connections",
           summary:
-            "Connects FruitLife360 to DesignID, Spiritual Gifts, DesignPD, purpose, and abiding.",
+            "Connects Fruitful Life 360 to DesignID, Spiritual Gifts, DesignPD, purpose, and abiding.",
           title: "DYDD Connections",
           companionMoment: fruitLifeCompanionMoments.connection,
         },
@@ -558,7 +558,7 @@ export const fruitLife360Course = {
   price: "$10 each time",
   slug: "fruitlife-360-formation",
   sourceNote:
-    "Built from the FruitLife360 report: visible fruit, steady forming fruit, growth invitations, pressure notes, observer perspective, practices, and formation guide language.",
+    "Built from the Fruitful Life 360 report: visible fruit, steady forming fruit, growth invitations, pressure notes, observer perspective, practices, and formation guide language.",
   tagline: "Formation over time",
-  title: "FruitLife360 Formation",
+  title: "Fruitful Life 360 Formation",
 } satisfies CourseDefinition;

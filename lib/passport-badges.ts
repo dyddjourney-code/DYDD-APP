@@ -93,13 +93,13 @@ export const defaultPassportBadges: PassportBadge[] = [
     title: "Niche",
   },
   {
-    connectedTo: "FruitLife360 assessment",
-    earnBy: "Complete the self reflection and every required observer response, then receive a completed saved FruitLife360 report.",
+    connectedTo: "Fruitful Life 360 assessment",
+    earnBy: "Complete the self reflection and every required observer response, then receive a completed saved Fruitful Life 360 report.",
     group: "extension",
     image: "/brand/badges/fruitlife-360-badge.png",
     state: "ahead",
     summary: "Shows visible fruit and growth themes through self and observer feedback.",
-    title: "FruitLife360",
+    title: "Fruitful Life 360",
   },
   {
     connectedTo: "DesignPD derived report — Dig Deeper trail ($15)",
@@ -132,7 +132,7 @@ export const designIdReflectionBadges: PassportBadge[] = ["Architect", "Artisan"
 const courseMarkers = [
   { title: "DesignID Course", slug: "designid-foundations", assessment: "DesignID" },
   { title: "Spiritual Gifts Course", slug: "spiritual-gifts-service", assessment: "Spiritual Gifts Assessment" },
-  { title: "FruitLife360 Course", slug: "fruitlife-360-formation", assessment: "FruitLife360" },
+  { title: "Fruitful Life 360 Course", slug: "fruitlife-360-formation", assessment: "Fruitful Life 360" },
   { title: "DesignPD Course", slug: "designpd-alignment", assessment: "DesignPD" },
 ];
 
@@ -147,7 +147,7 @@ export function buildPassportBadges({ completedAssessments, primaryDesign, compl
   const completed = new Set(completedAssessments);
   const assessmentByTitle: Record<string, string> = {
     DesignID: "designid", DesignPD: "designpd",
-    "Spiritual Gifts Assessment": "spiritual_gifts", FruitLife360: "fruit_360",
+    "Spiritual Gifts Assessment": "spiritual_gifts", "Fruitful Life 360": "fruit_360",
   };
   const earnedReflection = completed.has("designid")
     ? designIdReflectionBadges.find((badge) => badge.title.toLowerCase() === primaryDesign?.trim().toLowerCase())
@@ -166,7 +166,7 @@ export function buildPassportBadges({ completedAssessments, primaryDesign, compl
     const prerequisite = marker.slug === "designpd-alignment"
       ? "Complete DesignID, then unlock and save its derived DesignPD report (optional $15 Dig Deeper trail)."
       : marker.slug === "fruitlife-360-formation"
-        ? "Receive a completed saved FruitLife360 report after your self reflection and all required observers."
+        ? "Receive a completed saved Fruitful Life 360 report after your self reflection and all required observers."
         : `Complete and save your ${marker.assessment === "Spiritual Gifts Assessment" ? "Spiritual Gifts" : marker.assessment} scored result/report first.`;
     return {
       title: marker.title, image: assessment.image, group: "extension", kind: "course",

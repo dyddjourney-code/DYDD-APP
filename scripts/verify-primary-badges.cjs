@@ -17,7 +17,7 @@ for(const primary of names) {
  const badges=buildPassportBadges({completedAssessments:['designid','spiritual_gifts','fruit_360','designpd'],primaryDesign:primary,earnedBadgeKeys:[...names,'designid','spiritual_gifts','fruit_360','designpd']});
  assert.deepEqual(badges.filter(b=>names.includes(b.title)&&b.state==='earned').map(b=>b.title),[primary]);
  assert.equal(badges.filter(b=>b.kind==='course'&&b.state==='earned').length,0,'Assessment completion never completes courses');
- for(const title of ['DesignID','Spiritual Gifts Assessment','FruitLife360','DesignPD']) assert.equal(badges.find(b=>b.title===title).state,'earned');
+ for(const title of ['DesignID','Spiritual Gifts Assessment','Fruitful Life 360','DesignPD']) assert.equal(badges.find(b=>b.title===title).state,'earned');
 }
 assert.equal(buildPassportBadges({completedAssessments:[],earnedBadgeKeys:names}).filter(b=>b.state==='earned').length,0,'No saved DesignID cannot gain reflection from stale awards');
 assert.equal(buildPassportBadges({completedAssessments:[]}).filter(b=>b.state==='earned').length,0);

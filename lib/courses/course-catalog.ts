@@ -365,7 +365,7 @@ const baseLearningCourses = [
             body: [
               "Design Pathways is the bridge between insight and movement. It helps the learner ask what direction is emerging, what doors are open, what experiments are wise, and what support is needed.",
               "The goal is not to predict the whole future. The goal is to discern the next faithful path and move with enough clarity to learn.",
-              "This course framework should eventually connect DesignID, Spiritual Gifts, DesignPD, and FruitLife360 into practical pathway decisions.",
+              "This course framework should eventually connect DesignID, Spiritual Gifts, DesignPD, and Fruitful Life 360 into practical pathway decisions.",
             ],
             focus: [
               "A pathway is a direction to test, not a permanent label.",
@@ -477,7 +477,7 @@ const baseLearningCourses = [
     accent: "red",
     assessmentType: "fruit_360",
     companionNote:
-      "Dydi should treat FruitLife as formation feedback: encouragement, pressure awareness, and next practices, never shame or fixed identity.",
+      "Dydi should treat Fruitful Life 360 as formation feedback: encouragement, pressure awareness, and next practices, never shame or fixed identity.",
     description:
       "A formation class for reading visible fruit, pressure patterns, and growth invitations with prayer, humility, and practice.",
     logo: "/brand/tools/fruitful-life-360-logo.jpg",
@@ -488,9 +488,9 @@ const baseLearningCourses = [
         lessons: [
           {
             body: [
-              "FruitLife360 is different from a design assessment. It is not primarily naming wiring; it is helping a learner notice visible fruit and formation invitations in a particular season.",
+              "Fruitful Life 360 is different from a design assessment. It is not primarily naming wiring; it is helping a learner notice visible fruit and formation invitations in a particular season.",
               "The report should be read with gratitude first. Visible fruit is encouragement. Growth invitations are not condemnation. Pressure vulnerabilities are places to prepare before stress rises.",
-              "Heather's sample FruitLife360 snapshot is already mirrored. It shows a self-only report with Goodness, Faithfulness, and Kindness as most visible fruit.",
+              "Heather's sample Fruitful Life 360 snapshot is already mirrored. It shows a self-only report with Goodness, Faithfulness, and Kindness as most visible fruit.",
             ],
             focus: [
               "Read visible fruit as encouragement.",
@@ -501,8 +501,8 @@ const baseLearningCourses = [
               "Where can you thank God for visible fruit before trying to improve anything?",
             slug: "welcome-to-fruitlife-360",
             summary:
-              "Introduces FruitLife360 as a formation mirror for visible fruit and pressure-aware growth.",
-            title: "Welcome to FruitLife360",
+              "Introduces Fruitful Life 360 as a formation mirror for visible fruit and pressure-aware growth.",
+            title: "Welcome to Fruitful Life 360",
           },
           {
             body: [
@@ -530,7 +530,7 @@ const baseLearningCourses = [
         lessons: [
           {
             body: [
-              "Pressure does not create a new person; it often reveals where formation still needs support. FruitLife pressure notes help the learner prepare with prayer, boundaries, conversations, and practices.",
+              "Pressure does not create a new person; it often reveals where formation still needs support. Fruitful Life 360 pressure notes help the learner prepare with prayer, boundaries, conversations, and practices.",
               "A pressure vulnerability should be handled gently. The goal is not to stare at weakness. The goal is to build a faithful response before the next pressure moment.",
               "For Heather's sample, Self-control, Gentleness, and Patience appear in pressure change notes, giving the page a useful visual stress-test for formation prompts.",
             ],
@@ -549,8 +549,8 @@ const baseLearningCourses = [
           {
             body: [
               "A growth invitation should be received as an invitation, not a verdict. The learner can choose one fruit, one ordinary situation, and one practice that makes obedience more concrete.",
-              "FruitLife becomes more powerful when it is reviewed over time. A single report gives a snapshot; repeated reviews can show formation, pressure patterns, and encouragement.",
-              "This lesson can later connect directly to the native FruitLife report process already being built in the app.",
+              "Fruitful Life 360 becomes more powerful when it is reviewed over time. A single report gives a snapshot; repeated reviews can show formation, pressure patterns, and encouragement.",
+              "This lesson can later connect directly to the native Fruitful Life 360 report process already being built in the app.",
             ],
             focus: [
               "Choose one growth invitation instead of trying to improve everything.",
@@ -561,7 +561,7 @@ const baseLearningCourses = [
               "Which one fruit invitation should become your next small formation practice?",
             slug: "choose-one-growth-practice",
             summary:
-              "Turns FruitLife growth invitations into one concrete practice for ordinary life.",
+              "Turns Fruitful Life 360 growth invitations into one concrete practice for ordinary life.",
             title: "Choose One Growth Practice",
           },
         ],
@@ -572,7 +572,7 @@ const baseLearningCourses = [
         lessons: [
           {
             body: [
-              "FruitLife360 can include observer feedback, which means the learner needs a healthy way to receive outside perspective. Feedback should be handled with humility, boundaries, and prayer.",
+              "Fruitful Life 360 can include observer feedback, which means the learner needs a healthy way to receive outside perspective. Feedback should be handled with humility, boundaries, and prayer.",
               "The learner should look for themes rather than reacting to every sentence. What do trusted people consistently see? What surprises the learner? What encourages them?",
               "This module can later help the user invite observers, review the report, and prepare one healthy follow-up conversation.",
             ],
@@ -591,8 +591,8 @@ const baseLearningCourses = [
           {
             body: [
               "A formation plan should be light enough to practice and clear enough to review. The learner can choose a fruit, a pressure pattern, a practice, a support person, and a date to look again.",
-              "FruitLife should not end at a report. It should lead to a small, prayerful practice and a rhythm of noticing the Spirit's work over time.",
-              "This lesson can become the course bridge into the next FruitLife360 assessment cycle.",
+              "Fruitful Life 360 should not end at a report. It should lead to a small, prayerful practice and a rhythm of noticing the Spirit's work over time.",
+              "This lesson can become the course bridge into the next Fruitful Life 360 assessment cycle.",
             ],
             focus: [
               "Choose one fruit, one practice, and one review rhythm.",
@@ -603,7 +603,7 @@ const baseLearningCourses = [
               "What simple formation plan do you want to carry for the next 30 days?",
             slug: "build-a-formation-plan",
             summary:
-              "Closes the FruitLife course by turning the report into a small formation plan.",
+              "Closes the Fruitful Life 360 course by turning the report into a small formation plan.",
             title: "Build a Formation Plan",
           },
         ],
@@ -612,9 +612,9 @@ const baseLearningCourses = [
     price: "Free assessment",
     slug: "fruitlife-360-formation",
     sourceNote:
-      "Built from the FruitLife360 report export: most visible fruit, steady forming fruit, growth invitations, pressure vulnerabilities, fruit summaries, and practices.",
+      "Built from the Fruitful Life 360 report export: most visible fruit, steady forming fruit, growth invitations, pressure vulnerabilities, fruit summaries, and practices.",
     tagline: "Formation over time",
-    title: "FruitLife360 Formation",
+    title: "Fruitful Life 360 Formation",
   },
   {
     accent: "green",
@@ -631,7 +631,7 @@ const baseLearningCourses = [
         lessons: [
           {
             body: [
-              "The Discover Your Divine Design journey is the larger path that holds the individual tools together. DesignID, DesignPD, Spiritual Gifts, and FruitLife360 become supporting mirrors inside a deeper discipleship and purpose process.",
+              "The Discover Your Divine Design journey is the larger path that holds the individual tools together. DesignID, DesignPD, Spiritual Gifts, and Fruitful Life 360 become supporting mirrors inside a deeper discipleship and purpose process.",
               "The class rhythm should be simple and repeatable: Connect, Act, Reflect, Explore. Each stage helps the learner move from content into a faithful next step.",
               "The digital journey is already mapped into stages for Identity, Expertise, Story, Desire, Gifts, and Niche. This course view gives that map a class-style doorway for tomorrow's visual review.",
             ],
@@ -651,7 +651,7 @@ const baseLearningCourses = [
             body: [
               "A learner can collect reports and still miss the deeper invitation. The journey class should help them listen for what God is forming, what has been entrusted, and what next faithful experiment is becoming clear.",
               "The app can already show assessment artifacts, course trailheads, and the journey map. The next stage is tying those into a single guided flow that feels like a path rather than a dashboard.",
-              "Heather's sample lets the visual system show a real blend: Shepherd and Steward DesignID language, DesignPD movement patterns, Spiritual Gifts, and FruitLife formation feedback.",
+              "Heather's sample lets the visual system show a real blend: Shepherd and Steward DesignID language, DesignPD movement patterns, Spiritual Gifts, and Fruitful Life 360 formation feedback.",
             ],
             focus: [
               "Gather the assessment mirrors in one place.",

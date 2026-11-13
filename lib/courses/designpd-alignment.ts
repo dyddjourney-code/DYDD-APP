@@ -614,12 +614,12 @@ export const designPdCourse = {
         },
         {
           body: [
-            "DesignPD is part of a bigger environment. DesignID helps you understand identity and reflection language. Spiritual Gifts helps you consider Spirit-empowered contribution and service. FruitLife360 helps you notice Christlike formation and the visible fruit of the Spirit. Design Pathways helps you turn design into experiments, decisions, and direction. The main Discover Your Divine Design journey holds these pieces together through identity, expertise, story, desire, gifts, and niche.",
+            "DesignPD is part of a bigger environment. DesignID helps you understand identity and reflection language. Spiritual Gifts helps you consider Spirit-empowered contribution and service. Fruitful Life 360 helps you notice Christlike formation and the visible fruit of the Spirit. Design Pathways helps you turn design into experiments, decisions, and direction. The main Discover Your Divine Design journey holds these pieces together through identity, expertise, story, desire, gifts, and niche.",
             "That means DesignPD should not stand alone as a productivity tool. It is a movement lens inside a discipleship and purpose journey. It helps you ask how your design moves, but the larger environment helps you ask why it moves, where it is being sent, how it should mature, and who it is meant to bless. Your Plan, Decide, and Do pattern becomes more meaningful when it is connected to calling, character, community, and Kingdom contribution.",
-            "As you continue, keep looking for integration. Use DesignID for language, DesignPD for movement, Spiritual Gifts for service, FruitLife360 for formation, MAPS for alignment, and the DYDD journey for purpose. The goal is not to collect reports. The goal is to become a person who understands design, walks with God, serves others faithfully, and moves forward on purpose and for purpose.",
+            "As you continue, keep looking for integration. Use DesignID for language, DesignPD for movement, Spiritual Gifts for service, Fruitful Life 360 for formation, MAPS for alignment, and the DYDD journey for purpose. The goal is not to collect reports. The goal is to become a person who understands design, walks with God, serves others faithfully, and moves forward on purpose and for purpose.",
           ],
           focus: [
-            "DesignPD connects to DesignID, Spiritual Gifts, FruitLife360, Design Pathways, MAPS, and the main DYDD journey.",
+            "DesignPD connects to DesignID, Spiritual Gifts, Fruitful Life 360, Design Pathways, MAPS, and the main DYDD journey.",
             "DesignPD is a movement lens, not a standalone productivity tool.",
             "The goal is integrated purpose, formation, service, and faithful contribution.",
           ],

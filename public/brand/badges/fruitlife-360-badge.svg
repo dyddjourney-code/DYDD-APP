@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
-<title id="title">FruitLife 360 badge</title>
-<desc id="desc">DYDD trail badge for FruitLife 360</desc>
+<title id="title">Fruitful Life 360 badge</title>
+<desc id="desc">DYDD trail badge for Fruitful Life 360</desc>
 <defs>
   <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
     <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#000" flood-opacity=".22"/>
@@ -22,7 +22,7 @@
 </g>
 <text x="256" y="124" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="900" letter-spacing="5" fill="#fff8e7">DYDD</text>
 <path d="M82 354h348l28 34-28 34H82l-28-34z" fill="#171915" stroke="#fff8e7" stroke-width="10"/>
-<text x="256" y="399" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="900" letter-spacing="1.5" fill="#fff8e7">FRUITLIFE 360</text>
+<text x="256" y="399" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="900" letter-spacing="1.5" fill="#fff8e7">FRUITFUL LIFE 360</text>
 <circle cx="114" cy="388" r="8" fill="#fff8e7"/>
 <circle cx="398" cy="388" r="8" fill="#fff8e7"/>
 </g>

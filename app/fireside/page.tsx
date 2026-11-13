@@ -52,7 +52,7 @@ export default function FiresidePage() {
         </article>
         <article className="fireside-overview-card">
           <ReviewAwareLink className="fireside-preview-image" href="/live" aria-label="Explore Live Fireside">
-            <img src="/brand/dydd-live-fireside-banner-concept.png" alt="Illustrated Live Fireside gathering around a campfire" />
+            <img src="/brand/dydd-live-fireside-compact.webp" alt="Illustrated Live Fireside gathering around a campfire" />
           </ReviewAwareLink>
           <h2>Live Fireside</h2>
           <p>Gatherings, teaching, and conversations. Explore upcoming live and virtual moments to connect along the way.</p>

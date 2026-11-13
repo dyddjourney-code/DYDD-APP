@@ -56,7 +56,7 @@ export function TrailAnchor() {
       window.setTimeout(hash, 0);
     };
     const observer = new ResizeObserver(align);
-    const root = document.querySelector(".trailhead-renewal, .fieldkit-renewal");
+    const root = document.querySelector(".trailhead-renewal, .fieldkit-renewal, .fruitlife-release-shell");
     if (root) observer.observe(root);
     align();
     void document.fonts.ready.then(align);

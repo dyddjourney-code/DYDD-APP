@@ -99,7 +99,11 @@ export default async function TrailheadsPage({ searchParams }: Props) {
     mini && user ? await userHasFruitLifeEntitlement(user.id) : false;
   const fromJourney = params?.from === "journey";
   const path = (href: string) => withReviewQuery(href, params);
-  const fieldKit = path(mini ? "/field-kit?lane=fruitlife" : "/field-kit");
+  // The standalone Field Kit contains Fruitful Life reports only. Gifts
+  // results must open the full collection, even when launched from that lane.
+  const fieldKitResults = (trailId: string) => path(
+    `${mini && trailId === "fruitlife-360" ? "/field-kit?lane=fruitlife" : "/field-kit"}#results-${trailId}`,
+  );
   const trails = trailDefinitions.filter(
     (trail) => !mini || ["spiritual-gifts", "fruitlife-360"].includes(trail.id),
   );
@@ -348,7 +352,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                     {complete ? (
                       <Link
                         className="button secondary"
-                        href={`${fieldKit}#results-${trail.id}`}
+                        href={fieldKitResults(trail.id)}
                       >
                         View My Results
                       </Link>

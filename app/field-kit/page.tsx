@@ -287,6 +287,7 @@ export default async function FieldKitPage({
                 : null;
     return (
       <main className="journey-shell hq-standalone-page fruitlife-release-shell">
+        <TrailAnchor />
         <FruitLifeMiniNav reviewQuery={fruitLifeReviewQuery} />
         <header className="standalone-hero fieldkit-hero fruitlife-fieldkit-hero">
           <div>

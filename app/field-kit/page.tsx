@@ -334,7 +334,8 @@ export default async function FieldKitPage({
           token={activeFruitLifeToken}
         />
 
-        <section className="artifact-panel artifact-workbench" id="artifacts">
+        <section className="artifact-panel artifact-workbench fieldkit-result-anchor" id="results-fruitlife-360">
+          <span id="artifacts" aria-hidden="true" />
           <div className="card-heading">
             <p className="section-label">Reports</p>
             <h2>Fruitful Life 360 artifacts</h2>

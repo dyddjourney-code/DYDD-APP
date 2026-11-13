@@ -93,7 +93,7 @@ export function FieldKitCollection({
     ) : null;
     const collectionDetails = (<>
           <div className="fieldkit-collection-columns">
-            <section aria-label={`${name} reports`}>
+            <section data-fieldkit-results tabIndex={-1} aria-label={`${name} reports`}>
               <p className="section-label">Reports</p>
               <h4>
                 {main ? "Your connected discoveries" : "Your latest reports"}
@@ -179,7 +179,8 @@ export function FieldKitCollection({
     </>);
     return (
       <div
-        className={`trail-placard fieldkit-collection${main ? " trail-placard-main" : ""}`}
+        id={`results-${trail?.id ?? "journey"}`}
+        className={`trail-placard fieldkit-collection fieldkit-result-anchor${main ? " trail-placard-main" : ""}`}
       >
         <div className="trail-placard-top">
           <span>DYDD · FIELD KIT</span>

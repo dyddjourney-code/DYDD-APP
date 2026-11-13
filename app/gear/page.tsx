@@ -133,6 +133,13 @@ export default async function GearPage({ searchParams }: GearPageProps) {
             </article>
           ))}
         </div>
+        <aside className="gear-workshop-contact" aria-labelledby="gear-workshop-contact-title">
+          <div>
+            <h2 id="gear-workshop-contact-title">Bring the journey to your group.</h2>
+            <p>Let’s talk about a workshop or live experience for your church, team, or community.</p>
+          </div>
+          <a className="button" href="https://www.discoverdivine.design/discover-your-divine-design-contact" target="_blank" rel="noopener noreferrer">Talk About a Workshop</a>
+        </aside>
       </section>
       {fruitLifeLane ? <FruitLifeMiniFooter /> : null}
     </main>

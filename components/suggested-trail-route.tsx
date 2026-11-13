@@ -1,4 +1,3 @@
-import Link from "next/link";
 import styles from "./suggested-trail-route.module.css";
 
 const stops = [
@@ -20,10 +19,10 @@ export function SuggestedTrailRoute() {
       <ol className={styles.stops} aria-label="Suggested trail order">
         {stops.map((stop, index) => (
           <li key={stop.name}>
-            <Link href={stop.href}>
+            <div className={styles.label}>
               <span className={styles.number} aria-hidden="true">{index + 1}</span>
               <span><strong>{stop.name}</strong><small>{stop.note}</small></span>
-            </Link>
+            </div>
           </li>
         ))}
       </ol>

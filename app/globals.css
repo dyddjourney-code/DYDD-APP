@@ -22050,3 +22050,19 @@ body:has(.mobile-nav-drawer[open]) { overflow: hidden; }
 .personal-membership-retention ul { margin:0; padding-left:20px; font-size:.94rem; line-height:1.75; }
 .personal-membership-offer > [role=status]:empty { display:none; }
 @media(max-width:760px) { .personal-membership-offer { grid-template-columns:minmax(0,1fr); gap:18px; padding:18px; } }
+
+/* November 13: named report destinations and unclipped Fireside artwork. */
+.fieldkit-result-anchor, [data-fieldkit-results] { scroll-margin-top: 100px; }
+.gear-workshop-contact { display:flex; align-items:center; justify-content:space-between; gap:24px; margin-top:28px; padding:24px 28px; border-radius:14px; background:#294c3b; color:#fffdf4; }
+.gear-workshop-contact h2 { margin:0 0 8px; color:inherit; font-size:clamp(22px,2.4vw,28px); }
+.gear-workshop-contact p { color:#fffdf4; margin:0; max-width:55ch; line-height:1.6; }
+.gear-workshop-contact .button { flex-shrink:0; min-height:48px; background:#f0d58a; border-color:#f0d58a; color:#263e2f; text-align:center; }
+.gear-workshop-contact .button:hover { background:#f8e4ad; }
+.gear-workshop-contact .button:focus-visible { outline:3px solid #fffdf4; outline-offset:4px; }
+.gear-workshop-contact .button:active { transform:translateY(1px); }
+/* The whole original frame remains visible: faces above, fire below. */
+.fireside-page .fireside-page-hero { display:flex; flex-direction:column; align-items:stretch; gap:0; min-height:0; padding:0; overflow:hidden; background:#f7f6ee; color:#243f27; }
+.fireside-page .fireside-page-hero::before { content:''; display:block; position:static; flex:0 0 auto; width:100%; aspect-ratio:1742 / 903; background:url('/brand/dydd-fireside-campfire-banner.png') center / contain no-repeat; }
+.fireside-page .fireside-page-hero > div { padding:clamp(20px,3vw,36px); max-width:none; margin:0; }
+.fireside-page .fireside-page-hero :is(h1,.eyebrow,.lede) { max-width:none; color:#243f27; }
+@media(max-width:640px) { .gear-workshop-contact { flex-direction:column; align-items:stretch; padding:22px 18px; gap:18px; } }

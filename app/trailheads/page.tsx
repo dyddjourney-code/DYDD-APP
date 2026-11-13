@@ -162,6 +162,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
               <TrailPlacard
                 number="01"
                 name="Discover Your Divine Design Journey"
+                assessmentIcon="/brand/tools/badge-icons/dydd-icon.png"
                 description="A guided journey through identity, design, gifting, and calling—connecting what you discover to the life God is inviting you to live."
                 rating="Challenging"
                 ratingNote="A deeper commitment to discovery, reflection, and faithful action—one step at a time."
@@ -347,7 +348,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
                     {complete ? (
                       <Link
                         className="button secondary"
-                        href={`${fieldKit}#artifacts`}
+                        href={`${fieldKit}#results-${trail.id}`}
                       >
                         View My Results
                       </Link>

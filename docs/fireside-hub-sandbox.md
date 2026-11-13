@@ -34,3 +34,13 @@ Run typecheck/build, schema/transaction/concurrency/drop-in/storage tests and ac
 Private playback links last two hours so long teaching/audio range requests can finish. Authorization is checked whenever a link is issued; issued signed bearer URLs remain valid until expiry. This is storage authorization, not DRM. The storage primitive regression separately tests a 120-second fixture link.
 
 Small private uploads (up to 4 MiB) use authenticated same-origin `/api/fireside/upload` with a bounded multipart body, avoiding browser cross-origin restrictions. Larger files use direct host-signed Storage upload (up to bucket 500 MiB). Both remain unpublished until the host saves/publishes metadata. This runtime's external Chromium preflight was network-blocked although the same Storage OPTIONS response through the authorized API path returned CORS `*`; do not claim large direct browser transport was exercised here.
+
+## Second UX refinement (2026-11-13)
+
+Visitor uses the established DYDD paper/green/clay palette and Satoshi/Aptos/Segoe system font stack, with compact artwork, an editorial welcome, clearly selected sections, visible result/timezone context, current-month navigation, library filter recovery and an account/membership access action instead of a knowingly denied playback attempt. Keyboard focus containment includes reverse Tab from the dialog root; reduced motion and 44px controls remain supported.
+
+Host is an operational desk: quick create/review actions, visibility + title/topic/description search, chronologically sorted gatherings, event-to-roster shortcut, name/email/account/status/event roster filters and CSV export of precisely the filtered view. Media search and collapsed reusable formats keep large collections manageable. Dates in gathering rows are actually formatted in the displayed event timezone. Series sessions use labeled title/start/end rows, not raw JSON; hidden serialization preserves the existing API contract and server validation. Modal background scrolling is locked.
+
+No backend contracts, RLS/auth, schema, provider state, production or Camp Circles changes. Existing branding settings remain the product-brand boundary; this refinement deliberately does not introduce tenancy.
+
+Focused regression scripts: `scripts/fireside-refinement-host-qa.mjs` (local process-only synthetic admin allowlist; never deploy it) and `scripts/fireside-refinement-visitor-qa.mjs` (real temporary sandbox account/event, registration persistence/cancellation/timezones/actual ICS). Both clean up fixtures. Evidence and user handoff: workspace `outputs/fireside-refinement-2026-11-13/`.

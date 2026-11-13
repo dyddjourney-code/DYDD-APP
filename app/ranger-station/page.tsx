@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { RangerReliefMap } from "@/components/ranger-relief-map";
+import { SuggestedTrailRoute } from "@/components/suggested-trail-route";
 import { RangerDesk } from "@/components/ranger-desk";
 
 const pathGroups = [
@@ -83,6 +84,8 @@ export default function RangerStationPage() {
         </div>
         <RangerReliefMap />
       </section>
+
+      <SuggestedTrailRoute />
 
       <RangerDesk />
 

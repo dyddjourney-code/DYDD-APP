@@ -31,12 +31,14 @@ export default function RootLayout({
             <Link href="/command-center"><img src="/brand/dydd-logo.webp" alt="Discover Your Divine Design" style={{ width: 160 }} /></Link>
             <nav aria-label="Owner Command Center" style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
               <Link href="/command-center">Command Center</Link><Link href="/command-center/accounts">Accounts</Link><Link href="/owner/guest-access">DYDD Guest Pass</Link><Link href="/command-center/design-map">Design Map</Link><Link href="/command-center/maps">MAPS</Link><Link href="/command-center/expedition">Expedition</Link>
+              <a href="https://dydd-online-school-sandbox.vercel.app/command-center/fireside" referrerPolicy="no-referrer" title="Sandbox host tools. Uses your existing sandbox sign-in, separate from this private console.">Fireside</a>
             </nav>
             <nav aria-label="Return to DYDD app" style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
-              <a href="https://dydd-online-school.vercel.app/base-camp" referrerPolicy="no-referrer">Live Base Camp</a>
+              <a href="https://dydd-online-school.vercel.app/base-camp" referrerPolicy="no-referrer">Live app Base Camp</a>
               <a href="https://dydd-online-school-sandbox.vercel.app/base-camp" referrerPolicy="no-referrer">Sandbox Base Camp</a>
+              <a href="https://dydd-online-school-sandbox.vercel.app/live" referrerPolicy="no-referrer">Sandbox Live Fireside</a>
             </nav>
-            <small>Private owner · Original-school live data. App sign-ins are separate.</small>
+            <small>Private owner · Original-school live data. Fireside opens the isolated sandbox; its existing sign-in is separate from this private console.</small>
           </header>
           {children}
         </> : <AppChrome>{children}</AppChrome>}

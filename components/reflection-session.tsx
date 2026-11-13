@@ -1,4 +1,5 @@
 "use client";
+import { fruitfulLifeDisplayLabel } from "@/lib/fruitlife360/display-name";
 import { journeySlug, journeyAssessmentTypes, sourcesForJourneyRound } from "@/lib/reflections/journey-assessments";
 import { retiredPathfinderCanonical } from "@/lib/journey/pathfinder";
 import { isSandbox } from '@/lib/environment';
@@ -661,7 +662,7 @@ export function ReflectionSession({
             </p>
           )}
           {round?.assessment_label ? (
-            <p>Connected report: {round.assessment_label}</p>
+            <p>Connected report: {fruitfulLifeDisplayLabel(round.assessment_label)}</p>
           ) : null}
           {readOnly ? (
             <p>
@@ -818,7 +819,7 @@ export function ReflectionAnswer({
             <article key={round.id}>
               <h4>{date(round.started_at)}</h4>
               {round.assessment_label ? (
-                <small>{round.assessment_label}</small>
+                <small>{fruitfulLifeDisplayLabel(round.assessment_label)}</small>
               ) : null}
               {question && question.prompt !== q.prompt ? (
                 <p>Question then: {entry?.prompt ?? question.prompt}</p>
@@ -1185,7 +1186,7 @@ export function ReflectionWorkbook() {
                     >
                       <summary>
                         <span>
-                          <strong>{lessonQuestions[0].lessonTitle}</strong>
+                          <strong>{fruitfulLifeDisplayLabel(lessonQuestions[0].lessonTitle)}</strong>
                           <small>
                             {lessonQuestions.length}{" "}
                             {lessonQuestions.length === 1
@@ -1252,7 +1253,7 @@ function EarlierActivityAnswers() {
       const revisions = entries.filter(e => e.question_id === id).sort((a, b) => b.revision - a.revision);
       const current = revisions[0];
       return <article key={id} id={`reflection-${id}`}>
-        <h3>{current.lesson_title}</h3>
+        <h3>{fruitfulLifeDisplayLabel(current.lesson_title)}</h3>
         <p>{current.prompt}</p>
         <p className="reflection-read-answer"><ReflectionText text={current.response || "Answer left blank."} /></p>
         <small>Saved {date(current.saved_at)} · Revision {current.revision}</small>
@@ -1398,7 +1399,7 @@ export function ReflectionNicheBuilder() {
               </select>
             </label>
             {currentRound?.assessment_label ? (
-              <p>{currentRound.assessment_label}</p>
+              <p>{fruitfulLifeDisplayLabel(currentRound.assessment_label)}</p>
             ) : null}
             {(currentRound ? reflectionReviewQuestions(sourceSlug, currentRound.questions, currentRound.id === source?.rounds[0]?.id) : []).map((q) => {
               const e = source.entries
@@ -1409,7 +1410,7 @@ export function ReflectionNicheBuilder() {
               return (
                 <article key={q.id}>
                   <small>
-                    {q.moduleTitle} · {q.lessonTitle}
+                    {fruitfulLifeDisplayLabel(q.moduleTitle)} · {fruitfulLifeDisplayLabel(q.lessonTitle)}
                   </small>
                   <h3>{q.prompt}</h3>
                   <p className="reflection-read-answer">

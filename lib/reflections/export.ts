@@ -1,3 +1,4 @@
+import { fruitfulLifeDisplayLabel } from "../fruitlife360/display-name";
 import type { ReflectionEntry, ReflectionRound } from "./types";
 import { getReflectionExperience, reflectionReviewQuestions } from "./catalog";
 
@@ -25,7 +26,7 @@ export function reflectionExportText(
       `Walkthrough started: ${dated(round.started_at)}`,
     );
     if (round.assessment_label)
-      lines.push(`Connected report: ${round.assessment_label}`);
+      lines.push(`Connected report: ${fruitfulLifeDisplayLabel(round.assessment_label)}`);
     const latest = new Map<string, ReflectionEntry>();
     for (const entry of entries)
       if (
@@ -40,12 +41,12 @@ export function reflectionExportText(
     for (const question of questions) {
       if (module !== question.moduleTitle) {
         module = question.moduleTitle;
-        lines.push("", `MODULE: ${module}`);
+        lines.push("", `MODULE: ${fruitfulLifeDisplayLabel(module)}`);
         lesson = "";
       }
       if (lesson !== question.lessonTitle) {
         lesson = question.lessonTitle;
-        lines.push("", `Lesson: ${lesson}`);
+        lines.push("", `Lesson: ${fruitfulLifeDisplayLabel(lesson)}`);
       }
       const answer = latest.get(question.id);
       lines.push(
@@ -65,7 +66,7 @@ export function reflectionExportText(
       lines.push("", "EARLIER ACTIVITY ANSWERS (preserved history)");
       for (const id of new Set(historical.map(e => e.question_id))) {
         for (const entry of historical.filter(e => e.question_id === id).sort((a, b) => b.revision - a.revision)) {
-          lines.push("", `Lesson: ${entry.lesson_title}`, `Question when saved: ${entry.prompt}`, `Revision: ${entry.revision}`, "Answer:", entry.response || "[Answer left blank]", `Saved: ${dated(entry.saved_at)}`);
+          lines.push("", `Lesson: ${fruitfulLifeDisplayLabel(entry.lesson_title)}`, `Question when saved: ${entry.prompt}`, `Revision: ${entry.revision}`, "Answer:", entry.response || "[Answer left blank]", `Saved: ${dated(entry.saved_at)}`);
         }
       }
     }

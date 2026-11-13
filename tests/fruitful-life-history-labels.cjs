@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict'),load=require('../scripts/fruitlife-test-load.cjs');
+const {fruitfulLifeDisplayLabel:label}=load('lib/fruitlife360/display-name.ts');
+for(const old of ['FruitLife360','FruitLife 360','Fruit Life 360','FruitLife'])assert.equal(label('Welcome to '+old),'Welcome to Fruitful Life 360');
+for(const retained of ['fruit_360','fruitlife-360-formation','/fruitlife360','Fruitful Life 360'])assert.equal(label(retained),retained);
+const {reflectionExportText}=load('lib/reflections/export.ts',{'./catalog':{getReflectionExperience:()=>({title:'Fruitful Life 360 Formation'}),reflectionReviewQuestions:()=>[]}});
+const round={id:'r',course_slug:'fruitlife-360-formation',assessment_label:'FruitLife360 — November 4',started_at:'2026-11-04T00:00:00Z',questions:[]};
+const entry={id:'e',round_id:'r',question_id:'legacy',lesson_title:'Welcome to FruitLife360',lesson_slug:'welcome-to-fruitlife360',prompt:'Historical question unchanged',response:'My original answer says FruitLife360 and must remain unchanged.',revision:2,saved_at:'2026-11-04T01:00:00Z'};
+const before=JSON.stringify({round,entry}),text=reflectionExportText([round],[entry]);
+assert(text.includes('Connected report: Fruitful Life 360 — November 4'));assert(text.includes('Lesson: Welcome to Fruitful Life 360'));assert(text.includes(entry.response));assert(text.includes(entry.prompt));assert.equal(JSON.stringify({round,entry}),before);
+console.log('PASS legacy copied report/lesson labels render current brand; original user answer, prompt, revision, IDs, slugs and stored objects unchanged; no database writes.');

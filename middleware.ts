@@ -1,7 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 import { getSupabaseConfig } from "./lib/supabase/config";
-import { isDyddAdminEmail } from "./lib/admin-access";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -37,21 +36,9 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Verified sandbox admins stay in the complete isolated Command Center.
-  // All tabs share this origin and its existing Supabase session; never send
-  // sandbox-admin navigation to the live-data private owner deployment.
-  if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox" && request.method === "GET" && /^\/command-center(?:\/|$)/.test(request.nextUrl.pathname) && !/^\/command-center\/fireside(?:\/|$)/.test(request.nextUrl.pathname) && !(user?.email_confirmed_at && isDyddAdminEmail(user.email))) {
-    const destination = new URL(request.nextUrl.pathname, "https://dydd-private-owner-console.vercel.app");
-    for (const key of ["assessment", "from", "group", "message", "q", "sort", "to"]) {
-      const value = request.nextUrl.searchParams.get(key);
-      if (value) destination.searchParams.set(key, value);
-    }
-    const forwarded = NextResponse.redirect(destination);
-    forwarded.headers.set("Cache-Control", "private, no-store");
-    forwarded.headers.set("Referrer-Policy", "no-referrer");
-    return forwarded;
-  }
-
+  // This origin is the isolated sandbox, including its Command Center.
+  // Route-level verified-user/admin guards remain authoritative. Never silently
+  // forward a sandbox/login navigation into the separate live-data console.
   // Prefetched sandbox links may set a review cookie. It must never replace
   // a genuine signed-in learner on reload or ordinary navigation.
   if (sandbox && request.method === "GET" && previewPath && !key && validCookie && !user) {

@@ -39,11 +39,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     : isCommandCenterAccess
       ? "Open the Command Center."
       : "Enter your DYDD account.";
+  const sandbox = process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox";
   const accessCopy = isMiniAppAccess
     ? isSpiritualGiftsAccess
       ? "Use an email and password so your free Spiritual Gifts report, course access, and future DYDD app history stay connected."
       : "Use an email and password so you can return to your Fruitful Life 360 process, track observer progress, send reminders, and access your report."
-    : isCommandCenterAccess
+    : isCommandCenterAccess && sandbox
+      ? "Sign in with your existing sandbox owner account. This isolated sandbox does not share the private Command Center’s Vercel sign-in. After signing in you will return to the requested sandbox tools."
+      : isCommandCenterAccess
       ? "Use the owner account to review assessment activity, create groups, and manage the people connected to classes, circles, and future dashboards."
       : "Sign in to continue the DYDD Journey, collect your artifacts, and prepare for guided reflection around your design.";
   const signInHref = `/login?${new URLSearchParams({ mode: "signin", next }).toString()}`;

@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     if (error) {
       return NextResponse.redirect(
         new URL(
-          `/login?message=${encodeURIComponent(
+          `/login?next=${encodeURIComponent(next)}&message=${encodeURIComponent(
             "That sign-in link could not be completed. Use the email code below, or request a fresh link in the same browser.",
           )}`,
           requestUrl.origin,
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
   } else {
     return NextResponse.redirect(
       new URL(
-        `/login?message=${encodeURIComponent(
+        `/login?next=${encodeURIComponent(next)}&message=${encodeURIComponent(
           "The sign-in link was missing its login code. Request a new link or use the email code.",
         )}`,
         requestUrl.origin,

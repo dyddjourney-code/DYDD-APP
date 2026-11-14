@@ -40,3 +40,9 @@ for authenticated-equivalent browser navigation and host API checks against the
 real sandbox. Never enable owner mode on a public/shared test server. Verify
 ALL-deployment protection and stable hosted aliases separately. Do not describe a
 local equivalent as John's hosted SSO walkthrough. No Vercel bypass is necessary.
+
+Host roster/inquiries use ordered pagination up to10,000 records each, with exact
+counts and explicit truncation/export warnings. Missing contact accounts fall back
+to account IDs instead of disabling the workspace. Settings/media writes compare
+the browser-loaded baseline atomically and reject stale changes409. A failed
+post-save refresh is reported separately, without a false complete-success notice.

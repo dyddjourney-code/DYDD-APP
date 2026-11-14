@@ -64,16 +64,16 @@ export default async function Home() {
             </div>
             <Link href="/base-camp" className="button primary portal-login-button">Sandbox Base Camp</Link>
             <Link href="/login" className="button secondary">Sign in to a sandbox account</Link>
+            <Link href="/command-center/fireside" className="button secondary">Fireside host · sandbox</Link>
             <Link href="/owner" className="button secondary">
-              Owner Command Center
+              Private owner console · live data
             </Link>
             <Link href="/first-launch" className="button secondary">
               First Launch Mini App
             </Link>
             <p className="helper-text">
               Base Camp opens the existing teaching preview without a learner login.
-              Sandbox accounts are separate from live accounts. Owner Command
-              Center opens the private owner app with live data and its own Vercel sign-in.
+              Sandbox accounts are separate from live accounts. Fireside host stays in this sandbox. The private owner console opens the private owner app with live data and its own Vercel sign-in.
             </p>
           </div>
         </div>

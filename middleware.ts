@@ -9,7 +9,7 @@ export async function middleware(request: NextRequest) {
     const pinned = process.env.VERCEL_PROJECT_ID === "prj_Aw8o5xjiMpVY9NaGvFBsamRIM4Aq" && process.env.VERCEL_ENV === "production";
     if (!pinned) return new NextResponse("Owner deployment unavailable", { status: 503 });
     const path = request.nextUrl.pathname;
-    if (path === "/" || path === "/owner") return NextResponse.redirect(new URL("/command-center", request.url));
+    if (path === "/" || path === "/owner") return NextResponse.redirect(new URL("/command-center/home", request.url));
     const savedReport = /^\/(?:designid|designpd|spiritual-gifts)\/report$/.test(path) || /^\/api\/artifacts\/[0-9a-f-]{36}\/download$/i.test(path);
     const allowed = path === "/owner/guest-access" || savedReport || /^\/(?:command-center(?:\/|$)|api\/command-center(?:\/|$)|_next(?:\/|$)|brand(?:\/|$))/.test(path);
     if (!allowed) return new NextResponse("Not found", { status: 404 });

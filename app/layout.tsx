@@ -1,5 +1,5 @@
 import { isPrivateOwnerConsole } from "@/lib/private-owner";
-import Link from "next/link";
+import { OwnerHeader } from "@/components/owner-header";
 import type { Metadata } from "next";
 import { AppChrome } from "@/components/app-chrome";
 import "./globals.css";
@@ -27,19 +27,7 @@ export default function RootLayout({
           </div>
         ) : null}
         {isPrivateOwnerConsole() ? <>
-          <header style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 20, padding: "16px 24px", background: "#fffaf0", borderBottom: "1px solid #d5decc" }}>
-            <Link href="/command-center"><img src="/brand/dydd-logo.webp" alt="Discover Your Divine Design" style={{ width: 160 }} /></Link>
-            <nav aria-label="Owner Command Center" style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
-              <Link href="/command-center">Command Center</Link><Link href="/command-center/accounts">Accounts</Link><Link href="/owner/guest-access">DYDD Guest Pass</Link><Link href="/command-center/design-map">Design Map</Link><Link href="/command-center/maps">MAPS</Link><Link href="/command-center/expedition">Expedition</Link>
-              <Link href="/command-center/fireside">Fireside</Link>
-            </nav>
-            <nav aria-label="Return to DYDD app" style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
-              <a href="https://dydd-online-school.vercel.app/base-camp" referrerPolicy="no-referrer">Live app Base Camp</a>
-              <a href="https://dydd-online-school-sandbox.vercel.app/base-camp" referrerPolicy="no-referrer">Sandbox Base Camp</a>
-              <a href="https://dydd-online-school-sandbox.vercel.app/live" referrerPolicy="no-referrer">Sandbox Live Fireside</a>
-            </nav>
-            <small>Private owner · Original-school live data. Fireside host tools use this owner access and isolated sandbox data.</small>
-          </header>
+          <OwnerHeader />
           {children}
         </> : <AppChrome>{children}</AppChrome>}
       </body>

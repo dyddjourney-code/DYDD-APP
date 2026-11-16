@@ -37,7 +37,8 @@ export async function redeemGuestGrant(sessionId:string,token:string,sourceId?:s
  const result=await createSupabaseAdminClient().rpc('dydd_guest_redeem_access',{p_session_id:guestSessionId(sessionId),p_token_hash:guestCapabilityHash(token),p_source:sourceId?guestSessionId(sourceId):null});
  if(result.error||!result.data) {
   const reason=result.error?.message||'';
-  if(/timing needs recovery|Existing purchase needs recovery/.test(reason))throw Error('Your existing assessment or purchase needs recovery. Use your private link or contact support; do not repeat DesignID within six months.');
+  if(/timing needs recovery/.test(reason))throw Error('This email already has a completed DesignID within the last six months. Open your original private recovery link. The retake checkbox does not bypass the six-month waiting period.');
+  if(/Existing purchase needs recovery/.test(reason))throw Error('Your existing assessment or purchase needs recovery. Use your private link or contact support; do not repeat DesignID within six months.');
   if(/recipient email|different recipient/.test(reason))throw Error('Use the exact recipient email assigned to this individual guest pass.');
   if(/deadline/.test(reason))throw Error('This individual guest pass has expired. Completed reports remain saved.');
   if(/completed DesignID|existing DesignID/.test(reason))throw Error('DesignPD requires your completed DesignID in this private session. Open your original recovery link first.');

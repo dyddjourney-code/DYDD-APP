@@ -28,7 +28,7 @@ test('redemption sends hashed capability only to atomic service RPC, never price
 });
 test('recovery/timing failures are specific and other storage failures disclose no data',async()=>{
  const token=capability.newGuestCapability(),session='00000000-0000-4000-8000-000000000001';
- await assert.rejects(harness({error:{message:'Assessment timing needs recovery'}}).m.redeemGuestGrant(session,token),/six months/);
+ await assert.rejects(harness({error:{message:'Assessment timing needs recovery'}}).m.redeemGuestGrant(session,token),/six months.*retake checkbox/);
  await assert.rejects(harness({error:{message:'private DB diagnostics'}}).m.redeemGuestGrant(session,token),/unavailable, expired, or fully used/);
 });
 function ownerHarness(user,admin=true) {

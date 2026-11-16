@@ -16,3 +16,9 @@ test('cross-origin guest form cannot allocate a session or overwrite private ses
  const h=harness();const result=await h.route.POST(new NextRequest('https://app.discoverdivine.design/assessments/group/open',{method:'POST',headers:{origin:'https://unrelated.example'},body:new FormData()}));
  assert.equal(result.status,403);assert.equal(h.calls(),0);
 });
+
+test('no-referrer native forms use Origin:null and same-origin Fetch Metadata without weakening cross-site denial',async()=>{
+ for(const site of ['same-origin','cross-site',null]){const h=harness(),form=new FormData();form.set('key','fixture-capability');const headers={origin:'null'};if(site)headers['sec-fetch-site']=site;
+ const result=await h.route.POST(new NextRequest('https://app.discoverdivine.design/assessments/group/open',{method:'POST',headers,body:form}));
+ assert.equal(result.status,site==='same-origin'?303:403);assert.equal(h.calls(),site==='same-origin'?1:0);}
+});

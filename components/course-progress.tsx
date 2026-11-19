@@ -34,6 +34,10 @@ export type CourseProgress = ReturnType<typeof useCourseProgress>;
 export function CourseCompletionControls({progress,lessonSlug,nextTitle,onNext,flush,completionHref}:{progress:CourseProgress;lessonSlug:string;nextTitle?:string;onNext?:()=>void;flush?:()=>Promise<boolean>;completionHref?:string}) {
  const done=progress.done(lessonSlug);
  const advanceAfterRetry=useRef(false);
+ if(progress.state?.reviewAllLessons && !progress.canComplete(lessonSlug)) return <div className="course-completion-controls">
+  <small>Owner review · Your lesson checklist is unchanged.</small>
+  {onNext ? <button type="button" disabled={progress.busy} onClick={async()=>{if(flush && !await flush())return;onNext();}}>Next for review: {nextTitle}</button> : <small>End of the review lessons.</small>}
+ </div>;
  return <div className="course-completion-controls">
   <label><input type="checkbox" checked={done} disabled={done || !progress.state || progress.busy || !progress.canComplete(lessonSlug)} onChange={async()=>{advanceAfterRetry.current=false;if(flush && !await flush())return;await progress.complete(lessonSlug);}} /> {done?'Lesson completed':'Mark this lesson complete'}</label>
   <button type="button" disabled={!progress.state || progress.busy || !progress.canComplete(lessonSlug)} onClick={async()=>{

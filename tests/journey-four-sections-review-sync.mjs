@@ -20,11 +20,12 @@ const advance=async()=>{const heading=await page.$eval(".journey-active-lesson h
 async function go(path,width=1280){
  if(page)await page.close();page=await browser.newPage();await authenticateReviewPage(page);await page.setViewport({width,height:1000});await page.setCookie(...cookies);
  page.on("pageerror",e=>errors.push(e.message));page.on("dialog",d=>void d.accept());
- await page.setRequestInterception(true);page.on("request",r=>{const u=new URL(r.url());if(u.origin===base&&(u.pathname==="/base-camp"||u.pathname==="/sandbox-review"||u.searchParams.has("review")))return void r.abort();void r.continue()});
+ await page.setRequestInterception(true);page.on("request",r=>{const u=new URL(r.url());if(u.origin===base&&(u.pathname==="/base-camp"||u.pathname==="/sandbox-review"||u.searchParams.has("review")))return void r.abort();if(failSaves&&r.postData()?.includes('"action":"save"'))return void r.respond({status:503,contentType:"application/json",body:JSON.stringify({error:"Synthetic save failure; keep the draft"})});void r.continue()});
  await page.deleteCookie({name:"dydd_sandbox_review",url:base});const response=await page.goto(base+path,{waitUntil:"domcontentloaded",timeout:60000});assert.equal(response.status(),200,new URL(path,base).pathname);
- page.removeAllListeners("request");await page.setRequestInterception(false);
+ // Keep unrelated preview-prefetch suppression active for the entire real-account visit.
+
 }
-let cookies=[];
+let cookies=[],failSaves=false;
 try{
  const email="journey-four-sections-"+run+"@example.invalid",password=crypto.randomBytes(24).toString("base64url");
  uid=ok(await db.auth.admin.createUser({email,password,email_confirm:true})).user.id;
@@ -74,9 +75,9 @@ try{
  await page.$eval('.fieldkit-source-dialog [aria-label="Close Field Kit"]',e=>e.click());await advance();assert(latest(await data(),"niche-working-declaration").response.includes("#reflection-identity-declaration"));checks.push({originalDeclarationSourcePickerSaved:true});
  // Failure/retry and real stale-revision protection, tested separately from successful DB paths.
  await go("/journey?lesson="+lesson);await page.waitForSelector('[data-question="'+question+'"] textarea:not([disabled])');const draft="Retained failure draft "+run;await type(question,draft);
- await page.setRequestInterception(true);page.on("request",r=>r.postData()?.includes('"action":"save"')?void r.respond({status:503,contentType:"application/json",body:JSON.stringify({error:"Synthetic save failure; keep the draft"})}):void r.continue());
+ failSaves=true;
  await page.$eval(".journey-active-pagination .course-completion-controls button",e=>e.click());await page.waitForSelector(".reflection-lesson-save-state[role=alert]");assert.equal(await page.$eval('[data-question="'+question+'"] textarea',e=>e.value),draft);
- page.removeAllListeners("request");await page.setRequestInterception(false);await page.$eval(".reflection-lesson-save-state button",e=>e.click());await page.waitForFunction(()=>!document.querySelector(".reflection-lesson-save-state[role=alert]"));assert.equal(latest(await data(),question).response,draft);
+ failSaves=false;await page.$eval(".reflection-lesson-save-state button",e=>e.click());await page.waitForFunction(id=>document.querySelector('[data-question="'+id+'"] .reflection-answer-actions [role=status]')?.textContent==="Saved",{timeout:60000},question);assert.equal(latest(await data(),question).response,draft);
  const prior=latest(await data(),question),remote="Actual other-tab revision "+run;
  await api("/api/course-reflections",{action:"save",courseSlug:course,roundId:prior.round_id,questionId:question,response:remote,expectedRevision:prior.revision});
  await type(question,"Local conflict draft "+run);await page.$eval(".journey-active-pagination .course-completion-controls button",e=>e.click());await page.waitForSelector(".reflection-lesson-save-state[role=alert]");assert.equal(latest(await data(),question).response,remote);assert.equal(await page.$eval('[data-question="'+question+'"] textarea',e=>e.value),"Local conflict draft "+run);

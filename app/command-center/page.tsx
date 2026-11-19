@@ -1,3 +1,4 @@
+import { guestCoupleMemberships } from "@/lib/public-assessments/guest-couples";
 import { isPrivateOwnerConsole } from "@/lib/private-owner";
 import { isSandbox } from "@/lib/environment";
 import { visibleOwnerOverviewRecords } from "@/lib/public-assessments/owner-visible-records";
@@ -186,7 +187,7 @@ function participantIdentityKey(
   participantId: string | null | undefined,
   email: string | null | undefined,
 ) {
-  return normalizeEmail(email) || participantId || "unknown-participant";
+  return participantId?.startsWith("guest:") ? participantId : normalizeEmail(email) || participantId || "unknown-participant";
 }
 
 function participantEmailScore(email: string) {
@@ -814,6 +815,7 @@ function collapseOverlappingParticipantRecords(records: ParticipantRecord[], gro
 
     for (const candidate of nameMatches) {
       if (candidate === record || consumed.has(candidate)) continue;
+      if (record.id.startsWith("guest:") || candidate.id.startsWith("guest:")) continue;
       if (
         isParticipantInExcludedDefaultGroup(target, groups) !==
         isParticipantInExcludedDefaultGroup(candidate, groups)
@@ -1482,7 +1484,7 @@ async function getCommandCenterData({
 
   return {
     groups: visibleGroups,
-    memberships: (memberships ?? []) as AssessmentGroupMember[],
+    memberships: [...((memberships ?? []) as AssessmentGroupMember[]), ...(isAdmin && isPrivateOwnerConsole() ? await guestCoupleMemberships(groupIds) : [])],
     snapshots,
   };
 }
@@ -2331,7 +2333,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                 <div className="command-center-check-list">
                   {filteredMainParticipants.map((participant) => (
                     <label key={participant.id}>
-                      <input name="participant_id" type="checkbox" value={participant.id} disabled={participant.id.startsWith("guest:")} />
+                      <input name="participant_id" type="checkbox" value={participant.id} disabled={participant.id.startsWith("guest:") && !isPrivateOwnerConsole()} />
                       <span>
                         <strong>{participant.name}</strong>
                         <small>
@@ -2355,7 +2357,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                       <h3>{participant.name}</h3>
                       <p>{participant.email}</p>
                     </div>
-                    {!participant.id.startsWith("guest:") ? <form action={assignParticipantToAssessmentGroup}>
+                    {(!participant.id.startsWith("guest:") || isPrivateOwnerConsole()) ? <form action={assignParticipantToAssessmentGroup}>
                       <input name="participant_id" type="hidden" value={participant.id} />
                       <input name="assessment" type="hidden" value={params?.assessment ?? ""} />
                       <input name="current_group" type="hidden" value={params?.group ?? ""} />
@@ -2535,7 +2537,7 @@ export default async function CommandCenterPage({ searchParams }: CommandCenterP
                   <div className="command-center-check-list">
                     {activeGroupCandidates.map((participant) => (
                       <label key={participant.id}>
-                        <input name="participant_id" type="checkbox" value={participant.id} disabled={participant.id.startsWith("guest:")} />
+                        <input name="participant_id" type="checkbox" value={participant.id} disabled={participant.id.startsWith("guest:") && !isPrivateOwnerConsole()} />
                         <span>
                         <strong>{participant.name}</strong>
                         <small>

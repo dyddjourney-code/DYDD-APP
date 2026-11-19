@@ -1,3 +1,6 @@
+import { canonicalizeParticipantEmail } from "@/lib/identity/email";
+import { isPrivateOwnerConsole } from "@/lib/private-owner";
+import { guestCoupleMemberships, guestCoupleSnapshots } from "@/lib/public-assessments/guest-couples";
 import { NextResponse, type NextRequest } from "next/server";
 import { isDyddAdminEmail } from "@/lib/admin-access";
 import { isOwnerPreviewRequest } from "@/lib/owner-preview";
@@ -463,7 +466,13 @@ function sectionHeading(title: string, iconPath: string, alt: string) {
 }
 
 function hasCurrentAssessment(member: CoupleMember, assessmentType: string) {
-  return Boolean(currentSnapshot(member, assessmentType));
+  const snapshot = currentSnapshot(member, assessmentType);
+  if (!snapshot) return false;
+  if (!member.id.startsWith("guest:")) return true;
+  // Retained but incomplete evidence must not become a fabricated zero chart.
+  const fields = assessmentType === "designid" ? designIdScoreFields.map(f=>f.keys)
+    : assessmentType === "designpd" ? designPdAxes.map(a=>a.scoreKeys) : [];
+  return fields.every(keys=>{const value=firstSnapshotValue(snapshot,keys);return value!=="" && Number.isFinite(Number(value));});
 }
 
 function membersHaveCompleteMarriageDesignData(members: CoupleMember[]) {
@@ -1140,26 +1149,33 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Marriage Design downloads are available for couple groups only." }, { status: 400 });
   }
 
-  const { data: memberships } = await supabase
+  const { data: nativeMemberships, error: membershipError } = await supabase
     .from("assessment_group_members")
     .select("id,participant_id,membership_status,assessment_participants(id,display_name,normalized_email)")
     .eq("group_id", groupId)
     .eq("membership_status", "active");
 
+  if (membershipError) return NextResponse.json({error:"Group memberships could not be read."},{status:500});
+  // Guest membership never grants a Circle owner access to private guest evidence.
+  const {count: guestCount,error:guestError}=await supabase.from("assessment_group_guest_members").select("id",{count:"exact",head:true}).eq("group_id",groupId).eq("membership_status","active");
+  if(guestError) return NextResponse.json({error:"Guest memberships could not be read."},{status:500});
+  if(guestCount && (!actor.isAdmin || !isPrivateOwnerConsole())) return NextResponse.json({error:"Guest couple reports are private owner only."},{status:403});
+  const guestMemberships=guestCount ? await guestCoupleMemberships([groupId]) : [];
+  const memberships=[...(nativeMemberships||[]),...guestMemberships];
   const participantIds = ((memberships ?? []) as { participant_id: string }[]).map((membership) => membership.participant_id);
-  if (participantIds.length !== 2) {
+  if (participantIds.length !== 2 || new Set(participantIds).size !== 2) {
     return NextResponse.json({ error: "This couple artifact needs exactly two active group members." }, { status: 400 });
   }
 
   const { data: snapshots } = await supabase
     .from("assessment_snapshots")
     .select("id,assessment_type,created_at,participant_id,scores,source_submitted_at,assessment_participants(id,display_name,normalized_email)")
-    .in("participant_id", participantIds)
+    .in("participant_id", participantIds.filter(id=>!id.startsWith("guest:")))
     .order("source_submitted_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false });
 
   const snapshotsByParticipant = new Map<string, AssessmentSnapshot[]>();
-  for (const snapshot of (snapshots ?? []) as AssessmentSnapshot[]) {
+  for (const snapshot of [...(snapshots ?? []), ...await guestCoupleSnapshots(participantIds.filter(id=>id.startsWith("guest:")))] as AssessmentSnapshot[]) {
     if (!snapshot.participant_id) continue;
     snapshotsByParticipant.set(snapshot.participant_id, [
       ...(snapshotsByParticipant.get(snapshot.participant_id) ?? []),
@@ -1186,6 +1202,8 @@ export async function GET(request: NextRequest) {
       };
     });
 
+  const emails=memberships.map(m=>{const p=Array.isArray(m.assessment_participants)?m.assessment_participants[0]:m.assessment_participants;return canonicalizeParticipantEmail(p?.normalized_email);});
+  if(guestCount && emails[0] && emails[0]===emails[1]) return NextResponse.json({error:"Choose two distinct partners; these records share an email."},{status:400});
   const sections = availableReportSections(members, actor.isAdmin);
 
   if (!hasAnyReportSection(sections)) {

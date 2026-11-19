@@ -177,7 +177,13 @@ export async function assignParticipantToAssessmentGroup(formData: FormData) {
   }
 
   const supabase = createSupabaseAdminClient();
-  const { error } = await supabase.from("assessment_group_members").upsert(
+  const hasGuest = participantId.startsWith("guest:");
+  if (hasGuest && (!actor.isAdmin || !isPrivateOwnerConsole())) {
+    redirect(commandCenterTarget(formData, { message: "Guest membership is private owner only." }));
+  }
+  const { error } = hasGuest
+    ? await supabase.rpc("owner_assign_guest_couple_members", {p_group:groupId,p_actor:actor.id,p_members:[participantId]})
+    : await supabase.from("assessment_group_members").upsert(
     {
       added_by_user_id: actor.id,
       group_id: groupId,
@@ -229,7 +235,13 @@ export async function assignParticipantsToAssessmentGroup(formData: FormData) {
 
   const timestamp = new Date().toISOString();
   const supabase = createSupabaseAdminClient();
-  const { error } = await supabase.from("assessment_group_members").upsert(
+  const hasGuest = participantIds.some(id => id.startsWith("guest:"));
+  if (hasGuest && (!actor.isAdmin || !isPrivateOwnerConsole())) {
+    redirect(commandCenterReturnTarget(formData, { message: "Guest membership is private owner only." }));
+  }
+  const { error } = hasGuest
+    ? await supabase.rpc("owner_assign_guest_couple_members", {p_group:groupId,p_actor:actor.id,p_members:participantIds})
+    : await supabase.from("assessment_group_members").upsert(
     participantIds.map((participantId) => ({
       added_by_user_id: actor.id,
       group_id: groupId,
@@ -278,13 +290,18 @@ export async function archiveAssessmentGroupMember(formData: FormData) {
   }
 
   const supabase = createSupabaseAdminClient();
+  const isGuest = membershipId.startsWith("guest-member:");
+  if (isGuest && (!actor.isAdmin || !isPrivateOwnerConsole())) {
+    redirect(commandCenterTarget(formData, { message: "Guest membership is private owner only." }));
+  }
   const { error } = await supabase
-    .from("assessment_group_members")
+    .from(isGuest ? "assessment_group_guest_members" : "assessment_group_members")
     .update({
       membership_status: "archived",
       updated_at: new Date().toISOString(),
     })
-    .eq("id", membershipId);
+    .eq("id", isGuest ? membershipId.slice(13) : membershipId)
+    .eq("group_id", groupId);
 
   revalidatePath("/command-center");
   const target = commandCenterTarget(formData, { group: groupId });

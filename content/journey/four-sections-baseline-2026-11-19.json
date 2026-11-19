@@ -1,0 +1,1616 @@
+[
+  {
+    "module": "story",
+    "unit": {
+      "row": 35,
+      "slug": "story-why-story-matters-35",
+      "type": "normal",
+      "section": "Your Story Matters",
+      "title": "Why story matters",
+      "bookPages": "p70 - p73",
+      "workbookSection": "The moments that shape us",
+      "workbookPages": "p50",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach Why story matters with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Romans 8:28",
+      "companionMoment": {
+        "audioSrc": "/audio/companions/course-moments/dydd-journey-story-leo-mara.mp3",
+        "duration": "About 1 minute",
+        "kicker": "Story reflection",
+        "speakers": [
+          {
+            "image": "/brand/characters/full-body/artisan-male-leo-full-body.png",
+            "imageAlt": "Leo standing as a creative storyteller",
+            "name": "Leo",
+            "role": "design translator"
+          },
+          {
+            "image": "/brand/characters/full-body/shepherd-female-mara-full-body.png",
+            "imageAlt": "Mara standing as a warm Shepherd encourager",
+            "name": "Mara",
+            "role": "meaning-making encourager"
+          }
+        ],
+        "title": "God Does Not Waste the Story",
+        "transcript": [
+          {
+            "speaker": "Leo",
+            "text": "Your story is not just a timeline of events. It carries themes, wounds, provision, courage, and moments where God was writing more than you could see."
+          },
+          {
+            "speaker": "Mara",
+            "text": "Hold it tenderly. Some memories need gratitude. Some need grief. Some need redemption language. Ask what God has been forming through the story, not only what happened in it."
+          }
+        ]
+      },
+      "teachingBlocks": [
+        "This lesson introduces Why story matters as part of the Story movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Name triumph, tragedy, joy, pain, and the moments that left a mark.",
+        "act": "List major moments without forcing full meaning yet.",
+        "reflect": "Notice which moments still carry emotion, gratitude, grief, courage, or questions.",
+        "explore": "Ask where God may have been present even in places you could not see Him clearly then."
+      },
+      "kind": "care",
+      "prompts": [
+        {
+          "id": "shaping-moments",
+          "careStep": "connect",
+          "label": "List the biggest moments in your life that have shaped who you are.",
+          "responseType": "list"
+        }
+      ],
+      "purpose": "Begin the story chapter by listing major moments that shaped the learner before interpreting them too quickly.",
+      "sourceRef": "Workbook p. 50",
+      "title": "The Moments That Shape Us"
+    }
+  },
+  {
+    "module": "story",
+    "unit": {
+      "row": 36,
+      "slug": "story-god-never-wastes-a-hurt-36",
+      "type": "normal",
+      "section": "Your Story Matters",
+      "title": "God never wastes a hurt",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach God never wastes a hurt with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Romans 8:28",
+      "teachingBlocks": [
+        "This lesson introduces God never wastes a hurt as part of the Story movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": null
+  },
+  {
+    "module": "story",
+    "unit": {
+      "row": 37,
+      "slug": "story-what-is-a-testimony-37",
+      "type": "normal",
+      "section": "Testimony",
+      "title": "What is a testimony?",
+      "bookPages": "p74 - p76",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach What is a testimony? with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Romans 8:28",
+      "teachingBlocks": [
+        "This lesson introduces What is a testimony? as part of the Story movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": null
+  },
+  {
+    "module": "story",
+    "unit": {
+      "row": 38,
+      "slug": "story-pauls-testimony-38",
+      "type": "normal",
+      "section": "Testimony",
+      "title": "Paul's Testimony",
+      "bookPages": "p76 - p81",
+      "workbookSection": "Sharing your faith story",
+      "workbookPages": "p51 - p52",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach Paul's Testimony with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Romans 8:28",
+      "teachingBlocks": [
+        "This lesson introduces Paul's Testimony as part of the Story movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Write your faith story and name whether it includes a turning point or gradual surrender.",
+        "act": "Tell your faith story to someone you trust.",
+        "reflect": "Ask what part of your story could encourage someone else.",
+        "explore": "Ask one or two people to share their faith stories and listen for encouragement."
+      },
+      "kind": "care",
+      "prompts": [
+        {
+          "id": "faith-story-outline",
+          "careStep": "connect",
+          "label": "Write or outline your faith story.",
+          "responseType": "long_text"
+        },
+        {
+          "id": "story-encouragement",
+          "careStep": "reflect",
+          "label": "What part of your story might encourage someone else?",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Help the learner outline testimony through life before Jesus, coming to know Jesus, life after, and current obedience.",
+      "sourceRef": "Workbook p. 51-52",
+      "title": "Sharing Your Faith Story"
+    }
+  },
+  {
+    "module": "story",
+    "unit": {
+      "row": 39,
+      "slug": "story-family-and-culture-39",
+      "type": "normal",
+      "section": "Your Stories",
+      "title": "Family & Culture",
+      "bookPages": "p82 - p88",
+      "workbookSection": "Your Family & Culture story",
+      "workbookPages": "p53 - p55",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach Family & Culture with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Romans 8:28",
+      "teachingBlocks": [
+        "This lesson introduces Family & Culture as part of the Story movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Name one gift and one wound you have inherited from family or culture.",
+        "act": "Create a carry-forward / lay-down list and take one concrete step this week.",
+        "reflect": "Ask which inherited belief should be kept and which should be surrendered.",
+        "explore": "Share a meaningful conversation with a believer from a different background."
+      },
+      "kind": "care",
+      "prompts": [
+        {
+          "id": "family-culture-gifts-wounds",
+          "careStep": "connect",
+          "label": "Name one gift and one wound you have inherited from your family or culture.",
+          "responseType": "long_text"
+        },
+        {
+          "id": "inheritance-keep-surrender",
+          "careStep": "reflect",
+          "label": "What inherited belief or pattern should be kept, and what should be surrendered?",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Discern family and culture as both gift and wound, inheritance and stewardship, with Christ as the defining center.",
+      "sourceRef": "Workbook p. 53-55",
+      "title": "Family and Culture Story"
+    }
+  },
+  {
+    "module": "story",
+    "unit": {
+      "row": 40,
+      "slug": "story-your-work-matters-40",
+      "type": "normal",
+      "section": "Your Stories",
+      "title": "Your Work Matters!",
+      "bookPages": "p89 - p92",
+      "workbookSection": "Called where you are",
+      "workbookPages": "p56 - p58",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach Your Work Matters! with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Romans 8:28",
+      "teachingBlocks": [
+        "This lesson introduces Your Work Matters! as part of the Story movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Connect this workbook section to what the lesson just taught and what God may be bringing to the surface.",
+        "act": "Answer the workbook prompt honestly and choose one faithful next step.",
+        "reflect": "Review what you wrote and notice what feels important, repeated, or unresolved.",
+        "explore": "Ask what this response may reveal about your design, growth, or purpose."
+      },
+      "kind": "care",
+      "prompts": [
+        {
+          "id": "story-your-work-matters-40-workbook-response",
+          "label": "Called where you are",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Digitize this workbook section into the learner's saved journey record.",
+      "sourceRef": "Workbook p56 - p58",
+      "title": "Called where you are"
+    }
+  },
+  {
+    "module": "story",
+    "unit": {
+      "row": 41,
+      "slug": "story-your-church-story-41",
+      "type": "normal",
+      "section": "Your Stories",
+      "title": "Your Church Story",
+      "bookPages": "p94 - p94",
+      "workbookSection": "Church Vs. The Body of Christ",
+      "workbookPages": "p58 - p60",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach Your Church Story with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Romans 8:28",
+      "teachingBlocks": [
+        "This lesson introduces Your Church Story as part of the Story movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Connect this workbook section to what the lesson just taught and what God may be bringing to the surface.",
+        "act": "Answer the workbook prompt honestly and choose one faithful next step.",
+        "reflect": "Review what you wrote and notice what feels important, repeated, or unresolved.",
+        "explore": "Ask what this response may reveal about your design, growth, or purpose."
+      },
+      "kind": "care",
+      "prompts": [
+        {
+          "id": "story-your-church-story-41-workbook-response",
+          "label": "Church Vs. The Body of Christ",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Digitize this workbook section into the learner's saved journey record.",
+      "sourceRef": "Workbook p58 - p60",
+      "title": "Church Vs. The Body of Christ"
+    }
+  },
+  {
+    "module": "story",
+    "unit": {
+      "row": 42,
+      "slug": "story-divine-reflections-within-your-stories-42",
+      "type": "designid-reflection",
+      "section": "Your Stories",
+      "title": "Divine reflections within your stories",
+      "workbookSection": "Divine reflections within your stories",
+      "workbookPages": "p61 - p62",
+      "typeLabel": "DesignID reflection",
+      "duration": "10-15 min",
+      "lessonMainIdea": "Use DesignID as a mirror inside Story, helping the learner connect assessment language to faithful love and service.",
+      "anchorScripture": "Romans 8:28",
+      "teachingBlocks": [
+        "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
+        "Placed inside Story, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Connect this reflection to your DesignID results, your present capacity, and what God may be revealing about how you love Him and others.",
+        "act": "Name one concrete place where this reflection needs to become visible in real life.",
+        "reflect": "Notice what feels aligned, stretched, resistant, or in need of grace.",
+        "explore": "Ask how this design language could guide your next faithful step without becoming a label."
+      },
+      "kind": "designid",
+      "marker": {
+        "alt": "DesignID",
+        "image": "/brand/tools/badge-icons/designid-icon.png",
+        "label": "DesignID reflection"
+      },
+      "prompts": [
+        {
+          "id": "story-divine-reflections-within-your-stories-42-designid-connect",
+          "careStep": "connect",
+          "label": "What does this DesignID reflection help you notice?",
+          "responseType": "long_text"
+        },
+        {
+          "id": "story-divine-reflections-within-your-stories-42-designid-reflect",
+          "careStep": "reflect",
+          "label": "Where does this feel aligned, stretched, or in need of grace?",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Capture this DesignID reflection as part of the learner's personal journey record.",
+      "sourceRef": "Workbook p61 - p62",
+      "title": "Divine reflections within your stories"
+    }
+  },
+  {
+    "module": "story",
+    "unit": {
+      "row": 43,
+      "slug": "story-what-is-learned-helplessness-43",
+      "type": "designid-reflection",
+      "section": "Learned Helplessness",
+      "title": "What is Learned Helplessness?",
+      "notes": "This will need a \"new workbook\" like experience created\"",
+      "typeLabel": "DesignID reflection",
+      "duration": "10-15 min",
+      "lessonMainIdea": "Use DesignID as a mirror inside Story, helping the learner connect assessment language to faithful love and service.",
+      "anchorScripture": "Romans 8:28",
+      "teachingBlocks": [
+        "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
+        "Placed inside Story, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Connect this reflection to your DesignID results, your present capacity, and what God may be revealing about how you love Him and others.",
+        "act": "Name one concrete place where this reflection needs to become visible in real life.",
+        "reflect": "Notice what feels aligned, stretched, resistant, or in need of grace.",
+        "explore": "Ask how this design language could guide your next faithful step without becoming a label."
+      },
+      "kind": "designid",
+      "marker": {
+        "alt": "DesignID",
+        "image": "/brand/tools/badge-icons/designid-icon.png",
+        "label": "DesignID reflection"
+      },
+      "prompts": [
+        {
+          "id": "story-what-is-learned-helplessness-43-designid-connect",
+          "careStep": "connect",
+          "label": "What does this DesignID reflection help you notice?",
+          "responseType": "long_text"
+        },
+        {
+          "id": "story-what-is-learned-helplessness-43-designid-reflect",
+          "careStep": "reflect",
+          "label": "Where does this feel aligned, stretched, or in need of grace?",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Capture this DesignID reflection as part of the learner's personal journey record.",
+      "sourceRef": "DesignID reflection",
+      "title": "What is Learned Helplessness?"
+    }
+  },
+  {
+    "module": "story",
+    "unit": {
+      "row": 44,
+      "slug": "story-shadows-anxiety-and-fear-44",
+      "type": "designid-reflection",
+      "section": "Learned Helplessness",
+      "title": "Shadows: Anxiety & Fear",
+      "typeLabel": "DesignID reflection",
+      "duration": "10-15 min",
+      "lessonMainIdea": "Use DesignID as a mirror inside Story, helping the learner connect assessment language to faithful love and service.",
+      "anchorScripture": "Romans 8:28",
+      "teachingBlocks": [
+        "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
+        "Placed inside Story, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Connect this reflection to your DesignID results, your present capacity, and what God may be revealing about how you love Him and others.",
+        "act": "Name one concrete place where this reflection needs to become visible in real life.",
+        "reflect": "Notice what feels aligned, stretched, resistant, or in need of grace.",
+        "explore": "Ask how this design language could guide your next faithful step without becoming a label."
+      },
+      "kind": "designid",
+      "marker": {
+        "alt": "DesignID",
+        "image": "/brand/tools/badge-icons/designid-icon.png",
+        "label": "DesignID reflection"
+      },
+      "prompts": [
+        {
+          "id": "story-shadows-anxiety-and-fear-44-designid-connect",
+          "careStep": "connect",
+          "label": "What does this DesignID reflection help you notice?",
+          "responseType": "long_text"
+        },
+        {
+          "id": "story-shadows-anxiety-and-fear-44-designid-reflect",
+          "careStep": "reflect",
+          "label": "Where does this feel aligned, stretched, or in need of grace?",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Capture this DesignID reflection as part of the learner's personal journey record.",
+      "sourceRef": "DesignID reflection",
+      "title": "Shadows: Anxiety & Fear"
+    }
+  },
+  {
+    "module": "story",
+    "unit": {
+      "row": 45,
+      "slug": "story-from-fear-to-alignment-45",
+      "type": "designid-reflection",
+      "section": "Learned Helplessness",
+      "title": "From fear to alignment",
+      "typeLabel": "DesignID reflection",
+      "duration": "10-15 min",
+      "lessonMainIdea": "Use DesignID as a mirror inside Story, helping the learner connect assessment language to faithful love and service.",
+      "anchorScripture": "Romans 8:28",
+      "teachingBlocks": [
+        "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
+        "Placed inside Story, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Connect this reflection to your DesignID results, your present capacity, and what God may be revealing about how you love Him and others.",
+        "act": "Name one concrete place where this reflection needs to become visible in real life.",
+        "reflect": "Notice what feels aligned, stretched, resistant, or in need of grace.",
+        "explore": "Ask how this design language could guide your next faithful step without becoming a label."
+      },
+      "kind": "designid",
+      "marker": {
+        "alt": "DesignID",
+        "image": "/brand/tools/badge-icons/designid-icon.png",
+        "label": "DesignID reflection"
+      },
+      "prompts": [
+        {
+          "id": "story-from-fear-to-alignment-45-designid-connect",
+          "careStep": "connect",
+          "label": "What does this DesignID reflection help you notice?",
+          "responseType": "long_text"
+        },
+        {
+          "id": "story-from-fear-to-alignment-45-designid-reflect",
+          "careStep": "reflect",
+          "label": "Where does this feel aligned, stretched, or in need of grace?",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Capture this DesignID reflection as part of the learner's personal journey record.",
+      "sourceRef": "DesignID reflection",
+      "title": "From fear to alignment"
+    }
+  },
+  {
+    "module": "story",
+    "unit": {
+      "row": 46,
+      "slug": "story-niche-preparation-story-46",
+      "type": "pathfinder",
+      "section": "Story Pathfinder: Niche",
+      "title": "Niche Preparation: Story",
+      "bookPages": "p95 - p96",
+      "workbookSection": "Coming From...",
+      "workbookPages": "p63 - p64",
+      "typeLabel": "Pathfinder / niche",
+      "duration": "12-20 min",
+      "lessonMainIdea": "Shape the Story chapter into one useful line for the learner's developing niche declaration.",
+      "anchorScripture": "Romans 8:28",
+      "teachingBlocks": [
+        "This Pathfinder moment turns the Story chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
+        "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Review the chapter before drafting the line you will carry forward.",
+        "act": "Write the Pathfinder line in simple, honest language.",
+        "reflect": "Notice what feels clear and what still needs prayer or conversation.",
+        "explore": "Ask how this line might connect to the final niche declaration."
+      },
+      "kind": "pathfinder",
+      "prompts": [
+        {
+          "id": "story-declaration",
+          "label": "Coming from...",
+          "responseType": "declaration"
+        }
+      ],
+      "purpose": "At the end of Story, Pathfinder captures the Coming from... line of the eventual Niche Declaration.",
+      "sourceRef": "Workbook chapter three, pages 49-64; book chapter three; class deck week four",
+      "title": "Coming From..."
+    }
+  },
+  {
+    "module": "desire",
+    "unit": {
+      "row": 48,
+      "slug": "desire-desire-why-you-say-think-live-and-love-the-way-you-do-48",
+      "type": "designid-reflection",
+      "section": "What lights your fire?",
+      "title": "Desire: Why you say, think, live, & love the way you do.",
+      "bookPages": "p97 - p105",
+      "workbookSection": "The reflections and the desires of the heart",
+      "workbookPages": "p65 - p69",
+      "typeLabel": "DesignID reflection",
+      "duration": "10-15 min",
+      "lessonMainIdea": "Use DesignID as a mirror inside Desire, helping the learner connect assessment language to faithful love and service.",
+      "anchorScripture": "Psalm 37:4",
+      "companionMoment": {
+        "audioSrc": "/audio/companions/course-moments/dydd-journey-desire-elena.mp3",
+        "duration": "Under 1 minute",
+        "kicker": "Desire discernment",
+        "speakers": [
+          {
+            "image": "/brand/characters/full-body/architect-female-full-body.png",
+            "imageAlt": "Elena standing as a catalytic strategist",
+            "name": "Elena",
+            "role": "catalytic strategist"
+          }
+        ],
+        "title": "Pay Attention to Holy Desire",
+        "transcript": [
+          {
+            "speaker": "Elena",
+            "text": "Desire can become noisy when it is ruled by fear, comparison, or ambition. But desire can also become a clue. Pay attention to the burdens, hopes, and possibilities that keep returning in prayer. Do not force them into a final answer yet. Name them honestly and ask what faithful direction they may be pointing toward."
+          }
+        ]
+      },
+      "teachingBlocks": [
+        "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
+        "Placed inside Desire, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Notice how words, thoughts, actions, and affection flow from the desires of the heart.",
+        "act": "Personalize how your top reflections speak, think, live, and love.",
+        "reflect": "Ask what these patterns reveal about holy desire and shadow desire.",
+        "explore": "Consider how desire can be renewed by the Spirit instead of driven by fear or ego."
+      },
+      "kind": "designid",
+      "marker": {
+        "alt": "DesignID",
+        "image": "/brand/tools/badge-icons/designid-icon.png",
+        "label": "DesignID reflection"
+      },
+      "prompts": [
+        {
+          "id": "desire-say-think-live-love",
+          "careStep": "act",
+          "label": "For your primary reflection, how do you tend to say, think, live, and love?",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Use the reflections to see why the learner says, thinks, lives, and loves the way they do.",
+      "sourceRef": "Workbook p. 66-69",
+      "title": "The Reflections and the Desires of the Heart"
+    }
+  },
+  {
+    "module": "desire",
+    "unit": {
+      "row": 49,
+      "slug": "desire-aligning-desire-with-purpose-49",
+      "type": "normal",
+      "section": "What lights your fire?",
+      "title": "Aligning Desire with Purpose",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach Aligning Desire with Purpose with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Psalm 37:4",
+      "teachingBlocks": [
+        "This lesson introduces Aligning Desire with Purpose as part of the Desire movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": null
+  },
+  {
+    "module": "desire",
+    "unit": {
+      "row": 50,
+      "slug": "desire-will-vs-ways-50",
+      "type": "normal",
+      "section": "What lights your fire?",
+      "title": "Will Vs. Ways",
+      "bookPages": "p106 - p108",
+      "workbookSection": "Desire aligned with God's Design",
+      "workbookPages": "p70 - p71",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach Will Vs. Ways with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Psalm 37:4",
+      "teachingBlocks": [
+        "This lesson introduces Will Vs. Ways as part of the Desire movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Ask God to show one desire that draws you nearer and one that needs refining.",
+        "act": "Take one small prompting of obedience and trust that God guides as you walk.",
+        "reflect": "Release one desire that brings anxiety rather than peace.",
+        "explore": "Explore one area where natural desire could be turned toward kingdom good."
+      },
+      "kind": "care",
+      "prompts": [
+        {
+          "id": "desire-near-refined",
+          "careStep": "connect",
+          "label": "Name one desire that draws you nearer to God and one that needs refining.",
+          "responseType": "long_text"
+        },
+        {
+          "id": "desire-obedience-step",
+          "careStep": "act",
+          "label": "What small prompting of obedience will you act on this week?",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Bring desire before God so longing becomes surrender, obedience, peace, and kingdom contribution.",
+      "sourceRef": "Workbook p. 70-72",
+      "title": "Desire Aligned with God's Design"
+    }
+  },
+  {
+    "module": "desire",
+    "unit": {
+      "row": 51,
+      "slug": "desire-identity-and-desire-51",
+      "type": "normal",
+      "section": "Pulling it all together",
+      "title": "Identity & Desire",
+      "bookPages": "p109",
+      "workbookSection": "Pulling it all together",
+      "workbookPages": "p72 - p74",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach Identity & Desire with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Psalm 37:4",
+      "teachingBlocks": [
+        "This lesson introduces Identity & Desire as part of the Desire movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Name the two strongest truths or insights God has shown so far.",
+        "act": "Complete a summary table for Identity, Expertise, Story, and Desire.",
+        "reflect": "Look for patterns and themes beginning to converge.",
+        "explore": "Ask how God has been shaping these pieces for the good works He prepared."
+      },
+      "kind": "care",
+      "prompts": [
+        {
+          "id": "strongest-insights-so-far",
+          "careStep": "connect",
+          "label": "What are the two strongest truths or insights God has shown you so far?",
+          "responseType": "list"
+        },
+        {
+          "id": "design-patterns-emerging",
+          "careStep": "reflect",
+          "label": "How do Identity, Expertise, Story, and Desire begin to connect into a clear picture?",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Step back and see how Identity, Expertise, Story, and Desire begin to point toward calling.",
+      "sourceRef": "Workbook p. 72-74",
+      "title": "Pulling It All Together"
+    }
+  },
+  {
+    "module": "desire",
+    "unit": {
+      "row": 52,
+      "slug": "desire-expertise-and-desire-52",
+      "type": "normal",
+      "section": "Pulling it all together",
+      "title": "Expertise & Desire",
+      "bookPages": "p110 - p112",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach Expertise & Desire with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Psalm 37:4",
+      "teachingBlocks": [
+        "This lesson introduces Expertise & Desire as part of the Desire movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": null
+  },
+  {
+    "module": "desire",
+    "unit": {
+      "row": 53,
+      "slug": "desire-story-and-desire-53",
+      "type": "normal",
+      "section": "Pulling it all together",
+      "title": "Story & Desire",
+      "bookPages": "p112 - p116",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach Story & Desire with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Psalm 37:4",
+      "teachingBlocks": [
+        "This lesson introduces Story & Desire as part of the Desire movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": null
+  },
+  {
+    "module": "desire",
+    "unit": {
+      "row": 54,
+      "slug": "desire-precious-vs-worthless-54",
+      "type": "normal",
+      "section": "Pulling it all together",
+      "title": "Precious vs. Worthless",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach Precious vs. Worthless with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Psalm 37:4",
+      "teachingBlocks": [
+        "This lesson introduces Precious vs. Worthless as part of the Desire movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": null
+  },
+  {
+    "module": "desire",
+    "unit": {
+      "row": 55,
+      "slug": "desire-niche-preparation-desire-55",
+      "type": "pathfinder",
+      "section": "Desire Pathfinder: Niche",
+      "title": "Niche Preparation: Desire",
+      "bookPages": "p117",
+      "workbookSection": "Impassioned by...",
+      "workbookPages": "p75",
+      "typeLabel": "Pathfinder / niche",
+      "duration": "12-20 min",
+      "lessonMainIdea": "Shape the Desire chapter into one useful line for the learner's developing niche declaration.",
+      "anchorScripture": "Psalm 37:4",
+      "teachingBlocks": [
+        "This Pathfinder moment turns the Desire chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
+        "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Review the chapter before drafting the line you will carry forward.",
+        "act": "Write the Pathfinder line in simple, honest language.",
+        "reflect": "Notice what feels clear and what still needs prayer or conversation.",
+        "explore": "Ask how this line might connect to the final niche declaration."
+      },
+      "kind": "pathfinder",
+      "prompts": [
+        {
+          "id": "desire-declaration",
+          "label": "Impassioned by...",
+          "responseType": "declaration"
+        }
+      ],
+      "purpose": "At the end of Desire, Pathfinder captures the Impassioned by... line of the eventual Niche Declaration.",
+      "sourceRef": "Workbook chapter four, pages 65-75; book chapter four; class deck week five",
+      "title": "Impassioned by..."
+    }
+  },
+  {
+    "module": "gifts",
+    "unit": {
+      "row": 57,
+      "slug": "gifts-the-spiritual-gifts-assessment-with-dydd-57",
+      "type": "normal",
+      "section": "From Preparation to Power",
+      "title": "The spiritual Gifts Assessment with DYDD",
+      "notes": "Link to assessment and course upon completion",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach The spiritual Gifts Assessment with DYDD with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "1 Peter 4:10",
+      "companionMoment": {
+        "audioSrc": "/audio/companions/course-moments/dydd-journey-gifts-clara-daniel.mp3",
+        "duration": "About 1 minute",
+        "kicker": "Gifts bridge",
+        "speakers": [
+          {
+            "image": "/brand/characters/full-body/steward-female-clara-full-body.png",
+            "imageAlt": "Clara standing as a faithful organizer",
+            "name": "Clara",
+            "role": "faithful organizer"
+          },
+          {
+            "image": "/brand/characters/full-body/shepherd-male-daniel-full-body.png",
+            "imageAlt": "Daniel standing as a warm Shepherd guide",
+            "name": "Daniel",
+            "role": "protective guide"
+          }
+        ],
+        "title": "Let Gifts Serve the Whole Journey",
+        "transcript": [
+          {
+            "speaker": "Clara",
+            "text": "When you reach the Gifts chapter, keep your results connected to everything you have already named: identity, expertise, story, and desire."
+          },
+          {
+            "speaker": "Daniel",
+            "text": "A gift is not meant to stand alone. It becomes fruitful when love governs it and community confirms it. Ask where your gifts can serve the people God is placing in front of you."
+          }
+        ]
+      },
+      "teachingBlocks": [
+        "This lesson introduces The spiritual Gifts Assessment with DYDD as part of the Gifts movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": null
+  },
+  {
+    "module": "gifts",
+    "unit": {
+      "row": 58,
+      "slug": "gifts-what-are-and-are-not-the-spiritual-gifts-58",
+      "type": "normal",
+      "section": "From Preparation to Power",
+      "title": "What are and are not the Spiritual Gifts?",
+      "bookPages": "p119 - p128",
+      "workbookSection": "From Design to Power",
+      "workbookPages": "p76 - p79",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach What are and are not the Spiritual Gifts? with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "1 Peter 4:10",
+      "teachingBlocks": [
+        "This lesson introduces What are and are not the Spiritual Gifts? as part of the Gifts movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Thank God for giving you a place in His kingdom and ask where He is already working through your life.",
+        "act": "Serve one tangible need and ask the Spirit to empower the act.",
+        "reflect": "Ask how your story, skills, and desires interact with your gifts for unity and growth.",
+        "explore": "Try one service opportunity that stretches your comfort zone and notice joy, peace, or fruitfulness."
+      },
+      "kind": "care",
+      "marker": {
+        "alt": "Spiritual Gifts",
+        "image": "/brand/tools/badge-icons/spiritual-gifts-icon.png",
+        "label": "Spiritual Gifts reflection"
+      },
+      "prompts": [
+        {
+          "id": "gift-service-opportunity",
+          "careStep": "act",
+          "label": "What tangible need could you serve this week?",
+          "responseType": "long_text"
+        },
+        {
+          "id": "gift-fit-body",
+          "careStep": "reflect",
+          "label": "How could your gifts bring strength or encouragement to the Body of Christ?",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Move from preparation to Spirit-given empowerment for service and the building up of others.",
+      "sourceRef": "Workbook p. 77-79",
+      "title": "Spiritual Gifts: From Design to Power"
+    }
+  },
+  {
+    "module": "gifts",
+    "unit": {
+      "row": 59,
+      "slug": "gifts-unpack-your-spiritual-gifts-59",
+      "type": "workbook-checkpoint",
+      "section": "From Preparation to Power",
+      "title": "Unpack Your Spiritual Gifts",
+      "workbookSection": "Unpack Your Spiritual Gifts",
+      "workbookPages": "p80 - p81",
+      "typeLabel": "Workbook checkpoint",
+      "duration": "8-12 min",
+      "lessonMainIdea": "Slow down and complete the workbook reflection: Unpack Your Spiritual Gifts.",
+      "anchorScripture": "1 Peter 4:10",
+      "teachingBlocks": [
+        "This checkpoint should feel like guided reflection, not a plain form. It gives the learner space to answer the workbook and save the entry as part of the personal record.",
+        "Later, these saved responses can shape progress tracking, companion prompts, and Camp Circle visibility without exposing private content."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Bring your Spiritual Gifts assessment results into the journey.",
+        "act": "Rewrite your top gifts in your own words and record Scriptures that resonate.",
+        "reflect": "Notice what surprised you and how you are currently using your gifts.",
+        "explore": "Name one way gifts can benefit the Body of Christ and one way they can benefit family."
+      },
+      "kind": "care",
+      "marker": {
+        "alt": "Spiritual Gifts",
+        "image": "/brand/tools/badge-icons/spiritual-gifts-icon.png",
+        "label": "Spiritual Gifts reflection"
+      },
+      "prompts": [
+        {
+          "id": "top-three-gifts",
+          "careStep": "act",
+          "label": "List your top three spiritual gifts and rewrite each definition in your own words.",
+          "responseType": "long_text"
+        },
+        {
+          "id": "gift-surprises",
+          "careStep": "reflect",
+          "label": "Was there anything surprising to you about your gifts?",
+          "responseType": "long_text"
+        },
+        {
+          "id": "gift-family-body-service",
+          "careStep": "explore",
+          "label": "How can your gifts benefit the Body of Christ and your family?",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Record top gifts, definitions in the learner's words, resonant Scriptures, surprises, and current/future service.",
+      "sourceRef": "Workbook p. 80-81",
+      "title": "Unpack Your Spiritual Gifts"
+    }
+  },
+  {
+    "module": "gifts",
+    "unit": {
+      "row": 60,
+      "slug": "gifts-spiritual-gifts-and-identity-60",
+      "type": "designid-reflection",
+      "section": "Gifts in Design",
+      "title": "Spiritual Gifts & Identity",
+      "bookPages": "p129",
+      "workbookSection": "Spiritual Gifts and your divine reflection",
+      "workbookPages": "p82 - p84",
+      "typeLabel": "DesignID reflection",
+      "duration": "10-15 min",
+      "lessonMainIdea": "Use DesignID as a mirror inside Gifts, helping the learner connect assessment language to faithful love and service.",
+      "anchorScripture": "1 Peter 4:10",
+      "teachingBlocks": [
+        "DesignID should function here as a mirror, not a box. The learner can notice how their reflection pattern shapes love, learning, contribution, capacity, and pressure responses.",
+        "Placed inside Gifts, this reflection keeps the assessment connected to the Journey instead of sending the learner into a disconnected side course."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Ask where God's design and divine purpose meet through gifts and reflections.",
+        "act": "Choose one gift aligned with your reflection and use it intentionally this week.",
+        "reflect": "Name which gifts feel most aligned and which stretch you.",
+        "explore": "Put DesignID and Spiritual Gifts side by side and note overlaps, differences, and new service possibilities."
+      },
+      "kind": "designid",
+      "marker": {
+        "alt": "DesignID",
+        "image": "/brand/tools/badge-icons/designid-icon.png",
+        "label": "DesignID reflection"
+      },
+      "prompts": [
+        {
+          "id": "gift-reflection-overlap",
+          "careStep": "reflect",
+          "label": "Which gifts feel most aligned with your reflection, and which invite you to stretch?",
+          "responseType": "long_text"
+        },
+        {
+          "id": "gift-reflection-service",
+          "careStep": "explore",
+          "label": "What new way to serve emerges when you compare gifts and DesignID reflections?",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Compare Spiritual Gifts with DesignID reflection language to see how what God empowers and how a person naturally moves can work together.",
+      "sourceRef": "Workbook p. 82-84",
+      "title": "Spiritual Gifts and Your Divine Reflection"
+    }
+  },
+  {
+    "module": "gifts",
+    "unit": {
+      "row": 61,
+      "slug": "gifts-spiritual-gifts-and-expertise-61",
+      "type": "normal",
+      "section": "Gifts in Design",
+      "title": "Spiritual Gifts & Expertise",
+      "bookPages": "p130 - p131",
+      "workbookSection": "Considering your path forward",
+      "workbookPages": "p85 - p86",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach Spiritual Gifts & Expertise with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "1 Peter 4:10",
+      "teachingBlocks": [
+        "This lesson introduces Spiritual Gifts & Expertise as part of the Gifts movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Thank God for every insight and hold assessments as invitations, not conclusions.",
+        "act": "Offer one area of expertise or weakness to God in prayer.",
+        "reflect": "Ask what to hold lightly and what to hold with intention.",
+        "explore": "Use one gift or skill in service and notice peace, fruitfulness, or joy."
+      },
+      "kind": "care",
+      "marker": {
+        "alt": "Spiritual Gifts",
+        "image": "/brand/tools/badge-icons/spiritual-gifts-icon.png",
+        "label": "Spiritual Gifts reflection"
+      },
+      "prompts": [
+        {
+          "id": "hold-lightly-intentionally",
+          "careStep": "reflect",
+          "label": "What insight should you hold lightly, and what should you hold with intention?",
+          "responseType": "long_text"
+        },
+        {
+          "id": "gifts-pulling-together",
+          "careStep": "reflect",
+          "label": "What patterns do you see between your Spiritual Gifts, Story, Identity, Expertise, and Desire?",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Hold every tool lightly, compare gifts with Story, Identity, Expertise, and Desire, and notice how patterns point toward service.",
+      "sourceRef": "Workbook p. 85-88",
+      "title": "Considering Your Path Forward"
+    }
+  },
+  {
+    "module": "gifts",
+    "unit": {
+      "row": 62,
+      "slug": "gifts-spiritual-gifts-and-story-desire-62",
+      "type": "normal",
+      "section": "Gifts in Design",
+      "title": "Spiritual gifts & Story/Desire",
+      "bookPages": "p132 - 135",
+      "workbookSection": "Spiritual Gifts: Pulling it all together",
+      "workbookPages": "p87 - p88",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach Spiritual gifts & Story/Desire with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "1 Peter 4:10",
+      "teachingBlocks": [
+        "This lesson introduces Spiritual gifts & Story/Desire as part of the Gifts movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Connect this workbook section to what the lesson just taught and what God may be bringing to the surface.",
+        "act": "Answer the workbook prompt honestly and choose one faithful next step.",
+        "reflect": "Review what you wrote and notice what feels important, repeated, or unresolved.",
+        "explore": "Ask what this response may reveal about your design, growth, or purpose."
+      },
+      "kind": "care",
+      "marker": {
+        "alt": "Spiritual Gifts",
+        "image": "/brand/tools/badge-icons/spiritual-gifts-icon.png",
+        "label": "Spiritual Gifts reflection"
+      },
+      "prompts": [
+        {
+          "id": "gifts-spiritual-gifts-and-story-desire-62-workbook-response",
+          "label": "Spiritual Gifts: Pulling it all together",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Digitize this workbook section into the learner's saved journey record.",
+      "sourceRef": "Workbook p87 - p88",
+      "title": "Spiritual Gifts: Pulling it all together"
+    }
+  },
+  {
+    "module": "gifts",
+    "unit": {
+      "row": 63,
+      "slug": "gifts-niche-preparation-gifts-63",
+      "type": "pathfinder",
+      "section": "Gifts Pathfinder: Niche",
+      "title": "Niche Preparation: Gifts",
+      "bookPages": "p136",
+      "workbookSection": "Supported by...",
+      "workbookPages": "p89",
+      "typeLabel": "Pathfinder / niche",
+      "duration": "12-20 min",
+      "lessonMainIdea": "Shape the Gifts chapter into one useful line for the learner's developing niche declaration.",
+      "anchorScripture": "1 Peter 4:10",
+      "teachingBlocks": [
+        "This Pathfinder moment turns the Gifts chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
+        "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Review the chapter before drafting the line you will carry forward.",
+        "act": "Write the Pathfinder line in simple, honest language.",
+        "reflect": "Notice what feels clear and what still needs prayer or conversation.",
+        "explore": "Ask how this line might connect to the final niche declaration."
+      },
+      "kind": "pathfinder",
+      "prompts": [
+        {
+          "id": "gifts-declaration",
+          "label": "Supported by...",
+          "responseType": "declaration"
+        }
+      ],
+      "purpose": "At the end of Gifts, Pathfinder captures the Supported by... line of the eventual Niche Declaration.",
+      "sourceRef": "Workbook chapter five, pages 76-89; book chapter five; class deck week five/six",
+      "title": "Supported by..."
+    }
+  },
+  {
+    "module": "niche",
+    "unit": {
+      "row": 65,
+      "slug": "niche-who-do-you-see-65",
+      "type": "normal",
+      "section": "Called to Purpose",
+      "title": "Who do you see?",
+      "notes": "Matt 5: 3-10. blessed for...",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach Who do you see? with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Matthew 5:16",
+      "teachingBlocks": [
+        "This lesson introduces Who do you see? as part of the Niche movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": null
+  },
+  {
+    "module": "niche",
+    "unit": {
+      "row": 66,
+      "slug": "niche-who-is-calling-66",
+      "type": "normal",
+      "section": "Called to Purpose",
+      "title": "Who is calling?",
+      "notes": "General vs. specific, what if you don't know. Purpose - Action - Fruition",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach Who is calling? with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Matthew 5:16",
+      "teachingBlocks": [
+        "This lesson introduces Who is calling? as part of the Niche movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": null
+  },
+  {
+    "module": "niche",
+    "unit": {
+      "row": 67,
+      "slug": "niche-the-promised-land-journey-67",
+      "type": "normal",
+      "section": "Called to Purpose",
+      "title": "The Promised Land Journey",
+      "typeLabel": "Teaching lesson",
+      "duration": "6-9 min",
+      "lessonMainIdea": "Teach The Promised Land Journey with enough clarity and warmth that the learner is ready to answer the attached workbook section.",
+      "anchorScripture": "Matthew 5:16",
+      "teachingBlocks": [
+        "This lesson introduces The Promised Land Journey as part of the Niche movement of Discover Your Divine Design. It should give enough teaching to make the next reflection meaningful without overwhelming the learner.",
+        "The rhythm is steady: teach the idea, name what to notice, invite a small act of reflection, then attach the relevant workbook section at the bottom so progress is captured in one place."
+      ]
+    },
+    "experience": null
+  },
+  {
+    "module": "niche",
+    "unit": {
+      "row": 68,
+      "slug": "niche-pathfinder-preparing-your-niche-declaration-68",
+      "type": "pathfinder",
+      "section": "Step in to your purpose",
+      "title": "Pathfinder: Preparing your niche declaration",
+      "bookPages": "p137 - p143",
+      "workbookSection": "I believe God created me...",
+      "workbookPages": "p90 - p94",
+      "notes": "Full Pathfinder Niche builder here. Able to pull from their assessments, all entries, and collaboate with Dydi (Agent)",
+      "typeLabel": "Pathfinder / niche",
+      "duration": "12-20 min",
+      "lessonMainIdea": "Shape the Niche chapter into one useful line for the learner's developing niche declaration.",
+      "anchorScripture": "Matthew 5:16",
+      "companionMoment": {
+        "audioSrc": "/audio/companions/course-moments/dydd-journey-niche-four-voices.mp3",
+        "duration": "About 2 minutes",
+        "kicker": "Pathfinder conversation",
+        "speakers": [
+          {
+            "image": "/brand/characters/full-body/dydi-full-body.png",
+            "imageAlt": "Dydi standing as a friendly DYDD guide",
+            "name": "Dydi",
+            "role": "DYDD guide"
+          },
+          {
+            "image": "/brand/characters/full-body/shepherd-male-daniel-full-body.png",
+            "imageAlt": "Daniel standing as a warm Shepherd guide",
+            "name": "Daniel",
+            "role": "protective guide"
+          },
+          {
+            "image": "/brand/characters/full-body/artisan-female-naomi-full-body.png",
+            "imageAlt": "Naomi standing as a careful craftsperson",
+            "name": "Naomi",
+            "role": "careful craftsperson"
+          },
+          {
+            "image": "/brand/characters/full-body/architect-male-marcus-full-body.png",
+            "imageAlt": "Marcus standing as a steady builder",
+            "name": "Marcus",
+            "role": "steady builder"
+          }
+        ],
+        "title": "Four Voices Before the Niche Declaration",
+        "transcript": [
+          {
+            "speaker": "Dydi",
+            "text": "Before you draft the final declaration, gather the pieces slowly. Identity, story, expertise, desire, and gifts are not separate piles. They are becoming one faithful picture."
+          },
+          {
+            "speaker": "Daniel",
+            "text": "And if the picture still feels incomplete, that is all right. Purpose often becomes clearer through obedience, not before it."
+          },
+          {
+            "speaker": "Naomi",
+            "text": "Use plain words first. Do not try to make the sentence sound impressive. Make it honest, usable, and faithful to what you have actually discovered."
+          },
+          {
+            "speaker": "Marcus",
+            "text": "Then give it structure. Who are you called to serve? What has God formed in you? What kind of good work is beginning to take shape?"
+          },
+          {
+            "speaker": "Dydi",
+            "text": "Let this be a working declaration, not a final prison. God can keep refining the language as you keep walking."
+          }
+        ]
+      },
+      "teachingBlocks": [
+        "This Pathfinder moment turns the Niche chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
+        "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Review what this chapter helped you notice before trying to make the line sound polished.",
+        "act": "Draft the Pathfinder sentence in plain language you can carry forward.",
+        "reflect": "Ask whether the draft feels honest, humble, and faithful to what God is showing you.",
+        "explore": "Consider what this line may contribute to the final niche declaration."
+      },
+      "kind": "pathfinder",
+      "prompts": [
+        {
+          "id": "identity-declaration",
+          "label": "I believe God created me…",
+          "helper": "Use this space to write a sentence or paragraph that captures your true identity in Christ.",
+          "responseType": "declaration"
+        }
+      ],
+      "purpose": "Preserve this Pathfinder line so it can be pulled into the final niche builder.",
+      "sourceRef": "Workbook p90 - p94",
+      "title": "Pathfinder: Preparing your niche declaration"
+    }
+  },
+  {
+    "module": "niche",
+    "unit": {
+      "row": 69,
+      "slug": "niche-coming-from-69",
+      "type": "pathfinder",
+      "section": "Step in to your purpose",
+      "title": "Coming from...",
+      "workbookSection": "Coming from...",
+      "typeLabel": "Pathfinder / niche",
+      "duration": "12-20 min",
+      "lessonMainIdea": "Shape the Niche chapter into one useful line for the learner's developing niche declaration.",
+      "anchorScripture": "Matthew 5:16",
+      "teachingBlocks": [
+        "This Pathfinder moment turns the Niche chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
+        "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Review what this chapter helped you notice before trying to make the line sound polished.",
+        "act": "Draft the Pathfinder sentence in plain language you can carry forward.",
+        "reflect": "Ask whether the draft feels honest, humble, and faithful to what God is showing you.",
+        "explore": "Consider what this line may contribute to the final niche declaration."
+      },
+      "kind": "pathfinder",
+      "prompts": [
+        {
+          "id": "story-declaration",
+          "label": "Coming from...",
+          "responseType": "declaration"
+        }
+      ],
+      "purpose": "Preserve this Pathfinder line so it can be pulled into the final niche builder.",
+      "title": "Coming from..."
+    }
+  },
+  {
+    "module": "niche",
+    "unit": {
+      "row": 70,
+      "slug": "niche-which-will-enable-me-to-use-my-70",
+      "type": "pathfinder",
+      "section": "Step in to your purpose",
+      "title": "Which will allow me to use my…",
+      "workbookSection": "Which will allow me to use my…",
+      "typeLabel": "Pathfinder / niche",
+      "duration": "12-20 min",
+      "lessonMainIdea": "Shape the Niche chapter into one useful line for the learner's developing niche declaration.",
+      "anchorScripture": "Matthew 5:16",
+      "teachingBlocks": [
+        "This Pathfinder moment turns the Niche chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
+        "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Review what this chapter helped you notice before trying to make the line sound polished.",
+        "act": "Draft the Pathfinder sentence in plain language you can carry forward.",
+        "reflect": "Ask whether the draft feels honest, humble, and faithful to what God is showing you.",
+        "explore": "Consider what this line may contribute to the final niche declaration."
+      },
+      "kind": "pathfinder",
+      "prompts": [
+        {
+          "id": "identity-service-reflections",
+          "label": "Which will enable me to use my…",
+          "helper": "Reflections: What have you learned about your divine reflections that you might be able to use for serving God?",
+          "responseType": "long_text"
+        },
+        {
+          "id": "identity-love-for-others",
+          "label": "Which will enable me to use my…",
+          "helper": "Love for Others: How you naturally connect and care",
+          "responseType": "long_text"
+        },
+        {
+          "id": "expertise-talents-skills",
+          "label": "Talents and skills",
+          "helper": "What comes naturally to you, and what skills have you developed through learning and practice? Which could you use to serve others?",
+          "responseType": "long_text"
+        },
+        {
+          "id": "expertise-declaration",
+          "label": "Competency and expertise",
+          "helper": "Where have your knowledge, skills, and abilities become reliable? Where has experience deepened them into wisdom, insight, or intuition you can use to bless others?",
+          "responseType": "declaration"
+        }
+      ],
+      "purpose": "Preserve this Pathfinder line so it can be pulled into the final niche builder.",
+      "title": "Which will allow me to use my…"
+    }
+  },
+  {
+    "module": "niche",
+    "unit": {
+      "row": 71,
+      "slug": "niche-impassioned-by-71",
+      "type": "pathfinder",
+      "section": "Step in to your purpose",
+      "title": "Impassioned by...",
+      "workbookSection": "Impassioned by...",
+      "typeLabel": "Pathfinder / niche",
+      "duration": "12-20 min",
+      "lessonMainIdea": "Shape the Niche chapter into one useful line for the learner's developing niche declaration.",
+      "anchorScripture": "Matthew 5:16",
+      "teachingBlocks": [
+        "This Pathfinder moment turns the Niche chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
+        "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Review what this chapter helped you notice before trying to make the line sound polished.",
+        "act": "Draft the Pathfinder sentence in plain language you can carry forward.",
+        "reflect": "Ask whether the draft feels honest, humble, and faithful to what God is showing you.",
+        "explore": "Consider what this line may contribute to the final niche declaration."
+      },
+      "kind": "pathfinder",
+      "prompts": [
+        {
+          "id": "desire-declaration",
+          "label": "Impassioned by...",
+          "responseType": "declaration"
+        }
+      ],
+      "purpose": "Preserve this Pathfinder line so it can be pulled into the final niche builder.",
+      "title": "Impassioned by..."
+    }
+  },
+  {
+    "module": "niche",
+    "unit": {
+      "row": 72,
+      "slug": "niche-supported-by-72",
+      "type": "pathfinder",
+      "section": "Step in to your purpose",
+      "title": "Supported by...",
+      "workbookSection": "Supported by...",
+      "typeLabel": "Pathfinder / niche",
+      "duration": "12-20 min",
+      "lessonMainIdea": "Shape the Niche chapter into one useful line for the learner's developing niche declaration.",
+      "anchorScripture": "Matthew 5:16",
+      "teachingBlocks": [
+        "This Pathfinder moment turns the Niche chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
+        "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Review what this chapter helped you notice before trying to make the line sound polished.",
+        "act": "Draft the Pathfinder sentence in plain language you can carry forward.",
+        "reflect": "Ask whether the draft feels honest, humble, and faithful to what God is showing you.",
+        "explore": "Consider what this line may contribute to the final niche declaration."
+      },
+      "kind": "pathfinder",
+      "prompts": [
+        {
+          "id": "gifts-declaration",
+          "label": "Supported by...",
+          "responseType": "declaration"
+        }
+      ],
+      "purpose": "Preserve this Pathfinder line so it can be pulled into the final niche builder.",
+      "title": "Supported by..."
+    }
+  },
+  {
+    "module": "niche",
+    "unit": {
+      "row": 73,
+      "slug": "niche-resulting-in-my-73",
+      "type": "pathfinder",
+      "section": "Step in to your purpose",
+      "title": "Resulting in my...",
+      "workbookSection": "Resulting in my...",
+      "typeLabel": "Pathfinder / niche",
+      "duration": "12-20 min",
+      "lessonMainIdea": "Shape the Niche chapter into one useful line for the learner's developing niche declaration.",
+      "anchorScripture": "Matthew 5:16",
+      "teachingBlocks": [
+        "This Pathfinder moment turns the Niche chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
+        "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Review what this chapter helped you notice before trying to make the line sound polished.",
+        "act": "Draft the Pathfinder sentence in plain language you can carry forward.",
+        "reflect": "Ask whether the draft feels honest, humble, and faithful to what God is showing you.",
+        "explore": "Consider what this line may contribute to the final niche declaration."
+      },
+      "kind": "pathfinder",
+      "prompts": [
+        {
+          "id": "niche-resulting-in-my-73-pathfinder-line",
+          "label": "Resulting in my...",
+          "responseType": "declaration"
+        },
+        {
+          "id": "niche-resulting-in-my-73-pathfinder-notes",
+          "careStep": "reflect",
+          "label": "What words from this chapter feel important to preserve?",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Preserve this Pathfinder line so it can be pulled into the final niche builder.",
+      "title": "Resulting in my..."
+    }
+  },
+  {
+    "module": "niche",
+    "unit": {
+      "row": 74,
+      "slug": "niche-encouraged-by-74",
+      "type": "pathfinder",
+      "section": "Step in to your purpose",
+      "title": "Encouraged by...",
+      "workbookSection": "Encouraged by...",
+      "typeLabel": "Pathfinder / niche",
+      "duration": "12-20 min",
+      "lessonMainIdea": "Shape the Niche chapter into one useful line for the learner's developing niche declaration.",
+      "anchorScripture": "Matthew 5:16",
+      "teachingBlocks": [
+        "This Pathfinder moment turns the Niche chapter into language the learner can carry forward. The goal is not perfection; the goal is a faithful draft that captures what is becoming clear.",
+        "The mature version of this lesson should review saved reflections, surface repeated words, invite companion guidance, and preserve a draft line for the final niche declaration."
+      ]
+    },
+    "experience": {
+      "care": {
+        "connect": "Review what this chapter helped you notice before trying to make the line sound polished.",
+        "act": "Draft the Pathfinder sentence in plain language you can carry forward.",
+        "reflect": "Ask whether the draft feels honest, humble, and faithful to what God is showing you.",
+        "explore": "Consider what this line may contribute to the final niche declaration."
+      },
+      "kind": "pathfinder",
+      "prompts": [
+        {
+          "id": "niche-encouraged-by-74-pathfinder-line",
+          "label": "Encouraged by...",
+          "responseType": "declaration"
+        },
+        {
+          "id": "niche-encouraged-by-74-pathfinder-notes",
+          "careStep": "reflect",
+          "label": "What words from this chapter feel important to preserve?",
+          "responseType": "long_text"
+        }
+      ],
+      "purpose": "Preserve this Pathfinder line so it can be pulled into the final niche builder.",
+      "title": "Encouraged by..."
+    }
+  },
+  {
+    "module": "niche",
+    "unit": {
+      "row": 75,
+      "slug": "niche-congratulations-75",
+      "type": "completion",
+      "section": "Congratulations",
+      "title": "Congratulations",
+      "typeLabel": "Completion",
+      "duration": "5-8 min",
+      "lessonMainIdea": "Close the Journey with prayer, celebration, and one concrete next step beyond the course.",
+      "anchorScripture": "Matthew 5:16",
+      "teachingBlocks": [
+        "The ending should feel like a commissioning, not a hard stop. The learner has gathered language, evidence, prayers, and next steps that now need to be lived.",
+        "This unit can point them toward their next faithful experiment, future coaching, a Camp Circle, or deeper work with the Field Guide."
+      ]
+    },
+    "experience": null
+  },
+  {
+    "module": "niche",
+    "unit": {
+      "row": 76,
+      "slug": "niche-prayer-76",
+      "type": "completion",
+      "section": "Congratulations",
+      "title": "Prayer",
+      "typeLabel": "Completion",
+      "duration": "5-8 min",
+      "lessonMainIdea": "Close the Journey with prayer, celebration, and one concrete next step beyond the course.",
+      "anchorScripture": "Matthew 5:16",
+      "teachingBlocks": [
+        "The ending should feel like a commissioning, not a hard stop. The learner has gathered language, evidence, prayers, and next steps that now need to be lived.",
+        "This unit can point them toward their next faithful experiment, future coaching, a Camp Circle, or deeper work with the Field Guide."
+      ]
+    },
+    "experience": null
+  },
+  {
+    "module": "niche",
+    "unit": {
+      "row": 77,
+      "slug": "niche-whats-next-77",
+      "type": "completion",
+      "section": "Congratulations",
+      "title": "What's next",
+      "typeLabel": "Completion",
+      "duration": "5-8 min",
+      "lessonMainIdea": "Close the Journey with prayer, celebration, and one concrete next step beyond the course.",
+      "anchorScripture": "Matthew 5:16",
+      "teachingBlocks": [
+        "The ending should feel like a commissioning, not a hard stop. The learner has gathered language, evidence, prayers, and next steps that now need to be lived.",
+        "This unit can point them toward their next faithful experiment, future coaching, a Camp Circle, or deeper work with the Field Guide."
+      ]
+    },
+    "experience": null
+  }
+]

@@ -1,0 +1,568 @@
+{
+  "story-why-story-matters-35": {
+    "type": "normal",
+    "prompts": [
+      {
+        "id": "shaping-moments",
+        "careStep": "connect",
+        "label": "List the biggest moments in your life that have shaped who you are.",
+        "responseType": "list"
+      }
+    ],
+    "media": null,
+    "sourceRow": 35,
+    "module": "story"
+  },
+  "story-god-never-wastes-a-hurt-36": {
+    "type": "normal",
+    "prompts": [],
+    "media": null,
+    "sourceRow": 36,
+    "module": "story"
+  },
+  "story-what-is-a-testimony-37": {
+    "type": "normal",
+    "prompts": [],
+    "media": null,
+    "sourceRow": 37,
+    "module": "story"
+  },
+  "story-pauls-testimony-38": {
+    "type": "normal",
+    "prompts": [
+      {
+        "id": "faith-story-outline",
+        "careStep": "connect",
+        "label": "Write or outline your faith story.",
+        "responseType": "long_text"
+      },
+      {
+        "id": "story-encouragement",
+        "careStep": "reflect",
+        "label": "What part of your story might encourage someone else?",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 38,
+    "module": "story"
+  },
+  "story-family-and-culture-39": {
+    "type": "normal",
+    "prompts": [
+      {
+        "id": "family-culture-gifts-wounds",
+        "careStep": "connect",
+        "label": "Name one gift and one wound you have inherited from your family or culture.",
+        "responseType": "long_text"
+      },
+      {
+        "id": "inheritance-keep-surrender",
+        "careStep": "reflect",
+        "label": "What inherited belief or pattern should be kept, and what should be surrendered?",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 39,
+    "module": "story"
+  },
+  "story-your-work-matters-40": {
+    "type": "normal",
+    "prompts": [
+      {
+        "id": "story-your-work-matters-40-workbook-response",
+        "label": "Called where you are",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 40,
+    "module": "story"
+  },
+  "story-your-church-story-41": {
+    "type": "normal",
+    "prompts": [
+      {
+        "id": "story-your-church-story-41-workbook-response",
+        "label": "Church Vs. The Body of Christ",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 41,
+    "module": "story"
+  },
+  "story-divine-reflections-within-your-stories-42": {
+    "type": "designid-reflection",
+    "prompts": [
+      {
+        "id": "story-divine-reflections-within-your-stories-42-designid-connect",
+        "careStep": "connect",
+        "label": "What does this DesignID reflection help you notice?",
+        "responseType": "long_text"
+      },
+      {
+        "id": "story-divine-reflections-within-your-stories-42-designid-reflect",
+        "careStep": "reflect",
+        "label": "Where does this feel aligned, stretched, or in need of grace?",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 42,
+    "module": "story"
+  },
+  "story-what-is-learned-helplessness-43": {
+    "type": "designid-reflection",
+    "prompts": [
+      {
+        "id": "story-what-is-learned-helplessness-43-designid-connect",
+        "careStep": "connect",
+        "label": "What does this DesignID reflection help you notice?",
+        "responseType": "long_text"
+      },
+      {
+        "id": "story-what-is-learned-helplessness-43-designid-reflect",
+        "careStep": "reflect",
+        "label": "Where does this feel aligned, stretched, or in need of grace?",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 43,
+    "module": "story"
+  },
+  "story-shadows-anxiety-and-fear-44": {
+    "type": "designid-reflection",
+    "prompts": [
+      {
+        "id": "story-shadows-anxiety-and-fear-44-designid-connect",
+        "careStep": "connect",
+        "label": "What does this DesignID reflection help you notice?",
+        "responseType": "long_text"
+      },
+      {
+        "id": "story-shadows-anxiety-and-fear-44-designid-reflect",
+        "careStep": "reflect",
+        "label": "Where does this feel aligned, stretched, or in need of grace?",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 44,
+    "module": "story"
+  },
+  "story-from-fear-to-alignment-45": {
+    "type": "designid-reflection",
+    "prompts": [
+      {
+        "id": "story-from-fear-to-alignment-45-designid-connect",
+        "careStep": "connect",
+        "label": "What does this DesignID reflection help you notice?",
+        "responseType": "long_text"
+      },
+      {
+        "id": "story-from-fear-to-alignment-45-designid-reflect",
+        "careStep": "reflect",
+        "label": "Where does this feel aligned, stretched, or in need of grace?",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 45,
+    "module": "story"
+  },
+  "story-niche-preparation-story-46": {
+    "type": "pathfinder",
+    "prompts": [
+      {
+        "id": "story-declaration",
+        "label": "Coming from...",
+        "responseType": "declaration"
+      }
+    ],
+    "media": null,
+    "sourceRow": 46,
+    "module": "story"
+  },
+  "desire-desire-why-you-say-think-live-and-love-the-way-you-do-48": {
+    "type": "designid-reflection",
+    "prompts": [
+      {
+        "id": "desire-say-think-live-love",
+        "careStep": "act",
+        "label": "For your primary reflection, how do you tend to say, think, live, and love?",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 48,
+    "module": "desire"
+  },
+  "desire-aligning-desire-with-purpose-49": {
+    "type": "normal",
+    "prompts": [],
+    "media": null,
+    "sourceRow": 49,
+    "module": "desire"
+  },
+  "desire-will-vs-ways-50": {
+    "type": "normal",
+    "prompts": [
+      {
+        "id": "desire-near-refined",
+        "careStep": "connect",
+        "label": "Name one desire that draws you nearer to God and one that needs refining.",
+        "responseType": "long_text"
+      },
+      {
+        "id": "desire-obedience-step",
+        "careStep": "act",
+        "label": "What small prompting of obedience will you act on this week?",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 50,
+    "module": "desire"
+  },
+  "desire-identity-and-desire-51": {
+    "type": "normal",
+    "prompts": [
+      {
+        "id": "strongest-insights-so-far",
+        "careStep": "connect",
+        "label": "What are the two strongest truths or insights God has shown you so far?",
+        "responseType": "list"
+      },
+      {
+        "id": "design-patterns-emerging",
+        "careStep": "reflect",
+        "label": "How do Identity, Expertise, Story, and Desire begin to connect into a clear picture?",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 51,
+    "module": "desire"
+  },
+  "desire-expertise-and-desire-52": {
+    "type": "normal",
+    "prompts": [],
+    "media": null,
+    "sourceRow": 52,
+    "module": "desire"
+  },
+  "desire-story-and-desire-53": {
+    "type": "normal",
+    "prompts": [],
+    "media": null,
+    "sourceRow": 53,
+    "module": "desire"
+  },
+  "desire-precious-vs-worthless-54": {
+    "type": "normal",
+    "prompts": [],
+    "media": null,
+    "sourceRow": 54,
+    "module": "desire"
+  },
+  "desire-niche-preparation-desire-55": {
+    "type": "pathfinder",
+    "prompts": [
+      {
+        "id": "desire-declaration",
+        "label": "Impassioned by...",
+        "responseType": "declaration"
+      }
+    ],
+    "media": null,
+    "sourceRow": 55,
+    "module": "desire"
+  },
+  "gifts-the-spiritual-gifts-assessment-with-dydd-57": {
+    "type": "normal",
+    "prompts": [],
+    "media": null,
+    "sourceRow": 57,
+    "module": "gifts"
+  },
+  "gifts-what-are-and-are-not-the-spiritual-gifts-58": {
+    "type": "normal",
+    "prompts": [
+      {
+        "id": "gift-service-opportunity",
+        "careStep": "act",
+        "label": "What tangible need could you serve this week?",
+        "responseType": "long_text"
+      },
+      {
+        "id": "gift-fit-body",
+        "careStep": "reflect",
+        "label": "How could your gifts bring strength or encouragement to the Body of Christ?",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 58,
+    "module": "gifts"
+  },
+  "gifts-unpack-your-spiritual-gifts-59": {
+    "type": "workbook-checkpoint",
+    "prompts": [
+      {
+        "id": "top-three-gifts",
+        "careStep": "act",
+        "label": "List your top three spiritual gifts and rewrite each definition in your own words.",
+        "responseType": "long_text"
+      },
+      {
+        "id": "gift-surprises",
+        "careStep": "reflect",
+        "label": "Was there anything surprising to you about your gifts?",
+        "responseType": "long_text"
+      },
+      {
+        "id": "gift-family-body-service",
+        "careStep": "explore",
+        "label": "How can your gifts benefit the Body of Christ and your family?",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 59,
+    "module": "gifts"
+  },
+  "gifts-spiritual-gifts-and-identity-60": {
+    "type": "designid-reflection",
+    "prompts": [
+      {
+        "id": "gift-reflection-overlap",
+        "careStep": "reflect",
+        "label": "Which gifts feel most aligned with your reflection, and which invite you to stretch?",
+        "responseType": "long_text"
+      },
+      {
+        "id": "gift-reflection-service",
+        "careStep": "explore",
+        "label": "What new way to serve emerges when you compare gifts and DesignID reflections?",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 60,
+    "module": "gifts"
+  },
+  "gifts-spiritual-gifts-and-expertise-61": {
+    "type": "normal",
+    "prompts": [
+      {
+        "id": "hold-lightly-intentionally",
+        "careStep": "reflect",
+        "label": "What insight should you hold lightly, and what should you hold with intention?",
+        "responseType": "long_text"
+      },
+      {
+        "id": "gifts-pulling-together",
+        "careStep": "reflect",
+        "label": "What patterns do you see between your Spiritual Gifts, Story, Identity, Expertise, and Desire?",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 61,
+    "module": "gifts"
+  },
+  "gifts-spiritual-gifts-and-story-desire-62": {
+    "type": "normal",
+    "prompts": [
+      {
+        "id": "gifts-spiritual-gifts-and-story-desire-62-workbook-response",
+        "label": "Spiritual Gifts: Pulling it all together",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 62,
+    "module": "gifts"
+  },
+  "gifts-niche-preparation-gifts-63": {
+    "type": "pathfinder",
+    "prompts": [
+      {
+        "id": "gifts-declaration",
+        "label": "Supported by...",
+        "responseType": "declaration"
+      }
+    ],
+    "media": null,
+    "sourceRow": 63,
+    "module": "gifts"
+  },
+  "niche-who-do-you-see-65": {
+    "type": "normal",
+    "prompts": [],
+    "media": null,
+    "sourceRow": 65,
+    "module": "niche"
+  },
+  "niche-who-is-calling-66": {
+    "type": "normal",
+    "prompts": [],
+    "media": null,
+    "sourceRow": 66,
+    "module": "niche"
+  },
+  "niche-the-promised-land-journey-67": {
+    "type": "normal",
+    "prompts": [],
+    "media": null,
+    "sourceRow": 67,
+    "module": "niche"
+  },
+  "niche-pathfinder-preparing-your-niche-declaration-68": {
+    "type": "pathfinder",
+    "prompts": [
+      {
+        "id": "identity-declaration",
+        "label": "I believe God created me…",
+        "helper": "Use this space to write a sentence or paragraph that captures your true identity in Christ.",
+        "responseType": "declaration"
+      }
+    ],
+    "media": null,
+    "sourceRow": 68,
+    "module": "niche"
+  },
+  "niche-coming-from-69": {
+    "type": "pathfinder",
+    "prompts": [
+      {
+        "id": "story-declaration",
+        "label": "Coming from...",
+        "responseType": "declaration"
+      }
+    ],
+    "media": null,
+    "sourceRow": 69,
+    "module": "niche"
+  },
+  "niche-which-will-enable-me-to-use-my-70": {
+    "type": "pathfinder",
+    "prompts": [
+      {
+        "id": "identity-service-reflections",
+        "label": "Which will enable me to use my…",
+        "helper": "Reflections: What have you learned about your divine reflections that you might be able to use for serving God?",
+        "responseType": "long_text"
+      },
+      {
+        "id": "identity-love-for-others",
+        "label": "Which will enable me to use my…",
+        "helper": "Love for Others: How you naturally connect and care",
+        "responseType": "long_text"
+      },
+      {
+        "id": "expertise-talents-skills",
+        "label": "Talents and skills",
+        "helper": "What comes naturally to you, and what skills have you developed through learning and practice? Which could you use to serve others?",
+        "responseType": "long_text"
+      },
+      {
+        "id": "expertise-declaration",
+        "label": "Competency and expertise",
+        "helper": "Where have your knowledge, skills, and abilities become reliable? Where has experience deepened them into wisdom, insight, or intuition you can use to bless others?",
+        "responseType": "declaration"
+      }
+    ],
+    "media": null,
+    "sourceRow": 70,
+    "module": "niche"
+  },
+  "niche-impassioned-by-71": {
+    "type": "pathfinder",
+    "prompts": [
+      {
+        "id": "desire-declaration",
+        "label": "Impassioned by...",
+        "responseType": "declaration"
+      }
+    ],
+    "media": null,
+    "sourceRow": 71,
+    "module": "niche"
+  },
+  "niche-supported-by-72": {
+    "type": "pathfinder",
+    "prompts": [
+      {
+        "id": "gifts-declaration",
+        "label": "Supported by...",
+        "responseType": "declaration"
+      }
+    ],
+    "media": null,
+    "sourceRow": 72,
+    "module": "niche"
+  },
+  "niche-resulting-in-my-73": {
+    "type": "pathfinder",
+    "prompts": [
+      {
+        "id": "niche-resulting-in-my-73-pathfinder-line",
+        "label": "Resulting in my...",
+        "responseType": "declaration"
+      },
+      {
+        "id": "niche-resulting-in-my-73-pathfinder-notes",
+        "careStep": "reflect",
+        "label": "What words from this chapter feel important to preserve?",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 73,
+    "module": "niche"
+  },
+  "niche-encouraged-by-74": {
+    "type": "pathfinder",
+    "prompts": [
+      {
+        "id": "niche-encouraged-by-74-pathfinder-line",
+        "label": "Encouraged by...",
+        "responseType": "declaration"
+      },
+      {
+        "id": "niche-encouraged-by-74-pathfinder-notes",
+        "careStep": "reflect",
+        "label": "What words from this chapter feel important to preserve?",
+        "responseType": "long_text"
+      }
+    ],
+    "media": null,
+    "sourceRow": 74,
+    "module": "niche"
+  },
+  "niche-congratulations-75": {
+    "type": "completion",
+    "prompts": [],
+    "media": null,
+    "sourceRow": 75,
+    "module": "niche"
+  },
+  "niche-prayer-76": {
+    "type": "completion",
+    "prompts": [],
+    "media": null,
+    "sourceRow": 76,
+    "module": "niche"
+  },
+  "niche-whats-next-77": {
+    "type": "completion",
+    "prompts": [],
+    "media": null,
+    "sourceRow": 77,
+    "module": "niche"
+  }
+}

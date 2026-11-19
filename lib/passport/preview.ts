@@ -1,5 +1,6 @@
 import 'server-only';
 import { randomUUID } from 'node:crypto';
+import { isOwnerCoursePreview } from '@/lib/trails/course-preview';
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { reportBucket } from '@/lib/assessments/report-storage';
@@ -44,6 +45,6 @@ export async function previewProgressRequest(request:Request,p:ReviewSearchParam
    const saved=await bucket.upload(path(p),Buffer.from(JSON.stringify(state)),{upsert:true,contentType:'application/json',cacheControl:'0'});
    if(saved.error)throw Error('Could not save your preview checklist. Try again.');
   }
-  return reply({signedIn:true,preview:true,completed,awards:state.awards,legacyComplete:false,complete:courseCompleted(slug,completed)});
+  return reply({signedIn:true,preview:true,reviewAllLessons:slug===journeySlug && isOwnerCoursePreview(p),completed,awards:state.awards,legacyComplete:false,complete:courseCompleted(slug,completed)});
  }catch(e){return reply({error:(e as Error).message},503);}finally{if(leased)await bucket.remove([lock]);}
 }

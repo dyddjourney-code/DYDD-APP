@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export function useCourseProgress(courseSlug:string, slugs:string[]) {
- const [state,setState]=useState<{completed:string[];awards:string[];legacyComplete:boolean;complete:boolean;signedIn:boolean}|null>(null);
+ const [state,setState]=useState<{completed:string[];awards:string[];legacyComplete:boolean;complete:boolean;signedIn:boolean;reviewAllLessons?:boolean}|null>(null);
  const [error,setError]=useState(''),[busy,setBusy]=useState(false);
  const [failedLesson,setFailedLesson]=useState<string|null>(null);
  const activeCourse=useRef(courseSlug);activeCourse.current=courseSlug;
@@ -16,7 +16,8 @@ export function useCourseProgress(courseSlug:string, slugs:string[]) {
   if(activeCourse.current===courseSlug){setState(current=>current?{...data,completed:[...new Set([...current.completed,...data.completed])],awards:[...new Set([...current.awards,...data.awards])]}:data);setError('');}return data;
  },[courseSlug]);
  useEffect(()=>{let current=true;setState(null);request().catch(e=>{if(current)setError(e.message);});return()=>{current=false};},[request]);
- const canVisit=(slug:string)=>Boolean(state && slugs.includes(slug) && (state.legacyComplete || state.completed.includes(slug) || slugs.slice(0,slugs.indexOf(slug)).every(s=>state.completed.includes(s))));
+ const canComplete=(slug:string)=>Boolean(state && slugs.includes(slug) && (state.legacyComplete || state.completed.includes(slug) || slugs.slice(0,slugs.indexOf(slug)).every(s=>state.completed.includes(s))));
+ const canVisit=(slug:string)=>Boolean(state?.reviewAllLessons && slugs.includes(slug)) || canComplete(slug);
  const complete=async(slug:string)=>{
   if(busy || !state)return null;
   setBusy(true);try{const result=await request({action:'complete-lesson',lessonSlug:slug});setFailedLesson(null);return result;}catch(e){setFailedLesson(slug);setError((e as Error).message);return null;}finally{setBusy(false);}
@@ -25,7 +26,7 @@ export function useCourseProgress(courseSlug:string, slugs:string[]) {
   if(busy || !state)return;
   setBusy(true);try{await request({action:'declare-niche'});}catch(e){setError((e as Error).message);}finally{setBusy(false);}
  };
- return {state,error,busy,failedLesson,canVisit,complete,declareNiche,reload:()=>request().catch(e=>setError(e.message)),
+ return {state,error,busy,failedLesson,canVisit,canComplete,complete,declareNiche,reload:()=>request().catch(e=>setError(e.message)),
   done:(slug:string)=>Boolean(state?.completed.includes(slug)),
   percent:state?Math.round(state.completed.filter(s=>slugs.includes(s)).length/slugs.length*100):0};
 }
@@ -34,8 +35,8 @@ export function CourseCompletionControls({progress,lessonSlug,nextTitle,onNext,f
  const done=progress.done(lessonSlug);
  const advanceAfterRetry=useRef(false);
  return <div className="course-completion-controls">
-  <label><input type="checkbox" checked={done} disabled={done || !progress.state || progress.busy || !progress.canVisit(lessonSlug)} onChange={async()=>{advanceAfterRetry.current=false;if(flush && !await flush())return;await progress.complete(lessonSlug);}} /> {done?'Lesson completed':'Mark this lesson complete'}</label>
-  <button type="button" disabled={!progress.state || progress.busy || !progress.canVisit(lessonSlug)} onClick={async()=>{
+  <label><input type="checkbox" checked={done} disabled={done || !progress.state || progress.busy || !progress.canComplete(lessonSlug)} onChange={async()=>{advanceAfterRetry.current=false;if(flush && !await flush())return;await progress.complete(lessonSlug);}} /> {done?'Lesson completed':'Mark this lesson complete'}</label>
+  <button type="button" disabled={!progress.state || progress.busy || !progress.canComplete(lessonSlug)} onClick={async()=>{
    advanceAfterRetry.current=true;
    if(flush && !await flush())return;
    const saved=await progress.complete(lessonSlug);if(!saved)return;

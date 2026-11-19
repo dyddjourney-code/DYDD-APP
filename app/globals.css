@@ -22053,3 +22053,9 @@ body:has(.mobile-nav-drawer[open]) { overflow: hidden; }
  .fireside-page .fireside-page-hero .lede { font-size:16px; line-height:1.5; }
 }
 @media(max-width:640px) { .gear-workshop-contact { flex-direction:column; align-items:stretch; padding:22px 18px; gap:18px; } }
+
+/* Owner review draft: same approved forward template, scoped to the four new sections. */
+.journey-review-lesson .journey-review-prompt { font-weight: 600; }
+.journey-review-lesson .journey-review-next-step { margin-top: 24px; }
+.journey-review-closing { margin-top: 24px; }
+.journey-review-closing p { max-width: none; }

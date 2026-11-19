@@ -1,4 +1,5 @@
 import { expertiseLessons } from "./expertise-lessons";
+import { journeyReviewLessons } from "./review-lessons";
 import type { CompanionMoment } from "@/lib/courses/companion-moments";
 import { dyddJourneyCompanionMoments } from "@/lib/courses/course-companion-moment-data";
 
@@ -2440,6 +2441,19 @@ export const dyddMainCourseOutline: DyddCourseModule[] = [
     ],
   },
 ];
+
+// Owner-requested first-pass expansion, isolated review environment; neighbors remain identical.
+for (const module of dyddMainCourseOutline) {
+  module.units = module.units.map(unit => {
+    const review = journeyReviewLessons[unit.slug];
+    if (!review) return unit;
+    const image = module.slug === "story" ? "story-journal" : module.slug === "desire" ? "desire-light" : module.slug === "gifts" ? "gifts-community" : "niche-path";
+    return {...unit, lessonMainIdea: review.lessonMainIdea, focus: review.focus,
+      lessonBody: review.lessonBody, teachingBlocks: [], contentStatus: undefined, notes: undefined,
+      media: unit.media ?? {type: "image" as const, image: "/images/journey-review/" + image + ".jpg",
+        label: module.slug === "story" ? "A fountain pen writing on paper" : module.slug === "desire" ? "Light reaching through trees" : module.slug === "gifts" ? "People working together around a table" : "A green forest landscape inviting patient exploration"}};
+  });
+}
 
 export const dyddMainCourseStats = {
   moduleCount: dyddMainCourseOutline.length,

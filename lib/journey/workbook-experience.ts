@@ -1,4 +1,5 @@
 import { expertiseLessons } from "./expertise-lessons";
+import { journeyReviewLessons } from "./review-lessons";
 import { identityPathfinderPrompts, laterPathfinderIds } from './pathfinder';
 import { oneAnotherCare } from "@/lib/journey/one-another-care";
 import { designReflectionsLoveCare } from "@/lib/journey/design-reflections-love-care";
@@ -228,6 +229,12 @@ export function getWorkbookExperience(
   active: FlatUnit,
 ): WorkbookExperience | null {
   const { module, unit } = active;
+  const review = journeyReviewLessons[unit.slug];
+  if (review?.kind === "care") return {
+    kind: "care", title: review.title, purpose: review.careIntro,
+    care: Object.fromEntries(review.care.map(item => [item.stage, item.explanation])) as JourneyCarePerspective,
+    prompts: review.prompts,
+  };
   const expertise = expertiseLessons[unit.slug];
   if (expertise) return {
     kind: "care", title: expertise.careTitle, purpose: expertise.careIntro,

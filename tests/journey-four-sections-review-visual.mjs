@@ -1,0 +1,8 @@
+import fs from "node:fs";import assert from "node:assert/strict";import{launchReviewBrowser,authenticateReviewPage}from"../scripts/journey-review-browser.mjs";
+const base=process.env.JOURNEY_TEST_BASE||"http://localhost:3124";assert(base.startsWith("http://localhost:")||base==="https://dydd-online-school-sandbox.vercel.app");const cfg=JSON.parse(fs.readFileSync("/home/openclaw/.openclaw/secrets/dydd-online-school-sandbox.json"));
+const browser=await launchReviewBrowser();const phase=base.startsWith("https:")?"published":"local",out="tmp/four-sections-visual-"+phase;fs.mkdirSync(out,{recursive:true});
+try{const p=await browser.newPage();await authenticateReviewPage(p);
+for(const width of [1280,390])for(const [section,slug] of [["story","story-why-story-matters-35"],["desire","desire-desire-why-you-say-think-live-and-love-the-way-you-do-48"],["gifts","gifts-the-spiritual-gifts-assessment-with-dydd-57"],["niche","niche-who-do-you-see-65"]]){
+await p.setViewport({width,height:1000});await p.goto(base+"/journey?"+new URLSearchParams({lesson:slug,review:"new",key:cfg.review_token}),{waitUntil:"domcontentloaded"});await p.waitForSelector(".journey-review-care textarea:not([disabled])");
+for(const [name,selector] of [["teaching",".journey-active-lesson .lesson-source"],["care",".journey-review-care"]]){await p.$eval(selector,e=>e.scrollIntoView({block:"start",behavior:"instant"}));await p.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));await p.screenshot({path:out+"/"+section+"-"+width+"-"+name+".png"});}console.log("PASS visual viewport capture",section,width)}
+}finally{await browser.close()}

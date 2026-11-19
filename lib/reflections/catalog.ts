@@ -1,4 +1,5 @@
 import { expertiseLessons } from "@/lib/journey/expertise-lessons";
+import { journeyReviewLessons } from "@/lib/journey/review-lessons";
 import { designIdAuthoredLessons } from "@/lib/courses/designid-authored-lessons";
 import { getDesignIdReflectionPrompts } from "@/lib/courses/designid-reflection-prompts";
 import { dyddJourney } from "@/lib/journey/dydd-journey";
@@ -42,7 +43,7 @@ for (const [moduleIndex, module] of dyddMainCourseOutline.entries()) {
           lessonTitle: unit.title,
           moduleTitle: module.title,
           prompt: experience?.kind === "pathfinder" && prompt.helper ? `${prompt.label}\n${prompt.helper}` : prompt.label,
-          version: questionVersion,
+          version: journeyReviewLessons[unit.slug] ? "2026-11-19" : questionVersion,
         });
     }
   }

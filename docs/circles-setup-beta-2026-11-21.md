@@ -88,3 +88,6 @@ so the platform's configured outbound proxy does not intercept localhost.
 Hosted Chromium uses the pre-existing authenticated platform HTTPS proxy; direct
 egress is unavailable. The harness adds proxy transport only for hosted targets,
 never logs its credentials, and uses the same normal server authorization gates.
+
+Browser acceptance waits for DOM readiness plus the actual saved-Circle/workspace
+controls, not global network-idle; the hosted proxy can retain unrelated connections.

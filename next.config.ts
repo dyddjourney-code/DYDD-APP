@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: { serverActions: { bodySizeLimit: "4mb" } },
   outputFileTracingIncludes: {
     "/api/command-center/couple-report": ["./node_modules/@sparticuz/chromium/bin/**/*"],
     "/api/command-center/maps-report": ["./node_modules/@sparticuz/chromium/bin/**/*"],

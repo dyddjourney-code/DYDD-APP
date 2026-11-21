@@ -34,7 +34,7 @@ export async function requireGuestAccessOwner() {
  requireGuestAccessStorage();
  return user;
 }
-export type GrantCreationState={message:string;link?:string};
+export type GrantCreationState={message:string;link?:string;code?:string};
 export async function createGuestAccessGrant(_state:GrantCreationState,form:FormData):Promise<GrantCreationState> {
  const owner=await requireGuestAccessOwner();
  try {

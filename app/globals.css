@@ -22078,3 +22078,17 @@ body:has(.mobile-nav-drawer[open]) { overflow: hidden; }
  .fireside-page .fireside-page-hero .lede { font-size:16px; line-height:1.5; }
 }
 @media(max-width:640px) { .gear-workshop-contact { flex-direction:column; align-items:stretch; padding:22px 18px; gap:18px; } }
+
+/* Setup-only volunteer Circle beta: shared sandbox planner, phone-safe shell. */
+.circle-beta-workspace { width: min(100%, 1400px); margin-inline: auto; min-width: 0; }
+.circle-beta-notice { background: #eef3e8; border: 1px solid #b4c5a4; border-radius: 12px; padding: 16px 20px; color: #30452c; line-height: 1.6; overflow-wrap: anywhere; }
+.circle-beta-workspace .circle-setup { min-width: 0; }
+.circle-beta-workspace input, .circle-beta-workspace select, .circle-beta-workspace textarea { max-width: 100%; min-width: 0; }
+@media (max-width: 600px) {
+ .circle-beta-workspace { padding-inline: 12px; }
+ .circle-beta-workspace .circle-dashboard-heading { align-items: stretch; gap: 12px; }
+ .circle-beta-workspace .circle-field-pair { grid-template-columns: minmax(0, 1fr); }
+ .circle-beta-workspace .circle-planned-roster li { flex-wrap: wrap; gap: 12px; }
+ .circle-beta-workspace .circle-planned-roster li > div { min-width: 0; overflow-wrap: anywhere; }
+ .circle-beta-workspace .circle-action-row .button { min-height: 44px; }
+}

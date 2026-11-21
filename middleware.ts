@@ -1,9 +1,13 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
+import { circleBetaBlockedPath, CIRCLE_BETA_NOTICE } from "./lib/circles/beta-policy";
 import { getSupabaseConfig } from "./lib/supabase/config";
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
+  if (circleBetaBlockedPath(path)) {
+    return NextResponse.json({ error: CIRCLE_BETA_NOTICE, code: "CIRCLE_SETUP_ONLY" }, { status: 423, headers: { "Cache-Control": "private, no-store" } });
+  }
   if (process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT !== "sandbox" &&
       /^\/(?:command-center|admin|api\/(?:command-center|admin))(?:\/|$)/.test(path)) {
     return new NextResponse("Not found", { status: 404, headers: { "Cache-Control": "private, no-store" } });

@@ -1,4 +1,5 @@
 import 'server-only';
+import {isCircleSetupBeta} from '@/lib/circles/beta-policy';
 import {guestInvitationDeliveryEligibility} from '@/lib/public-assessments/guest-invitation';
 import {guestRecoveryDeliveryEligibility} from '@/lib/public-assessments/guest-recovery-delivery';
 import {guestReportDeliveryEligibility} from '@/lib/public-assessments/guest-delivery';
@@ -30,7 +31,9 @@ export async function processLifecycleEvents(limit=50){
  for(const e of events)try{
   if(e.occurred_at<settings.activated_at){must(await db.from('dydd_lifecycle_events').update({processed_at:iso(Date.now()),error_message:'Historical event ignored; no backfill.'}).eq('id',e.id));continue;}
   const t=Date.parse(e.occurred_at),user=e.user_id?await userById(e.user_id):e.email?await profileUser(e.email):null;
-  if(e.kind==='circle_accepted'){
+  if(isCircleSetupBeta() && String(e.kind).startsWith('circle_')) {
+   // Consume without producing any invitations, reminders or leader messages.
+  } else if(e.kind==='circle_accepted'){
    const cs=must(await db.from('dydd_circle_campaigns').select('id').eq('circle_id',e.payload.circleId).in('status',['finalized','paused'])) as any[];
    for(const c of cs)await enqueueCampaignMembers(c.id,e.source_id);
   } else if(e.kind==='circle_finalized'){
@@ -76,6 +79,7 @@ export async function processLifecycleEvents(limit=50){
 }
 // Return a permanent stop, a temporary deferral, or permission. Storage errors throw (retry), never send.
 export async function lifecycleEligibility(job:any,now=Date.now()):Promise<{stop?:string;deferUntil?:string;reason?:string}>{
+ if(isCircleSetupBeta() && (job.circle_id || job.campaign_id || job.category === "circle" || /^E\d/.test(job.template_id || ""))) return {stop:"Circle setup beta: no invitations, reminders or messages."};
  // Also stop old queued/retry/submitting self messages before any provider call.
  if(suppressFruitLifeSelfEmail(job.template_id,job.context?.deliveryContext))return {stop:fruitLifeSelfEmailStop};
  const db=createSupabaseAdminClient(),settings=must(await db.from('dydd_lifecycle_settings').select('*').eq('id',true).single()) as any;

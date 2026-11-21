@@ -1,3 +1,4 @@
+import {isCircleSetupBeta, CIRCLE_BETA_NOTICE} from "@/lib/circles/beta-policy";
 import {randomBytes} from 'node:crypto';
 import {NextResponse} from 'next/server';
 import {circleActor,circleQuery,sameOrigin} from '@/lib/circles/server';
@@ -8,7 +9,9 @@ import {appBase,must,tokenHash} from '@/lib/lifecycle/store';
 export const dynamic='force-dynamic';
 const reply=(body:unknown,status=200)=>NextResponse.json(body,{status,headers:{'Cache-Control':'private, no-store'}});
 async function owned(request:Request,id:string){const actor=await circleActor(request);if(!actor)throw Error('Sign in to manage Circle messages.');const circle=must(await circleQuery(actor).eq('id',id).maybeSingle()) as any;if(!circle)throw Error('This Circle is not available in your account.');return {actor,circle};}
-export async function GET(request:Request){try{
+export async function GET(request:Request){
+ if(isCircleSetupBeta()) return reply({error:CIRCLE_BETA_NOTICE,code:"CIRCLE_SETUP_ONLY"},423);
+try{
  const id=new URL(request.url).searchParams.get('circleId')||'',{circle,actor}=await owned(request,id),db=createSupabaseAdminClient();
  const campaign=must(await db.from('dydd_circle_campaigns').select('*').eq('circle_id',id).eq('circle_revision',circle.revision).maybeSingle()) as any;
  const messages=campaign?must(await db.from('dydd_circle_message_drafts').select('*').eq('campaign_id',campaign.id).order('scheduled_at')):[];
@@ -20,6 +23,8 @@ export async function GET(request:Request){try{
  return reply({campaign,messages,members,announcements,history:(history as any[]).map(j=>({...j,delivery:delivery.find(d=>d.provider_id===j.provider_id)||null})),preview:!actor.userId,sandbox:process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT==='sandbox'});
  }catch(e){return reply({error:(e as Error).message},403);}}
 export async function POST(request:Request){
+ if(isCircleSetupBeta()) return reply({error:CIRCLE_BETA_NOTICE,code:"CIRCLE_SETUP_ONLY"},423);
+
  if(!sameOrigin(request)||request.headers.get('sec-fetch-site')==='cross-site')return reply({error:'Open your Circle page before making changes.'},403);
  const raw=await request.text();if(raw.length>50000)return reply({error:'Message is too large.'},413);
  let b:any;try{b=JSON.parse(raw);}catch{return reply({error:'Check your message details.'},400);}

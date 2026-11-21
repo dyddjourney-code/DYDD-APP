@@ -1,3 +1,4 @@
+import {isCircleSetupBeta, CIRCLE_BETA_NOTICE} from "@/lib/circles/beta-policy";
 import {NextResponse} from 'next/server';
 import {createSupabaseAdminClient} from '@/lib/supabase/admin';
 import {createSupabaseServerClient} from '@/lib/supabase/server';
@@ -5,7 +6,9 @@ import {sameOrigin} from '@/lib/circles/server';
 import {must,tokenHash,enqueueCampaignMembers} from '@/lib/lifecycle/store';
 export const dynamic='force-dynamic';
 const reply=(body:unknown,status=200)=>NextResponse.json(body,{status,headers:{'Cache-Control':'private, no-store','Referrer-Policy':'no-referrer'}});
-export async function GET(request:Request){try{
+export async function GET(request:Request){
+ if(isCircleSetupBeta()) return reply({error:CIRCLE_BETA_NOTICE,code:"CIRCLE_SETUP_ONLY"},423);
+try{
  const token=new URL(request.url).searchParams.get('token')||'';if(!/^[a-f0-9]{64}$/.test(token))return reply({error:'This invitation link is not valid.'},404);
  const db=createSupabaseAdminClient(),m=must(await db.from('dydd_circle_memberships').select('id,circle_id,status,expires_at').eq('token_hash',tokenHash(token)).maybeSingle()) as any;
  if(!m || m.expires_at<=new Date().toISOString() || !['invited','accepted'].includes(m.status))return reply({error:'This invitation is no longer available. Ask your Circle leader for help.'},410);
@@ -14,6 +17,8 @@ export async function GET(request:Request){try{
  return reply({name:c.plan.name,startDate:c.plan.startDate,time:c.plan.time,timezone:c.plan.timezone,location:c.plan.location,status:m.status});
  }catch{return reply({error:'Your invitation could not be loaded.'},503);}}
 export async function POST(request:Request){
+ if(isCircleSetupBeta()) return reply({error:CIRCLE_BETA_NOTICE,code:"CIRCLE_SETUP_ONLY"},423);
+
  if(!sameOrigin(request)||request.headers.get('sec-fetch-site')==='cross-site')return reply({error:'Open your invitation on this site.'},403);
  try{
  const b=await request.json(),s=await createSupabaseServerClient(),user=(await s.auth.getUser()).data.user;

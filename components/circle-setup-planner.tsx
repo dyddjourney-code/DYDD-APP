@@ -15,6 +15,7 @@ import {
   type CirclePlan,
   type SavedCircle,
 } from "@/lib/circles/plan";
+import { isCircleSetupBeta, CIRCLE_BETA_NOTICE } from "@/lib/circles/beta-policy";
 import { CircleTimePicker } from "./circle-time-picker";
 import { CircleScheduleEditor } from "./circle-schedule-editor";
 import { CircleMessages } from "@/components/circle-messages";
@@ -22,6 +23,8 @@ import { CircleFieldGuide } from "@/components/circle-field-guide";
 const stages = ["Circle details", "Meeting schedule", "People", "Review"];
 export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (plan: CirclePlan, tab: string, samples: boolean, circleId?: string) => ReactNode }) {
   const params = useSearchParams();
+  const beta = isCircleSetupBeta();
+  const setupComplete = (c: SavedCircle) => c.status !== "draft" || c.plan.betaSetupComplete === true;
   const query = new URLSearchParams();
   for (const key of ["review", "key"])
     if (params.get(key)) query.set(key, params.get(key)!);
@@ -33,9 +36,10 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
     [selected, setSelected] = useState<SavedCircle | null>(null);
   const [newId, setNewId] = useState(""),
     [workspace, setWorkspace] = useState(false),
-    [tab, setTab] = useState(params.get("fieldGuide") === "1" ? "Field Guide" : "Progress");
+    [tab, setTab] = useState(beta ? "Schedule" : params.get("fieldGuide") === "1" ? "Field Guide" : "Progress");
   const [showSetup, setShowSetup] = useState(true);
   const [samples, setSamples] = useState(false);
+  const [editingEmail, setEditingEmail] = useState<string | null>(null);
   const [participant, setParticipant] = useState({ name: "", email: "" });
   const [notice, setNotice] = useState(""),
     [error, setError] = useState(""),
@@ -68,7 +72,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
             setShowSetup(true);
             setSelected(circle);
             setPlan(normalizePlan(circle.plan));
-            setWorkspace(circle.status !== "draft");
+            setWorkspace(setupComplete(circle));
           } else if (requested)
             setError("This Circle is not available in your account.");
         }
@@ -93,7 +97,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
       ignore = true;
     };
   }, [api, storageKey]);
-  const size = circleSizes[plan.format],
+  const size = beta && plan.format === "Class" ? { min: 20, max: 49, label: "20–49 people" } : circleSizes[plan.format],
     peopleCount = plan.participants.length + 1;
   function change(p: CirclePlan) {
     setPlan(p);
@@ -113,14 +117,15 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
   }
   function open(circle: SavedCircle) {
     setShowSetup(true);
-    setTab("Progress");
+    setTab(beta ? "Schedule" : "Progress");
     setSamples(false);
     rememberCircle(circle.id);
     setSelected(circle);
     setPlan(normalizePlan(circle.plan));
-    setWorkspace(circle.status !== "draft");
+    setWorkspace(setupComplete(circle));
     setStep(0);
     setParticipant({ name: "", email: "" });
+    setEditingEmail(null);
     setError("");
     setNotice("");
   }
@@ -134,6 +139,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
     setStep(0);
     setWorkspace(false);
     setParticipant({ name: "", email: "" });
+    setEditingEmail(null);
     setError("");
     setNotice("");
   }
@@ -203,13 +209,13 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
         ...current.filter((c) => c.id !== circle.id),
       ]);
       setPlan(normalizePlan(circle.plan));
-      setWorkspace(circle.status !== "draft");
-      if (!workspace) setTab("Messages");
+      setWorkspace(setupComplete(circle));
+      if (!workspace) setTab(beta ? "Schedule" : "Messages");
       try {
         localStorage.removeItem(storageKey);
       } catch {}
       setNotice(
-        circle.status === "draft"
+        beta ? (circle.plan.betaSetupComplete ? "Setup complete. Your Circle and draft people are saved. No invitations or messages were created." : "Draft saved to your account. No invitations sent.") : circle.status === "draft"
           ? "Draft saved to your account."
           : "Circle saved. Review and approve your messages before finalizing its communication schedule.",
       );
@@ -257,20 +263,21 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
       setError("Enter a name and valid email address.");
       return;
     }
-    if (plan.participants.some((p) => p.email === email)) {
+    if (plan.participants.some((p) => p.email === email && p.email !== editingEmail)) {
       setError("That email is already on your participant list.");
       return;
     }
-    if (peopleCount >= size.max) {
+    if (!editingEmail && peopleCount >= size.max) {
       setError(`${plan.format} allows ${size.label}, including you.`);
       return;
     }
     change({
       ...plan,
-      participants: [...plan.participants, { name, email }],
-      expectedPeople: String(Math.max(+plan.expectedPeople, peopleCount + 1)),
+      participants: editingEmail ? plan.participants.map(p => p.email === editingEmail ? { name, email } : p) : [...plan.participants, { name, email }],
+      expectedPeople: String(Math.max(+plan.expectedPeople, peopleCount + (editingEmail ? 0 : 1))),
     });
     setParticipant({ name: "", email: "" });
+    setEditingEmail(null);
   }
   const people = (
     <div className="invite-rail">
@@ -309,8 +316,9 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
           </label>
         </div>
         <button className="button secondary" type="submit">
-          Add person
+          {editingEmail ? "Save person" : "Add person"}
         </button>
+        {editingEmail && <button className="button secondary" type="button" onClick={() => { setEditingEmail(null); setParticipant({name:"",email:""}); }}>Cancel edit</button>}
       </form>
       {plan.participants.length === 0 ? (
         <p className="circle-fine-print">Add people now or later.</p>
@@ -321,8 +329,9 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
               <div>
                 <strong>{p.name}</strong>
                 <span>{p.email}</span>
-                {workspace && <small>Not invited</small>}
+                {(beta || workspace) && <small>{beta ? "Draft person · not invited" : "Not invited"}</small>}
               </div>
+              <button className="button secondary" type="button" aria-label={`Edit ${p.name}`} onClick={() => {setParticipant({...p}); setEditingEmail(p.email); setError("");}}>Edit</button>
               <button
                 className="button secondary"
                 type="button"
@@ -357,6 +366,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
       aria-labelledby="start-circle-title"
     >
       <div className="card-heading wide-heading circle-dashboard-heading"><h2 id="start-circle-title">{showSetup ? (workspace ? plan.name : selected ? "Edit your Circle" : "Start a Circle") : "Your Circles"}</h2><button className="button secondary" type="button" onClick={startNew} disabled={busy}>Start another Circle</button></div>
+      {beta && <p className="circle-beta-notice" role="note">{CIRCLE_BETA_NOTICE} Setup access is temporary through February 28, 2027; your personal beta access is unchanged.</p>}
       {!loaded ? (
         <p role="status">Loading your Circles…</p>
       ) : (
@@ -364,7 +374,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
           {circles.length > 0 && <section className="circle-saved-list" aria-label="Your saved Circles"><div className="circle-current-heading"><h3>Current Circles</h3><span>{circles.filter(c => c.status !== "archived").length} Circles</span></div><div>{circles.filter(c => c.status !== "archived").map(c => {
             const ds = scheduledDates(c.plan), today = new Date().toLocaleDateString("en-CA", { timeZone: c.plan.timezone }), upcoming = ds.find(d => d >= today), number = upcoming ? ds.indexOf(upcoming) + 1 : 0;
             const modules = number ? [...new Set(meetingLessons(c.plan, number).map(l => l.moduleTitle))].join(" · ") : "";
-            return <button type="button" className={`circle-saved-item${selected?.id === c.id && showSetup ? " selected" : ""}`} key={c.id} onClick={() => open(c)} disabled={busy} aria-pressed={selected?.id === c.id && showSetup}><span className="circle-card-topline">{c.plan.format}<b>{c.status === "draft" ? "Draft" : ds[0] && ds[0] > today ? "Not started" : "Scheduled"}</b></span><strong>{c.plan.name}</strong><span>{c.plan.expectedPeople} planned · {c.plan.participants.length + 1} listed</span><span>Start: {ds[0] || "Not set"} · Finish: {ds.at(-1) || "Not set"}</span><span className="circle-card-next"><b>Next meeting</b>{upcoming ? `${upcoming}${c.plan.time ? ` · ${displayCircleTime(c.plan.time)}` : ""} · ${c.plan.timezone}` : "No upcoming meeting scheduled"}</span>{modules && <small>{modules}</small>}<span>{c.status === "draft" ? "Continue setup" : "Progress · Data · Schedule · People · Messages · Field Guide"}</span></button>;
+            return <button type="button" className={`circle-saved-item${selected?.id === c.id && showSetup ? " selected" : ""}`} key={c.id} onClick={() => open(c)} disabled={busy} aria-pressed={selected?.id === c.id && showSetup}><span className="circle-card-topline">{c.plan.format}<b>{beta ? (setupComplete(c) ? "Setup complete" : "Draft") : c.status === "draft" ? "Draft" : ds[0] && ds[0] > today ? "Not started" : "Scheduled"}</b></span><strong>{c.plan.name}</strong><span>{c.plan.expectedPeople} planned · {c.plan.participants.length + 1} listed</span><span>Start: {ds[0] || "Not set"} · Finish: {ds.at(-1) || "Not set"}</span><span className="circle-card-next"><b>Next meeting</b>{upcoming ? `${upcoming}${c.plan.time ? ` · ${displayCircleTime(c.plan.time)}` : ""} · ${c.plan.timezone}` : "No upcoming meeting scheduled"}</span>{modules && <small>{modules}</small>}<span>{beta ? "Setup · Schedule · Draft people" : c.status === "draft" ? "Continue setup" : "Progress · Data · Schedule · People · Messages · Field Guide"}</span></button>;
           })}</div><details className="circle-archive-drawer"><summary>Archived Circles ({circles.filter(c => c.status === "archived").length})</summary>{circles.filter(c => c.status === "archived").map(c => <button className="circle-saved-item" type="button" key={c.id} onClick={() => open(c)}><strong>{c.plan.name}</strong><span>{c.plan.expectedPeople} planned · View archive</span></button>)}{!circles.some(c => c.status === "archived") && <p>No archived Circles.</p>}</details></section>}
           {!signedIn && (
             <p className="circle-form-error">
@@ -391,7 +401,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
                 className="circle-action-row"
                 aria-label="Circle workspace sections"
               >
-                {["Progress", "Data", "Schedule", "People", "Messages", "Field Guide"].map((t) => (
+                {(beta ? ["Schedule", "People"] : ["Progress", "Data", "Schedule", "People", "Messages", "Field Guide"]).map((t) => (
                   <button
                     type="button"
                     className={`button${t === tab ? "" : " secondary"}`}
@@ -415,7 +425,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
                 </>
               )}
               {tab === "People" && people}
-              {tab === "Messages" && selected && <CircleMessages circleId={selected.id} revision={selected.revision} query={query.toString()} hasUnsavedChanges={JSON.stringify(plan)!==JSON.stringify(normalizePlan(selected.plan))} />}
+              {!beta && tab === "Messages" && selected && <CircleMessages circleId={selected.id} revision={selected.revision} query={query.toString()} hasUnsavedChanges={JSON.stringify(plan)!==JSON.stringify(normalizePlan(selected.plan))} />}
               {tab === "Field Guide" && selected?.status === "active" && (
                 <CircleFieldGuide key={selected.id} circleId={selected.id} plan={plan} onSchedule={() => setTab("Schedule")} />
               )}
@@ -484,7 +494,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
                       </label>
                       <fieldset className="circle-type-options">
                         <legend>Circle type</legend>
-                        {Object.entries(circleSizes).map(([format, rule]) => (
+                        {Object.entries(circleSizes).map(([format, originalRule]) => { const rule = beta && format === "Class" ? { min: 20, max: 49, label: "20–49 people" } : originalRule; return (
                           <label
                             key={format}
                             className={plan.format === format ? "selected" : ""}
@@ -516,7 +526,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
                             <strong>{format}</strong>
                             <span>{rule.label}</span>
                           </label>
-                        ))}
+                        ); })}
                       </fieldset>
                       <label htmlFor="plan-size">
                         Expected people, including you
@@ -760,7 +770,7 @@ export function CircleSetupPlanner({ renderDashboard }: { renderDashboard?: (pla
                           ? "Saving…"
                           : selected?.status === "active"
                             ? "Save changes"
-                            : "Create Circle"}
+                            : beta ? "Complete setup" : "Create Circle"}
                       </button>
                     )}
                     <button

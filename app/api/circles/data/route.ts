@@ -1,3 +1,4 @@
+import {isCircleSetupBeta, CIRCLE_BETA_NOTICE} from "@/lib/circles/beta-policy";
 import "server-only";
 import { NextResponse } from "next/server";
 import { isSandbox } from "@/lib/environment";
@@ -9,6 +10,8 @@ const reply = (body: unknown, status = 200) => NextResponse.json(body, {
   status, headers: {"Cache-Control": "private, no-store", "Vary": "Cookie"},
 });
 export async function GET(request: Request) {
+ if(isCircleSetupBeta()) return reply({error:CIRCLE_BETA_NOTICE,code:"CIRCLE_SETUP_ONLY"},423);
+
   try {
     const actor = await circleActor(request);
     if (!actor) return reply({error: "Sign in to open your Circle’s data."}, 401);

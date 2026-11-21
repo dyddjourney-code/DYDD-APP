@@ -1,3 +1,4 @@
+import { circleBetaOpen, isCircleSetupBeta } from "@/lib/circles/beta-policy";
 import { isDeepStrictEqual } from "node:util";
 import { NextResponse } from "next/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -51,8 +52,17 @@ export async function POST(request: Request) {
     b.revision < 0
   )
     return reply({ error: "Choose a valid Circle." }, 400);
-  const invalid = validatePlan(b.plan, b.status === "active");
+  const beta = isCircleSetupBeta() && !actor.previewScope;
+  if (beta && !circleBetaOpen()) return reply({ error: "The Circle setup pilot has ended. Your saved plans remain available to read." }, 403);
+  const invalid = validatePlan(b.plan, b.status === "active" || b.plan?.betaSetupComplete === true);
   if (invalid) return reply({ error: invalid }, 400);
+  if (beta) {
+    if (+b.plan.expectedPeople > 49 || b.plan.participants.length > 48)
+      return reply({ error: "The setup beta supports up to 49 planned people, including you." }, 400);
+    // Completing setup is NOT activating membership or starting communication.
+    b.plan = { ...b.plan, betaSetupComplete: b.status === "active" || b.plan.betaSetupComplete === true };
+    if (b.status === "active") b.status = "draft";
+  }
   const db = createSupabaseAdminClient();
   if (b.revision === 0) {
     const { data, error } = await db

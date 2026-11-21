@@ -32,6 +32,7 @@ export const circleSizes: Record<
   Class: { min: 20, max: Infinity, label: "20+ people" },
 };
 export type CirclePlan = {
+  betaSetupComplete?: boolean;
   name: string;
   format: string;
   startDate: string;

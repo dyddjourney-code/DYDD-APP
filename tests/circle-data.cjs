@@ -15,6 +15,8 @@ class Query {
 }
 let previewDownloads=0;const db={from(table){calls.push({table,op:'from'});return new Query(table);},storage:{from(bucket){assert.equal(bucket,'assessment-report-pdfs');return {download:async file=>{assert.equal(file,'sandbox-owner/john-assessment-report.json');previewDownloads++;return {data:{text:async()=>JSON.stringify({all:[snap('saved-owner',null,'designid',allocation)]})},error:null};}};}}};
 const mocks={
+  // Legacy/sandbox projection contract; public setup-only denial is tested separately.
+  '@/lib/circles/beta-policy':{isCircleSetupBeta:()=>false},
   'server-only':{},
   '@/lib/supabase/admin':{createSupabaseAdminClient:()=>db},
   '@/lib/supabase/server':{createSupabaseServerClient:async()=>({auth:{getUser:async()=>({data:{user:actorId?{id:actorId}:null}})}})},

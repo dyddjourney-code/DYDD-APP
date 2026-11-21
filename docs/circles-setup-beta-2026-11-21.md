@@ -84,3 +84,7 @@ filesystem-root restriction requires `npm run build -- --webpack` locally; Verce
 uses a normal dependency installation. Local env is private/ignored and uses the
 canonical HTTPS app origin. Node HTTP fixtures require `NO_PROXY=localhost,127.0.0.1`
 so the platform's configured outbound proxy does not intercept localhost.
+
+Hosted Chromium uses the pre-existing authenticated platform HTTPS proxy; direct
+egress is unavailable. The harness adds proxy transport only for hosted targets,
+never logs its credentials, and uses the same normal server authorization gates.

@@ -1,5 +1,5 @@
 "use client";
-import { CourseTrailNavigation, LessonPacing } from "@/components/course-trail-navigation";
+import { LessonPacing } from "@/components/course-trail-navigation";
 import { useCourseProgress, CourseCompletionControls, NicheDeclarationCompletion } from "@/components/course-progress";
 import { JourneyAppliedCapacity } from "@/components/journey-applied-capacity";
 import { appliedCapacitySlug, type AppliedCapacityScores } from "@/lib/journey/applied-capacity";
@@ -15,7 +15,7 @@ import {
   ReflectionNicheBuilder,
 } from "@/components/reflection-session";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { ReviewAwareLink } from "@/components/review-aware-link";
 import { JourneyIdentityBelieversCare } from "@/components/journey-identity-believers-care";
 import { JourneyWhoWhoseCare } from "@/components/journey-who-whose-care";
@@ -28,6 +28,8 @@ import type {
   DyddCourseUnit,
   DyddCourseUnitType,
 } from "@/lib/journey/dydd-course-outline";
+
+import styles from "./journey-course-navigator.module.css";
 
 type JourneyCourseNavigatorProps = {
   modules: DyddCourseModule[];
@@ -149,6 +151,11 @@ export function JourneyCourseNavigator({
   reflectionNames,
   capacityScores,
 }: JourneyCourseNavigatorProps) {
+  const [curriculumOpen, setCurriculumOpen] = useState(false);
+  const curriculumId = useId();
+  const [curriculumReady, setCurriculumReady] = useState(false);
+  const curriculumToggleRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => { setCurriculumReady(true); }, []);
   const moduleSections = useMemo(
     () =>
       modules.map((module) => ({ module, sections: groupSections(module) })),
@@ -243,6 +250,7 @@ export function JourneyCourseNavigator({
     if (savedPosition.flush && !await savedPosition.flush()) return;
     const sectionKey = `${item.module.slug}-${item.section}`;
     setActiveSlug(item.unit.slug);
+    setCurriculumOpen(false);
     savedPosition.recordPosition?.(item.unit.slug);
     try {
       localStorage.setItem("dydd-journey-position", item.unit.slug);
@@ -257,6 +265,7 @@ export function JourneyCourseNavigator({
     );
     window.setTimeout(() => {
       activeLessonRef.current?.scrollIntoView({ block: "start" });
+      activeLessonRef.current?.focus({ preventScroll: true });
     }, 0);
   };
 
@@ -278,18 +287,26 @@ export function JourneyCourseNavigator({
 
   return (
     <section
-      className={`journey-course-walkthrough dydd-journey-walkthrough${usesApprovedLessonFormat || isPathfinder ? " journey-who-whose-walkthrough" : ""}${active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? " journey-designid-lens-walkthrough" : ""}`}
+      className={`${styles.classroom} journey-course-walkthrough dydd-journey-walkthrough${usesApprovedLessonFormat || isPathfinder ? " journey-who-whose-walkthrough" : ""}${active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? " journey-designid-lens-walkthrough" : ""}`}
       aria-label="Guided course walkthrough"
     >
-      <CourseTrailNavigation current={active.module.title} position={activeIndex + 1} total={flatUnits.length} completed={checklistSlugs.filter(slug => checklist.done(slug)).length}>
-      <aside className="journey-course-index">
+      <nav className={styles.curriculum} aria-label="Journey curriculum" aria-busy={!curriculumReady} onKeyDown={event => { if (event.key === "Escape" && curriculumOpen) { setCurriculumOpen(false); curriculumToggleRef.current?.focus(); } }}>
+        <button ref={curriculumToggleRef} className={styles.mobileToggle} disabled={!curriculumReady} type="button" aria-expanded={curriculumOpen} aria-controls={curriculumId} onClick={() => setCurriculumOpen(open => !open)}>
+          <span><strong>Course curriculum</strong><small>Module {active.moduleIndex + 1} · Section {active.moduleIndex + 1}.{active.sectionIndex + 1} · Lesson {active.unitIndex + 1}</small></span>
+          <span aria-hidden="true">{curriculumOpen ? "−" : "+"}</span>
+        </button>
+      <aside id={curriculumId} className={`journey-course-index ${styles.index}`} data-mobile-open={curriculumOpen}>
         <div className="journey-course-index-heading">
-          <p className="section-label">Course hierarchy</p>
-          <h2>Choose a module, section, and lesson.</h2>
+          <p className="section-label">Your Journey curriculum</p>
+          <h2>Modules &amp; lessons</h2>
         </div>
         <div
           className="journey-course-progress"
-          aria-label="Current lesson progress"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={progress}
+          aria-label="Course completion"
         >
           <span style={{ width: `${progress}%` }} />
         </div>
@@ -308,18 +325,19 @@ export function JourneyCourseNavigator({
               >
                 <button
                   className="journey-module-toggle"
+                  disabled={!curriculumReady}
                   aria-expanded={moduleOpen}
                   onClick={() => toggleModule(module.slug)}
                   type="button"
                 >
                   <span>{String(moduleIndex + 1).padStart(2, "0")}</span>
                   <strong>{module.title}</strong>
-                  <small>{module.units.length} units</small>
+                  <small>{module.units.length} lessons</small>
                 </button>
                 {moduleOpen ? (
                   <div className="journey-section-accordion">
                     {sections.map((section, sectionIndex) => {
-                      const sectionActive = section.title === active.section;
+                      const sectionActive = moduleActive && section.title === active.section;
                       const sectionKey = `${module.slug}-${section.title}`;
                       const sectionOpen = openSections.includes(sectionKey);
                       return (
@@ -329,6 +347,7 @@ export function JourneyCourseNavigator({
                         >
                           <button
                             className="journey-section-toggle"
+                            disabled={!curriculumReady}
                             aria-expanded={sectionOpen}
                             onClick={() => toggleSection(sectionKey)}
                             type="button"
@@ -353,6 +372,7 @@ export function JourneyCourseNavigator({
                                           ? "active"
                                           : ""
                                       }
+                                      aria-current={unit.slug === active.unit.slug ? "step" : undefined}
                                       disabled={!checklist.canVisit(unit.slug) || checklist.busy}
                                       onClick={() =>
                                         flatUnit
@@ -381,11 +401,12 @@ export function JourneyCourseNavigator({
           })}
         </div>
       </aside>
-      </CourseTrailNavigation>
+      </nav>
 
       <article
         className={`journey-active-lesson ${typeClass[active.unit.type]}${usesApprovedLessonFormat || isIdentityPathfinder || isExpertisePathfinder ? " journey-who-whose-lesson" : ""}${isOneAnother || isNeighbor ? " journey-neighbor-lesson" : ""}${expertiseLesson || reviewLesson ? " journey-expertise-lesson" : ""}${reviewLesson ? " journey-review-lesson" : ""}${isAppliedCapacity ? " journey-applied-capacity-lesson" : ""}${isDesignReflectionsLove ? " journey-design-love-lesson" : ""}${active.unit.slug === "identity-identity-among-believers-20" ? " journey-identity-believers-lesson" : ""}`}
         ref={activeLessonRef}
+        tabIndex={-1}
       >
         <header>
           <div>

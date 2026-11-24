@@ -98,7 +98,7 @@ export function EnvironmentRoute({ pathname, children }: { pathname: string; chi
   if (environment.key === "journey") return (
     <div className="environment-route environment-route--journey course-cabin">
       <div className="course-cabin-art" aria-hidden="true" />
-      <header className="course-cabin-arrival"><ReviewAwareLink href="/trailheads">← Trailheads</ReviewAwareLink><span>The reading room</span><ReviewAwareLink href={`/field-kit/reflections/${courseSlug}`}>Field Kit ↗</ReviewAwareLink></header>
+      <header className="course-cabin-arrival"><ReviewAwareLink href="/trailheads">← Trailheads</ReviewAwareLink><span>{pathname === "/journey" ? "Learning Center · Journey classroom" : "The reading room"}</span><ReviewAwareLink href={`/field-kit/reflections/${courseSlug}`}>Field Kit ↗</ReviewAwareLink></header>
       <div className="environment-destination" id="destination-content" tabIndex={-1}><div className="environment-original-content">{children}</div></div>
     </div>
   );

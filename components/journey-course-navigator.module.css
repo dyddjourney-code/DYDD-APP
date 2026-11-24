@@ -1,0 +1,104 @@
+/* Local classroom restoration. Other course navigators retain their own layouts. */
+.classroom.classroom.classroom {
+  display: grid !important;
+  grid-template-columns: minmax(260px, 310px) minmax(0, 1fr) !important;
+  align-items: start;
+  gap: 22px !important;
+  background: transparent !important;
+}
+.curriculum {
+  position: sticky;
+  top: 24px;
+  min-width: 0;
+  border: 1px solid rgb(255 250 230 / 35%);
+  border-radius: 8px;
+  background: rgb(249 246 233 / 86%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 65%), 0 12px 30px rgb(22 38 28 / 12%);
+  backdrop-filter: blur(12px);
+  color: #273c30;
+}
+.classroom .index.index {
+  display: grid !important;
+  position: static !important;
+  max-height: calc(100dvh - 160px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #829078 transparent;
+  padding: 18px !important;
+  border: 0 !important;
+  border-radius: inherit;
+  background: transparent !important;
+  box-shadow: none !important;
+  gap: 14px;
+}
+.index :global(.journey-course-index-heading) h2 {
+  font-size: 1.25rem !important;
+  line-height: 1.25 !important;
+  color: #273c30 !important;
+}
+.index :global(.journey-course-progress-label),
+.index :global(.section-label) { color: #495b49 !important; }
+.index :global(.journey-module-toggle),
+.index :global(.journey-section-toggle) {
+  grid-template-columns: 28px minmax(0, 1fr) 14px;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 10px;
+}
+.index :global(.journey-module-toggle) small,
+.index :global(.journey-section-toggle) small {
+  grid-column: 2;
+  grid-row: 2;
+  color: #495b49 !important;
+}
+.index :global(.journey-module-toggle)::after,
+.index :global(.journey-section-toggle)::after { grid-column: 3; grid-row: 1; }
+.index :global(.journey-module-toggle) > span,
+.index :global(.journey-section-toggle) > span { width: 28px; height: 28px; font-size: .65rem; }
+.index :global(.journey-module-toggle) strong,
+.index :global(.journey-section-toggle) strong { font-size: .88rem; line-height: 1.4; color: #273c30 !important; }
+.index :global(.journey-module-accordion) > section,
+.index :global(.journey-section-accordion) > section { background: rgb(255 253 244 / 40%); }
+.index :global(.journey-section-accordion) { padding: 0 7px 8px; }
+.index ol { padding: 0 6px 8px; }
+.index ol button { min-height: 48px; line-height: 1.4; }
+.index ol button strong { color: #273c30 !important; font-size: .84rem; }
+.index :global(.lesson-checklist-status) { color: #495b49 !important; font-size: .69rem; }
+.index ol button[aria-current="step"] { border-left: 3px solid #426144; background: #e0e9d5; }
+.index button:disabled { opacity: .65; cursor: not-allowed; }
+.curriculum button:focus-visible { outline: 3px solid #526f3e !important; outline-offset: 2px; }
+.classroom > article { min-width: 0; }
+.mobileToggle { display: none; }
+@media (max-width: 900px) {
+  .classroom.classroom.classroom { grid-template-columns: minmax(0, 1fr) !important; gap: 14px !important; }
+  .curriculum { position: static; margin-inline: 0; }
+  .mobileToggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    min-height: 64px;
+    padding: 14px 18px;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    color: #273c30;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+  }
+  .mobileToggle strong { display: block; font-size: .95rem; color: #273c30 !important; }
+  .mobileToggle small { display: block; margin-top: 5px; font-size: .75rem; color: #495b49 !important; }
+  .mobileToggle > span:last-child { font-size: 1.5rem; }
+  .classroom .index.index { max-height: min(65dvh, 640px) !important; border-top: 1px solid #bdc7b4 !important; }
+  .classroom .index[data-mobile-open="false"] { display: none !important; }
+  .index :global(.journey-course-index-heading) { display: none; }
+}
+@media (max-width: 600px) {
+  .curriculum { margin-inline: 14px; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .curriculum { background: #f4f0e5; backdrop-filter: none; }
+}

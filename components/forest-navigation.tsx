@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import { DydiAdventure } from "@/components/dydi-adventure";
 import { DestinationRoom } from "@/components/destination-room";
 import { EnvironmentRoute } from "@/components/environment-route";
 import { ReviewAwareLink } from "@/components/review-aware-link";
@@ -62,10 +63,7 @@ export function ForestNavigation({children}:{children:ReactNode}) {
       <div className="game-location"><ForestIcon name={atCamp?"camp":"journey"}/><span>{atCamp?"Base Camp":"On the trail"}</span></div>
       <button className="game-profile" onClick={()=>open("profile")}>Traveler profile</button>
     </header>
-    {atCamp ? <main id="forest-content" className="game-scene" tabIndex={-1}>
-      <div className="game-intro"><h1>Welcome to<br/>Base Camp.</h1><p>A place to find your bearings, reflect on your story, and take the next step on your journey.</p>
-      <button className="game-next" onClick={()=>open("ranger")}><ForestIcon name="compass"/><span>Visit the Ranger Station</span><span aria-hidden="true">→</span></button></div>
-    </main> : <EnvironmentRoute pathname={pathname}><div className="game-route" id="forest-content" tabIndex={-1}>
+    {atCamp ? <main id="forest-content" className="adventure-main" tabIndex={-1}><DydiAdventure onPassport={()=>open("passport")}/></main> : <EnvironmentRoute pathname={pathname}><div className="game-route" id="forest-content" tabIndex={-1}>
       <ReviewAwareLink className="game-return" href="/base-camp">← Return to Base Camp</ReviewAwareLink>
       <div className="game-reading">{children}</div>
       <footer className="game-support"><ReviewAwareLink href="/contact">Contact</ReviewAwareLink><ReviewAwareLink href="/privacy">Privacy</ReviewAwareLink><ReviewAwareLink href="/terms">Terms</ReviewAwareLink></footer>

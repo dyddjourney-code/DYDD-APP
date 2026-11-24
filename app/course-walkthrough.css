@@ -109,3 +109,9 @@
 .course-cabin .journey-active-lesson :is(.journey-care-process>section>span,.journey-care-entry-grid>div){background:transparent!important;color:#273c30!important;border-color:#bdc7b3!important}
 
 .course-cabin :is(.course-map-opener,.lesson-pacing button):disabled{opacity:.55;cursor:progress}
+
+/* Journey's Learning Center keeps its familiar left curriculum against the cabin. */
+.course-cabin:has(.dydd-journey-class) .course-cabin-art{position:fixed;inset:0;height:100dvh;background:linear-gradient(90deg,#16271cb0,#16271c33 55%,#16271c66),linear-gradient(0deg,#1a2a20bb,transparent 70%),url('/brand/environments/archive.webp') center/cover;}
+.course-cabin:has(.dydd-journey-class) .game-route{width:min(1320px,94%)!important;}
+.course-cabin:has(.dydd-journey-class) .course-cabin-arrival{width:min(1320px,94%);}
+@media(max-width:600px){.course-cabin:has(.dydd-journey-class) .game-route{width:100%!important;}.course-cabin:has(.dydd-journey-class) .course-cabin-arrival{width:calc(100% - 36px);}}

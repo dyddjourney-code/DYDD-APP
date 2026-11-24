@@ -1,0 +1,235 @@
+{
+  "speaker": "Dydi",
+  "voiceId": "EXAVITQu4vr4xnSDxMaL",
+  "modelId": "eleven_multilingual_v2",
+  "voiceSettings": {
+    "stability": 0.82,
+    "similarity_boost": 0.9,
+    "style": 0.08,
+    "use_speaker_boost": true
+  },
+  "generatedAt": "2026-11-24T20:47:15.511Z",
+  "clips": [
+    {
+      "id": "camp",
+      "audio": "/audio/dydi-adventure/camp.mp3",
+      "captions": "/audio/dydi-adventure/camp.vtt",
+      "transcript": "Welcome to Base Camp. I’m Dydi. There’s no race here. Walk with me to the Ranger Station, and we’ll find a good place for your journey to begin.",
+      "durationSeconds": 8.071837,
+      "timing": "normalized_alignment",
+      "codec": "mp3",
+      "sampleRate": 44100,
+      "bytes": 129610,
+      "cues": [
+        {
+          "text": "Welcome to Base Camp.",
+          "start": 0.209,
+          "end": 1.405
+        },
+        {
+          "text": "I’m Dydi.",
+          "start": 1.521,
+          "end": 2.299
+        },
+        {
+          "text": "There’s no race here.",
+          "start": 2.473,
+          "end": 3.518
+        },
+        {
+          "text": "Walk with me to the Ranger Station, and we’ll find a good place for your journey to begin.",
+          "start": 3.796,
+          "end": 7.848
+        }
+      ]
+    },
+    {
+      "id": "trail",
+      "audio": "/audio/dydi-adventure/trail.mp3",
+      "captions": "/audio/dydi-adventure/trail.vtt",
+      "transcript": "Take a look at the trails ahead. The full Journey brings the pieces together. The shorter paths let you explore one part of your design at a time.",
+      "durationSeconds": 8.672653,
+      "timing": "normalized_alignment",
+      "codec": "mp3",
+      "sampleRate": 44100,
+      "bytes": 139223,
+      "cues": [
+        {
+          "text": "Take a look at the trails ahead.",
+          "start": 0.035,
+          "end": 1.637
+        },
+        {
+          "text": "The full Journey brings the pieces together.",
+          "start": 1.962,
+          "end": 4.319
+        },
+        {
+          "text": "The shorter paths let you explore one part of your design at a time.",
+          "start": 4.644,
+          "end": 8.487
+        }
+      ]
+    },
+    {
+      "id": "desk",
+      "audio": "/audio/dydi-adventure/desk.mp3",
+      "captions": "/audio/dydi-adventure/desk.vtt",
+      "transcript": "Come on in. This is the Ranger Station. Bring your questions to the desk, or join me at the relief table to see how the journey fits together.",
+      "durationSeconds": 7.601633,
+      "timing": "normalized_alignment",
+      "codec": "mp3",
+      "sampleRate": 44100,
+      "bytes": 122087,
+      "cues": [
+        {
+          "text": "Come on in.",
+          "start": 0.035,
+          "end": 0.743
+        },
+        {
+          "text": "This is the Ranger Station.",
+          "start": 0.952,
+          "end": 2.415
+        },
+        {
+          "text": "Bring your questions to the desk, or join me at the relief table to see how the journey fits together.",
+          "start": 2.659,
+          "end": 7.384
+        }
+      ]
+    },
+    {
+      "id": "relief",
+      "audio": "/audio/dydi-adventure/relief.mp3",
+      "captions": "/audio/dydi-adventure/relief.vtt",
+      "transcript": "This is our working map. Base Camp is where you return. Trailheads open the courses. Your Field Kit holds discoveries. And Fireside makes room to walk with others. Choose a place on the map and take a closer look.",
+      "durationSeconds": 13.191837,
+      "timing": "normalized_alignment",
+      "codec": "mp3",
+      "sampleRate": 44100,
+      "bytes": 211530,
+      "cues": [
+        {
+          "text": "This is our working map.",
+          "start": 0.035,
+          "end": 1.393
+        },
+        {
+          "text": "Base Camp is where you return.",
+          "start": 1.602,
+          "end": 3.402
+        },
+        {
+          "text": "Trailheads open the courses.",
+          "start": 3.576,
+          "end": 5.283
+        },
+        {
+          "text": "Your Field Kit holds discoveries.",
+          "start": 5.492,
+          "end": 7.593
+        },
+        {
+          "text": "And Fireside makes room to walk with others.",
+          "start": 7.767,
+          "end": 10.391
+        },
+        {
+          "text": "Choose a place on the map and take a closer look.",
+          "start": 10.635,
+          "end": 12.98
+        }
+      ]
+    },
+    {
+      "id": "doorway",
+      "audio": "/audio/dydi-adventure/doorway.mp3",
+      "captions": "/audio/dydi-adventure/doorway.vtt",
+      "transcript": "Just past the map table is the Learning Center. This is the doorway into your classroom. Come through with me, and we’ll settle in for the Journey.",
+      "durationSeconds": 7.758367,
+      "timing": "normalized_alignment",
+      "codec": "mp3",
+      "sampleRate": 44100,
+      "bytes": 124594,
+      "cues": [
+        {
+          "text": "Just past the map table is the Learning Center.",
+          "start": 0.058,
+          "end": 2.566
+        },
+        {
+          "text": "This is the doorway into your classroom.",
+          "start": 2.81,
+          "end": 4.783
+        },
+        {
+          "text": "Come through with me, and we’ll settle in for the Journey.",
+          "start": 5.027,
+          "end": 7.57
+        }
+      ]
+    },
+    {
+      "id": "classroom",
+      "audio": "/audio/dydi-adventure/classroom.mp3",
+      "captions": "/audio/dydi-adventure/classroom.vtt",
+      "transcript": "Welcome to the Learning Center. Your course follows the familiar modules and lessons on the left. Read, listen to your companions, then make room to reflect. Your existing lessons and saved work are still here.",
+      "durationSeconds": 13.139592,
+      "timing": "normalized_alignment",
+      "codec": "mp3",
+      "sampleRate": 44100,
+      "bytes": 210694,
+      "cues": [
+        {
+          "text": "Welcome to the Learning Center.",
+          "start": 0.209,
+          "end": 1.846
+        },
+        {
+          "text": "Your course follows the familiar modules and lessons on the left.",
+          "start": 2.125,
+          "end": 5.608
+        },
+        {
+          "text": "Read, listen to your companions, then make room to reflect.",
+          "start": 5.933,
+          "end": 9.532
+        },
+        {
+          "text": "Your existing lessons and saved work are still here.",
+          "start": 9.776,
+          "end": 12.91
+        }
+      ]
+    },
+    {
+      "id": "passport",
+      "audio": "/audio/dydi-adventure/passport.mp3",
+      "captions": "/audio/dydi-adventure/passport.vtt",
+      "transcript": "Your Passport records real milestones from your journey. We don’t hand out points for looking around. As you complete the existing missions and assessments, your earned badges tell the story.",
+      "durationSeconds": 11.180408,
+      "timing": "normalized_alignment",
+      "codec": "mp3",
+      "sampleRate": 44100,
+      "bytes": 179347,
+      "cues": [
+        {
+          "text": "Your Passport records real milestones from your journey.",
+          "start": 0.035,
+          "end": 3.228
+        },
+        {
+          "text": "We don’t hand out points for looking around.",
+          "start": 3.471,
+          "end": 5.596
+        },
+        {
+          "text": "As you complete the existing missions and assessments, your earned badges tell the story.",
+          "start": 5.921,
+          "end": 11.006
+        }
+      ]
+    }
+  ]
+}

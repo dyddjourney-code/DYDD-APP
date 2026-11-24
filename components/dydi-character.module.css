@@ -1,0 +1,58 @@
+.character {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 5;
+  pointer-events: none;
+  user-select: none;
+  --stride: 920ms;
+}
+.rig { display: block; width: 100%; height: 100%; overflow: visible; }
+.rig g { transform-box: view-box; }
+.shadow { fill: #17291e; opacity: .17; transform-origin: 405px 1160px; }
+.body { transform-origin: 400px 1120px; animation: breathe 5.8s ease-in-out infinite; }
+.torso { transform-origin: 400px 554px; }
+.head { transform-origin: 390px 246px; animation: attentive 7.2s ease-in-out infinite; }
+.mouth { transform-origin: 395px 174px; }
+.leftThigh { transform-origin: 311px 558px; }
+.rightThigh { transform-origin: 442px 566px; }
+.leftShin { transform-origin: 329px 782px; }
+.rightShin { transform-origin: 468px 784px; }
+.leftBoot { transform-origin: 333px 1004px; }
+.rightBoot { transform-origin: 506px 1024px; }
+.arm { transform-origin: 518px 257px; transition: transform 650ms cubic-bezier(.22,.8,.3,1); }
+.forearm { transform-origin: 543px 427px; transition: transform 650ms cubic-bezier(.22,.8,.3,1); }
+.bookArm { transform-origin: 289px 277px; }
+.character[data-walking="true"] .body { animation: walkingBob var(--stride) linear infinite; }
+.character[data-walking="true"] .torso { animation: counterbalance var(--stride) ease-in-out infinite; }
+.character[data-walking="true"] .leftThigh { animation: leftStep var(--stride) ease-in-out infinite; }
+.character[data-walking="true"] .rightThigh { animation: rightStep var(--stride) ease-in-out infinite; }
+.character[data-walking="true"] .leftShin { animation: leftKnee var(--stride) ease-in-out infinite; }
+.character[data-walking="true"] .rightShin { animation: rightKnee var(--stride) ease-in-out infinite; }
+.character[data-walking="true"] .leftBoot { animation: toeRoll var(--stride) ease-in-out infinite; }
+.character[data-walking="true"] .rightBoot { animation: toeRoll var(--stride) ease-in-out infinite reverse; }
+.character[data-walking="true"] .bookArm { animation: bookSwing var(--stride) ease-in-out infinite; }
+.character[data-walking="true"] .arm { animation: armSwing var(--stride) ease-in-out infinite; }
+.character[data-walking="true"] .shadow { animation: shadowStep var(--stride) ease-in-out infinite; }
+.character[data-talking="true"] .head { animation: speakingHead 2.8s ease-in-out infinite; }
+.character[data-talking="true"] .mouth { animation: speakingMouth 420ms ease-in-out infinite; }
+.character[data-pointing="true"] .arm { animation: none; transform: rotate(-9deg); }
+.character[data-pointing="true"] .forearm { transform: rotate(-12deg); }
+@keyframes breathe { 0%,100% { transform: translateY(0) scaleY(1); } 50% { transform: translateY(-1px) scaleY(1.002); } }
+@keyframes attentive { 0%,40%,100% { transform: rotate(0); } 58%,75% { transform: rotate(1.1deg); } }
+@keyframes walkingBob { 0%,50%,100% { transform: translateY(0); } 25%,75% { transform: translateY(-7px); } }
+@keyframes counterbalance { 0%,100% { transform: rotate(-.7deg); } 50% { transform: rotate(.7deg); } }
+@keyframes leftStep { 0%,100% { transform: rotate(4deg); } 50% { transform: rotate(-5deg); } }
+@keyframes rightStep { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(4deg); } }
+@keyframes leftKnee { 0%,85%,100% { transform: rotate(0); } 45% { transform: rotate(2deg); } 65% { transform: rotate(9deg); } }
+@keyframes rightKnee { 0%,35%,100% { transform: rotate(2deg); } 15% { transform: rotate(9deg); } 50%,85% { transform: rotate(0); } }
+@keyframes toeRoll { 0%,100% { transform: rotate(-2deg); } 50% { transform: rotate(3deg); } }
+@keyframes armSwing { 0%,100% { transform: rotate(-2deg); } 50% { transform: rotate(2.5deg); } }
+@keyframes bookSwing { 0%,100% { transform: rotate(1deg); } 50% { transform: rotate(-1.5deg); } }
+@keyframes shadowStep { 0%,50%,100% { transform: scaleX(1); opacity: .17; } 25%,75% { transform: scaleX(.94); opacity: .13; } }
+@keyframes speakingHead { 0%,100% { transform: rotate(0); } 30% { transform: rotate(-.8deg); } 65% { transform: rotate(.7deg); } }
+@keyframes speakingMouth { 0%,100% { transform: scaleY(1); } 30% { transform: translateY(.65px) scaleY(1.065); } 70% { transform: translateY(-.3px) scaleY(.97); } }
+.character[data-reduced-motion="true"] .rig g,
+.character[data-reduced-motion="true"] .shadow { animation: none !important; transition: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .character .rig g, .character .shadow { animation: none !important; transition: none !important; }
+}

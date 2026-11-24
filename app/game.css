@@ -143,3 +143,9 @@ body:has(.game-world)::before { display:none!important; }
 .game-reading .journey-top-racetrack li small { font-size:10px; }
 /* Legacy phone rules must not turn owner-status text dark on the forest surface. */
 .game-reading :is(.command-center-hero-card,.design-map-status-card) :is(span,small,strong) { color:#eee9d6!important; }
+
+/* Sandbox2 first-arrival adventure owns the scenic stage, original dock/account remain. */
+.adventure-main { flex:1; outline:0; min-width:0; }
+.game-at-camp .game-bottom { padding-top:16px; background:#112017; }
+.game-at-camp .game-caption { max-width:250px; }
+@media(max-width:700px){ .game-at-camp .game-bottom {padding:14px 3.5% 20px;} .game-at-camp .game-dock button {min-height:65px;} }

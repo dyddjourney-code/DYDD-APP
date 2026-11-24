@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { DydiCharacter } from "@/components/dydi-character";
 import { RangerReliefMap } from "@/components/ranger-relief-map";
 import { RangerDesk } from "@/components/ranger-desk";
@@ -40,6 +40,8 @@ export function DydiAdventure({ onPassport }: { onPassport: () => void }) {
   const stage=useRef<HTMLElement>(null);
   const heading=useRef<HTMLHeadingElement>(null);
   const opener=useRef<HTMLElement|null>(null);
+  const guide=useRef<HTMLDivElement>(null);
+  const travelFrom=useRef<string|null>(null);
   const timer=useRef<ReturnType<typeof setTimeout>|null>(null);
   const s=scenes[stop];
   const quiet=reducedMotion||motionPaused;
@@ -69,6 +71,14 @@ export function DydiAdventure({ onPassport }: { onPassport: () => void }) {
     const before=document.body.style.overflow;document.body.style.overflow="hidden";
     return()=>{dialog.current?.close();document.body.style.overflow=before;};
   },[detail]);
+  useLayoutEffect(()=>{
+    const el=guide.current;
+    if(!el||!walking||quiet||!travelFrom.current)return;
+    // Snapshot both endpoints explicitly: unregistered custom-property updates
+    // can otherwise resolve to the destination before a CSS transition starts.
+    const animation=el.animate([{transform:travelFrom.current},{transform:getComputedStyle(el).transform}],{duration:4200,easing:"cubic-bezier(.37,0,.22,1)"});
+    return()=>animation.cancel();
+  },[walking,destination,quiet]);
   function arrive(next:Stop){
     if(timer.current)clearTimeout(timer.current);
     setStop(next);setDestination(null);setWalking(false);
@@ -76,6 +86,7 @@ export function DydiAdventure({ onPassport }: { onPassport: () => void }) {
   }
   function travel(next:Stop){
     if(walking||next===stop)return;
+    travelFrom.current=guide.current?getComputedStyle(guide.current).transform:null;
     audio.current?.pause();setSpeaking(false);setDestination(next);setWalking(true);
     setDetail(null);
     if(quiet){arrive(next);return;}
@@ -96,7 +107,7 @@ export function DydiAdventure({ onPassport }: { onPassport: () => void }) {
   return <section ref={stage} className={`${styles.adventure} ${quiet?styles.quiet:""} ${walking?styles.travelling:""} ${interior?styles.interior:""}`} data-stop={stop} data-destination={destination??""} data-motion={quiet?"reduced":"full"} aria-labelledby="adventure-title">
     <div className={styles.world} aria-hidden="true">
       <div key={interior?"station":stop==="classroom"?"classroom":"forest"} className={`${styles.art} ${interior?styles.station:stop==="classroom"?styles.classroom:styles.forest}`} />
-      <div className={styles.character} style={characterStyle} data-walking={walking}>
+      <div ref={guide} className={styles.character} style={characterStyle} data-walking={walking}>
         <div className={styles.groundShadow}/><DydiCharacter walking={walking&&!quiet} talking={speaking&&!quiet} pointing={!walking&&(stop==="relief"||stop==="doorway"||stop==="trail")} reducedMotion={quiet}/>
       </div>
       {(interior||stop==="classroom")&&<div className={styles.foreground} style={{"--scene-mask":`url("/brand/adventure/${interior?"ranger":"archive"}-table-mask.png")`} as CSSProperties}><div className={`${styles.art} ${interior?styles.station:styles.classroom}`}/></div>}

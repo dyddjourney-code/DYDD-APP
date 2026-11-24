@@ -49,7 +49,7 @@ export function DydiAdventure({ onPassport }: { onPassport: () => void }) {
     const m=matchMedia("(prefers-reduced-motion: reduce)");
     const change=()=>setReducedMotion(m.matches);
     change();m.addEventListener("change",change);setReady(true);
-    for (const src of ["/brand/environments/ranger.webp", "/brand/environments/archive.webp"]) { const image = new Image(); image.src = src; }
+    for (const src of ["/brand/environments/ranger.webp", "/brand/environments/archive.webp", "/brand/adventure/ranger-table-mask.png", "/brand/adventure/archive-table-mask.png"]) { const image = new Image(); image.src = src; }
     return()=>{m.removeEventListener("change",change);if(timer.current)clearTimeout(timer.current);};
   },[]);
   useEffect(()=>{
@@ -96,6 +96,10 @@ export function DydiAdventure({ onPassport }: { onPassport: () => void }) {
   return <section ref={stage} className={`${styles.adventure} ${quiet?styles.quiet:""} ${walking?styles.travelling:""} ${interior?styles.interior:""}`} data-stop={stop} data-destination={destination??""} data-motion={quiet?"reduced":"full"} aria-labelledby="adventure-title">
     <div className={styles.world} aria-hidden="true">
       <div key={interior?"station":stop==="classroom"?"classroom":"forest"} className={`${styles.art} ${interior?styles.station:stop==="classroom"?styles.classroom:styles.forest}`} />
+      <div className={styles.character} style={characterStyle} data-walking={walking}>
+        <div className={styles.groundShadow}/><DydiCharacter walking={walking&&!quiet} talking={speaking&&!quiet} pointing={!walking&&(stop==="relief"||stop==="doorway"||stop==="trail")} reducedMotion={quiet}/>
+      </div>
+      {(interior||stop==="classroom")&&<div className={styles.foreground} style={{"--scene-mask":`url("/brand/adventure/${interior?"ranger":"archive"}-table-mask.png")`} as CSSProperties}><div className={`${styles.art} ${interior?styles.station:styles.classroom}`}/></div>}
       <div className={styles.sunlight}/><div className={styles.atmosphere}/>
       {!interior&&stop!=="classroom"&&<svg className={styles.trailLine} viewBox="0 0 1000 600" preserveAspectRatio="none"><path d="M680 610 Q440 470 560 380 T640 230"/></svg>}
     </div>
@@ -112,10 +116,6 @@ export function DydiAdventure({ onPassport }: { onPassport: () => void }) {
       <h1 ref={heading} tabIndex={-1} id="adventure-title">{s.title.split("\n").map((line,i)=><span key={line}>{i>0&&<br/>}{line}</span>)}</h1>
       <p className={styles.subtitle}>{s.subtitle}</p>
     </div>
-    <div className={styles.character} style={characterStyle} data-walking={walking} aria-hidden="true">
-      <div className={styles.groundShadow}/><DydiCharacter walking={walking&&!quiet} talking={speaking&&!quiet} pointing={!walking&&(stop==="relief"||stop==="doorway"||stop==="trail")} reducedMotion={quiet}/>
-    </div>
-    {interior&&<div className={`${styles.world} ${styles.foreground}`} aria-hidden="true"><div className={`${styles.art} ${styles.station}`}/></div>}
     {interior&&<button className={`${styles.door} ${stop==="doorway"?styles.doorActive:""}`} disabled={walking||!ready} onClick={()=>travel(stop==="doorway"?"classroom":"doorway")} aria-label="Learning Center doorway: enter the classroom"><span>LEARNING CENTER</span><small>Journey classroom <b aria-hidden="true">↗</b></small></button>}
     {(stop==="desk"||stop==="relief")&&!walking&&<div className={styles.sceneObjects} aria-label="Objects in the Ranger Station"><button onClick={()=>openDetail("map")} className={styles.mapObject}><span aria-hidden="true">01</span> Explore the relief map</button><button onClick={()=>openDetail("desk")} className={styles.deskObject}><span aria-hidden="true">02</span> Ask at Dydi’s desk</button></div>}
     {stop==="trail"&&!walking&&<div className={styles.signpost} aria-label="Trail choices"><span>The trails ahead</span><button onClick={()=>{setIntent("explore");travel("desk");}}>Help me see the whole picture <b>→</b></button><button onClick={()=>{setIntent("begin");travel("doorway");}}>I’m ready for the Journey <b>→</b></button><ReviewAwareLink href="/trailheads">Explore a focused trail <b>↗</b></ReviewAwareLink></div>}

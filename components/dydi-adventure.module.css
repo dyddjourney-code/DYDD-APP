@@ -16,8 +16,9 @@
 @media(max-height:650px) and (min-width:701px){.adventure{min-height:720px}}
 @media(prefers-reduced-motion:reduce){.adventure *{animation:none!important;transition:none!important}}
 
-/* Matched foreground matte: the explorer really passes behind the relief table. */
-.foreground{z-index:1;pointer-events:none;clip-path:polygon(20% 67%,28% 62%,31% 57%,39% 50%,47% 51%,52% 54%,57% 55%,61% 59%,64% 65%,67% 70%,65% 97%,22% 99%)}
+/* One lighting stack and source-coordinate alpha matte: no viewport seams. */
+.world:after{z-index:6}.world>.art{z-index:0}.trailLine{z-index:1}.character{z-index:2;filter:drop-shadow(4px 10px 9px #101a1499) brightness(1.2)}.sunlight{z-index:4;opacity:.55}.atmosphere{z-index:5}
+.foreground{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden}
+.foreground .art{-webkit-mask-image:var(--scene-mask);mask-image:var(--scene-mask);-webkit-mask-size:cover;mask-size:cover;-webkit-mask-position:center;mask-position:center;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 .adventure[data-stop=desk] .door{left:58%}
-@media(max-width:1200px){.foreground{display:none}}
-@media(max-width:700px){.adventure[data-stop=desk] .door{left:5%}}
+@media(max-width:700px){.adventure[data-stop=desk] .door{left:5%}.foreground .art{-webkit-mask-size:auto 80%;mask-size:auto 80%;-webkit-mask-position:58% 28%;mask-position:58% 28%}}

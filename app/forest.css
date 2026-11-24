@@ -1455,3 +1455,7 @@ body:has(.journey-active-lesson)::before {
 .reflection-module small,.reflection-answer label,.reflection-answer p{color:#c0cdb4!important}.reflection-module-number{background:none!important;border:0!important;border-radius:0!important;color:#d7c28d!important}
 .reflection-browse-controls,.reflection-workbook-settings,.reflection-discussion-reminders{background:transparent!important;border-color:var(--line)!important;color:var(--ink)!important}
 .login-choice{background:#102319!important;border:0!important;border-radius:3px!important}.login-choice a{background:transparent!important;border:0!important;border-radius:0!important;color:#bdcbb2!important}.login-choice a.active,.login-choice a[aria-selected=true]{background:#cfb77f20!important;color:#f0d69d!important}
+
+/* The streamed Trailheads loading state belongs to the same forest palette. */
+.trail-loading-sign{background:#14281e!important;border:0!important;border-radius:4px!important;box-shadow:none!important}
+.trail-loading-sign div{background:#2a412e!important;border-radius:3px!important}

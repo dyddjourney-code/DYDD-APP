@@ -141,3 +141,5 @@ body:has(.game-world)::before { display:none!important; }
 .game-reading .journey-top-racetrack li span { display:block; position:static; width:auto; height:auto; font-size:11px; margin:0 0 7px; }
 .game-reading .journey-top-racetrack li strong { display:block; font-size:12px; line-height:1.35; margin:0 0 5px; }
 .game-reading .journey-top-racetrack li small { font-size:10px; }
+/* Legacy phone rules must not turn owner-status text dark on the forest surface. */
+.game-reading :is(.command-center-hero-card,.design-map-status-card) :is(span,small,strong) { color:#eee9d6!important; }

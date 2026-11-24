@@ -4,7 +4,7 @@ import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 const base=process.env.SANDBOX2_BASE||'http://localhost:3148';
 assert(['http://localhost:3148','https://dydd-online-school-sandbox-2.vercel.app'].includes(base));
-const out='/home/openclaw/.openclaw/workspace/outputs/dydd-sandbox2-2026-11-24/environment-'+(base.startsWith('https')?'hosted':'local');fs.mkdirSync(out,{recursive:true});
+const out='/home/openclaw/.openclaw/workspace/outputs/dydd-sandbox2-2026-11-24/environment-'+(base.startsWith('https')?'hosted':'local');fs.mkdirSync(out,{recursive:true});fs.writeFileSync(out+'/qa.json',JSON.stringify({base,state:'running',startedAt:new Date().toISOString()}));process.on('uncaughtExceptionMonitor',e=>fs.writeFileSync(out+'/qa.json',JSON.stringify({base,state:'failed',failureType:e.name})));
 const args=chromium.args.filter(x=>x!=='--single-process');let proxy;
 if(base.startsWith('https')&&process.env.HTTPS_PROXY){proxy=new URL(process.env.HTTPS_PROXY);args.push(`--proxy-server=${proxy.origin}`,'--ignore-certificate-errors');}
 const browser=await puppeteer.launch({executablePath:await chromium.executablePath(),args,headless:true});
@@ -76,5 +76,5 @@ try{
   await anon.goto(base+route+'?review=new&key=invalid-environment-check',{waitUntil:'domcontentloaded',timeout:60000});await anon.waitForFunction(()=>location.pathname==='/login',{timeout:20000});results.push({route,unauthorizedDenied:true});
  }
  await anonContext.close();
- assert.deepEqual(errors,[]);fs.writeFileSync(out+'/qa.json',JSON.stringify({base,results,errors},null,2));console.log('PASS',results.length,'room/route checks, real map, account/passport, actual Journey audio/text/companions preserved, no inline lesson art; four widths; no overflow or JS errors.');
+ assert.deepEqual(errors,[]);fs.writeFileSync(out+'/qa.json',JSON.stringify({base,state:'passed',results,errors},null,2));console.log('PASS',results.length,'room/route checks, real map, account/passport, actual Journey audio/text/companions preserved, no inline lesson art; four widths; no overflow or JS errors.');
 }finally{await browser.close();}

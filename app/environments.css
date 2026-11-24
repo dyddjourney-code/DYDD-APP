@@ -241,3 +241,12 @@
 @media(prefers-reduced-motion:reduce){.environment-route:not(.environment-route--journey) .environment-object-label{transition:none}}
 /* A light Trailheads CTA needs ink, not the inherited light forest link color. */
 .environment-route--ranger .ranger-path-cta a{background:#d5c18f!important;color:#233b2b!important;border-color:#d5c18f!important}
+/* Keep contextual course offers in the archive's open flow. Their legacy pale
+   card fill inherited light forest text; a divider is enough hierarchy here. */
+.game-reading .designpd-trail-offer{background:transparent!important;border:0!important;border-top:1px solid #a4ae8e4d!important;padding:24px 0!important;border-radius:0!important;box-shadow:none!important}
+/* Supporting routes use the same unboxed hierarchy and inherited readable ink. */
+.game-reading .contextual-purchases .purchase-offer{background:transparent!important;border:0!important;border-top:1px solid #a4ae8e4d!important;padding:24px 0!important;border-radius:0!important;box-shadow:none!important}
+.game-reading .contextual-purchases :is(.purchase-fine-print,.purchase-test-note,.purchase-price span){color:#c2cdb8!important}
+.game-reading .fireside-image-title :is(p,span){color:inherit!important}
+.environment-route--archive .reflection-notebook-page .course-nav{background:transparent!important;border:0!important}
+.environment-route--archive .reflection-notebook-page .course-nav a{background:transparent!important;border:0!important;color:#ead8af!important}

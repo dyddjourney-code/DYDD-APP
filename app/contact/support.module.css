@@ -10,3 +10,7 @@
 .queue { max-width: 1000px; margin: 0 auto; padding: 32px 24px; } .toolbar { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; margin: 24px 0; } .toolbar label { display: grid; gap: 8px; }
 .request { border-top: 1px solid #cbd5c9; padding: 24px 0; overflow-wrap: anywhere; } .request h2 { margin: 8px 0; font-size: 1.3rem; } .message { white-space: pre-wrap; line-height: 1.6; } .request label { display: grid; gap: 8px; max-width: 240px; } .request button { margin-top: 12px; min-height: 44px; }
 @media (max-width: 767px) { .shell, .queue { padding: 28px 16px; } .layout { grid-template-columns: minmax(0, 1fr); gap: 28px; } .form { padding: 20px 16px; } }
+/* Sandbox 2's support form belongs to the open forest reading surface. */
+.form { background: transparent; border: 0; border-top: 1px solid #9fae8c55; border-radius: 0; padding-inline: 0; color: inherit; box-shadow: none; }
+.form .hint { color: #c3cfbc !important; }
+.form .error { color: #f2ad9c !important; }

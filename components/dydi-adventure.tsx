@@ -144,7 +144,7 @@ export function DydiAdventure({ onPassport }: { onPassport: () => void }) {
       <source src={`/audio/dydi-adventure/${track}.mp3`} type="audio/mpeg"/>
       <track key={track} kind="captions" src={`/audio/dydi-adventure/${track}.vtt`} srcLang="en" label="Dydi — English" default/>
     </audio>
-    <dialog ref={dialog} className={styles.detail} aria-labelledby="adventure-detail-title" onCancel={e=>{e.preventDefault();closeDetail();}} onClick={e=>{if(e.target===e.currentTarget)closeDetail();}}>
+    <dialog ref={dialog} className={styles.detail} aria-labelledby="adventure-detail-title" onCancel={e=>{if(e.target===e.currentTarget){e.preventDefault();closeDetail();}}} onClick={e=>{if(e.target===e.currentTarget)closeDetail();}}>
       <div className={styles.detailInner}>
         <header><h2 id="adventure-detail-title">{detail==="map"?"The working relief map":detail==="desk"?"At Dydi’s desk":"Your story, not a score"}</h2><button onClick={closeDetail} aria-label="Close exploration">×</button></header>
         {detail==="map"&&<RangerReliefMap/>}{detail==="desk"&&<RangerDesk/>}

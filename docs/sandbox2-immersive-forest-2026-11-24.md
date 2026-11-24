@@ -26,7 +26,7 @@ Root `/` opens the existing `/base-camp` entry. All real routes remain available
 3. Load sandbox-only credentials into ignored local env files; never print/stage them. Verify Supabase hostname equals `atemrshtshxoqnuevvqu.supabase.co`.
 4. Build: `npm run build -- --webpack` (Webpack supports this host's shared dependency symlink); `npm run typecheck`.
 5. Run `npm run start -- --port 3148` then `node tests/sandbox2-visual.mjs`. Hosted check: `SANDBOX2_BASE=https://dydd-online-school-sandbox-2.vercel.app node tests/sandbox2-visual.mjs`.
-6. Commit only the presentation files/runbook/test, push only the Sandbox 2 branch, explicitly deploy that SHA to the new project. Do not use `scripts/deploy-sandbox.mjs`, which intentionally targets the **original** sandbox.
+6. Commit only the presentation files/runbook/test, push only the Sandbox 2 branch, then run `node scripts/deploy-sandbox2.mjs` to deploy that exact SHA to the new project. The guarded script checks the branch, project, alias and protected project deployment identities. Do not use `scripts/deploy-sandbox.mjs`, which intentionally targets the **original** sandbox.
 7. Confirm deployment metadata SHA, stable alias and new project ID; independently compare production/original sandbox deployment IDs and alias mappings against the preflight receipt. No production/original sandbox deploy or project mutation is part of this workflow.
 
 Local verification artifacts live outside Git at `outputs/dydd-sandbox2-2026-11-24/`. They contain screenshots and sanitized deployment/QA receipts, not credentials.

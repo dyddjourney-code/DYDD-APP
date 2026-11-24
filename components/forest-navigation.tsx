@@ -13,6 +13,7 @@ const destinations = [
   { href: "/fireside", label: "Fireside", icon: "fire" },
 ];
 const moreDestinations = [
+  { href: "/login", label: "Sign in", detail: "Use your sandbox account" },
   { href: "/base-camp#passport", label: "Passport Book", detail: "Your milestones and discoveries" },
   { href: "/base-camp#your-profile", label: "Traveler profile", detail: "Your story and account details" },
   { href: "/gear", label: "Gear", detail: "Resources for the trail" },

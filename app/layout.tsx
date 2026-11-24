@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { AppChrome } from "@/components/app-chrome";
 import "./globals.css";
 import "./field-guide.css";
+import "./forest.css";
 
 export const metadata: Metadata = {
-  title: "DYDD Online School",
+  title: "DYDD — Sandbox 2",
+  robots: { index: false, follow: false },
   description:
     "A course and companion platform for Discover Your Divine Design.",
 };
@@ -17,17 +19,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {process.env.NEXT_PUBLIC_DYDD_ENVIRONMENT === "sandbox" ? (
-          <div role="note" style={{ padding: "10px 20px", background: "#f0d99e", color: "#3f381d", fontSize: 14, textAlign: "center" }}>
-            DYDD Sandbox — separate test accounts and data. No real charges. {process.env.DYDD_SANDBOX_EMAIL_ENABLED === "true" ? "Email is restricted to the configured test inbox. External report delivery is off." : "Email and external report delivery are off."}{" "}
-            <a href="/base-camp" style={{ color: "inherit", textDecoration: "underline", whiteSpace: "nowrap" }}>Sandbox Base Camp</a>
-            {" · "}<a href="/live" style={{ color: "inherit", textDecoration: "underline", whiteSpace: "nowrap" }}>Live Fireside</a>
-            {" · "}<a href="/command-center/fireside" style={{ color: "inherit", textDecoration: "underline", whiteSpace: "nowrap" }}>Fireside host</a>
-            {" · "}<a href="https://dydd-private-owner-console.vercel.app/command-center" referrerPolicy="no-referrer" style={{ color: "inherit", textDecoration: "underline", whiteSpace: "nowrap" }}>Private owner console (live data)</a>
-            {process.env.DYDD_SANDBOX_EMAIL_ENABLED === "true" && <>{" · "}<a href="/sandbox/email-lab" style={{color:"inherit",textDecoration:"underline",whiteSpace:"nowrap"}}>Email walkthrough</a></>}
-            {" · "}<a href="/sandbox-review" style={{ color: "inherit", textDecoration: "underline", whiteSpace: "nowrap" }}>Preview all courses</a>
-          </div>
-        ) : null}
         <AppChrome>{children}</AppChrome>
       </body>
     </html>

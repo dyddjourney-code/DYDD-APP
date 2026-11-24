@@ -1,49 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { AppMobileNav } from "@/components/app-mobile-nav";
-import { AppSidebar } from "@/components/app-sidebar";
+import { ForestNavigation } from "@/components/forest-navigation";
 
-type AppChromeProps = {
-  children: React.ReactNode;
-};
-
-function AppChromeFrame({ children }: AppChromeProps) {
-  const searchParams = useSearchParams();
-  const fruitLifeLane = searchParams.get("lane") === "fruitlife";
-
-  if (fruitLifeLane) {
-    return <>{children}</>;
-  }
-
-  return (
-    <>
-      <Suspense fallback={null}>
-        <AppMobileNav />
-      </Suspense>
-      <div className="app-frame">
-        <Suspense fallback={null}>
-          <AppSidebar />
-        </Suspense>
-        <div className="app-frame-content">
-          {children}
-          <footer className="app-footer" aria-label="App support links">
-            <Link href="/contact">Contact</Link>
-            <Link href="/privacy">Privacy Policy</Link>
-            <Link href="/terms">Terms of Service</Link>
-          </footer>
-        </div>
-      </div>
-    </>
-  );
-}
+type AppChromeProps = { children: React.ReactNode };
 
 export function AppChrome({ children }: AppChromeProps) {
-  return (
-    <Suspense fallback={children}>
-      <AppChromeFrame>{children}</AppChromeFrame>
-    </Suspense>
-  );
+  return <>
+    <Suspense fallback={<div className="forest-header forest-nav-loading" aria-label="Loading navigation" />}><ForestNavigation /></Suspense>
+    <div className="app-frame"><div className="app-frame-content" id="forest-content" tabIndex={-1}>
+      {children}
+      <footer className="app-footer" aria-label="App support links"><Link href="/contact">Contact</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></footer>
+    </div></div>
+  </>;
 }

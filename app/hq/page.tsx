@@ -651,27 +651,17 @@ export default async function HqPage({ searchParams }: HqPageProps) {
     <main className="hq-shell hq-app-shell basecamp-clean-layout">
       <div className="hq-content">
       <section className="basecamp-hero" id="basecamp" aria-label="DYDD Base Camp">
-        <div className="basecamp-scene" aria-hidden="true">
-          <img src="/brand/dydd-cabin-hut-only.png" alt="" />
-        </div>
-        <header className="basecamp-image-header">
-          <div>
-            <p className="basecamp-image-label">DYDD Base Camp</p>
-            <p className="basecamp-image-purpose">On purpose. For purpose.</p>
-          </div>
-          <form action={signOut}>
-            <button className="button secondary" type="submit">Sign out</button>
-          </form>
-        </header>
         <div className="basecamp-copy">
-          <h1>Welcome, {welcomeName}.</h1>
+          <h1>Welcome to<br />Base Camp.</h1>
+          <p>A place to find your bearings, reflect on your story, and take the next step on your journey.</p>
+          <Link className="forest-next-step" href={withReviewQuery("/ranger-station", reviewParams)}>Visit the Ranger Station <span aria-hidden="true">↗</span></Link>
         </div>
       </section>
 
       <section className="basecamp-next-profile" aria-label="Your next step and profile">
         <div className="basecamp-ranger-launch-card">
-          <h2>Next</h2>
-          <p>Open Ranger Station</p>
+          <h2>Your next step, {welcomeName}.</h2>
+          <p>Find your bearings and choose where to go next.</p>
           <Link className="button primary" href={withReviewQuery("/ranger-station", reviewParams)}>
             Go to Ranger Station
           </Link>

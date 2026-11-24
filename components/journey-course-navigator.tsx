@@ -223,28 +223,9 @@ export function JourneyCourseNavigator({
     Boolean(workbookExperience),
   );
   const showNicheBuilder = active ? isNicheBuilderUnit(active) : false;
-  const chapterArtwork = [
-    "identity", "expertise", "story", "desire", "gifts", "niche",
-  ].includes(active.module.slug)
-    ? `/brand/badges/${active.module.slug}-badge.png`
-    : "/brand/dydd-journey-road-waymarkers.png";
-  const lessonImage = active.unit.media?.image ?? chapterArtwork;
-  const lessonImageLabel =
-    active.unit.media?.label ?? `${active.module.title} Journey illustration`;
-  // Approved forward format, opt-in only; older lesson cleanup remains deferred.
   const wrapLessonImage = active.unit.slug === "what-is-dydd-d-e-s-i-g-n-9" || usesApprovedLessonFormat || isIdentityPathfinder || isExpertisePathfinder;
-  const lessonArtwork = (
-    <div className="journey-lesson-images">
-      {[{ image: lessonImage, label: lessonImageLabel }, ...(active.unit.media?.additionalImages ?? [])].map((image) => (
-        <figure
-          key={image.image}
-          className={`assessment-lesson-image${active.unit.media?.type === "video" || active.unit.media?.additionalImages?.length || active.unit.slug === "identity-assessment-time-designid" ? " contain" : ""}`}
-        >
-          <img src={image.image} alt={image.label} loading="lazy" />
-        </figure>
-      ))}
-    </div>
-  );
+  // Sandbox 2 keeps the teaching page image-free; companion portraits/audio remain.
+  const lessonArtwork = null;
   const lessonFocus = active.unit.focus?.length
     ? active.unit.focus.flatMap((item) =>
         item.split(/[,;\n]+|(?<=\?)\s+(?=[A-Z])/).map((focus) => focus.trim()).filter(Boolean),

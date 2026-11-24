@@ -441,7 +441,7 @@ export default async function FieldKitPage({
       <header className="standalone-hero fieldkit-hero">
         <div>
           <p className="eyebrow">Field Kit</p>
-          <h1>What you’ve discovered. Ready to use.</h1>
+          <h1>Field Kit</h1>
           <p className="lede">
             Your reports and course reflections, together by trail. Revisit
             earlier discoveries, see your growth over time, and bring what you

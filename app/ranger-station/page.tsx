@@ -65,6 +65,7 @@ const pathGroups = [
 export default function RangerStationPage() {
   return (
     <main className="journey-shell hq-standalone-page ranger-station-page">
+      <header className="standalone-hero"><h1>Ranger Station</h1><p className="lede">Find your bearings and choose your next faithful step.</p></header>
       <div className="ranger-station-header-image">
         <img
           src="/brand/dydd-ranger-station-header.png"

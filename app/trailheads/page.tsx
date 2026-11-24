@@ -123,7 +123,7 @@ export default async function TrailheadsPage({ searchParams }: Props) {
       <header className="standalone-hero trailheads-hero">
         <div>
           <p className="eyebrow">Trailheads</p>
-          <h1>Take your next faithful step.</h1>
+          <h1>Trailheads</h1>
           <p className="lede">
             Trailheads are courses that pair personal assessments with practical
             teaching to help you understand your design, deepen your faith, and

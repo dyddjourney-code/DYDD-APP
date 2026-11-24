@@ -1,5 +1,5 @@
 /* Sandbox 2: the supplied jungle game is a spatial interface, not a dashboard skin. */
-body::before { display:none!important; }
+body:has(.game-world)::before { display:none!important; }
 .game-world { min-height:100dvh; position:relative; isolation:isolate; background:linear-gradient(90deg,rgba(6,17,13,.82),rgba(6,17,13,.22) 47%,rgba(6,17,13,.05)),linear-gradient(0deg,rgba(4,15,10,.9),transparent 32%,rgba(5,17,12,.4)),url('/brand/sandbox2-jungle.webp') center/cover fixed; }
 .game-top { position:relative; z-index:2; display:flex; align-items:center; min-height:80px; padding:17px 3.5%; border-bottom:1px solid #ffffff27; background:linear-gradient(#09170fd9,#09170f55); gap:24px; }
 .game-mark { display:flex; gap:12px; align-items:center; color:#f5eedc; text-decoration:none; }

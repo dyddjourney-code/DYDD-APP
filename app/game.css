@@ -1,0 +1,143 @@
+/* Sandbox 2: the supplied jungle game is a spatial interface, not a dashboard skin. */
+body::before { display:none!important; }
+.game-world { min-height:100dvh; position:relative; isolation:isolate; background:linear-gradient(90deg,rgba(6,17,13,.82),rgba(6,17,13,.22) 47%,rgba(6,17,13,.05)),linear-gradient(0deg,rgba(4,15,10,.9),transparent 32%,rgba(5,17,12,.4)),url('/brand/sandbox2-jungle.webp') center/cover fixed; }
+.game-top { position:relative; z-index:2; display:flex; align-items:center; min-height:80px; padding:17px 3.5%; border-bottom:1px solid #ffffff27; background:linear-gradient(#09170fd9,#09170f55); gap:24px; }
+.game-mark { display:flex; gap:12px; align-items:center; color:#f5eedc; text-decoration:none; }
+.game-mark svg { width:27px; height:27px; color:#d7bd82; }
+.game-mark>span { font:600 27px/.8 "Cormorant Garamond",serif; letter-spacing:2px; }
+.game-mark small { display:block; font:500 8px/1.2 "DM Sans",sans-serif; letter-spacing:1.8px; color:#d0cbb4; margin-top:9px; }
+.game-location { margin-left:auto; display:flex; align-items:center; gap:12px; color:#e3dcc4; font-size:11px; letter-spacing:1.8px; }
+.game-location svg { width:27px; height:27px; color:#dec58d; }
+.game-profile { border:1px solid #d5c18b77; background:#101e17b0; color:#e8e2cf; padding:12px 16px; font-size:10px; letter-spacing:1px; min-height:44px; }
+.game-at-camp { display:flex; flex-direction:column; }
+.game-scene { flex:1; display:flex; align-items:center; padding:50px 5% 44px; min-height:calc(100dvh - 195px); outline:0; }
+.game-intro { max-width:440px; text-shadow:0 2px 15px #06110c; }
+.game-intro h1 { font:600 clamp(56px,5.8vw,90px)/.9 "Cormorant Garamond",serif; letter-spacing:-.02em; margin:0 0 27px; color:#f5eedc; }
+.game-intro p { color:#e4e3d5; font-size:14px; line-height:1.8; max-width:355px; margin:0; }
+.game-next { display:flex; gap:14px; align-items:center; margin-top:32px; padding:16px 0; border:0; border-bottom:1px solid #cfb57b77; background:transparent; color:#ead8af; text-align:left; }
+.game-next svg { width:27px; height:27px; flex-shrink:0; }
+.game-next span { font:600 23px/1.2 "Cormorant Garamond",serif; }
+.game-next:hover { color:#fff2ce; }
+.game-bottom { position:relative; z-index:2; padding:0 3.5% 25px; display:flex; justify-content:space-between; align-items:end; gap:24px; }
+.game-caption { font-size:10px; line-height:1.7; letter-spacing:1.4px; text-transform:uppercase; color:#e0d3ad; text-shadow:0 2px 8px #07130d; padding-bottom:5px; }
+.game-caption span { display:block; color:#c5cdbb; letter-spacing:0; text-transform:none; font-size:11px; }
+.game-world .game-dock { position:static; transform:none; width:auto; display:grid; grid-template-columns:repeat(6,minmax(90px,1fr)); background:#0d1d15ed; border:1px solid #b49e6e88; box-shadow:0 8px 30px #06110c99; backdrop-filter:blur(12px); }
+.game-dock button { min-width:0; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:7px; min-height:77px; border:0; border-right:1px solid #a8945c40; border-radius:0; color:#eae4d1; background:none; padding:12px 13px; font:400 10px/1.2 "DM Sans",sans-serif; letter-spacing:.5px; transition:background .2s; }
+.game-dock button:last-child { border-right:0; }
+.game-dock button:hover,.game-dock button[aria-current=true] { background:#c4a86c29; }
+.game-dock button svg { width:24px; height:24px; color:#e0c58e; }
+.game-world .game-overlay { inset:0; width:100%; height:100dvh; max-width:100%; max-height:100dvh; margin:0; padding:0; border:0; background:transparent; overflow:hidden; box-shadow:none; }
+.game-overlay::backdrop { background:#06120bd9; backdrop-filter:blur(3px); }
+.game-panel { position:absolute; right:0; top:0; width:min(650px,100%); height:100%; overflow:auto; overscroll-behavior:contain; background:linear-gradient(145deg,#263e2d,#101e16 80%); border-left:1px solid #aa9461; box-shadow:-15px 0 70px #06110c99; padding:30px clamp(24px,4vw,55px); animation:guide-arrive .3s cubic-bezier(.16,1,.3,1); }
+.game-panel-top { display:flex; align-items:center; justify-content:space-between; gap:20px; border-bottom:1px solid #b7a37355; padding-bottom:20px; }
+.game-panel-top>a { font-size:10px; letter-spacing:1.7px; color:#dac18e; text-transform:uppercase; }
+.game-close { flex-shrink:0; width:44px; height:44px; border:1px solid #a99b76; border-radius:0; color:#f5efd9; background:none; font:400 26px/1 "DM Sans",sans-serif; }
+.game-panel h2#game-panel-title { font:600 48px/1 "Cormorant Garamond",serif; margin:32px 0 14px; color:#f5eedc; }
+.game-lead { color:#c9d0bd; line-height:1.8; font-size:14px; max-width:490px; margin:0 0 28px; }
+.game-tiles { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.game-tile { position:relative; display:block; min-width:0; border:1px solid #9d98724d; border-radius:0; background:#09170f70; padding:20px; text-align:left; color:#eee9d6; text-decoration:none; min-height:152px; transition:background .2s,border-color .2s; }
+.game-tile:hover,.game-tile:focus-visible { border-color:#d6be83; background:#2d4830; }
+.game-tile svg { width:22px; height:22px; color:#cfb77f; margin-bottom:10px; }
+.game-tile strong { display:block; font:600 25px/1.1 "Cormorant Garamond",serif; margin:0 0 9px; color:#eee9d6; }
+.game-tile>span:not(.game-trail-number) { display:block; font-size:12px; line-height:1.65; color:#becbbb; }
+.game-tile b { display:block; margin-top:14px; color:#d7bd82; font-weight:400; }
+.game-trails { grid-template-columns:1fr; }
+.game-trails .game-tile { padding:22px 24px 22px 65px; min-height:130px; }
+.game-trail-number { position:absolute; left:22px; top:21px; font:400 28px/1 "Cormorant Garamond",serif; color:#d3bc86; }
+.game-back { margin-top:28px; background:none; color:#dfc78f; border:1px solid #a99466; border-radius:0; padding:13px 17px; min-height:44px; font-size:11px; letter-spacing:.6px; }
+.game-panel-support,.game-support { display:flex; flex-wrap:wrap; gap:18px; font-size:11px; color:#aabca7; margin-top:30px; }
+.game-account-content[hidden] { display:none!important; }
+.game-account-content .basecamp-hero,.game-account-content .basecamp-ranger-launch-card,.game-account-content .basecamp-clean-layout> .hq-content>section[aria-label="Base Camp admin view"],.game-account-content .basecamp-clean-layout> .hq-content>section:last-child:not(.basecamp-account-layout) { display:none!important; }
+.game-account-content .basecamp-clean-layout,.game-account-content .hq-content { padding:0!important; margin:0!important; max-width:100%!important; width:100%!important; }
+.game-account-content[data-account-view=profile] .passport-book { display:none!important; }
+.game-account-content[data-account-view=passport] .hq-content> :not(.passport-book) { display:none!important; }
+.game-account-content .basecamp-next-profile,.game-account-content .basecamp-account-billing-layout { display:block!important; }
+.game-account-content #your-profile,.game-account-content .basecamp-account-card { margin:20px 0!important; padding:20px!important; border:1px solid #9d98724d!important; background:#09170f70!important; }
+.game-account-content .passport-book { padding:0!important; background:none!important; border:0!important; }
+.game-account-content .passport-book-heading { align-items:flex-start; flex-direction:column; }
+.game-account-content .passport-book-toggle { width:100%; }
+.game-account-content .basecamp-account-card h2 { font-size:27px; }
+.game-route { max-width:1240px; padding:32px 4% 135px; margin:auto; min-height:calc(100dvh - 80px); }
+.game-return { display:inline-block; font-size:11px; letter-spacing:.6px; color:#dfc78f; margin:0 0 24px; padding:8px 0; }
+.game-reading { background:linear-gradient(140deg,#243a2cf5,#101e16fa 70%); border:1px solid #a9946659; box-shadow:0 20px 70px #06110c66; padding:clamp(20px,3vw,42px); }
+.game-reading>main,.game-reading>div { width:100%!important; max-width:100%!important; margin:0!important; padding:0!important; }
+.game-on-trail .game-bottom { position:fixed; bottom:0; right:0; left:0; pointer-events:none; background:linear-gradient(transparent,#08170fe6); padding-top:20px; }
+.game-on-trail .game-bottom .game-dock { pointer-events:auto; margin-left:auto; }
+.game-on-trail .game-caption { display:none; }
+.game-reading :is(.trailheads-hero,.fieldkit-page-hero,.ranger-hero,.fireside-page-hero,.journey-course-hero) { min-height:0!important; background:transparent!important; border:0!important; padding:0 0 28px!important; }
+.game-reading :is(.trailheads-hero,.fieldkit-page-hero,.ranger-hero,.fireside-page-hero,.journey-course-hero)::before { display:none!important; }
+.game-reading h1 { font-size:clamp(40px,4.3vw,62px); }
+@keyframes guide-arrive { from { transform:translateX(35px); opacity:0; } to { transform:translateX(0); opacity:1; } }
+@media(min-width:1500px){ .game-world .game-dock { grid-template-columns:repeat(6,minmax(105px,1fr)); } }
+@media(max-width:1000px){ .game-caption { display:none; } .game-bottom { justify-content:flex-end; } }
+@media(max-width:850px){
+ .game-world { background-position:62% center; }
+ .game-location { display:none; }
+ .game-profile { margin-left:auto; }
+ .game-scene { align-items:flex-start; padding:11vh 5% 45px; }
+ .game-intro { max-width:80%; }
+ .game-intro h1 { font-size:60px; }
+ .game-bottom { display:block; padding:0 3.5% 22px; }
+ .game-world .game-dock { width:100%; grid-template-columns:repeat(6,minmax(0,1fr)); }
+ .game-dock button { padding:12px 4px; font-size:9px; letter-spacing:0; }
+ .game-panel h2#game-panel-title { font-size:40px; }
+ .game-route { padding:24px 3.5% 125px; }
+ .game-reading { padding:24px 20px; }
+}
+@media(max-width:440px){
+ .game-top { min-height:76px; padding:16px 5%; gap:12px; }
+ .game-mark>span { font-size:25px; }
+ .game-mark small { font-size:6px; letter-spacing:1.2px; }
+ .game-mark { gap:8px; }
+ .game-mark svg { width:23px; height:23px; }
+ .game-profile { font-size:9px; padding:10px; letter-spacing:0; }
+ .game-scene { padding-top:9vh; min-height:calc(100dvh - 177px); }
+ .game-intro { max-width:90%; }
+ .game-intro h1 { font-size:54px; }
+ .game-intro p { font-size:13px; max-width:280px; }
+ .game-next { gap:10px; margin-top:25px; }
+ .game-next span { font-size:21px; }
+ .game-dock button { min-height:74px; font-size:8px; }
+ .game-dock button svg { width:22px; height:22px; }
+ .game-tiles { grid-template-columns:1fr; }
+ .game-tile { min-height:115px; padding:18px; }
+ .game-tile svg { float:left; margin-right:15px; margin-top:3px; }
+ .game-panel { padding:24px 22px; }
+ .game-reading { padding:20px 15px; }
+}
+@media(prefers-reduced-motion:reduce){ .game-panel { animation:none; } }
+/* The real passport is a field-guide page, not a three-column desktop dashboard. */
+.game-account-content .passport-book-heading>div { display:none; }
+.game-account-content .passport-book-cover,.game-account-content .passport-layout { display:grid!important; grid-template-columns:minmax(0,1fr)!important; gap:20px!important; }
+.game-account-content .passport-book-cover { padding:20px 0!important; }
+.game-account-content .passport-earned-page { display:flex; align-items:center; gap:20px; padding:18px 0; border:0; }
+.game-account-content .passport-count-stamp { flex-shrink:0; width:65px; height:65px; }
+.game-account-content .passport-earned-page p { font-size:13px; font-weight:400; }
+.game-account-content .passport-badge-grid,.game-account-content .passport-badge-grid.journey { grid-template-columns:repeat(3,minmax(0,1fr))!important; gap:8px; }
+.game-account-content .passport-badge-button { background:#10251a!important; border:1px solid #9d98724d!important; border-radius:0!important; min-width:0; color:#eee9d6; }
+.game-account-content .passport-badge-button.selected { background:#2d4830!important; border-color:#d6be83!important; }
+.game-account-content .passport-badge-button strong { font-size:13px; line-height:1.25; color:#eee9d6; }
+.game-account-content .passport-badge-button span { font-size:9px; }
+.game-account-content .passport-short-trails-row { grid-template-columns:minmax(0,1fr); gap:20px; }
+.game-account-content .passport-short-trail+.passport-short-trail { padding:0; border:0; }
+.game-account-content .passport-badge-popover { display:none!important; }
+.game-account-content .passport-mobile-hint { display:block; font-size:12px; }
+.game-account-content .passport-next-badge { padding:15px; background:#10251a!important; border:1px solid #9d98724d!important; }
+.game-account-content .passport-record-notice { padding:0; background:none!important; font-size:12px; font-weight:400; }
+.game-account-content .passport-record-notice strong { font-weight:400; }
+.game-account-content .passport-detail-sheet { background:linear-gradient(145deg,#263e2d,#101e16)!important; color:#eee9d6!important; border-color:#aa9461; }
+.game-account-content .passport-sheet-header,.game-account-content .passport-sheet-body { background:transparent!important; color:inherit!important; }
+@media(max-width:440px){ .game-account-content .passport-badge-grid,.game-account-content .passport-badge-grid.journey { grid-template-columns:repeat(2,minmax(0,1fr))!important; } }
+.game-trails .game-tile { background:none; border:0; border-bottom:1px solid #9d987250; min-height:112px; padding-block:18px; }
+.game-trails .game-tile:hover { background:#c4a86c0d; }
+.game-trails .game-tile b { position:absolute; right:8px; top:22px; margin:0; }
+.game-trails .game-tile strong { padding-right:18px; }
+.game-dock .forest-menu { margin-left:0; }
+.game-dock .forest-menu span { display:block; }
+/* Compact the repeated chapter reference so the authored lesson stays close. */
+.game-reading .journey-top-racetrack { margin:20px 0 24px!important; }
+.game-reading .journey-top-racetrack ol { display:flex!important; gap:24px!important; overflow-x:auto; padding:0 0 12px!important; scrollbar-color:#6b7459 transparent; }
+.game-reading .journey-top-racetrack li { flex:0 0 94px; min-height:0!important; padding:0!important; text-align:left; display:block!important; }
+.game-reading .journey-top-racetrack li span { display:block; position:static; width:auto; height:auto; font-size:11px; margin:0 0 7px; }
+.game-reading .journey-top-racetrack li strong { display:block; font-size:12px; line-height:1.35; margin:0 0 5px; }
+.game-reading .journey-top-racetrack li small { font-size:10px; }

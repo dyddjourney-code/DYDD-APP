@@ -678,7 +678,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
         {user && !reviewReport ? <BetaAccess active={lifetimeAccess} verified={Boolean(user.email_confirmed_at)} /> : null}
       </section>
 
-      <DydPassportBook badges={passportBadges} firstName={welcomeName} />
+      <DydPassportBook badges={passportBadges} firstName={welcomeName} fieldGuide />
 
       <section className="basecamp-account-layout basecamp-account-billing-layout" aria-label="Base Camp account overview">
         <article className="basecamp-account-card profile">

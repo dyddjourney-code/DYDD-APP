@@ -13,9 +13,11 @@ const badgeStatusLabel: Record<PassportBadgeState, string> = {
 export function DydPassportBook({
   badges = buildPassportBadges({ completedAssessments: [] }),
   firstName: _firstName = "Traveler",
+  fieldGuide = false,
 }: {
   badges?: PassportBadge[];
   firstName?: string;
+  fieldGuide?: boolean;
 }) {
   const [selectedTitle, setSelectedTitle] = useState(
     badges.find((badge) => badge.state === "next")?.title ?? badges[0]?.title ?? "",
@@ -35,13 +37,13 @@ export function DydPassportBook({
   useEffect(() => {
     const query = window.matchMedia("(max-width: 980px)");
     const update = () => {
-      setMobile(query.matches);
-      if (!query.matches) setDetailOpen(false);
+      setMobile(query.matches || fieldGuide);
+      if (!query.matches && !fieldGuide) setDetailOpen(false);
     };
     update();
     query.addEventListener("change", update);
     return () => query.removeEventListener("change", update);
-  }, []);
+  }, [fieldGuide]);
 
   useEffect(() => {
     if (!detailOpen) return;
@@ -86,7 +88,7 @@ export function DydPassportBook({
       key={badge.title}
       onClick={(event) => {
         setSelectedTitle(badge.title);
-        if (window.matchMedia("(max-width: 980px)").matches) {
+        if (mobile) {
           triggerRef.current = event.currentTarget;
           setDetailOpen(true);
         }

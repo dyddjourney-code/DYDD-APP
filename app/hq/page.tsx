@@ -695,6 +695,7 @@ export default async function HqPage({ searchParams }: HqPageProps) {
               <dd>{user?.email ?? fruitLifeDashboardEmail ?? "Preview account"}</dd>
             </div>
           </dl>
+          <form action={signOut}><button className="button secondary" type="submit">Sign out</button></form>
         </article>
         <article className="basecamp-account-card account-billing-records" aria-label="Your purchases and subscription">
           {testBillingEnabled() ? <AccountPurchases preview={Boolean(reviewReport)} lifetime={Boolean(lifetimeAccess)} /> : <p>Your purchased access stays connected to this account.</p>}

@@ -13,7 +13,7 @@ const bookResources = [
   {
     title: "Discover Your Divine Design Workbook",
     image:
-      "https://images.squarespace-cdn.com/content/v1/685da500fbad741e29c08c78/d2a3900f-0b7c-4b09-84d4-1429dcb48c8f/DYDD_Workbook.jpeg?format=750w",
+      "/brand/sandbox2-workbook-cover.webp",
     alt: "Discover Your Divine Design workbook cover",
     description:
       "A guided companion to the book created to support prayerful engagement, personal reflection, and faithful application. The workbook is included digitally inside the Discover Your Divine Design Journey; this paper copy is for people who prefer something they can hold, write in, and keep nearby.",

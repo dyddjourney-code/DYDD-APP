@@ -63,8 +63,8 @@ export function ForestNavigation() {
     <nav className="forest-dock" aria-label="Camp navigation">
       {destinations.map(item => <ReviewAwareLink key={item.href} href={item.href} aria-current={(pathname === item.href || (item.href === "/base-camp" && pathname === "/hq")) ? "page" : undefined}><ForestIcon name={item.icon}/><span>{item.label}</span></ReviewAwareLink>)}
     </nav>
-    <dialog className="forest-map" ref={dialog} onCancel={() => setOpen(false)} onClose={() => setOpen(false)} onClick={event => {if(event.target === event.currentTarget) close();}}>
-      <div className="forest-map-inner"><div className="forest-map-heading"><h2>Camp map</h2><button className="forest-close" onClick={close} aria-label="Close camp map">×</button></div>
+    <dialog aria-labelledby="forest-camp-map-title" className="forest-map" ref={dialog} onCancel={() => setOpen(false)} onClose={() => setOpen(false)} onClick={event => {if(event.target === event.currentTarget) close();}}>
+      <div className="forest-map-inner"><div className="forest-map-heading"><h2 id="forest-camp-map-title">Camp map</h2><button className="forest-close" onClick={close} aria-label="Close camp map">×</button></div>
         <nav aria-label="All destinations">{[...destinations.map(item => ({...item,detail:""})), ...moreDestinations].map(item => <ReviewAwareLink href={item.href} key={item.href} onClick={close}><strong>{item.label}</strong>{item.detail ? <span>{item.detail}</span> : null}<b aria-hidden="true">↗</b></ReviewAwareLink>)}</nav>
         <p className="forest-map-note">Separate sandbox accounts and data. No real charges. External report delivery is off.</p>
       </div>

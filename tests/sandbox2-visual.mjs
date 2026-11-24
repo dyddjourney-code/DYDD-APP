@@ -55,7 +55,7 @@ try{
  }
  const clean=await browser.createBrowserContext();const anon=await clean.newPage();
  if(base.startsWith('https:')&&process.env.HTTPS_PROXY){const p=new URL(process.env.HTTPS_PROXY);if(p.username)await anon.authenticate({username:decodeURIComponent(p.username),password:decodeURIComponent(p.password)});}
- for(const path of ['/courses/designid-foundations','/learn/designid-foundations/welcome-to-designid']){await anon.goto(base+path,{waitUntil:'domcontentloaded'});assert.equal(new URL(anon.url()).pathname,'/login');await anon.goto(base+path+'?review=new&key=invalid',{waitUntil:'domcontentloaded'});assert.equal(new URL(anon.url()).pathname,'/login');}
+ for(const path of ['/courses/designid-foundations','/learn/designid-foundations/welcome-to-designid']){await anon.goto(base+path,{waitUntil:'domcontentloaded'});await anon.waitForFunction(()=>location.pathname==='/login',{timeout:20000});assert.equal(new URL(anon.url()).pathname,'/login');await anon.goto(base+path+'?review=new&key=invalid',{waitUntil:'domcontentloaded'});await anon.waitForFunction(()=>location.pathname==='/login',{timeout:20000});assert.equal(new URL(anon.url()).pathname,'/login');}
  await clean.close();
  fs.writeFileSync(out+'/qa.json',JSON.stringify({base,results,audioEvidence,errors,authBoundary:'Anonymous/invalid protected DesignID course and lesson redirect to login',campMap:'Open/Escape and actual route links checked at all widths'},null,2));assert.deepEqual(errors,[]);console.log('PASS '+results.length+' responsive routes; first two authored units at 4 widths; native companion audio playback/transcript/portraits; no lesson illustrations; camp map; anonymous/invalid protected access; no JS errors.');
 }finally{await browser.close()}

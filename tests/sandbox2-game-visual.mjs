@@ -13,7 +13,7 @@ const errors=[],results=[];
 try{
  const page=await browser.newPage();page.on('pageerror',e=>errors.push(e.message));
  if(proxy?.username)await page.authenticate({username:decodeURIComponent(proxy.username),password:decodeURIComponent(proxy.password)});
- async function screenshot(name){await page.waitForFunction(()=>[...document.querySelectorAll(".game-panel")].every(e=>e.getAnimations().every(a=>a.playState==="finished")));await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:out+'/'+name+'.png'});}
+ async function screenshot(name){await page.waitForFunction(()=>[...document.querySelectorAll(".game-panel")].every(e=>e.getAnimations().every(a=>a.playState==="finished")));await page.evaluate(async()=>{await document.fonts.ready;const scene=new Image();scene.src="/brand/sandbox2-jungle.webp";await scene.decode();});await page.screenshot({path:out+'/'+name+'.png'});}
  async function overflow(){assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No document overflow');assert(await page.evaluate(()=>!document.querySelector('dialog[open] .game-panel')||document.querySelector('dialog[open] .game-panel').scrollWidth<=document.querySelector('dialog[open] .game-panel').clientWidth+1),'No guide panel overflow');}
  for(const width of [1440,768,390,320]){
   await page.setViewport({width,height:width>700?1000:844});

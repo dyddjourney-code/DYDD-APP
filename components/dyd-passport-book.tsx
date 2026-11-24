@@ -3,6 +3,11 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { buildPassportBadges, type PassportBadge, type PassportBadgeState } from "@/lib/passport-badges";
 
+// A whole proof sheet is not an individual milestone icon. Keep the genuine
+// milestone records and use the existing DYDD trail emblem for these two covers.
+const badgeArtwork = (badge: PassportBadge) => badge.image === "/brand/badges/dydd-trail-badges-preview.png"
+  ? "/brand/tools/badge-icons/dydd-icon.png" : badge.image;
+
 const badgeStatusLabel: Record<PassportBadgeState, string> = {
   ahead: "Ahead",
   locked: "Locked",
@@ -100,7 +105,7 @@ export function DydPassportBook({
       aria-pressed={selectedBadge?.title === badge.title}
       type="button"
     >
-      <img src={badge.image} alt={`${badge.title} badge`} />
+      <img src={badgeArtwork(badge)} alt={`${badge.title} badge`} />
       {badge.kind === "course" ? <small className="passport-course-ribbon">Course</small> : null}
       <span>{badgeStatusLabel[badge.state]}</span>
       <strong>{badge.title}</strong>
@@ -184,7 +189,7 @@ export function DydPassportBook({
 
         {selectedBadge ? (
           <article className="passport-badge-popover" aria-live="polite">
-            <img src={selectedBadge.image} alt={`${selectedBadge.title} badge detail`} />
+            <img src={badgeArtwork(selectedBadge)} alt={`${selectedBadge.title} badge detail`} />
             <div>
               <span>{badgeStatusLabel[selectedBadge.state]}</span>
               <h3>{selectedBadge.title}</h3>
@@ -222,7 +227,7 @@ export function DydPassportBook({
             <button type="button" autoFocus onClick={() => setDetailOpen(false)} aria-label="Close badge details">Close</button>
           </header>
           <div className="passport-sheet-body" tabIndex={0} role="region" aria-label="Badge meaning and requirements" key={selectedBadge.title}>
-            <img src={selectedBadge.image} alt="" />
+            <img src={badgeArtwork(selectedBadge)} alt="" />
             <h4>Overview</h4>
             {renderDetailCopy(selectedBadge)}
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { ReviewAwareLink } from "@/components/review-aware-link";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 
 type MapPoint = {
   body: string;
@@ -435,9 +436,9 @@ export function RangerReliefMap() {
             ))}
           </ul>
         </div>
-        <a className="button primary" href={activePoint.href}>
+        <Suspense fallback={<a className="button primary" href={activePoint.href}>{activePoint.cta}</a>}><ReviewAwareLink className="button primary" href={activePoint.href}>
           {activePoint.cta}
-        </a>
+        </ReviewAwareLink></Suspense>
       </aside>
 
       <div className="relief-map-legend" aria-label="Map legend">

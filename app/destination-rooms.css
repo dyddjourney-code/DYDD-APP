@@ -1,0 +1,151 @@
+/* Room-scale destinations. Artwork is the environment; controls belong to its objects. */
+.game-world .game-overlay:has(.destination-room){background:#17231b}
+.game-panel.destination-room{position:absolute;inset:0;width:100%;height:100%;padding:0;overflow:auto;border:0;background:none;box-shadow:none;animation:room-enter .45s ease-out}
+.destination-interior{min-height:100dvh;position:relative;isolation:isolate;overflow:hidden;background:#1e2a21;color:#f5eedc}
+.destination-art,.destination-shade{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.destination-shade{z-index:-1;background:linear-gradient(180deg,#111c1a80,transparent 24%,transparent 55%,#111b16d9),linear-gradient(90deg,#17201966,transparent 48%)}
+.destination-top{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:24px 4%;position:relative;z-index:2}
+.destination-top>span{font:600 25px/1 "Cormorant Garamond",serif;letter-spacing:3px;color:#eee6cf;margin-left:auto;margin-right:24px}
+.destination-return{border:0;background:#142019b3;color:#f2ead8;padding:12px 16px;font-size:12px;min-height:44px;backdrop-filter:blur(8px)}
+.destination-top .game-close{background:#142019b3;border-color:#e7dac46b;color:#f4ecd9}
+.destination-intro{position:absolute;bottom:108px;left:5%;max-width:425px;pointer-events:none;text-shadow:0 2px 20px #15211a}
+.destination-intro h2#game-panel-title{font:500 clamp(44px,5vw,76px)/.97 "Cormorant Garamond",serif;margin:0 0 18px;color:#faf2df}
+.destination-intro p{font:400 14px/1.8 "DM Sans",sans-serif;color:#ece8da;max-width:360px;margin:0 0 16px}
+.destination-text-link{display:inline-block;color:#f1dbaf;font:500 12px/1.7 "DM Sans",sans-serif;text-decoration:none;pointer-events:auto;padding:10px 0}
+.destination-text-link:hover{text-decoration:underline;text-underline-offset:5px}
+.destination-objects{position:absolute;inset:95px 0 200px;pointer-events:none}
+.scene-object{position:absolute;display:flex;align-items:center;gap:12px;text-align:left;text-decoration:none;transform:translate(-50%,-50%);border:0;background:none;color:#fff5df;padding:10px 14px 10px 5px;pointer-events:auto;max-width:270px;text-shadow:0 2px 10px #111f18;transition:transform .2s ease}
+.scene-object>span:last-child{padding:10px 14px;background:#15251ed9;backdrop-filter:blur(10px);box-shadow:0 3px 16px #111c1944}
+.scene-object .object-marker{width:36px;height:36px;display:grid;place-items:center;flex-shrink:0;border:1px solid #f3e0b2b3;border-radius:50%;background:#17271eb3;font:300 24px/1 "DM Sans",sans-serif;box-shadow:0 3px 18px #15251a55}
+.scene-object strong{display:block;font:500 21px/1.2 "Cormorant Garamond",serif;color:#fff4da;white-space:nowrap}
+.scene-object small{display:block;font:400 10px/1.5 "DM Sans",sans-serif;color:#e2decb;margin-top:4px;white-space:nowrap}
+.scene-object:hover{transform:translate(-50%,calc(-50% - 3px))}
+.scene-object:hover>span:last-child{background:#2e4233f5}
+.scene-object:focus-visible,.destination-switch button:focus-visible,.destination-return:focus-visible{outline:2px solid #efd4a0;outline-offset:5px}
+.destination-switch{position:absolute;bottom:0;left:5%;right:5%;display:flex;align-items:center;justify-content:flex-end;gap:28px;padding:24px 0;flex-wrap:wrap}
+.destination-switch button{border:0;background:none;color:#ece2c9;font:400 11px/1.5 "DM Sans",sans-serif;min-height:44px;padding:8px 0;white-space:nowrap}
+.destination-switch button span{margin-left:9px;color:#d7c69c}
+.destination-detail{margin:0;border:0;max-height:100dvh;max-width:100%;position:fixed;z-index:4;inset:0 0 0 auto;width:min(720px,100%);height:100dvh;overflow:auto;overscroll-behavior:contain;padding:24px clamp(22px,3vw,44px) 60px;background:#efe7d6;color:#2a352c;box-shadow:-30px 0 100px #13201780;animation:guide-arrive .25s ease}
+.destination-detail>header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:32px}
+.destination-detail>header button{border:0;background:none;color:#364734;padding:10px 0;font:400 12px/1.5 "DM Sans",sans-serif;min-height:44px}
+.destination-detail>header button:last-child{font-size:28px;padding:4px 8px}
+.destination-detail h3{font:500 42px/1.1 "Cormorant Garamond",serif;color:#293d30;margin:0 0 24px}
+.destination-detail p{color:#4e5a49;line-height:1.8;font-size:14px}
+.room-action{display:block;padding:20px 0;width:100%;border:0;background:transparent;color:#374b36;font:500 23px/1.3 "Cormorant Garamond",serif;text-align:left;text-decoration:none}
+.destination-detail :is(.ranger-desk-section,.ranger-desk-card,.ranger-desk-panel){background:transparent!important;border:0!important;box-shadow:none!important;color:#293d30!important;padding:0!important}
+.destination-detail .ranger-desk-section h2{color:#293d30;font-size:40px}
+.destination-detail .ranger-desk-section :is(h3,strong,button){color:#354a37!important}
+.destination-detail .ranger-desk-section .section-label{display:none}
+.destination-detail .ranger-desk-section :is(button,a){background:transparent!important;border-color:#77856d66!important}
+.destination-detail .ranger-desk-section :is(p,small,span){color:#4e5a49!important}
+.destination-detail.detail-map{width:min(1130px,96%)}
+.destination-detail .relief-map-workbench{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(230px,1fr);gap:24px;border:0;padding:0;background:none!important;color:#2b3d2e}
+.destination-detail .relief-map-canvas,.destination-detail .relief-map-stage-scroll{min-width:0;background:transparent!important;border:0!important;padding:0!important}
+.destination-detail .relief-map-toolbar{background:none!important;padding:0 0 18px!important;gap:16px}
+.destination-detail .relief-map-toolbar p{font-size:11px;margin:0}
+.destination-detail .relief-map-toolbar button{color:#344c37;background:transparent!important;border:1px solid #7f8d6e;font-size:11px;padding:9px 12px}
+.destination-detail .relief-map-stage{border-radius:0!important;min-width:0!important}
+.destination-detail .relief-map-panel{padding:0!important;background:transparent!important;border:0!important;color:#2b3d2e}
+.destination-detail .relief-map-panel :is(h3,p,li){color:#2b3d2e!important}
+.destination-detail .relief-panel-visual{display:none}
+.destination-detail .relief-map-panel h3{font-size:32px;margin:8px 0 10px}
+.destination-detail .relief-map-panel p,.destination-detail .relief-map-panel li{font-size:12px;line-height:1.7}
+.destination-detail .relief-map-panel .button{background:#354c38!important;color:#fff1d3!important;border:0!important;border-radius:0;white-space:normal}
+.destination-detail .relief-map-legend{grid-column:1/-1;background:none!important;padding:10px 0!important;color:#354a37}
+.destination-detail .relief-map-legend button{background:none!important;border-color:#83927666!important;color:#354a37!important;border-radius:0}
+.destination-detail .relief-map-legend button.active{background:#d6ddc8!important}
+.destination-account{margin:20px 5% 120px auto;width:min(680px,48%);max-height:calc(100dvh - 200px);overflow:auto;padding:30px;background:#18291ee8;backdrop-filter:blur(12px);box-shadow:0 20px 90px #111d1980;scrollbar-color:#8d9a79 #18291e}
+.interior-account .destination-intro{max-width:35%}
+.destination-account .game-account-content .passport-book-cover{padding-top:0!important}
+@keyframes room-enter{from{opacity:0;transform:scale(1.025)}to{opacity:1;transform:scale(1)}}
+@media(min-width:1600px){.destination-objects{inset:95px 5% 200px}}
+@media(max-width:900px){.destination-intro{max-width:330px;bottom:120px}.destination-intro h2#game-panel-title{font-size:53px}.destination-switch{gap:20px}.scene-object{gap:6px;padding:6px}.scene-object>span:last-child{padding:9px 10px}.scene-object strong{font-size:18px}.scene-object small{font-size:9px}.scene-object .object-marker{width:30px;height:30px}.destination-account{width:55%;margin-right:4%;padding:22px}.interior-account .destination-intro{max-width:30%;left:4%}.destination-detail .relief-map-workbench{grid-template-columns:1fr}.destination-detail .relief-map-stage{max-width:520px;margin:auto}}
+@media(max-width:850px){
+ .destination-interior{min-height:100dvh;padding-bottom:30px;overflow:clip;display:flex;flex-direction:column}
+ .destination-art{position:absolute;height:72dvh;object-position:50% center;mask-image:linear-gradient(#fff 78%,transparent)}
+ .interior-ranger .destination-art{object-position:43% center}.interior-archive .destination-art{object-position:50% center}
+ .destination-shade{background:linear-gradient(#12211877,transparent 35%,#17251d33 52%,#17251d 76%)}
+ .destination-top{padding:16px 5%;gap:10px}.destination-top>span{font-size:21px;margin-right:8px}.destination-return{font-size:10px;padding:9px 10px}.destination-top .game-close{width:40px;height:40px}
+ .destination-intro{position:relative;left:auto;bottom:auto;max-width:none;padding:28px 6% 0;margin-top:32dvh;order:2}
+ .destination-intro h2#game-panel-title{font-size:44px;margin-bottom:14px}.destination-intro p{max-width:100%;font-size:13px;line-height:1.75;margin-bottom:5px}
+ .destination-objects{position:relative;inset:auto;order:3;display:grid;grid-template-columns:1fr;gap:0;padding:12px 6% 10px}
+ .scene-object{position:relative;left:auto!important;top:auto!important;transform:none;max-width:none;width:100%;padding:10px 0;gap:13px;text-shadow:none}
+ .scene-object:hover{transform:none}.scene-object>span:last-child{background:none;box-shadow:none;backdrop-filter:none;padding:7px 0}.scene-object:hover>span:last-child{background:none}
+ .scene-object .object-marker{width:34px;height:34px;background:#33433399;border-color:#bcb28d80;font-size:20px}.scene-object strong{font-size:22px}.scene-object small{font-size:10px;white-space:normal}
+ .destination-switch{position:relative;inset:auto;order:5;padding:10px 6% 0;justify-content:flex-start;gap:0 22px}.destination-switch button{font-size:10px}
+ .destination-detail{margin:0;border:0;max-height:100dvh;max-width:100%;position:fixed;width:100%;padding:18px 6% 45px}.destination-detail.detail-map{width:100%}.destination-detail h3{font-size:36px}.destination-detail>header{margin-bottom:22px}
+ .destination-account{order:3;position:relative;width:auto;margin:20px 5% 0;max-height:none;padding:22px 18px;background:#18291eee;backdrop-filter:none;box-shadow:none}
+ .interior-account .destination-intro{max-width:none;left:auto}
+ .destination-detail .relief-map-workbench{gap:15px}.destination-detail .relief-map-stage{width:100%!important;min-width:0!important}.destination-detail .relief-map-toolbar{flex-wrap:wrap}.destination-detail .relief-map-panel{padding-top:15px!important}
+}
+@media(prefers-reduced-motion:reduce){.game-panel.destination-room,.destination-detail{animation:none}.scene-object{transition:none}}
+
+.destination-detail::backdrop{background:#15221b66;backdrop-filter:blur(2px)}
+/* The course is a reading desk inside the cabin, not the camp photo behind a dashboard. */
+.environment-route--journey{background:linear-gradient(#19231bd9,#19231bf0),url('/brand/environments/ranger.webp') center/cover fixed}
+.environment-route--journey .environment-scene{min-height:360px;max-height:none;padding-top:70px;padding-bottom:55px;align-items:center}
+.environment-route--journey .environment-scene-copy h1{font-size:clamp(44px,4.4vw,66px)}
+.environment-route--journey .environment-scene-copy p{font-size:14px;max-width:42ch}
+.environment-route--journey .environment-passage{display:none}
+.environment-route--journey .environment-destination{padding-top:30px;background:transparent}
+.environment-route--journey .journey-active-lesson,.environment-route--journey .journey-active-body>section,.environment-route--journey .journey-teaching-card{background:transparent!important;box-shadow:none!important;padding-inline:0!important}
+.environment-route--journey .journey-active-lesson .lesson-source{background:#eee7d7!important;color:#333e32!important;padding:clamp(24px,3.5vw,48px)!important;box-shadow:0 12px 45px #121a1466!important;max-width:76ch}
+.environment-route--journey .journey-active-lesson .lesson-source :is(h1,h2,h3,h4,h5,strong,b,p,li,blockquote,span){color:#333e32!important}
+.environment-route--journey .journey-active-lesson .lesson-source :is(p,li){font-size:16px!important;line-height:1.9!important}
+.environment-route--journey .journey-active-lesson .lesson-source :is(h2,h3,h4){font-family:"Cormorant Garamond",serif;font-size:28px!important;font-weight:500}
+.environment-route--journey .journey-active-lesson .lesson-source a{color:#50633d!important}
+.environment-route--journey .journey-active-lesson .lesson-source :is(blockquote,.journey-scripture-callout,.journey-lesson-callout){background:#dfdfca!important;border-color:#8c987a!important;box-shadow:none!important}
+.environment-route--journey .journey-active-workbook{background:#e6decb!important;color:#344032!important;padding:clamp(24px,3.5vw,48px)!important;margin-top:35px!important;box-shadow:0 12px 45px #121a1466!important}
+.environment-route--journey .journey-active-workbook :is(h2,h3,h4,h5,strong,b,p,li,label,summary){color:#344032!important}
+.environment-route--journey .journey-active-workbook :is(input,textarea,select){background:#faf7ee!important;border:1px solid #a8af96!important;color:#293b2e!important;border-radius:0!important}
+.environment-route--journey .journey-active-workbook :is(.reflection-question,.reflection-care-card,.care-question,.care-step,.care-intro,.journey-care-block){background:transparent!important;border-color:#89997b55!important;color:#344032!important}
+.environment-route--journey .journey-active-workbook button{border-radius:0!important}
+.environment-route--journey .journey-course-sidebar{background:#19271fe8!important;border:0!important;border-radius:0!important;backdrop-filter:blur(8px)}
+.environment-route--journey .companion-audio-card{background:#26372be6!important;border-radius:0!important;padding:26px!important}
+@media(max-width:600px){.environment-route--journey .environment-scene{min-height:340px;padding:70px 6% 45px}.environment-route--journey .environment-objects{display:none}.environment-route--journey .journey-active-lesson .lesson-source{padding:26px 22px!important}.environment-route--journey .journey-active-workbook{padding:26px 22px!important}.environment-route--journey .journey-active-lesson .lesson-source :is(p,li){font-size:15px!important}.environment-route--journey .companion-audio-card{padding:20px!important}}
+.environment-route--ranger .ranger-station-header-image{display:none!important}
+.destination-detail .ranger-desk-card{display:block!important}
+.destination-detail .ranger-desk-art{float:right;width:120px!important;height:190px!important;background:transparent!important;border:0!important;margin:0 0 15px 22px}
+.destination-detail .ranger-desk-art img{width:100%;height:100%;object-fit:contain}
+.destination-detail .ranger-faq-questions{display:grid!important;grid-template-columns:1fr!important;gap:4px!important;clear:both;margin-top:25px}
+.destination-detail .ranger-faq-questions button{border:0!important;background:transparent!important;padding:12px 14px!important;font-size:12px!important;text-align:left!important;color:#344b36!important}
+.destination-detail .ranger-faq-questions button[aria-pressed=true]{background:#d8ddca!important}
+.destination-detail .ranger-faq-answer{background:#e2e2cd!important;border:0!important;border-radius:0!important;padding:22px!important;margin-top:24px}
+.destination-detail .ranger-faq-answer h3{font-size:28px!important;color:#344b36!important}
+.destination-detail .ranger-faq-answer a{color:#344b36!important;font-weight:500}
+@media(min-width:851px){
+ .destination-objects{inset:0}
+ .scene-object{transform:translate(-18px,-50%);padding:0;min-height:44px;max-width:none}
+ .scene-object>span:last-child{position:absolute;left:48px;width:max-content;max-width:245px}
+ .scene-object.object-right>span:last-child{left:auto;right:48px}
+ .scene-object:hover{transform:translate(-18px,calc(-50% - 3px))}
+}
+
+.destination-detail .ranger-desk-section{margin:0!important;padding:0!important;background:transparent!important;border:0!important}
+@media(min-width:851px) and (max-height:820px){
+ .destination-intro{max-width:240px;bottom:95px}
+ .destination-intro h2#game-panel-title{font-size:44px;margin-bottom:12px}
+ .destination-intro p{max-width:240px;font-size:12px;line-height:1.7}
+ .destination-text-link{font-size:10px;padding:6px 0}
+ .scene-object>span:last-child{max-width:215px;padding:10px 12px}
+ .scene-object strong{font-size:19px}.scene-object small{font-size:9px}
+}
+/* Passport records are a paper folio on the archive desk, not another green panel. */
+.destination-room[data-place=passport] .destination-account{background:#eee6d3;color:#344330;backdrop-filter:none;box-shadow:0 20px 70px #14221880}
+.destination-room[data-place=passport] .destination-account :is(h2,h3,h4,p,strong,small,label,summary){color:#344330!important}
+.destination-room[data-place=passport] .destination-account .passport-book-toggle{background:none!important;border:1px solid #8f9b7c!important;color:#344330!important;border-radius:0!important}
+.destination-room[data-place=passport] .destination-account :is(.passport-next-badge,.passport-earned-page,.passport-record-notice){background:#e1dfc9!important;border:0!important;color:#344330!important}
+.destination-room[data-place=passport] .destination-account .passport-badge-button{background:transparent!important;border:1px solid #9eaa8c77!important;color:#344330!important}
+.destination-room[data-place=passport] .destination-account .passport-badge-button.selected{background:#d5dcbf!important;border-color:#788866!important}
+.destination-room[data-place=passport] .destination-account :is(.passport-badge-button span,.passport-next-badge span,.passport-earned-page span,.passport-record-notice span){color:#5d6b4e!important}
+.destination-room[data-place=passport] .destination-account .passport-count-stamp{color:#344330!important;background:none!important}
+.environment-route.environment-route--journey .journey-active-lesson:is(.orientation,.normal,.designid,.pathfinder,.assessment,.completion),.environment-route.environment-route--journey .journey-active-body>section,.environment-route.environment-route--journey .journey-active-lesson .journey-teaching-card{background:transparent!important}
+.destination-room[data-place=passport] .passport-detail-sheet,.destination-room[data-place=passport] .passport-sheet-header,.destination-room[data-place=passport] .passport-sheet-body{background:#eee6d3!important;color:#344330!important}
+.destination-room[data-place=passport] .passport-detail-sheet :is(p,strong,h2,h3,h4,span,small,button,a){color:#344330!important}
+@media(max-width:850px){.destination-shade{background:linear-gradient(#12211866,transparent 25%,#17251d77 43%,#17251dcc 59%,#17251d 77%)}}
+@media(max-width:980px){
+ .environment-route--journey .journey-course-walkthrough{display:block!important}
+ .environment-route--journey .journey-course-index{position:static!important;max-height:280px;margin-bottom:24px;padding:20px!important}
+ .environment-route--journey .journey-course-index-heading h2{font-size:25px!important;max-width:none!important}
+}
+.environment-route--journey .journey-active-workbook :is(input,textarea)::placeholder{color:#738069!important;opacity:1}

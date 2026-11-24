@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import { DestinationRoom } from "@/components/destination-room";
+import { EnvironmentRoute } from "@/components/environment-route";
 import { ReviewAwareLink } from "@/components/review-aware-link";
 
 type Place = "map" | "ranger" | "trails" | "passport" | "kit" | "fireside" | "profile";
@@ -13,38 +15,6 @@ const places: { key: Place; label: string; icon: string }[] = [
   {key:"kit",label:"Field Kit",icon:"kit"},
   {key:"fireside",label:"Fireside",icon:"fire"},
 ];
-const guide: Record<Place,{title:string;lead:string;links?:{title:string;copy:string;href?:string;panel?:Place}[]}> = {
- map:{title:"Your field guide",lead:"Every place has a purpose. Choose where you would like to go next.",links:[
-  {title:"Ranger Station",copy:"Find your bearings and meet Dydi.",panel:"ranger"},
-  {title:"Trailheads",copy:"Explore courses and assessments.",panel:"trails"},
-  {title:"Passport Book",copy:"Your milestones and discoveries.",panel:"passport"},
-  {title:"Field Kit",copy:"Keep your saved resources close.",panel:"kit"},
-  {title:"Fireside",copy:"Encouragement and community.",panel:"fireside"},
-  {title:"Traveler profile",copy:"Your story, account and access.",panel:"profile"}]},
- ranger:{title:"Ranger Station",lead:"Find your bearings. Let Dydi help you discover the next faithful step.",links:[
-  {title:"Meet your ranger",copy:"Get oriented with Dydi and the real camp guide.",href:"/ranger-station"},
-  {title:"Explore the map",copy:"Get to know the places in your journey.",panel:"map"},
-  {title:"Choose a trail",copy:"Find a course or assessment to begin.",panel:"trails"}]},
- trails:{title:"Trailheads",lead:"Explore the full journey or begin with a focused path. There is room to start where you are.",links:[
-  {title:"DYDD Journey",copy:"A guided path through identity, design, gifting and calling.",href:"/journey"},
-  {title:"DesignID",copy:"Explore how you are designed to contribute.",href:"/trailheads#designid"},
-  {title:"Spiritual Gifts",copy:"Discover gifts to explore through service and community.",href:"/trailheads#spiritual-gifts"},
-  {title:"Fruitful Life 360",copy:"Reflect on growth and invite meaningful feedback.",href:"/trailheads#fruitlife-360"},
-  {title:"DesignPD",copy:"Build on your DesignID insight and put it into action.",href:"/trailheads#designpd"}]},
- passport:{title:"Passport Book",lead:"A place to look back on the milestones and discoveries that mark your journey."},
- kit:{title:"Field Kit",lead:"Keep the tools you need close at hand as you explore.",links:[
-  {title:"Open your Field Kit",copy:"Your saved reflections, reports and assessment results.",href:"/field-kit"},
-  {title:"Journey workbook",copy:"Return to your authored course reflections.",href:"/field-kit/reflections/discover-your-divine-design"},
-  {title:"Gear",copy:"Resources for the trail.",href:"/gear"},
-  {title:"Your design",copy:"Bring your discoveries together in the Command Center.",href:"/command-center"}]},
- fireside:{title:"Fireside",lead:"A place for encouragement, conversation, and walking alongside others.",links:[
-  {title:"Fireside",copy:"Gather around the campfire.",href:"/fireside"},
-  {title:"Waypoints",copy:"Pause for a short encouragement.",href:"/waypoints"},
-  {title:"Live",copy:"Gather for an upcoming experience.",href:"/live"},
-  {title:"Camp Circles",copy:"Explore community with others.",href:"/camp-circle"},
-  {title:"My Circles",copy:"Return to the circles you belong to.",href:"/camp-circle/my-circles"}]},
- profile:{title:"Traveler profile",lead:"Your story, account details and purchased access stay connected here."}
-};
 export function ForestIcon({ name }: { name: string }) {
   const paths: Record<string, React.ReactNode> = {
     passport: <><path d="M5 3h14v18H5V3ZM8 3v18M11 8h5M11 12h5M11 16h3"/></>,
@@ -66,8 +36,7 @@ export function ForestNavigation({children}:{children:ReactNode}) {
   const dialog = useRef<HTMLDialogElement>(null);
   const previousFocus = useRef<HTMLElement|null>(null);
   const panelScroll = useRef<HTMLDivElement>(null);
-  const closeButton = useRef<HTMLButtonElement>(null);
-  const current = place ? guide[place] : null;
+
   function close() { dialog.current?.close();setPlace(null);previousFocus.current?.focus(); }
   function open(key:Place) {
     if (!dialog.current?.open) previousFocus.current=document.activeElement as HTMLElement;
@@ -78,7 +47,7 @@ export function ForestNavigation({children}:{children:ReactNode}) {
   useEffect(()=>{ dialog.current?.close();setPlace(null); },[pathname]);
   useEffect(()=>{
     if(!place)return;
-    closeButton.current?.focus();
+    dialog.current?.querySelector<HTMLButtonElement>(".destination-return")?.focus();
     const before=document.body.style.overflow;document.body.style.overflow="hidden";
     return ()=>{document.body.style.overflow=before;};
   },[place]);
@@ -86,7 +55,6 @@ export function ForestNavigation({children}:{children:ReactNode}) {
     function hash(){if(location.hash==="#passport")open("passport");else if(location.hash==="#your-profile"||location.hash==="#purchases")open("profile");}
     hash();window.addEventListener("hashchange",hash);return ()=>window.removeEventListener("hashchange",hash);
   },[pathname]);
-  const profileAccount=place==="profile"||place==="passport";
   return <div className={`game-world ${atCamp?"game-at-camp":"game-on-trail"}`}>
     <a className="forest-skip" href="#forest-content">Skip to content</a>
     <header className="game-top">
@@ -97,24 +65,17 @@ export function ForestNavigation({children}:{children:ReactNode}) {
     {atCamp ? <main id="forest-content" className="game-scene" tabIndex={-1}>
       <div className="game-intro"><h1>Welcome to<br/>Base Camp.</h1><p>A place to find your bearings, reflect on your story, and take the next step on your journey.</p>
       <button className="game-next" onClick={()=>open("ranger")}><ForestIcon name="compass"/><span>Visit the Ranger Station</span><span aria-hidden="true">→</span></button></div>
-    </main> : <div className="game-route" id="forest-content" tabIndex={-1}>
+    </main> : <EnvironmentRoute pathname={pathname}><div className="game-route" id="forest-content" tabIndex={-1}>
       <ReviewAwareLink className="game-return" href="/base-camp">← Return to Base Camp</ReviewAwareLink>
       <div className="game-reading">{children}</div>
       <footer className="game-support"><ReviewAwareLink href="/contact">Contact</ReviewAwareLink><ReviewAwareLink href="/privacy">Privacy</ReviewAwareLink><ReviewAwareLink href="/terms">Terms</ReviewAwareLink></footer>
-    </div>}
+    </div></EnvironmentRoute>}
     <footer className="game-bottom"><div className="game-caption">Your journey begins here<span>Choose a destination from your field guide.</span></div>
       <nav className="forest-dock game-dock" aria-label="Camp navigation">{places.map(item=><button className={item.key==="map"?"forest-menu":undefined} key={item.key} aria-haspopup="dialog" aria-expanded={place===item.key} aria-current={place===item.key?"true":undefined} onClick={()=>open(item.key)}><ForestIcon name={item.icon}/><span>{item.label}</span></button>)}</nav>
     </footer>
-    <dialog ref={dialog} className="game-overlay forest-map" aria-modal="true" aria-labelledby="game-panel-title" onCancel={e=>{if(e.target===e.currentTarget)setPlace(null);}} onClose={e=>{if(e.target===e.currentTarget)setPlace(null);}} onClick={e=>{if(e.target===e.currentTarget)close();}}>
-      <div ref={panelScroll} className="game-panel" data-place={place}>
-        <div className="game-panel-top"><ReviewAwareLink href="/base-camp" onClick={close}>DYDD · Field guide</ReviewAwareLink><button ref={closeButton} className="game-close forest-close" onClick={close} aria-label="Close panel">×</button></div>
-        {current&&<><h2 id="game-panel-title">{current.title}</h2><p className="game-lead">{current.lead}</p>
-          {current.links&&<div className={`game-tiles ${place==="trails"?"game-trails":""}`}>{current.links.map((item,i)=>item.panel?<button key={item.title} className="game-tile" onClick={()=>open(item.panel!)}><ForestIcon name={places.find(p=>p.key===item.panel)?.icon||"compass"}/><strong>{item.title}</strong><span>{item.copy}</span></button>:<ReviewAwareLink key={item.title} className="game-tile" href={item.href!} onClick={close}>{place==="trails"?<span className="game-trail-number">0{i+1}</span>:<ForestIcon name="journey"/>}<strong>{item.title}</strong><span>{item.copy}</span><b aria-hidden="true">→</b></ReviewAwareLink>)}</div>}
-          {profileAccount && !atCamp && <ReviewAwareLink className="game-tile" href={place==="passport"?"/base-camp#passport":"/base-camp#your-profile"} onClick={close}><strong>{place==="passport"?"Open your Passport Book":"Open account & profile"}</strong><span>Return to your connected Base Camp record.</span><b aria-hidden="true">→</b></ReviewAwareLink>}
-        </>}
-        {atCamp&&<div className="game-account-content" hidden={!profileAccount} data-account-view={place}>{children}</div>}
-        <button className="game-back" onClick={close}>← {atCamp?"Return to Base Camp":"Return to the trail"}</button>
-        <div className="game-panel-support"><ReviewAwareLink href="/login" onClick={close}>Sign in</ReviewAwareLink><ReviewAwareLink href="/contact" onClick={close}>Contact</ReviewAwareLink><ReviewAwareLink href="/privacy" onClick={close}>Privacy</ReviewAwareLink><ReviewAwareLink href="/terms" onClick={close}>Terms</ReviewAwareLink></div>
+    <dialog ref={dialog} className="game-overlay" aria-modal="true" aria-labelledby="game-panel-title" onCancel={e=>{if(e.target===e.currentTarget)setPlace(null);}} onClose={e=>{if(e.target===e.currentTarget)setPlace(null);}} onClick={e=>{if(e.target===e.currentTarget)close();}}>
+      <div ref={panelScroll} className="game-panel destination-room" data-place={place}>
+        {place&&<DestinationRoom key={place} place={place} onClose={close} onPlace={open} atCamp={atCamp}>{children}</DestinationRoom>}
       </div>
     </dialog>
   </div>;

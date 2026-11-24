@@ -1,0 +1,223 @@
+/* Each destination is a place first, then the original, fully functional route.
+   All presentation is scoped; Base Camp and account overlays are untouched. */
+.environment-route {
+  --environment-ground: #111d17;
+  --environment-surface: #1a2920;
+  --environment-paper: #eee7d7;
+  --environment-copy: #d0d3c5;
+  --environment-accent: #dfc697;
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-width: 0;
+  background: var(--environment-ground);
+  color: var(--environment-paper);
+}
+.environment-route--ranger { --environment-ground: #211f19; --environment-surface: #2b2a20; }
+.environment-route--trails { --environment-ground: #13221b; --environment-surface: #203027; }
+.environment-route--archive { --environment-ground: #22211b; --environment-surface: #2d2c22; }
+.environment-route--fireside { --environment-ground: #141f26; --environment-surface: #1c2b31; --environment-copy: #cdd5d6; }
+.environment-route--journey { --environment-ground: #1d211b; --environment-surface: #292e24; }
+.environment-route .environment-scene {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(32px, 8vw, 150px);
+  min-height: calc(100dvh - 80px);
+  padding: clamp(48px, 9vh, 110px) max(6vw, calc((100vw - 1380px) / 2)) clamp(90px, 13vh, 150px);
+  overflow: hidden;
+}
+.environment-route .environment-scene-art {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  background-color: var(--environment-ground);
+  background-image: url('/brand/environments/ranger.webp');
+  background-position: center;
+  background-size: cover;
+}
+.environment-route--trails .environment-scene-art { background-image: url('/brand/environments/trails.webp'); background-position: 60% center; }
+.environment-route--archive .environment-scene-art { background-image: url('/brand/environments/archive.webp'); background-position: center; }
+.environment-route--fireside .environment-scene-art { background-image: url('/brand/environments/fireside.webp'); background-position: 58% center; }
+.environment-route--journey .environment-scene-art { background-position: 70% center; }
+.environment-route .environment-scene::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, #101810d9, #10181088 37%, #10181012 74%), linear-gradient(0deg, var(--environment-ground), transparent 36%, #10181020 85%);
+}
+.environment-route--ranger .environment-scene::before { background: linear-gradient(90deg, #1b1b15df, #1b1b1570 43%, transparent 80%), linear-gradient(0deg, var(--environment-ground), transparent 42%); }
+.environment-route--archive .environment-scene { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+.environment-route--archive .environment-scene-copy { grid-column: 2; }
+.environment-route--archive .environment-scene::before { background: linear-gradient(270deg, #1b1c15e8, #1b1c1570 47%, transparent 80%), linear-gradient(0deg, var(--environment-ground), transparent 46%); }
+.environment-route--archive .environment-objects { grid-column: 1; grid-row: 1; }
+.environment-route--fireside .environment-scene::before { background: linear-gradient(90deg, #101c27d9, #101c2770 43%, transparent 80%), linear-gradient(0deg, var(--environment-ground), transparent 48%); }
+.environment-route--journey .environment-scene { align-items: center; }
+.environment-route--journey .environment-scene::before { background: linear-gradient(90deg, #171e17e8, #171e178c 46%, #171e1720), linear-gradient(0deg, var(--environment-ground), transparent 40%); }
+.environment-route .environment-scene-copy { max-width: 510px; min-width: 0; }
+.environment-route .environment-scene-copy h1 {
+  margin: 0 0 24px;
+  color: #f5efdf;
+  font: 500 clamp(3.5rem, 6.2vw, 6.3rem)/.98 'Cormorant Garamond', Georgia, serif;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+.environment-route .environment-scene-copy p {
+  max-width: 37ch;
+  margin: 0;
+  color: #e3e4d7;
+  font-size: clamp(.98rem, 1.25vw, 1.13rem);
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+.environment-route .environment-enter {
+  display: inline-flex;
+  align-items: center;
+  gap: 25px;
+  margin-top: 28px;
+  min-height: 48px;
+  padding: 8px 0;
+  color: #f0d9ac;
+  font-size: .92rem;
+  font-weight: 500;
+  text-decoration: none;
+  text-underline-offset: 7px;
+}
+.environment-route .environment-enter > span { font-size: 1.4rem; transition: transform .25s ease; }
+.environment-route .environment-enter:hover { text-decoration: underline; }
+.environment-route .environment-enter:hover > span { transform: translateY(4px); }
+.environment-route .environment-objects { display: grid; justify-items: start; align-content: end; gap: 30px; padding-bottom: 12px; }
+.environment-route--ranger .environment-objects { gap: 42px; padding-left: 9%; }
+.environment-route .environment-object {
+  display: block;
+  max-width: 320px;
+  padding: 14px 16px;
+  margin-left: -16px;
+  min-height: 58px;
+  color: #f5e8c9;
+  text-decoration: none;
+  background: #1520187a;
+  backdrop-filter: blur(6px);
+  border-radius: 2px;
+  transition: background .25s ease, transform .25s ease;
+}
+.environment-route--archive .environment-object { background: #23241d9c; }
+.environment-route--fireside .environment-object { background: #15232c8c; }
+.environment-route .environment-object:hover { background: #1e2a20d9; transform: translateY(-3px); }
+.environment-route .environment-object-title { display: flex; align-items: baseline; gap: 28px; font: 500 1.65rem/1.2 'Cormorant Garamond', Georgia, serif; }
+.environment-route .environment-object-title > span { font: 400 1rem/1 'DM Sans', sans-serif; }
+.environment-route .environment-object-description { display: block; margin-top: 8px; color: #d6dbc9; font-size: .75rem; line-height: 1.6; }
+.environment-route .environment-destination { position: relative; padding: 8px 0 140px; scroll-margin-top: 30px; outline: none; }
+.environment-route .environment-passage { width: min(1220px, 88%); margin: 0 auto; padding: 48px 0 50px; display: grid; grid-template-columns: 1.1fr 1fr; align-items: start; gap: 7%; }
+.environment-route .environment-passage h2 { max-width: 21ch; margin: 0; color: var(--environment-paper); font-size: clamp(2rem, 3.4vw, 3rem); font-weight: 400; line-height: 1.15; }
+.environment-route .environment-passage p { max-width: 44ch; margin: 5px 0 0; color: var(--environment-copy); font-size: .95rem; line-height: 1.85; }
+/* Remove the enclosing dashboard box, not its content. This supports wrapping
+   the existing game-route, or its children when the parent supplies that shell. */
+.environment-route .game-route { width: min(1220px, 88%); max-width: none; padding: 0; margin: 0 auto; min-height: 0; }
+.environment-route .game-reading { background: none; border: 0; box-shadow: none; padding: 0; }
+.environment-route .environment-original-content > :is(main, .journey-shell, .course-shell) { width: min(1220px, 88%) !important; max-width: none !important; padding: 0 !important; margin: 0 auto !important; }
+.environment-route .game-return { margin-bottom: 30px; color: var(--environment-accent); }
+.environment-route .game-support { margin-top: 60px; }
+.environment-route :is(#ecosystem-map, #ranger-desk) { scroll-margin-top: 32px; }
+.environment-route :is(.ranger-station-page, .trailhead-renewal, .fieldkit-renewal, .fireside-page) > .standalone-hero { display: none !important; }
+.environment-route .ranger-orientation-strip { display: none !important; }
+.environment-route :is(h2, h3, h4) { text-wrap: pretty; }
+.environment-route .environment-original-content p { color: var(--environment-copy); }
+/* Ranger: open map table and working desk, not a stack of bordered panels. */
+.environment-route--ranger :is(.ranger-map-section, .ranger-path-finder, .visual-journey-map, .ranger-desk, .suggested-trail-route, .suggested-route) { background: transparent !important; border: 0 !important; box-shadow: none !important; padding-inline: 0 !important; }
+.environment-route--ranger .ranger-map-section { margin-bottom: 70px; }
+.environment-route--ranger :is(.ranger-desk-panel, .ranger-help-panel, .ranger-companion-panel) { background: var(--environment-surface) !important; border-radius: 2px !important; }
+.environment-route--ranger :is(.ranger-desk, .ranger-desk-section) { margin-block: 70px !important; }
+.environment-route--ranger .ranger-desk-card { background: var(--environment-surface) !important; border: 0 !important; border-radius: 2px !important; box-shadow: none !important; }
+.environment-route--ranger :is(.relief-map-workbench, .relief-map-panel, .relief-map-legend) { background: transparent !important; }
+.environment-route--ranger .ranger-faq-answer { background: #21271e !important; border-radius: 2px !important; }
+.environment-route--ranger .ranger-desk-art { border: 0 !important; border-radius: 2px !important; }
+.environment-route--ranger .ranger-faq-questions button { background: #354032 !important; }
+.environment-route--ranger .ranger-faq-questions button[aria-pressed="true"] { background: #516047 !important; color: #fff1ce !important; }
+/* Trails: the main route has visual weight; focused paths read like a field guide. */
+.environment-route--trails .trail-main-route { background: transparent !important; padding: 0 !important; border: 0 !important; }
+.environment-route--trails .trail-showcase { background: var(--environment-surface) !important; padding: clamp(26px, 4vw, 56px) !important; border-radius: 2px !important; }
+.environment-route--trails .trail-guide-route-list { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 7% !important; row-gap: 18px !important; }
+.environment-route--trails .trail-guide-route { background: transparent !important; padding: 32px 0 !important; border: 0 !important; border-bottom: 1px solid #c6c7a32e !important; border-radius: 0 !important; }
+.environment-route--trails .trail-guide-route h3 { font-size: 2rem; }
+/* Archive: clearly separated collections, with compact report and reflection work surfaces. */
+.environment-route--archive .fieldkit-collection { background: transparent !important; padding-block: 38px !important; border-bottom: 1px solid #d2c6a42d !important; border-radius: 0 !important; }
+.environment-route--archive .fieldkit-collection-columns > section { background: var(--environment-surface) !important; padding: clamp(20px, 3vw, 32px) !important; border-radius: 2px !important; }
+.environment-route--archive :is(.fieldkit-report-row, .fieldkit-collection-footer) { background: transparent !important; box-shadow: none !important; }
+.environment-route--archive :is(.reflection-workbook, .reflection-workspace) { background: transparent !important; padding-inline: 0 !important; }
+/* Fireside: a long-form introduction and open, varied gathering spaces. */
+.environment-route--fireside .fireside-author-strip { background: transparent !important; padding-inline: 0 !important; margin-bottom: 64px !important; }
+.environment-route--fireside .fireside-overview-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 70px); }
+.environment-route--fireside .fireside-overview-card { background: transparent !important; border-radius: 0 !important; padding: 0 0 32px !important; }
+.environment-route--fireside .fireside-overview-card:nth-child(even) { margin-top: 90px; }
+.environment-route--fireside .fireside-preview-image { overflow: hidden; border-radius: 2px !important; }
+/* Course interiors: a quiet reading desk. Only authored decorative art is
+   suppressed; no blanket img/audio rule can hide companion portraits or players. */
+.environment-route--journey :is(.journey-active-lesson, .journey-active-lesson:is(.orientation,.normal,.designid,.pathfinder,.assessment,.completion), .assessment-teaching-card, .journey-teaching-card, .journey-active-workbook) { background: var(--environment-surface) !important; border-radius: 2px !important; box-shadow: none !important; }
+.environment-route--journey .journey-active-body > section { background: transparent !important; }
+.environment-route--journey :is(.journey-lesson-images, .assessment-lesson-image, .designid-lesson-artwork, .designid-authored-artwork, .designid-welcome-artwork, .journey-inline-book, .lesson-body-image) { display: none !important; }
+.environment-route--journey :is(.assessment-lesson-content.with-image, .designid-lesson-content.with-image, .journey-wrap-pilot, .designid-authored-body, .designid-welcome-body) { display: block !important; grid-template-columns: minmax(0, 1fr) !important; }
+.environment-route--journey :is(.readable-lesson-body, .lesson-source, .designid-semantic-body) { max-width: 70ch; }
+.environment-route--journey .readable-lesson-body :is(p, li) { font-size: 1.04rem; line-height: 1.9; }
+.environment-route--journey .companion-audio-portraits img { display: block !important; }
+.environment-route :is(a, button, summary):focus-visible { outline: 2px solid var(--environment-accent); outline-offset: 6px; }
+.environment-route .environment-object:active { transform: translateY(0); }
+@media (min-width: 1600px) {
+  .environment-route .environment-scene { min-height: min(1000px, calc(100dvh - 80px)); }
+}
+@media (max-width: 850px) {
+  .environment-route .environment-scene { grid-template-columns: minmax(0, 1fr); align-content: end; gap: 38px; min-height: calc(100dvh - 76px); padding: 100px 7% 80px; }
+  .environment-route .environment-scene-copy { max-width: 480px; }
+  .environment-route .environment-scene-copy h1 { font-size: clamp(3.2rem, 10vw, 4.8rem); }
+  .environment-route .environment-scene-copy p { max-width: 36ch; }
+  .environment-route .environment-objects { grid-column: 1; grid-row: auto; padding: 0; gap: 12px; }
+  .environment-route--ranger .environment-objects { grid-template-columns: 1fr 1fr; padding-left: 0; gap: 18px; }
+  .environment-route--archive .environment-scene-copy { grid-column: 1; }
+  .environment-route--archive .environment-objects { grid-column: 1; grid-row: auto; }
+  .environment-route .environment-scene::before { background: linear-gradient(0deg, var(--environment-ground), #111b15b8 38%, #111b151c 100%); }
+  .environment-route--fireside .environment-scene::before { background: linear-gradient(0deg, var(--environment-ground), #14232ccb 42%, #14232c20); }
+  .environment-route .environment-object { margin-left: -10px; padding: 12px 10px; }
+  .environment-route .environment-object-title { font-size: 1.45rem; gap: 14px; }
+  .environment-route .environment-passage { grid-template-columns: minmax(0, 1fr); gap: 20px; padding: 35px 0 40px; }
+  .environment-route--trails .trail-guide-route-list { grid-template-columns: minmax(0, 1fr); }
+  .environment-route--fireside .fireside-overview-grid { grid-template-columns: minmax(0, 1fr); }
+  .environment-route--fireside .fireside-overview-card:nth-child(even) { margin-top: 0; }
+}
+@media (max-width: 480px) {
+  .environment-route .environment-scene { padding-top: 100px; padding-bottom: 55px; }
+  .environment-route .environment-scene-art { background-position: 62% center; }
+  .environment-route .environment-scene-copy h1 { font-size: 3.45rem; }
+  .environment-route .environment-object-description { font-size: .7rem; }
+  .environment-route .environment-destination { padding-bottom: 115px; }
+  .environment-route .environment-passage, .environment-route .game-route, .environment-route .environment-original-content > :is(main, .journey-shell, .course-shell) { width: 88%; }
+  .environment-route--ranger .environment-object-title { font-size: 1.25rem; }
+  .environment-route--journey .readable-lesson-body :is(p, li) { font-size: 1rem; line-height: 1.85; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .environment-route .environment-object, .environment-route .environment-enter > span { transition: none; }
+}
+/* Direct routes keep the same spatial object language as the rooms. */
+@media(min-width:851px){
+ .environment-route .environment-objects{position:absolute;inset:0;display:block;pointer-events:none;padding:0}
+ .environment-route .environment-object{position:absolute;transform:translate(-18px,-50%);min-height:44px;width:36px;padding:0;display:flex;align-items:center;background:none!important;pointer-events:auto;box-shadow:none}
+ .environment-route .environment-marker{display:grid;place-items:center;width:36px;height:36px;border:1px solid #e6d6abb3;background:#14251caa;border-radius:50%;font:300 23px/1 'DM Sans',sans-serif;color:#f2e0b7}
+ .environment-route .environment-object-label{position:absolute;left:48px;width:max-content;max-width:260px;background:#18271fd9;padding:12px 16px;backdrop-filter:blur(8px)}
+ .environment-route .environment-object-right .environment-object-label{left:auto;right:48px}
+ .environment-route .environment-object-title{font-size:23px;line-height:1.15}
+ .environment-route .environment-object-description{font-size:10px;margin-top:6px}
+ .environment-route .environment-object:hover{transform:translate(-18px,calc(-50% - 3px))}
+ .environment-route--trails .environment-scene-copy{max-width:340px}.environment-route--trails .environment-scene-copy h1{font-size:66px}
+ .environment-route--archive .environment-scene-copy{align-self:start;max-width:420px}
+ .environment-route--archive .environment-scene::before{background:linear-gradient(270deg,#18251b99,transparent 65%),linear-gradient(0deg,var(--environment-ground),transparent 40%)}
+}
+@media(max-width:850px){
+ .environment-route .environment-object{left:auto!important;top:auto!important;display:flex;gap:14px;align-items:center;margin:0;padding:10px 0;background:none!important}
+ .environment-route .environment-marker{display:grid;place-items:center;flex-shrink:0;width:30px;height:30px;border:1px solid #bcb28d80;border-radius:50%;font-size:20px;color:#e3d0a3}
+ .environment-route .environment-objects{gap:0!important;grid-template-columns:1fr!important}
+ .environment-route .environment-object-title{font-size:22px}
+ .environment-route .environment-object-description{font-size:10px}
+}

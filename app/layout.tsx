@@ -4,6 +4,8 @@ import "./globals.css";
 import "./field-guide.css";
 import "./forest.css";
 import "./game.css";
+import "./environments.css";
+import "./destination-rooms.css";
 
 export const metadata: Metadata = {
   title: "DYDD — Sandbox 2",

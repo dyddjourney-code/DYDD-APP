@@ -36,7 +36,7 @@ try{
    if(key==='passport'){
     await page.waitForSelector('.passport-book-toggle');await page.click('.passport-book-toggle');await page.waitForSelector('.passport-book-content:not([hidden])');
     await page.click('.passport-badge-button');await page.waitForSelector('.passport-detail-sheet[open]');await page.keyboard.press('Escape');assert(await page.$('.game-overlay[open]'),'Nested badge close keeps room open');
-    assert(!await page.$('.passport-badge-button img[src*=\"dydd-trail-badges-preview\"]'),'Individual milestone emblems, not full contact sheet');await shot(width+'-passport-open');await overflow('passport');
+    assert(!await page.$('.passport-badge-button img[src*=\"dydd-trail-badges-preview\"]'),'Individual milestone emblems, not full contact sheet');assert.equal(await page.$eval('.destination-account .passport-book-cover',e=>getComputedStyle(e).backgroundColor),'rgba(0, 0, 0, 0)','No dark cover beneath paper-folio text');await shot(width+'-passport-open');await overflow('passport');
    }
    if(key==='trails')assert.equal(await page.$$eval('.scene-object[href]',es=>es.length),5);
    if(key==='kit')assert(await page.$('.scene-object[href*="reflections"]'),'Real workbook destination');

@@ -149,3 +149,13 @@
  .environment-route--journey .journey-course-index-heading h2{font-size:25px!important;max-width:none!important}
 }
 .environment-route--journey .journey-active-workbook :is(input,textarea)::placeholder{color:#738069!important;opacity:1}
+/* Paper surfaces must not inherit the old dark-field-guide fills or brass text. */
+.destination-room[data-place=passport] .destination-account .passport-book-cover,.destination-room[data-place=passport] .destination-account .passport-book-cover>div{background:transparent!important}
+.destination-room[data-place=passport] .passport-detail-sheet :is(dt,dd){color:#344330!important}
+.environment-route--journey .journey-active-lesson .lesson-source :is(cite,em,figcaption,dt,dd,caption,th,td){color:#344330!important}
+.environment-route--journey .journey-active-lesson .lesson-source .journey-authored-table th{background:#dce1ca!important}
+.environment-route--journey .journey-active-lesson .lesson-source .journey-authored-table td{background:#eee7d7!important}
+.environment-route--journey .journey-advanced-planning{background:#233328e8!important;border:0!important;border-radius:0!important}
+.environment-route--journey .journey-advanced-planning>summary{display:block!important;padding:18px 22px!important}
+.environment-route--journey .journey-advanced-planning>summary span{display:none!important}
+.environment-route--journey .journey-advanced-planning>summary strong{color:#e9dbbb!important;font-size:12px!important;font-weight:400!important}

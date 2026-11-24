@@ -1,0 +1,20 @@
+// Focused regression for observed final visual defects. Preview reads only; no saves.
+import fs from 'node:fs';import assert from 'node:assert/strict';import puppeteer from 'puppeteer-core';import chromium from '@sparticuz/chromium';
+const base='http://localhost:3148',out='/home/openclaw/.openclaw/workspace/outputs/dydd-sandbox2-2026-11-24/environment-polish-local';fs.mkdirSync(out,{recursive:true});
+const browser=await puppeteer.launch({executablePath:await chromium.executablePath(),args:chromium.args.filter(x=>x!=='--single-process'),headless:true});const errors=[],results=[];
+try{
+ const token=fs.readFileSync('.env.local','utf8').split('\n').find(x=>x.startsWith('DYDD_REVIEW_TOKEN='))?.split('=').slice(1).join('=').replace(/^['"]|['"]$/g,'');assert(token);await browser.setCookie({name:'dydd_sandbox_review',value:token,domain:'localhost',path:'/',httpOnly:true,sameSite:'Lax'});
+ const page=await browser.newPage();page.on('pageerror',e=>errors.push(e.message));
+ async function shot(name){await page.waitForFunction(()=>[...document.querySelectorAll('dialog[open],.destination-room')].every(e=>e.getAnimations().every(a=>a.playState==='finished')));await page.evaluate(async()=>{await document.fonts.ready;await Promise.all([...document.querySelectorAll('.destination-art')].map(i=>i.decode()));});await page.screenshot({path:out+'/'+name+'.png'});}
+ for(const width of [1440,768,390,320]){
+  await page.setViewport({width,height:width>700?1000:844});await page.goto(base+'/base-camp',{waitUntil:'domcontentloaded'});await page.waitForSelector('.game-intro');
+  await page.click('.game-dock button:nth-child(4)');await page.waitForSelector('.passport-book-toggle');await page.click('.passport-book-toggle');await page.waitForSelector('.passport-book-content:not([hidden])');
+  assert.equal(await page.$eval('.destination-account .passport-book-cover',e=>getComputedStyle(e).backgroundColor),'rgba(0, 0, 0, 0)');assert.equal(await page.$eval('.destination-account .passport-book-cover h3',e=>getComputedStyle(e).color),'rgb(52, 67, 48)');assert(!await page.$('.passport-badge-button img[src*="dydd-trail-badges-preview"]'));
+  await shot(width+'-passport-paper');await page.click('.passport-badge-button');await page.waitForSelector('.passport-detail-sheet[open]');assert.equal(await page.$eval('.passport-detail-sheet',e=>getComputedStyle(e).backgroundColor),'rgb(238, 230, 211)');assert.equal(await page.$eval('.passport-detail-sheet dd',e=>getComputedStyle(e).color),'rgb(52, 67, 48)');await shot(width+'-badge-paper');await page.keyboard.press('Escape');await page.keyboard.press('Escape');
+  await page.click('.game-dock button:nth-child(3)');await shot(width+'-trails-readable');await page.keyboard.press('Escape');
+  await page.goto(base+'/journey',{waitUntil:'domcontentloaded'});await page.waitForSelector('.journey-section-accordion ol button:not([disabled])');await page.waitForSelector('.lesson-source cite');
+  assert.equal(await page.$eval('.lesson-source cite',e=>getComputedStyle(e).color),'rgb(52, 67, 48)');assert.equal(await page.$eval('.journey-active-lesson',e=>getComputedStyle(e).backgroundColor),'rgba(0, 0, 0, 0)');if(width<=980)assert.equal(await page.$eval('.journey-course-walkthrough',e=>getComputedStyle(e).display),'block');
+  await page.$eval('.journey-active-lesson',e=>e.scrollIntoView({block:'start',behavior:'instant'}));await shot(width+'-course-reading');await page.$eval('.lesson-source cite',e=>e.scrollIntoView({block:'center',behavior:'instant'}));await shot(width+'-scripture-readable');assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));results.push({width,passportPaper:true,badgeDetailPaper:true,individualEmblems:true,citationReadable:true,transparentCourseFrame:true,tabletStacked:width<=980});
+ }
+ assert.deepEqual(errors,[]);fs.writeFileSync(out+'/qa.json',JSON.stringify({base,results,errors},null,2));console.log('PASS final paper-folio, nested badge details, actual emblems, Scripture citation, course frame and tablet type at four widths.');
+}finally{await browser.close();}

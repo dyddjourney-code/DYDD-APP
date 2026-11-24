@@ -84,3 +84,4 @@ Static route readiness: wait for the actual `.game-reading` chrome before auditi
 The new map/pacing controls render disabled and aria-busy until their own client handlers are ready. This prevents an early cold-load tap from looking actionable while hydration is still pending; the existing native audio disclosure and authored reading stay available. No access/data loading policy changed.
 
 Image readiness must only decode images intersecting the viewport. Offscreen `loading=lazy` archive thumbnails can retain positive layout rectangles without loading; awaiting every laid-out image can hang an otherwise complete Waypoints/supporting-route audit.
+The Base Camp audit waits for `.game-intro`; normal supporting pages wait for `.game-reading`. The homepage intentionally has no reading wrapper. Snapshot readiness also decodes the actual cabin/scenery background, not only DOM portraits.

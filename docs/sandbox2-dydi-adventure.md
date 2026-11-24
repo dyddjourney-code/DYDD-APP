@@ -8,7 +8,7 @@ Target is exclusively `dydd-online-school-sandbox-2.vercel.app`, project `prj_OI
 
 No arrival actions award badges, create progress, write accounts or call save APIs. Passport explanation opens the real connected Passport. Focused-trail/ready-to-begin choices change the presentation route, not lesson access.
 
-`JourneyCourseNavigator` keeps the existing article and save/flush/completion logic. The menu waits until the existing saved round has restored its authoritative position before enabling lesson selection, so a late resume response cannot overwrite a fresh click. Save/access/flush behavior itself remains unchanged. The outer curriculum wrapper is changed: sticky left desktop menu, mobile disclosure with the same original module/section/lesson tree. Its styles are locally scoped. Cabin backdrop/wider main Journey canvas uses `:has(.dydd-journey-class)` to leave other courses unchanged.
+`JourneyCourseNavigator` keeps the existing article and save/flush/completion logic. Only the outer curriculum wrapper is changed: sticky left desktop menu, mobile disclosure with the same original module/section/lesson tree. Its styles are locally scoped. Cabin backdrop/wider main Journey canvas uses `:has(.dydd-journey-class)` to leave other courses unchanged.
 
 ## Animation/media
 

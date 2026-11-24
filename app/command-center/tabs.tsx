@@ -5,6 +5,7 @@ import styles from './tabs.module.css';
 const views = [
   ['/command-center', 'Assessments & groups'],
   ['/command-center/accounts', 'Accounts'],
+  ['/command-center/maps', 'MAPS'],
   ['/command-center/fireside', 'Fireside'],
 ] as const;
 export default function CommandCenterTabs() {

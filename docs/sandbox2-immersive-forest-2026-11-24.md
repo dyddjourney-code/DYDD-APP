@@ -80,3 +80,7 @@ Hosted media readiness: use DOMContentLoaded plus the actual enabled course inde
 Extended light-surface closure: the normal-course harness also audits support/legal/login/community/workbook pages after fonts and visible artwork are decoded. Legacy light DesignPD/Circle offer fills were removed in favor of the same open divider hierarchy; support forms now inherit their dark reading surface, mobile Waypoints headings inherit the correct light-panel ink, and workbook navigation no longer carries pale pills with light text. No offer price, support submission behavior or other action changed.
 
 Static route readiness: wait for the actual `.game-reading` chrome before auditing supporting pages. Next's raw Suspense fallback is not the hydrated environmental page; auditing it early can falsely report legacy CTA colors that are already corrected in the environmental stylesheet. Course actions wait for enabled real lesson buttons, not only the server-rendered opener.
+
+The new map/pacing controls render disabled and aria-busy until their own client handlers are ready. This prevents an early cold-load tap from looking actionable while hydration is still pending; the existing native audio disclosure and authored reading stay available. No access/data loading policy changed.
+
+Image readiness must only decode images intersecting the viewport. Offscreen `loading=lazy` archive thumbnails can retain positive layout rectangles without loading; awaiting every laid-out image can hang an otherwise complete Waypoints/supporting-route audit.

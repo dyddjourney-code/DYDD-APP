@@ -8,10 +8,12 @@ export function CourseTrailNavigation({ children, current, position, total, comp
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
+  const [ready, setReady] = useState(false);
+  useEffect(() => { if (immersive) setReady(true); }, [immersive]);
   if (!immersive) return <>{children}</>;
   return <div className="course-wayfinder">
     <div className="course-location"><span>YOUR TRAIL · {position} / {total}</span><strong>{current.replace(/^Module\s+\d+:\s*/i, "")}</strong></div>
-    <button type="button" className="course-map-opener" aria-haspopup="dialog" onClick={() => dialog.current?.showModal()}>Trail map <span aria-hidden="true">↗</span></button>
+    <button type="button" className="course-map-opener" disabled={!ready} aria-busy={!ready} aria-haspopup="dialog" onClick={() => dialog.current?.showModal()}>Trail map <span aria-hidden="true">↗</span></button>
     <div className="course-route-progress" role="progressbar" aria-label="Lessons completed" aria-valuemin={0} aria-valuemax={total} aria-valuenow={completed}><span style={{ width: `${completed / total * 100}%` }} /></div>
     <dialog ref={dialog} className="course-map-dialog" aria-labelledby={titleId} onClick={event => { if (event.target === event.currentTarget) dialog.current?.close(); }}>
       <header className="course-map-header"><div><p>Your route</p><h2 id={titleId}>One step at a time.</h2><span>{completed} of {total} lessons completed</span></div><button type="button" aria-label="Close trail map" onClick={() => dialog.current?.close()}>×</button></header>
@@ -24,7 +26,8 @@ export function CourseTrailNavigation({ children, current, position, total, comp
 export function LessonPacing({ lessonKey, hasAudio = true }: { lessonKey: string; hasAudio?: boolean }) {
   const ref = useRef<HTMLElement>(null);
   const [hasReflection, setHasReflection] = useState(false);
-  useEffect(() => { setHasReflection(Boolean(ref.current?.closest('.journey-active-lesson')?.querySelector('.journey-active-workbook, .designid-lesson-reflections, .reflection-answer, .capacity-calendar'))); }, [lessonKey]);
+  const [ready, setReady] = useState(false);
+  useEffect(() => { setReady(true); setHasReflection(Boolean(ref.current?.closest('.journey-active-lesson')?.querySelector('.journey-active-workbook, .designid-lesson-reflections, .reflection-answer, .capacity-calendar'))); }, [lessonKey]);
   const move = (step: string) => {
     const lesson = ref.current?.closest('.journey-active-lesson');
     if (!lesson) return;
@@ -32,9 +35,9 @@ export function LessonPacing({ lessonKey, hasAudio = true }: { lessonKey: string
     if (step === 'listen') { const disclosure = target?.querySelector('details.companion-listen'); if (disclosure instanceof HTMLDetailsElement) disclosure.open = true; }
     if (target instanceof HTMLElement) { target.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' }); target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }); }
   };
-  return <nav key={lessonKey} ref={ref} className="lesson-pacing" aria-label="Move through this lesson">
-    <button type="button" onClick={() => move('read')}><span>01</span> Read</button>
-    {hasAudio && <button type="button" onClick={() => move('listen')}><span>02</span> Listen</button>}
-    <button type="button" onClick={() => move('reflect')}><span>{hasAudio ? '03' : '02'}</span> {hasReflection ? "Reflect & continue" : "Continue"}</button>
+  return <nav key={lessonKey} ref={ref} className="lesson-pacing" aria-busy={!ready} aria-label="Move through this lesson">
+    <button type="button" disabled={!ready} onClick={() => move('read')}><span>01</span> Read</button>
+    {hasAudio && <button type="button" disabled={!ready} onClick={() => move('listen')}><span>02</span> Listen</button>}
+    <button type="button" disabled={!ready} onClick={() => move('reflect')}><span>{hasAudio ? '03' : '02'}</span> {hasReflection ? "Reflect & continue" : "Continue"}</button>
   </nav>;
 }

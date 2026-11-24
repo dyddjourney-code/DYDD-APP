@@ -53,3 +53,24 @@ Local verification artifacts live outside Git at `outputs/dydd-sandbox2-2026-11-
 The environment harness additionally checks real map markers/selection, review context on map CTA, expanded-map Escape → work surface Escape → room Escape, dock focus restoration, high-resolution art decode, genuine account/passport controls, native course audio advancing, no non-companion lesson art, direct routes, four widths plus short landscape. Preserve first-pass failures separately; final screenshots must wait for all entrance animations and environment image decoding. Verify actual visuals independently instead of relying only on overflow checks.
 
 Changes remain presentation-only plus map-link review propagation; no database, scoring, auth policy, integration, package or authored-content change.
+
+## Reading-first walkthrough refinement — November 24 owner feedback
+
+The environmental art is unchanged. Room exploration now uses numbered physical stops, a current-stop action, next-stop handoffs from the map/desk and an explicit onward room. Desktop hotspot names reveal on intent rather than permanently obscuring the room; phones retain large, unboxed object links. All destinations remain available through a disclosure.
+
+The normal school courses use one continuous paper reading surface inside the cabin (`app/course-walkthrough.css`). `CourseTrailNavigation` keeps the actual existing gated module/section/lesson index inside a native modal, with Escape/focus restoration. It is not an alternate course list or access implementation. `LessonPacing` jumps to real Read / Listen / Reflect or Continue destinations, including the Applied Capacity activity and personalized DesignID snapshot. Native companion audio, original portraits and transcripts are available in a compact disclosure. Course report context and save instructions are available on demand; live save/error status stays visible. Repeated arrival panels and the duplicated static module racetrack no longer precede the lesson. The historical internal build/planning appendix remains in source but is no longer mounted, avoiding hundreds of duplicate hidden workbook fields and their effects on phones.
+
+The dedicated `lane=fruitlife` bypass keeps its original assessment navigator, audio layout and report context (`immersive={false}`). No source lesson, response key, audio asset, progress/save handler, entitlement or assessment logic changed. The normal 71-lesson Journey and four focused courses retain their original authored content and sequential completion behavior. Inline course illustrations stay hidden; actual companion portraits stay visible.
+
+Acceptance:
+- `node tests/sandbox2-walkthrough.mjs`: real normal-course walkthrough at 360/390/430/1440; map selection/Escape, audio advancement, companion decode, transcript, readability/contrast, overflow and final dock clearance.
+- `node tests/sandbox2-special-lessons.mjs`: specialized Read/Reflect targets, CARE header contrast and Fruitful Life normal course.
+- `SANDBOX2_EVIDENCE_ROOT=<output directory> node tests/sandbox2-environments.mjs`: all rooms, real relief map/desk, nested Escape, genuine profile cancel/Passport, direct routes, tablet and short landscapes.
+- Hosted runs use the same tests with `SANDBOX2_BASE=https://dydd-online-school-sandbox-2.vercel.app`.
+
+All revised browser harnesses intercept non-GET app API calls: existing preview position-bookkeeping calls are locally acknowledged, not sent. These are real read/navigation/audio/render checks, not live writing or completion-persistence certification. Initial exploration before interception advanced only the existing owner's sandbox preview position Storage JSON; no reflection answers, completion, relational database, payment or email operations were requested. Existing isolated source/save-boundary tests cover preservation separately.
+
+Evidence for this refinement: `outputs/dydd-sandbox2-walkthrough-2026-11-24/`. Old environmental baseline evidence remains in its original output directory.
+- `node tests/sandbox2-access.mjs` independently verifies four fresh browser contexts (absent and invalid preview for a focused course and standalone lesson); access checks never reuse the authenticated review context.
+
+Access limit: the original sandbox-only `testBillingEnabled()` configuration is disabled here because sensitive original TEST keys are not provisioned. Consequently Journey teaching retains its pre-existing public-read behavior; the source membership guard is unchanged. Focused-course assessment access and private reflection/progress APIs retain their existing guards. Do not describe the public Journey as newly login-gated or claim paid checkout validation.

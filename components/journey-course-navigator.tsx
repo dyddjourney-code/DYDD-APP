@@ -1,4 +1,5 @@
 "use client";
+import { CourseTrailNavigation, LessonPacing } from "@/components/course-trail-navigation";
 import { useCourseProgress, CourseCompletionControls, NicheDeclarationCompletion } from "@/components/course-progress";
 import { JourneyAppliedCapacity } from "@/components/journey-applied-capacity";
 import { appliedCapacitySlug, type AppliedCapacityScores } from "@/lib/journey/applied-capacity";
@@ -180,6 +181,7 @@ export function JourneyCourseNavigator({
       if (match) {
         setActiveSlug(match.unit.slug);
         setOpenModules([match.module.slug]);
+        setOpenSections([`${match.module.slug}-${match.section}`]);
       }
       if (!match && flatUnits[0])
         localStorage.setItem("dydd-journey-position", flatUnits[0].unit.slug);
@@ -187,8 +189,8 @@ export function JourneyCourseNavigator({
       /* Storage is optional; learning stays available. */
     }
   }, [flatUnits]);
-  const [openModules, setOpenModules] = useState<string[]>([]);
-  const [openSections, setOpenSections] = useState<string[]>([]);
+  const [openModules, setOpenModules] = useState<string[]>(modules[0] ? [modules[0].slug] : []);
+  const [openSections, setOpenSections] = useState<string[]>(flatUnits[0] ? [`${flatUnits[0].module.slug}-${flatUnits[0].section}`] : []);
   const activeLessonRef = useRef<HTMLElement | null>(null);
   const activeIndex = Math.max(
     0,
@@ -279,6 +281,7 @@ export function JourneyCourseNavigator({
       className={`journey-course-walkthrough dydd-journey-walkthrough${usesApprovedLessonFormat || isPathfinder ? " journey-who-whose-walkthrough" : ""}${active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? " journey-designid-lens-walkthrough" : ""}`}
       aria-label="Guided course walkthrough"
     >
+      <CourseTrailNavigation current={active.module.title} position={activeIndex + 1} total={flatUnits.length} completed={checklistSlugs.filter(slug => checklist.done(slug)).length}>
       <aside className="journey-course-index">
         <div className="journey-course-index-heading">
           <p className="section-label">Course hierarchy</p>
@@ -361,7 +364,7 @@ export function JourneyCourseNavigator({
                                       {!["identity-who-vs-whose-16", "identity-good-works-17", "identity-niche-18"].includes(unit.slug) ? <span className={typeClass[unit.type]}>
                                         {unit.typeLabel}
                                       </span> : null}
-                                      <strong>{unit.title}</strong><small className="lesson-checklist-status">{checklist.done(unit.slug) ? "✓ Completed" : checklist.canVisit(unit.slug) ? "○ Not completed" : "🔒 Complete earlier lessons"}</small>
+                                      <strong>{unit.title}</strong><small className="lesson-checklist-status">{checklist.done(unit.slug) ? "Completed" : checklist.canVisit(unit.slug) ? "Ready to explore" : "Complete earlier lessons"}</small>
                                     </button>
                                   </li>
                                 );
@@ -378,6 +381,7 @@ export function JourneyCourseNavigator({
           })}
         </div>
       </aside>
+      </CourseTrailNavigation>
 
       <article
         className={`journey-active-lesson ${typeClass[active.unit.type]}${usesApprovedLessonFormat || isIdentityPathfinder || isExpertisePathfinder ? " journey-who-whose-lesson" : ""}${isOneAnother || isNeighbor ? " journey-neighbor-lesson" : ""}${expertiseLesson || reviewLesson ? " journey-expertise-lesson" : ""}${reviewLesson ? " journey-review-lesson" : ""}${isAppliedCapacity ? " journey-applied-capacity-lesson" : ""}${isDesignReflectionsLove ? " journey-design-love-lesson" : ""}${active.unit.slug === "identity-identity-among-believers-20" ? " journey-identity-believers-lesson" : ""}`}
@@ -404,6 +408,8 @@ export function JourneyCourseNavigator({
           </div>
         </header>
 
+        <LessonPacing lessonKey={active.unit.slug} hasAudio={Boolean(active.unit.companionMoment)} />
+
         <div className="journey-active-body has-care">
           <section className="journey-teaching-card assessment-teaching-card">
             <p className="section-label">Lesson focus</p>
@@ -426,7 +432,7 @@ export function JourneyCourseNavigator({
             ) : null}
 
             {active.unit.companionMomentPosition !== "after-teaching" ? (
-              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction && !usesApprovedLessonFormat} />
+              <CompanionAudioCard collapsible key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction && !usesApprovedLessonFormat} />
             ) : null}
 
             {isAppliedCapacity ? <JourneyAppliedCapacity scores={capacityScores} /> : null}
@@ -455,7 +461,7 @@ export function JourneyCourseNavigator({
             </div> : null}
 
             {active.unit.companionMomentPosition === "after-teaching" ? (
-              <CompanionAudioCard key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction && !usesApprovedLessonFormat} />
+              <CompanionAudioCard collapsible key={active.unit.slug} moment={active.unit.companionMoment} showDuration={!isCareIntroduction && !usesApprovedLessonFormat} />
             ) : null}
             {active.unit.closingScripture ? (
               <blockquote className="journey-closing-scripture">

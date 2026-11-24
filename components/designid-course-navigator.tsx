@@ -1,4 +1,5 @@
 "use client";
+import { CourseTrailNavigation, LessonPacing } from "@/components/course-trail-navigation";
 import { useCourseProgress, CourseCompletionControls } from "@/components/course-progress";
 import { DesignIdAuthoredBody } from "@/components/designid-authored-body";
 import { DesignIdWelcomeBody } from "@/components/designid-welcome-body";
@@ -106,7 +107,7 @@ export function DesignIdCourseNavigator({
     setSavingReflection(true);
     try { await savedPosition.flush(); } finally { setSavingReflection(false); }
   };
-  const [openModules, setOpenModules] = useState<string[]>([]);
+  const [openModules, setOpenModules] = useState<string[]>(modules[0] ? [modules[0].slug] : []);
   const activeLessonRef = useRef<HTMLElement | null>(null);
   const activeIndex = Math.max(
     0,
@@ -156,6 +157,7 @@ export function DesignIdCourseNavigator({
       className={`journey-course-walkthrough designid-course-walkthrough ${active.lesson.slug === "welcome-to-designid" || active.lesson.authored ? "designid-welcome-walkthrough" : ""}`}
       aria-label="DesignID course walkthrough"
     >
+      <CourseTrailNavigation current={active.module.title} position={activeIndex + 1} total={flatLessons.length} completed={checklistSlugs.filter(slug => checklist.done(slug)).length}>
       <aside className="journey-course-index designid-course-index">
         <div className="journey-course-index-heading">
           <p className="section-label">Course menu</p>
@@ -218,7 +220,7 @@ export function DesignIdCourseNavigator({
                               <span className="designid">
                                 Lesson {lessonIndex + 1}
                               </span>
-                              <strong>{lesson.title}</strong><small className="lesson-checklist-status">{checklist.done(lesson.slug) ? "✓ Completed" : checklist.canVisit(lesson.slug) ? "○ Not completed" : "🔒 Complete earlier lessons"}</small>
+                              <strong>{lesson.title}</strong><small className="lesson-checklist-status">{checklist.done(lesson.slug) ? "Completed" : checklist.canVisit(lesson.slug) ? "Ready to explore" : "Complete earlier lessons"}</small>
                             </button>
                           </li>
                         );
@@ -231,6 +233,7 @@ export function DesignIdCourseNavigator({
           })}
         </div>
       </aside>
+      </CourseTrailNavigation>
 
       <article
         className={`journey-active-lesson designid designid-active-lesson ${active.lesson.slug === "welcome-to-designid" ? "designid-welcome-lesson" : ""}`}
@@ -259,6 +262,8 @@ export function DesignIdCourseNavigator({
 
         </section> : null}
 
+        <LessonPacing lessonKey={active.lesson.slug} hasAudio={Boolean(active.lesson.companionMoment)} />
+
         <div className="journey-active-body has-care">
           <section className="journey-teaching-card designid-teaching-card">
             <p className="section-label">Lesson focus</p>
@@ -268,7 +273,7 @@ export function DesignIdCourseNavigator({
               ))}
             </div>
 
-            <CompanionAudioCard moment={active.lesson.companionMoment} />
+            <CompanionAudioCard collapsible moment={active.lesson.companionMoment} />
 
             {active.lesson.slug === "welcome-to-designid" ? <DesignIdWelcomeBody bodyHtml={active.lesson.bodyHtml} image={active.lesson.images[0]} /> : active.lesson.authored ? <DesignIdAuthoredBody bodyHtml={active.lesson.bodyHtml} images={active.lesson.images} compactIntro={active.lesson.slug === "your-design-profile"} capacityIntro={active.lesson.slug === "reflection-capacity"} /> : <div className="assessment-lesson-content designid-lesson-content with-image">
               <section className="lesson-source readable-lesson-body designid-clean-lesson" aria-label="Lesson body">

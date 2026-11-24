@@ -1,4 +1,5 @@
 "use client";
+import { CourseTrailNavigation, LessonPacing } from "@/components/course-trail-navigation";
 import { useCourseProgress, CourseCompletionControls } from "@/components/course-progress";
 import {
   useReflectionPosition,
@@ -15,6 +16,7 @@ type AssessmentInsightRow = {
 };
 
 type AssessmentCourseNavigatorProps = {
+  immersive?: boolean;
   accent: string;
   assessmentLabel: string;
   connected: boolean;
@@ -96,6 +98,7 @@ function renderLessonBodyBlock(
 }
 
 export function AssessmentCourseNavigator({
+  immersive = true,
   accent,
   assessmentLabel,
   connected,
@@ -146,7 +149,7 @@ export function AssessmentCourseNavigator({
       /* Storage is optional; learning stays available. */
     }
   }, [flatLessons, courseSlug]);
-  const [openModules, setOpenModules] = useState<string[]>([]);
+  const [openModules, setOpenModules] = useState<string[]>(modules[0] ? [modules[0].slug] : []);
   const activeLessonRef = useRef<HTMLElement | null>(null);
   const activeIndex = Math.max(
     0,
@@ -193,6 +196,7 @@ export function AssessmentCourseNavigator({
       className={`journey-course-walkthrough assessment-course-walkthrough assessment-course-${accent}`}
       aria-label={`${assessmentLabel} course walkthrough`}
     >
+      <CourseTrailNavigation immersive={immersive} current={active.module.title} position={activeIndex + 1} total={flatLessons.length} completed={checklistSlugs.filter(slug => checklist.done(slug)).length}>
       <aside className="journey-course-index assessment-course-index">
         <div className="journey-course-index-heading">
           <p className="section-label">Course menu</p>
@@ -253,7 +257,7 @@ export function AssessmentCourseNavigator({
                               type="button"
                             >
                               <span>{`Lesson ${lessonIndex + 1}`}</span>
-                              <strong>{lesson.title}</strong><small className="lesson-checklist-status">{checklist.done(lesson.slug) ? "✓ Completed" : checklist.canVisit(lesson.slug) ? "○ Not completed" : "🔒 Complete earlier lessons"}</small>
+                              <strong>{lesson.title}</strong><small className="lesson-checklist-status">{checklist.done(lesson.slug) ? "Completed" : checklist.canVisit(lesson.slug) ? "Ready to explore" : "Complete earlier lessons"}</small>
                             </button>
                           </li>
                         );
@@ -266,6 +270,7 @@ export function AssessmentCourseNavigator({
           })}
         </div>
       </aside>
+      </CourseTrailNavigation>
 
       <article
         className={`journey-active-lesson assessment assessment-active-lesson assessment-active-${accent}`}
@@ -290,6 +295,8 @@ export function AssessmentCourseNavigator({
           </span>
         </section>
 
+        {immersive ? <LessonPacing lessonKey={active.lesson.slug} hasAudio={Boolean(active.lesson.companionMoment)} /> : null}
+
         <div className="journey-active-body has-care">
           <section className="journey-teaching-card assessment-teaching-card">
             <p className="section-label">Lesson focus</p>
@@ -299,7 +306,7 @@ export function AssessmentCourseNavigator({
               ))}
             </div>
 
-            <CompanionAudioCard moment={active.lesson.companionMoment} />
+            <CompanionAudioCard collapsible={immersive} moment={active.lesson.companionMoment} />
             {courseSlug === "designpd-alignment" &&
               (["unpacking-your-report", "planning", "deciding", "doing"].includes(active.module.slug)) ? (
               <section className="personal-walkthrough assessment-personal-walkthrough designpd-lesson-tendencies" aria-label="Your saved DesignPD tendencies">

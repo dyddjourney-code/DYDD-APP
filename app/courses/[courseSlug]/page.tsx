@@ -66,6 +66,7 @@ export default async function LearningCoursePage({
   }
   const course = getLearningCourse(courseSlug);
   const fruitLifeLane = reviewParams?.lane === "fruitlife";
+  const PersonalizationContainer = fruitLifeLane ? "section" : "details";
   const tracksOrigin = courseSlug === "designpd-alignment" || courseSlug === "fruitlife-360-formation" || courseSlug === "spiritual-gifts-service";
   const origin = (courseSlug === "fruitlife-360-formation" || courseSlug === "spiritual-gifts-service") ? "field-kit" : courseOrigin(reviewParams?.origin);
   const cardHref = withReviewQuery(tracksOrigin ? courseCardHref(courseSlug, origin) : fruitLifeLane ? "/trailheads?lane=fruitlife" : "/trailheads", reviewParams);
@@ -163,10 +164,11 @@ export default async function LearningCoursePage({
       )}
 
       {insights.rows.length ? (
-        <section
+        <PersonalizationContainer
           className={`mini-course-personalization mini-course-personalization-${course.accent}`}
           aria-label={`${course.title} personalization`}
         >
+          {!fruitLifeLane ? <summary>Your assessment connection</summary> : null}
           <div className="course-personalization-label-row">
             <p className="section-label">Personalization</p>
             {insights.note ? (
@@ -181,12 +183,13 @@ export default async function LearningCoursePage({
               </div>
             ))}
           </dl>
-        </section>
+        </PersonalizationContainer>
       ) : null}
 
       <div id={`${course.slug}-course-player`}>
         <ReflectionCourseShell courseSlug={course.slug} inlineEntry>
           <AssessmentCourseNavigator
+            immersive={!fruitLifeLane}
             accent={course.accent}
             assessmentLabel={course.title}
             connected={insights.connected}

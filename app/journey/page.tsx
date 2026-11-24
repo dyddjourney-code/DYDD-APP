@@ -104,6 +104,9 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
           <p className="journey-save-notice">{params.message}</p>
         ) : null}
 
+        {/* Retain the historical source appendix in Git, not in the learner DOM.
+            Mounting its duplicate workbook fields also mounts their effects on phones. */}
+        {false && <>
         <details className="journey-advanced-planning">
           <summary>
             <span>Course architecture</span>
@@ -545,6 +548,8 @@ export default async function JourneyPage({ searchParams }: JourneyPageProps) {
             })}
           </section>
         </details>
+        </>}
+
       </ReflectionCourseShell>
     </main>
   );

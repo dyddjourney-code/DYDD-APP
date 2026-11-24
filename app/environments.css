@@ -221,3 +221,23 @@
  .environment-route .environment-object-title{font-size:22px}
  .environment-route .environment-object-description{font-size:10px}
 }
+
+/* Open wayfinding on direct environmental routes. Preserve every scene image;
+   reveal object labels on intent rather than permanently covering the art. */
+.environment-route:not(.environment-route--journey) .environment-object-label{background:transparent!important;backdrop-filter:none!important;text-shadow:0 2px 12px #15211a,0 1px 5px #15211a}
+.environment-route:not(.environment-route--journey) .environment-marker{background:#18271e80;box-shadow:none;font-size:19px}
+.environment-route:not(.environment-route--journey) .environment-enter{border-bottom:1px solid #cbbb8f66;gap:32px}
+.environment-route:not(.environment-route--journey) :is(.ranger-desk-panel,.ranger-help-panel,.ranger-companion-panel,.ranger-desk-card,.trail-showcase,.fieldkit-collection-columns>section){background:transparent!important;box-shadow:none!important;border-radius:0!important}
+.environment-route--trails .trail-showcase{padding-inline:0!important}
+.environment-route--archive .fieldkit-collection-columns>section{padding-inline:0!important}
+@media(min-width:851px){
+ .environment-route:not(.environment-route--journey) .environment-object-label{opacity:0;transform:translateY(4px);transition:opacity .2s,transform .2s;pointer-events:none}
+ .environment-route:not(.environment-route--journey) .environment-object:hover .environment-object-label,.environment-route:not(.environment-route--journey) .environment-object:focus-visible .environment-object-label{opacity:1;transform:none}
+}
+@media(max-width:850px){
+ .environment-route:not(.environment-route--journey) .environment-object{max-width:none;width:100%;border-bottom:1px solid #d4c49c26;padding:14px 0}
+ .environment-route:not(.environment-route--journey) .environment-object-description{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){.environment-route:not(.environment-route--journey) .environment-object-label{transition:none}}
+/* A light Trailheads CTA needs ink, not the inherited light forest link color. */
+.environment-route--ranger .ranger-path-cta a{background:#d5c18f!important;color:#233b2b!important;border-color:#d5c18f!important}

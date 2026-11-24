@@ -3,15 +3,16 @@ import type { CompanionMoment } from "@/lib/courses/companion-moments";
 type CompanionAudioCardProps = {
   moment?: CompanionMoment;
   showDuration?: boolean;
+  collapsible?: boolean;
 };
 
-export function CompanionAudioCard({ moment, showDuration = true }: CompanionAudioCardProps) {
+export function CompanionAudioCard({ moment, showDuration = true, collapsible = false }: CompanionAudioCardProps) {
   if (!moment) {
     return null;
   }
 
-  return (
-    <aside className="companion-audio-card" aria-label={`${moment.title} companion audio`}>
+  const content = (
+    <>
       <div className="companion-audio-portraits" aria-hidden="true">
         {moment.speakers.map((speaker) => (
           <img
@@ -44,6 +45,7 @@ export function CompanionAudioCard({ moment, showDuration = true }: CompanionAud
           </div>
         </details>
       </div>
-    </aside>
+    </>
   );
+  return <aside className={`companion-audio-card${collapsible ? " companion-audio-inline" : ""}`} aria-label={`${moment.title} companion audio`}>{collapsible ? <details className="companion-listen"><summary><span>Listen with your companions</span><small>{moment.duration} · Audio & transcript</small></summary><div className="companion-listen-body">{content}</div></details> : content}</aside>;
 }

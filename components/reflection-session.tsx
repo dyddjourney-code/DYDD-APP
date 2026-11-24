@@ -695,10 +695,11 @@ export function ReflectionSession({
       </> : automatic || contextualEntry ? null : assessmentEntry ? (
         data.rounds.length ? <details className="reflection-workbook-settings"><summary>Previous reflections and fresh sets</summary>{controls}</details> : setup
       ) : controls}
-      {automatic ? <p className="reflection-lesson-save-state" role={saveError ? "alert" : "status"}>
+      {automatic && (saveError || savingLesson) ? <p className="reflection-lesson-save-state" role={saveError ? "alert" : "status"}>
         {saveError || (savingLesson ? "Saving your lesson reflections…" : "Take your time. Changed answers save together when you complete or leave this lesson—not while typing or moving between boxes. To close or reload the browser, save your lesson first.")}
         {saveError ? <> <button type="button" disabled={savingLesson} onClick={() => void flush()}>Retry saving lesson</button></> : null}
       </p> : null}
+      {automatic && !saveError && !savingLesson ? <details className="reflection-save-guidance"><summary>Reflections save when you continue</summary><p>Take your time. Changed answers save together when you complete or leave this lesson—not while typing or moving between boxes. To close or reload the browser, save your lesson first.</p></details> : null}
       {children}
       {contextualEntry && data.rounds.length > 0 ? <details className="reflection-workbook-settings">
         <summary>Reflection workbook · Previous reflections and fresh sets</summary>

@@ -74,3 +74,5 @@ Evidence for this refinement: `outputs/dydd-sandbox2-walkthrough-2026-11-24/`. O
 - `node tests/sandbox2-access.mjs` independently verifies four fresh browser contexts (absent and invalid preview for a focused course and standalone lesson); access checks never reuse the authenticated review context.
 
 Access limit: the original sandbox-only `testBillingEnabled()` configuration is disabled here because sensitive original TEST keys are not provisioned. Consequently Journey teaching retains its pre-existing public-read behavior; the source membership guard is unchanged. Focused-course assessment access and private reflection/progress APIs retain their existing guards. Do not describe the public Journey as newly login-gated or claim paid checkout validation.
+
+Hosted media readiness: use DOMContentLoaded plus the actual enabled course index, decoded artwork/portraits and native audio readiness/playback assertions. Native hosted MP3 range requests may remain active; `networkidle2` can time out on a fully rendered, usable course. Do not diagnose that idle wait alone as a product-render failure.

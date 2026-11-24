@@ -47,7 +47,7 @@ try{
   const edit=await page.$('.game-account-content #your-profile button');if(edit){await edit.click();await page.waitForSelector('.game-account-content #your-profile input');const cancel=await page.$('::-p-text(Cancel)');if(cancel)await cancel.click();}
   await shot(width+'-profile');await overflow('profile');await page.keyboard.press('Escape');
   // Navigate from a real trail object, not an example handler.
-  await page.click('.game-dock button:nth-child(3)');await page.click('.scene-object[href*="/journey"]');await page.waitForFunction(()=>location.pathname==='/journey');await page.goto(base+'/journey?lesson=welcome-and-orientation-welcome-to-discover-your-divine-design-2',{waitUntil:'networkidle2',timeout:60000});
+  await page.click('.game-dock button:nth-child(3)');await page.click('.scene-object[href*="/journey"]');await page.waitForFunction(()=>location.pathname==='/journey');await page.goto(base+'/journey?lesson=welcome-and-orientation-welcome-to-discover-your-divine-design-2',{waitUntil:'domcontentloaded',timeout:60000});
   await page.waitForSelector('.journey-section-accordion ol button:not([disabled])',{timeout:30000});
   assert((await page.$eval('.lesson-source',e=>e.textContent)).length>300);
   assert.deepEqual(await page.$$eval('.journey-active-lesson img',es=>es.filter(e=>e.getBoundingClientRect().height>0&&!e.closest('.companion-audio-portraits')).map(e=>e.src)),[],'No inline lesson artwork');
@@ -73,7 +73,7 @@ try{
  // Presentation never grants course access in a fresh browser context.
  for(const route of ['/courses/designid-foundations','/learn/designid-foundations/welcome-to-designid']){
   const anonContext=await browser.createBrowserContext(),anon=await anonContext.newPage();assert.equal((await anonContext.cookies()).length,0);if(proxy?.username)await anon.authenticate({username:decodeURIComponent(proxy.username),password:decodeURIComponent(proxy.password)});
-  await anon.goto(base+route+'?review=new&key=invalid',{waitUntil:'networkidle2',timeout:90000});assert.equal(await anon.evaluate(()=>location.pathname),'/login','Fresh context denies invalid review');assert(!await anon.$('.journey-active-lesson'));results.push({route,unauthorizedDenied:true});await anonContext.close();
+  await anon.goto(base+route+'?review=new&key=invalid',{waitUntil:'domcontentloaded',timeout:90000});assert.equal(await anon.evaluate(()=>location.pathname),'/login','Fresh context denies invalid review');assert(!await anon.$('.journey-active-lesson'));results.push({route,unauthorizedDenied:true});await anonContext.close();
  }
  assert.deepEqual(errors,[]);fs.writeFileSync(out+'/qa.json',JSON.stringify({base,state:'passed',results,errors},null,2));console.log('PASS',results.length,'room/route checks, real map, account/passport, actual Journey audio/text/companions preserved, no inline lesson art; four widths; no overflow or JS errors.');
 }finally{await browser.close();}

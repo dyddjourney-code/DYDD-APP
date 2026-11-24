@@ -56,20 +56,20 @@ const questions = [
   },
 ];
 
-export function RangerDesk() {
+export function RangerDesk({ unhosted = false }: { unhosted?: boolean }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const active = questions[activeIndex];
 
   return (
     <section className="ranger-desk-section ranger-desk-guided" id="ranger-desk" aria-label="Ranger desk">
       <article className="ranger-desk-card ranger-desk-faq">
-        <div className="ranger-desk-art" aria-label="Dydi at the ranger desk">
+        {!unhosted && <div className="ranger-desk-art" aria-label="Dydi at the ranger desk">
           <img src="/brand/dydi-ranger-hallway.webp" alt="Dydi standing in the Ranger Station hall" />
-        </div>
+        </div>}
         <div className="ranger-desk-copy">
           <div>
             <p className="section-label">Ranger desk</p>
-            <h2>Ask Dydi</h2>
+            <h2>{unhosted ? "Find your bearings" : "Ask Dydi"}</h2>
             <p>Choose a question to find your next step.</p>
           </div>
           <div className="ranger-faq-questions" aria-label="Common questions">
@@ -90,7 +90,7 @@ export function RangerDesk() {
               </button>
             ))}
           </div>
-          <div className="ranger-faq-answer" id="ranger-desk-answer" role="region" aria-label="Dydi's answer" aria-live="polite" aria-atomic="true">
+          <div className="ranger-faq-answer" id="ranger-desk-answer" role="region" aria-label={unhosted ? "Ranger guidance" : "Dydi's answer"} aria-live="polite" aria-atomic="true">
             <h3>{active.question}</h3>
             <p>{active.answer}</p>
             <Suspense fallback={<a href={active.href}>{active.action}<span aria-hidden="true"> &rarr;</span></a>}><Link href={active.href}>{active.action}<span aria-hidden="true"> &rarr;</span></Link></Suspense>

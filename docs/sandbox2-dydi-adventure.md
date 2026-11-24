@@ -1,3 +1,7 @@
+# Historical implementation — superseded arrival
+
+The current Sandbox2 arrival removes Dydi and makes new relief artwork interactive. See [sandbox2-relief-map.md](sandbox2-relief-map.md). The notes below describe the prior77090b6 benchmark, not the current arrival UI.
+
 # Sandbox2 Dydi arrival prototype
 
 Target is exclusively `dydd-online-school-sandbox-2.vercel.app`, project `prj_OIFpZrQcv3uqs14PEiBD1lVngXrH`, branch `sandbox2/immersive-forest-2026-11-24`. Use only `scripts/deploy-sandbox2.mjs`; never the original sandbox deploy script.

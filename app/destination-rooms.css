@@ -159,3 +159,8 @@
 .environment-route--journey .journey-advanced-planning>summary{display:block!important;padding:18px 22px!important}
 .environment-route--journey .journey-advanced-planning>summary span{display:none!important}
 .environment-route--journey .journey-advanced-planning>summary strong{color:#e9dbbb!important;font-size:12px!important;font-weight:400!important}
+/* The phone scrim follows the artwork height, not the much taller open book/list. */
+@media(max-width:850px){
+ .destination-interior{background:#17251d}
+ .destination-shade{height:72dvh;background:linear-gradient(#12211866,transparent 24%,#17251d99 50%,#17251de6 78%,#17251d 100%)}
+}

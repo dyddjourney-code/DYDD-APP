@@ -18,11 +18,12 @@ try{
  await page.setViewport({width,height:width>700?1000:844});
  for(const route of ['/base-camp','/trailheads','/field-kit','/journey','/ranger-station','/fireside','/gear','/waypoints','/camp-circle','/command-center','/courses/designid-foundations','/field-kit/reflections/discover-your-divine-design','/login']){
   await page.goto(base+route,{waitUntil:'domcontentloaded',timeout:60000});
-  await page.waitForSelector('.forest-dock');
-  if(route==='/trailheads')await page.waitForSelector('.trailhead-renewal .trail-placard',{timeout:30000});
+  await page.waitForSelector('.forest-dock',{visible:true});
+  if(route==='/trailheads')await page.waitForSelector('.trailhead-renewal .trail-placard',{timeout:30000,visible:true});
   await page.evaluate(()=>document.fonts.ready);
   await page.waitForFunction(()=>[...document.images].filter(e=>{const r=e.getBoundingClientRect();return r.height>0&&r.bottom>0&&r.top<innerHeight}).every(e=>e.complete),{timeout:8000}).catch(()=>{});
-  const evidence=await page.evaluate(()=>({path:location.pathname,title:document.querySelector('h1')?.textContent,overflow:document.documentElement.scrollWidth>innerWidth+1,eyebrows:[...document.querySelectorAll('.eyebrow,.section-label')].filter(e=>getComputedStyle(e).display!=='none').length,audio:document.querySelectorAll('audio').length,brokenVisibleImages:[...document.images].filter(e=>e.getBoundingClientRect().height>0&&e.getBoundingClientRect().top<innerHeight&&e.complete&&!e.naturalWidth).map(e=>e.getAttribute('src'))}));
+  const evidence=await page.evaluate(()=>({path:location.pathname,title:[...document.querySelectorAll('h1')].find(e=>e.getBoundingClientRect().height>0)?.textContent,overflow:document.documentElement.scrollWidth>innerWidth+1,eyebrows:[...document.querySelectorAll('.eyebrow,.section-label')].filter(e=>getComputedStyle(e).display!=='none').length,audio:document.querySelectorAll('audio').length,brokenVisibleImages:[...document.images].filter(e=>e.getBoundingClientRect().height>0&&e.getBoundingClientRect().top<innerHeight&&e.complete&&!e.naturalWidth).map(e=>e.getAttribute('src'))}));
+  if(route==='/trailheads')assert.equal(evidence.title,'Trailheads','Fully rendered visible Trailheads required');
   assert(!evidence.overflow,`${route} ${width}: overflow`);assert.equal(evidence.eyebrows,0);assert.deepEqual(evidence.brokenVisibleImages,[],`${route}: broken visible art`);
   await page.screenshot({path:`${out}/${width}-${route.slice(1).replaceAll('/','-')}.png`});console.log('PASS route',width,route);
   results.push({width,route,...evidence});
@@ -34,7 +35,7 @@ try{
  await page.click('.forest-menu');await page.click('.forest-map a[href*="field-kit"]');await page.waitForFunction(()=>location.pathname==='/field-kit');assert(!await page.$('dialog[open]'));
  for(const[slug,title]of [['welcome-and-orientation-welcome-to-discover-your-divine-design-2','Welcome to Discover Your Divine Design'],['welcome-and-orientation-course-outline-and-objectives-3','Course Outline & Objectives']]){
   await page.goto(base+'/journey?lesson='+slug,{waitUntil:'domcontentloaded',timeout:60000});
-  await page.waitForSelector('.journey-section-accordion ol button:not([disabled])',{timeout:30000});
+  await page.waitForSelector('.journey-section-accordion ol button:not([disabled])',{timeout:30000,visible:true});
   await page.waitForFunction(title=>document.querySelector('.journey-active-lesson h2')?.textContent===title,{timeout:30000},title);
   await page.evaluate(()=>document.fonts.ready);
   const images=await page.$$eval('.journey-active-lesson img',es=>es.filter(e=>e.getBoundingClientRect().height>0&&!e.closest('.companion-audio-portraits')).map(e=>e.src));assert.deepEqual(images,[],'No lesson illustration images');

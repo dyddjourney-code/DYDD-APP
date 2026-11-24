@@ -19,10 +19,10 @@ try{
  for(const route of ['/base-camp','/trailheads','/field-kit','/journey','/ranger-station','/fireside','/gear','/waypoints','/camp-circle','/command-center','/courses/designid-foundations','/field-kit/reflections/discover-your-divine-design','/login']){
   await page.goto(base+route,{waitUntil:'domcontentloaded',timeout:60000});
   await page.waitForSelector('.forest-dock');await page.evaluate(()=>document.fonts.ready);
-  await page.waitForFunction(()=>[...document.images].filter(e=>e.getBoundingClientRect().top<innerHeight).every(e=>e.complete),{timeout:20000}).catch(()=>{});
+  await page.waitForFunction(()=>[...document.images].filter(e=>{const r=e.getBoundingClientRect();return r.height>0&&r.bottom>0&&r.top<innerHeight}).every(e=>e.complete),{timeout:8000}).catch(()=>{});
   const evidence=await page.evaluate(()=>({path:location.pathname,title:document.querySelector('h1')?.textContent,overflow:document.documentElement.scrollWidth>innerWidth+1,eyebrows:[...document.querySelectorAll('.eyebrow,.section-label')].filter(e=>getComputedStyle(e).display!=='none').length,audio:document.querySelectorAll('audio').length,brokenVisibleImages:[...document.images].filter(e=>e.getBoundingClientRect().height>0&&e.getBoundingClientRect().top<innerHeight&&e.complete&&!e.naturalWidth).map(e=>e.getAttribute('src'))}));
   assert(!evidence.overflow,`${route} ${width}: overflow`);assert.equal(evidence.eyebrows,0);assert.deepEqual(evidence.brokenVisibleImages,[],`${route}: broken visible art`);
-  await page.screenshot({path:`${out}/${width}-${route.slice(1)}.png`});
+  await page.screenshot({path:`${out}/${width}-${route.slice(1).replaceAll('/','-')}.png`});console.log('PASS route',width,route);
   results.push({width,route,...evidence});
  }
  await page.click('.forest-menu');await page.waitForSelector('dialog[open]');
@@ -31,7 +31,7 @@ try{
  await page.screenshot({path:`${out}/${width}-camp-map.png`});await page.keyboard.press('Escape');assert(!await page.$('dialog[open]'));
  await page.click('.forest-menu');await page.click('.forest-map a[href*="field-kit"]');await page.waitForFunction(()=>location.pathname==='/field-kit');assert(!await page.$('dialog[open]'));
  for(const[slug,title]of [['welcome-and-orientation-welcome-to-discover-your-divine-design-2','Welcome to Discover Your Divine Design'],['welcome-and-orientation-course-outline-and-objectives-3','Course Outline & Objectives']]){
-  await page.goto(base+'/journey?lesson='+slug,{waitUntil:'domcontentloaded',timeout:60000});
+  await page.goto(base+'/journey?lesson='+slug,{waitUntil:'networkidle2',timeout:60000});
   await page.waitForFunction(title=>document.querySelector('.journey-active-lesson h2')?.textContent===title,{timeout:30000},title);
   await page.evaluate(()=>document.fonts.ready);
   const images=await page.$$eval('.journey-active-lesson img',es=>es.filter(e=>e.getBoundingClientRect().height>0&&!e.closest('.companion-audio-portraits')).map(e=>e.src));assert.deepEqual(images,[],'No lesson illustration images');
@@ -39,7 +39,7 @@ try{
   if(slug.endsWith('-2')){
    await page.waitForFunction(()=>document.querySelector('audio')?.readyState>=2,{timeout:30000});
    const audio=await page.$eval('audio',async e=>{await e.play();return {src:e.getAttribute('src'),duration:e.duration,readyState:e.readyState}});
-   await page.waitForFunction(()=>document.querySelector('audio').currentTime>.2,{timeout:10000});
+   await page.waitForFunction(()=>document.querySelector('audio')?.currentTime>.2,{timeout:15000,polling:100}).catch(async error=>{console.log('AUDIO_STATE',JSON.stringify(await page.$eval('audio',e=>({time:e.currentTime,paused:e.paused,ended:e.ended,ready:e.readyState,network:e.networkState,error:e.error?.message,visibility:document.visibilityState,src:e.getAttribute('src')}))));throw error});
    audio.playbackTime=await page.$eval('audio',e=>{e.pause();return e.currentTime});assert(audio.duration>5);assert(audio.playbackTime>.2);
    assert(await page.$('.companion-audio-portraits img'),'Companion portraits retained');
    await page.click('.companion-transcript summary');assert(await page.$('.companion-transcript[open]'));audioEvidence.push({width,...audio});

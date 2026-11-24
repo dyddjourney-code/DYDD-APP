@@ -1446,3 +1446,12 @@ body:has(.journey-active-lesson)::before {
   background:none!important;
   border:0!important;
 }
+/* The Field Kit workbook is a reading desk, with its original questions intact. */
+.reflection-notebook-hero{display:block!important;background:none!important;border:0!important;border-radius:0!important;color:var(--ink)!important;padding:0 0 32px!important}
+.reflection-notebook-hero>div{padding:0!important}.reflection-notebook-art{display:none!important}
+.reflection-notebook-hero h1{color:#ecd8a7!important;font-size:clamp(2.5rem,4vw,4rem)!important;font-weight:400!important}
+.reflection-notebook-hero .lede{max-width:700px!important;color:#c6d0bc!important}
+.reflection-answer,.reflection-source-panel,.reflection-module>summary,.reflection-module[open]>summary,.reflection-lesson>summary{background:#14281e!important;border:0!important;border-radius:3px!important;color:#d7dfcc!important}
+.reflection-module small,.reflection-answer label,.reflection-answer p{color:#c0cdb4!important}.reflection-module-number{background:none!important;border:0!important;border-radius:0!important;color:#d7c28d!important}
+.reflection-browse-controls,.reflection-workbook-settings,.reflection-discussion-reminders{background:transparent!important;border-color:var(--line)!important;color:var(--ink)!important}
+.login-choice{background:#102319!important;border:0!important;border-radius:3px!important}.login-choice a{background:transparent!important;border:0!important;border-radius:0!important;color:#bdcbb2!important}.login-choice a.active,.login-choice a[aria-selected=true]{background:#cfb77f20!important;color:#f0d69d!important}

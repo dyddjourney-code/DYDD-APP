@@ -15,7 +15,7 @@
 
 ## Visual architecture
 
-`app/forest.css` is a final shared stylesheet overriding the original presentation. `components/forest-navigation.tsx` replaces the sidebar with the camp navigation and a native accessible camp-map dialog linking to the actual existing routes. Base Camp uses the supplied jungle artwork as a full-bleed scene. Editorial gold/ivory serif headings, dark forest reading surfaces and restrained controls apply across the shell. Legacy eyebrows, signboard top/bottom trims and text-only chips are removed. Journey illustrations are not rendered; companion portraits, native audio, transcripts and workbook controls remain. Course source data and stable answer keys are not edited.
+`app/forest.css` is a final shared stylesheet overriding the original presentation. `components/forest-navigation.tsx` replaces the sidebar with the camp navigation and a native accessible camp-map dialog linking to the actual existing routes. Base Camp uses the supplied jungle artwork as a full-bleed scene. Editorial gold/ivory serif headings, dark forest reading surfaces and restrained controls apply across the shell. Legacy eyebrows, signboard top/bottom trims and text-only chips are removed. Journey illustrations are not rendered; companion portraits, native audio, transcripts and workbook controls remain. Course source data and stable answer keys are not edited. Both concept fonts (Cormorant Garamond and DM Sans) are self-hosted with their OFL licenses. The existing workbook-cover image is also self-hosted to avoid third-party loading failures.
 
 Root `/` opens the existing `/base-camp` entry. All real routes remain available, including the owner Command Center via Camp map. Environment identification stays in the main navigation, not an extra colored banner.
 
@@ -30,3 +30,10 @@ Root `/` opens the existing `/base-camp` entry. All real routes remain available
 7. Confirm deployment metadata SHA, stable alias and new project ID; independently compare production/original sandbox deployment IDs and alias mappings against the preflight receipt. No production/original sandbox deploy or project mutation is part of this workflow.
 
 Local verification artifacts live outside Git at `outputs/dydd-sandbox2-2026-11-24/`. They contain screenshots and sanitized deployment/QA receipts, not credentials.
+
+## Acceptance and review
+
+- Optimized Webpack build and TypeScript passed; existing authored-content, reflection save-boundary fixture suite and real-account/preview precedence checks passed.
+- Independent static review requested restoration of sign out, retention of the dedicated Fruitful Life lane bypass, an accessible camp-map dialog name, and preservation of focus words as plain prose. All were implemented; final independent review passed.
+- `tests/sandbox2-visual.mjs` exercises thirteen real routes at 1440, 768, 390 and 320 pixels, camp-map open/Escape/link navigation, the first two authored Journey units, actual native companion audio playback, transcripts, retained portraits, absence of other lesson images, and anonymous/invalid protected-course denial. Screenshots and JSON distinguish local and hosted results. Audio checks wait for course hydration/network idle, not the transient server-rendered first-unit placeholder.
+- No real payment, email, assessment submission, new account or production database operation is part of visual acceptance. Personal workbook persistence is covered by the isolated fixture regression rather than new live response writes.

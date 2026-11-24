@@ -152,6 +152,7 @@ export function JourneyCourseNavigator({
   capacityScores,
 }: JourneyCourseNavigatorProps) {
   const [curriculumOpen, setCurriculumOpen] = useState(false);
+  const [curriculumRoundReady, setCurriculumRoundReady] = useState<string | null>(null);
   const curriculumId = useId();
   const [curriculumReady, setCurriculumReady] = useState(false);
   const curriculumToggleRef = useRef<HTMLButtonElement>(null);
@@ -165,6 +166,7 @@ export function JourneyCourseNavigator({
   const savedPosition = useReflectionPosition();
   const checklistSlugs = useMemo(() => flatUnits.map(item => item.unit.slug), [flatUnits]);
   const checklist = useCourseProgress("discover-your-divine-design", checklistSlugs);
+  const curriculumDataReady = Boolean(checklist.state && (!checklist.state.signedIn || (savedPosition.roundId && curriculumRoundReady === savedPosition.roundId)));
   useEffect(() => {
     if (!savedPosition.roundId) return;
     const requested =
@@ -176,6 +178,7 @@ export function JourneyCourseNavigator({
       setActiveSlug(match.unit.slug);
       setOpenModules([match.module.slug]);
       setOpenSections([`${match.module.slug}-${match.section}`]);
+      setCurriculumRoundReady(savedPosition.roundId);
     }
   }, [savedPosition.roundId]);
   const [activeSlug, setActiveSlug] = useState(flatUnits[0]?.unit.slug ?? "");
@@ -290,7 +293,7 @@ export function JourneyCourseNavigator({
       className={`${styles.classroom} journey-course-walkthrough dydd-journey-walkthrough${usesApprovedLessonFormat || isPathfinder ? " journey-who-whose-walkthrough" : ""}${active.unit.slug === "identity-the-designid-lens-what-is-in-the-report-19" ? " journey-designid-lens-walkthrough" : ""}`}
       aria-label="Guided course walkthrough"
     >
-      <nav className={styles.curriculum} aria-label="Journey curriculum" aria-busy={!curriculumReady} onKeyDown={event => { if (event.key === "Escape" && curriculumOpen) { setCurriculumOpen(false); curriculumToggleRef.current?.focus(); } }}>
+      <nav className={styles.curriculum} aria-label="Journey curriculum" aria-busy={!curriculumReady || !curriculumDataReady} onKeyDown={event => { if (event.key === "Escape" && curriculumOpen) { setCurriculumOpen(false); curriculumToggleRef.current?.focus(); } }}>
         <button ref={curriculumToggleRef} className={styles.mobileToggle} disabled={!curriculumReady} type="button" aria-expanded={curriculumOpen} aria-controls={curriculumId} onClick={() => setCurriculumOpen(open => !open)}>
           <span><strong>Course curriculum</strong><small>Module {active.moduleIndex + 1} · Section {active.moduleIndex + 1}.{active.sectionIndex + 1} · Lesson {active.unitIndex + 1}</small></span>
           <span aria-hidden="true">{curriculumOpen ? "−" : "+"}</span>
@@ -311,7 +314,7 @@ export function JourneyCourseNavigator({
           <span style={{ width: `${progress}%` }} />
         </div>
         <p className="journey-course-progress-label">
-          Lesson {activeIndex + 1} of {flatUnits.length} · {checklist.state?.completed.length ?? 0} completed
+          {curriculumDataReady ? <>Lesson {activeIndex + 1} of {flatUnits.length} · {checklist.state?.completed.length ?? 0} completed</> : "Loading your saved place…"}
         </p>
 
         <div className="journey-module-accordion">
@@ -373,7 +376,7 @@ export function JourneyCourseNavigator({
                                           : ""
                                       }
                                       aria-current={unit.slug === active.unit.slug ? "step" : undefined}
-                                      disabled={!checklist.canVisit(unit.slug) || checklist.busy}
+                                      disabled={!checklist.canVisit(unit.slug) || checklist.busy || !curriculumDataReady}
                                       onClick={() =>
                                         flatUnit
                                           ? setLesson(flatUnit)

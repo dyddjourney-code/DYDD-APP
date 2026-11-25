@@ -125,3 +125,50 @@ to{opacity:1;transform:none}
  .hotspot[data-place=designpd] .label{transform:translateY(6px)}
  .hotspot[data-place=designid] .label{transform:translateY(1px)}
 }
+
+/* Approved historical route palette, muted at rest; independent water geometry. */
+.trailBed{stroke:#182b25;stroke-width:3.2;opacity:.18}
+.trailTrack{stroke:var(--route-color);stroke-width:1.05;opacity:.24}
+.trailLights{stroke:var(--route-hot);stroke-width:1.7;stroke-dasharray:.1 20;opacity:0;filter:none}
+.activeTrail .trailBed{stroke-width:4;opacity:.65}
+.activeTrail .trailTrack{stroke:var(--route-color);stroke-width:1.8;opacity:.95;animation:trailBreath 8s ease-in-out infinite}
+.activeTrail .trailLights{stroke:var(--route-hot);stroke-width:1.7;opacity:.95;filter:drop-shadow(0 0 1px var(--route-color));animation:trailShimmer 24s linear infinite}
+.trails [data-route-kind=water] .trailBed{stroke:#19253c;stroke-width:3.4;opacity:.26}
+.trails [data-route-kind=water] .trailTrack{stroke-width:1.25;opacity:.32}
+.trails [data-route-kind=water].activeTrail .trailBed{stroke-width:4.3;opacity:.85}
+.trails [data-route-kind=water].activeTrail .trailTrack{stroke-width:2.1;opacity:1}
+.riverFlow,.footpaths{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;fill:none}
+.riverFlow path{stroke:#e3f8f5;stroke-width:.12;stroke-linecap:round;stroke-dasharray:.15 .8;opacity:.16;animation:waterGlint 12s ease-in-out infinite;animation-delay:var(--flow-delay)}
+.footpaths path{stroke:#b79e6b;stroke-width:.24;opacity:.58;stroke-linecap:round;stroke-linejoin:round}
+.hotspot[data-side=roof] .label{position:absolute;left:10px;bottom:24px;transform:translate(-50%,0);text-align:center}
+.hotspot[data-place=base-camp] .label{transform:translateY(1px)}
+.hotspot[data-place=field-kit] .label{transform:translateY(8px)}
+.hotspot[data-place=trailheads] .label{transform:translateY(9px)}
+@keyframes trailBreath{0%,100%{opacity:.76}50%{opacity:1}}
+@keyframes trailShimmer{from{stroke-dashoffset:0}to{stroke-dashoffset:-80}}
+@keyframes waterGlint{0%,100%{opacity:.08;stroke-dashoffset:0}45%{opacity:.3}80%{opacity:.12}100%{stroke-dashoffset:-1.9}}
+@media(max-width:700px){
+ .hotspot[data-side=roof] .label{bottom:23px}
+ .hotspot[data-place=base-camp] .label{transform:translateY(-2px)}
+ .hotspot[data-place=field-kit] .label{transform:translateY(9px)}
+ .hotspot[data-place=trailheads] .label{transform:translateY(7px)}
+ .hotspot[data-place=fireside] .label{transform:translateY(-1px)}
+ .hotspot[data-place=fruitlife-360] .label{transform:translate(-100%,6px)}
+ .hotspot[data-place=designid] .label{transform:translateY(-5px)}
+}
+@media(prefers-reduced-motion:reduce){.riverFlow path,.activeTrail .trailTrack,.activeTrail .trailLights{animation:none!important}}
+
+/* At overview sizes names sit on owned, separated targets around the cabin. */
+.hotspot[data-place=fireside] .label{transform:translateY(9px)}
+.hotspot[data-place=fruitlife-360] .label{transform:translateY(26px)}
+.hotspot[data-place=designpd] .label{transform:translateY(3px)}
+.hotspot[data-place=field-kit] .label{transform:translateY(1px)}
+@media(max-width:700px){
+ .label{padding:2px 1px}
+ .hotspot[data-place=base-camp] .label{transform:translateY(-5px)}
+ .hotspot[data-place=field-kit] .label{transform:translateY(3px)}
+ .hotspot[data-place=fireside] .label{transform:translateY(10px)}
+ .hotspot[data-place=fruitlife-360] .label{transform:translateY(19px)}
+ .hotspot[data-place=designpd] .label{transform:translateY(8px)}
+ .hotspot[data-place=trailheads] .label{transform:translateY(9px)}
+}

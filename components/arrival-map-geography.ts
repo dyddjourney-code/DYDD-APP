@@ -1,24 +1,44 @@
-// Source-faithful generated close-up of the original station’s raised physical relief.
-// Coordinates follow visible valleys, ridgelines, paths, cabin, river and fire ring.
-// These are conceptual course routes, not surveyed trails or safe boating directions.
-export const mapTerrain = { width: 1672, height: 941, image: "/brand/adventure/realistic-ranger-tabletop.webp" };
+// One source-image coordinate plane. Hiking and water adventures never share geometry.
+// Source palette is preserved verbatim from the approved .relief-route-* rules.
+export const mapTerrain = { width: 1672, height: 941, image: "/brand/adventure/realistic-ranger-camp-update.webp" };
 export const positions: Record<string, [number, number]> = {
- "start-here": [24,57], "base-camp": [44,84], "ranger-station": [83,44],
- "trailheads": [17,49], "fireside": [52,79], "camp-circles": [59,81],
- "waypoints": [22,19], "dydd-journey": [27,31], "spiritual-gifts": [34,37],
- "fruitlife-360": [66,68], "designpd": [73,56], "designid": [56,44], "field-kit": [79,49]
+ "start-here": [68,76], "base-camp": [80.2,49.7], "ranger-station": [83.2,43.3],
+ "trailheads": [60.6,54.5], "fireside": [86.9,54.5], "camp-circles": [52.2,79],
+ "waypoints": [29.1,33.3], "dydd-journey": [25.5,15.8], "spiritual-gifts": [16.4,21.5],
+ "fruitlife-360": [89.7,56.5], "designpd": [70.6,64], "designid": [57.8,43.9], "field-kit": [74.2,51.3]
 };
+// River centerline is reviewed independently against the actual native image.
+export const riverAdventure = "M74 13 L72 13.7 L69.5 14.6 L68.5 15.6 L68.1 16.6 L68.7 17.6 L69.7 18.5 L69.8 19.5 M65.7 21.3 L63.5 22.4 L62.5 23.8 L62.7 25 L63.8 26.6 L65.5 27.8 L66.1 29 L65.2 30.5 L64.8 32 L65.4 33.7 L66.4 35.1 L66.3 36.2 L65 37.4 L63 38.7 L62 40 L61.3 42 L59.5 43.4 L57.5 44.4 L55.3 45.4 L53.6 46.8 L53.2 48.3 L54 49.6 M55.7 55.3 L56.1 56.7 L55.4 58 L54.6 59.1 L55 60.4 L53.7 61.8 L52.8 63 L51.4 64 L49.6 65.3 L47.2 66.9 L44.5 68 L42 69.2 L40 70.3 L39.4 71.7 L40.1 73.4 L39.2 75 L37.2 76.1 L35.5 77.1 L33.7 78.1 L31.8 79.4 L30 80.9 L28.7 82.4 L27.1 83.9 L25.7 85.1 L24.5 86.3 L23.5 87.5 L22.2 89";
+// Visible station-to-bridge approach, then terrain-following western switchbacks.
+const stationToJunction = "M81 49.3 L80.3 51.1 L79 52.2 L77.3 53.1 L75.6 54.3 L73.3 55.3 L71.5 55.3 L69 54.6 L66 54.2 L62.8 54.3 L60 54 L57.6 53 L55.5 52.3 L52 51 L50.1 50.3 L48.4 48.9 L47.8 46.7 L47 44.8 L44.8 43.8 L42.1 43 L40 41.5 L38.2 39.8 L36.8 37.9 L35.3 35.7 L33.8 34 L31.4 32.6 L29.1 33.3";
+const junctionToPeak = " L27.3 31.1 L24.6 30.3 L22.7 29.6 L22.1 28.8 L22.4 27.7 L24 26.3 L24 25.6 L22.5 24.8 L19.6 24 L17 23 L16 22.1 L16.4 21.5 L18.7 20.5 L21.5 19.9 L23.9 18.8 L24.5 17.6 L24 16.9 L24.8 15.2 L25.5 13.9 L27.1 12.2 L28.3 10.6 L29.2 8.5 L30.5 6.2";
 export const trails = [
- { id: "dydd-journey", d: "M17 51 C18 50 21 49 21.5 47.5 C23 46 18 46 17.5 44 C16.8 42.5 21 41.5 23 40 C25 38.5 27 37.5 28.5 35.5 C30 33.5 24 32 22.5 31 C21 30 26 30 28 29 C29 28 23 27.5 21 26 C19 24.5 24 24.5 23.5 23.5 C23 22.4 18 22.5 15.5 22 C15 21 18 20.5 22 19 C24 18 22 17 23 16 C25 15 27 16 26.5 18 C26 20 24 21 25 23 C26 25 28 26 29 28 C30 30 27 32 28.5 34 C30 36 34 38 39 40 C42 41 47 42 47.5 46 C48 48 50 49 51 50.5 L55.5 52.5 C59 54.5 64 54 67 54.5 C71 58 75 54 78 52 C81 51 82 50 83 48" },
- { id: "spiritual-gifts", d: "M28.5 35.5 C31 36.5 33 37.5 35 38 C39 39.5 42 40.5 42 42 C41 44 36 44 33 42 C30 40 27 40 25 41 C23 42.5 20 42 18 43 C16 45 20 46 21.5 47.5" },
- { id: "fruitlife-360", d: "M52 79 C49 78 46 80 45 82 C47 84 55 83 59 80 C62 77 63 73 66 70 C69 67 71 64 72 62 C74 59 78 57 78 54 L80 51" },
- { id: "designpd", d: "M83 48 L80 51 C78 54 73 56 70 55.5 C72 58 73 59 72 62 C70 65 67 68 66 70 C63 73 63 77 59 80 C56 82 53 82 51 80" },
- { id: "designid", d: "M74 13 C70 14 67 16 69 18 C71 20 67 21 65 23 C62 25 66 27 65 29 C64 32 64 34 62 36 C61 39 58 41 57 43 C56 45 52 46 52 48 C52 50 55 51 54.5 53 C54 56 52 58 49 60 C47 62 46 65 42 67 C38 69 38 72 36 74 C33 77 32 80 28 82 C25 84 24 87 22 89" }
+ { id: "dydd-journey", color: "#4fb36b", hot: "#b9ffd0", kind: "hike", d: stationToJunction + junctionToPeak },
+ { id: "spiritual-gifts", color: "#3d9de8", hot: "#c8edff", kind: "hike", d: "M29.1 33.3" + junctionToPeak.split(" L18.7")[0] + " L15.2 20 L14.9 18.7" },
+ { id: "fruitlife-360", color: "#d94f34", hot: "#ffd0bd", kind: "hike", d: "M81 49.3 L83 51 L85 51 L87.4 51.4 L89.7 53.1 L90 56.5 L88 58 L84.5 57.3 L82.7 54.8 L83 51 L81 49.3" },
+ { id: "designpd", color: "#e88924", hot: "#ffe0a4", kind: "hike", d: "M81 49.3 L80.3 51.1 L79 52.2 L77.3 53.1 L75.6 54.3 L74.2 53 L73.6 54.8 L73 58 L71.5 61.8 L70 65.6 L68 70 L66.9 73 L65.4 75.7 L62.7 78.3 L59 80 L55 80.4 L52.2 79" },
+ { id: "designid", color: "#8a67db", hot: "#dccdff", kind: "water", d: riverAdventure }
+];
+// Small, static trail fork makes Waypoints a genuine three-way junction. It is
+// ground guidance only: it is never animated and never overlays the river.
+export const waypointFork = "M29.1 33.3 L28.9 35.5 L28.6 37.1";
+// Short whitecap glints are each registered to clear open water, not a scene filter.
+export const riverWaterPools = [
+ "65.5,28.5 66,28.7 66,29.2 65.3,30.1 64.9,30.3 65,29.6",
+ "54.8,45.8 55.4,45.6 56.8,45.1 57.2,45.3 56,46.1 54.8,46.8 54,47.3 53.8,47",
+ "40,70.1 41.9,69.2 44.4,68.2 46.1,67.6 46.3,68 44.5,68.8 42.2,69.7 40.2,70.8",
+ "22.1,88.9 23.6,87.1 25,85.8 25.4,85.8 24.5,87.1 22.8,89.4"
+];
+export const riverFlow = [
+ "M65.8 28.9 L65.5 29.4 L65.1 30",
+ "M56.8 45.4 L55.7 45.9 L54.8 46.3 L54.2 47",
+ "M45.9 67.9 L44.3 68.5 L42.2 69.5 L40.4 70.4",
+ "M25 86.1 L24.4 86.7 L23.6 87.8 L22.6 89"
 ];
 export const routeNotes: Record<string, string> = {
-  "dydd-journey": "The long journey leaves the timber trailhead, climbs the western switchbacks to the high lookout, then descends through the valley and across the timber footbridge to Ranger Station.",
-  "spiritual-gifts": "A woodland discovery loop follows the sheltered foothills above the trailhead, returning to the valley path.",
-  "fruitlife-360": "A lower-valley route stays beside the fire-circle clearing, following the visible path back toward the cabin.",
-  "designpd": "Follow the cabin-side path past the Field Kit porch and down to the fireside gathering clearing.",
-  "designid": "Follow the winding turquoise river from the distant mountain valley, through the forest gorge and down to the foreground pools."
+ "dydd-journey": "Leave Ranger Station, cross the timber footbridge, pause at the Waypoints junction and climb the western switchbacks to the high mountain lookout. Return along the same mountain trail.",
+ "spiritual-gifts": "At Waypoints, take the first western ridge to the left-hand peak. The blue trail remains separate from the longer green summit climb.",
+ "fruitlife-360": "A fireside hiking loop leaves Ranger Station and circles the smaller fire clearing to its right. Stay on this bank: this trail does not cross the bridge.",
+ "designpd": "Walk from Ranger Station past the separate Field Kit outbuilding, then follow the lower valley trail to the Camp Circles clearing.",
+ "designid": "A water adventure follows the actual turquoise river channel, winding through the valley and below the timber footbridge to the foreground pools. Purple guidance and whitecaps stay on water."
 };

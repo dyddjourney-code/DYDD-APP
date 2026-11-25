@@ -1,0 +1,26 @@
+{
+  "path": "public/brand/adventure/realistic-ranger-camp-update.webp",
+  "sha256": "e83cd43da88d2752a90040b23cfe130d724953c6892c6efc3538922d1a273be0",
+  "nativeDimensions": [
+    1672,
+    941
+  ],
+  "type": "source-faithful localized generated physical-relief image edit",
+  "localizedMasks": 3,
+  "source": "public/brand/adventure/realistic-ranger-tabletop.webp",
+  "sourceSha256": "dc6b91e0aa0fbc62a2cfdd25ec9858daaf1759bdd647244a92be53f68d21c951",
+  "edits": [
+    "separate Field Kit outbuilding74.3/51.5",
+    "smaller fire + benches + hiking loop86.9/54.5",
+    "physical three-way dirt junction29.1/33.3"
+  ],
+  "unchangedOutsideLocalizedMasks": true,
+  "provider": "openai/gpt-image-2",
+  "waterRoute": "independent piecewise visible-channel trace; bridge/terrain occlusions omitted",
+  "waterMotion": "4conservative explicit clip polygons excluding dry rocks",
+  "limits": [
+    "native1672x941 enlargement in fullscreen, not new4K detail",
+    "generated imagery of physical-relief model, not real photography/realtime3D",
+    "conceptual park routes, not surveyed terrain"
+  ]
+}

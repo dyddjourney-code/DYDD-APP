@@ -1,0 +1,290 @@
+[
+  {
+    "scene": "ranger",
+    "index": 1,
+    "center": [
+      49.8,
+      16.1
+    ],
+    "sourceBounds": [
+      819,
+      135,
+      846,
+      168
+    ],
+    "sourceSize": [
+      1672,
+      941
+    ],
+    "patchSize": [
+      27,
+      33
+    ],
+    "output": "/brand/lighting/ranger-1.webp",
+    "sha256": "a40e9f88e6b21f30b180643f0603753b3fe83b5c75cfe2e95d646313da2e1ab8"
+  },
+  {
+    "scene": "ranger",
+    "index": 2,
+    "center": [
+      21.5,
+      30.5
+    ],
+    "sourceBounds": [
+      351,
+      277,
+      368,
+      297
+    ],
+    "sourceSize": [
+      1672,
+      941
+    ],
+    "patchSize": [
+      17,
+      20
+    ],
+    "output": "/brand/lighting/ranger-2.webp",
+    "sha256": "e1eb50340873973d5da05b7d6271b715f4a611f1793d2571a8b014efbed2ce5b"
+  },
+  {
+    "scene": "ranger",
+    "index": 3,
+    "center": [
+      37.2,
+      25.5
+    ],
+    "sourceBounds": [
+      614,
+      230,
+      630,
+      250
+    ],
+    "sourceSize": [
+      1672,
+      941
+    ],
+    "patchSize": [
+      16,
+      20
+    ],
+    "output": "/brand/lighting/ranger-3.webp",
+    "sha256": "4c8a9a808f5569b3a5dc1e7ad57c67c754c9ae064ccbb29c440a534110e507ef"
+  },
+  {
+    "scene": "ranger",
+    "index": 4,
+    "center": [
+      61.5,
+      25.5
+    ],
+    "sourceBounds": [
+      1020,
+      230,
+      1037,
+      250
+    ],
+    "sourceSize": [
+      1672,
+      941
+    ],
+    "patchSize": [
+      17,
+      20
+    ],
+    "output": "/brand/lighting/ranger-4.webp",
+    "sha256": "64081f60f22f666e896d0cf0cbbef84559c14e21b28f2c1a0296b8539d06d8ba"
+  },
+  {
+    "scene": "ranger",
+    "index": 5,
+    "center": [
+      89.8,
+      50.5
+    ],
+    "sourceBounds": [
+      1493,
+      465,
+      1510,
+      486
+    ],
+    "sourceSize": [
+      1672,
+      941
+    ],
+    "patchSize": [
+      17,
+      21
+    ],
+    "output": "/brand/lighting/ranger-5.webp",
+    "sha256": "ce1814ff88bf0282c1a630e40e6711ba538514babf142856936a05a78f143a2f"
+  },
+  {
+    "scene": "ranger",
+    "index": 6,
+    "center": [
+      11.3,
+      13.5
+    ],
+    "sourceBounds": [
+      162,
+      124,
+      216,
+      130
+    ],
+    "sourceSize": [
+      1672,
+      941
+    ],
+    "patchSize": [
+      54,
+      6
+    ],
+    "output": "/brand/lighting/ranger-6.webp",
+    "sha256": "d58fd4425350f16e3838b1179c758004ffb73889523b91e6afb2e32f440debc6"
+  },
+  {
+    "scene": "archive",
+    "index": 1,
+    "center": [
+      64,
+      14.5
+    ],
+    "sourceBounds": [
+      1057,
+      120,
+      1083,
+      153
+    ],
+    "sourceSize": [
+      1672,
+      941
+    ],
+    "patchSize": [
+      26,
+      33
+    ],
+    "output": "/brand/lighting/archive-1.webp",
+    "sha256": "7815131c8636637bc25ac4ae9d81ccbe75f89ab15b1167542d7b4d3add843678"
+  },
+  {
+    "scene": "archive",
+    "index": 2,
+    "center": [
+      55,
+      23.8
+    ],
+    "sourceBounds": [
+      911,
+      214,
+      928,
+      234
+    ],
+    "sourceSize": [
+      1672,
+      941
+    ],
+    "patchSize": [
+      17,
+      20
+    ],
+    "output": "/brand/lighting/archive-2.webp",
+    "sha256": "6afe019ab2b0adf4660bccf93d12b5a1c02b5fc42bccc599bcf1d29bc0d4da21"
+  },
+  {
+    "scene": "archive",
+    "index": 3,
+    "center": [
+      49.2,
+      33.2
+    ],
+    "sourceBounds": [
+      814,
+      302,
+      831,
+      323
+    ],
+    "sourceSize": [
+      1672,
+      941
+    ],
+    "patchSize": [
+      17,
+      21
+    ],
+    "output": "/brand/lighting/archive-3.webp",
+    "sha256": "b869e2ddc4bdb5613709a1d474b44ca044e47996ec9ca0996add71bad6e48fa2"
+  },
+  {
+    "scene": "archive",
+    "index": 4,
+    "center": [
+      63.8,
+      33.2
+    ],
+    "sourceBounds": [
+      1058,
+      302,
+      1075,
+      323
+    ],
+    "sourceSize": [
+      1672,
+      941
+    ],
+    "patchSize": [
+      17,
+      21
+    ],
+    "output": "/brand/lighting/archive-4.webp",
+    "sha256": "aecf548669258e5f061a5aefa1155cbfdaa46cb2c01ddd1a9c8759e5a1e04412"
+  },
+  {
+    "scene": "archive",
+    "index": 5,
+    "center": [
+      81.2,
+      18
+    ],
+    "sourceBounds": [
+      1349,
+      159,
+      1366,
+      180
+    ],
+    "sourceSize": [
+      1672,
+      941
+    ],
+    "patchSize": [
+      17,
+      21
+    ],
+    "output": "/brand/lighting/archive-5.webp",
+    "sha256": "9edac24271156ef789b458262614ff735ac53824fe17c4c9f9c75d83185affd4"
+  },
+  {
+    "scene": "archive",
+    "index": 6,
+    "center": [
+      41,
+      45
+    ],
+    "sourceBounds": [
+      672,
+      421,
+      699,
+      426
+    ],
+    "sourceSize": [
+      1672,
+      941
+    ],
+    "patchSize": [
+      27,
+      5
+    ],
+    "output": "/brand/lighting/archive-6.webp",
+    "sha256": "991294dc646bdb45b7a52e9b9dc06c8924bfd024cdbe0e9f7bdffd344c5aa300"
+  }
+]

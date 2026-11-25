@@ -59,21 +59,20 @@ export function ForestNavigation({children,courses}:{children:ReactNode;courses:
     function hash(){if(location.hash==="#passport")open("passport");else if(location.hash==="#your-profile"||location.hash==="#purchases")open("profile");}
     hash();window.addEventListener("hashchange",hash);return ()=>window.removeEventListener("hashchange",hash);
   },[pathname]);
+  const dock = <nav className="forest-dock game-dock" aria-label="Camp navigation">{places.map(item=><button className={item.key==="map"?"forest-menu":undefined} key={item.key} aria-haspopup={atCamp&&(item.key==="map"||item.key==="ranger")?undefined:"dialog"} aria-expanded={atCamp&&(item.key==="map"||item.key==="ranger")?undefined:place===item.key} aria-current={place===item.key?"true":undefined} onClick={()=>open(item.key)}><ForestIcon name={item.icon}/><span>{item.label}</span></button>)}</nav>;
   return <div className={`game-world ${atCamp?"game-at-camp":"game-on-trail"}`}>
     <a className="forest-skip" href="#forest-content">Skip to content</a>
-    <header className="game-top">
+    {!atCamp&&<header className="game-top">
       <ReviewAwareLink href="/base-camp" className="game-mark" aria-label="DYDD Base Camp"><img src="/brand/dydd-logo-white-correct.png" width={2500} height={785} alt="Discover Your Divine Design"/></ReviewAwareLink>
       <div className="game-location"><ForestIcon name={atCamp?"camp":"journey"}/><span>{atCamp?"Base Camp":"On the trail"}</span></div>
       <button className="game-profile" onClick={()=>open("profile")}>Traveler profile</button>
-    </header>
-    {atCamp ? <main id="forest-content" className="adventure-main" tabIndex={-1}><DydiAdventure courses={courses} request={sceneRequest} onPassport={()=>open("passport")}/></main> : <EnvironmentRoute pathname={pathname}><div className="game-route" id="forest-content" tabIndex={-1}>
+    </header>}
+    {atCamp ? <main id="forest-content" className="adventure-main" tabIndex={-1}><DydiAdventure dock={dock} onProfile={()=>open("profile")} courses={courses} request={sceneRequest} onPassport={()=>open("passport")}/></main> : <EnvironmentRoute pathname={pathname}><div className="game-route" id="forest-content" tabIndex={-1}>
       <ReviewAwareLink className="game-return" href="/base-camp">← Return to Base Camp</ReviewAwareLink>
       <div className="game-reading">{children}</div>
       <footer className="game-support"><ReviewAwareLink href="/contact">Contact</ReviewAwareLink><ReviewAwareLink href="/privacy">Privacy</ReviewAwareLink><ReviewAwareLink href="/terms">Terms</ReviewAwareLink></footer>
     </div></EnvironmentRoute>}
-    <footer className="game-bottom">
-      <nav className="forest-dock game-dock" aria-label="Camp navigation">{places.map(item=><button className={item.key==="map"?"forest-menu":undefined} key={item.key} aria-haspopup={atCamp&&(item.key==="map"||item.key==="ranger")?undefined:"dialog"} aria-expanded={atCamp&&(item.key==="map"||item.key==="ranger")?undefined:place===item.key} aria-current={place===item.key?"true":undefined} onClick={()=>open(item.key)}><ForestIcon name={item.icon}/><span>{item.label}</span></button>)}</nav>
-    </footer>
+    {!atCamp&&<footer className="game-bottom">{dock}</footer>}
     <dialog ref={dialog} className="game-overlay" aria-modal="true" aria-labelledby="game-panel-title" onCancel={e=>{if(e.target===e.currentTarget)setPlace(null);}} onClose={e=>{if(e.target===e.currentTarget)setPlace(null);}} onClick={e=>{if(e.target===e.currentTarget)close();}}>
       <div ref={panelScroll} className="game-panel destination-room" data-place={place}>
         {place&&<DestinationRoom key={place} place={place} onClose={close} onPlace={open} atCamp={atCamp}>{children}</DestinationRoom>}

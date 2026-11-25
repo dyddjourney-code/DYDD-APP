@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ReviewAwareLink } from "@/components/review-aware-link";
 import { RangerReliefMap } from "@/components/ranger-relief-map";
+import { RoomAtmosphere } from "@/components/room-atmosphere";
 import { RangerDesk } from "@/components/ranger-desk";
 
 type Place = "map" | "ranger" | "trails" | "passport" | "kit" | "fireside" | "profile";
@@ -73,7 +74,7 @@ export function DestinationRoom({place,onClose,onPlace,children,atCamp}:{place:P
   return ()=>dialog?.close();
  },[detail]);
  return <section className={`destination-interior interior-${room.art} ${account?"interior-account":""}`} aria-label={room.title}>
-   <img className="destination-art" src={`/brand/environments/${room.art}.webp`} alt="" fetchPriority="high"/>
+   {room.art === "ranger" || room.art === "archive" ? <RoomAtmosphere scene={room.art} className="destination-art" /> : <img className="destination-art" src={`/brand/environments/${room.art}.webp`} alt="" fetchPriority="high"/>}
    <div className="destination-shade"/>
    <header className="destination-top"><button className="destination-return" onClick={onClose}>← Return to {atCamp?"Base Camp":"the trail"}</button><span>DYDD</span><button className="game-close" onClick={onClose} aria-label="Close destination">×</button></header>
    <div className="destination-intro"><h2 id="game-panel-title">{room.title}</h2><p>{room.copy}</p>{place==="ranger"&&<ReviewAwareLink className="destination-text-link" href="/ranger-station" onClick={onClose}>Explore the full Ranger Station →</ReviewAwareLink>}{place==="trails"&&<ReviewAwareLink className="destination-text-link" href="/trailheads" onClick={onClose}>View course details & access →</ReviewAwareLink>}</div>

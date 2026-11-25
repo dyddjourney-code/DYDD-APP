@@ -1,0 +1,153 @@
+{
+  "provider": "openai/gpt-image-2",
+  "nativeDimensions": [
+    1672,
+    941
+  ],
+  "kind": "localized source-faithful generated photographic-style derivatives",
+  "derivatives": {
+    "book": {
+      "source": "/brand/environments/archive.webp",
+      "output": "/brand/environments/archive-closed-divine-design-20261125.webp",
+      "size": [
+        1672,
+        941
+      ],
+      "crop": [
+        620,
+        475,
+        1120,
+        680
+      ],
+      "maskGeometry": [
+        [
+          660,
+          651
+        ],
+        [
+          695,
+          544
+        ],
+        [
+          710,
+          532
+        ],
+        [
+          826,
+          526
+        ],
+        [
+          872,
+          530
+        ],
+        [
+          908,
+          526
+        ],
+        [
+          1038,
+          535
+        ],
+        [
+          1089,
+          651
+        ]
+      ],
+      "maskFeatherSigma": 1.2,
+      "maskBBox": [
+        657,
+        523,
+        1093,
+        655
+      ],
+      "changedBBox": [
+        659,
+        524,
+        1092,
+        655
+      ],
+      "changedPixels": 49188,
+      "outsideMaskChanged": 0,
+      "sourceFileSHA256": "704c87a120513157787df0f7372f5eb668ebb30a80a4725bb778812a2eb193e5",
+      "outputFileSHA256": "94cd65b99ba79b9b7ccff20e938c3703e20c61fc21653d84a74245e3075665d0"
+    },
+    "map": {
+      "source": "/brand/adventure/realistic-ranger-camp-update.webp",
+      "output": "/brand/adventure/realistic-ranger-north-water-trail-20261125.webp",
+      "size": [
+        1672,
+        941
+      ],
+      "crop": [
+        1120,
+        330,
+        1450,
+        535
+      ],
+      "maskGeometry": [
+        [
+          1346,
+          455
+        ],
+        [
+          1331,
+          448
+        ],
+        [
+          1316,
+          443
+        ],
+        [
+          1297,
+          439
+        ],
+        [
+          1279,
+          433
+        ],
+        [
+          1262,
+          431
+        ],
+        [
+          1237,
+          424
+        ],
+        [
+          1219,
+          417
+        ],
+        [
+          1200,
+          409
+        ],
+        [
+          1187,
+          403
+        ],
+        [
+          1179,
+          393
+        ]
+      ],
+      "maskFeatherSigma": 1.2,
+      "maskBBox": [
+        1172,
+        387,
+        1352,
+        464
+      ],
+      "changedBBox": [
+        1173,
+        389,
+        1352,
+        463
+      ],
+      "changedPixels": 2856,
+      "outsideMaskChanged": 0,
+      "sourceFileSHA256": "e83cd43da88d2752a90040b23cfe130d724953c6892c6efc3538922d1a273be0",
+      "outputFileSHA256": "d095f9c115b95c682567589f79795872826eb8c9bea9fef037e86e29c3cf185a"
+    }
+  },
+  "evidence": "outputs/dydd-fast-scenes-book-map-2026-11-25/art/PROVENANCE.md"
+}

@@ -1,4 +1,5 @@
 import { ReviewAwareLink } from "@/components/review-aware-link";
+import { RoomAtmosphere } from "@/components/room-atmosphere";
 import type { ReactNode } from "react";
 
 /** Presentation only: the original route remains mounted, with all its state and actions. */
@@ -106,7 +107,7 @@ export function EnvironmentRoute({ pathname, children }: { pathname: string; chi
   return (
     <div className={`environment-route environment-route--${environment.key}`}>
       <section className="environment-scene" aria-labelledby="environment-title">
-        <div className="environment-scene-art" aria-hidden="true" />
+        {environment.key === "ranger" || environment.key === "archive" ? <RoomAtmosphere scene={environment.key} className="environment-scene-art" background /> : <div className="environment-scene-art" aria-hidden="true" />}
         <div className="environment-scene-copy">
           <h1 id="environment-title">{environment.title}</h1>
           <p>{environment.description}</p>

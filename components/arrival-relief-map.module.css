@@ -1,11 +1,11 @@
-.map{position:relative;z-index:2;margin:20px auto 32px;width:96%;max-width:1800px;color:#f0e9d8;animation:approach .85s cubic-bezier(.16,1,.3,1) both;font-family:Arial,Helvetica,sans-serif}
+.map{position:relative;z-index:2;margin:20px auto 32px;width:96%;max-width:1800px;color:#f0e9d8;animation:approach 240ms steps(6,end) both;font-family:Arial,Helvetica,sans-serif}
 .mapHeading{display:flex;justify-content:space-between;align-items:center;margin:0 2px 12px;gap:16px}
 .mapHeading>span{font-size:10px;letter-spacing:2.2px}
 .mapHeading p{font-size:11px;margin:0;color:#d4d5c2}
 .table{position:relative;padding:5px;border:1px solid #b29a6570;background:#394033;box-shadow:0 22px 60px #15271e66}
 .landscape{position:relative;width:100%;aspect-ratio:1672/941;overflow:hidden;isolation:isolate;background:#23352b;touch-action:none;cursor:grab;outline-offset:3px;overscroll-behavior:contain}
 .dragging{cursor:grabbing}
-.plane{position:absolute;left:50%;top:50%;transform-origin:center;transition:transform .55s cubic-bezier(.16,1,.3,1);will-change:transform}
+.plane{position:absolute;left:50%;top:50%;transform-origin:center;transition:transform 240ms steps(6,end);will-change:transform}
 .dragging .plane{transition:none}
 .plane>img{display:block;width:100%;height:100%;pointer-events:none;user-select:none;object-fit:contain}
 .tools{position:absolute;right:18px;top:18px;z-index:4;display:flex;gap:8px;align-items:flex-start}
@@ -25,12 +25,6 @@
 .index button[aria-pressed=true]{color:#21392b;background:#dfcba0}
 .trails{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;fill:none}
 .trails path{vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
-.trailBed{stroke:#433c29;stroke-width:5;opacity:.32}
-.trailTrack{stroke:#d9bf87;stroke-width:2.2;opacity:.56}
-.trailLights{stroke:#ffdfa1;stroke-width:3.2;stroke-dasharray:.1 16;opacity:0;transition:opacity .5s}
-.activeTrail .trailBed{opacity:.55;stroke-width:6}
-.activeTrail .trailTrack{opacity:.9;stroke-width:2.6}
-.activeTrail .trailLights{opacity:.95;filter:drop-shadow(0 0 2px #f4ca76)}
 .hotspot{position:absolute;left:var(--x);top:var(--y);display:flex;align-items:center;gap:6px;min-width:44px;min-height:44px;border:0!important;background:transparent!important;color:#fff4d5!important;padding:4px 6px!important;cursor:pointer;z-index:1;transform:translate(-10px,-50%) scale(var(--inverse-zoom));transform-origin:10px center;white-space:nowrap;text-shadow:0 1px 3px #1d3025,0 1px 8px #1d3025}
 .map .hotspot:active:not(:disabled){transform:translate(-10px,-50%) scale(var(--inverse-zoom))}
 .pin{width:7px;height:7px;flex:none;border-radius:50%;background:#f4dfb0;border:1px solid #35513a;box-shadow:0 1px 4px #1c3027}
@@ -100,9 +94,6 @@ to{opacity:1;transform:none}
 
 .detailsArt{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .popup .routeNote{color:#d7c496;border-bottom:1px solid #c8b58833;padding-bottom:13px;margin-bottom:13px}
-.trailBed,.trailTrack{opacity:0}
-.activeTrail .trailBed{opacity:.4}
-.activeTrail .trailTrack{opacity:.85}
 
 
 @media(max-width:700px){.hotspot[data-place=base-camp] .label{transform:translateY(-3px)}.hotspot[data-place=fruitlife-360] .label{transform:translateY(11px)}.hotspot[data-place=fireside] .label{transform:translateY(-5px)}.hotspot[data-place=camp-circles] .label{transform:translateY(9px)}.hotspot[data-place=field-kit] .label{transform:translateY(-4px)}}
@@ -113,9 +104,6 @@ to{opacity:1;transform:none}
 .passport{display:block;width:100%;margin-top:12px;min-height:44px;background:transparent;border:0;border-top:1px solid #c3af8266;color:#eddfbd;font-size:11px;text-align:left;cursor:pointer}.passport:focus-visible{outline:2px solid #f6e1ae;outline-offset:3px}
 
 /* Keep realistic source texture dominant: selection is a restrained guide, not a new map painting. */
-.activeTrail .trailBed{stroke-width:3;opacity:.35}
-.activeTrail .trailTrack{stroke-width:1.15;opacity:.72}
-.activeTrail .trailLights{stroke-width:2.1;stroke-dasharray:.1 20}
 
 /* The cabin porch and roof are close together in the original oblique art.
    Keep each visible target owned on compact screens without moving its landmark dot. */
@@ -127,26 +115,13 @@ to{opacity:1;transform:none}
 }
 
 /* Approved historical route palette, muted at rest; independent water geometry. */
-.trailBed{stroke:#182b25;stroke-width:3.2;opacity:.18}
-.trailTrack{stroke:var(--route-color);stroke-width:1.05;opacity:.24}
-.trailLights{stroke:var(--route-hot);stroke-width:1.7;stroke-dasharray:.1 20;opacity:0;filter:none}
-.activeTrail .trailBed{stroke-width:4;opacity:.65}
-.activeTrail .trailTrack{stroke:var(--route-color);stroke-width:1.8;opacity:.95;animation:trailBreath 8s ease-in-out infinite}
-.activeTrail .trailLights{stroke:var(--route-hot);stroke-width:1.7;opacity:.95;filter:drop-shadow(0 0 1px var(--route-color));animation:trailShimmer 24s linear infinite}
-.trails [data-route-kind=water] .trailBed{stroke:#19253c;stroke-width:3.4;opacity:.26}
-.trails [data-route-kind=water] .trailTrack{stroke-width:1.25;opacity:.32}
-.trails [data-route-kind=water].activeTrail .trailBed{stroke-width:4.3;opacity:.85}
-.trails [data-route-kind=water].activeTrail .trailTrack{stroke-width:2.1;opacity:1}
-.riverFlow,.footpaths{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;fill:none}
-.riverFlow path{stroke:#e3f8f5;stroke-width:.12;stroke-linecap:round;stroke-dasharray:.15 .8;opacity:.16;animation:waterGlint 12s ease-in-out infinite;animation-delay:var(--flow-delay)}
-.footpaths path{stroke:#b79e6b;stroke-width:.24;opacity:.58;stroke-linecap:round;stroke-linejoin:round}
+.riverFlow{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;fill:none}
+.riverFlow path{stroke:#e3f8f5;stroke-width:.15;stroke-linecap:round;stroke-dasharray:.15 .8;opacity:.28;animation:waterGlint 6s ease-in-out infinite;animation-delay:var(--flow-delay)}
 .hotspot[data-side=roof] .label{position:absolute;left:10px;bottom:24px;transform:translate(-50%,0);text-align:center}
 .hotspot[data-place=base-camp] .label{transform:translateY(1px)}
 .hotspot[data-place=field-kit] .label{transform:translateY(8px)}
 .hotspot[data-place=trailheads] .label{transform:translateY(9px)}
-@keyframes trailBreath{0%,100%{opacity:.76}50%{opacity:1}}
-@keyframes trailShimmer{from{stroke-dashoffset:0}to{stroke-dashoffset:-80}}
-@keyframes waterGlint{0%,100%{opacity:.08;stroke-dashoffset:0}45%{opacity:.3}80%{opacity:.12}100%{stroke-dashoffset:-1.9}}
+@keyframes waterGlint{0%{opacity:.2;stroke-dashoffset:0}45%{opacity:.52}80%{opacity:.28}100%{opacity:.2;stroke-dashoffset:-3.8}}
 @media(max-width:700px){
  .hotspot[data-side=roof] .label{bottom:23px}
  .hotspot[data-place=base-camp] .label{transform:translateY(-2px)}
@@ -156,7 +131,6 @@ to{opacity:1;transform:none}
  .hotspot[data-place=fruitlife-360] .label{transform:translate(-100%,6px)}
  .hotspot[data-place=designid] .label{transform:translateY(-5px)}
 }
-@media(prefers-reduced-motion:reduce){.riverFlow path,.activeTrail .trailTrack,.activeTrail .trailLights{animation:none!important}}
 
 /* At overview sizes names sit on owned, separated targets around the cabin. */
 .hotspot[data-place=fireside] .label{transform:translateY(9px)}
@@ -172,3 +146,18 @@ to{opacity:1;transform:none}
  .hotspot[data-place=designpd] .label{transform:translateY(8px)}
  .hotspot[data-place=trailheads] .label{transform:translateY(9px)}
 }
+/* One dotted guide per route: no solid underlay, traveling shimmer or stagger.
+   Shared phase makes every dot in every route breathe as a whole. */
+.trails g{opacity:.68;animation:routePulse 6s ease-in-out infinite}
+.trails .activeTrail{opacity:1}
+.trailLights{stroke:var(--route-color);stroke-width:3.6;stroke-dasharray:.01 9;filter:drop-shadow(0 0 2.5px var(--route-color))}
+.activeTrail .trailLights{stroke:var(--route-color);stroke-width:4.2;filter:drop-shadow(0 0 3px var(--route-color))}
+@keyframes routePulse{0%,100%{opacity:.62}50%{opacity:.8}}
+.trails .activeTrail{animation-name:selectedRoutePulse}
+@keyframes selectedRoutePulse{0%,100%{opacity:.88}50%{opacity:1}}
+.hotspot[data-place=start-here]{z-index:2}
+.hotspot[data-place=start-here] .label{font-size:11px;letter-spacing:.5px}
+@media(max-width:700px){.hotspot[data-place=start-here] .label{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.trails g{animation:none!important}}
+
+.hotspot[data-place=fruitlife-360] .label{transform:translateY(-9px)}

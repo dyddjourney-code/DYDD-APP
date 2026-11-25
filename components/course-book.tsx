@@ -13,6 +13,31 @@ export function CourseBook({ onClose, courses }: { onClose: () => void; courses:
   const onCloseRef = useRef(onClose);
   const backdropPress = useRef(false);
   const [selected, setSelected] = useState(0);
+  const [turn, setTurn] = useState<{ from: number; to: number; serial: number } | null>(null);
+  const turnSerial = useRef(0);
+
+  // A decorative leaf turns over the real, immediately available destination.
+  // It never owns links, focus, or a second copy of the accessible panel.
+  useEffect(() => {
+    if (!turn) return;
+    const timer = window.setTimeout(() => setTurn(null), 940);
+    return () => window.clearTimeout(timer);
+  }, [turn]);
+
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const freeze = () => { if (preference.matches) setTurn(null); };
+    preference.addEventListener("change", freeze);
+    return () => preference.removeEventListener("change", freeze);
+  }, []);
+
+  function turnTo(next: number) {
+    if (next === selected || next < 0 || next >= courses.length) return;
+    const quiet = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      || dialogRef.current?.closest('[data-motion="reduced"]');
+    setTurn(quiet ? null : { from: selected, to: next, serial: ++turnSerial.current });
+    setSelected(next);
+  }
   const id = useId();
   onCloseRef.current = onClose;
 
@@ -48,7 +73,7 @@ export function CourseBook({ onClose, courses }: { onClose: () => void; courses:
       default: return;
     }
     event.preventDefault();
-    setSelected(next);
+    turnTo(next);
     tabRefs.current[next]?.focus();
   }
 
@@ -73,6 +98,7 @@ export function CourseBook({ onClose, courses }: { onClose: () => void; courses:
     >
       <header className={styles.header}>
         <div>
+          <p className={styles.imprint}>Learning Center · Field Library</p>
           <h2 id={`${id}-title`}>Explore Courses</h2>
           <p id={`${id}-description`} className={styles.srOnly}>Use the course tabs to turn pages. Open a course or its connected assessment.</p>
         </div>
@@ -93,7 +119,7 @@ export function CourseBook({ onClose, courses }: { onClose: () => void; courses:
             tabIndex={selected === index ? 0 : -1}
             className={styles.tab}
             data-course-tab={course.slug}
-            onClick={() => setSelected(index)}
+            onClick={() => turnTo(index)}
             onKeyDown={(event) => selectTab(event, index)}
           >
             <span className={styles.tabNumber} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
@@ -101,6 +127,8 @@ export function CourseBook({ onClose, courses }: { onClose: () => void; courses:
           </button>
         ))}
       </div>
+      <div className={styles.bookBody} data-page-direction={turn ? (turn.to > turn.from ? "forward" : "backward") : "rest"}>
+      <span className={styles.binding} aria-hidden="true" />
       {courses.map((course, index) => {
         const trail = trailDefinitions.find((item) => item.courseSlug === course.slug);
         const journey = course.slug === "discover-your-divine-design";
@@ -138,6 +166,26 @@ export function CourseBook({ onClose, courses }: { onClose: () => void; courses:
           </section>
         );
       })}
+      {turn && <div key={turn.serial} className={`${styles.turningLeaf} ${turn.to > turn.from ? styles.forward : styles.backward}`} aria-hidden="true" data-turning-leaf="">
+        <div className={styles.leafFront}>
+          <span className={styles.eyebrow}>Chapter {String(turn.from + 1).padStart(2, "0")}</span>
+          <img className={styles.logo} src={courses[turn.from].logo} alt="" width={240} height={128} />
+          <h3>{courses[turn.from].title}</h3>
+          <p>{courses[turn.from].description}</p>
+          <span className={styles.leafCurl} />
+        </div>
+        <div className={styles.leafBack}>
+          <span className={styles.eyebrow}>Chapter {String(turn.to + 1).padStart(2, "0")}</span>
+          <h3>{courses[turn.to].title}</h3>
+          <p>{courses[turn.to].description}</p>
+        </div>
+      </div>}
+      </div>
+      <nav className={styles.pageNavigation} aria-label="Turn course book pages">
+        <button type="button" onClick={() => turnTo(selected - 1)} disabled={selected === 0}>← Previous chapter</button>
+        <span role="status" aria-live="polite" aria-atomic="true">Chapter {selected + 1} of {courses.length}</span>
+        <button type="button" onClick={() => turnTo(selected + 1)} disabled={selected === courses.length - 1}>Next chapter →</button>
+      </nav>
       <footer className={styles.footer}>
         <span>Discover Your Divine Design</span>
         <ReviewAwareLink href="/assessments" data-course-link="assessments">Explore assessments →</ReviewAwareLink>

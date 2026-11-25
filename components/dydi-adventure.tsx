@@ -12,7 +12,7 @@ type Camera = "rest" | "steps" | "hallway" | "desk" | "map" | "book";
 const titles: Record<SceneStop,string> = {camp:"Welcome to Base Camp",station:"Ranger Station",desk:"Ranger Desk",relief:"Camp Map",classroom:"Learning Center"};
 const art = {camp:"/brand/sandbox2-jungle.webp",station:"/brand/environments/ranger.webp",classroom:"/brand/environments/archive.webp"};
 // Coordinates are percentages of the approved 1672 × 941 artwork, not the viewport.
-const lanterns = {camp:[[65.4,39.8],[69.2,39],[70.8,42.1],[81,36.8],[86.3,38.7]],station:[[49.7,15],[21.5,30],[37.2,25.5],[61.5,25.5],[89.8,50]],classroom:[[64,14],[55,23.8],[49.2,33.2],[63.8,33.2],[81,18]]};
+const lanterns = {camp:[[65.4,39.8],[69.2,39],[70.8,42.1],[81,36.8],[86.3,38.7]],station:[[49.8,16.1],[21.5,30.5],[37.2,25.5],[61.5,25.5],[89.8,50.5]],classroom:[[64,14.5],[55,23.8],[49.2,33.2],[63.8,33.2],[81.2,18]]};
 
 /** Presentation only: camera crops of approved art; no account/progress writes. */
 export function DydiAdventure({onPassport,request,onScene,courses}:{courses:readonly CourseBookSummary[];onPassport:()=>void;request?:SceneRequest|null;onScene?:(stop:SceneStop)=>void}) {
@@ -94,7 +94,7 @@ export function DydiAdventure({onPassport,request,onScene,courses}:{courses:read
       <div className={styles.sceneFrame} data-scene-frame>
         <div className={styles.camera} data-scene-plane data-art={scene}>
           <img className={styles.art} src={art[scene]} alt={scene==="camp"?"Forest walkway leading to the Ranger Station steps":scene==="station"?"Ranger Station with a relief map table, hallway ahead and ranger desk on the right":"Learning Center with an open book on the reading desk"} width={1672} height={941} fetchPriority="high" draggable={false}/>
-          <div className={styles.lanterns} aria-hidden="true" data-lanterns>{lanterns[scene].map(([x,y],i)=><i key={i} style={{left:`${x}%`,top:`${y}%`,animationDelay:`${-i*1.7}s`}}/>)}</div>
+          <div className={styles.lanterns} aria-hidden="true" data-lanterns>{lanterns[scene].map(([x,y],i)=><i key={`${scene}-${i}`} data-candlelight={`${scene}-${i+1}`} style={{left:`${x}%`,top:`${y}%`,animationDelay:`${-i*1.7}s`}}/>)}</div>
         </div>
         <div className={styles.shade} aria-hidden="true"/>
         <h1 ref={heading} tabIndex={-1} id="adventure-title" className={styles.title}>{titles[stop]}</h1>

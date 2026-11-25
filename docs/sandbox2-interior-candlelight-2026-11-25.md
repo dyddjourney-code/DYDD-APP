@@ -1,0 +1,7 @@
+# Sandbox2 interior candlelight follow-up
+
+Presentation-only follow-up to map release e41ef164b82c6dcc8a7bfc93adeb6571e51eeab7. Only authorized alias: https://dydd-online-school-sandbox-2.vercel.app/base-camp; guarded scripts/deploy-sandbox2.mjs enforces project and branch identity.
+
+The previous single, faint 6.7–8.3-second halo existed but had no explicit interior time-sampled verification. Each real lantern now has an independently phased irregular 4.1–5.9-second warm halo plus a restrained 1.9–2.9-second flame-core opacity/shape shimmer. No image, room, artwork, or map filter animates. Corrected main lantern centers against original art. Five source-registered lights each in the exterior arrival, Ranger Station (including desk view), and Learning Center; transforms remain children of the image camera so mobile crops stay aligned. Reduced-motion CSS disables both layers, including the pseudo-element, and retains steady light.
+
+Evidence: outputs/dydd-candlelight-2026-11-25/. Native Chromium read-only QA samples every light seven times over 2.58 seconds in desktop and emulated phone scenes, checks both animations actually run, checks core transform/intensity changes, and verifies steady samples 700 ms apart after live reduced-motion toggling. Scene screenshots at both time endpoints provide pixel evidence; original images have no animations. Camp Map remains 13 destinations; prior map acceptance applies unchanged because no map code, navigation, art, or course/access logic changed.

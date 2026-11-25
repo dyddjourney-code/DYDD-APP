@@ -3,7 +3,7 @@
 .mapHeading>span{font-size:10px;letter-spacing:2.2px}
 .mapHeading p{font-size:11px;margin:0;color:#d4d5c2}
 .table{position:relative;padding:5px;border:1px solid #b29a6570;background:#394033;box-shadow:0 22px 60px #15271e66}
-.landscape{position:relative;width:100%;aspect-ratio:4096/2730;overflow:hidden;isolation:isolate;background:#23352b;touch-action:none;cursor:grab;outline-offset:3px;overscroll-behavior:contain}
+.landscape{position:relative;width:100%;aspect-ratio:1672/941;overflow:hidden;isolation:isolate;background:#23352b;touch-action:none;cursor:grab;outline-offset:3px;overscroll-behavior:contain}
 .dragging{cursor:grabbing}
 .plane{position:absolute;left:50%;top:50%;transform-origin:center;transition:transform .55s cubic-bezier(.16,1,.3,1);will-change:transform}
 .dragging .plane{transition:none}
@@ -111,3 +111,17 @@ to{opacity:1;transform:none}
 .hotspot{pointer-events:none}.pin,.label{pointer-events:auto}.pin{position:relative}.pin:before{content:"";position:absolute;inset:-7px}.label{padding:4px 2px}
 
 .passport{display:block;width:100%;margin-top:12px;min-height:44px;background:transparent;border:0;border-top:1px solid #c3af8266;color:#eddfbd;font-size:11px;text-align:left;cursor:pointer}.passport:focus-visible{outline:2px solid #f6e1ae;outline-offset:3px}
+
+/* Keep realistic source texture dominant: selection is a restrained guide, not a new map painting. */
+.activeTrail .trailBed{stroke-width:3;opacity:.35}
+.activeTrail .trailTrack{stroke-width:1.15;opacity:.72}
+.activeTrail .trailLights{stroke-width:2.1;stroke-dasharray:.1 20}
+
+/* The cabin porch and roof are close together in the original oblique art.
+   Keep each visible target owned on compact screens without moving its landmark dot. */
+@media(max-width:700px){
+ .pin:before{inset:-4px}
+ .hotspot[data-place=field-kit] .label{transform:translateY(6px)}
+ .hotspot[data-place=designpd] .label{transform:translateY(6px)}
+ .hotspot[data-place=designid] .label{transform:translateY(1px)}
+}

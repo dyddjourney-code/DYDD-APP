@@ -1,11 +1,11 @@
-.map{position:relative;z-index:2;margin:20px auto 32px;width:96%;max-width:1800px;color:#f0e9d8;animation:approach 240ms steps(6,end) both;font-family:Arial,Helvetica,sans-serif}
+.map{position:relative;z-index:2;margin:20px auto 32px;width:96%;max-width:1800px;color:#f0e9d8;animation:approach 480ms steps(12,end) both;font-family:Arial,Helvetica,sans-serif}
 .mapHeading{display:flex;justify-content:space-between;align-items:center;margin:0 2px 12px;gap:16px}
 .mapHeading>span{font-size:10px;letter-spacing:2.2px}
 .mapHeading p{font-size:11px;margin:0;color:#d4d5c2}
 .table{position:relative;padding:5px;border:1px solid #b29a6570;background:#394033;box-shadow:0 22px 60px #15271e66}
 .landscape{position:relative;width:100%;aspect-ratio:1672/941;overflow:hidden;isolation:isolate;background:#23352b;touch-action:none;cursor:grab;outline-offset:3px;overscroll-behavior:contain}
 .dragging{cursor:grabbing}
-.plane{position:absolute;left:50%;top:50%;transform-origin:center;transition:transform 240ms steps(6,end);will-change:transform}
+.plane{position:absolute;left:50%;top:50%;transform-origin:center;transition:transform 480ms steps(12,end);will-change:transform}
 .dragging .plane{transition:none}
 .plane>img{display:block;width:100%;height:100%;pointer-events:none;user-select:none;object-fit:contain}
 .tools{position:absolute;right:18px;top:18px;z-index:4;display:flex;gap:8px;align-items:flex-start}
@@ -116,12 +116,12 @@ to{opacity:1;transform:none}
 
 /* Approved historical route palette, muted at rest; independent water geometry. */
 .riverFlow{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;fill:none}
-.riverFlow path{stroke:#e3f8f5;stroke-width:.15;stroke-linecap:round;stroke-dasharray:.15 .8;opacity:.28;animation:waterGlint 6s ease-in-out infinite;animation-delay:var(--flow-delay)}
+.riverFlow path{stroke:#e3f8f5;stroke-width:.25;stroke-linecap:round;stroke-dasharray:.38 .65;opacity:.65;animation:waterGlint 2.8s linear infinite;animation-delay:var(--flow-delay)}
 .hotspot[data-side=roof] .label{position:absolute;left:10px;bottom:24px;transform:translate(-50%,0);text-align:center}
 .hotspot[data-place=base-camp] .label{transform:translateY(1px)}
 .hotspot[data-place=field-kit] .label{transform:translateY(8px)}
 .hotspot[data-place=trailheads] .label{transform:translateY(9px)}
-@keyframes waterGlint{0%{opacity:.2;stroke-dashoffset:0}45%{opacity:.52}80%{opacity:.28}100%{opacity:.2;stroke-dashoffset:-3.8}}
+@keyframes waterGlint{0%{opacity:.5;stroke-dashoffset:0}50%{opacity:.85}100%{opacity:.5;stroke-dashoffset:-4.12}}
 @media(max-width:700px){
  .hotspot[data-side=roof] .label{bottom:23px}
  .hotspot[data-place=base-camp] .label{transform:translateY(-2px)}
@@ -146,15 +146,14 @@ to{opacity:1;transform:none}
  .hotspot[data-place=designpd] .label{transform:translateY(8px)}
  .hotspot[data-place=trailheads] .label{transform:translateY(9px)}
 }
-/* One dotted guide per route: no solid underlay, traveling shimmer or stagger.
-   Shared phase makes every dot in every route breathe as a whole. */
-.trails g{opacity:.68;animation:routePulse 6s ease-in-out infinite}
+/* Only the clicked route lights up. A gentle whole-route strobe preserves the original terrain. */
+.trails g{opacity:0;animation:none}
 .trails .activeTrail{opacity:1}
-.trailLights{stroke:var(--route-color);stroke-width:3.6;stroke-dasharray:.01 9;filter:drop-shadow(0 0 2.5px var(--route-color))}
+.trailLights{stroke:var(--route-color);stroke-width:3.6;stroke-dasharray:.01 9;filter:none}
 .activeTrail .trailLights{stroke:var(--route-color);stroke-width:4.2;filter:drop-shadow(0 0 3px var(--route-color))}
-@keyframes routePulse{0%,100%{opacity:.62}50%{opacity:.8}}
-.trails .activeTrail{animation-name:selectedRoutePulse}
-@keyframes selectedRoutePulse{0%,100%{opacity:.88}50%{opacity:1}}
+
+.trails .activeTrail{animation:selectedRoutePulse 2.4s ease-in-out infinite}
+@keyframes selectedRoutePulse{0%,100%{opacity:.32}50%{opacity:1}}
 .hotspot[data-place=start-here]{z-index:2}
 .hotspot[data-place=start-here] .label{font-size:11px;letter-spacing:.5px}
 @media(max-width:700px){.hotspot[data-place=start-here] .label{font-size:9px}}

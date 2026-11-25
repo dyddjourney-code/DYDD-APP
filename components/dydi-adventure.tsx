@@ -5,6 +5,7 @@ import { ArrivalReliefMap } from "@/components/arrival-relief-map";
 import { RangerDesk } from "@/components/ranger-desk";
 import { CourseBook, type CourseBookSummary } from "@/components/course-book";
 import styles from "./dydi-adventure.module.css";
+import { BaseCampNature } from "./base-camp-nature";
 
 export type SceneStop = "camp" | "station" | "desk" | "relief" | "classroom";
 export type SceneRequest = { stop: SceneStop; serial: number };
@@ -40,16 +41,16 @@ export function DydiAdventure({onPassport,onProfile,dock,request,onScene,courses
   }
   function schedule(fn:()=>void,ms:number,run:number){timer.current=setTimeout(()=>{if(version.current===run)fn();},ms);}
   function cameraFrames(fn:()=>void,run:number){
-    // Give the committed source plane a paint before starting its 240ms clock.
+    // Give the committed source plane a paint before starting its 480ms clock.
     // Otherwise a cold compositor can consume the timer before frame one.
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{if(version.current===run)schedule(fn,240,run);}));
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{if(version.current===run)schedule(fn,480,run);}));
   }
   function travel(next:SceneStop){
     cancel();setBook(false);target.current=next;
     if(reducedRef.current||next===current.current){arrive(next);return;}
     const run=version.current;
     setDestination(next);
-    // Six deliberate camera frames, one 240ms trip regardless of origin.
+    // Twelve deliberate camera frames, one 480ms trip regardless of origin.
     setCamera(current.current==="camp"?"steps":next==="classroom"?"hallway":next==="desk"?"desk":next==="relief"?"map":next==="station"&&current.current==="desk"?"rest":"depart");
     cameraFrames(()=>arrive(next),run);
   }
@@ -87,7 +88,7 @@ export function DydiAdventure({onPassport,onProfile,dock,request,onScene,courses
         <div key={scene} className={styles.camera} data-scene-plane data-art={scene}>
           <img className={styles.art} data-source-book={scene==="classroom"?"closed":undefined} src={art[scene]} alt={scene==="camp"?"Forest walkway leading to the Ranger Station steps":scene==="station"?"Ranger Station with a relief map table, hallway ahead and ranger desk on the right":"Learning Center with a closed Discover Your Divine Design book on the reading desk"} width={1672} height={941} fetchPriority="high" draggable={false}/>
           <div className={styles.daylight} data-daylight={scene} aria-hidden="true"/>
-          {scene==="camp"&&<div className={styles.waterfall} aria-hidden="true"><img src={art.camp} alt="" draggable={false}/></div>}
+          {scene==="camp"&&<BaseCampNature/>}
           {scene!=="camp"&&<div className={styles.emission} data-lamp-emission aria-hidden="true">{lanterns[scene].map(([x,y],i)=><img key={i} src={`/brand/lighting/${scene==="station"?"ranger":"archive"}-${i+1}.webp`} alt="" draggable={false} style={{left:`${x}%`,top:`${y}%`,width:`${2*(scene==="station"&&i===5?1.6:scene==="classroom"&&i===5?.8:i===0?.8:.5)}%`,height:`${2*(scene==="station"&&i===5?.32:scene==="classroom"&&i===5?.3:i===0?1.8:1.1)}%`,animationDelay:`${-i*.39}s`}}/>)}</div>}
           <div className={styles.lanterns} aria-hidden="true" data-lanterns>{lanterns[scene].map(([x,y],i)=><i key={`${scene}-${i}`} data-candlelight={`${scene}-${i+1}`} data-light-kind={scene==="station"&&i===5?"wall-bar":"lantern"} style={{left:`${x}%`,top:`${y}%`,animationDelay:`${-i*1.7}s`}}/>)}</div>
           {!walking&&stop==="classroom"&&<button className={styles.bookObject} data-explore-courses disabled={camera==="book"} aria-haspopup="dialog" onClick={openBook}>Explore Courses</button>}

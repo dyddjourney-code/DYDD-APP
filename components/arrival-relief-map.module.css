@@ -41,7 +41,7 @@
 .hotspot:focus-visible,.fullscreen:focus-visible,.access summary:focus-visible,.controls button:focus-visible,.index button:focus-visible,.landscape:focus-visible,.close:focus-visible,.link:focus-visible{outline:2px solid #f6e1ae;outline-offset:3px}
 .compass{position:absolute;left:22px;top:20px;display:grid;text-align:center;pointer-events:none;font-size:9px;letter-spacing:2px;color:#f5e8c5;text-shadow:0 2px 5px #213629}
 .compass span{font-size:25px;font-weight:300;line-height:1.1}
-.exploreNote{position:absolute;bottom:14px;left:18px;font-size:9px;letter-spacing:.5px;color:#f3e6c5;text-shadow:0 1px 6px #183122;pointer-events:none}
+
 .popup{position:fixed;inset:auto 3vw 5vh auto;box-sizing:border-box;width:410px;max-width:calc(100vw - 32px);max-height:calc(100dvh - 40px);overflow:auto;margin:0;padding:30px;background:#223b30f5;backdrop-filter:blur(16px);border:1px solid #dbc79d88;border-radius:4px;box-shadow:0 20px 65px #10281d88,inset 0 1px 0 #fff0d61a;color:#ede8d8;font-family:Arial,Helvetica,sans-serif}
 .popup::backdrop{background:#13291c20}
 .popup h2{font-family:Arial,Helvetica,sans-serif!important;font-size:25px!important;line-height:1.2!important;font-weight:500!important;color:#f2e3be!important;margin:13px 0!important;padding:0 20px 0 0!important}
@@ -80,7 +80,7 @@ to{opacity:1;transform:none}
 .pin{width:5px;height:5px}
 .compass{left:12px;top:12px;font-size:7px}
 .compass span{font-size:18px}
-.exploreNote{font-size:7px;bottom:7px;left:10px}
+
 .popup{inset:auto 12px max(12px,env(safe-area-inset-bottom)) 12px;width:auto;max-width:none;padding:25px;max-height:80dvh}
 .popup h2{font-size:23px!important}
 .popup p{font-size:12px}

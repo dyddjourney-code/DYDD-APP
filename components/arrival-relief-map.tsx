@@ -161,7 +161,6 @@ export function ArrivalReliefMap({ reducedMotion, onOrient, onPassport }: { redu
           {destinations.map(place => <button key={place.id} className={`${styles.hotspot} ${selected === place.id ? styles.selected : ""}`} type="button" data-place={place.id} data-side={["ranger-station", "designid", "fireside", "base-camp", "start-here", "trailheads"].includes(place.id) ? "left" : "right"} aria-label={`Explore ${place.label}`} aria-pressed={selected === place.id} aria-haspopup="dialog" aria-controls="arrival-map-selection" style={{ "--x": `${positions[place.id][0]}%`, "--y": `${positions[place.id][1]}%` } as CSSProperties} onClick={() => choose(place.id)}><span className={styles.pin} aria-hidden="true"/><span className={styles.label}>{place.label}</span></button>)}
         </div>
         <span className={styles.compass} aria-hidden="true">N<span>↑</span></span>
-        <span className={styles.exploreNote} aria-hidden="true">Pinch or scroll to discover more</span>
       </div>
     </div>
     <dialog ref={popup} id="arrival-map-selection" className={styles.popup} aria-labelledby="map-destination-title" onCancel={e=>{e.preventDefault();closePopup();}} onClick={e=>{if(e.target===e.currentTarget){const r=e.currentTarget.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closePopup();}}}>

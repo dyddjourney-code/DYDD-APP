@@ -1,0 +1,26 @@
+{
+  "artworkType": "source-faithful generated physical-relief reconstruction",
+  "provider": "openai",
+  "model": "gpt-image-2",
+  "capability": "image.edit",
+  "sourcePath": "public/brand/environments/ranger.webp",
+  "sourceSha256": "9e92901aab03468ae6175d0cee81fcfa50b95d4806d0da221e61eb927a34ae0c",
+  "outputPath": "public/brand/adventure/realistic-ranger-tabletop.webp",
+  "outputSha256": "dc6b91e0aa0fbc62a2cfdd25ec9858daaf1759bdd647244a92be53f68d21c951",
+  "nativeDimensions": [
+    1672,
+    941
+  ],
+  "ignoredOverrides": [
+    {
+      "key": "resolution",
+      "value": "4K"
+    }
+  ],
+  "prompt": "Use the supplied reference image as the visual source. Generate a source-faithful cinematic close-up photograph of the ACTUAL physical raised topographic relief miniature on its central ranger table, not a new landscape or room view. Wide 16:9 composition. Move camera closer and slightly higher, looking obliquely down so the complete miniature mountain park fills nearly the entire frame, retaining only a thin aged timber model-base edge across foreground and very subtle blurred hints of the same rustic ranger cabin beyond. Preserve reference terrain arrangement and physical appearance: rugged multiple rocky mountain ridgelines across rear and left, tallest craggy pale-brown peaks rear center-left, smaller western ridges foreground-left, densely forested miniature tropical valleys, winding turquoise river beginning distant upper-center, threading central valley toward front-left. Warm oblique golden cabin light from upper-right, convincing deep miniature cast shadows in ravines. Museum-quality handcrafted REAL MATERIAL sculpted relief with individually modeled very small trees, granular rock faces, tactile painted stone and foliage, narrow resin watercourse. Believable macro architectural photography with enough depth of field for intricate terrain, background softly blurred; unmistakably tabletop miniature, never life-size jungle. Integrate only tiny coherently scaled structures: one realistic timber ranger cabin at approximately 79% frame width / 45% frame height beside existing valley path; one tiny timber trailhead gateway at 21% / 43%; a tiny fire circle surrounded by benches in a clearing at 50% / 77%. Narrow paths hug slopes and existing valley, a long narrow switchback hiking route naturally climbs western mountains then descends toward cabin. Exactly one narrow timber footbridge across river in central valley around 54% / 54%. Keep whole model visible, naturally photographic, physically dimensional, intricate. No people, characters, letters, labels, text, UI, contour lines, cartographic illustration, flat painting, procedural heightmap, or computer map. No foreground table accessories obstructing model. Prioritize reference relief topology and sculptural physicality over room scenery.",
+  "limits": [
+    "Generated reconstruction; not literal crop or recovered photography",
+    "Native1672x941; fullscreen4K enlarges source",
+    "Conceptual course routes; not surveyed physical geography"
+  ]
+}

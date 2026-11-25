@@ -42,7 +42,7 @@ export function DydiAdventure({ onPassport }: { onPassport: () => void }) {
     const m=matchMedia("(prefers-reduced-motion: reduce)");
     const change=()=>setReducedMotion(m.matches);
     change();m.addEventListener("change",change);setReady(true);
-    for (const src of ["/brand/environments/ranger.webp", "/brand/environments/archive.webp", "/brand/adventure/relief-landscape.webp"]) { const image = new Image(); image.src = src; }
+    for (const src of ["/brand/environments/ranger.webp", "/brand/environments/archive.webp", "/brand/adventure/terrain-adventure-4k.webp"]) { const image = new Image(); image.src = src; }
     return()=>{m.removeEventListener("change",change);if(timer.current)clearTimeout(timer.current);};
   },[]);
   useEffect(()=>{
@@ -97,7 +97,7 @@ export function DydiAdventure({ onPassport }: { onPassport: () => void }) {
     {interior&&<button className={`${styles.door} ${stop==="doorway"?styles.doorActive:""}`} disabled={walking||!ready} onClick={()=>travel(stop==="doorway"?"classroom":"doorway")} aria-label="Learning Center doorway: enter the classroom"><span>LEARNING CENTER</span><small>Journey classroom <b aria-hidden="true">↗</b></small></button>}
     {stop==="desk"&&!walking&&<div className={styles.sceneObjects} aria-label="Objects in the Ranger Station"><button onClick={()=>travel("relief")} className={styles.mapObject}><span aria-hidden="true">01</span> Explore the relief map</button><button onClick={()=>openDetail("desk")} className={styles.deskObject}><span aria-hidden="true">02</span> Ask at the ranger desk</button></div>}
     {stop==="trail"&&!walking&&<div className={styles.signpost} aria-label="Trail choices"><span>The trails ahead</span><button onClick={()=>{setIntent("explore");travel("desk");}}>Help me see the whole picture <b>→</b></button><button onClick={()=>{setIntent("begin");travel("doorway");}}>I’m ready for the Journey <b>→</b></button><ReviewAwareLink href="/trailheads">Explore a focused trail <b>↗</b></ReviewAwareLink></div>}
-    {stop==="relief"&&<div inert={walking}><ArrivalReliefMap reducedMotion={quiet} onOrient={travel}/></div>}
+    {stop==="relief"&&<div inert={walking}><ArrivalReliefMap reducedMotion={quiet} onOrient={travel} onPassport={onPassport}/></div>}
     <div className={styles.bottom}>
       <div className={styles.guideVoice}>
         <div className={styles.voiceHeader}><span className={styles.voiceName}>{walking?"On the trail":s.place}</span><div className={styles.voiceControls}><button onClick={()=>{if(destination&&!quiet)arrive(destination);setMotionPaused(!motionPaused);}} disabled={!ready||reducedMotion} aria-pressed={quiet} aria-label={reducedMotion?"Reduced motion is enabled on your device":quiet?"Enable scene motion":"Pause scene motion"}>{reducedMotion?"Reduced motion":quiet?"Motion off":"Motion on"}</button></div></div>

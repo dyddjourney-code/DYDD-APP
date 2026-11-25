@@ -2,29 +2,23 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { ReviewAwareLink } from "@/components/review-aware-link";
+import { mapTerrain, positions, trails, routeNotes } from "./arrival-map-geography";
 import { mapPoints } from "./arrival-map-places";
 import styles from "./arrival-relief-map.module.css";
 
-// Geographic placement on the existing, unchanged landscape. Trails are orientation
-// overlays, not new course content or a claim of measured park geography.
-const positions: Record<string, [number, number]> = {
-  "start-here": [10, 83], "base-camp": [69, 85], "ranger-station": [70, 66],
-  trailheads: [21, 45], fireside: [50, 77], "camp-circles": [87, 72],
-  waypoints: [50, 14], "dydd-journey": [37, 64], "spiritual-gifts": [34, 34],
-  "fruitlife-360": [47, 43], designpd: [70, 23], designid: [54, 29], "field-kit": [79, 45],
-};
 const destinations = [...mapPoints, { id: "field-kit", label: "Field Kit", title: "Gather your discoveries", body: "Return to your available results, reports and Journey reflections. The discoveries you bring back from the trail have a place here.", bullets: ["Available assessment results and reports", "Journey reflections"], href: "/field-kit", cta: "Open Field Kit", type: "place" }];
-const trails = [
-  { id: "dydd-journey", d: "M69 85 Q54 90 37 64 Q22 61 21 45 Q25 18 50 14" },
-  { id: "spiritual-gifts", d: "M21 45 Q26 37 34 34 Q42 22 50 14" },
-  { id: "fruitlife-360", d: "M21 45 Q33 51 47 43 Q53 38 54 29" },
-  { id: "designid", d: "M21 45 Q39 37 54 29 Q59 19 70 23" },
-  { id: "designpd", d: "M54 29 Q62 35 70 23 Q78 24 79 45" },
-];
 type View = { x: number; y: number; z: number };
 const overview: View = { x: 0, y: 0, z: 1 };
-export function ArrivalReliefMap({ reducedMotion, onOrient }: { reducedMotion: boolean; onOrient: (place: "camp" | "desk") => void }) {
-  const [selected, setSelected] = useState("start-here");
+export function ArrivalReliefMap({ reducedMotion, onOrient, onPassport }: { reducedMotion: boolean; onOrient: (place: "camp" | "desk") => void; onPassport: () => void }) {
+  const [selected, setSelected] = useState("");
+  const [expanded, setExpanded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [imageReady, setImageReady] = useState(false);
+  const host = useRef<HTMLElement>(null);
+  const popup = useRef<HTMLDialogElement>(null);
+  const opener = useRef<HTMLElement | null>(null);
+  const planeSize = useRef({width: 0, height: 0});
+  const [plane, setPlane] = useState({width: 0, height: 0});
   const [view, setView] = useState<View>(overview);
   const [dragging, setDragging] = useState(false);
   const viewport = useRef<HTMLDivElement>(null);
@@ -32,23 +26,83 @@ export function ArrivalReliefMap({ reducedMotion, onOrient }: { reducedMotion: b
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const moved = useRef(false);
   const origins = useRef(new Map<number, { x: number; y: number }>());
-  const active = destinations.find(place => place.id === selected)!;
+  const active = destinations.find(place => place.id === selected);
   function update(next: View) {
     const surface = viewport.current;
     const z = Math.max(1, Math.min(3, next.z));
-    const bx = (surface?.clientWidth ?? 0) * (z - 1) / 2;
-    const by = (surface?.clientHeight ?? 0) * (z - 1) / 2;
+    const bx = Math.max(0, (planeSize.current.width * z - (surface?.clientWidth ?? 0)) / 2);
+    const by = Math.max(0, (planeSize.current.height * z - (surface?.clientHeight ?? 0)) / 2);
     const value = { z, x: Math.max(-bx, Math.min(bx, next.x)), y: Math.max(-by, Math.min(by, next.y)) };
     current.current = value; setView(value);
   }
-  useEffect(() => { const observer = new ResizeObserver(() => update(current.current)); if (viewport.current) observer.observe(viewport.current); return () => observer.disconnect(); }, []);
+  useEffect(() => {
+    const surface = viewport.current;
+    if (!surface) return;
+    const resize = () => {
+      const width = Math.min(surface.clientWidth, surface.clientHeight * mapTerrain.width / mapTerrain.height);
+      const size = {width, height: width * mapTerrain.height / mapTerrain.width};
+      planeSize.current = size; setPlane(size); update(current.current);
+    };
+    const observer = new ResizeObserver(resize); observer.observe(surface); resize();
+    return () => observer.disconnect();
+  }, []);
+  useEffect(() => {
+    const surface = viewport.current;
+    if (!surface) return;
+    const wheel = (event: WheelEvent) => {
+      const z=current.current.z;
+      if (host.current?.dataset.expanded !== "true" && ((z <= 1 && event.deltaY > 0) || (z >= 3 && event.deltaY < 0))) return;
+      event.preventDefault();
+      const r=surface.getBoundingClientRect();
+      zoom(current.current.z * Math.exp(-Math.max(-100, Math.min(100, event.deltaY)) * .002), event.clientX-r.x-r.width/2, event.clientY-r.y-r.height/2);
+    };
+    surface.addEventListener("wheel", wheel, {passive:false});
+    return () => surface.removeEventListener("wheel", wheel);
+  }, []);
+  useEffect(() => {
+    const change = () => { if (!document.fullscreenElement) setExpanded(false); };
+    document.addEventListener("fullscreenchange", change);
+    return () => document.removeEventListener("fullscreenchange", change);
+  }, []);
+  useEffect(() => {
+    if (!expanded) return;
+    const old = document.body.style.overflow;
+    const previous = document.activeElement as HTMLElement | null;
+    document.body.style.overflow = "hidden";
+    const focusFrame = requestAnimationFrame(() => viewport.current?.focus({preventScroll:true}));
+    const keydown = (event: KeyboardEvent) => {
+      if (popup.current?.open) return;
+      if (event.key === "Escape") { setExpanded(false); if (document.fullscreenElement) void document.exitFullscreen(); }
+      if (event.key === "Tab") {
+        const items = [...(host.current?.querySelectorAll<HTMLElement>('button:not([disabled]), summary, a[href], [tabindex="0"]') ?? [])].filter(item => item.getBoundingClientRect().width && item.getBoundingClientRect().height);
+        const first=items[0],last=items[items.length-1];
+        if (!host.current?.contains(document.activeElement) || (event.shiftKey && document.activeElement===first) || (!event.shiftKey && document.activeElement===last)) { event.preventDefault(); (event.shiftKey ? last : first)?.focus(); }
+      }
+    };
+    document.addEventListener("keydown", keydown);
+    return () => { cancelAnimationFrame(focusFrame); document.body.style.overflow = old; document.removeEventListener("keydown", keydown); if(previous?.isConnected)previous.focus({preventScroll:true}); };
+  }, [expanded]);
+
+  async function fullscreen() {
+    if (expanded) { setExpanded(false); if (document.fullscreenElement) await document.exitFullscreen(); }
+    else { setExpanded(true); try { await host.current?.requestFullscreen?.(); } catch { /* Viewport-filling fallback for browsers without Fullscreen API support. */ } }
+  }
+  async function openPassport() {
+    host.current?.querySelector("details")?.removeAttribute("open");
+    setExpanded(false);
+    if (document.fullscreenElement) await document.exitFullscreen();
+    host.current?.querySelector("summary")?.focus({preventScroll:true});
+    onPassport();
+  }
+  function closePopup() { popup.current?.close(); opener.current?.focus({preventScroll: true}); }
   function zoom(z: number, x = 0, y = 0) {
     const old = current.current; const scale = Math.max(1, Math.min(3, z)) / old.z;
     update({ z, x: x - (x - old.x) * scale, y: y - (y - old.y) * scale });
   }
   function choose(id: string) {
-    setSelected(id); const [x, y] = positions[id]; const r = viewport.current?.getBoundingClientRect();
-    if (r) update({ z: 1.7, x: (50 - x) / 100 * r.width * 1.7, y: (50 - y) / 100 * r.height * 1.7 });
+    opener.current = host.current?.querySelector(`[aria-label="Explore ${destinations.find(place => place.id === id)?.label}"]`) as HTMLElement | null;
+    setSelected(id);
+    requestAnimationFrame(() => { if (!popup.current?.open) popup.current?.showModal(); });
   }
   function down(e: PointerEvent<HTMLDivElement>) {
     if (e.pointerType === "mouse" && e.button !== 0) return;
@@ -70,28 +124,48 @@ export function ArrivalReliefMap({ reducedMotion, onOrient }: { reducedMotion: b
       const before = Math.hypot(previous.x - other.x, previous.y - other.y);
       const after = Math.hypot(next.x - other.x, next.y - other.y);
       const r = e.currentTarget.getBoundingClientRect();
-      if (before > 0) zoom(current.current.z * after / before, (next.x + other.x) / 2 - r.x - r.width / 2, (next.y + other.y) / 2 - r.y - r.height / 2);
+      if (before > 0) {
+        const old=current.current,z=Math.max(1,Math.min(3,old.z*after/before)),scale=z/old.z;
+        const oldMid={x:(previous.x+other.x)/2-r.x-r.width/2,y:(previous.y+other.y)/2-r.y-r.height/2};
+        const newMid={x:(next.x+other.x)/2-r.x-r.width/2,y:(next.y+other.y)/2-r.y-r.height/2};
+        update({z,x:newMid.x-(oldMid.x-old.x)*scale,y:newMid.y-(oldMid.y-old.y)*scale});
+      }
     } else update({ ...current.current, x: current.current.x + next.x - previous.x, y: current.current.y + next.y - previous.y });
     pointers.current.set(e.pointerId, next);
   }
   function up(e: PointerEvent<HTMLDivElement>) { pointers.current.delete(e.pointerId); origins.current.delete(e.pointerId); setDragging(pointers.current.size > 0); }
-  return <section className={`${styles.map} ${reducedMotion ? styles.quiet : ""}`} aria-label="Interactive relief landscape" data-arrival-map>
-    <div className={styles.toolbar}><p className={styles.mapNote}>Ranger Station · Relief table <span>Zoom or pinch in, then drag · Select a place to learn more</span></p><div className={styles.controls} aria-label="Map view controls"><button type="button" aria-label="Zoom out" disabled={view.z <= 1} onClick={() => zoom(view.z - .25)}>−</button><output aria-label="Map zoom">{Math.round(view.z * 100)}%</output><button type="button" aria-label="Zoom in" disabled={view.z >= 3} onClick={() => zoom(view.z + .25)}>+</button><button type="button" onClick={() => update(overview)}>Overview</button></div></div>
-    <div className={styles.table}><div ref={viewport} className={`${styles.landscape} ${dragging ? styles.dragging : ""}`} data-map-viewport tabIndex={0} aria-label="Relief map. Arrow keys pan; plus and minus zoom; Home returns to overview." onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onLostPointerCapture={up} onClickCapture={e => { const dragged = moved.current; moved.current = false; if (dragged && e.detail > 0) { e.preventDefault(); e.stopPropagation(); } }} onKeyDown={e => {
-      if (e.target !== e.currentTarget) return;
-      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "+", "=", "-", "Home"].includes(e.key)) e.preventDefault();
-      if (e.key === "Home") update(overview);
-      else if (e.key === "+" || e.key === "=") zoom(current.current.z + .25);
-      else if (e.key === "-") zoom(current.current.z - .25);
-      else if (e.key.startsWith("Arrow")) update({ ...current.current, x: current.current.x + (e.key === "ArrowLeft" ? 45 : e.key === "ArrowRight" ? -45 : 0), y: current.current.y + (e.key === "ArrowUp" ? 45 : e.key === "ArrowDown" ? -45 : 0) });
-    }}>
-      <div className={styles.plane} data-map-plane data-zoom={view.z} data-pan-x={view.x} data-pan-y={view.y} style={{ transform: `translate3d(${view.x}px,${view.y}px,0) scale(${view.z})`, "--inverse-zoom": 1 / view.z } as CSSProperties}>
-        <img src="/brand/adventure/relief-landscape.webp" alt="Raised forest relief landscape with branching trails, an archive cabin, fireside clearing and a winding river" width={1672} height={941} fetchPriority="high" draggable={false} />
-        <svg className={styles.trails} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">{trails.map(trail => <path key={trail.id} pathLength={100} d={trail.d} className={selected === trail.id ? styles.activeTrail : ""} />)}</svg>
-        {destinations.map((place, index) => <button key={place.id} className={`${styles.hotspot} ${selected === place.id ? styles.selected : ""}`} type="button" aria-label={`Explore ${place.label}`} aria-pressed={selected === place.id} aria-controls="arrival-map-selection" style={{ "--x": `${positions[place.id][0]}%`, "--y": `${positions[place.id][1]}%` } as CSSProperties} onClick={() => choose(place.id)}><span className={styles.pin} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><span className={styles.label}>{place.label}</span></button>)}
-      </div><span className={styles.compass} aria-hidden="true">N <span>↑</span></span>
-    </div><div className={styles.tableEdge}>DISCOVER YOUR DIVINE DESIGN <span>Choose your next faithful step</span></div></div>
-    <nav className={styles.index} aria-label="Relief map destinations">{destinations.map(place => <button type="button" key={place.id} aria-pressed={selected === place.id} onClick={() => choose(place.id)}>{place.label}</button>)}</nav>
-    <div id="arrival-map-selection" className={styles.selection} aria-label="Selected destination"><div aria-live="polite" aria-atomic="true"><p className={styles.place}>{active.type === "trail" ? "Trail" : "Place"} · {active.label}</p><h2>{active.title}</h2><p>{active.body}</p><ul>{active.bullets.map(b => <li key={b}>{b}</li>)}</ul></div>{active.id === "ranger-station" || active.id === "base-camp" || active.id === "start-here" ? <button type="button" className={styles.link} onClick={() => onOrient(active.id === "ranger-station" ? "desk" : "camp")}>{active.cta}<span aria-hidden="true">↗</span></button> : <ReviewAwareLink href={active.href} className={styles.link}>{active.cta}<span aria-hidden="true">↗</span></ReviewAwareLink>}</div>
+  return <section ref={host} className={`${styles.map} ${reducedMotion ? styles.quiet : ""} ${expanded ? styles.expanded : ""}`} aria-label="Interactive relief landscape" data-arrival-map data-expanded={expanded}>
+    <div className={styles.mapHeading}><span>THE DYDD PARK</span><p>A place to discover. A trail to follow.</p></div>
+    <div className={styles.table}>
+      <div className={styles.tools}>
+        <details className={styles.access}><summary aria-label="Map help and accessible destinations">Map guide</summary><div className={styles.guide}><p>Scroll or pinch to zoom. Drag to explore. Select a name and dot for details.</p><p>Keyboard: + / − to zoom, arrows to pan, Home for the whole park.</p><div className={styles.controls}><button type="button" aria-label="Zoom out" disabled={view.z <= 1} onClick={() => zoom(view.z - .25)}>−</button><output aria-label="Map zoom">{Math.round(view.z * 100)}%</output><button type="button" aria-label="Zoom in" disabled={view.z >= 3} onClick={() => zoom(view.z + .25)}>+</button><button type="button" onClick={() => update(overview)}>Whole park</button></div><nav className={styles.index} aria-label="Relief map destinations">{destinations.map(place => <button type="button" key={place.id} aria-pressed={selected === place.id} onClick={() => { host.current?.querySelector("details")?.removeAttribute("open"); choose(place.id); }}>{place.label}</button>)}</nav><button type="button" className={styles.passport} onClick={() => void openPassport()}>Open my Passport</button></div></details>
+        <button type="button" className={styles.fullscreen} aria-label={expanded ? "Exit full screen map" : "Full screen map"} aria-pressed={expanded} onClick={() => void fullscreen()}><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">{expanded ? <path d="M9 3v6H3m18 0h-6V3M3 15h6v6m6 0v-6h6"/> : <path d="M9 3H3v6m12-6h6v6M3 15v6h6m6 0h6v-6"/>}</svg></button>
+      </div>
+      <div ref={viewport} className={`${styles.landscape} ${dragging ? styles.dragging : ""}`} style={{aspectRatio: expanded ? undefined : `${mapTerrain.width}/${mapTerrain.height}`}} data-map-viewport tabIndex={0} aria-label="Relief map. Arrow keys pan; plus and minus zoom; Home returns to overview." onDoubleClick={() => { if (!moved.current) zoom(current.current.z < 2 ? 2 : 1); }} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onLostPointerCapture={up} onClickCapture={e => { const dragged = moved.current; moved.current = false; if (dragged && e.detail > 0) { e.preventDefault(); e.stopPropagation(); } }} onKeyDown={e => {
+        if (e.target !== e.currentTarget) return;
+        if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "+", "=", "-", "Home"].includes(e.key)) e.preventDefault();
+        if (e.key === "Home") update(overview);
+        else if (e.key === "+" || e.key === "=") zoom(current.current.z + .25);
+        else if (e.key === "-") zoom(current.current.z - .25);
+        else if (e.key.startsWith("Arrow")) update({ ...current.current, x: current.current.x + (e.key === "ArrowLeft" ? 45 : e.key === "ArrowRight" ? -45 : 0), y: current.current.y + (e.key === "ArrowUp" ? 45 : e.key === "ArrowDown" ? -45 : 0) });
+      }}>
+        {!imageReady && !imageError && <div className={styles.loading} aria-label="Loading park landscape"/>}
+        {imageError && <p className={styles.imageError} role="status">The landscape could not load. Use Map guide to explore every destination.</p>}
+        <div className={styles.plane} data-map-plane data-zoom={view.z} data-pan-x={view.x} data-pan-y={view.y} style={{ width:plane.width || "100%",height:plane.height || "100%",transform: `translate3d(calc(-50% + ${view.x}px),calc(-50% + ${view.y}px),0) scale(${view.z})`, "--inverse-zoom": 1 / view.z } as CSSProperties}>
+          <img src={mapTerrain.image} alt="Overhead forest park relief: alpine ridge and switchbacks in the northwest, meadow trails, one ranger cabin, fire and gathering circles, and a navigable river to the east" width={mapTerrain.width} height={mapTerrain.height} fetchPriority="high" draggable={false} onLoad={() => setImageReady(true)} onError={() => setImageError(true)} />
+          <svg className={styles.trails} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">{trails.map(trail => <g key={trail.id} data-trail={trail.id} className={selected === trail.id ? styles.activeTrail : ""}><path className={styles.trailBed} d={trail.d}/><path className={styles.trailTrack} d={trail.d}/><path className={styles.trailLights} d={trail.d}/></g>)}</svg>
+          <svg className={styles.detailsArt} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            {selected === "fireside" && <g className={styles.fireWarmth}><ellipse cx="51" cy="77" rx=".6" ry=".9" fill="#e4b06b" opacity=".25"/><ellipse cx="51" cy="77" rx=".17" ry=".25" fill="#f7d69a"/></g>}
+            {selected === "designid" && <g transform="translate(77 65) rotate(-12)"><ellipse rx=".35" ry=".9" fill="#433d29" opacity=".35" transform="translate(.12 .12)"/><path d="M0 -.85 Q.55 -.4 .25 .7 L-.25 .7 Q-.55 -.4 0 -.85" fill="#d4bb81" stroke="#665035" strokeWidth=".08"/><path d="M-.22 -.1H.22M-.22 .35H.22" stroke="#8c7248" strokeWidth=".12"/></g>}
+          </svg>
+          {destinations.map(place => <button key={place.id} className={`${styles.hotspot} ${selected === place.id ? styles.selected : ""}`} type="button" data-place={place.id} data-side={["ranger-station", "designid", "fireside", "base-camp", "start-here", "trailheads"].includes(place.id) ? "left" : "right"} aria-label={`Explore ${place.label}`} aria-pressed={selected === place.id} aria-haspopup="dialog" aria-controls="arrival-map-selection" style={{ "--x": `${positions[place.id][0]}%`, "--y": `${positions[place.id][1]}%` } as CSSProperties} onClick={() => choose(place.id)}><span className={styles.pin} aria-hidden="true"/><span className={styles.label}>{place.label}</span></button>)}
+        </div>
+        <span className={styles.compass} aria-hidden="true">N<span>↑</span></span>
+        <span className={styles.exploreNote} aria-hidden="true">Pinch or scroll to discover more</span>
+      </div>
+    </div>
+    <dialog ref={popup} id="arrival-map-selection" className={styles.popup} aria-labelledby="map-destination-title" onCancel={e=>{e.preventDefault();closePopup();}} onClick={e=>{if(e.target===e.currentTarget){const r=e.currentTarget.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closePopup();}}}>
+      {active && <><button autoFocus type="button" className={styles.close} aria-label="Close destination details" onClick={closePopup}>×</button><p className={styles.place}>{active.type === "trail" ? "Explore the trail" : "A place in the park"} · {active.label}</p><h2 id="map-destination-title">{active.title}</h2>{routeNotes[active.id] && <p className={styles.routeNote}>{routeNotes[active.id]}</p>}<p>{active.body}</p><ul>{active.bullets.map(b => <li key={b}>{b}</li>)}</ul>{active.id === "ranger-station" || active.id === "base-camp" || active.id === "start-here" ? <button type="button" className={styles.link} onClick={() => { closePopup(); setExpanded(false); if(document.fullscreenElement)void document.exitFullscreen(); onOrient(active.id === "ranger-station" ? "desk" : "camp"); }}>{active.cta}<span aria-hidden="true">↗</span></button> : <ReviewAwareLink href={active.href} className={styles.link}>{active.cta}<span aria-hidden="true">↗</span></ReviewAwareLink>}</>}
+    </dialog>
   </section>;
 }

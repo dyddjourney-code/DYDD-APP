@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ArrivalReliefMap } from "@/components/arrival-relief-map";
 import { RangerDesk } from "@/components/ranger-desk";
-import { CourseBook } from "@/components/course-book";
+import { CourseBook, type CourseBookSummary } from "@/components/course-book";
 import styles from "./dydi-adventure.module.css";
 
 export type SceneStop = "camp" | "station" | "desk" | "relief" | "classroom";
@@ -15,7 +15,7 @@ const art = {camp:"/brand/sandbox2-jungle.webp",station:"/brand/environments/ran
 const lanterns = {camp:[[65.4,39.8],[69.2,39],[70.8,42.1],[81,36.8],[86.3,38.7]],station:[[49.7,15],[21.5,30],[37.2,25.5],[61.5,25.5],[89.8,50]],classroom:[[64,14],[55,23.8],[49.2,33.2],[63.8,33.2],[81,18]]};
 
 /** Presentation only: camera crops of approved art; no account/progress writes. */
-export function DydiAdventure({onPassport,request,onScene}:{onPassport:()=>void;request?:SceneRequest|null;onScene?:(stop:SceneStop)=>void}) {
+export function DydiAdventure({onPassport,request,onScene,courses}:{courses:readonly CourseBookSummary[];onPassport:()=>void;request?:SceneRequest|null;onScene?:(stop:SceneStop)=>void}) {
   const [stop,setStop]=useState<SceneStop>("camp");
   const [camera,setCamera]=useState<Camera>("rest");
   const [destination,setDestination]=useState<SceneStop|null>(null);
@@ -109,6 +109,6 @@ export function DydiAdventure({onPassport,request,onScene}:{onPassport:()=>void;
       </div>
       {stop==="desk"&&!walking&&<div className={styles.deskReturn}><button onClick={()=>travel("station")}>← Back to Ranger Station</button><details className={styles.deskGuide}><summary>Ranger guide</summary><RangerDesk unhosted/></details></div>}
     </>}
-    {book&&<CourseBook onClose={closeBook}/>}
+    {book&&<CourseBook courses={courses} onClose={closeBook}/>}
   </section>;
 }

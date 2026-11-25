@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { allCourseSummaries } from "@/lib/courses/course-catalog";
 import { AppChrome } from "@/components/app-chrome";
 import "./globals.css";
 import "./field-guide.css";
@@ -20,10 +21,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Project public metadata on the server; never bundle gated lesson bodies with the book.
+  const courseBook=allCourseSummaries.map(({slug,title,description,hrefBase,logo})=>({slug,title,description,hrefBase,logo}));
   return (
     <html lang="en">
       <body>
-        <AppChrome>{children}</AppChrome>
+        <AppChrome courses={courseBook}>{children}</AppChrome>
       </body>
     </html>
   );

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import type { CourseBookSummary } from "@/components/course-book";
 import { DydiAdventure, type SceneRequest } from "@/components/dydi-adventure";
 import { DestinationRoom } from "@/components/destination-room";
 import { EnvironmentRoute } from "@/components/environment-route";
@@ -30,7 +31,7 @@ export function ForestIcon({ name }: { name: string }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name] ?? paths.compass}</svg>;
 }
 
-export function ForestNavigation({children}:{children:ReactNode}) {
+export function ForestNavigation({children,courses}:{children:ReactNode;courses:readonly CourseBookSummary[]}) {
   const pathname = usePathname();
   const atCamp = pathname === "/hq" || pathname === "/base-camp" || pathname === "/";
   const [place,setPlace] = useState<Place|null>(null);
@@ -65,7 +66,7 @@ export function ForestNavigation({children}:{children:ReactNode}) {
       <div className="game-location"><ForestIcon name={atCamp?"camp":"journey"}/><span>{atCamp?"Base Camp":"On the trail"}</span></div>
       <button className="game-profile" onClick={()=>open("profile")}>Traveler profile</button>
     </header>
-    {atCamp ? <main id="forest-content" className="adventure-main" tabIndex={-1}><DydiAdventure request={sceneRequest} onPassport={()=>open("passport")}/></main> : <EnvironmentRoute pathname={pathname}><div className="game-route" id="forest-content" tabIndex={-1}>
+    {atCamp ? <main id="forest-content" className="adventure-main" tabIndex={-1}><DydiAdventure courses={courses} request={sceneRequest} onPassport={()=>open("passport")}/></main> : <EnvironmentRoute pathname={pathname}><div className="game-route" id="forest-content" tabIndex={-1}>
       <ReviewAwareLink className="game-return" href="/base-camp">← Return to Base Camp</ReviewAwareLink>
       <div className="game-reading">{children}</div>
       <footer className="game-support"><ReviewAwareLink href="/contact">Contact</ReviewAwareLink><ReviewAwareLink href="/privacy">Privacy</ReviewAwareLink><ReviewAwareLink href="/terms">Terms</ReviewAwareLink></footer>

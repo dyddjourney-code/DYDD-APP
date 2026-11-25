@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
-import { allCourseSummaries } from "@/lib/courses/course-catalog";
 import { trailDefinitions } from "@/lib/trails/catalog";
 import { ReviewAwareLink } from "@/components/review-aware-link";
 import styles from "./course-book.module.css";
 
-export function CourseBook({ onClose }: { onClose: () => void }) {
+export type CourseBookSummary = { slug: string; title: string; description: string; hrefBase: string; logo: string };
+
+export function CourseBook({ onClose, courses }: { onClose: () => void; courses: readonly CourseBookSummary[] }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const onCloseRef = useRef(onClose);
@@ -40,10 +41,10 @@ export function CourseBook({ onClose }: { onClose: () => void }) {
   function selectTab(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     let next: number;
     switch (event.key) {
-      case "ArrowRight": next = (index + 1) % allCourseSummaries.length; break;
-      case "ArrowLeft": next = (index - 1 + allCourseSummaries.length) % allCourseSummaries.length; break;
+      case "ArrowRight": next = (index + 1) % courses.length; break;
+      case "ArrowLeft": next = (index - 1 + courses.length) % courses.length; break;
       case "Home": next = 0; break;
-      case "End": next = allCourseSummaries.length - 1; break;
+      case "End": next = courses.length - 1; break;
       default: return;
     }
     event.preventDefault();
@@ -80,7 +81,7 @@ export function CourseBook({ onClose }: { onClose: () => void }) {
         </button>
       </header>
       <div className={styles.tabs} role="tablist" aria-label="Courses">
-        {allCourseSummaries.map((course, index) => (
+        {courses.map((course, index) => (
           <button
             key={course.slug}
             ref={(node) => { tabRefs.current[index] = node; }}
@@ -100,7 +101,7 @@ export function CourseBook({ onClose }: { onClose: () => void }) {
           </button>
         ))}
       </div>
-      {allCourseSummaries.map((course, index) => {
+      {courses.map((course, index) => {
         const trail = trailDefinitions.find((item) => item.courseSlug === course.slug);
         const journey = course.slug === "discover-your-divine-design";
         return (

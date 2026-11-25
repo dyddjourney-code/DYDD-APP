@@ -149,3 +149,10 @@ body:has(.game-world)::before { display:none!important; }
 .game-at-camp .game-bottom { padding-top:16px; background:#112017; }
 .game-at-camp .game-caption { max-width:250px; }
 @media(max-width:700px){ .game-at-camp .game-bottom {padding:14px 3.5% 20px;} .game-at-camp .game-dock button {min-height:65px;} }
+
+/* Approved transparent white wordmark, including the original icon. */
+.game-top .game-mark{display:block;width:clamp(150px,19vw,235px);height:auto;line-height:0;padding:0}
+.game-top .game-mark img{display:block;width:100%;height:auto;max-height:74px;object-fit:contain}
+@media(max-width:700px){.game-top .game-mark{width:146px;flex-shrink:0}.game-top .game-mark img{max-height:49px}}
+@media(max-width:700px){.game-top{flex-wrap:wrap;gap:8px 16px;padding:12px 4%}.game-top .game-location{display:flex;order:3;width:100%;margin:0;font-size:10px;letter-spacing:.5px;gap:7px}.game-location svg{width:17px;height:17px}.game-top .game-profile{margin-left:auto;padding:10px;font-size:9px;letter-spacing:.3px}.game-at-camp .game-bottom{justify-content:center}.game-at-camp .game-dock{width:100%}}
+.game-top .game-location{display:flex}

@@ -20,7 +20,7 @@ over7.6s; calm water, source terrain, boats, landmarks remain static.
 Lights: `useNaturalLampFlicker` regenerates independent fresh duration/target
 segments (1.4–4s; opacity61–69%; glass brightness97–103%). No looping pulse,
 flame skew/scale or synchronized flashes. Native WAAPI handles are cancelled on
-scene changes, unmount and reduced-motion changes; source positions/glass unchanged.
+actual stop/mount changes, active camera/book travel, unmount and reduced-motion changes; source positions/glass unchanged.
 Reduced motion disables nature/river/travel and leaves only the selected route
 steady. Existing clicked-only trail behavior and colors are unchanged.
 

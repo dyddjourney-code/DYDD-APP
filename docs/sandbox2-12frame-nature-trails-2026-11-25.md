@@ -1,3 +1,5 @@
+> Historical release notes. Current motion is superseded by [natural motion refinement](sandbox2-natural-motion-2026-11-26.md): smooth780ms, restrained nonperiodic lighting and source-only water.
+
 # Sandbox2: twelve-frame travel and localized nature
 
 Scope: only `dydd-online-school-sandbox-2.vercel.app`, project `prj_OIFpZrQcv3uqs14PEiBD1lVngXrH`. Deploy solely through `scripts/deploy-sandbox2.mjs` on the existing pinned Sandbox2 branch. Never use the original sandbox deployment script.

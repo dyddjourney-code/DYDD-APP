@@ -36,7 +36,7 @@ export function DydiAdventure({onPassport,onProfile,dock,request,onScene,courses
   const target=useRef<SceneStop|null>(null);
   const scene=stop==="camp"?"camp":stop==="classroom"?"classroom":"station";
   const walking=destination!==null;
-  useNaturalLampFlicker(atmosphere, scene);
+  useNaturalLampFlicker(atmosphere, stop, !walking && camera !== "book");
   function cancel(){version.current++;if(timer.current)clearTimeout(timer.current);}
   function arrive(next:SceneStop){
     cancel();target.current=null;current.current=next;pendingFocus.current=true;

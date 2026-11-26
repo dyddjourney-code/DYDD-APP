@@ -5,7 +5,7 @@ import { useEffect, type RefObject } from "react";
 /** Independent bounded intensity wander, not a repeating pulse or moving flame.
  * Each completed interval chooses a fresh duration/target; reduced motion cancels
  * every owned animation and restores the static source-backed lighting. */
-export function useNaturalLampFlicker(root: RefObject<HTMLElement | null>, scene: string) {
+export function useNaturalLampFlicker(root: RefObject<HTMLElement | null>, scene: string, enabled = true) {
   useEffect(() => {
     const host = root.current;
     if (!host) return;
@@ -15,7 +15,7 @@ export function useNaturalLampFlicker(root: RefObject<HTMLElement | null>, scene
     const clear = () => { for (const animation of active) { animation.onfinish = null; animation.cancel(); } active.clear(); };
     const start = () => {
       clear();
-      if (media.matches || stopped) return;
+      if (media.matches || stopped || !enabled) return;
       const lamps = host.querySelectorAll<HTMLElement>("[data-candlelight], [data-room-lamp]");
       const glass = host.querySelectorAll<HTMLElement>("[data-lamp-emission] img, [data-room-emission] img");
       const wander = (element: HTMLElement, emission: boolean, previous: number) => {
@@ -38,5 +38,5 @@ export function useNaturalLampFlicker(root: RefObject<HTMLElement | null>, scene
     };
     start(); media.addEventListener("change", start);
     return () => { stopped = true; media.removeEventListener("change", start); clear(); };
-  }, [root, scene]);
+  }, [root, scene, enabled]);
 }

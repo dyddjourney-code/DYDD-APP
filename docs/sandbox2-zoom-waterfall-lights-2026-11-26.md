@@ -18,7 +18,9 @@ camera transition; map arrival/departure also move. No artwork/layout changes.
 
 Rapid route/book commands during arrival coalesce to the latest requested action,
 which begins after the current visible handoff completes. Explicit Skip movement
-commits the final scene with no arrival animation. Reduced-motion changes cancel
+commits the final scene with no arrival animation. Hosted native-input QA also
+found the persistent dock intercepted the old Skip control; its temporary status
+row now sits above the dock with explicit hit ownership. Resting layout is unchanged. Reduced-motion changes cancel
 native camera/lamp animations and pending travel, then resolve the latest request.
 Source clones omit UI/headings/IDs, are inert, pointer-free, and removed on finish,
 new departure or unmount. Lamp lifecycle explicitly excludes transient clones.

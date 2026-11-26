@@ -100,3 +100,7 @@
 .adventure[data-camera=book] .camera *::after{animation-play-state:paused!important}
 
 .lanterns i::after{opacity:.65;animation:none;transform:none}
+
+/* The temporary travel control must own its hit area above the persistent dock. */
+.arrival{bottom:110px;z-index:4}
+@media(max-width:700px){.arrival{bottom:164px}}

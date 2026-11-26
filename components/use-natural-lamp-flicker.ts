@@ -16,14 +16,14 @@ export function useNaturalLampFlicker(root: RefObject<HTMLElement | null>, scene
     const start = () => {
       clear();
       if (media.matches || stopped || !enabled) return;
-      const lamps = host.querySelectorAll<HTMLElement>("[data-candlelight], [data-room-lamp]");
-      const glass = host.querySelectorAll<HTMLElement>("[data-lamp-emission] img, [data-room-emission] img");
+      const lamps = [...host.querySelectorAll<HTMLElement>("[data-candlelight], [data-room-lamp]")].filter(e => !e.closest("[data-travel-ghost]"));
+      const glass = [...host.querySelectorAll<HTMLElement>("[data-lamp-emission] img, [data-room-emission] img")].filter(e => !e.closest("[data-travel-ghost]"));
       const wander = (element: HTMLElement, emission: boolean, previous: number) => {
         if (stopped || media.matches || !element.isConnected) return;
-        const next = emission ? .97 + Math.random() * .06 : .61 + Math.random() * .08;
+        const next = emission ? .84 + Math.random() * .32 : .38 + Math.random() * .5;
         const value = (n: number) => emission ? { filter: `brightness(${n})` } : { opacity: n };
         const animation = element.animate([value(previous), value(next)], {
-          duration: 1400 + Math.random() * 2600, easing: "ease-in-out", fill: "forwards",
+          duration: 1700 + Math.random() * 2300, easing: "ease-in-out", fill: "forwards",
         });
         active.add(animation);
         animation.onfinish = () => {

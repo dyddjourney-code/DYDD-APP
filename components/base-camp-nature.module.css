@@ -1,9 +1,10 @@
 .nature{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .fall{position:absolute;isolation:isolate;overflow:hidden;mask-image:url('/brand/nature/camp-fall.png');mask-size:100% 100%;mask-repeat:no-repeat}
-.water{display:block;width:100%;height:100%;opacity:.24;animation:waterSlip 5.6s ease-in-out infinite alternate}
+.water{position:absolute;inset:0;display:block;width:100%;height:100%;opacity:.72;animation:waterSlip 2.6s linear infinite}
+.secondWater{animation-delay:-1.3s}
 .foliage{position:absolute;display:block;object-fit:fill;will-change:transform;animation:breeze 5.8s ease-in-out infinite}
 .vine{transform-origin:50% 0;animation-duration:6.8s}
 .leaf{transform-origin:92% 50%}
 @keyframes breeze{0%,100%{transform:translateX(-.5px) rotate(-.12deg)}45%{transform:translateX(1.5px) rotate(.2deg)}72%{transform:translateX(.3px) rotate(.05deg)}}
-@keyframes waterSlip{from{transform:translateY(-.4px);opacity:.18}to{transform:translateY(.7px);opacity:.3}}
+@keyframes waterSlip{0%{transform:translateY(-2.4px) scaleY(1.08);opacity:0}25%{opacity:.88}50%{opacity:.72}75%{opacity:.88}100%{transform:translateY(3.8px) scaleY(1.08);opacity:0}}
 @media(prefers-reduced-motion:reduce){.nature *{animation:none!important;will-change:auto}.water,.stream{opacity:0}.foliage{transform:none}}

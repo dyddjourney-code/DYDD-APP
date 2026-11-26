@@ -19,6 +19,10 @@ const lanterns = {camp:[[65.4,39.8],[69.2,39],[70.8,42.1],[81,36.8],[86.3,38.7]]
 /** Presentation only: camera crops of approved art; no account/progress writes. */
 export function DydiAdventure({onPassport,onProfile,dock,request,onScene,courses}:{dock?:React.ReactNode;onProfile:()=>void;courses:readonly CourseBookSummary[];onPassport:()=>void;request?:SceneRequest|null;onScene?:(stop:SceneStop)=>void}) {
   const atmosphere=useRef<HTMLElement>(null);
+  const handoff=useRef<HTMLElement|null>(null);
+  const settling=useRef<Animation[]>([]);
+  const enterPending=useRef(false);
+  const pendingAction=useRef<(()=>void)|null>(null);
   const [stop,setStop]=useState<SceneStop>("camp");
   const [camera,setCamera]=useState<Camera>("rest");
   const [destination,setDestination]=useState<SceneStop|null>(null);
@@ -37,9 +41,34 @@ export function DydiAdventure({onPassport,onProfile,dock,request,onScene,courses
   const scene=stop==="camp"?"camp":stop==="classroom"?"classroom":"station";
   const walking=destination!==null;
   useNaturalLampFlicker(atmosphere, stop, !walking && camera !== "book");
-  function cancel(){version.current++;if(timer.current)clearTimeout(timer.current);}
-  function arrive(next:SceneStop){
-    cancel();target.current=null;current.current=next;pendingFocus.current=true;
+  function clearHandoff(){handoff.current?.remove();handoff.current=null;for(const a of settling.current)a.cancel();settling.current=[];}
+  function cancel(){version.current++;if(timer.current)clearTimeout(timer.current);pendingAction.current=null;enterPending.current=false;clearHandoff();}
+  function retainDeparture(){
+    const host=atmosphere.current;
+    const source=host?.querySelector<HTMLElement>("[data-scene-frame], [data-map-scene]");
+    if(!host||!source)return;
+    const box=source.getBoundingClientRect(),parent=host.getBoundingClientRect();
+    const shell=document.createElement("div");
+    shell.dataset.travelGhost="";shell.setAttribute("aria-hidden","true");shell.inert=true;
+    Object.assign(shell.style,{position:"absolute",left:`${box.left-parent.left}px`,top:`${box.top-parent.top}px`,width:`${box.width}px`,height:`${box.height}px`,overflow:"hidden",pointerEvents:"none",zIndex:"2"});
+    const clone=source.cloneNode(true) as HTMLElement;
+    // Pin the real departure crop. CSS keyed on the old stop/camera ceases to
+    // match after arrival, so inheriting it would visibly snap the ghost back.
+    const originalPlane=source.querySelector<HTMLElement>("[data-scene-plane]");
+    const clonePlane=clone.querySelector<HTMLElement>("[data-scene-plane]");
+    if(originalPlane&&clonePlane){const css=getComputedStyle(originalPlane);Object.assign(clonePlane.style,{transform:css.transform,transformOrigin:css.transformOrigin,transition:"none"});}
+    const originalMap=source.querySelector<HTMLElement>("[data-arrival-map]");
+    const cloneMap=clone.querySelector<HTMLElement>("[data-arrival-map]");
+    if(originalMap&&cloneMap){const css=getComputedStyle(originalMap);Object.assign(cloneMap.style,{transform:css.transform,opacity:css.opacity,animation:"none"});}
+    clone.querySelectorAll("button, nav, h1, details, [role=status]").forEach(e=>e.remove());
+    clone.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"));
+    Object.assign(clone.style,{width:"100%",height:"100%",minHeight:"0",margin:"0"});
+    shell.append(clone);host.append(shell);handoff.current=shell;
+  }
+  function arrive(next:SceneStop, immediate=false){
+    cancel();
+    if(!immediate&&!reducedRef.current&&next!==current.current&&!(next==="desk"&&current.current==="station")&&!(next==="station"&&current.current==="desk")){retainDeparture();enterPending.current=true;}
+    target.current=null;current.current=next;pendingFocus.current=true;
     setStop(next);setCamera(next==="desk"?"desk":"rest");setDestination(null);onScene?.(next);
   }
   function schedule(fn:()=>void,ms:number,run:number){timer.current=setTimeout(()=>{if(version.current===run)fn();},ms);}
@@ -49,6 +78,9 @@ export function DydiAdventure({onPassport,onProfile,dock,request,onScene,courses
     requestAnimationFrame(()=>requestAnimationFrame(()=>{if(version.current===run)schedule(fn,780,run);}));
   }
   function travel(next:SceneStop){
+    // Coalesce rapid input until the visible arrival completes; never tear a
+    // partially dissolved / zooming composite away from under the next trip.
+    if(settling.current.length){pendingAction.current=()=>travel(next);return;}
     cancel();setBook(false);target.current=next;
     if(reducedRef.current||next===current.current){arrive(next);return;}
     const run=version.current;
@@ -60,14 +92,27 @@ export function DydiAdventure({onPassport,onProfile,dock,request,onScene,courses
 
   useEffect(()=>{
     const media=matchMedia("(prefers-reduced-motion: reduce)");
-    const update=()=>{reducedRef.current=media.matches;setReduced(media.matches);if(media.matches&&target.current)arrive(target.current);};
+    const update=()=>{reducedRef.current=media.matches;setReduced(media.matches);if(media.matches){const queued=pendingAction.current;pendingAction.current=null;clearHandoff();if(target.current)arrive(target.current);else queued?.();}};
     update();media.addEventListener("change",update);setReady(true);
     for(const src of Object.values(art)){const img=new Image();img.src=src;}
     return()=>{media.removeEventListener("change",update);cancel();};
   },[]);
   useEffect(()=>{if(request&&request.serial!==requestSeen.current){requestSeen.current=request.serial;travel(request.stop);}},[request]);
   useLayoutEffect(()=>{if(!walking&&pendingFocus.current){heading.current?.focus({preventScroll:true});pendingFocus.current=false;}},[stop,walking]);
+  useLayoutEffect(()=>{
+    if(!enterPending.current)return;
+    enterPending.current=false;
+    const plane=atmosphere.current?.querySelector<HTMLElement>("[data-scene-plane], [data-map-scene]");
+    const ghost=handoff.current;
+    if(!plane||reducedRef.current){clearHandoff();return;}
+    const base=getComputedStyle(plane).transform;
+    const arrival=plane.animate([{transform:`${base==="none"?"":base} scale(1.18)`},{transform:base}],{duration:620,easing:"cubic-bezier(.16,1,.3,1)"});
+    settling.current=[arrival];
+    if(ghost){const dissolve=ghost.animate([{opacity:1,transform:"scale(1)"},{opacity:0,transform:"scale(1.09)"}],{duration:440,easing:"ease-out",fill:"forwards"});settling.current.push(dissolve);}
+    arrival.onfinish=()=>{const queued=pendingAction.current;pendingAction.current=null;clearHandoff();queued?.();};
+  },[stop]);
   function openBook(){
+    if(settling.current.length){pendingAction.current=openBook;return;}
     opener.current=document.activeElement as HTMLElement;cancel();
     if(reducedRef.current){setBook(true);return;}
     setCamera("book");const run=version.current;cameraFrames(()=>setBook(true),run);
@@ -82,7 +127,7 @@ export function DydiAdventure({onPassport,onProfile,dock,request,onScene,courses
         <button disabled={!ready} onClick={()=>travel("classroom")} aria-current={stop==="classroom"?"page":undefined}>Learning Center</button>
       </nav>
     </header>
-    {stop==="relief"?<div className={styles.mapScene}>
+    {stop==="relief"?<div className={styles.mapScene} data-map-scene>
       <h1 ref={heading} tabIndex={-1} id="adventure-title" className={styles.mapTitle}>Camp Map</h1>
       <ArrivalReliefMap reducedMotion={reduced} onOrient={place=>travel(place==="desk"?"station":"camp")} onPassport={onPassport}/>
       <div className={styles.destinationDock}>{dock}</div>
@@ -104,7 +149,7 @@ export function DydiAdventure({onPassport,onProfile,dock,request,onScene,courses
           <button className={styles.deskObject} aria-current={stop==="desk"?"location":undefined} onClick={()=>travel("desk")}>Ranger Desk</button>
           <button className={styles.hallObject} onClick={()=>travel("classroom")}>Learning Center <span aria-hidden="true">→</span></button>
         </nav>}
-        {walking&&<div className={styles.arrival} role="status">{destination==="camp"?"Returning to Base Camp":destination==="station"?"Entering Ranger Station":destination==="classroom"?"Entering Learning Center":destination==="desk"?"Approaching Ranger Desk":"Approaching Camp Map"}<button onClick={()=>arrive(destination!)}>Skip movement</button></div>}
+        {walking&&<div className={styles.arrival} role="status">{destination==="camp"?"Returning to Base Camp":destination==="station"?"Entering Ranger Station":destination==="classroom"?"Entering Learning Center":destination==="desk"?"Approaching Ranger Desk":"Approaching Camp Map"}<button onClick={()=>arrive(destination!,true)}>Skip movement</button></div>}
         <div className={styles.destinationDock}>{dock}</div>
       </div>
       {stop==="desk"&&!walking&&<div className={styles.deskReturn}><button onClick={()=>travel("station")}>← Back to Ranger Station</button><details className={styles.deskGuide}><summary>Ranger guide</summary><RangerDesk unhosted/></details></div>}

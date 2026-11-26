@@ -1,11 +1,11 @@
-.map{position:relative;z-index:2;margin:20px auto 32px;width:96%;max-width:1800px;color:#f0e9d8;animation:approach 480ms steps(12,end) both;font-family:Arial,Helvetica,sans-serif}
+.map{position:relative;z-index:2;margin:20px auto 32px;width:96%;max-width:1800px;color:#f0e9d8;animation:approach 780ms cubic-bezier(.4,0,.2,1) both;font-family:Arial,Helvetica,sans-serif}
 .mapHeading{display:flex;justify-content:space-between;align-items:center;margin:0 2px 12px;gap:16px}
 .mapHeading>span{font-size:10px;letter-spacing:2.2px}
 .mapHeading p{font-size:11px;margin:0;color:#d4d5c2}
 .table{position:relative;padding:5px;border:1px solid #b29a6570;background:#394033;box-shadow:0 22px 60px #15271e66}
 .landscape{position:relative;width:100%;aspect-ratio:1672/941;overflow:hidden;isolation:isolate;background:#23352b;touch-action:none;cursor:grab;outline-offset:3px;overscroll-behavior:contain}
 .dragging{cursor:grabbing}
-.plane{position:absolute;left:50%;top:50%;transform-origin:center;transition:transform 480ms steps(12,end);will-change:transform}
+.plane{position:absolute;left:50%;top:50%;transform-origin:center;transition:transform 780ms cubic-bezier(.4,0,.2,1);will-change:transform}
 .dragging .plane{transition:none}
 .plane>img{display:block;width:100%;height:100%;pointer-events:none;user-select:none;object-fit:contain}
 .tools{position:absolute;right:18px;top:18px;z-index:4;display:flex;gap:8px;align-items:flex-start}
@@ -116,12 +116,12 @@ to{opacity:1;transform:none}
 
 /* Approved historical route palette, muted at rest; independent water geometry. */
 .riverFlow{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;fill:none}
-.riverFlow path{stroke:#e3f8f5;stroke-width:.25;stroke-linecap:round;stroke-dasharray:.38 .65;opacity:.65;animation:waterGlint 2.8s linear infinite;animation-delay:var(--flow-delay)}
+.riverFlow{overflow:hidden}.riverFlow img{width:100%;height:100%;display:block;opacity:.3;animation:whitewaterDrift 7.6s ease-in-out infinite alternate;will-change:transform,opacity}
 .hotspot[data-side=roof] .label{position:absolute;left:10px;bottom:24px;transform:translate(-50%,0);text-align:center}
 .hotspot[data-place=base-camp] .label{transform:translateY(1px)}
 .hotspot[data-place=field-kit] .label{transform:translateY(8px)}
 .hotspot[data-place=trailheads] .label{transform:translateY(9px)}
-@keyframes waterGlint{0%{opacity:.5;stroke-dashoffset:0}50%{opacity:.85}100%{opacity:.5;stroke-dashoffset:-4.12}}
+@keyframes whitewaterDrift{from{transform:translate(.15px,-.25px);opacity:.2}to{transform:translate(-.35px,.45px);opacity:.55}}
 @media(max-width:700px){
  .hotspot[data-side=roof] .label{bottom:23px}
  .hotspot[data-place=base-camp] .label{transform:translateY(-2px)}
@@ -160,3 +160,5 @@ to{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.trails g{animation:none!important}}
 
 .hotspot[data-place=fruitlife-360] .label{transform:translateY(-9px)}
+
+@media(prefers-reduced-motion:reduce){.riverFlow img{animation:none!important;opacity:0;will-change:auto}}

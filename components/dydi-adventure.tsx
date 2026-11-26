@@ -5,6 +5,7 @@ import { ArrivalReliefMap } from "@/components/arrival-relief-map";
 import { RangerDesk } from "@/components/ranger-desk";
 import { CourseBook, type CourseBookSummary } from "@/components/course-book";
 import styles from "./dydi-adventure.module.css";
+import { useNaturalLampFlicker } from "./use-natural-lamp-flicker";
 import { BaseCampNature } from "./base-camp-nature";
 
 export type SceneStop = "camp" | "station" | "desk" | "relief" | "classroom";
@@ -17,6 +18,7 @@ const lanterns = {camp:[[65.4,39.8],[69.2,39],[70.8,42.1],[81,36.8],[86.3,38.7]]
 
 /** Presentation only: camera crops of approved art; no account/progress writes. */
 export function DydiAdventure({onPassport,onProfile,dock,request,onScene,courses}:{dock?:React.ReactNode;onProfile:()=>void;courses:readonly CourseBookSummary[];onPassport:()=>void;request?:SceneRequest|null;onScene?:(stop:SceneStop)=>void}) {
+  const atmosphere=useRef<HTMLElement>(null);
   const [stop,setStop]=useState<SceneStop>("camp");
   const [camera,setCamera]=useState<Camera>("rest");
   const [destination,setDestination]=useState<SceneStop|null>(null);
@@ -34,6 +36,7 @@ export function DydiAdventure({onPassport,onProfile,dock,request,onScene,courses
   const target=useRef<SceneStop|null>(null);
   const scene=stop==="camp"?"camp":stop==="classroom"?"classroom":"station";
   const walking=destination!==null;
+  useNaturalLampFlicker(atmosphere, scene);
   function cancel(){version.current++;if(timer.current)clearTimeout(timer.current);}
   function arrive(next:SceneStop){
     cancel();target.current=null;current.current=next;pendingFocus.current=true;
@@ -41,16 +44,16 @@ export function DydiAdventure({onPassport,onProfile,dock,request,onScene,courses
   }
   function schedule(fn:()=>void,ms:number,run:number){timer.current=setTimeout(()=>{if(version.current===run)fn();},ms);}
   function cameraFrames(fn:()=>void,run:number){
-    // Give the committed source plane a paint before starting its 480ms clock.
+    // Give the committed source plane a paint before starting its 780ms clock.
     // Otherwise a cold compositor can consume the timer before frame one.
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{if(version.current===run)schedule(fn,480,run);}));
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{if(version.current===run)schedule(fn,780,run);}));
   }
   function travel(next:SceneStop){
     cancel();setBook(false);target.current=next;
     if(reducedRef.current||next===current.current){arrive(next);return;}
     const run=version.current;
     setDestination(next);
-    // Twelve deliberate camera frames, one 480ms trip regardless of origin.
+    // Continuous eased camera travel, one 780ms trip regardless of origin.
     setCamera(current.current==="camp"?"steps":next==="classroom"?"hallway":next==="desk"?"desk":next==="relief"?"map":next==="station"&&current.current==="desk"?"rest":"depart");
     cameraFrames(()=>arrive(next),run);
   }
@@ -70,7 +73,7 @@ export function DydiAdventure({onPassport,onProfile,dock,request,onScene,courses
     setCamera("book");const run=version.current;cameraFrames(()=>setBook(true),run);
   }
   function closeBook(){cancel();setBook(false);setCamera("rest");requestAnimationFrame(()=>opener.current?.focus({preventScroll:true}));}
-  return <section className={`${styles.adventure} ${reduced?styles.quiet:""}`} data-stop={stop} data-destination={destination??""} data-motion={reduced?"reduced":"full"} data-camera={camera} aria-labelledby="adventure-title">
+  return <section ref={atmosphere} className={`${styles.adventure} ${reduced?styles.quiet:""}`} data-stop={stop} data-destination={destination??""} data-motion={reduced?"reduced":"full"} data-camera={camera} aria-labelledby="adventure-title">
     <header className={styles.sceneHeader}>
       <nav aria-label="Your route" className={styles.route}>
         <button disabled={!ready} onClick={()=>travel("camp")} aria-current={stop==="camp"?"page":undefined}>Base Camp</button>

@@ -11,11 +11,8 @@
 @media (prefers-reduced-motion: reduce) { .frame *, .frame *::before, .frame *::after { animation: none !important; transition: none !important; } .lamp { opacity: .7; } .daylight { opacity: .2; } }
 
 .lamp{width:6.8%;mix-blend-mode:screen;background:radial-gradient(ellipse,#ffd588b0 0%,#ffbd5a65 15%,#ffa62e24 40%,transparent 69%)}
-.lamp b{animation:core-flicker 1.3s ease-in-out var(--phase) infinite}
+.lamp b{opacity:.65}
 .lamp[data-light-kind="wall-bar"]{width:6%;aspect-ratio:2.8}
 .lamp[data-light-kind="wall-bar"] b{left:18%;top:35%;width:64%;height:25%;border-radius:45%}
-@keyframes lamp-flicker{0%,100%{opacity:.28}12%{opacity:.85}22%{opacity:.49}38%{opacity:.97}47%{opacity:.66}58%{opacity:.9}73%{opacity:.37}86%{opacity:.79}}
-@keyframes core-flicker{0%,100%{opacity:.48;transform:scale(.88,1)}23%{opacity:1;transform:scale(1.1,1.16)}47%{opacity:.52;transform:scale(.92,.88)}72%{opacity:.94;transform:scale(1.04,1.1)}}
 
-.emission{position:absolute;inset:0;pointer-events:none}.emission img{position:absolute;transform:translate(-50%,-50%);object-fit:fill;animation:glass-intensity 2.7s linear infinite}
-@keyframes glass-intensity{0%,100%{filter:brightness(1)}14%{filter:brightness(.79)}27%{filter:brightness(1.05)}43%{filter:brightness(.91)}56%{filter:brightness(1.03)}72%{filter:brightness(.82)}87%{filter:brightness(.97)}}
+.emission{position:absolute;inset:0;pointer-events:none}.emission img{position:absolute;transform:translate(-50%,-50%);object-fit:fill;filter:brightness(1)}

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { ReviewAwareLink } from "@/components/review-aware-link";
-import { mapTerrain, positions, trails, routeNotes, riverFlow, riverWaterPools } from "./arrival-map-geography";
+import { mapTerrain, positions, trails, routeNotes } from "./arrival-map-geography";
 import { mapPoints } from "./arrival-map-places";
 import styles from "./arrival-relief-map.module.css";
 
@@ -153,7 +153,7 @@ export function ArrivalReliefMap({ reducedMotion, onOrient, onPassport }: { redu
         {imageError && <p className={styles.imageError} role="status">The landscape could not load. Use Map guide to explore every destination.</p>}
         <div className={styles.plane} data-map-plane data-zoom={view.z} data-pan-x={view.x} data-pan-y={view.y} style={{ width:plane.width || "100%",height:plane.height || "100%",transform: `translate3d(calc(-50% + ${view.x}px),calc(-50% + ${view.y}px),0) scale(${view.z})`, "--inverse-zoom": 1 / view.z } as CSSProperties}>
           <img src={mapTerrain.image} alt="Source-faithful close-up of the ranger station’s raised relief model: tactile mountain ridges, miniature forest, winding river and timber footbridge, ranger cabin with separate Field Kit outbuilding, bridge trailhead, two camp clearings and a fireside hiking loop on the original wooden table" width={mapTerrain.width} height={mapTerrain.height} fetchPriority="high" draggable={false} onLoad={() => setImageReady(true)} onError={() => setImageError(true)} />
-          <svg className={styles.riverFlow} data-river-flow viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><clipPath id="arrival-river-water" clipPathUnits="userSpaceOnUse">{riverWaterPools.map(points => <polygon key={points} points={points}/>)}</clipPath></defs><g clipPath="url(#arrival-river-water)">{riverFlow.map((d, index) => <path key={d} d={d} style={{ "--flow-delay": `${-index * .73}s` } as CSSProperties}/>)}</g></svg>
+          <div className={styles.riverFlow} data-river-flow aria-hidden="true"><img src="/brand/nature/river-whitewater.png" alt="" draggable={false}/></div>
           <svg className={styles.trails} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">{[...trails].sort((a,b)=>Number(a.id===selected)-Number(b.id===selected)).map(trail => <g key={trail.id} data-trail={trail.id} data-route-kind={trail.kind} style={{ "--route-color": trail.color, "--route-hot": trail.hot } as CSSProperties} className={selected === trail.id ? styles.activeTrail : ""}><path className={styles.trailLights} d={trail.d}/></g>)}</svg>
           <svg className={styles.detailsArt} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
             {selected === "fireside" && <g className={styles.fireWarmth}><ellipse cx="86.9" cy="54.5" rx=".6" ry=".9" fill="#e4b06b" opacity=".25"/><ellipse cx="86.9" cy="54.5" rx=".17" ry=".25" fill="#f7d69a"/></g>}

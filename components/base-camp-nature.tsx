@@ -18,8 +18,6 @@ export function BaseCampNature() {
   return <div className={styles.nature} aria-hidden="true" data-base-camp-nature>
     <div className={styles.fall} style={position([865, 201, 45, 76])} data-source-waterfall>
       <img className={styles.water} src="/brand/nature/camp-fall.png" alt="" draggable={false} />
-      <div className={styles.stream} />
-      <div className={`${styles.stream} ${styles.fine}`} />
     </div>
     {foliage.map(({ name, box, delay }) => <img key={name}
       className={`${styles.foliage} ${name === "camp-vine" ? styles.vine : styles.leaf}`}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type CSSProperties } from "react";
+import { useNaturalLampFlicker } from "./use-natural-lamp-flicker";
 import styles from "./room-atmosphere.module.css";
 
 type Scene = "ranger" | "archive";
@@ -15,6 +16,7 @@ export function RoomAtmosphere({ scene, className, background = false }: {
 }) {
   const frame = useRef<HTMLDivElement>(null);
   const plane = useRef<HTMLDivElement>(null);
+  useNaturalLampFlicker(frame, scene);
   useEffect(() => {
     const host = frame.current, overlay = plane.current;
     if (!host || !overlay) return;

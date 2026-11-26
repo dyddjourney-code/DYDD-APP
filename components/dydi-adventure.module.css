@@ -1,16 +1,13 @@
 .adventure{position:relative;isolation:isolate;background:#14251c;color:#f1eedf;font-family:"DM Sans",sans-serif;min-height:calc(100dvh - 180px);padding-bottom:12px}
 .sceneHeader{padding:16px 4%;display:flex;justify-content:flex-end;background:#14251c}.route{display:flex;gap:clamp(16px,3vw,42px);align-items:center}.route button{border:0;border-bottom:1px solid transparent;padding:9px 0;min-height:44px;color:#e4e6da;background:transparent;font:500 13px/1.3 "DM Sans",sans-serif;cursor:pointer}.route button[aria-current]{border-bottom-color:#d2bd8a;color:#f5e2b5}.route button:disabled{opacity:.5}
-.sceneFrame{position:relative;aspect-ratio:1672/941;overflow:hidden;background:#17291f}.camera{position:absolute;inset:0;transform:scale(1);transition:transform 480ms steps(12,end);will-change:transform}.art{display:block;width:100%;height:100%;object-fit:fill}.shade{pointer-events:none;position:absolute;inset:0;background:linear-gradient(90deg,#1122196b,transparent 40%),linear-gradient(180deg,#10211755,transparent 24%)}
+.sceneFrame{position:relative;aspect-ratio:1672/941;overflow:hidden;background:#17291f}.camera{position:absolute;inset:0;transform:scale(1);transition:transform 780ms cubic-bezier(.4,0,.2,1);will-change:transform}.art{display:block;width:100%;height:100%;object-fit:fill}.shade{pointer-events:none;position:absolute;inset:0;background:linear-gradient(90deg,#1122196b,transparent 40%),linear-gradient(180deg,#10211755,transparent 24%)}
 .title{position:absolute;top:7%;left:4%;margin:0;color:#f8f4e8;font:500 clamp(24px,3.1vw,46px)/1.15 "DM Sans",sans-serif;letter-spacing:-.04em;text-shadow:0 2px 18px #102117b3;max-width:45%;outline:none}.start{position:absolute;left:4%;top:65%;display:flex;justify-content:space-between;align-items:center;gap:45px;min-width:165px;min-height:52px;padding:14px 20px;border:1px solid #e0cf9c;background:#d9c595;color:#17291e;font:600 15px/1.3 "DM Sans",sans-serif;cursor:pointer}.start span{font-size:21px}.start:hover{background:#ecdbb1}.start:active,.objects button:active,.bookObject:active{transform:translateY(1px)}
 .objects{position:absolute;inset:0;pointer-events:none}.objects button,.bookObject{position:absolute;border:1px solid #e0cf9c88;background:#17281ee8;color:#f8efd9;backdrop-filter:blur(5px);font:500 13px/1.3 "DM Sans",sans-serif;min-height:44px;padding:11px 17px;cursor:pointer;pointer-events:auto;box-shadow:0 4px 14px #17251d55}.objects button:hover,.bookObject:hover{background:#293d2e;border-color:#e9d49d}.mapObject{left:39%;top:72%}.deskObject{right:4%;top:65%}.hallObject{left:57%;top:47%}.hallObject span{padding-left:14px}.bookObject{left:52%;top:71%;transform:translateX(-50%)}.bookObject:active{transform:translateX(-50%) translateY(1px)}.bookObject:disabled{opacity:0;pointer-events:none}.atDesk{inset:auto 4% 4%;display:flex;gap:10px;flex-wrap:wrap}.atDesk button{position:static}.atDesk .deskObject{border-color:#e0cf9c}
 .arrival{position:absolute;bottom:5%;left:4%;display:flex;align-items:center;flex-wrap:wrap;gap:20px;font-size:12px;color:#f2ebd8;background:#13261dd9;padding:10px 15px}.arrival button,.deskReturn button{background:none;border:0;border-bottom:1px solid #ccb98688;color:#f1e1b6;padding:8px 0;min-height:40px;font:inherit;cursor:pointer}.deskReturn{padding:12px 4%;font-size:12px}.mapTitle{font:500 26px/1.2 "DM Sans",sans-serif;margin:0 4% 12px;outline:none}
 /* Source-plane registrations: every glow follows a painted fixture, never the viewport. */
 .lanterns{position:absolute;inset:0;pointer-events:none}
-.lanterns i{position:absolute;width:6.8%;aspect-ratio:1;transform:translate(-50%,-50%);background:radial-gradient(ellipse,#ffd588b0 0%,#ffbd5a65 15%,#ffa62e24 40%,transparent 69%);mix-blend-mode:screen;opacity:.7;animation:candle 2.9s linear infinite;will-change:opacity}
-.lanterns i::after{content:"";position:absolute;left:45%;top:40%;width:10%;height:20%;border-radius:50%;background:radial-gradient(ellipse,#fff9d9 0%,#ffe3a0ba 35%,#ffc35544 65%,transparent 100%);transform-origin:50% 80%;animation:flame 1.3s ease-in-out infinite;animation-delay:inherit}
-.lanterns i:nth-child(2n){animation-duration:3.7s}.lanterns i:nth-child(3n){animation-duration:2.3s}.lanterns i:nth-child(2n)::after{animation-duration:1.7s}
-@keyframes candle{0%,100%{opacity:.28}12%{opacity:.85}22%{opacity:.49}38%{opacity:.97}47%{opacity:.66}58%{opacity:.9}73%{opacity:.37}86%{opacity:.79}}
-@keyframes flame{0%,100%{opacity:.48;transform:skewX(-4deg) scale(.88,1)}23%{opacity:1;transform:skewX(5deg) scale(1.1,1.16)}47%{opacity:.52;transform:skewX(-3deg) scale(.92,.88)}72%{opacity:.94;transform:skewX(3deg) scale(1.04,1.1)}}
+.lanterns i{position:absolute;width:6.8%;aspect-ratio:1;transform:translate(-50%,-50%);background:radial-gradient(ellipse,#ffd588b0 0%,#ffbd5a65 15%,#ffa62e24 40%,transparent 69%);mix-blend-mode:screen;opacity:.65;will-change:opacity}
+.lanterns i::after{content:"";position:absolute;left:45%;top:40%;width:10%;height:20%;border-radius:50%;background:radial-gradient(ellipse,#fff9d9 0%,#ffe3a0ba 35%,#ffc35544 65%,transparent 100%);transform-origin:50% 80%;animation-delay:inherit}
 .daylight{position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light;animation:cloudLight 13s ease-in-out infinite;background:linear-gradient(116deg,transparent 27%,#fff1bb60 36%,transparent 43%,#fff0b338 49%,transparent 57%);mask-image:radial-gradient(ellipse at 45% 25%,#000 10%,transparent 68%)}
 .daylight[data-daylight=station]{background:linear-gradient(122deg,transparent 32%,#fff4c577 47%,transparent 56%);clip-path:polygon(25% 29%,65% 27%,83% 98%,12% 98%);animation-delay:-4s}
 .daylight[data-daylight=classroom]{background:linear-gradient(120deg,#fff4bf88,transparent 60%);clip-path:polygon(0 0,28% 12%,67% 85%,26% 87%,0 59%);animation-delay:-8s}
@@ -19,7 +16,7 @@
 .waterfall img{position:absolute;width:100%;height:100%;object-fit:fill;animation:waterFlow 1.8s linear infinite;mix-blend-mode:screen;opacity:.35}
 @keyframes waterFlow{0%{transform:translateY(-.12%);opacity:.12}50%{opacity:.48}100%{transform:translateY(.24%);opacity:.12}}
 .sourceBook{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;filter:drop-shadow(0 2px 2px #1b160c88)}
-.adventure[data-camera=steps] .camera{transform-origin:74% 53%;transform:scale(1.9);transition-duration:480ms}.adventure[data-camera=hallway] .camera{transform-origin:62% 45%;transform:scale(2.45)}.adventure[data-camera=desk] .camera{transform-origin:90% 59%;transform:scale(1.75)}.adventure[data-camera=map] .camera{transform-origin:44% 59%;transform:scale(1.85)}.adventure[data-camera=book] .camera{transform-origin:52% 62%;transform:scale(2.25);transition-duration:480ms}.adventure[data-destination]:not([data-destination=""]) .title{opacity:0;transition:opacity .4s}.adventure button:focus-visible,.adventure a:focus-visible{outline:2px solid #f3d799;outline-offset:4px}.quiet *{animation:none!important;transition:none!important}
+.adventure[data-camera=steps] .camera{transform-origin:74% 53%;transform:scale(1.9);transition-duration:780ms}.adventure[data-camera=hallway] .camera{transform-origin:62% 45%;transform:scale(2.45)}.adventure[data-camera=desk] .camera{transform-origin:90% 59%;transform:scale(1.75)}.adventure[data-camera=map] .camera{transform-origin:44% 59%;transform:scale(1.85)}.adventure[data-camera=book] .camera{transform-origin:52% 62%;transform:scale(2.25);transition-duration:780ms}.adventure[data-destination]:not([data-destination=""]) .title{opacity:0;transition:opacity .4s}.adventure button:focus-visible,.adventure a:focus-visible{outline:2px solid #f3d799;outline-offset:4px}.quiet *{animation:none!important;transition:none!important}
 @media(min-width:1800px){.sceneFrame{max-height:1100px}}
 @media(max-width:700px){.adventure{min-height:calc(100dvh - 200px)}.sceneHeader{padding:8px 5%}.route{width:100%;justify-content:space-between;gap:12px}.route button{font-size:11px}.title{top:7%;font-size:clamp(21px,5vw,32px);max-width:57%;left:5%}.sceneFrame{aspect-ratio:auto;padding-bottom:94px}.camera{position:relative;inset:auto;aspect-ratio:1672/941;transform-origin:center}.shade{bottom:94px}.start{top:auto;bottom:23px;left:5%;min-height:48px;min-width:150px;padding:10px 17px;font-size:13px}.objects,.atDesk{inset:auto 5% 16px;display:flex;justify-content:flex-start;gap:8px;flex-wrap:wrap}.objects button{position:static;font-size:11px;min-height:44px;padding:10px 12px}.objects .hallObject span{padding-left:4px}.bookObject{top:calc((100% - 94px)*.71);font-size:11px;padding:8px 12px;min-height:40px}.arrival{left:5%;bottom:12px;right:5%;gap:8px;justify-content:space-between;font-size:11px;padding:4px 10px}.arrival button{font-size:10px}.atDesk{inset:auto 5% 16px}.mapTitle{font-size:22px}.deskReturn{padding-top:0}.sceneFrame:has(.bookObject){padding-bottom:32px}.sceneFrame:has(.bookObject) .shade{bottom:32px}.sceneFrame:has(.bookObject) .bookObject{top:calc((100% - 32px)*.71)}
 }
@@ -29,7 +26,7 @@
    The room crop pans to the real right-hand desk / central hallway. */
 @media(max-width:700px){
  .sceneFrame{aspect-ratio:4/5;padding-bottom:0}
- .camera{position:absolute;inset:auto;left:50%;top:0;height:calc(100% - 80px);width:auto;aspect-ratio:1672/941;transform:translateX(-50%);transition:transform 480ms steps(12,end)}
+ .camera{position:absolute;inset:auto;left:50%;top:0;height:calc(100% - 80px);width:auto;aspect-ratio:1672/941;transform:translateX(-50%);transition:transform 780ms cubic-bezier(.4,0,.2,1)}
  /* Keep the genuine waterfall inside the narrow source crop. */
  .camera[data-art=camp]{transform:translateX(-64%)}
  .camera[data-art=station]{transform:translateX(-60%)}
@@ -39,7 +36,7 @@
  .adventure[data-camera=hallway] .camera{transform-origin:62% 45%;transform:translateX(-62%) scale(1.9)}
  .adventure[data-camera=desk] .camera{transform-origin:85% 59%;transform:translateX(-85%) scale(1.8)}
  .adventure[data-camera=map] .camera{transform-origin:44% 59%;transform:translateX(-44%) scale(1.7)}
- .adventure[data-camera=book] .camera{transform-origin:52% 62%;transform:translateX(-52%) scale(1.9);transition-duration:480ms}
+ .adventure[data-camera=book] .camera{transform-origin:52% 62%;transform:translateX(-52%) scale(1.9);transition-duration:780ms}
  .sceneFrame:has(.bookObject){padding-bottom:0}.sceneFrame:has(.bookObject) .shade{bottom:0}.sceneFrame:has(.bookObject) .camera{height:100%}
  .sceneFrame:has(.bookObject) .bookObject{left:50%;top:71%}
  .start{bottom:16px}.objects,.atDesk{bottom:16px}
@@ -56,7 +53,7 @@
 .title{top:14%;font-size:clamp(24px,3vw,42px)}
 .adventure[data-stop=camp] .title{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%)}
 .destinationDock{position:absolute;bottom:24px;left:4%;z-index:3;max-width:92%}
-.camera,.adventure[data-camera] .camera{transition-duration:480ms;transition-timing-function:steps(12,end)}
+.camera,.adventure[data-camera] .camera{transition-duration:780ms;transition-timing-function:cubic-bezier(.4,0,.2,1)}
 .bookObject{top:70%;left:52%}
 @media(max-width:700px){
  .sceneHeader{padding:12px 5%}.route{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:16px;row-gap:0;width:auto;margin-left:auto}.route button{font-size:11px;text-align:left;min-height:40px}
@@ -68,7 +65,7 @@
  .destinationDock :global(.game-dock button svg){width:20px;height:20px}
  .objects,.atDesk{bottom:164px;left:5%;right:5%}
  .sceneFrame:has(.bookObject) .bookObject{left:50%;top:70%}
- .adventure[data-camera] .camera{transition-duration:480ms;transition-timing-function:steps(12,end)}
+ .adventure[data-camera] .camera{transition-duration:780ms;transition-timing-function:cubic-bezier(.4,0,.2,1)}
 }
 @media(prefers-reduced-motion:reduce){.camera,.adventure[data-camera] .camera{transition:none}}
 
@@ -79,7 +76,7 @@
 
 .mapScene{position:relative;min-height:100dvh;padding-top:94px;padding-bottom:132px}.mapScene .destinationDock{bottom:22px}.mapTitle{margin-bottom:18px}
 @media(max-width:700px){.mapScene{padding-top:112px;padding-bottom:164px}.mapScene .destinationDock{bottom:18px}}
-.adventure[data-stop=relief][data-destination]:not([data-destination=""]) :global([data-arrival-map]){animation:mapDepart 480ms steps(12,end) both;pointer-events:none}
+.adventure[data-stop=relief][data-destination]:not([data-destination=""]) :global([data-arrival-map]){animation:mapDepart 780ms cubic-bezier(.4,0,.2,1) both;pointer-events:none}
 @keyframes mapDepart{from{transform:scale(1);opacity:1}to{transform:scale(1.035);opacity:.65}}
 @media(prefers-reduced-motion:reduce){.adventure :global([data-arrival-map]){animation:none!important}}
 
@@ -93,8 +90,7 @@
 /* Real glass pixels vary in intensity inside tiny feathered source masks.
    The unchanged foundation image is never filtered or animated. */
 .emission{position:absolute;inset:0;pointer-events:none}
-.emission img{position:absolute;display:block;transform:translate(-50%,-50%);object-fit:fill;animation:lampEmission 2.7s linear infinite}
-@keyframes lampEmission{0%,100%{filter:brightness(1)}14%{filter:brightness(.79)}27%{filter:brightness(1.05)}43%{filter:brightness(.91)}56%{filter:brightness(1.03)}72%{filter:brightness(.82)}87%{filter:brightness(.97)}}
+.emission img{position:absolute;display:block;transform:translate(-50%,-50%);object-fit:fill;filter:brightness(1)}
 /* Cache the source composite during the very short camera flight / book modal. */
 .adventure[data-destination]:not([data-destination=""]) .camera *,
 .adventure[data-destination]:not([data-destination=""]) .camera *::before,
@@ -102,3 +98,5 @@
 .adventure[data-camera=book] .camera *,
 .adventure[data-camera=book] .camera *::before,
 .adventure[data-camera=book] .camera *::after{animation-play-state:paused!important}
+
+.lanterns i::after{opacity:.65;animation:none;transform:none}
